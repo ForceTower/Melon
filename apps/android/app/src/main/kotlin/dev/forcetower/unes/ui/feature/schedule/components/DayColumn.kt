@@ -34,6 +34,7 @@ internal fun ScheduleDayColumn(
     showGaps: Boolean,
     entering: Boolean,
     modifier: Modifier = Modifier,
+    onOpenDiscipline: (ScheduleClass) -> Unit = {},
 ) {
     if (classes.isEmpty()) {
         EmptyDay(modifier = modifier)
@@ -54,6 +55,9 @@ internal fun ScheduleDayColumn(
                 state = scheduleStateFor(cls, isToday = isToday, nowMin = nowMin),
                 showGap = showGaps && index > 0,
                 gapMin = gapMin,
+                onClick = if (cls.offerId != null) {
+                    { onOpenDiscipline(cls) }
+                } else null,
                 modifier = Modifier.fadeUpOnAppear(
                     delayMs = baseDelayMs,
                     durationMs = 450,

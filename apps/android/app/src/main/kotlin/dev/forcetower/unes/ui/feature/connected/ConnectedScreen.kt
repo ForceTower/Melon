@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.BlurEffect
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.layer.GraphicsLayer
 import androidx.compose.ui.graphics.rememberGraphicsLayer
@@ -41,6 +42,7 @@ import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import dev.forcetower.unes.designsystem.theme.MelonTheme
 import dev.forcetower.unes.ui.feature.disciplinedetail.DisciplineDetailRoute
+import dev.forcetower.unes.ui.feature.disciplines.Discipline
 import dev.forcetower.unes.ui.feature.disciplines.DisciplinesIntent
 import dev.forcetower.unes.ui.feature.disciplines.DisciplinesListViewModel
 import dev.forcetower.unes.ui.feature.disciplines.DisciplinesScreen
@@ -114,10 +116,44 @@ fun ConnectedScreen(
             entryDecorators = listOf(saveableDecorator),
             entryProvider = entryProvider {
                 entry<ConnectedRoute.Overview>(metadata = TabRootMetadata) {
-                    OverviewScreen(bottomInset = bottomInset)
+                    OverviewScreen(
+                        bottomInset = bottomInset,
+                        onOpenDiscipline = { d ->
+                            val offerId = d.offerId ?: return@OverviewScreen
+                            disciplinesVm.onIntent(
+                                DisciplinesIntent.OpenDiscipline(
+                                    seedDiscipline(
+                                        code = d.code,
+                                        title = d.title,
+                                        prof = "",
+                                        color = d.color,
+                                        offerId = offerId,
+                                    ),
+                                ),
+                            )
+                            navigator.navigate(ConnectedRoute.DisciplineDetail(offerId))
+                        },
+                    )
                 }
                 entry<ConnectedRoute.Schedule>(metadata = TabRootMetadata) {
-                    ScheduleScreen(bottomInset = bottomInset)
+                    ScheduleScreen(
+                        bottomInset = bottomInset,
+                        onOpenDiscipline = { c ->
+                            val offerId = c.offerId ?: return@ScheduleScreen
+                            disciplinesVm.onIntent(
+                                DisciplinesIntent.OpenDiscipline(
+                                    seedDiscipline(
+                                        code = c.code,
+                                        title = c.title,
+                                        prof = c.prof,
+                                        color = c.color,
+                                        offerId = offerId,
+                                    ),
+                                ),
+                            )
+                            navigator.navigate(ConnectedRoute.DisciplineDetail(offerId))
+                        },
+                    )
                 }
                 entry<ConnectedRoute.Classes>(metadata = TabRootMetadata) {
                     DisciplinesScreen(
@@ -236,6 +272,31 @@ fun ConnectedScreen(
         }
     }
 }
+
+// Minimal seed handed to `DisciplinesListViewModel` when an Overview/Schedule
+// tap pushes `DisciplineDetail`. The detail VM hydrates the full payload from
+// KMP via `offerId`; the seed only powers the first frame so the screen has
+// something to render before the flow emits. Mirrors iOS `detailSeed` in
+// `DisciplinesStrip` / `DayColumn`.
+private fun seedDiscipline(
+    code: String,
+    title: String,
+    prof: String,
+    color: Color,
+    offerId: String,
+): Discipline = Discipline(
+    code = code,
+    fullCode = code,
+    title = title,
+    dept = "",
+    prof = prof,
+    color = color,
+    hours = 0,
+    absences = 0,
+    allowedAbsences = 0,
+    sections = emptyList(),
+    offerId = offerId,
+)
 
 // Visual height of the floating tab bar block (bar + 22dp top/bottom design
 // margin). Content scroll views add this plus the live navigation-bar inset

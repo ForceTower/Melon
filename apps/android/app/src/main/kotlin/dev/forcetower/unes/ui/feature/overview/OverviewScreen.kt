@@ -60,9 +60,10 @@ import dev.forcetower.melon.feature.overview.domain.model.OverviewTodayItem as K
 // local UI projection types declared in `OverviewFixtures.kt` (those types are
 // also reused by Compose previews on the components).
 @Composable
-fun OverviewScreen(
+internal fun OverviewScreen(
     modifier: Modifier = Modifier,
     bottomInset: Dp = 0.dp,
+    onOpenDiscipline: (OverviewDiscipline) -> Unit = {},
 ) {
     val vm: OverviewViewModel = hiltViewModel()
     val state by vm.state.collectAsStateWithLifecycle()
@@ -141,6 +142,7 @@ fun OverviewScreen(
             DisciplinesStrip(
                 items = disciplines,
                 semesterLabel = state.semesterLabel,
+                onOpen = onOpenDiscipline,
                 modifier = Modifier.fadeUpOnAppear(delayMs = 440),
             )
 
@@ -238,6 +240,7 @@ private fun mapDisciplines(
         title = item.title,
         grade = item.gradeLabel,
         color = ColorFor.discipline(palette, item.code),
+        offerId = item.offerId,
     )
 }
 

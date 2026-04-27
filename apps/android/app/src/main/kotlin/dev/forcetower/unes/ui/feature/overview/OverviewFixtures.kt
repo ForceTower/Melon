@@ -41,6 +41,10 @@ internal data class OverviewDiscipline(
     val title: String,
     val grade: String,
     val color: Color,
+    // DisciplineOffer id — non-null once the KMP feed lands. Fixtures and
+    // pre-sync emissions leave it null so the card renders non-tappable
+    // (mirrors iOS `DisciplinesStrip.detailSeed`).
+    val offerId: String? = null,
 )
 
 internal data class OverviewGradeTileData(

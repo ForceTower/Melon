@@ -60,9 +60,10 @@ import dev.forcetower.melon.feature.schedule.domain.model.ScheduleWeek as KmpSch
 // projection types (the local `ScheduleClass` carries a Color so the column
 // stays self-contained — same call iOS made).
 @Composable
-fun ScheduleScreen(
+internal fun ScheduleScreen(
     modifier: Modifier = Modifier,
     bottomInset: Dp = 0.dp,
+    onOpenDiscipline: (ScheduleClass) -> Unit = {},
 ) {
     val vm: ScheduleViewModel = hiltViewModel()
     val state by vm.state.collectAsStateWithLifecycle()
@@ -72,6 +73,7 @@ fun ScheduleScreen(
     ScheduleContent(
         state = state,
         week = week,
+        onOpenDiscipline = onOpenDiscipline,
         modifier = modifier,
         bottomInset = bottomInset,
     )
@@ -83,6 +85,7 @@ private fun ScheduleContent(
     week: List<List<ScheduleClass>>,
     modifier: Modifier = Modifier,
     bottomInset: Dp = 0.dp,
+    onOpenDiscipline: (ScheduleClass) -> Unit = {},
 ) {
     var activeIdx by rememberSaveable { mutableIntStateOf(-1) }
     // Seed the active pill once the first valid emission lands. iOS does the
@@ -148,6 +151,7 @@ private fun ScheduleContent(
                 isToday = resolvedActive == state.todayIdx,
                 nowMin = state.nowMin,
                 entering = entering,
+                onOpenDiscipline = onOpenDiscipline,
             )
 
             Spacer(Modifier.height(20.dp))
@@ -162,6 +166,7 @@ private fun DayColumnSlot(
     isToday: Boolean,
     nowMin: Int,
     entering: Boolean,
+    onOpenDiscipline: (ScheduleClass) -> Unit,
 ) {
     key(key) {
         ScheduleDayColumn(
@@ -170,6 +175,7 @@ private fun DayColumnSlot(
             nowMin = nowMin,
             showGaps = true,
             entering = entering,
+            onOpenDiscipline = onOpenDiscipline,
         )
     }
 }
@@ -230,6 +236,7 @@ private fun mapClass(raw: KmpScheduleClass, palette: MelonPaletteColors): Schedu
         room = raw.room,
         campus = raw.campus,
         topic = raw.topic,
+        offerId = raw.offerId,
     )
 
 // Upstream ships HH:mm or HH:mm:ss — trim to five chars so the time rail

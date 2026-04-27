@@ -2,6 +2,7 @@ package dev.forcetower.unes.ui.feature.overview.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,6 +38,7 @@ internal fun DisciplinesStrip(
     items: List<OverviewDiscipline>,
     semesterLabel: String,
     modifier: Modifier = Modifier,
+    onOpen: (OverviewDiscipline) -> Unit = {},
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
         Column(
@@ -70,14 +72,19 @@ internal fun DisciplinesStrip(
             modifier = Modifier.padding(top = 4.dp, bottom = 12.dp),
         ) {
             items(items, key = { it.code }) { item ->
-                DisciplineCard(item = item)
+                DisciplineCard(
+                    item = item,
+                    onClick = if (item.offerId != null) {
+                        { onOpen(item) }
+                    } else null,
+                )
             }
         }
     }
 }
 
 @Composable
-private fun DisciplineCard(item: OverviewDiscipline) {
+private fun DisciplineCard(item: OverviewDiscipline, onClick: (() -> Unit)?) {
     val card = MaterialTheme.melon.surface.card
     val cardLine = MaterialTheme.melon.surface.cardLine
     val ink = MaterialTheme.colorScheme.onBackground
@@ -90,7 +97,8 @@ private fun DisciplineCard(item: OverviewDiscipline) {
             .size(width = 142.dp, height = 168.dp)
             .clip(RoundedCornerShape(22.dp))
             .background(card)
-            .border(1.dp, cardLine, RoundedCornerShape(22.dp)),
+            .border(1.dp, cardLine, RoundedCornerShape(22.dp))
+            .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier),
     ) {
         // Color glow in the top-right corner.
         Box(

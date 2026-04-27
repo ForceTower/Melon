@@ -8,6 +8,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -64,12 +65,13 @@ internal fun ScheduleClassBlock(
     showGap: Boolean,
     gapMin: Int,
     modifier: Modifier = Modifier,
+    onClick: (() -> Unit)? = null,
 ) {
     Column(modifier = modifier) {
         if (showGap && gapMin > 30) {
             GapMarker(gapMin = gapMin)
         }
-        ClassRow(cls = cls, state = state)
+        ClassRow(cls = cls, state = state, onClick = onClick)
     }
 }
 
@@ -123,7 +125,7 @@ private fun formatGapLabel(gapMin: Int): String {
 }
 
 @Composable
-private fun ClassRow(cls: ScheduleClass, state: ScheduleClassState) {
+private fun ClassRow(cls: ScheduleClass, state: ScheduleClassState, onClick: (() -> Unit)?) {
     val isNow = state == ScheduleClassState.Now
     val isDone = state == ScheduleClassState.Done
 
@@ -131,6 +133,7 @@ private fun ClassRow(cls: ScheduleClass, state: ScheduleClassState) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 6.dp, vertical = 2.dp)
+            .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier)
             .alpha(if (isDone) 0.52f else 1f),
         horizontalArrangement = Arrangement.spacedBy(10.dp),
         verticalAlignment = Alignment.Top,

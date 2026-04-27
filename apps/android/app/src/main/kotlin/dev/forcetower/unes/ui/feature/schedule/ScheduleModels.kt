@@ -18,6 +18,10 @@ internal data class ScheduleClass(
     val room: String?,
     val campus: String?,
     val topic: String?,
+    // DisciplineOffer id — non-null once the KMP feed lands. Pre-sync /
+    // fixture rows leave it null so the row renders non-tappable (mirrors
+    // iOS `DayColumn.detailSeed`).
+    val offerId: String? = null,
 )
 
 internal enum class ScheduleClassState { Done, Now, Next, Later, Future }
