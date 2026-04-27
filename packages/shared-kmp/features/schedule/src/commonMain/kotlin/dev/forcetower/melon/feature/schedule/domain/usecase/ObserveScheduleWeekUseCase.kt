@@ -158,7 +158,7 @@ internal fun weekOfSemester(semester: SemesterEntity, reference: LocalDate): Int
         else -> reference
     }
     val days = clamped.toEpochDays() - start.toEpochDays()
-    return (days / 7) + 1
+    return ((days / 7) + 1).toInt()
 }
 
 private fun topicFor(classId: String, dateIso: String, lectures: List<WeekLectureRow>): String? =

@@ -11,7 +11,7 @@ import dev.forcetower.melon.core.database.query.SemesterAllocationRow
 import dev.forcetower.melon.feature.dashboard.domain.model.NextClassInfo
 import dev.forcetower.melon.feature.dashboard.domain.model.ReadyOverview
 import dev.zacsweers.metro.Inject
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 

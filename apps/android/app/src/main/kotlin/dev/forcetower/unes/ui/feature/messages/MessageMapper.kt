@@ -8,7 +8,7 @@ import dev.forcetower.unes.R
 import java.net.URI
 import java.time.LocalDateTime
 import java.time.ZoneId
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import dev.forcetower.melon.feature.messages.domain.model.MessageFeedAttachment as KmpMessageFeedAttachment
 import dev.forcetower.melon.feature.messages.domain.model.MessageFeedAttachmentKind as KmpMessageFeedAttachmentKind
 import dev.forcetower.melon.feature.messages.domain.model.MessageFeedDetail as KmpMessageFeedDetail

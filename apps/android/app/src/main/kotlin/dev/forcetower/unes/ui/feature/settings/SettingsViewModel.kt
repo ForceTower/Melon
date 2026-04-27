@@ -14,7 +14,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 
 // Drives `SettingsScreen`. Mirrors iOS `SettingsViewModel`: subscribe to the
 // credentials, last-sync, and settings flows; tick a 30s clock so the relative

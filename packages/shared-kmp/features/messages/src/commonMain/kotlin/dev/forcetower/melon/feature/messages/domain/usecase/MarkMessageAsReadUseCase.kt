@@ -3,7 +3,7 @@ package dev.forcetower.melon.feature.messages.domain.usecase
 import dev.forcetower.melon.core.database.dao.MessageDao
 import dev.forcetower.melon.core.database.entity.MessageStateEntity
 import dev.zacsweers.metro.Inject
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 
 // Local-first: flips `readAt` in the device DB. The backend has no ack
 // endpoint yet (sync is read-only for messages today) — a follow-up will

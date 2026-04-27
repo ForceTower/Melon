@@ -24,8 +24,8 @@ import kotlin.math.max
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
+import kotlin.time.Clock
+import kotlin.time.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import dev.forcetower.melon.feature.overview.domain.model.OverviewAttendanceTile as KmpOverviewAttendanceTile

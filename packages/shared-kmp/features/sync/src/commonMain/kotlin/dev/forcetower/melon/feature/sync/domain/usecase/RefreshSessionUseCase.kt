@@ -6,7 +6,7 @@ import dev.forcetower.melon.core.sync.domain.model.SyncError
 import dev.forcetower.melon.core.sync.domain.repository.MirrorRepository
 import dev.forcetower.melon.core.sync.domain.repository.SyncStateRepository
 import dev.zacsweers.metro.Inject
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime

@@ -5,9 +5,11 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -16,9 +18,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -69,6 +71,14 @@ import dev.forcetower.unes.ui.feature.me.components.rememberAppInfo
 // behind the editorial header, distribution summary card, dark tribute card,
 // search field + filter chips, then per-family group cards with expandable
 // rows, then a closing signature.
+//
+// Implementation note: built on `LazyColumn` so off-screen group cards stay
+// out of composition. Each chrome block (header / summary / tribute / search
+// / filters / footer) is a single `item`; each license-family group is also
+// a single `item` (a contiguous group preserves the rounded card chrome and
+// dividers without per-row corner accounting). With ~150 deps + ~7 families
+// the largest group is the only one that pays full composition cost on
+// scroll-into-view, which is well under the 16 ms frame budget on debug.
 @Composable
 internal fun LicensesScreen(
     onBack: () -> Unit,
@@ -92,6 +102,9 @@ internal fun LicensesScreen(
     }
 
     val surface = MaterialTheme.colorScheme.surface
+    val statusBarTop = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
+    val loaded = state.packages != null
+    val anyPackages = packages.isNotEmpty()
 
     Box(
         modifier = modifier
@@ -114,93 +127,118 @@ internal fun LicensesScreen(
             )
         }
 
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
-                .verticalScroll(rememberScrollState())
-                .padding(bottom = bottomInset),
+                .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)),
+            contentPadding = PaddingValues(top = statusBarTop, bottom = bottomInset + 32.dp),
         ) {
-            Spacer(modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars))
-
-            LicensesHeader(
-                onBack = onBack,
-                totalPackages = packages.size,
-                appVersion = appInfo.version,
-                appBuild = appInfo.build,
-                modifier = Modifier.fadeUpOnAppear(delayMs = 20),
-            )
-
-            Column(
-                modifier = Modifier
-                    .padding(horizontal = 16.dp)
-                    .padding(bottom = 32.dp),
-                verticalArrangement = Arrangement.spacedBy(14.dp),
-            ) {
-                LicensesSummaryCard(
-                    breakdown = breakdown,
-                    modifier = Modifier.fadeUpOnAppear(delayMs = 80),
-                )
-
-                LicensesTributeCard(modifier = Modifier.fadeUpOnAppear(delayMs = 140))
-
-                LicensesSearchBar(
-                    query = query,
-                    onQueryChange = { query = it },
-                    modifier = Modifier.fadeUpOnAppear(delayMs = 180),
-                )
-
-                LicensesFilterChipsRow(
-                    breakdown = breakdown,
-                    filter = filter,
-                    onFilterChange = { filter = it },
-                    modifier = Modifier.fadeUpOnAppear(delayMs = 220),
-                )
-
-                Box(modifier = Modifier.fadeUpOnAppear(delayMs = 260)) {
-                    GroupedSection(
-                        loaded = state.packages != null,
-                        anyPackages = packages.isNotEmpty(),
-                        groups = groups,
-                        expandedKey = expandedKey,
-                        onToggleExpanded = { key ->
-                            expandedKey = if (expandedKey == key) null else key
-                        },
-                    )
-                }
-
-                LicensesFooter(
+            // ── Editorial chrome ──
+            // The chrome above the list is always above the fold, so we
+            // keep `fadeUpOnAppear` here for the entrance animation. Items
+            // below the search/filter strip drop the modifier — LazyColumn
+            // recomposes items on scroll-into-view, which would re-fire the
+            // fade every time a row entered the viewport.
+            item(key = "header") {
+                LicensesHeader(
+                    onBack = onBack,
+                    totalPackages = packages.size,
                     appVersion = appInfo.version,
                     appBuild = appInfo.build,
-                    modifier = Modifier.fadeUpOnAppear(delayMs = 320),
+                    modifier = Modifier.fadeUpOnAppear(delayMs = 20),
                 )
+            }
+
+            item(key = "summary") {
+                Padded {
+                    LicensesSummaryCard(
+                        breakdown = breakdown,
+                        modifier = Modifier.fadeUpOnAppear(delayMs = 80),
+                    )
+                }
+            }
+
+            item(key = "tribute") {
+                Padded {
+                    LicensesTributeCard(modifier = Modifier.fadeUpOnAppear(delayMs = 140))
+                }
+            }
+
+            item(key = "search") {
+                Padded {
+                    LicensesSearchBar(
+                        query = query,
+                        onQueryChange = { query = it },
+                        modifier = Modifier.fadeUpOnAppear(delayMs = 180),
+                    )
+                }
+            }
+
+            item(key = "filters") {
+                Padded {
+                    LicensesFilterChipsRow(
+                        breakdown = breakdown,
+                        filter = filter,
+                        onFilterChange = { filter = it },
+                        modifier = Modifier.fadeUpOnAppear(delayMs = 220),
+                    )
+                }
+            }
+
+            // ── List body ──
+            when {
+                !loaded -> item(key = "loading") {
+                    Spacer(modifier = Modifier.height(180.dp))
+                }
+                !anyPackages -> item(key = "empty-artifact") {
+                    Padded { EmptyBuildArtifactCard() }
+                }
+                groups.isEmpty() -> item(key = "empty-search") {
+                    Padded { EmptySearchCard() }
+                }
+                else -> items(groups, key = { "group-${it.family.name}" }) { group ->
+                    Padded(topPadding = 18.dp) {
+                        LicensesGroupCard(
+                            family = group.family,
+                            items = group.items,
+                            expandedKey = expandedKey,
+                            onToggleExpanded = { key ->
+                                expandedKey = if (expandedKey == key) null else key
+                            },
+                        )
+                    }
+                }
+            }
+
+            item(key = "footer") {
+                Padded(topPadding = 14.dp) {
+                    LicensesFooter(
+                        appVersion = appInfo.version,
+                        appBuild = appInfo.build,
+                    )
+                }
             }
         }
     }
 }
 
+// `LazyColumn` doesn't accept a `verticalArrangement = spacedBy` and per-item
+// horizontal padding the same way a regular Column does, so wrap each item
+// in a small helper. Default `topPadding` of 14.dp matches the previous
+// `Arrangement.spacedBy(14.dp)` between chrome blocks; group items override
+// it to 18.dp to mirror iOS.
 @Composable
-private fun GroupedSection(
-    loaded: Boolean,
-    anyPackages: Boolean,
-    groups: List<LicenseGroup>,
-    expandedKey: String?,
-    onToggleExpanded: (String) -> Unit,
+private fun Padded(
+    topPadding: Dp = 14.dp,
+    content: @Composable () -> Unit,
 ) {
-    when {
-        !loaded -> Spacer(modifier = Modifier.height(180.dp))
-        !anyPackages -> EmptyBuildArtifactCard()
-        groups.isEmpty() -> EmptySearchCard()
-        else -> Column(verticalArrangement = Arrangement.spacedBy(18.dp)) {
-            groups.forEach { group ->
-                LicensesGroupCard(
-                    family = group.family,
-                    items = group.items,
-                    expandedKey = expandedKey,
-                    onToggleExpanded = onToggleExpanded,
-                )
-            }
-        }
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+            .padding(top = topPadding),
+    ) {
+        content()
     }
 }
 

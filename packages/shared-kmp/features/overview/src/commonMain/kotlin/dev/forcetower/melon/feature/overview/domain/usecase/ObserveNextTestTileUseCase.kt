@@ -48,7 +48,7 @@ class ObserveNextTestTileUseCase internal constructor(
                         label = it.evaluationName?.takeIf(String::isNotBlank) ?: "Avaliação",
                         disciplineName = it.disciplineName,
                         date = it.date,
-                        daysUntil = days.coerceAtLeast(0),
+                        daysUntil = days.coerceAtLeast(0).toInt(),
                     )
                 }
             }.distinctUntilChanged()
