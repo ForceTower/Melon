@@ -82,6 +82,11 @@ internal data class Discipline(
     val ementa: String? = null,
     val groups: List<DisciplineGroup> = emptyList(),
     val finalGrade: Double? = null,
+    // Authoritative pass/fail flag from upstream — set once the semester
+    // closes (after finals). When null the discipline is still in progress
+    // (or upstream simply hasn't recorded a result), and `status` falls back
+    // to grade thresholds.
+    val approved: Boolean? = null,
     // Weighted partial average computed upstream. When null, `partialAverage`
     // falls back to the unweighted mean of released scores.
     val storedPartialAverage: Double? = null,
@@ -159,6 +164,17 @@ internal val Discipline.absenceRisk: AbsenceRisk
 
 internal val Discipline.status: DisciplineStatus
     get() {
+        // Trust upstream's `approved` flag whenever it's set — the partial
+        // mean alone can't tell us whether a student passed via the final
+        // exam (typical 5–7 mean range), so falling back to a `>= 7` cutoff
+        // misclassifies anyone who took finals.
+        approved?.let {
+            return if (it) {
+                DisciplineStatus(DisciplineStatus.Key.Approved, "aprovado")
+            } else {
+                DisciplineStatus(DisciplineStatus.Key.Failed, "reprovado")
+            }
+        }
         val final = finalGrade
         if (final != null) {
             return when {

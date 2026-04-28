@@ -149,6 +149,7 @@ private fun mapItem(raw: KmpListItem): Discipline {
         sections = listOf(section),
         groups = groups,
         finalGrade = raw.finalGrade,
+        approved = raw.approved,
         storedPartialAverage = raw.partialAverage,
         disciplineId = raw.disciplineId,
         offerId = raw.offerId,

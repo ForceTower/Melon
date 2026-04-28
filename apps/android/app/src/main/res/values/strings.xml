@@ -335,6 +335,7 @@
     <string name="disciplines_past_approved_format">%1$d/%2$d aprovadas</string>
     <string name="disciplines_past_status_approved">aprovado</string>
     <string name="disciplines_past_status_failed">reprovado</string>
+    <string name="disciplines_past_status_final">prova final</string>
     <!-- endregion -->
 
     <!-- region Disciplinas · Undownloaded placeholder -->

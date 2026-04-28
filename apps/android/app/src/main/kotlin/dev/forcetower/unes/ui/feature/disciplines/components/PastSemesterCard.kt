@@ -46,7 +46,9 @@ import dev.forcetower.unes.designsystem.theme.MelonMotion
 import dev.forcetower.unes.designsystem.theme.melon
 import dev.forcetower.unes.ui.feature.disciplines.Discipline
 import dev.forcetower.unes.ui.feature.disciplines.DisciplineScoreColor
+import dev.forcetower.unes.ui.feature.disciplines.DisciplineStatus
 import dev.forcetower.unes.ui.feature.disciplines.Semester
+import dev.forcetower.unes.ui.feature.disciplines.status
 import java.util.Locale
 
 // Collapsible summary card for a past semester. Tap to expand a stack of
@@ -87,7 +89,10 @@ private fun SemesterHeader(semester: Semester, expanded: Boolean, onToggle: () -
     val disciplines = semester.disciplines
     val finals = disciplines.mapNotNull { it.finalGrade }
     val mean = if (finals.isEmpty()) null else finals.sum() / finals.size
-    val approved = disciplines.count { (it.finalGrade ?: 0.0) >= 7.0 }
+    // Pass count from the resolved `status` — defers to upstream's `approved`
+    // flag so disciplines closed via the final exam (mean in the 5–7 range)
+    // still count as passed when upstream marked them so.
+    val approved = disciplines.count { it.status.key == DisciplineStatus.Key.Approved }
 
     val rotation by animateFloatAsState(
         targetValue = if (expanded) 180f else 0f,
@@ -186,7 +191,7 @@ private fun SemesterHeader(semester: Semester, expanded: Boolean, onToggle: () -
                         .clip(CircleShape)
                         .background(
                             d.color.copy(
-                                alpha = if ((d.finalGrade ?: 0.0) >= 7.0) 1f else 0.4f,
+                                alpha = if (d.status.key == DisciplineStatus.Key.Approved) 1f else 0.4f,
                             ),
                         ),
                 )
@@ -231,8 +236,8 @@ internal fun PastDisciplineRow(
     val cardLine = MaterialTheme.melon.surface.cardLine
     val shape = RoundedCornerShape(16.dp)
     val final = discipline.finalGrade
-    val passed = (final ?: 0.0) >= 7.0
-    val railOpacity = if (passed) 1f else 0.4f
+    val statusKey = discipline.status.key
+    val railOpacity = if (statusKey == DisciplineStatus.Key.Approved) 1f else 0.4f
 
     Box(
         modifier = modifier
@@ -302,19 +307,33 @@ internal fun PastDisciplineRow(
                     ),
                     color = DisciplineScoreColor.colorFor(final),
                 )
-                Text(
-                    text = if (passed) {
+                val statusLabel = when (statusKey) {
+                    DisciplineStatus.Key.Approved ->
                         stringResource(R.string.disciplines_past_status_approved)
-                    } else {
+                    DisciplineStatus.Key.Failed ->
                         stringResource(R.string.disciplines_past_status_failed)
-                    }.uppercase(Locale.ROOT),
+                    DisciplineStatus.Key.Final ->
+                        stringResource(R.string.disciplines_past_status_final)
+                    // Past-semester rows shouldn't normally land in the
+                    // ongoing/low/pending buckets, but when they do show the
+                    // upstream label rather than guessing pass/fail.
+                    else -> discipline.status.label
+                }
+                val statusColor = when (statusKey) {
+                    DisciplineStatus.Key.Approved -> DisciplineScoreColor.excellent()
+                    DisciplineStatus.Key.Failed -> DisciplineScoreColor.danger()
+                    DisciplineStatus.Key.Final -> DisciplineScoreColor.caution()
+                    else -> MaterialTheme.colorScheme.onSurfaceVariant
+                }
+                Text(
+                    text = statusLabel.uppercase(Locale.ROOT),
                     style = MaterialTheme.typography.labelSmall.copy(
                         fontFamily = FontFamily.Monospace,
                         fontSize = 8.sp,
                         fontWeight = FontWeight.SemiBold,
                         letterSpacing = 0.8.sp,
                     ),
-                    color = if (passed) DisciplineScoreColor.excellent() else DisciplineScoreColor.danger(),
+                    color = statusColor,
                 )
             }
         }

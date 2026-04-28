@@ -26,8 +26,11 @@ struct PastSemesterCard: View {
         return finals.reduce(0, +) / Double(finals.count)
     }
 
+    // Pass count from the resolved `status` — defers to upstream's `approved`
+    // flag so disciplines closed via the final exam (mean in the 5–7 range)
+    // still count as passed when upstream marked them so.
     private var approved: Int {
-        disciplines.filter { ($0.finalGrade ?? 0) >= 7 }.count
+        disciplines.filter { $0.status.key == .approved }.count
     }
 
     var body: some View {
@@ -88,7 +91,7 @@ struct PastSemesterCard: View {
                         Circle()
                             .fill(d.color)
                             .frame(width: 7, height: 7)
-                            .opacity((d.finalGrade ?? 0) >= 7 ? 1 : 0.4)
+                            .opacity(d.status.key == .approved ? 1 : 0.4)
                     }
                 }
 
@@ -114,7 +117,32 @@ struct PastDisciplineRow: View {
     let onOpen: () -> Void
 
     private var final: Double? { discipline.finalGrade }
-    private var passed: Bool { (final ?? 0) >= 7 }
+    private var status: DisciplineStatus { discipline.status }
+
+    private var statusLabel: String {
+        switch status.key {
+        case .approved: return "APROVADO"
+        case .failed:   return "REPROVADO"
+        case .final:    return "PROVA FINAL"
+        // Past-semester rows shouldn't normally land in ongoing/low/pending,
+        // but render the upstream label uppercased rather than guessing
+        // a pass/fail outcome we don't actually have.
+        default:        return status.label.uppercased()
+        }
+    }
+
+    private var statusColor: Color {
+        switch status.key {
+        case .approved: return Color(red: 0x2A/255, green: 0x7E/255, blue: 0x8B/255)
+        case .failed:   return Color(red: 0xB8/255, green: 0x46/255, blue: 0x3A/255)
+        case .final:    return Color(red: 0xA0/255, green: 0x64/255, blue: 0x19/255)
+        default:        return UNESColor.ink3
+        }
+    }
+
+    private var railOpacity: Double {
+        status.key == .approved ? 1 : 0.4
+    }
 
     var body: some View {
         Button(action: onOpen) {
@@ -138,12 +166,10 @@ struct PastDisciplineRow: View {
                         .font(UNESFont.serif(22))
                         .tracking(-0.44)
                         .foregroundStyle(DisciplineScoreColor.color(for: final))
-                    Text(passed ? "APROVADO" : "REPROVADO")
+                    Text(statusLabel)
                         .font(UNESFont.mono(8, weight: .semibold))
                         .tracking(0.8)
-                        .foregroundStyle(passed
-                                         ? Color(red: 0x2A/255, green: 0x7E/255, blue: 0x8B/255)
-                                         : Color(red: 0xB8/255, green: 0x46/255, blue: 0x3A/255))
+                        .foregroundStyle(statusColor)
                 }
             }
             .padding(.horizontal, 14)
@@ -161,7 +187,7 @@ struct PastDisciplineRow: View {
                     }
                     Rectangle()
                         .fill(discipline.color)
-                        .opacity(passed ? 1 : 0.4)
+                        .opacity(railOpacity)
                         .frame(width: 3)
                         .padding(.vertical, 10)
                 }

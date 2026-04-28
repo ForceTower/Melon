@@ -95,6 +95,11 @@ struct Discipline: Identifiable, Hashable {
     let ementa: String?
     let groups: [DisciplineGroup]
     let finalGrade: Double?
+    // Authoritative pass/fail flag from upstream — set once the semester
+    // closes (after finals). When nil the discipline is still in progress
+    // (or upstream simply hasn't recorded a result), and `status` falls back
+    // to grade thresholds.
+    let approved: Bool?
 
     // Weighted partial average computed upstream. When nil, `partialAverage`
     // falls back to the unweighted mean of released scores — enough for
@@ -123,6 +128,7 @@ struct Discipline: Identifiable, Hashable {
         ementa: String? = nil,
         groups: [DisciplineGroup] = [],
         finalGrade: Double? = nil,
+        approved: Bool? = nil,
         storedPartialAverage: Double? = nil,
         disciplineId: String? = nil,
         offerId: String? = nil,
@@ -143,6 +149,7 @@ struct Discipline: Identifiable, Hashable {
         self.ementa = ementa
         self.groups = groups
         self.finalGrade = finalGrade
+        self.approved = approved
         self.storedPartialAverage = storedPartialAverage
         self.disciplineId = disciplineId
         self.offerId = offerId
@@ -206,6 +213,15 @@ extension Discipline {
     }
 
     var status: DisciplineStatus {
+        // Trust upstream's `approved` flag whenever it's set — the partial
+        // mean alone can't tell us whether a student passed via the final
+        // exam (typical 5–7 mean range), so falling back to a `>= 7` cutoff
+        // misclassifies anyone who took finals.
+        if let approved {
+            return approved
+                ? .init(key: .approved, label: "aprovado")
+                : .init(key: .failed, label: "reprovado")
+        }
         if let final = finalGrade {
             if final >= 7 { return .init(key: .approved, label: "aprovado") }
             if final >= 5 { return .init(key: .final, label: "prova final") }

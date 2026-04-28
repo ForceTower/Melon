@@ -145,6 +145,7 @@ final class DisciplinesListViewModel {
             ementa: nil,
             groups: groups,
             finalGrade: raw.finalGrade?.doubleValue,
+            approved: raw.approved?.boolValue,
             storedPartialAverage: raw.partialAverage?.doubleValue,
             disciplineId: raw.disciplineId,
             offerId: raw.offerId,

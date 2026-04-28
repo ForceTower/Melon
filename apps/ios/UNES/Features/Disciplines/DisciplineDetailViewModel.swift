@@ -83,6 +83,7 @@ final class DisciplineDetailViewModel {
             ementa: raw.ementa,
             groups: groups,
             finalGrade: raw.finalGrade?.doubleValue,
+            approved: raw.approved?.boolValue,
             disciplineId: raw.disciplineId,
             offerId: raw.offerId,
             semesterId: raw.semesterId
