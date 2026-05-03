@@ -38,6 +38,7 @@ struct RootView: View {
     let me: MeFactory
     let refreshSession: SyncRefreshSessionUseCase
     let backfillMirror: SyncBackfillMirrorUseCase
+    let pingActivity: SyncPingActivityUseCase
 
     @State private var viewModel = RootViewModel()
 
@@ -75,6 +76,7 @@ struct RootView: View {
                     me: me,
                     refreshSession: refreshSession,
                     backfillMirror: backfillMirror,
+                    pingActivity: pingActivity,
                     onLoggedOut: {
                         withAnimation(.timingCurve(0.2, 0.8, 0.2, 1, duration: 0.5)) {
                             viewModel.userLoggedOut()

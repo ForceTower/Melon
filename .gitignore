@@ -50,8 +50,6 @@ gen/
 *.jks
 *.keystore
 !**/debug.keystore.template
-google-services.json
-GoogleService-Info.plist
 
 # ---------- iOS / Xcode / Swift ----------
 xcuserdata/

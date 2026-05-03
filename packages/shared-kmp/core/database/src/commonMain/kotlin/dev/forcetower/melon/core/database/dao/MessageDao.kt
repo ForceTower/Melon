@@ -40,6 +40,19 @@ abstract class MessageDao {
     @Query("SELECT * FROM MessageState WHERE messageId IN (:ids)")
     abstract fun observeStates(ids: List<String>): Flow<List<MessageStateEntity>>
 
+    @Query("SELECT * FROM MessageState WHERE messageId IN (:ids)")
+    abstract suspend fun getStates(ids: List<String>): List<MessageStateEntity>
+
+    // Unread = no MessageState row (initial sync) or readAt is null.
+    @Query(
+        """
+        SELECT m.id FROM Message m
+          LEFT JOIN MessageState ms ON ms.messageId = m.id
+         WHERE ms.readAt IS NULL
+        """,
+    )
+    abstract suspend fun unreadMessageIds(): List<String>
+
     // Count of unread messages — a missing MessageState row counts as unread
     // (matches MirrorRepositoryImpl, which applies messages without states
     // during initial sync).
@@ -78,6 +91,31 @@ abstract class MessageDao {
 
     @Upsert
     abstract suspend fun upsertState(state: MessageStateEntity)
+
+    @Upsert
+    abstract suspend fun upsertStates(states: List<MessageStateEntity>)
+
+    // Atomically flips readAt to `now` for every currently-unread message,
+    // preserving each existing row's `starred` flag. Idempotent: a second
+    // call inside the same `now` window is a no-op because `unreadMessageIds`
+    // already filters them out.
+    @Transaction
+    open suspend fun markAllRead(now: String) {
+        val ids = unreadMessageIds()
+        if (ids.isEmpty()) return
+        val existing = getStates(ids).associateBy { it.messageId }
+        upsertStates(
+            ids.map { id ->
+                val cur = existing[id]
+                MessageStateEntity(
+                    messageId = id,
+                    readAt = now,
+                    starred = cur?.starred == true,
+                    updatedAt = now,
+                )
+            },
+        )
+    }
 
     // Scopes + attachments get wiped per message before reinsert so the local
     // graph reflects the server's view (deletes propagate). Messages themselves

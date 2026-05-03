@@ -20,6 +20,7 @@ import dev.forcetower.melon.feature.disciplines.domain.usecase.ObserveDiscipline
 import dev.forcetower.melon.feature.disciplines.domain.usecase.ObserveDisciplinesListUseCase
 import dev.forcetower.melon.feature.me.domain.usecase.ObserveCurrentCredentialsUseCase
 import dev.forcetower.melon.feature.me.domain.usecase.ObserveMeProfileUseCase
+import dev.forcetower.melon.feature.messages.domain.usecase.MarkAllMessagesAsReadUseCase
 import dev.forcetower.melon.feature.messages.domain.usecase.MarkMessageAsReadUseCase
 import dev.forcetower.melon.feature.messages.domain.usecase.ObserveMessageDetailUseCase
 import dev.forcetower.melon.feature.messages.domain.usecase.ObserveMessagesInboxUseCase
@@ -107,6 +108,9 @@ object UmbrellaBridgeModule {
         graph.observeLastSyncUseCase
 
     // Sync orchestration — six steps run by SyncViewModel during onboarding.
+    // PingActivity is also fired by ConnectedViewModel on every authenticated
+    // shell entry / foreground so the worker keeps the student on the hourly
+    // cadence tier (see utils/cadence.ts on the API).
     @Provides fun providePingActivityUseCase(graph: UmbrellaGraph): PingActivityUseCase =
         graph.pingActivityUseCase
     @Provides fun provideSyncProfileUseCase(graph: UmbrellaGraph): SyncProfileUseCase =
@@ -167,6 +171,8 @@ object UmbrellaBridgeModule {
         graph.observeMessageDetailUseCase
     @Provides fun provideMarkMessageAsReadUseCase(graph: UmbrellaGraph): MarkMessageAsReadUseCase =
         graph.markMessageAsReadUseCase
+    @Provides fun provideMarkAllMessagesAsReadUseCase(graph: UmbrellaGraph): MarkAllMessagesAsReadUseCase =
+        graph.markAllMessagesAsReadUseCase
 
     // Configurações — credential vault read flow lives in `feature/me`, the
     // user settings flow + patch live in `feature/settings`. `observeLastSync`

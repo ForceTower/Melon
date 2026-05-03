@@ -240,6 +240,8 @@
     <string name="messages_unread_badge_format">%1$d NOVAS</string>
     <string name="messages_empty">Nenhuma mensagem neste filtro.</string>
     <string name="messages_back_label">Voltar</string>
+    <string name="messages_mark_all_read">Marcar como lidas</string>
+    <string name="messages_mark_all_read_a11y">Marcar todas as mensagens como lidas</string>
 
     <!-- Filter chips -->
     <string name="messages_filter_all">Todas</string>

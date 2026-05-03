@@ -130,14 +130,70 @@ struct MessagesListView: View {
                 }
             }
 
-            Text("Mensagens")
-                .font(UNESFont.serif(32))
-                .tracking(-0.64)
-                .foregroundStyle(UNESColor.ink)
+            HStack(alignment: .bottom, spacing: 12) {
+                Text("Mensagens")
+                    .font(UNESFont.serif(32))
+                    .tracking(-0.64)
+                    .foregroundStyle(UNESColor.ink)
+
+                Spacer(minLength: 0)
+
+                if unreadCount > 0 {
+                    markAllReadButton
+                        .padding(.bottom, 2)
+                        .transition(.opacity.combined(with: .scale(scale: 0.9)))
+                }
+            }
+            .animation(UNESMotion.ease, value: unreadCount > 0)
         }
         .padding(.horizontal, 20)
         .padding(.top, 16)
         .padding(.bottom, 14)
+    }
+
+    private var markAllReadButton: some View {
+        Button {
+            withAnimation(UNESMotion.ease) { viewModel.markAllRead() }
+        } label: {
+            HStack(spacing: 6) {
+                doubleCheckIcon
+                Text("Marcar como lidas")
+                    .font(UNESFont.sans(11, weight: .medium))
+                    .tracking(-0.05)
+            }
+            .padding(.horizontal, 11)
+            .padding(.vertical, 7)
+            .foregroundStyle(UNESColor.ink2)
+            .background(
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .strokeBorder(UNESColor.cardLine, lineWidth: 1)
+            )
+            .contentShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(Text("Marcar todas as mensagens como lidas"))
+    }
+
+    // 11pt double-tick glyph mirroring `screens-messages.jsx` — two stacked
+    // checkmarks, the trailing one at half opacity.
+    private var doubleCheckIcon: some View {
+        ZStack {
+            Path { p in
+                p.move(to: CGPoint(x: 1, y: 5.5))
+                p.addLine(to: CGPoint(x: 3, y: 7.5))
+                p.addLine(to: CGPoint(x: 7, y: 3.5))
+            }
+            .stroke(style: StrokeStyle(lineWidth: 1.5, lineCap: .round, lineJoin: .round))
+
+            Path { p in
+                p.move(to: CGPoint(x: 4, y: 5.5))
+                p.addLine(to: CGPoint(x: 6, y: 7.5))
+                p.addLine(to: CGPoint(x: 10, y: 3.5))
+            }
+            .stroke(style: StrokeStyle(lineWidth: 1.5, lineCap: .round, lineJoin: .round))
+            .opacity(0.5)
+        }
+        .frame(width: 11, height: 11)
     }
 
     private var unreadBadge: some View {

@@ -66,7 +66,8 @@ extension UmbrellaGraph {
             useCases: MessagesUseCases(
                 observeInbox: observeMessagesInboxUseCase,
                 observeDetail: observeMessageDetailUseCase,
-                markRead: markMessageAsReadUseCase
+                markRead: markMessageAsReadUseCase,
+                markAllRead: markAllMessagesAsReadUseCase
             )
         )
     }

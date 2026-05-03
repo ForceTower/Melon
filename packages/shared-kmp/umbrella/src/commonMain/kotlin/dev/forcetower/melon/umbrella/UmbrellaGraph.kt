@@ -18,6 +18,7 @@ import dev.forcetower.melon.feature.disciplines.domain.usecase.ObserveDiscipline
 import dev.forcetower.melon.feature.disciplines.domain.usecase.ObserveDisciplinesListUseCase
 import dev.forcetower.melon.feature.me.domain.usecase.ObserveCurrentCredentialsUseCase
 import dev.forcetower.melon.feature.me.domain.usecase.ObserveMeProfileUseCase
+import dev.forcetower.melon.feature.messages.domain.usecase.MarkAllMessagesAsReadUseCase
 import dev.forcetower.melon.feature.messages.domain.usecase.MarkMessageAsReadUseCase
 import dev.forcetower.melon.feature.messages.domain.usecase.ObserveMessageDetailUseCase
 import dev.forcetower.melon.feature.messages.domain.usecase.ObserveMessagesInboxUseCase
@@ -106,6 +107,7 @@ interface UmbrellaGraph {
     val observeMessagesInboxUseCase: ObserveMessagesInboxUseCase
     val observeMessageDetailUseCase: ObserveMessageDetailUseCase
     val markMessageAsReadUseCase: MarkMessageAsReadUseCase
+    val markAllMessagesAsReadUseCase: MarkAllMessagesAsReadUseCase
 
     // Calendário (academic-calendar) reactive surfaces — events feed for the
     // agenda, plus the active-semester code that powers the eyebrow label.

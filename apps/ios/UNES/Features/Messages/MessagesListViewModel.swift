@@ -55,4 +55,17 @@ final class MessagesListViewModel {
         log.info("mark message read id=\(message.id)")
         Task { try? await useCases.markRead.invoke(messageId: message.id) }
     }
+
+    // Bulk variant — flips every unread row locally so the header button
+    // visibly clears the inbox in one frame, then asks KMP to persist. The
+    // DB flow will emit the canonical state shortly after.
+    func markAllRead() {
+        guard messages.contains(where: \.unread) else { return }
+        for idx in messages.indices where messages[idx].unread {
+            messages[idx].unread = false
+        }
+        guard let useCases else { return }
+        log.info("mark all messages read")
+        Task { try? await useCases.markAllRead.invoke() }
+    }
 }

@@ -1,13 +1,15 @@
 @preconcurrency import Umbrella
 
 // Bundle of KMP use cases the Mensagens feature leans on. `observeInbox`
-// feeds the list, `observeDetail` hydrates the reader, and `markRead`
-// persists a local readAt on first view. Mirrors DisciplinesUseCases /
+// feeds the list, `observeDetail` hydrates the reader, `markRead` persists a
+// local readAt on first view, and `markAllRead` flips every unread row in a
+// single transaction so the list flow re-emits once. Mirrors DisciplinesUseCases /
 // OverviewUseCases so feature code never sees `UmbrellaGraph` directly.
 struct MessagesUseCases {
     let observeInbox: MessagesObserveMessagesInboxUseCase
     let observeDetail: MessagesObserveMessageDetailUseCase
     let markRead: MessagesMarkMessageAsReadUseCase
+    let markAllRead: MessagesMarkAllMessagesAsReadUseCase
 }
 
 @MainActor

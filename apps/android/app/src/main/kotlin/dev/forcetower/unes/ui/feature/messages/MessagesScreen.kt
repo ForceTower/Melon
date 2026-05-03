@@ -1,6 +1,9 @@
 package dev.forcetower.unes.ui.feature.messages
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -38,6 +41,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.stringResource
@@ -101,6 +106,7 @@ private fun MessagesInbox(
             filter = state.filter,
             roles = roles,
             onFilterChange = { onIntent(MessagesIntent.SetFilter(it)) },
+            onMarkAllRead = { onIntent(MessagesIntent.MarkAllRead) },
             onOpen = onOpen,
             bottomInset = bottomInset,
         )
@@ -113,6 +119,7 @@ private fun InboxList(
     filter: MessageFilter,
     roles: MessageRoleStrings,
     onFilterChange: (MessageFilter) -> Unit,
+    onMarkAllRead: () -> Unit,
     onOpen: (String, KmpMessageFeedItem) -> Unit,
     bottomInset: Dp,
 ) {
@@ -146,6 +153,7 @@ private fun InboxList(
             item("messages-header") {
                 MessagesHeader(
                     unreadCount = unreadCount,
+                    onMarkAllRead = onMarkAllRead,
                     modifier = Modifier.fadeUpOnAppear(delayMs = 20),
                 )
             }
@@ -219,7 +227,11 @@ private fun AmbientMeshTop(surface: Color) {
 }
 
 @Composable
-private fun MessagesHeader(unreadCount: Int, modifier: Modifier = Modifier) {
+private fun MessagesHeader(
+    unreadCount: Int,
+    onMarkAllRead: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -244,15 +256,28 @@ private fun MessagesHeader(unreadCount: Int, modifier: Modifier = Modifier) {
             )
             if (unreadCount > 0) UnreadBadge(unreadCount)
         }
-        Text(
-            text = stringResource(R.string.messages_title),
-            style = MaterialTheme.typography.headlineLarge.copy(
-                fontSize = 32.sp,
-                lineHeight = 32.sp,
-                letterSpacing = (-0.64).sp,
-            ),
-            color = MaterialTheme.colorScheme.onBackground,
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.Bottom,
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Text(
+                text = stringResource(R.string.messages_title),
+                style = MaterialTheme.typography.headlineLarge.copy(
+                    fontSize = 32.sp,
+                    lineHeight = 32.sp,
+                    letterSpacing = (-0.64).sp,
+                ),
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.weight(1f),
+            )
+            if (unreadCount > 0) {
+                MarkAllReadButton(
+                    onClick = onMarkAllRead,
+                    modifier = Modifier.padding(bottom = 2.dp),
+                )
+            }
+        }
     }
 }
 
@@ -283,6 +308,66 @@ private fun UnreadBadge(count: Int) {
             ),
             color = coral,
         )
+    }
+}
+
+// Trailing chip in the "Mensagens" header. Mirrors the `mark-all-btn` in
+// `screens-messages.jsx`: a hairline-bordered pill with a double-tick glyph
+// and the "Marcar como lidas" label. Only rendered when there's at least one
+// unread message — the parent gates that.
+@Composable
+private fun MarkAllReadButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val cardLine = MaterialTheme.melon.surface.cardLine
+    val a11y = stringResource(R.string.messages_mark_all_read_a11y)
+    Row(
+        modifier = modifier
+            .clip(RoundedCornerShape(14.dp))
+            .border(1.dp, cardLine, RoundedCornerShape(14.dp))
+            .clickable(onClickLabel = a11y, onClick = onClick)
+            .padding(horizontal = 11.dp, vertical = 7.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(6.dp),
+    ) {
+        DoubleCheckIcon(tint = MaterialTheme.colorScheme.onSurface)
+        Text(
+            text = stringResource(R.string.messages_mark_all_read),
+            style = MaterialTheme.typography.labelMedium.copy(
+                fontSize = 11.sp,
+                fontWeight = FontWeight.Medium,
+                letterSpacing = (-0.05).sp,
+            ),
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+    }
+}
+
+// 11dp double-tick, mirroring the SVG in `screens-messages.jsx` — the trailing
+// tick is at half opacity so it reads as a "read receipt" glyph rather than a
+// plain check.
+@Composable
+private fun DoubleCheckIcon(tint: Color) {
+    Canvas(modifier = Modifier.size(11.dp)) {
+        val unit = size.width / 11f
+        val stroke = Stroke(
+            width = 1.5f * unit,
+            cap = StrokeCap.Round,
+            join = StrokeJoin.Round,
+        )
+        val front = Path().apply {
+            moveTo(1f * unit, 5.5f * unit)
+            lineTo(3f * unit, 7.5f * unit)
+            lineTo(7f * unit, 3.5f * unit)
+        }
+        drawPath(front, color = tint, style = stroke)
+        val back = Path().apply {
+            moveTo(4f * unit, 5.5f * unit)
+            lineTo(6f * unit, 7.5f * unit)
+            lineTo(10f * unit, 3.5f * unit)
+        }
+        drawPath(back, color = tint.copy(alpha = 0.5f), style = stroke)
     }
 }
 

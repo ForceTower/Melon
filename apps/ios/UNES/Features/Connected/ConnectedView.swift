@@ -13,10 +13,12 @@ struct ConnectedView: View {
     let me: MeFactory
     let refreshSession: SyncRefreshSessionUseCase
     let backfillMirror: SyncBackfillMirrorUseCase
+    let pingActivity: SyncPingActivityUseCase
     var onLoggedOut: () -> Void = {}
 
     @State private var activeTab: ConnectedTab = .overview
     @State private var refreshInFlight = false
+    @State private var pingInFlight = false
     @Environment(\.scenePhase) private var scenePhase
     @AppStorage(ScheduleVariant.storageKey) private var scheduleVariantRaw: String = ScheduleVariant.default.rawValue
 
@@ -66,6 +68,11 @@ struct ConnectedView: View {
             // (cheap); per-semester payload pulls behind them are gated by
             // the 1h throttle inside the use case.
             await runSessionRefresh(reason: "connected entry")
+            // Bumps users.last_active_at server-side so the worker keeps this
+            // student on the hourly sync cadence tier (cadenceFor in
+            // apps/api/src/utils/cadence.ts). Without this the user falls to
+            // the 24h tier 7 days after onboarding.
+            await runPing(reason: "connected entry")
             // Fills in historical semesters + full message archive once
             // server Phase 2 finalizes. No-op after first successful run
             // (flag persisted in SyncState, wiped on logout).
@@ -87,6 +94,7 @@ struct ConnectedView: View {
             // that don't warrant a network round-trip.
             guard oldPhase == .background, newPhase == .active else { return }
             Task { await runSessionRefresh(reason: "foreground") }
+            Task { await runPing(reason: "foreground") }
         }
     }
 
@@ -106,6 +114,24 @@ struct ConnectedView: View {
             // view left before work completed
         } catch {
             log.warn("session refresh failed reason=\(reason)", error: error)
+        }
+    }
+
+    private func runPing(reason: String) async {
+        guard !pingInFlight else {
+            log.info("skip ping — already in flight reason=\(reason)")
+            return
+        }
+        pingInFlight = true
+        defer { pingInFlight = false }
+
+        do {
+            _ = try await pingActivity.invoke()
+            log.info("ping ok reason=\(reason)")
+        } catch is CancellationError {
+            // view left before work completed
+        } catch {
+            log.warn("ping failed reason=\(reason)", error: error)
         }
     }
 }

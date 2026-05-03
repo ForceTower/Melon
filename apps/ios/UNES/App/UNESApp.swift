@@ -24,7 +24,8 @@ struct UNESApp: App {
                 messages: graph.messagesFactory,
                 me: graph.meFactory,
                 refreshSession: graph.refreshSessionUseCase,
-                backfillMirror: graph.backfillMirrorUseCase
+                backfillMirror: graph.backfillMirrorUseCase,
+                pingActivity: graph.pingActivityUseCase
             )
         }
     }

@@ -2,6 +2,7 @@ package dev.forcetower.unes.ui.feature.messages
 
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.forcetower.melon.feature.messages.domain.usecase.MarkAllMessagesAsReadUseCase
 import dev.forcetower.melon.feature.messages.domain.usecase.MarkMessageAsReadUseCase
 import dev.forcetower.melon.feature.messages.domain.usecase.ObserveMessageDetailUseCase
 import dev.forcetower.melon.feature.messages.domain.usecase.ObserveMessagesInboxUseCase
@@ -29,6 +30,7 @@ internal sealed interface MessagesIntent : UiIntent {
     data object CloseMessage : MessagesIntent
     data class SetFilter(val filter: MessageFilter) : MessagesIntent
     data class MarkRead(val id: String) : MessagesIntent
+    data object MarkAllRead : MessagesIntent
 }
 
 internal sealed interface MessagesEffect : UiEffect
@@ -47,6 +49,7 @@ internal class MessagesViewModel @Inject constructor(
     private val observeInbox: ObserveMessagesInboxUseCase,
     private val observeDetail: ObserveMessageDetailUseCase,
     private val markReadUseCase: MarkMessageAsReadUseCase,
+    private val markAllReadUseCase: MarkAllMessagesAsReadUseCase,
 ) : MviViewModel<MessagesUiState, MessagesIntent, MessagesEffect>(MessagesUiState()) {
 
     private var detailJob: Job? = null
@@ -65,6 +68,7 @@ internal class MessagesViewModel @Inject constructor(
             MessagesIntent.CloseMessage -> close()
             is MessagesIntent.SetFilter -> setState { copy(filter = intent.filter) }
             is MessagesIntent.MarkRead -> markRead(intent.id)
+            MessagesIntent.MarkAllRead -> markAllRead()
         }
     }
 
@@ -91,5 +95,9 @@ internal class MessagesViewModel @Inject constructor(
 
     private fun markRead(id: String) {
         viewModelScope.launch { runCatching { markReadUseCase.invoke(id) } }
+    }
+
+    private fun markAllRead() {
+        viewModelScope.launch { runCatching { markAllReadUseCase.invoke() } }
     }
 }
