@@ -134,6 +134,7 @@ fun ConnectedScreen(
                             navigator.navigate(ConnectedRoute.DisciplineDetail(offerId))
                         },
                         onOpenMessages = { navigator.selectTab(ConnectedTab.Messages) },
+                        onOpenSchedule = { navigator.selectTab(ConnectedTab.Schedule) },
                     )
                 }
                 entry<ConnectedRoute.Schedule>(metadata = TabRootMetadata) {

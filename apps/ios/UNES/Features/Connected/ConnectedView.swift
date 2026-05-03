@@ -32,7 +32,8 @@ struct ConnectedView: View {
                 OverviewView(
                     factory: overview,
                     disciplinesFactory: disciplines,
-                    onOpenMessages: { activeTab = .messages }
+                    onOpenMessages: { activeTab = .messages },
+                    onOpenSchedule: { activeTab = .schedule }
                 )
             }
             Tab(ConnectedTab.schedule.label, systemImage: ConnectedTab.schedule.icon, value: .schedule) {

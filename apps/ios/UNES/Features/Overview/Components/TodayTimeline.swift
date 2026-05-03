@@ -2,6 +2,7 @@ import SwiftUI
 
 struct TodayTimeline: View {
     let items: [OverviewTodayItem]
+    var onOpenWeek: () -> Void = {}
 
     var body: some View {
         VStack(spacing: 0) {
@@ -12,9 +13,7 @@ struct TodayTimeline: View {
                     .foregroundStyle(UNESColor.ink)
                     .lineLimit(1)
                 Spacer()
-                Button {
-                    // navigate to full week
-                } label: {
+                Button(action: onOpenWeek) {
                     HStack(spacing: 4) {
                         Text("semana")
                             .font(UNESFont.sans(12, weight: .medium))

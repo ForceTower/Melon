@@ -8,6 +8,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -49,6 +50,7 @@ import dev.forcetower.unes.ui.feature.overview.OverviewTodayItem
 internal fun TodayTimeline(
     items: List<OverviewTodayItem>,
     modifier: Modifier = Modifier,
+    onOpenWeek: () -> Unit = {},
 ) {
     val card = MaterialTheme.melon.surface.card
     val cardLine = MaterialTheme.melon.surface.cardLine
@@ -78,7 +80,13 @@ internal fun TodayTimeline(
                 maxLines = 1,
                 modifier = Modifier.weight(1f),
             )
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .clip(RoundedCornerShape(8.dp))
+                    .clickable(onClick = onOpenWeek)
+                    .padding(horizontal = 4.dp, vertical = 4.dp),
+            ) {
                 Text(
                     text = stringResource(R.string.overview_today_week_action),
                     style = MaterialTheme.typography.labelLarge.copy(

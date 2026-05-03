@@ -65,6 +65,7 @@ internal fun OverviewScreen(
     bottomInset: Dp = 0.dp,
     onOpenDiscipline: (OverviewDiscipline) -> Unit = {},
     onOpenMessages: () -> Unit = {},
+    onOpenSchedule: () -> Unit = {},
 ) {
     val vm: OverviewViewModel = hiltViewModel()
     val state by vm.state.collectAsStateWithLifecycle()
@@ -128,6 +129,7 @@ internal fun OverviewScreen(
                 if (today.isNotEmpty()) {
                     TodayTimeline(
                         items = today,
+                        onOpenWeek = onOpenSchedule,
                         modifier = Modifier.fadeUpOnAppear(delayMs = 240),
                     )
                 }

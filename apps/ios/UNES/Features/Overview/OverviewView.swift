@@ -4,15 +4,18 @@ struct OverviewView: View {
     @State private var viewModel: OverviewViewModel
     private let disciplinesFactory: DisciplinesFactory
     private let onOpenMessages: () -> Void
+    private let onOpenSchedule: () -> Void
 
     init(
         factory: OverviewFactory,
         disciplinesFactory: DisciplinesFactory,
-        onOpenMessages: @escaping () -> Void = {}
+        onOpenMessages: @escaping () -> Void = {},
+        onOpenSchedule: @escaping () -> Void = {}
     ) {
         _viewModel = State(initialValue: factory.makeViewModel())
         self.disciplinesFactory = disciplinesFactory
         self.onOpenMessages = onOpenMessages
+        self.onOpenSchedule = onOpenSchedule
     }
 
     var body: some View {
@@ -68,7 +71,7 @@ struct OverviewView: View {
                         }
                       
                         if !viewModel.today.isEmpty {
-                            TodayTimeline(items: viewModel.today)
+                            TodayTimeline(items: viewModel.today, onOpenWeek: onOpenSchedule)
                                 .fadeUpOnAppear(delay: 0.24, distance: 14, duration: 0.55)
                         }
                       
