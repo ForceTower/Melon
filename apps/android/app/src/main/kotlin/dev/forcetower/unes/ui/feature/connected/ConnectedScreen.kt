@@ -133,6 +133,7 @@ fun ConnectedScreen(
                             )
                             navigator.navigate(ConnectedRoute.DisciplineDetail(offerId))
                         },
+                        onOpenMessages = { navigator.selectTab(ConnectedTab.Messages) },
                     )
                 }
                 entry<ConnectedRoute.Schedule>(metadata = TabRootMetadata) {

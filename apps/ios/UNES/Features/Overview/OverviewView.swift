@@ -3,10 +3,16 @@ import SwiftUI
 struct OverviewView: View {
     @State private var viewModel: OverviewViewModel
     private let disciplinesFactory: DisciplinesFactory
+    private let onOpenMessages: () -> Void
 
-    init(factory: OverviewFactory, disciplinesFactory: DisciplinesFactory) {
+    init(
+        factory: OverviewFactory,
+        disciplinesFactory: DisciplinesFactory,
+        onOpenMessages: @escaping () -> Void = {}
+    ) {
         _viewModel = State(initialValue: factory.makeViewModel())
         self.disciplinesFactory = disciplinesFactory
+        self.onOpenMessages = onOpenMessages
     }
 
     var body: some View {
@@ -70,7 +76,8 @@ struct OverviewView: View {
                             grade: viewModel.gradeTile,
                             messages: viewModel.messagesTile,
                             nextTest: viewModel.nextTestTile,
-                            attendance: viewModel.attendanceTile
+                            attendance: viewModel.attendanceTile,
+                            onOpenMessages: onOpenMessages
                         )
                         .fadeUpOnAppear(delay: 0.34, distance: 14, duration: 0.55)
                     }

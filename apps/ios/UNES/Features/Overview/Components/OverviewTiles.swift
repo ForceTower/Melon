@@ -5,12 +5,13 @@ struct OverviewTileGrid: View {
     var messages: OverviewMessagesTileData? = nil
     var nextTest: OverviewNextTestTileData? = nil
     var attendance: OverviewAttendanceTileData? = nil
+    var onOpenMessages: () -> Void = {}
 
     var body: some View {
         VStack(spacing: 10) {
             HStack(spacing: 10) {
                 GradeTile(data: grade)
-                MessagesTile(data: messages)
+                MessagesTile(data: messages, onOpen: onOpenMessages)
             }
             HStack(spacing: 10) {
                 TestsTile(data: nextTest)
@@ -125,35 +126,40 @@ private struct GradeDelta: View {
 
 private struct MessagesTile: View {
     let data: OverviewMessagesTileData?
+    var onOpen: () -> Void = {}
 
     var body: some View {
-        ZStack(alignment: .topLeading) {
-            Color(red: 0x1A / 255, green: 0x0F / 255, blue: 0x28 / 255)
-            MeshGradientView(variant: .rose, intensity: 0.75)
+        Button(action: onOpen) {
+            ZStack(alignment: .topLeading) {
+                Color(red: 0x1A / 255, green: 0x0F / 255, blue: 0x28 / 255)
+                MeshGradientView(variant: .rose, intensity: 0.75)
 
-            VStack(alignment: .leading, spacing: 0) {
-                TileEyebrow(label: "recados", tint: Color.white.opacity(0.7))
-                Spacer(minLength: 0)
-                HStack(alignment: .firstTextBaseline, spacing: 8) {
-                    Text("\(data?.unreadCount ?? 0)")
-                        .font(UNESFont.serif(48))
-                        .tracking(-1.44)
-                        .foregroundStyle(UNESColor.surfaceLight)
-                    Text("não lidos")
-                        .font(UNESFont.sans(12))
-                        .foregroundStyle(Color.white.opacity(0.7))
+                VStack(alignment: .leading, spacing: 0) {
+                    TileEyebrow(label: "recados", tint: Color.white.opacity(0.7))
+                    Spacer(minLength: 0)
+                    HStack(alignment: .firstTextBaseline, spacing: 8) {
+                        Text("\(data?.unreadCount ?? 0)")
+                            .font(UNESFont.serif(48))
+                            .tracking(-1.44)
+                            .foregroundStyle(UNESColor.surfaceLight)
+                        Text("não lidos")
+                            .font(UNESFont.sans(12))
+                            .foregroundStyle(Color.white.opacity(0.7))
+                    }
+                    Text(previewLine)
+                        .font(UNESFont.sans(11))
+                        .foregroundStyle(Color.white.opacity(0.75))
+                        .lineLimit(1)
+                        .truncationMode(.tail)
+                        .padding(.top, 6)
                 }
-                Text(previewLine)
-                    .font(UNESFont.sans(11))
-                    .foregroundStyle(Color.white.opacity(0.75))
-                    .lineLimit(1)
-                    .truncationMode(.tail)
-                    .padding(.top, 6)
+                .padding(14)
             }
-            .padding(14)
+            .frame(maxWidth: .infinity, minHeight: 150)
+            .contentShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+            .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
         }
-        .frame(maxWidth: .infinity, minHeight: 150)
-        .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+        .buttonStyle(.plain)
     }
 
     private var previewLine: String {

@@ -3,6 +3,7 @@ package dev.forcetower.unes.ui.feature.overview.components
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -56,6 +57,7 @@ internal fun OverviewTileGrid(
     nextTest: OverviewNextTestTileData?,
     attendance: OverviewAttendanceTileData?,
     modifier: Modifier = Modifier,
+    onOpenMessages: () -> Unit = {},
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
@@ -63,7 +65,11 @@ internal fun OverviewTileGrid(
     ) {
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             GradeTile(data = grade, modifier = Modifier.weight(1f))
-            MessagesTile(data = messages, modifier = Modifier.weight(1f))
+            MessagesTile(
+                data = messages,
+                onOpen = onOpenMessages,
+                modifier = Modifier.weight(1f),
+            )
         }
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             TestsTile(data = nextTest, modifier = Modifier.weight(1f))
@@ -220,7 +226,11 @@ private fun TrendUpGlyph(color: Color) {
 // ───────── Messages (always-dark mesh card) ─────────
 
 @Composable
-private fun MessagesTile(data: OverviewMessagesTileData?, modifier: Modifier = Modifier) {
+private fun MessagesTile(
+    data: OverviewMessagesTileData?,
+    onOpen: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     val alwaysDark = MaterialTheme.melon.brand.alwaysDarkBg
     val onAlwaysDark = Color(0xFFFBF7F2)
 
@@ -229,7 +239,8 @@ private fun MessagesTile(data: OverviewMessagesTileData?, modifier: Modifier = M
             .fillMaxWidth()
             .height(TileMinHeight)
             .clip(TileShape)
-            .background(alwaysDark),
+            .background(alwaysDark)
+            .clickable(onClick = onOpen),
     ) {
         Mesh(
             variant = MeshVariant.Rose,

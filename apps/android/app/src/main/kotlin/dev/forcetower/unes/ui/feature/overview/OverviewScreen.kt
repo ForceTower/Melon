@@ -64,6 +64,7 @@ internal fun OverviewScreen(
     modifier: Modifier = Modifier,
     bottomInset: Dp = 0.dp,
     onOpenDiscipline: (OverviewDiscipline) -> Unit = {},
+    onOpenMessages: () -> Unit = {},
 ) {
     val vm: OverviewViewModel = hiltViewModel()
     val state by vm.state.collectAsStateWithLifecycle()
@@ -135,6 +136,7 @@ internal fun OverviewScreen(
                     messages = messagesTile,
                     nextTest = nextTestTile,
                     attendance = attendanceTile,
+                    onOpenMessages = onOpenMessages,
                     modifier = Modifier.fadeUpOnAppear(delayMs = 340),
                 )
             }

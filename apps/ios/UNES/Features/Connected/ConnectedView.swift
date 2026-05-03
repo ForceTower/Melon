@@ -29,7 +29,11 @@ struct ConnectedView: View {
     var body: some View {
         TabView(selection: $activeTab) {
             Tab(ConnectedTab.overview.label, systemImage: ConnectedTab.overview.icon, value: .overview) {
-                OverviewView(factory: overview, disciplinesFactory: disciplines)
+                OverviewView(
+                    factory: overview,
+                    disciplinesFactory: disciplines,
+                    onOpenMessages: { activeTab = .messages }
+                )
             }
             Tab(ConnectedTab.schedule.label, systemImage: ConnectedTab.schedule.icon, value: .schedule) {
                 switch scheduleVariant {
