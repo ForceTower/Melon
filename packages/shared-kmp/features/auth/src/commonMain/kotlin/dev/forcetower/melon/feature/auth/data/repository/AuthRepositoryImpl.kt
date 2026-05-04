@@ -3,6 +3,7 @@ package dev.forcetower.melon.feature.auth.data.repository
 import co.touchlab.kermit.Logger
 import dev.forcetower.melon.core.common.Outcome
 import dev.forcetower.melon.core.network.ApiEnvelope
+import dev.forcetower.melon.core.network.NetworkError
 import dev.forcetower.melon.core.session.domain.SessionStore
 import dev.forcetower.melon.core.session.domain.model.User
 import dev.forcetower.melon.feature.auth.data.dto.LoginRequest
@@ -43,6 +44,9 @@ internal class AuthRepositoryImpl(
         handleLoginResponse(response, username, password)
     } catch (cancellation: CancellationException) {
         throw cancellation
+    } catch (ex: NetworkError.Tls) {
+        log.w(throwable = ex) { "login failed: TLS — ${ex.message}" }
+        Outcome.Err(ex.toLoginError())
     } catch (ex: SerializationException) {
         log.e(throwable = ex) { "login failed: envelope deserialization" }
         Outcome.Err(LoginError.Kind.Unexpected)
@@ -75,6 +79,9 @@ internal class AuthRepositoryImpl(
         }
     } catch (cancellation: CancellationException) {
         throw cancellation
+    } catch (ex: NetworkError.Tls) {
+        log.w(throwable = ex) { "passkey begin failed: TLS — ${ex.message}" }
+        Outcome.Err(ex.toLoginError())
     } catch (ex: SerializationException) {
         log.e(throwable = ex) { "passkey begin failed: deserialization" }
         Outcome.Err(LoginError.Kind.Unexpected)
@@ -109,6 +116,9 @@ internal class AuthRepositoryImpl(
         }
     } catch (cancellation: CancellationException) {
         throw cancellation
+    } catch (ex: NetworkError.Tls) {
+        log.w(throwable = ex) { "passkey complete failed: TLS — ${ex.message}" }
+        Outcome.Err(ex.toLoginError())
     } catch (ex: SerializationException) {
         log.e(throwable = ex) { "passkey complete failed: deserialization" }
         Outcome.Err(LoginError.Kind.Unexpected)
@@ -182,4 +192,10 @@ internal class AuthRepositoryImpl(
         log.i { "passkey ok userId=${user.id}" }
         return Outcome.Ok(user)
     }
+}
+
+private fun NetworkError.Tls.toLoginError(): LoginError = when (this) {
+    is NetworkError.Tls.Intercepted -> LoginError.TlsIntercepted(displayName)
+    is NetworkError.Tls.ClockSkew -> LoginError.TlsClockSkew
+    is NetworkError.Tls.Generic -> LoginError.TlsGeneric
 }

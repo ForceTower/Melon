@@ -172,6 +172,16 @@ final class LoginViewModel {
             }
         case .server(let server):
             return server.message ?? "Erro no servidor."
+        case .tlsIntercepted(let intercepted):
+            if let name = intercepted.issuerName {
+                return "\(name) parece estar interceptando o tráfego e impedindo a conexão segura. Você está em uma rede corporativa ou com antivírus que inspeciona HTTPS?"
+            } else {
+                return "Algo na sua rede está interceptando o tráfego e impedindo a conexão segura. Verifique se você está em uma rede corporativa ou com antivírus que inspeciona HTTPS."
+            }
+        case .tlsClockSkew:
+            return "A data e hora do seu dispositivo parecem estar incorretas. Verifique e tente novamente."
+        case .tlsGeneric:
+            return "Não foi possível estabelecer uma conexão segura. Tente novamente em outra rede."
         }
     }
 }

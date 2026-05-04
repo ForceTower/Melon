@@ -78,6 +78,10 @@
     <string name="onboarding_login_error_unexpected">Algo deu errado. Tente novamente.</string>
     <string name="onboarding_login_error_server">%1$s</string>
     <string name="onboarding_login_error_email_warning">Use o nome de usuário, email geralmente não funciona aqui</string>
+    <string name="onboarding_login_error_tls_intercepted_named">%1$s parece estar interceptando o tráfego e impedindo a conexão segura. Você está em uma rede corporativa ou com antivírus que inspeciona HTTPS?</string>
+    <string name="onboarding_login_error_tls_intercepted_unnamed">Algo na sua rede está interceptando o tráfego e impedindo a conexão segura. Verifique se você está em uma rede corporativa ou com antivírus que inspeciona HTTPS.</string>
+    <string name="onboarding_login_error_tls_clock_skew">A data e hora do seu dispositivo parecem estar incorretas. Verifique e tente novamente.</string>
+    <string name="onboarding_login_error_tls_generic">Não foi possível estabelecer uma conexão segura. Tente novamente em outra rede.</string>
     <string name="onboarding_login_passkey_not_supported">Passkey não é suportada neste dispositivo.</string>
     <string name="onboarding_login_passkey_invalid_challenge">Desafio inválido recebido do servidor.</string>
     <string name="onboarding_login_passkey_no_credential">Nenhuma credencial foi retornada.</string>

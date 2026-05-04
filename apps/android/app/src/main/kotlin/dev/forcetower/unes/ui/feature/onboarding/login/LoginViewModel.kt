@@ -123,9 +123,18 @@ private fun LoginError.toMessageRes(): Int = when (this) {
     LoginError.Kind.InvalidCredentials -> R.string.onboarding_login_error_invalid_credentials
     LoginError.Kind.Unexpected -> R.string.onboarding_login_error_unexpected
     is LoginError.Server -> R.string.onboarding_login_error_server
+    is LoginError.TlsIntercepted ->
+        if (issuerName != null) R.string.onboarding_login_error_tls_intercepted_named
+        else R.string.onboarding_login_error_tls_intercepted_unnamed
+    LoginError.TlsClockSkew -> R.string.onboarding_login_error_tls_clock_skew
+    LoginError.TlsGeneric -> R.string.onboarding_login_error_tls_generic
 }
 
-private fun LoginError.serverMessage(): String? = (this as? LoginError.Server)?.message
+private fun LoginError.serverMessage(): String? = when (this) {
+    is LoginError.Server -> message
+    is LoginError.TlsIntercepted -> issuerName
+    else -> null
+}
 
 private fun PasskeyClient.PasskeyException.toMessageRes(): Int = when (this) {
     is PasskeyClient.PasskeyException.NotSupported -> R.string.onboarding_login_passkey_not_supported
