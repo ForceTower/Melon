@@ -5,6 +5,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -267,22 +268,11 @@ private fun CloseButton(
             .size(32.dp)
             .clip(CircleShape)
             .background(FolioPalette.ink.copy(alpha = 0.06f))
+            // detectTapGestures consumes the down event, so the parent's
+            // engine gesture (which uses requireUnconsumed = true) never
+            // sees this tap.
             .pointerInput(onClick) {
-                // Detect tap and consume so the parent's tap-vs-drag gesture
-                // doesn't ALSO fire a tap on the engine.
-                awaitEachGesture {
-                    val down = awaitFirstDown(requireUnconsumed = false)
-                    down.consume()
-                    while (true) {
-                        val event = awaitPointerEvent()
-                        val change = event.changes.firstOrNull { it.id == down.id } ?: break
-                        change.consume()
-                        if (change.changedToUp()) {
-                            onClick()
-                            break
-                        }
-                    }
-                }
+                detectTapGestures(onTap = { onClick() })
             },
         contentAlignment = Alignment.Center,
     ) {
