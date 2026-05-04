@@ -24,6 +24,7 @@ data class LoginUiState(
     val isLoading: Boolean = false,
     @StringRes val errorRes: Int? = null,
     val errorArg: String? = null,
+    val warnedEmailValue: String? = null,
 ) : UiState {
     val canSubmit: Boolean
         get() = !isLoading && username.isNotBlank() && password.isNotBlank()
@@ -64,9 +65,20 @@ class LoginViewModel @Inject constructor(
     private fun submit() {
         val state = currentState
         if (!state.canSubmit) return
+        val trimmedUsername = state.username.trim()
+        if (trimmedUsername.contains('@') && state.warnedEmailValue != trimmedUsername) {
+            setState {
+                copy(
+                    errorRes = R.string.onboarding_login_error_email_warning,
+                    errorArg = null,
+                    warnedEmailValue = trimmedUsername,
+                )
+            }
+            return
+        }
         setState { copy(isLoading = true, errorRes = null, errorArg = null) }
         viewModelScope.launch {
-            val result = loginUseCase(state.username.trim(), state.password)
+            val result = loginUseCase(trimmedUsername, state.password)
             handleLoginResult(result)
         }
     }

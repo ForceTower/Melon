@@ -42,15 +42,16 @@ enum CalendarMapping {
         }
     }
 
-    // KMP `LocalDate` round-trips through SKIE as `Kotlinx_datetimeLocalDate`
-    // with `year`/`monthNumber`/`dayOfMonth` Ints. Resolve to a local-midnight
-    // Date so the rest of the screen (which works in Calendar.current days)
-    // can compare/groupBy without re-parsing.
+    // KMP `LocalDate` round-trips through SKIE as `Kotlinx_datetimeLocalDate`.
+    // Resolve to a local-midnight Date so the rest of the screen (which works
+    // in Calendar.current days) can compare/groupBy without re-parsing.
+    // `month` returns the `Month` enum (january..december); SKIE doesn't surface
+    // the `Month.number` extension, so derive the 1-based month from `ordinal`.
     private static func parseDate(_ date: Kotlinx_datetimeLocalDate) -> Date {
         var comps = DateComponents()
         comps.year = Int(date.year)
-        comps.month = Int(date.monthNumber)
-        comps.day = Int(date.dayOfMonth)
+        comps.month = Int(date.month.ordinal) + 1
+        comps.day = Int(date.day)
         return Calendar.current.date(from: comps) ?? Date()
     }
 }

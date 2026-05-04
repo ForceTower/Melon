@@ -195,7 +195,7 @@ struct FocusedClassBlock: View {
     }
 
     private var footerRow: some View {
-        HStack(alignment: .center, spacing: 10) {
+        HStack(alignment: .top, spacing: 10) {
             ScheduleLocationRow(cls: cls, style: isNow ? .inverted : .normal(dim: isDone))
                 .frame(maxWidth: .infinity, alignment: .leading)
             Text(cls.prof)

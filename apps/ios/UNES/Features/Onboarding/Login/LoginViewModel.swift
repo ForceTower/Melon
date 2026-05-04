@@ -14,6 +14,7 @@ final class LoginViewModel {
     private let beginPasskeyLogin: AuthBeginPasskeyLoginUseCase?
     private let completePasskeyLogin: AuthCompletePasskeyLoginUseCase?
     private let log = Log.scoped("LoginViewModel")
+    private var warnedEmailValue: String?
 
     init(
         loginUseCase: AuthLoginUseCase?,
@@ -31,6 +32,13 @@ final class LoginViewModel {
 
     func submit() async -> SessionUser? {
         guard canSubmit, let loginUseCase else { return nil }
+
+        let trimmedId = studentId.trimmingCharacters(in: .whitespacesAndNewlines)
+        if trimmedId.contains("@") && warnedEmailValue != trimmedId {
+            warnedEmailValue = trimmedId
+            errorMessage = Self.emailWarningMessage
+            return nil
+        }
 
         log.info("login submit for student=\(studentId)")
         isLoading = true
@@ -149,6 +157,7 @@ final class LoginViewModel {
     }
 
     private static let unexpectedMessage = "Algo deu errado. Tente novamente."
+    private static let emailWarningMessage = "Use o nome de usuário, email geralmente não funciona aqui"
 
     private static func describe(_ error: any AuthLoginError) -> String {
         switch onEnum(of: error) {
