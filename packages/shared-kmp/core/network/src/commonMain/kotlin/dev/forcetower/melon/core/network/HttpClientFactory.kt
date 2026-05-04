@@ -65,6 +65,7 @@ fun buildHttpClient(
     install(MachineIdInterceptor) {
         this.machineIdSource = machineIdSource
     }
+    installTlsDiagnostics()
 }
 
 private fun KermitLogger.asKtorLogger(): KtorLogger {

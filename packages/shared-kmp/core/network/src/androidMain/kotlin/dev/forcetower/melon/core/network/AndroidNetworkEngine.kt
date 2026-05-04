@@ -12,6 +12,13 @@ interface AndroidNetworkEngineGraph {
     companion object {
         @Provides
         @SingleIn(AppScope::class)
-        fun engine(): HttpClientEngine = OkHttp.create()
+        fun engine(): HttpClientEngine = OkHttp.create {
+            // Production trust path is the platform default — we never install a
+            // custom X509TrustManager. The interceptor only runs AFTER OkHttp's
+            // own TLS path has already accepted or rejected the connection.
+            config {
+                addInterceptor(TlsDiagnosticInterceptor())
+            }
+        }
     }
 }
