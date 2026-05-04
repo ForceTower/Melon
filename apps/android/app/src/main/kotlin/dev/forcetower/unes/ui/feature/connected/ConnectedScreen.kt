@@ -70,6 +70,7 @@ import dev.forcetower.unes.ui.feature.settings.SettingsScreen
 fun ConnectedScreen(
     onLoggedOut: () -> Unit,
     modifier: Modifier = Modifier,
+    onOpenFolioRunner: () -> Unit = {},
 ) {
     val vm: ConnectedViewModel = hiltViewModel()
     // Fires on initial mount AND on every background → foreground transition,
@@ -155,6 +156,7 @@ fun ConnectedScreen(
                             )
                             navigator.navigate(ConnectedRoute.DisciplineDetail(offerId))
                         },
+                        onOpenFolioRunner = onOpenFolioRunner,
                     )
                 }
                 entry<ConnectedRoute.Classes>(metadata = TabRootMetadata) {

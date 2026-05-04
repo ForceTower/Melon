@@ -64,6 +64,7 @@ internal fun ScheduleScreen(
     modifier: Modifier = Modifier,
     bottomInset: Dp = 0.dp,
     onOpenDiscipline: (ScheduleClass) -> Unit = {},
+    onOpenFolioRunner: () -> Unit = {},
 ) {
     val vm: ScheduleViewModel = hiltViewModel()
     val state by vm.state.collectAsStateWithLifecycle()
@@ -74,6 +75,7 @@ internal fun ScheduleScreen(
         state = state,
         week = week,
         onOpenDiscipline = onOpenDiscipline,
+        onOpenFolioRunner = onOpenFolioRunner,
         modifier = modifier,
         bottomInset = bottomInset,
     )
@@ -86,6 +88,7 @@ private fun ScheduleContent(
     modifier: Modifier = Modifier,
     bottomInset: Dp = 0.dp,
     onOpenDiscipline: (ScheduleClass) -> Unit = {},
+    onOpenFolioRunner: () -> Unit = {},
 ) {
     var activeIdx by rememberSaveable { mutableIntStateOf(-1) }
     // Seed the active pill once the first valid emission lands. iOS does the
@@ -152,6 +155,7 @@ private fun ScheduleContent(
                 nowMin = state.nowMin,
                 entering = entering,
                 onOpenDiscipline = onOpenDiscipline,
+                onOpenFolioRunner = onOpenFolioRunner,
             )
 
             Spacer(Modifier.height(20.dp))
@@ -167,6 +171,7 @@ private fun DayColumnSlot(
     nowMin: Int,
     entering: Boolean,
     onOpenDiscipline: (ScheduleClass) -> Unit,
+    onOpenFolioRunner: () -> Unit,
 ) {
     key(key) {
         ScheduleDayColumn(
@@ -176,6 +181,7 @@ private fun DayColumnSlot(
             showGaps = true,
             entering = entering,
             onOpenDiscipline = onOpenDiscipline,
+            onOpenFolioRunner = onOpenFolioRunner,
         )
     }
 }

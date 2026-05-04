@@ -1,5 +1,7 @@
 package dev.forcetower.unes.ui.feature.schedule.components
 
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -11,11 +13,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.withTimeoutOrNull
 import dev.forcetower.unes.R
+import dev.forcetower.unes.designsystem.components.BlinkingFolio
 import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
 import dev.forcetower.unes.ui.feature.schedule.ScheduleClass
 import dev.forcetower.unes.ui.feature.schedule.scheduleStateFor
@@ -35,9 +42,10 @@ internal fun ScheduleDayColumn(
     entering: Boolean,
     modifier: Modifier = Modifier,
     onOpenDiscipline: (ScheduleClass) -> Unit = {},
+    onOpenFolioRunner: () -> Unit = {},
 ) {
     if (classes.isEmpty()) {
-        EmptyDay(modifier = modifier)
+        EmptyDay(modifier = modifier, onLongPress = onOpenFolioRunner)
         return
     }
 
@@ -69,24 +77,48 @@ internal fun ScheduleDayColumn(
     }
 }
 
+// Easter-egg entry point: long-pressing the empty-state mascot opens the Folio
+// runner. Held distinctly longer than the system long-press (~500ms) so an
+// accidental hold won't open the easter egg — discovery should feel like a
+// deliberate secret. Mirrors iOS `DayColumn`.
 @Composable
-private fun EmptyDay(modifier: Modifier = Modifier) {
+private fun EmptyDay(
+    onLongPress: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     val ink3 = MaterialTheme.colorScheme.onSurfaceVariant
     val ink4 = MaterialTheme.colorScheme.outlineVariant
+    val haptics = LocalHapticFeedback.current
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 30.dp, vertical = 60.dp),
+            .padding(horizontal = 30.dp, vertical = 60.dp)
+            .pointerInput(onLongPress) {
+                awaitEachGesture {
+                    val down = awaitFirstDown(requireUnconsumed = false)
+                    val released = withTimeoutOrNull(LongPressMillis) {
+                        while (true) {
+                            val event = awaitPointerEvent()
+                            val change = event.changes.firstOrNull { it.id == down.id }
+                                ?: return@withTimeoutOrNull true
+                            if (!change.pressed) return@withTimeoutOrNull true
+                        }
+                        @Suppress("UNREACHABLE_CODE") true
+                    }
+                    if (released == null) {
+                        haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                        onLongPress()
+                    }
+                }
+            },
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
-        Text(
-            text = "—",
-            style = MaterialTheme.typography.headlineLarge.copy(
-                fontSize = 42.sp,
-                fontStyle = FontStyle.Italic,
-            ),
-            color = ink3.copy(alpha = 0.3f),
+        BlinkingFolio(
+            size = 96.dp,
+            modifier = Modifier
+                .alpha(0.85f)
+                .padding(bottom = 6.dp),
         )
         Text(
             text = stringResource(R.string.schedule_empty_title),
@@ -103,3 +135,7 @@ private fun EmptyDay(modifier: Modifier = Modifier) {
         )
     }
 }
+
+// Held distinctly longer than the system long-press (~500ms) so an accidental
+// hold won't trip the easter egg. Matches iOS `onLongPressGesture(minimumDuration: 1.2)`.
+private const val LongPressMillis = 1_200L

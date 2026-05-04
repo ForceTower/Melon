@@ -13,4 +13,5 @@ sealed interface AppRoute : NavKey {
     @Serializable data class Sync(val firstName: String) : AppRoute
     @Serializable data class Ready(val firstName: String) : AppRoute
     @Serializable data object Connected : AppRoute
+    @Serializable data object FolioRunner : AppRoute
 }

@@ -9,6 +9,7 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import dev.forcetower.unes.R
 import dev.forcetower.unes.ui.feature.connected.ConnectedScreen
+import dev.forcetower.unes.ui.feature.foliorunner.FolioRunnerScreen
 import dev.forcetower.unes.ui.feature.onboarding.intro.IntroCarouselScreen
 import dev.forcetower.unes.ui.feature.onboarding.login.LoginScreen
 import dev.forcetower.unes.ui.feature.onboarding.ready.ReadyScreen
@@ -75,7 +76,13 @@ fun AppNavHost() {
                 )
             }
             entry<AppRoute.Connected> {
-                ConnectedScreen(onLoggedOut = { replace(AppRoute.Welcome) })
+                ConnectedScreen(
+                    onLoggedOut = { replace(AppRoute.Welcome) },
+                    onOpenFolioRunner = { backStack.add(AppRoute.FolioRunner) },
+                )
+            }
+            entry<AppRoute.FolioRunner> {
+                FolioRunnerScreen(onClose = { backStack.removeLastOrNull() })
             }
         },
     )

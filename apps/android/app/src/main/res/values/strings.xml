@@ -476,6 +476,14 @@
     <string name="schedule_empty_subtitle">Dia livre. Aproveite.</string>
     <!-- endregion -->
 
+    <!-- region Folio runner · Easter egg game -->
+    <string name="folio_runner_title">Folio</string>
+    <string name="folio_runner_hint">toque para pular · arraste pra baixo para abaixar</string>
+    <string name="folio_runner_game_over">acabou</string>
+    <string name="folio_runner_retry_hint">toque para tentar de novo</string>
+    <string name="folio_runner_close">Fechar</string>
+    <!-- endregion -->
+
     <!-- region Me · Header -->
     <!-- "◦ PERFIL · {semester}" — eyebrow stamp above the greeting. -->
     <string name="me_header_eyebrow_format">◦ PERFIL · %1$s</string>
