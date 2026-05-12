@@ -26,10 +26,17 @@ struct DayDoneMediumView: View {
                     .lineLimit(2)
                     .minimumScaleFactor(0.85)
 
-                if let line = entry.dayDoneLine {
-                    Text(line)
+                if !entry.title.isEmpty {
+                    Text(entry.title)
                         .font(WidgetFont.sans(12))
                         .foregroundStyle(theme.ink3)
+                        .lineLimit(1)
+                }
+
+                if !entry.room.isEmpty {
+                    Text(entry.room)
+                        .font(WidgetFont.sans(11))
+                        .foregroundStyle(theme.ink4)
                         .lineLimit(1)
                 }
             }
