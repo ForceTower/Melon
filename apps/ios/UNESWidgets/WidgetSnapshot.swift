@@ -147,29 +147,39 @@ extension WidgetSnapshot {
             )
         }
 
+        // In the final stretch of a running class we shift attention to the
+        // next class so the student gets a heads-up before walking out, but
+        // only when there's actually another class to flag — otherwise we
+        // keep showing the running one so the widget doesn't go blank for
+        // the last 30 minutes of the day.
+        let inClassSwitchThreshold = 30
         if let r = running {
             let start = parseHhMm(r.startTime) ?? nowMinutes
             let end = parseHhMm(r.endTime) ?? (nowMinutes + 60)
-            return NextClassEntry(
-                date: now,
-                state: .inClass,
-                code: r.code,
-                shortCode: shortCode(from: r.code),
-                title: r.title,
-                shortTitle: shortTitle(from: r.title),
-                prof: r.prof ?? "",
-                room: r.room ?? "",
-                building: "",
-                startsIn: 0,
-                endsIn: max(0, end - nowMinutes),
-                totalDurationMin: max(1, end - start),
-                startTime: r.startTime,
-                endTime: r.endTime ?? "",
-                topic: r.topic,
-                todayBars: bars,
-                dayDoneLine: nil,
-                completedTodayCount: completedCount
-            )
+            let endsIn = max(0, end - nowMinutes)
+            let shouldHandOffToUpcoming = endsIn <= inClassSwitchThreshold && upcoming != nil
+            if !shouldHandOffToUpcoming {
+                return NextClassEntry(
+                    date: now,
+                    state: .inClass,
+                    code: r.code,
+                    shortCode: shortCode(from: r.code),
+                    title: r.title,
+                    shortTitle: shortTitle(from: r.title),
+                    prof: r.prof ?? "",
+                    room: r.room ?? "",
+                    building: "",
+                    startsIn: 0,
+                    endsIn: endsIn,
+                    totalDurationMin: max(1, end - start),
+                    startTime: r.startTime,
+                    endTime: r.endTime ?? "",
+                    topic: r.topic,
+                    todayBars: bars,
+                    dayDoneLine: nil,
+                    completedTodayCount: completedCount
+                )
+            }
         }
 
         if let n = upcoming {

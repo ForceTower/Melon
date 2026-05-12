@@ -74,9 +74,18 @@ struct NextClassProvider: TimelineProvider {
                 points.append(start)
             }
             if let end = c.endTime,
-               let endDate = Self.minutesToDate(end, dayStart: startOfToday, calendar: calendar),
-               endDate > now {
-                points.append(endDate)
+               let endDate = Self.minutesToDate(end, dayStart: startOfToday, calendar: calendar) {
+                if endDate > now {
+                    points.append(endDate)
+                }
+                // 30 minutes before each class ends, renderEntry hands off to
+                // the next class if there is one (see inClassSwitchThreshold
+                // in WidgetSnapshot.renderEntry). Surface that boundary so
+                // WidgetKit picks up the entry at the right moment.
+                if let handoff = calendar.date(byAdding: .minute, value: -30, to: endDate),
+                   handoff > now {
+                    points.append(handoff)
+                }
             }
         }
 
