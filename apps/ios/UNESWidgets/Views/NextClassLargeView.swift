@@ -76,6 +76,15 @@ struct NextClassLargeView: View {
 private struct TodayStrip: View {
     let bars: [NextClassEntry.TodayBar]
 
+    /// Mirrors the CSS `flex: state === 'next' ? 2 : 1` rule from the design.
+    /// `layoutPriority` doesn't proportionally divide width in SwiftUI — it
+    /// only breaks ties — so a GeometryReader split is used instead. With
+    /// priority alone, the `next` cell devoured the row and the others
+    /// collapsed below their intrinsic width, hiding the code/time text.
+    private func weight(for bar: NextClassEntry.TodayBar) -> CGFloat {
+        bar.state == .next ? 2 : 1
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("◦ seu dia")
@@ -83,11 +92,22 @@ private struct TodayStrip: View {
                 .tracking(1.44)
                 .textCase(.uppercase)
                 .foregroundStyle(Color.white.opacity(0.6))
-            HStack(spacing: 6) {
-                ForEach(bars, id: \.self) { bar in
-                    TodayCell(bar: bar)
+
+            GeometryReader { geo in
+                let spacing: CGFloat = 6
+                let totalSpacing = spacing * CGFloat(max(0, bars.count - 1))
+                let totalWeight = bars.reduce(CGFloat(0)) { $0 + weight(for: $1) }
+                let unit = totalWeight > 0
+                    ? (geo.size.width - totalSpacing) / totalWeight
+                    : 0
+                HStack(spacing: spacing) {
+                    ForEach(bars, id: \.self) { bar in
+                        TodayCell(bar: bar)
+                            .frame(width: unit * weight(for: bar))
+                    }
                 }
             }
+            .frame(height: 40)
         }
     }
 }
@@ -104,9 +124,13 @@ private struct TodayCell: View {
                 .font(WidgetFont.mono(9, weight: .semibold))
                 .tracking(0.9)
                 .foregroundStyle(bar.color)
+                .lineLimit(1)
+                .minimumScaleFactor(0.85)
             Text(bar.time)
                 .font(WidgetFont.mono(9.5))
                 .foregroundStyle(Color.white.opacity(0.75))
+                .lineLimit(1)
+                .minimumScaleFactor(0.85)
         }
         .padding(.horizontal, 10)
         .padding(.vertical, 8)
@@ -120,8 +144,5 @@ private struct TodayCell: View {
                 .stroke(isNext ? bar.color.opacity(0.4) : Color.white.opacity(0.06), lineWidth: 1)
         )
         .opacity(isDone ? 0.4 : 1)
-        // `next` is emphasized at flex 2 in the design; mirror that with a
-        // layout priority so it grabs roughly double the row.
-        .layoutPriority(isNext ? 2 : 1)
     }
 }
