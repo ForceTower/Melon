@@ -19,7 +19,7 @@ struct NextClassProvider: TimelineProvider {
             completion(.placeholder)
             return
         }
-        let now = Date()
+        let now = WidgetSnapshot.resolvedNow()
         guard let snapshot = WidgetSnapshot.load() else {
             completion(.placeholder)
             return
@@ -28,12 +28,23 @@ struct NextClassProvider: TimelineProvider {
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<NextClassEntry>) -> Void) {
-        let now = Date()
+        let now = WidgetSnapshot.resolvedNow()
         guard let snapshot = WidgetSnapshot.load() else {
-            let next = Calendar.current.date(byAdding: .minute, value: 15, to: now) ?? now
+            let next = Calendar.current.date(byAdding: .minute, value: 15, to: Date()) ?? Date()
             completion(Timeline(entries: [.placeholder], policy: .after(next)))
             return
         }
+
+        #if DEBUG
+        // Debug clock override is on — WidgetKit picks entries by wall clock,
+        // so multi-entry timelines anchored on fake times produce confusing
+        // results. Emit a single static entry rendered against the override.
+        if WidgetSnapshot.isDebugClockOverridden {
+            let next = Calendar.current.date(byAdding: .minute, value: 5, to: Date()) ?? Date()
+            completion(Timeline(entries: [snapshot.renderEntry(at: now)], policy: .after(next)))
+            return
+        }
+        #endif
 
         let transitions = Self.transitionPoints(snapshot: snapshot, now: now)
         let entries = transitions.map { snapshot.renderEntry(at: $0) }

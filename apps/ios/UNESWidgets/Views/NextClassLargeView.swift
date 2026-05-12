@@ -11,7 +11,7 @@ struct NextClassLargeView: View {
             HStack {
                 HStack(spacing: 6) {
                     LiveDot(color: WidgetColor.amber, size: 6)
-                    Text("em \(formatCountdown(entry.startsIn))")
+                    Text(countdownEyebrow(state: entry.state, startsIn: entry.startsIn, endsIn: entry.endsIn))
                         .font(WidgetFont.mono(10))
                         .tracking(1.4)
                         .textCase(.uppercase)

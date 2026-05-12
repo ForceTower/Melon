@@ -55,6 +55,43 @@ struct WidgetSnapshot: Codable, Sendable {
         decoder.dateDecodingStrategy = .iso8601
         return try? decoder.decode(WidgetSnapshot.self, from: data)
     }
+
+    /// Returns the effective "now" the provider should render against. In
+    /// DEBUG builds, an ISO8601 string under
+    /// `UserDefaults(suiteName: appGroup)["widget.debug.now"]` overrides the
+    /// system clock so we can preview widget states without changing the
+    /// host Mac clock. Set via:
+    ///
+    ///   xcrun simctl spawn booted defaults write group.dev.forcetower.unes.ios \
+    ///     widget.debug.now -string "2026-05-12T10:00:00-03:00"
+    ///
+    /// Clear via `defaults delete`. Compiles out in Release.
+    static func resolvedNow() -> Date {
+        #if DEBUG
+        if let override = debugClockOverride() {
+            return override
+        }
+        #endif
+        return Date()
+    }
+
+    #if DEBUG
+    static var isDebugClockOverridden: Bool {
+        debugClockOverride() != nil
+    }
+
+    private static func debugClockOverride() -> Date? {
+        guard let defaults = UserDefaults(suiteName: appGroup),
+              let raw = defaults.string(forKey: "widget.debug.now") else { return nil }
+        return iso8601Parser.date(from: raw)
+    }
+
+    private static let iso8601Parser: ISO8601DateFormatter = {
+        let f = ISO8601DateFormatter()
+        f.formatOptions = [.withInternetDateTime]
+        return f
+    }()
+    #endif
 }
 
 // MARK: - Entry rendering

@@ -10,7 +10,7 @@ struct NextClassSmallView: View {
         VStack(alignment: .leading, spacing: 0) {
             HStack(spacing: 6) {
                 LiveDot(color: WidgetColor.amber, size: 5)
-                Text("em \(formatCountdown(entry.startsIn))")
+                Text(entry.state == .inClass ? "agora" : "em \(formatCountdown(entry.startsIn))")
                     .font(WidgetFont.mono(8.5))
                     .tracking(1.36)
                     .textCase(.uppercase)

@@ -123,3 +123,15 @@ func formatCountdown(_ mins: Int) -> String {
     if m == 0 { return "\(h)h" }
     return "\(h)h \(m)min"
 }
+
+/// Top-eyebrow label for the upcoming-style layouts (Small, Medium upcoming,
+/// Large). Switches copy when a class is in session so the eyebrow doesn't
+/// read "em 0 min" — matches the Medium in-class header pattern.
+func countdownEyebrow(state: NextClassState, startsIn: Int, endsIn: Int) -> String {
+    switch state {
+    case .inClass:
+        return "agora · termina em \(formatCountdown(endsIn))"
+    case .upcoming, .dayDone:
+        return "em \(formatCountdown(startsIn))"
+    }
+}
