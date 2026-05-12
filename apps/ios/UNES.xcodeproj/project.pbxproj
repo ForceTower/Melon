@@ -13,10 +13,36 @@
 		6C839DB42F95934700715E79 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 6C839DB32F95934700715E79 /* FirebaseCrashlytics */; };
 		6C839DB62F95934700715E79 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 6C839DB52F95934700715E79 /* FirebaseMessaging */; };
 		6C839DB82F95934700715E79 /* FirebaseRemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = 6C839DB72F95934700715E79 /* FirebaseRemoteConfig */; };
+		6CD001082F930600005557AF /* UNESWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 6CD001012F930600005557AF /* UNESWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		6CD001092F930600005557AF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6C3995DF2F930600005557AF /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6CD001002F930600005557AF;
+			remoteInfo = UNESWidgets;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		6CD001072F930600005557AF /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				6CD001082F930600005557AF /* UNESWidgets.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		6C3995E72F930600005557AF /* UNES.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UNES.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		6CD001012F930600005557AF /* UNESWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = UNESWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -27,6 +53,13 @@
 			);
 			target = 6C3995E62F930600005557AF /* UNES */;
 		};
+		6CD001032F930600005557AF /* Exceptions for "UNESWidgets" folder in "UNESWidgets" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 6CD001002F930600005557AF /* UNESWidgets */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -36,6 +69,14 @@
 				6C83A0782F97ABB600715E79 /* Exceptions for "UNES" folder in "UNES" target */,
 			);
 			path = UNES;
+			sourceTree = "<group>";
+		};
+		6CD001022F930600005557AF /* UNESWidgets */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				6CD001032F930600005557AF /* Exceptions for "UNESWidgets" folder in "UNESWidgets" target */,
+			);
+			path = UNESWidgets;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -54,6 +95,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		6CD001042F930600005557AF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -61,6 +109,7 @@
 			isa = PBXGroup;
 			children = (
 				6C3995E92F930600005557AF /* UNES */,
+				6CD001022F930600005557AF /* UNESWidgets */,
 				6C3995E82F930600005557AF /* Products */,
 			);
 			sourceTree = "<group>";
@@ -69,6 +118,7 @@
 			isa = PBXGroup;
 			children = (
 				6C3995E72F930600005557AF /* UNES.app */,
+				6CD001012F930600005557AF /* UNESWidgets.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -85,11 +135,13 @@
 				6C3995E32F930600005557AF /* Sources */,
 				6C3995E42F930600005557AF /* Frameworks */,
 				6C3995E52F930600005557AF /* Resources */,
+				6CD001072F930600005557AF /* Embed Foundation Extensions */,
 				6CCR01002F930600005557AF /* Upload Symbols (Firebase Crashlytics) */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				6CD0010A2F930600005557AF /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				6C3995E92F930600005557AF /* UNES */,
@@ -107,6 +159,28 @@
 			productReference = 6C3995E72F930600005557AF /* UNES.app */;
 			productType = "com.apple.product-type.application";
 		};
+		6CD001002F930600005557AF /* UNESWidgets */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6CD0010D2F930600005557AF /* Build configuration list for PBXNativeTarget "UNESWidgets" */;
+			buildPhases = (
+				6CD001052F930600005557AF /* Sources */,
+				6CD001042F930600005557AF /* Frameworks */,
+				6CD001062F930600005557AF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				6CD001022F930600005557AF /* UNESWidgets */,
+			);
+			name = UNESWidgets;
+			packageProductDependencies = (
+			);
+			productName = UNESWidgets;
+			productReference = 6CD001012F930600005557AF /* UNESWidgets.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -118,6 +192,9 @@
 				LastUpgradeCheck = 2640;
 				TargetAttributes = {
 					6C3995E62F930600005557AF = {
+						CreatedOnToolsVersion = 26.4.1;
+					};
+					6CD001002F930600005557AF = {
 						CreatedOnToolsVersion = 26.4.1;
 					};
 				};
@@ -140,6 +217,7 @@
 			projectRoot = "";
 			targets = (
 				6C3995E62F930600005557AF /* UNES */,
+				6CD001002F930600005557AF /* UNESWidgets */,
 			);
 		};
 /* End PBXProject section */
@@ -152,9 +230,36 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		6CD001062F930600005557AF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		6CCR01002F930600005557AF /* Upload Symbols (Firebase Crashlytics) */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",
+				"$(SRCROOT)/$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
+			);
+			name = "Upload Symbols (Firebase Crashlytics)";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${BUILD_DIR%/Build/*}/SourcePackages/checkouts/firebase-ios-sdk/Crashlytics/run\"\n";
+		};
 		6CLP01002F930600005557AF /* Generate licenses (license-plist) */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
@@ -195,26 +300,6 @@
 			shellPath = /bin/sh;
 			shellScript = "cd \"$SRCROOT/../..\"\n./gradlew :packages:shared-kmp:umbrella:embedAndSignAppleFrameworkForXcode\n";
 		};
-		6CCR01002F930600005557AF /* Upload Symbols (Firebase Crashlytics) */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",
-				"$(SRCROOT)/$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
-			);
-			name = "Upload Symbols (Firebase Crashlytics)";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${BUILD_DIR%/Build/*}/SourcePackages/checkouts/firebase-ios-sdk/Crashlytics/run\"\n";
-		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -225,7 +310,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		6CD001052F930600005557AF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		6CD0010A2F930600005557AF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6CD001002F930600005557AF /* UNESWidgets */;
+			targetProxy = 6CD001092F930600005557AF /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		6C3995F02F930602005557AF /* Debug */ = {
@@ -449,6 +549,70 @@
 			};
 			name = Release;
 		};
+		6CD0010B2F930600005557AF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5GH6Q6KS69;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = UNESWidgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = UNES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 0.9.3;
+				PRODUCT_BUNDLE_IDENTIFIER = dev.forcetower.unes.ios.widgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		6CD0010C2F930600005557AF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5GH6Q6KS69;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = UNESWidgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = UNES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 0.9.3;
+				PRODUCT_BUNDLE_IDENTIFIER = dev.forcetower.unes.ios.widgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -466,6 +630,15 @@
 			buildConfigurations = (
 				6C3995F32F930602005557AF /* Debug */,
 				6C3995F42F930602005557AF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6CD0010D2F930600005557AF /* Build configuration list for PBXNativeTarget "UNESWidgets" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6CD0010B2F930600005557AF /* Debug */,
+				6CD0010C2F930600005557AF /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
