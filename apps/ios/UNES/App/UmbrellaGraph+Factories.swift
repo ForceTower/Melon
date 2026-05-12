@@ -50,6 +50,11 @@ extension UmbrellaGraph {
     }
 
     @MainActor
+    func makeWidgetSnapshotPublisher() -> WidgetSnapshotPublisher {
+        WidgetSnapshotPublisher(week: observeScheduleWeekUseCase)
+    }
+
+    @MainActor
     var disciplinesFactory: DisciplinesFactory {
         DisciplinesFactory(
             useCases: DisciplinesUseCases(

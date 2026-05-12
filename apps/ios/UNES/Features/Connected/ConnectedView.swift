@@ -14,6 +14,7 @@ struct ConnectedView: View {
     let refreshSession: SyncRefreshSessionUseCase
     let backfillMirror: SyncBackfillMirrorUseCase
     let pingActivity: SyncPingActivityUseCase
+    let widgetSnapshotPublisher: WidgetSnapshotPublisher
     var onLoggedOut: () -> Void = {}
 
     @State private var activeTab: ConnectedTab = .overview
@@ -61,6 +62,12 @@ struct ConnectedView: View {
             // needed here.
             _ = try? await UNUserNotificationCenter.current()
                 .requestAuthorization(options: [.alert, .badge, .sound])
+        }
+        .task {
+            // Runs for the entire authenticated session — keeps the iOS
+            // widget snapshot in the App Group container up to date so the
+            // "Próxima aula" widget renders real data.
+            await widgetSnapshotPublisher.start()
         }
         .task {
             // Fires once per authenticated session entry (fresh launch or

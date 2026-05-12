@@ -29,6 +29,42 @@ enum WidgetColor {
     static let accent       = dynamic(light: hex(0xE8, 0x5D, 0x4E),
                                       dark:  hex(0xF4, 0xA2, 0x3C))
 
+    /// 10-slot subject palette — mirrors `ColorFor.palette` in the host app
+    /// (`apps/ios/UNES/Features/Overview/OverviewViewModel.swift`). Each
+    /// slot stores the light-mode hex; widgets carry colors through the
+    /// timeline as `UInt32`, so we hand back hex rather than `Color`.
+    private static let subjectPalette: [UInt32] = [
+        0xE8_5D_4E, // coral
+        0xF4_A2_3C, // amber
+        0xB2_3A_7A, // magenta
+        0x3B_9E_AE, // teal
+        0x2D_1B_4E, // plum
+        0xC6_4A_6D, // rose
+        0x3C_7D_C9, // sky
+        0x2E_8B_5C, // emerald
+        0x4A_5F_B8, // indigo
+        0xA0_74_1F, // mustard
+    ]
+
+    /// Stable mapping from discipline code → palette hex. Matches
+    /// `ColorFor.discipline(code:)` so the widget paints each class in the
+    /// same family color as the app, without the host having to ship the
+    /// color through the snapshot.
+    static func subjectHex(for code: String) -> UInt32 {
+        let bucket = abs(stableHash(code)) % subjectPalette.count
+        return subjectPalette[bucket]
+    }
+
+    /// djb2 — process-stable, unlike Swift's randomized `hashValue`. Same
+    /// algorithm the host uses in `ColorFor.stableHash`.
+    private static func stableHash(_ s: String) -> Int {
+        var hash = 5381
+        for scalar in s.unicodeScalars {
+            hash = ((hash << 5) &+ hash) &+ Int(scalar.value)
+        }
+        return hash
+    }
+
     private static func hex(_ r: Int, _ g: Int, _ b: Int) -> UIColor {
         UIColor(red: CGFloat(r) / 255, green: CGFloat(g) / 255, blue: CGFloat(b) / 255, alpha: 1)
     }

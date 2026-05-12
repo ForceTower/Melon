@@ -1,25 +1,93 @@
+import Foundation
 import WidgetKit
 
 /// Timeline provider for the "Próxima aula" widget.
 ///
-/// Today this returns the same fixture the design system uses, refreshed every
-/// 5 minutes per the spec. Once the KMP layer exposes a query for the next
-/// class on the widget surface, this is where it gets called from. The widget
-/// extension can't link the umbrella framework yet (the umbrella build script
-/// targets only the host app), so the real data path will likely flow through
-/// an App Group + shared cache the app writes to.
+/// Loads `WidgetSnapshot` from the App Group container (written by the
+/// host app via `WidgetSnapshotPublisher`) and generates a multi-entry
+/// timeline anchored on today's class boundaries. State + countdowns are
+/// recomputed at every transition point, so WidgetKit can flip from
+/// upcoming → inClass → dayDone without another reload — until the host
+/// writes a fresher snapshot or the safety-net `.after(...)` policy fires.
 struct NextClassProvider: TimelineProvider {
     func placeholder(in context: Context) -> NextClassEntry {
         .placeholder
     }
 
     func getSnapshot(in context: Context, completion: @escaping (NextClassEntry) -> Void) {
-        completion(.placeholder)
+        if context.isPreview {
+            completion(.placeholder)
+            return
+        }
+        let now = Date()
+        guard let snapshot = WidgetSnapshot.load() else {
+            completion(.placeholder)
+            return
+        }
+        completion(snapshot.renderEntry(at: now))
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<NextClassEntry>) -> Void) {
-        let entry = NextClassEntry.placeholder
-        let next = Calendar.current.date(byAdding: .minute, value: 5, to: entry.date) ?? entry.date
-        completion(Timeline(entries: [entry], policy: .after(next)))
+        let now = Date()
+        guard let snapshot = WidgetSnapshot.load() else {
+            let next = Calendar.current.date(byAdding: .minute, value: 15, to: now) ?? now
+            completion(Timeline(entries: [.placeholder], policy: .after(next)))
+            return
+        }
+
+        let transitions = Self.transitionPoints(snapshot: snapshot, now: now)
+        let entries = transitions.map { snapshot.renderEntry(at: $0) }
+
+        // Safety-net reload: ~02:00 tomorrow, well past any reasonable class
+        // boundary. The publisher will write a fresher snapshot well before
+        // this, but if the app stays backgrounded WidgetKit still refreshes
+        // overnight so the dayDone copy stays correct.
+        let calendar = Calendar.current
+        let tomorrow = calendar.startOfDay(for: now.addingTimeInterval(24 * 3600))
+        let safetyNet = calendar.date(byAdding: .hour, value: 2, to: tomorrow) ?? tomorrow
+
+        completion(Timeline(entries: entries, policy: .after(safetyNet)))
+    }
+
+    /// Generates the time points where the rendered entry would change.
+    /// Always includes `now` plus every future class boundary on today and
+    /// the start of tomorrow (so dayDone copy flips at midnight).
+    private static func transitionPoints(snapshot: WidgetSnapshot, now: Date) -> [Date] {
+        var points: [Date] = [now]
+        let calendar = Calendar.current
+        let startOfToday = calendar.startOfDay(for: now)
+
+        for c in snapshot.today {
+            if let start = Self.minutesToDate(c.startTime, dayStart: startOfToday, calendar: calendar),
+               start > now {
+                points.append(start)
+            }
+            if let end = c.endTime,
+               let endDate = Self.minutesToDate(end, dayStart: startOfToday, calendar: calendar),
+               endDate > now {
+                points.append(endDate)
+            }
+        }
+
+        let tomorrow = calendar.date(byAdding: .day, value: 1, to: startOfToday) ?? startOfToday
+        points.append(tomorrow)
+
+        // WidgetKit accepts up to ~96 entries per kind; we'll easily stay
+        // well under that even on a packed day. Sort + dedupe by minute so
+        // back-to-back classes don't produce duplicate transitions.
+        let unique = Array(Set(points.map { $0.timeIntervalSince1970.rounded() }))
+            .sorted()
+            .map { Date(timeIntervalSince1970: $0) }
+        return unique
+    }
+
+    private static func minutesToDate(
+        _ hhmm: String,
+        dayStart: Date,
+        calendar: Calendar
+    ) -> Date? {
+        let parts = hhmm.split(separator: ":")
+        guard parts.count >= 2, let h = Int(parts[0]), let m = Int(parts[1]) else { return nil }
+        return calendar.date(byAdding: .minute, value: h * 60 + m, to: dayStart)
     }
 }

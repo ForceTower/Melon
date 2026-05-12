@@ -39,6 +39,7 @@ struct RootView: View {
     let refreshSession: SyncRefreshSessionUseCase
     let backfillMirror: SyncBackfillMirrorUseCase
     let pingActivity: SyncPingActivityUseCase
+    let widgetSnapshotPublisher: WidgetSnapshotPublisher
 
     @State private var viewModel = RootViewModel()
 
@@ -77,6 +78,7 @@ struct RootView: View {
                     refreshSession: refreshSession,
                     backfillMirror: backfillMirror,
                     pingActivity: pingActivity,
+                    widgetSnapshotPublisher: widgetSnapshotPublisher,
                     onLoggedOut: {
                         withAnimation(.timingCurve(0.2, 0.8, 0.2, 1, duration: 0.5)) {
                             viewModel.userLoggedOut()

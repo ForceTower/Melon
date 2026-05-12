@@ -25,7 +25,8 @@ struct UNESApp: App {
                 me: graph.meFactory,
                 refreshSession: graph.refreshSessionUseCase,
                 backfillMirror: graph.backfillMirrorUseCase,
-                pingActivity: graph.pingActivityUseCase
+                pingActivity: graph.pingActivityUseCase,
+                widgetSnapshotPublisher: graph.makeWidgetSnapshotPublisher()
             )
         }
     }
