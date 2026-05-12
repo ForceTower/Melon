@@ -40,6 +40,71 @@ enum WidgetColor {
     }
 }
 
+/// Theme palette for the next-class widget. Mirrors the `LIGHT`/`DARK`
+/// constants in `screens-widgets.jsx`. The widget follows the **system**
+/// appearance (not the app's theme override) per the handoff.
+struct WidgetTheme {
+    let surface: Color
+    let ink: Color
+    let ink2: Color
+    let ink3: Color
+    let ink4: Color
+    /// Hairline separator between sections inside the card.
+    let line: Color
+    /// Vertical separator between footer chips.
+    let divider: Color
+    /// Card edge border.
+    let cardLine: Color
+    /// Linear gradient veil painted on top of the mesh, top → bottom.
+    let veilTop: Color
+    let veilBottom: Color
+    /// Subtle background for the non-`next` cells in the "seu dia" strip on
+    /// the large widget.
+    let todayCellBackground: Color
+    /// Progress-bar track on the in-class state.
+    let progressTrack: Color
+    let meshVariant: WidgetMeshVariant
+    let meshIntensity: Double
+
+    static let light = WidgetTheme(
+        surface: Color(red: 0xFB / 255, green: 0xF7 / 255, blue: 0xF2 / 255),
+        ink: Color(red: 0x1A / 255, green: 0x14 / 255, blue: 0x20 / 255),
+        ink2: Color(red: 0x3A / 255, green: 0x2F / 255, blue: 0x42 / 255),
+        ink3: Color(red: 0x6B / 255, green: 0x5E / 255, blue: 0x70 / 255),
+        ink4: Color(red: 0x9C / 255, green: 0x8F / 255, blue: 0xA0 / 255),
+        line: Color(red: 0x1A / 255, green: 0x14 / 255, blue: 0x20 / 255).opacity(0.08),
+        divider: Color(red: 0x1A / 255, green: 0x14 / 255, blue: 0x20 / 255).opacity(0.15),
+        cardLine: Color(red: 0x1A / 255, green: 0x14 / 255, blue: 0x20 / 255).opacity(0.06),
+        veilTop: Color(red: 0xFB / 255, green: 0xF7 / 255, blue: 0xF2 / 255).opacity(0.55),
+        veilBottom: Color(red: 0xFB / 255, green: 0xF7 / 255, blue: 0xF2 / 255).opacity(0.78),
+        todayCellBackground: Color(red: 0x1A / 255, green: 0x14 / 255, blue: 0x20 / 255).opacity(0.04),
+        progressTrack: Color(red: 0x1A / 255, green: 0x14 / 255, blue: 0x20 / 255).opacity(0.1),
+        meshVariant: .sun,
+        meshIntensity: 0.35
+    )
+
+    static let dark = WidgetTheme(
+        surface: Color(red: 0x1A / 255, green: 0x0F / 255, blue: 0x28 / 255),
+        ink: Color(red: 0xFB / 255, green: 0xF7 / 255, blue: 0xF2 / 255),
+        ink2: Color(red: 0xFB / 255, green: 0xF7 / 255, blue: 0xF2 / 255).opacity(0.92),
+        ink3: Color(red: 0xFB / 255, green: 0xF7 / 255, blue: 0xF2 / 255).opacity(0.78),
+        ink4: Color(red: 0xFB / 255, green: 0xF7 / 255, blue: 0xF2 / 255).opacity(0.55),
+        line: Color(red: 0xFB / 255, green: 0xF7 / 255, blue: 0xF2 / 255).opacity(0.15),
+        divider: Color(red: 0xFB / 255, green: 0xF7 / 255, blue: 0xF2 / 255).opacity(0.2),
+        cardLine: Color.white.opacity(0.06),
+        veilTop: Color(red: 0x1A / 255, green: 0x0F / 255, blue: 0x28 / 255).opacity(0.08),
+        veilBottom: Color(red: 0x1A / 255, green: 0x0F / 255, blue: 0x28 / 255).opacity(0.55),
+        todayCellBackground: Color(red: 0xFB / 255, green: 0xF7 / 255, blue: 0xF2 / 255).opacity(0.06),
+        progressTrack: Color(red: 0xFB / 255, green: 0xF7 / 255, blue: 0xF2 / 255).opacity(0.12),
+        meshVariant: .cool,
+        meshIntensity: 1.0
+    )
+
+    static func resolve(_ scheme: ColorScheme) -> WidgetTheme {
+        scheme == .light ? .light : .dark
+    }
+}
+
 enum WidgetFont {
     private static let serifFamily = "Fraunces"
     private static let sansFamily  = "Inter"

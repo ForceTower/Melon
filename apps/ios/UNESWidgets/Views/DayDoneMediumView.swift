@@ -1,10 +1,12 @@
 import SwiftUI
 
-/// 338×158pt "Dia concluído" — light card, accent-colored "amanhã, hh:mm"
-/// callout, dotted count of finished classes. Mirrors `StateDayDone` in
-/// `screens-widgets.jsx`.
+/// 338×158pt "Dia concluído" — flat surface (no mesh), accent-colored
+/// "amanhã, hh:mm" callout, dotted count of finished classes. Mirrors
+/// `StateDayDone` in `screens-widgets.jsx`. Both themes use the coral
+/// accent for the time so the highlight reads regardless of background.
 struct DayDoneMediumView: View {
     let entry: NextClassEntry
+    let theme: WidgetTheme
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -13,21 +15,21 @@ struct DayDoneMediumView: View {
                     .font(WidgetFont.mono(9.5))
                     .tracking(1.52)
                     .textCase(.uppercase)
-                    .foregroundStyle(Color(red: 0x6B / 255, green: 0x5E / 255, blue: 0x70 / 255))
+                    .foregroundStyle(theme.ink3)
             }
 
             VStack(alignment: .leading, spacing: 4) {
                 tomorrowLine
                     .font(WidgetFont.serif(26))
                     .tracking(-0.39)
-                    .foregroundStyle(WidgetColor.inkFixed)
+                    .foregroundStyle(theme.ink)
                     .lineLimit(2)
                     .minimumScaleFactor(0.85)
 
                 if let line = entry.dayDoneLine {
                     Text(line)
                         .font(WidgetFont.sans(12))
-                        .foregroundStyle(Color(red: 0x6B / 255, green: 0x5E / 255, blue: 0x70 / 255))
+                        .foregroundStyle(theme.ink3)
                         .lineLimit(1)
                 }
             }
@@ -36,12 +38,12 @@ struct DayDoneMediumView: View {
             Spacer(minLength: 0)
 
             Divider()
-                .overlay(Color(red: 0x1A / 255, green: 0x14 / 255, blue: 0x20 / 255).opacity(0.08))
+                .overlay(theme.line)
 
             HStack {
                 Text("\(entry.completedTodayCount) aulas concluídas")
                     .font(WidgetFont.sans(11))
-                    .foregroundStyle(Color(red: 0x6B / 255, green: 0x5E / 255, blue: 0x70 / 255))
+                    .foregroundStyle(theme.ink3)
                 Spacer()
                 HStack(spacing: 4) {
                     ForEach(0..<entry.completedTodayCount, id: \.self) { _ in

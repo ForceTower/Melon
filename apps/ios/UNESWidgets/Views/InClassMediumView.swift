@@ -5,6 +5,7 @@ import SwiftUI
 /// Mirrors `StateInClass` in `screens-widgets.jsx`.
 struct InClassMediumView: View {
     let entry: NextClassEntry
+    let theme: WidgetTheme
 
     private var progress: Double {
         guard entry.totalDurationMin > 0 else { return 0 }
@@ -14,19 +15,19 @@ struct InClassMediumView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            HStack(alignment: .top) {
+            HStack {
                 HStack(spacing: 6) {
                     LiveDot(color: WidgetColor.amber, size: 5)
                     Text("agora · termina em \(formatCountdown(entry.endsIn))")
                         .font(WidgetFont.mono(9.5, weight: .semibold))
-                        .tracking(1.71)
+                        .tracking(1.52)
                         .textCase(.uppercase)
                         .foregroundStyle(WidgetColor.amber)
                 }
                 Spacer()
                 Text("\(entry.startTime) – \(entry.endTime)")
                     .font(WidgetFont.mono(9.5))
-                    .foregroundStyle(Color.white.opacity(0.55))
+                    .foregroundStyle(theme.ink4)
             }
 
             VStack(alignment: .leading, spacing: 6) {
@@ -34,7 +35,7 @@ struct InClassMediumView: View {
                 Text(entry.title)
                     .font(WidgetFont.serif(26))
                     .tracking(-0.39)
-                    .foregroundStyle(WidgetColor.surfaceLight)
+                    .foregroundStyle(theme.ink)
                     .lineLimit(1)
                     .minimumScaleFactor(0.9)
             }
@@ -46,7 +47,7 @@ struct InClassMediumView: View {
                 GeometryReader { geo in
                     ZStack(alignment: .leading) {
                         RoundedRectangle(cornerRadius: 3, style: .continuous)
-                            .fill(Color.white.opacity(0.12))
+                            .fill(theme.progressTrack)
                         RoundedRectangle(cornerRadius: 3, style: .continuous)
                             .fill(WidgetColor.amber)
                             .frame(width: geo.size.width * progress)
@@ -61,7 +62,7 @@ struct InClassMediumView: View {
                 }
                 .font(WidgetFont.mono(9.5))
                 .tracking(0.38)
-                .foregroundStyle(Color.white.opacity(0.65))
+                .foregroundStyle(theme.ink3)
             }
         }
     }

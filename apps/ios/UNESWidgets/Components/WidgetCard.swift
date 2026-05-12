@@ -1,27 +1,23 @@
 import SwiftUI
 
-/// Mirrors `WidgetCard` from `screens-widgets.jsx`. Dark mesh hero is the
-/// canonical "next class" surface; the light variant is reused by the
-/// "dia concluído" state.
+/// Card background. Both themes share the same structure: tonal surface,
+/// optional mesh, and a top→bottom veil that lifts contrast on the inner
+/// text. Mirrors `WidgetCard` in `screens-widgets.jsx` after the handoff
+/// added per-mode palettes.
 struct WidgetCardBackground: View {
-    var dark: Bool = true
+    let theme: WidgetTheme
     var mesh: Bool = false
-    var meshVariant: WidgetMeshVariant = .cool
 
     var body: some View {
         ZStack {
-            if dark {
-                Color(red: 0x1A / 255, green: 0x0F / 255, blue: 0x28 / 255)
-            } else {
-                WidgetColor.surfaceLight
-            }
+            theme.surface
 
             if mesh {
-                WidgetMeshView(variant: meshVariant, intensity: 1)
+                WidgetMeshView(variant: theme.meshVariant, intensity: theme.meshIntensity)
                 LinearGradient(
                     stops: [
-                        .init(color: Color(red: 0x1A / 255, green: 0x0F / 255, blue: 0x28 / 255).opacity(0.08), location: 0),
-                        .init(color: Color(red: 0x1A / 255, green: 0x0F / 255, blue: 0x28 / 255).opacity(0.55), location: 1),
+                        .init(color: theme.veilTop, location: 0),
+                        .init(color: theme.veilBottom, location: 1),
                     ],
                     startPoint: .top,
                     endPoint: .bottom
@@ -77,12 +73,15 @@ struct MetaItem: View {
     let label: String
     var shrinks: Bool = false
     var foreground: Color
+    /// Icon often reads lighter than the label in the design — pass the row's
+    /// secondary color here if you want the iconography dimmed.
+    var iconForeground: Color?
 
     var body: some View {
         HStack(spacing: 5) {
             Image(systemName: systemImage)
                 .font(.system(size: 9, weight: .medium))
-                .foregroundStyle(foreground.opacity(0.7))
+                .foregroundStyle(iconForeground ?? foreground.opacity(0.7))
             Text(label)
                 .font(WidgetFont.sans(11))
                 .foregroundStyle(foreground)

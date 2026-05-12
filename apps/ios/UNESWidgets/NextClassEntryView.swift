@@ -2,22 +2,26 @@ import SwiftUI
 import WidgetKit
 
 /// Top-level view that branches on widget family + entry state to pick the
-/// right layout. Backgrounds are applied per-family because lock-screen
-/// complications must be transparent (the system handles tinting), while
-/// home-screen sizes get the dark plum mesh hero.
+/// right layout, and resolves the theme from the system `colorScheme` (per
+/// the handoff: widgets follow system appearance, not the app's theme
+/// override). Lock-screen complications stay monochrome and let WidgetKit
+/// handle tinting.
 struct NextClassEntryView: View {
     @Environment(\.widgetFamily) private var family
+    @Environment(\.colorScheme) private var colorScheme
 
     let entry: NextClassEntry
+
+    private var theme: WidgetTheme { WidgetTheme.resolve(colorScheme) }
 
     var body: some View {
         switch family {
         case .systemSmall:
-            homeScreen(NextClassSmallView(entry: entry), padding: 14)
+            homeScreen(NextClassSmallView(entry: entry, theme: theme), mesh: true, padding: 14)
         case .systemMedium:
             homeScreenMedium()
         case .systemLarge:
-            homeScreen(NextClassLargeView(entry: entry), padding: 18)
+            homeScreen(NextClassLargeView(entry: entry, theme: theme), mesh: true, padding: 18)
         case .accessoryRectangular:
             LockRectangularView(entry: entry)
         case .accessoryCircular:
@@ -25,7 +29,7 @@ struct NextClassEntryView: View {
         case .accessoryInline:
             LockInlineView(entry: entry)
         default:
-            homeScreen(NextClassSmallView(entry: entry), padding: 14)
+            homeScreen(NextClassSmallView(entry: entry, theme: theme), mesh: true, padding: 14)
         }
     }
 
@@ -33,32 +37,22 @@ struct NextClassEntryView: View {
     private func homeScreenMedium() -> some View {
         switch entry.state {
         case .upcoming:
-            homeScreen(NextClassMediumView(entry: entry), padding: 14)
+            homeScreen(NextClassMediumView(entry: entry, theme: theme), mesh: true, padding: 14)
         case .inClass:
-            homeScreen(InClassMediumView(entry: entry), padding: 14)
+            homeScreen(InClassMediumView(entry: entry, theme: theme), mesh: true, padding: 14)
         case .dayDone:
-            homeScreenLight(DayDoneMediumView(entry: entry), padding: 14)
+            // Day-done is intentionally flat (no mesh) per the design.
+            homeScreen(DayDoneMediumView(entry: entry, theme: theme), mesh: false, padding: 14)
         }
     }
 
-    /// Dark plum mesh hero — the canonical "next class" surface.
     @ViewBuilder
-    private func homeScreen(_ content: some View, padding: CGFloat) -> some View {
+    private func homeScreen(_ content: some View, mesh: Bool, padding: CGFloat) -> some View {
         content
             .padding(padding)
             .containerBackground(for: .widget) {
-                WidgetCardBackground(dark: true, mesh: true, meshVariant: .cool)
+                WidgetCardBackground(theme: theme, mesh: mesh)
             }
-            .foregroundStyle(WidgetColor.surfaceLight)
-    }
-
-    /// Light variant for "dia concluído". Surface follows the system theme.
-    @ViewBuilder
-    private func homeScreenLight(_ content: some View, padding: CGFloat) -> some View {
-        content
-            .padding(padding)
-            .containerBackground(for: .widget) {
-                WidgetColor.surface
-            }
+            .foregroundStyle(theme.ink)
     }
 }

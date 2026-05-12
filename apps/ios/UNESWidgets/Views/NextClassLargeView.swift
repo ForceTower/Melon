@@ -4,22 +4,23 @@ import SwiftUI
 /// Mirrors `IOSLarge` in `screens-widgets.jsx`.
 struct NextClassLargeView: View {
     let entry: NextClassEntry
+    let theme: WidgetTheme
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            HStack(alignment: .top) {
+            HStack {
                 HStack(spacing: 6) {
                     LiveDot(color: WidgetColor.amber, size: 6)
-                    Text("próxima aula · em \(formatCountdown(entry.startsIn))")
+                    Text("em \(formatCountdown(entry.startsIn))")
                         .font(WidgetFont.mono(10))
-                        .tracking(1.8)
+                        .tracking(1.4)
                         .textCase(.uppercase)
-                        .foregroundStyle(Color.white.opacity(0.78))
+                        .foregroundStyle(theme.ink3)
                 }
                 Spacer()
                 Text("\(entry.startTime) – \(entry.endTime)")
                     .font(WidgetFont.mono(10))
-                    .foregroundStyle(Color.white.opacity(0.55))
+                    .foregroundStyle(theme.ink4)
             }
 
             VStack(alignment: .leading, spacing: 10) {
@@ -27,18 +28,18 @@ struct NextClassLargeView: View {
                 Text(entry.title)
                     .font(WidgetFont.serif(34))
                     .tracking(-0.68)
-                    .foregroundStyle(WidgetColor.surfaceLight)
+                    .foregroundStyle(theme.ink)
                     .lineLimit(2)
                     .minimumScaleFactor(0.85)
                 if let topic = entry.topic {
                     HStack(alignment: .top, spacing: 8) {
                         Image(systemName: "text.alignleft")
                             .font(.system(size: 10, weight: .medium))
-                            .foregroundStyle(Color.white.opacity(0.55))
+                            .foregroundStyle(theme.ink3)
                         Text(topic)
                             .font(WidgetFont.sans(12))
                             .italic()
-                            .foregroundStyle(Color.white.opacity(0.85))
+                            .foregroundStyle(theme.ink2)
                             .lineLimit(2)
                             .truncationMode(.tail)
                     }
@@ -46,26 +47,28 @@ struct NextClassLargeView: View {
             }
             .padding(.top, 18)
 
-            TodayStrip(bars: entry.todayBars)
+            TodayStrip(bars: entry.todayBars, theme: theme)
                 .padding(.top, 18)
 
             Spacer(minLength: 0)
 
             Divider()
-                .overlay(Color.white.opacity(0.15))
+                .overlay(theme.line)
 
             HStack(spacing: 14) {
                 MetaItem(systemImage: "building.2",
                          label: "Sala \(entry.room)",
                          shrinks: false,
-                         foreground: Color.white.opacity(0.85))
+                         foreground: theme.ink2,
+                         iconForeground: theme.ink3)
                 Rectangle()
-                    .fill(Color.white.opacity(0.2))
+                    .fill(theme.divider)
                     .frame(width: 1, height: 10)
                 MetaItem(systemImage: "person",
                          label: "Prof. \(entry.prof)",
                          shrinks: true,
-                         foreground: Color.white.opacity(0.85))
+                         foreground: theme.ink2,
+                         iconForeground: theme.ink3)
                 Spacer(minLength: 0)
             }
             .padding(.top, 12)
@@ -75,6 +78,7 @@ struct NextClassLargeView: View {
 
 private struct TodayStrip: View {
     let bars: [NextClassEntry.TodayBar]
+    let theme: WidgetTheme
 
     /// Mirrors the CSS `flex: state === 'next' ? 2 : 1` rule from the design.
     /// `layoutPriority` doesn't proportionally divide width in SwiftUI — it
@@ -91,7 +95,7 @@ private struct TodayStrip: View {
                 .font(WidgetFont.mono(9))
                 .tracking(1.44)
                 .textCase(.uppercase)
-                .foregroundStyle(Color.white.opacity(0.6))
+                .foregroundStyle(theme.ink3)
 
             GeometryReader { geo in
                 let spacing: CGFloat = 6
@@ -102,7 +106,7 @@ private struct TodayStrip: View {
                     : 0
                 HStack(spacing: spacing) {
                     ForEach(bars, id: \.self) { bar in
-                        TodayCell(bar: bar)
+                        TodayCell(bar: bar, theme: theme)
                             .frame(width: unit * weight(for: bar))
                     }
                 }
@@ -114,10 +118,13 @@ private struct TodayStrip: View {
 
 private struct TodayCell: View {
     let bar: NextClassEntry.TodayBar
+    let theme: WidgetTheme
 
     var body: some View {
         let isNext = bar.state == .next
         let isDone = bar.state == .done
+        let fill = isNext ? bar.color.opacity(0.19) : theme.todayCellBackground
+        let stroke = isNext ? bar.color.opacity(0.4) : theme.cardLine
 
         VStack(alignment: .leading, spacing: 3) {
             Text(bar.code)
@@ -128,7 +135,7 @@ private struct TodayCell: View {
                 .minimumScaleFactor(0.85)
             Text(bar.time)
                 .font(WidgetFont.mono(9.5))
-                .foregroundStyle(Color.white.opacity(0.75))
+                .foregroundStyle(theme.ink3)
                 .lineLimit(1)
                 .minimumScaleFactor(0.85)
         }
@@ -137,11 +144,11 @@ private struct TodayCell: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(
             RoundedRectangle(cornerRadius: 10, style: .continuous)
-                .fill(isNext ? bar.color.opacity(0.19) : Color.white.opacity(0.06))
+                .fill(fill)
         )
         .overlay(
             RoundedRectangle(cornerRadius: 10, style: .continuous)
-                .stroke(isNext ? bar.color.opacity(0.4) : Color.white.opacity(0.06), lineWidth: 1)
+                .stroke(stroke, lineWidth: 1)
         )
         .opacity(isDone ? 0.4 : 1)
     }

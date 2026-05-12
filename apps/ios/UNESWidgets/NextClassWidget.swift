@@ -30,31 +30,49 @@ struct UNESWidgetsBundle: WidgetBundle {
 
 // MARK: - Previews
 
-#Preview("Small — Próxima", as: .systemSmall) {
+#Preview("Small · Dark", as: .systemSmall) {
     NextClassWidget()
 } timeline: {
     NextClassEntry.placeholder
 }
 
-#Preview("Medium — Próxima", as: .systemMedium) {
+#Preview("Small · Light", as: .systemSmall) {
     NextClassWidget()
 } timeline: {
     NextClassEntry.placeholder
 }
 
-#Preview("Medium — Em aula", as: .systemMedium) {
+#Preview("Medium · Dark", as: .systemMedium) {
+    NextClassWidget()
+} timeline: {
+    NextClassEntry.placeholder
+}
+
+#Preview("Medium · Light", as: .systemMedium) {
+    NextClassWidget()
+} timeline: {
+    NextClassEntry.placeholder
+}
+
+#Preview("Medium · Em aula", as: .systemMedium) {
     NextClassWidget()
 } timeline: {
     NextClassEntry.inClassPlaceholder
 }
 
-#Preview("Medium — Dia concluído", as: .systemMedium) {
+#Preview("Medium · Dia concluído", as: .systemMedium) {
     NextClassWidget()
 } timeline: {
     NextClassEntry.dayDonePlaceholder
 }
 
-#Preview("Large", as: .systemLarge) {
+#Preview("Large · Dark", as: .systemLarge) {
+    NextClassWidget()
+} timeline: {
+    NextClassEntry.placeholder
+}
+
+#Preview("Large · Light", as: .systemLarge) {
     NextClassWidget()
 } timeline: {
     NextClassEntry.placeholder

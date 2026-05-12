@@ -4,6 +4,7 @@ import SwiftUI
 /// Mirrors `IOSMedium` in `screens-widgets.jsx`.
 struct NextClassMediumView: View {
     let entry: NextClassEntry
+    let theme: WidgetTheme
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -14,12 +15,12 @@ struct NextClassMediumView: View {
                         .font(WidgetFont.mono(9.5))
                         .tracking(1.33)
                         .textCase(.uppercase)
-                        .foregroundStyle(Color.white.opacity(0.78))
+                        .foregroundStyle(theme.ink3)
                 }
                 Spacer()
                 Text("\(entry.startTime) – \(entry.endTime)")
                     .font(WidgetFont.mono(9.5))
-                    .foregroundStyle(Color.white.opacity(0.55))
+                    .foregroundStyle(theme.ink4)
             }
 
             VStack(alignment: .leading, spacing: 6) {
@@ -27,14 +28,14 @@ struct NextClassMediumView: View {
                 Text(entry.title)
                     .font(WidgetFont.serif(26))
                     .tracking(-0.39)
-                    .foregroundStyle(WidgetColor.surfaceLight)
+                    .foregroundStyle(theme.ink)
                     .lineLimit(1)
                     .minimumScaleFactor(0.9)
                 if let topic = entry.topic {
                     Text("“\(topic)”")
                         .font(WidgetFont.sans(11))
                         .italic()
-                        .foregroundStyle(Color.white.opacity(0.75))
+                        .foregroundStyle(theme.ink3)
                         .lineLimit(1)
                         .truncationMode(.tail)
                 }
@@ -44,20 +45,22 @@ struct NextClassMediumView: View {
             Spacer(minLength: 0)
 
             Divider()
-                .overlay(Color.white.opacity(0.15))
+                .overlay(theme.line)
 
             HStack(spacing: 14) {
                 MetaItem(systemImage: "building.2",
                          label: "Sala \(entry.room)",
                          shrinks: false,
-                         foreground: Color.white.opacity(0.85))
+                         foreground: theme.ink2,
+                         iconForeground: theme.ink3)
                 Rectangle()
-                    .fill(Color.white.opacity(0.2))
+                    .fill(theme.divider)
                     .frame(width: 1, height: 10)
                 MetaItem(systemImage: "person",
                          label: entry.prof,
                          shrinks: true,
-                         foreground: Color.white.opacity(0.85))
+                         foreground: theme.ink2,
+                         iconForeground: theme.ink3)
                 Spacer(minLength: 0)
             }
             .padding(.top, 10)
