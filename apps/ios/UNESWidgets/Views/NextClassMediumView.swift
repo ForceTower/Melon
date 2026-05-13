@@ -11,7 +11,7 @@ struct NextClassMediumView: View {
             HStack {
                 HStack(spacing: 6) {
                     LiveDot(color: WidgetColor.amber, size: 5)
-                    Text("em \(formatCountdown(entry.startsIn))")
+                    eyebrowText(for: entry)
                         .font(WidgetFont.mono(9.5))
                         .tracking(1.33)
                         .textCase(.uppercase)

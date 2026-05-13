@@ -166,12 +166,33 @@ func formatCountdown(_ mins: Int) -> String {
 
 /// Top-eyebrow label for the upcoming-style layouts (Small, Medium upcoming,
 /// Large). Switches copy when a class is in session so the eyebrow doesn't
-/// read "em 0 min" — matches the Medium in-class header pattern.
+/// read "em 0 min". Returns plain `Text` so it can be concatenated with the
+/// auto-updating `Text(timerInterval:)` half — see `eyebrowText(for:)`.
 func countdownEyebrow(state: NextClassState, startsIn: Int, endsIn: Int) -> String {
     switch state {
     case .inClass:
         return "agora · termina em \(formatCountdown(endsIn))"
     case .upcoming, .dayDone:
         return "em \(formatCountdown(startsIn))"
+    }
+}
+
+/// Composes a live, self-updating eyebrow `Text` using SwiftUI's
+/// `\(date, style: .timer)` interpolation so the countdown ticks per-second
+/// without forcing new timeline entries. Falls back to the static
+/// `formatCountdown` form when the entry's reference dates are absent
+/// (placeholder fixtures).
+func eyebrowText(for entry: NextClassEntry, prefixForInClass: String = "agora · termina em ") -> Text {
+    switch entry.state {
+    case .inClass:
+        guard let end = entry.referenceEnd, end > Date() else {
+            return Text("\(prefixForInClass)\(formatCountdown(entry.endsIn))")
+        }
+        return Text("\(prefixForInClass)\(end, style: .timer)")
+    case .upcoming, .dayDone:
+        guard let start = entry.referenceStart, start > Date() else {
+            return Text("em \(formatCountdown(entry.startsIn))")
+        }
+        return Text("em \(start, style: .timer)")
     }
 }

@@ -18,7 +18,7 @@ struct InClassMediumView: View {
             HStack {
                 HStack(spacing: 6) {
                     LiveDot(color: WidgetColor.amber, size: 5)
-                    Text("agora · termina em \(formatCountdown(entry.endsIn))")
+                    eyebrowText(for: entry)
                         .font(WidgetFont.mono(9.5, weight: .semibold))
                         .tracking(1.52)
                         .textCase(.uppercase)
@@ -50,16 +50,32 @@ struct InClassMediumView: View {
             Spacer(minLength: 0)
 
             VStack(alignment: .leading, spacing: 6) {
-                GeometryReader { geo in
-                    ZStack(alignment: .leading) {
-                        RoundedRectangle(cornerRadius: 3, style: .continuous)
-                            .fill(theme.progressTrack)
-                        RoundedRectangle(cornerRadius: 3, style: .continuous)
-                            .fill(WidgetColor.amber)
-                            .frame(width: geo.size.width * progress)
+                // Apple's `ProgressView(timerInterval:)` auto-animates the
+                // fill per-second within a single timeline entry — no extra
+                // per-minute entries needed. We can't recreate the custom 5pt
+                // rounded fill while still getting the auto-tick, so we
+                // accept the system linear style with our amber tint.
+                if let start = entry.referenceStart, let end = entry.referenceEnd, end > start {
+                    ProgressView(timerInterval: start...end, countsDown: false) {
+                        EmptyView()
+                    } currentValueLabel: {
+                        EmptyView()
                     }
+                    .progressViewStyle(.linear)
+                    .tint(WidgetColor.amber)
+                    .frame(height: 5)
+                } else {
+                    GeometryReader { geo in
+                        ZStack(alignment: .leading) {
+                            RoundedRectangle(cornerRadius: 3, style: .continuous)
+                                .fill(theme.progressTrack)
+                            RoundedRectangle(cornerRadius: 3, style: .continuous)
+                                .fill(WidgetColor.amber)
+                                .frame(width: geo.size.width * progress)
+                        }
+                    }
+                    .frame(height: 5)
                 }
-                .frame(height: 5)
 
                 HStack {
                     Text("\(entry.startTime) · iniciada")

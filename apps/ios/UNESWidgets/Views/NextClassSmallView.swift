@@ -10,11 +10,17 @@ struct NextClassSmallView: View {
         VStack(alignment: .leading, spacing: 0) {
             HStack(spacing: 6) {
                 LiveDot(color: WidgetColor.amber, size: 5)
-                Text(entry.state == .inClass ? "agora" : "em \(formatCountdown(entry.startsIn))")
-                    .font(WidgetFont.mono(8.5))
-                    .tracking(1.36)
-                    .textCase(.uppercase)
-                    .foregroundStyle(theme.ink3)
+                Group {
+                    if entry.state == .inClass {
+                        Text("agora")
+                    } else {
+                        eyebrowText(for: entry)
+                    }
+                }
+                .font(WidgetFont.mono(8.5))
+                .tracking(1.36)
+                .textCase(.uppercase)
+                .foregroundStyle(theme.ink3)
             }
             Spacer(minLength: 0)
 

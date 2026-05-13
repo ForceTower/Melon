@@ -3,22 +3,18 @@ import WidgetKit
 
 /// Timeline provider for the "Próxima aula" widget.
 ///
-/// Strategy: emit one entry per minute for the next `liveWindowMinutes`
-/// minutes plus extra entries at class boundaries (start, end, end−30) and
-/// the next-day rollover. Per-minute entries are what actually drives the
-/// "EM 1H 30MIN → 1H 29MIN → …" countdown — `TimelineView(.everyMinute)`
-/// inside the views is not reliably honored by the widget renderer in
-/// practice. Once the timeline's last entry fires, WidgetKit re-asks the
-/// provider for a fresh batch (`.atEnd`), and the host's publisher also
-/// nudges a reload whenever the underlying schedule changes.
+/// Emits one entry per state-change boundary — class start, end, end−30
+/// handoff to the next class, and the next-day rollover — so WidgetKit
+/// transitions between upcoming/inClass/dayDone at exactly the right
+/// moments. Inside each entry, `Text(timerInterval:)` and
+/// `ProgressView(timerInterval:)` carry the smooth per-second countdown
+/// and bar fill without needing extra entries.
 ///
-/// Cap: ~95 entries per submission. A 60-minute live window plus a handful
-/// of boundary entries comfortably fits.
+/// ~5–15 entries per submission, ~10–20 submissions per day driven by
+/// the `.atEnd` policy plus the host publisher's explicit
+/// `reloadTimelines` on KMP flow changes — well under WidgetKit's daily
+/// reload budget.
 struct NextClassProvider: TimelineProvider {
-    /// Length of the per-minute live-update window submitted in each
-    /// timeline. WidgetKit calls back at `.atEnd` to extend it.
-    private static let liveWindowMinutes = 60
-
     func placeholder(in context: Context) -> NextClassEntry {
         .placeholder
     }
@@ -60,24 +56,16 @@ struct NextClassProvider: TimelineProvider {
         completion(Timeline(entries: entries, policy: .atEnd))
     }
 
-    /// Generates the entry set the timeline ships with:
-    ///   - one entry every minute for the next `liveWindowMinutes` minutes,
-    ///   - one entry at each future class boundary today (start, end,
-    ///     end−30 handoff) so state flips line up exactly even if those
-    ///     boundaries fall outside the live window,
-    ///   - one at the next-day rollover so dayDone copy refreshes overnight.
-    /// Sorted and deduped to the minute.
+    /// Generates one entry at `now` plus one entry at each future state
+    /// boundary today (class start, class end, class end − 30 min handoff)
+    /// plus the next-day rollover so dayDone copy refreshes overnight.
+    /// Each entry is rendered against its own `.date` so countdown values
+    /// land correctly at the start of every transition.
     private static func entries(snapshot: WidgetSnapshot, now: Date) -> [NextClassEntry] {
         let calendar = Calendar.current
         let startOfToday = calendar.startOfDay(for: now)
 
-        var points: [Date] = []
-
-        for i in 0..<liveWindowMinutes {
-            if let t = calendar.date(byAdding: .minute, value: i, to: now) {
-                points.append(t)
-            }
-        }
+        var points: [Date] = [now]
 
         for c in snapshot.today {
             if let start = minutesToDate(c.startTime, dayStart: startOfToday, calendar: calendar),
