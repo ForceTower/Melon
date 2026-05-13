@@ -25,13 +25,20 @@ struct NextClassEntry: TimelineEntry, Hashable {
     let room: String          // "MT-14"
     let building: String      // "Matemática"
 
-    let startsIn: Int         // minutes until start (upcoming)
+    let startsIn: Int         // minutes until start (upcoming) — fallback for previews / nil refs
     let endsIn: Int           // minutes until end (inClass)
     let totalDurationMin: Int // total class duration (inClass progress bar)
 
     let startTime: String     // "10:20"
     let endTime: String       // "12:00"
     let topic: String?        // "Integrais por partes"
+
+    // Absolute datetimes of the focused class — drive live countdowns
+    // through `TimelineView(.everyMinute)` inside the widget views. Both
+    // nil for the static placeholder fixture; views fall back to the
+    // integer fields above when nil.
+    let referenceStart: Date?
+    let referenceEnd: Date?
 
     let todayBars: [TodayBar]
     let dayDoneLine: String?  // e.g. "amanhã, 08:00 · Algoritmos I — Lab LC-03"
@@ -64,6 +71,8 @@ extension NextClassEntry {
         startTime: "10:20",
         endTime: "12:00",
         topic: "Integrais por partes",
+        referenceStart: nil,
+        referenceEnd: nil,
         todayBars: [
             .init(code: "ALGI", time: "08:00", state: .done,  colorHex: 0xE85D4E),
             .init(code: "CALC", time: "10:20", state: .next,  colorHex: 0x3B9EAE),
@@ -84,7 +93,9 @@ extension NextClassEntry {
             prof: e.prof, room: e.room, building: e.building,
             startsIn: 0, endsIn: 38, totalDurationMin: 100,
             startTime: e.startTime, endTime: e.endTime,
-            topic: e.topic, todayBars: e.todayBars,
+            topic: e.topic,
+            referenceStart: nil, referenceEnd: nil,
+            todayBars: e.todayBars,
             dayDoneLine: nil, completedTodayCount: 1
         )
     }()
@@ -98,10 +109,39 @@ extension NextClassEntry {
         startsIn: 0, endsIn: 0, totalDurationMin: 0,
         startTime: "", endTime: "",
         topic: nil,
+        referenceStart: nil, referenceEnd: nil,
         todayBars: [],
         dayDoneLine: "amanhã, 08:00 · Algoritmos I — Lab LC-03",
         completedTodayCount: 4
     )
+}
+
+extension NextClassEntry {
+    /// Minutes from `now` until the focused class starts. Falls back to the
+    /// integer field when no absolute reference is available (placeholder).
+    func liveStartsIn(at now: Date) -> Int {
+        guard let referenceStart else { return startsIn }
+        return max(0, Int((referenceStart.timeIntervalSince(now) / 60).rounded()))
+    }
+
+    /// Minutes from `now` until the focused class ends.
+    func liveEndsIn(at now: Date) -> Int {
+        guard let referenceEnd else { return endsIn }
+        return max(0, Int((referenceEnd.timeIntervalSince(now) / 60).rounded()))
+    }
+
+    /// Fraction [0, 1] of the focused class elapsed.
+    func liveProgress(at now: Date) -> Double {
+        guard let referenceStart, let referenceEnd else {
+            guard totalDurationMin > 0 else { return 0 }
+            let elapsed = max(0, totalDurationMin - endsIn)
+            return min(1, Double(elapsed) / Double(totalDurationMin))
+        }
+        let total = referenceEnd.timeIntervalSince(referenceStart)
+        guard total > 0 else { return 0 }
+        let elapsed = now.timeIntervalSince(referenceStart)
+        return min(1, max(0, elapsed / total))
+    }
 }
 
 /// Bridge from the entry's class color (stored as hex) back to a SwiftUI

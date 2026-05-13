@@ -11,11 +11,18 @@ struct NextClassLargeView: View {
             HStack {
                 HStack(spacing: 6) {
                     LiveDot(color: WidgetColor.amber, size: 6)
-                    Text(countdownEyebrow(state: entry.state, startsIn: entry.startsIn, endsIn: entry.endsIn))
-                        .font(WidgetFont.mono(10))
-                        .tracking(1.4)
-                        .textCase(.uppercase)
-                        .foregroundStyle(theme.ink3)
+                    TimelineView(.everyMinute) { context in
+                        let now = WidgetSnapshot.effectiveNow(contextDate: context.date)
+                        Text(countdownEyebrow(
+                            state: entry.state,
+                            startsIn: entry.liveStartsIn(at: now),
+                            endsIn: entry.liveEndsIn(at: now)
+                        ))
+                            .font(WidgetFont.mono(10))
+                            .tracking(1.4)
+                            .textCase(.uppercase)
+                            .foregroundStyle(theme.ink3)
+                    }
                 }
                 Spacer()
                 Text("\(entry.startTime) – \(entry.endTime)")

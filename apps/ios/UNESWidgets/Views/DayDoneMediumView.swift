@@ -64,19 +64,21 @@ struct DayDoneMediumView: View {
         }
     }
 
-    /// First line picks up a coral-accented "amanhã, 08:00" segment when the
-    /// raw line follows the `… amanhã, HH:MM · …` shape; falls back to plain
-    /// text otherwise.
+    /// "Sem aulas até <DAY>, HH:MM" with the day+time portion in coral
+    /// italic. Pulls the day+time prefix from `dayDoneLine`, which is
+    /// shaped `"<when>, HH:MM · <title> — <room>"` (see WidgetSnapshot
+    /// `dayDoneLine`). `<when>` is "amanhã" when the next class is the
+    /// calendar day after now, otherwise the weekday name ("segunda" …).
     @ViewBuilder
     private var tomorrowLine: some View {
         if let line = entry.dayDoneLine,
-           let timeRange = line.range(of: #"amanhã, \d{2}:\d{2}"#, options: .regularExpression) {
-            let accent = String(line[timeRange])
-            Text("Sem aulas até ") + Text(accent)
+           let separator = line.range(of: " · ") {
+            let head = String(line[..<separator.lowerBound])
+            Text("Sem aulas até ") + Text(head)
                 .foregroundStyle(WidgetColor.coral)
                 .italic()
         } else {
-            Text("Sem aulas até amanhã")
+            Text("Sem aulas hoje")
         }
     }
 }

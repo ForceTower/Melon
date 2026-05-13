@@ -66,6 +66,19 @@ final class WidgetSnapshotPublisher {
     }
 
     private func publish(week: ScheduleScheduleWeek) {
+        #if DEBUG
+        // Skip the write when the widget debug clock override is active so
+        // hand-edited snapshots used for widget visual testing survive the
+        // app relaunch. Still reload timelines so the widget picks up the
+        // disk state. Compiles out in Release.
+        if let defaults = UserDefaults(suiteName: Self.appGroup),
+           defaults.string(forKey: "widget.debug.now") != nil {
+            WidgetCenter.shared.reloadTimelines(ofKind: Self.widgetKind)
+            log.debug("widget snapshot write skipped — debug clock override active")
+            return
+        }
+        #endif
+
         let snapshot = Self.buildSnapshot(week: week)
         do {
             try Self.write(snapshot: snapshot)

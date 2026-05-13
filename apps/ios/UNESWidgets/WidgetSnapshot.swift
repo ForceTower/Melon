@@ -75,6 +75,20 @@ struct WidgetSnapshot: Codable, Sendable {
         return Date()
     }
 
+    /// Same idea as `resolvedNow()` but seeded from a `TimelineView` context.
+    /// In production this just hands back `contextDate` so `.everyMinute`
+    /// ticks drive the live countdowns. In DEBUG with the clock override
+    /// set we ignore the tick and return the override so the view stays
+    /// frozen at the requested moment for visual testing.
+    static func effectiveNow(contextDate: Date) -> Date {
+        #if DEBUG
+        if let override = debugClockOverride() {
+            return override
+        }
+        #endif
+        return contextDate
+    }
+
     #if DEBUG
     static var isDebugClockOverridden: Bool {
         debugClockOverride() != nil
@@ -159,6 +173,8 @@ extension WidgetSnapshot {
             let endsIn = max(0, end - nowMinutes)
             let shouldHandOffToUpcoming = endsIn <= inClassSwitchThreshold && upcoming != nil
             if !shouldHandOffToUpcoming {
+                let startDate = absoluteDate(forMinutes: start, on: now, calendar: calendar)
+                let endDate = absoluteDate(forMinutes: end, on: now, calendar: calendar)
                 return NextClassEntry(
                     date: now,
                     state: .inClass,
@@ -175,6 +191,8 @@ extension WidgetSnapshot {
                     startTime: r.startTime,
                     endTime: r.endTime ?? "",
                     topic: r.topic,
+                    referenceStart: startDate,
+                    referenceEnd: endDate,
                     todayBars: bars,
                     dayDoneLine: nil,
                     completedTodayCount: completedCount
@@ -185,6 +203,8 @@ extension WidgetSnapshot {
         if let n = upcoming {
             let start = parseHhMm(n.startTime) ?? nowMinutes
             let end = parseHhMm(n.endTime) ?? start
+            let startDate = absoluteDate(forMinutes: start, on: now, calendar: calendar)
+            let endDate = absoluteDate(forMinutes: end, on: now, calendar: calendar)
             return NextClassEntry(
                 date: now,
                 state: .upcoming,
@@ -201,6 +221,8 @@ extension WidgetSnapshot {
                 startTime: n.startTime,
                 endTime: n.endTime ?? "",
                 topic: n.topic,
+                referenceStart: startDate,
+                referenceEnd: endDate,
                 todayBars: bars,
                 dayDoneLine: nil,
                 completedTodayCount: completedCount
@@ -215,7 +237,14 @@ extension WidgetSnapshot {
         if let n = nextDay {
             let nextStart = parseHhMm(n.first.startTime) ?? 0
             let nextEnd = parseHhMm(n.first.endTime) ?? nextStart
-            let startsIn = max(0, n.daysAway * 1440 - nowMinutes + nextStart)
+            // Re-derive against render time. `n.daysAway` was computed when
+            // the snapshot was written, so it drifts if the snapshot is a
+            // few hours stale (production) or in widget visual testing with
+            // a debug clock override.
+            let daysAway = max(0, calendarDaysBetween(now, isoDay: n.dateIso, calendar: calendar) ?? n.daysAway)
+            let startsIn = max(0, daysAway * 1440 - nowMinutes + nextStart)
+            let startDate = absoluteDate(forMinutes: nextStart, on: now, daysAhead: daysAway, calendar: calendar)
+            let endDate = absoluteDate(forMinutes: nextEnd, on: now, daysAhead: daysAway, calendar: calendar)
             return NextClassEntry(
                 date: now,
                 state: .dayDone,
@@ -232,8 +261,10 @@ extension WidgetSnapshot {
                 startTime: n.first.startTime,
                 endTime: n.first.endTime ?? "",
                 topic: n.first.topic,
+                referenceStart: startDate,
+                referenceEnd: endDate,
                 todayBars: bars,
-                dayDoneLine: dayDoneLine(),
+                dayDoneLine: dayDoneLine(at: now, calendar: calendar),
                 completedTodayCount: completedCount
             )
         }
@@ -247,21 +278,74 @@ extension WidgetSnapshot {
             startsIn: 0, endsIn: 0, totalDurationMin: 0,
             startTime: "", endTime: "",
             topic: nil,
+            referenceStart: nil,
+            referenceEnd: nil,
             todayBars: bars,
             dayDoneLine: nil,
             completedTodayCount: completedCount
         )
     }
 
-    private func dayDoneLine() -> String? {
+    /// Combines `now`'s calendar day with `forMinutes` (minutes-of-day) and
+    /// an optional day offset to produce an absolute Date. Used to derive
+    /// `referenceStart` / `referenceEnd` from snapshot HH:MM values for the
+    /// live countdown views.
+    private func absoluteDate(
+        forMinutes minutes: Int,
+        on now: Date,
+        daysAhead: Int = 0,
+        calendar: Calendar
+    ) -> Date? {
+        let baseDay = calendar.startOfDay(for: now)
+        guard let dayDate = calendar.date(byAdding: .day, value: daysAhead, to: baseDay) else { return nil }
+        return calendar.date(byAdding: .minute, value: minutes, to: dayDate)
+    }
+
+    /// "amanhã, 07:30 · Cálculo I-E — PAT59" when the next class is the
+    /// calendar day after `now`; otherwise substitutes the weekday name in
+    /// pt-BR ("segunda, 07:30 …"). `nextDay.daysAway` was computed when the
+    /// snapshot was written, so we re-derive against render time here to
+    /// stay correct if the snapshot becomes a few hours stale.
+    private func dayDoneLine(at now: Date, calendar: Calendar) -> String? {
         guard let nextDay else { return nil }
-        let when = nextDay.daysAway == 1 ? "amanhã" : "em \(nextDay.daysAway) dias"
+        let diff = calendarDaysBetween(now, isoDay: nextDay.dateIso, calendar: calendar) ?? nextDay.daysAway
+        let when: String
+        switch diff {
+        case 1: when = "amanhã"
+        case 0: when = "hoje"
+        case 2...:
+            when = weekdayLabel(isoDay: nextDay.dateIso) ?? "em \(diff) dias"
+        default:
+            when = "em breve"
+        }
         var line = "\(when), \(nextDay.first.startTime) · \(nextDay.first.title)"
         if let room = nextDay.first.room, !room.isEmpty {
             line += " — \(room)"
         }
         return line
     }
+
+    private func calendarDaysBetween(_ from: Date, isoDay: String, calendar: Calendar) -> Int? {
+        guard let target = isoDayFormatter.date(from: isoDay) else { return nil }
+        let start = calendar.startOfDay(for: from)
+        let end = calendar.startOfDay(for: target)
+        return calendar.dateComponents([.day], from: start, to: end).day
+    }
+
+    private func weekdayLabel(isoDay: String) -> String? {
+        guard let date = isoDayFormatter.date(from: isoDay) else { return nil }
+        return Self.weekdayFormatter.string(from: date)
+            .replacingOccurrences(of: "-feira", with: "")
+            .lowercased()
+    }
+
+    private static let weekdayFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.locale = Locale(identifier: "pt_BR")
+        f.dateFormat = "EEEE"
+        f.timeZone = TimeZone.current
+        return f
+    }()
 }
 
 private func parseHhMm(_ value: String?) -> Int? {

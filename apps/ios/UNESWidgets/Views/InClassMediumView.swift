@@ -7,22 +7,19 @@ struct InClassMediumView: View {
     let entry: NextClassEntry
     let theme: WidgetTheme
 
-    private var progress: Double {
-        guard entry.totalDurationMin > 0 else { return 0 }
-        let elapsed = max(0, entry.totalDurationMin - entry.endsIn)
-        return min(1, Double(elapsed) / Double(entry.totalDurationMin))
-    }
-
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack {
                 HStack(spacing: 6) {
                     LiveDot(color: WidgetColor.amber, size: 5)
-                    Text("agora · termina em \(formatCountdown(entry.endsIn))")
-                        .font(WidgetFont.mono(9.5, weight: .semibold))
-                        .tracking(1.52)
-                        .textCase(.uppercase)
-                        .foregroundStyle(WidgetColor.amber)
+                    TimelineView(.everyMinute) { context in
+                        let now = WidgetSnapshot.effectiveNow(contextDate: context.date)
+                        Text("agora · termina em \(formatCountdown(entry.liveEndsIn(at: now)))")
+                            .font(WidgetFont.mono(9.5, weight: .semibold))
+                            .tracking(1.52)
+                            .textCase(.uppercase)
+                            .foregroundStyle(WidgetColor.amber)
+                    }
                 }
                 Spacer()
                 Text("\(entry.startTime) – \(entry.endTime)")
@@ -38,19 +35,28 @@ struct InClassMediumView: View {
                     .foregroundStyle(theme.ink)
                     .lineLimit(1)
                     .minimumScaleFactor(0.9)
+                if !entry.room.isEmpty {
+                    Text(entry.room)
+                        .font(WidgetFont.sans(12))
+                        .foregroundStyle(theme.ink3)
+                        .lineLimit(1)
+                }
             }
             .padding(.top, 14)
 
             Spacer(minLength: 0)
 
             VStack(alignment: .leading, spacing: 6) {
-                GeometryReader { geo in
-                    ZStack(alignment: .leading) {
-                        RoundedRectangle(cornerRadius: 3, style: .continuous)
-                            .fill(theme.progressTrack)
-                        RoundedRectangle(cornerRadius: 3, style: .continuous)
-                            .fill(WidgetColor.amber)
-                            .frame(width: geo.size.width * progress)
+                TimelineView(.everyMinute) { context in
+                    let now = WidgetSnapshot.effectiveNow(contextDate: context.date)
+                    GeometryReader { geo in
+                        ZStack(alignment: .leading) {
+                            RoundedRectangle(cornerRadius: 3, style: .continuous)
+                                .fill(theme.progressTrack)
+                            RoundedRectangle(cornerRadius: 3, style: .continuous)
+                                .fill(WidgetColor.amber)
+                                .frame(width: geo.size.width * entry.liveProgress(at: now))
+                        }
                     }
                 }
                 .frame(height: 5)
