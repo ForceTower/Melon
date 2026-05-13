@@ -1,5 +1,6 @@
 package dev.forcetower.unes.ui.feature.calendar
 
+import kotlinx.datetime.number
 import java.time.LocalDate
 import dev.forcetower.melon.feature.calendar.domain.model.CalendarEventFeed as KmpEvent
 import dev.forcetower.melon.feature.calendar.domain.model.CalendarFeedOrigin as KmpOrigin
@@ -37,4 +38,4 @@ private fun mapOrigin(raw: KmpOrigin): CalendarOrigin = when (raw) {
 }
 
 private fun KmpLocalDate.toJavaLocalDate(): LocalDate =
-    LocalDate.of(year, monthNumber, dayOfMonth)
+    LocalDate.of(year, month.number, day)

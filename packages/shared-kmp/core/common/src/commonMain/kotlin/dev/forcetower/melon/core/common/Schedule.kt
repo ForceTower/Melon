@@ -20,7 +20,6 @@ fun DayOfWeek.toUpstreamDay(): Int = when (this) {
     DayOfWeek.THURSDAY -> 4
     DayOfWeek.FRIDAY -> 5
     DayOfWeek.SATURDAY -> 6
-    else -> 0
 }
 
 // Parses "HH:mm" (or "HH:mm:ss") into minutes since midnight. Returns null on
