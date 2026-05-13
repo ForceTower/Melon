@@ -94,7 +94,6 @@ private fun NextClassWidgetContent() {
             surface = theme.surface,
             size = size,
             cornerRadius = 28,
-            accentStripe = true,
             mesh = showMesh,
         ) {
             // Branch on size: three layouts map to the three iOS canonical
