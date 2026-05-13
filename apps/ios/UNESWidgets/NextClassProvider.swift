@@ -3,13 +3,22 @@ import WidgetKit
 
 /// Timeline provider for the "Próxima aula" widget.
 ///
-/// Loads `WidgetSnapshot` from the App Group container (written by the
-/// host app via `WidgetSnapshotPublisher`) and generates a multi-entry
-/// timeline anchored on today's class boundaries. State + countdowns are
-/// recomputed at every transition point, so WidgetKit can flip from
-/// upcoming → inClass → dayDone without another reload — until the host
-/// writes a fresher snapshot or the safety-net `.after(...)` policy fires.
+/// Strategy: emit one entry per minute for the next `liveWindowMinutes`
+/// minutes plus extra entries at class boundaries (start, end, end−30) and
+/// the next-day rollover. Per-minute entries are what actually drives the
+/// "EM 1H 30MIN → 1H 29MIN → …" countdown — `TimelineView(.everyMinute)`
+/// inside the views is not reliably honored by the widget renderer in
+/// practice. Once the timeline's last entry fires, WidgetKit re-asks the
+/// provider for a fresh batch (`.atEnd`), and the host's publisher also
+/// nudges a reload whenever the underlying schedule changes.
+///
+/// Cap: ~95 entries per submission. A 60-minute live window plus a handful
+/// of boundary entries comfortably fits.
 struct NextClassProvider: TimelineProvider {
+    /// Length of the per-minute live-update window submitted in each
+    /// timeline. WidgetKit calls back at `.atEnd` to extend it.
+    private static let liveWindowMinutes = 60
+
     func placeholder(in context: Context) -> NextClassEntry {
         .placeholder
     }
@@ -19,7 +28,7 @@ struct NextClassProvider: TimelineProvider {
             completion(.placeholder)
             return
         }
-        let now = WidgetSnapshot.resolvedNow()
+        let now = Date()
         guard let snapshot = WidgetSnapshot.load() else {
             completion(.placeholder)
             return
@@ -36,9 +45,10 @@ struct NextClassProvider: TimelineProvider {
         }
 
         #if DEBUG
-        // Debug clock override is on — WidgetKit picks entries by wall clock,
-        // so multi-entry timelines anchored on fake times produce confusing
-        // results. Emit a single static entry rendered against the override.
+        // Debug clock override is on — WidgetKit picks entries by wall
+        // clock, so multi-entry timelines anchored on fake times produce
+        // confusing results. Emit a single static entry rendered against
+        // the override.
         if WidgetSnapshot.isDebugClockOverridden {
             let next = Calendar.current.date(byAdding: .minute, value: 5, to: Date()) ?? Date()
             completion(Timeline(entries: [snapshot.renderEntry(at: now)], policy: .after(next)))
@@ -46,42 +56,39 @@ struct NextClassProvider: TimelineProvider {
         }
         #endif
 
-        let transitions = Self.transitionPoints(snapshot: snapshot, now: now)
-        let entries = transitions.map { snapshot.renderEntry(at: $0) }
-
-        // Safety-net reload: ~02:00 tomorrow, well past any reasonable class
-        // boundary. The publisher will write a fresher snapshot well before
-        // this, but if the app stays backgrounded WidgetKit still refreshes
-        // overnight so the dayDone copy stays correct.
-        let calendar = Calendar.current
-        let tomorrow = calendar.startOfDay(for: now.addingTimeInterval(24 * 3600))
-        let safetyNet = calendar.date(byAdding: .hour, value: 2, to: tomorrow) ?? tomorrow
-
-        completion(Timeline(entries: entries, policy: .after(safetyNet)))
+        let entries = Self.entries(snapshot: snapshot, now: now)
+        completion(Timeline(entries: entries, policy: .atEnd))
     }
 
-    /// Generates the time points where the rendered entry would change.
-    /// Always includes `now` plus every future class boundary on today and
-    /// the start of tomorrow (so dayDone copy flips at midnight).
-    private static func transitionPoints(snapshot: WidgetSnapshot, now: Date) -> [Date] {
-        var points: [Date] = [now]
+    /// Generates the entry set the timeline ships with:
+    ///   - one entry every minute for the next `liveWindowMinutes` minutes,
+    ///   - one entry at each future class boundary today (start, end,
+    ///     end−30 handoff) so state flips line up exactly even if those
+    ///     boundaries fall outside the live window,
+    ///   - one at the next-day rollover so dayDone copy refreshes overnight.
+    /// Sorted and deduped to the minute.
+    private static func entries(snapshot: WidgetSnapshot, now: Date) -> [NextClassEntry] {
         let calendar = Calendar.current
         let startOfToday = calendar.startOfDay(for: now)
 
+        var points: [Date] = []
+
+        for i in 0..<liveWindowMinutes {
+            if let t = calendar.date(byAdding: .minute, value: i, to: now) {
+                points.append(t)
+            }
+        }
+
         for c in snapshot.today {
-            if let start = Self.minutesToDate(c.startTime, dayStart: startOfToday, calendar: calendar),
+            if let start = minutesToDate(c.startTime, dayStart: startOfToday, calendar: calendar),
                start > now {
                 points.append(start)
             }
             if let end = c.endTime,
-               let endDate = Self.minutesToDate(end, dayStart: startOfToday, calendar: calendar) {
+               let endDate = minutesToDate(end, dayStart: startOfToday, calendar: calendar) {
                 if endDate > now {
                     points.append(endDate)
                 }
-                // 30 minutes before each class ends, renderEntry hands off to
-                // the next class if there is one (see inClassSwitchThreshold
-                // in WidgetSnapshot.renderEntry). Surface that boundary so
-                // WidgetKit picks up the entry at the right moment.
                 if let handoff = calendar.date(byAdding: .minute, value: -30, to: endDate),
                    handoff > now {
                     points.append(handoff)
@@ -92,13 +99,11 @@ struct NextClassProvider: TimelineProvider {
         let tomorrow = calendar.date(byAdding: .day, value: 1, to: startOfToday) ?? startOfToday
         points.append(tomorrow)
 
-        // WidgetKit accepts up to ~96 entries per kind; we'll easily stay
-        // well under that even on a packed day. Sort + dedupe by minute so
-        // back-to-back classes don't produce duplicate transitions.
         let unique = Array(Set(points.map { $0.timeIntervalSince1970.rounded() }))
             .sorted()
             .map { Date(timeIntervalSince1970: $0) }
-        return unique
+
+        return unique.map { snapshot.renderEntry(at: $0) }
     }
 
     private static func minutesToDate(

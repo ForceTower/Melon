@@ -11,14 +11,11 @@ struct NextClassMediumView: View {
             HStack {
                 HStack(spacing: 6) {
                     LiveDot(color: WidgetColor.amber, size: 5)
-                    TimelineView(.everyMinute) { context in
-                        let now = WidgetSnapshot.effectiveNow(contextDate: context.date)
-                        Text("em \(formatCountdown(entry.liveStartsIn(at: now)))")
-                            .font(WidgetFont.mono(9.5))
-                            .tracking(1.33)
-                            .textCase(.uppercase)
-                            .foregroundStyle(theme.ink3)
-                    }
+                    Text("em \(formatCountdown(entry.startsIn))")
+                        .font(WidgetFont.mono(9.5))
+                        .tracking(1.33)
+                        .textCase(.uppercase)
+                        .foregroundStyle(theme.ink3)
                 }
                 Spacer()
                 Text("\(entry.startTime) – \(entry.endTime)")
