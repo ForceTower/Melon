@@ -51,7 +51,10 @@ extension UmbrellaGraph {
 
     @MainActor
     func makeWidgetSnapshotPublisher() -> WidgetSnapshotPublisher {
-        WidgetSnapshotPublisher(week: observeScheduleWeekUseCase)
+        WidgetSnapshotPublisher(
+            week: observeScheduleWeekUseCase,
+            nextDay: observeNextClassDayUseCase
+        )
     }
 
     @MainActor

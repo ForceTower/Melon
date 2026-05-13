@@ -22,6 +22,22 @@ data class ScheduleDay(
     val classes: List<ScheduleClass>,
 )
 
+// First future day with at least one scheduled class for the active
+// semester. Scans across week boundaries — populated even when the rest
+// of the current week is empty (Friday with no weekend classes still
+// reaches into next week's Monday/Tuesday allocations). `topic` on the
+// inner `ScheduleClass` is always null here since lectures are recorded
+// against an exact (classId, date) pair and the next class day usually
+// hasn't been synced yet; widgets that surface it should treat topic as
+// optional.
+data class NextClassDay(
+    val dateIso: String,
+    val daysAway: Int,
+    val first: ScheduleClass,
+    // All classes for the day, sorted by startTime (`first` is also classes[0]).
+    val classes: List<ScheduleClass>,
+)
+
 // A single allocation rendered on the day column. `topic` is resolved from
 // ClassLecture for the matching (classId, dateIso); null when no lecture has
 // been synced for that date yet.

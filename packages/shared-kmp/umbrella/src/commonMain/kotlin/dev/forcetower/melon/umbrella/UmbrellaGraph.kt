@@ -32,6 +32,7 @@ import dev.forcetower.melon.feature.overview.domain.usecase.ObserveNowClassUseCa
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveOverviewHeaderUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveTodayTimelineUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveUnreadMessagesTileUseCase
+import dev.forcetower.melon.feature.schedule.domain.usecase.ObserveNextClassDayUseCase
 import dev.forcetower.melon.feature.schedule.domain.usecase.ObserveScheduleWeekUseCase
 import dev.forcetower.melon.feature.settings.domain.usecase.ObserveSettingsUseCase
 import dev.forcetower.melon.feature.settings.domain.usecase.UpdateSettingsUseCase
@@ -84,6 +85,11 @@ interface UmbrellaGraph {
     // Schedule (Horário) reactive surface — one flow emitting the whole
     // Mon–Sun week of the active semester.
     val observeScheduleWeekUseCase: ObserveScheduleWeekUseCase
+
+    // First future day with at least one scheduled class. Scans past the
+    // current week so the iOS widget's "no class today" copy can name the
+    // real next weekday even when there are no weekend classes.
+    val observeNextClassDayUseCase: ObserveNextClassDayUseCase
 
     // Disciplinas (Boletim) reactive surface — one flow emitting the
     // current-semester cards, downloaded past semesters, and placeholders
