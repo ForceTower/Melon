@@ -38,13 +38,20 @@
         </service>
 
         <!-- "Próxima aula" home-screen widget. The receiver runs in the host
-             app process; Glance handles the actual RemoteViews rendering. -->
+             app process; Glance handles the actual RemoteViews rendering.
+             `TIME_SET` / `TIMEZONE_CHANGED` keep the countdown honest when the
+             user manually changes the clock or crosses a TZ boundary —
+             without these we'd render against the new wall time only on the
+             next AlarmManager tick (which can be minutes away in Doze).
+             Both are protected broadcasts (system-only sender). -->
         <receiver
             android:name=".widgets.NextClassWidgetReceiver"
             android:exported="true"
             android:label="@string/widget_next_class_title">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
             </intent-filter>
             <meta-data
                 android:name="android.appwidget.provider"

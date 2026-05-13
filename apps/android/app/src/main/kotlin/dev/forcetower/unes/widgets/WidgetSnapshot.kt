@@ -4,7 +4,9 @@ import android.content.Context
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import java.io.File
+import java.util.Calendar
 import java.util.Locale
+import java.util.TimeZone
 
 // Wire-format snapshot the host process writes to internal storage and the
 // widget reads back at render time. Same idea as iOS, except both producer
@@ -84,6 +86,31 @@ internal data class WidgetSnapshot(
             }
         }
     }
+}
+
+// Loads the on-disk snapshot and resolves it against the current wall clock
+// into a `NextClassEntry`. Returns null when no snapshot has been written yet
+// — caller decides whether to render a placeholder (the Glance widget) or
+// fall back to a safe default cadence (the receiver). Shared by the widget
+// composable and the receiver's tick scheduler so both branch on the exact
+// same materialized entry.
+internal fun loadCurrentEntry(context: Context): NextClassEntry? {
+    val snapshot = WidgetSnapshot.load(context) ?: return null
+    val tz = TimeZone.getDefault()
+    val now = Calendar.getInstance(tz)
+    val nowMinutes = now.get(Calendar.HOUR_OF_DAY) * 60 + now.get(Calendar.MINUTE)
+    val nowDateIso = String.format(
+        Locale.US,
+        "%04d-%02d-%02d",
+        now.get(Calendar.YEAR),
+        now.get(Calendar.MONTH) + 1,
+        now.get(Calendar.DAY_OF_MONTH),
+    )
+    return snapshot.renderEntry(
+        nowDateIso = nowDateIso,
+        nowMinutes = nowMinutes,
+        weekdayResolver = ::weekdayLabelForIsoDay,
+    )
 }
 
 // Pure derivation of a `NextClassEntry` from this snapshot at `nowMinutes`

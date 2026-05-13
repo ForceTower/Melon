@@ -16,10 +16,13 @@
     No `android:configure` activity (the widget self-configures from the
     snapshot file) and no `widgetFeatures="reconfigurable"` (Pixel Launcher
     silently deletes the bind when the flag is set without a corresponding
-    configure activity). `updatePeriodMillis="0"` because the per-minute
-    refresh is driven by `NextClassWidgetReceiver`'s AlarmManager tick — the
-    system's own update period maxes out at 30 min, too coarse for a
-    countdown.
+    configure activity). `updatePeriodMillis="1800000"` (30 min — the system
+    floor) acts as a safety net: the primary refresh is driven by
+    `NextClassWidgetReceiver`'s self-rescheduled AlarmManager tick, but if
+    that chain ever breaks (process kill without resurrection, OEM background
+    restrictions, etc.) the launcher will still poke us at least every half
+    hour. The system call also lands as `onUpdate`, which reschedules our
+    own tick — so a single launcher poll is enough to self-heal.
 -->
 <appwidget-provider
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -32,8 +35,8 @@
     android:targetCellHeight="2"
     android:minResizeWidth="110dp"
     android:minResizeHeight="110dp"
-    android:maxResizeWidth="360dp"
-    android:maxResizeHeight="360dp"
+    android:maxResizeWidth="400dp"
+    android:maxResizeHeight="500dp"
     android:resizeMode="horizontal|vertical"
-    android:updatePeriodMillis="0"
+    android:updatePeriodMillis="1800000"
     android:widgetCategory="home_screen" />

@@ -28,9 +28,6 @@ import dev.forcetower.unes.widgets.views.NextClassLargeContent
 import dev.forcetower.unes.widgets.views.NextClassMediumContent
 import dev.forcetower.unes.widgets.views.NextClassSmallContent
 import dev.forcetower.unes.widgets.views.WidgetCardSurface
-import java.util.Calendar
-import java.util.Locale
-import java.util.TimeZone
 
 // "Próxima aula" — one Glance widget exposed in three home-screen sizes that
 // the user can resize between. Mirrors `NextClassWidget` on iOS (Small /
@@ -75,11 +72,13 @@ private fun NextClassWidgetContent() {
     val theme = remember { resolveTheme(context) }
     val background = remember(theme) { MeshBackgroundBitmap.render(theme) }
 
+    val layout = chooseLayout(size)
+
     // Day-done is intentionally rendered flat (no mesh) per the iOS handoff
     // — the calmer surface signals "no plans" without the warmth of the
-    // upcoming/inClass mesh. Every other state gets the mesh wash.
-    val medium = isMediumSize(size)
-    val showMesh = !(medium && entry.state == NextClassState.DayDone)
+    // upcoming/inClass mesh. The Large layout routes through the upcoming
+    // hero (next-day's first class) so it keeps the mesh.
+    val showMesh = !(layout == WidgetLayoutChoice.Medium && entry.state == NextClassState.DayDone)
 
     Box(
         modifier = GlanceModifier
@@ -97,18 +96,22 @@ private fun NextClassWidgetContent() {
             accentStripe = true,
             mesh = showMesh,
         ) {
-            // Branch on size: the three breakpoints map to the three layouts
-            // in `screens-widgets.jsx`. Medium has three sub-layouts driven
-            // by `entry.state` so the in-class progress bar and dayDone copy
-            // can replace the upcoming hero on the same surface.
-            when {
-                isLargeSize(size) -> NextClassLargeContent(entry, theme)
-                medium -> when (entry.state) {
+            // Branch on size: three layouts map to the three iOS canonical
+            // sizes (`screens-widgets.jsx`). Medium has three sub-layouts
+            // driven by `entry.state` so the in-class progress bar and
+            // dayDone copy can replace the upcoming hero on the same
+            // surface. Large always renders the upcoming hero — matches
+            // iOS, where `systemLarge` ignores `entry.state` and shows the
+            // next class (which falls back to next-day's first class when
+            // the day is done).
+            when (layout) {
+                WidgetLayoutChoice.Large -> NextClassLargeContent(entry, theme)
+                WidgetLayoutChoice.Medium -> when (entry.state) {
                     NextClassState.Upcoming -> NextClassMediumContent(entry, theme)
                     NextClassState.InClass -> InClassMediumContent(entry, theme)
                     NextClassState.DayDone -> DayDoneMediumContent(entry, theme)
                 }
-                else -> NextClassSmallContent(entry, theme)
+                WidgetLayoutChoice.Small -> NextClassSmallContent(entry, theme)
             }
         }
     }
@@ -121,36 +124,36 @@ private fun NextClassWidgetContent() {
     LaunchedEffect(Unit) {}
 }
 
-// Width/height thresholds for switching layouts. Picked at the *midpoints*
-// between the iOS canonical sizes (small 158, medium 338, large 338×354)
-// so a cell-grid bind that lands a few dp shy of the iOS spec still routes
-// to the intended layout. Anything wider than ~250dp gets the wider hero;
-// anything taller than ~250dp unlocks the today-strip on Large.
-private fun isMediumSize(size: DpSize): Boolean =
-    size.width >= 250.dp && size.height < 250.dp
+// Layout selection: pick whichever iOS canonical size the actual cell-grid
+// bind is *closest* to (Small 158², Medium 338×158, Large 338×354). Earlier
+// I used fixed `width >= 250 && height >= 250` thresholds, but cell-snapped
+// dimensions on Pixel Launcher land in the 200-260dp gap — taller than
+// Medium but short of the strict Large cutoff — and the layout never
+// switched. Closest-match routing covers that gap without needing the user
+// to hit the exact iOS dimensions.
+private enum class WidgetLayoutChoice { Small, Medium, Large }
 
-private fun isLargeSize(size: DpSize): Boolean =
-    size.width >= 250.dp && size.height >= 250.dp
-
-private fun resolveEntry(context: Context): NextClassEntry {
-    val snapshot = WidgetSnapshot.load(context) ?: return NextClassEntry.placeholder
-
-    val tz = TimeZone.getDefault()
-    val now = Calendar.getInstance(tz)
-    val nowMinutes = now.get(Calendar.HOUR_OF_DAY) * 60 + now.get(Calendar.MINUTE)
-    val nowDateIso = String.format(
-        Locale.US,
-        "%04d-%02d-%02d",
-        now.get(Calendar.YEAR),
-        now.get(Calendar.MONTH) + 1,
-        now.get(Calendar.DAY_OF_MONTH),
-    )
-    return snapshot.renderEntry(
-        nowDateIso = nowDateIso,
-        nowMinutes = nowMinutes,
-        weekdayResolver = ::weekdayLabelForIsoDay,
-    )
+private fun chooseLayout(size: DpSize): WidgetLayoutChoice {
+    val w = size.width.value
+    val h = size.height.value
+    val small = distSq(w, h, 158f, 158f)
+    val medium = distSq(w, h, 338f, 158f)
+    val large = distSq(w, h, 338f, 354f)
+    return when (minOf(small, medium, large)) {
+        small -> WidgetLayoutChoice.Small
+        medium -> WidgetLayoutChoice.Medium
+        else -> WidgetLayoutChoice.Large
+    }
 }
+
+private fun distSq(x1: Float, y1: Float, x2: Float, y2: Float): Float {
+    val dx = x1 - x2
+    val dy = y1 - y2
+    return dx * dx + dy * dy
+}
+
+private fun resolveEntry(context: Context): NextClassEntry =
+    loadCurrentEntry(context) ?: NextClassEntry.placeholder
 
 // Widgets follow the **system** appearance (not the app's theme override) per
 // the iOS handoff — read it from the host context's UI mode rather than

@@ -1,8 +1,17 @@
 package dev.forcetower.unes.widgets.views
 
+import android.graphics.Typeface
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
+import android.widget.RemoteViews
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 import androidx.glance.GlanceModifier
+import androidx.glance.LocalContext
+import androidx.glance.appwidget.AndroidRemoteViews
 import androidx.glance.background
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Box
@@ -17,6 +26,7 @@ import androidx.glance.layout.width
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.unit.ColorProvider
+import dev.forcetower.unes.R
 import dev.forcetower.unes.widgets.NextClassEntry
 import dev.forcetower.unes.widgets.WidgetBrand
 import dev.forcetower.unes.widgets.WidgetTheme
@@ -86,37 +96,64 @@ internal fun DayDoneMediumContent(
     }
 }
 
-// "Sem aulas até amanhã, 08:00" — coral italic on the prefix part. Glance
-// `Text` doesn't support inline span styling, so the prose stacks as two
-// `Text` runs inside a Column. Wrapped in a single Composable so the parent
-// only sees one child regardless of the accent split.
+// "Sem aulas até amanhã, 08:00" — coral italic on the date portion only.
+// Glance's `Text` accepts only a `String`, which forces split-line rendering
+// when you want two styles in one phrase. Routing through `RemoteViews` +
+// `SpannableString` via Glance's `AndroidRemoteViews` escape hatch produces
+// a single inline-styled run that wraps naturally — same shape as iOS's
+// `Text("Sem aulas até ") + Text(head).foregroundStyle(coral).italic()`.
 @Composable
 private fun TomorrowLine(line: String?, theme: WidgetTheme) {
     val head: String? = line?.let {
         val sep = it.indexOf(" · ")
         if (sep < 0) null else it.substring(0, sep)
     }
-    Column {
-        if (head == null) {
-            Text(
-                text = "Sem aulas hoje",
-                style = WidgetText.serif(26f, theme.ink),
-                maxLines = 2,
-            )
-        } else {
-            Text(
-                text = "Sem aulas até",
-                style = WidgetText.serif(26f, theme.ink),
-                maxLines = 1,
-            )
-            Text(
-                modifier = GlanceModifier.padding(top = 2.dp),
-                text = head,
-                style = WidgetText.serif(26f, WidgetBrand.coral, italic = true),
-                maxLines = 1,
-            )
-        }
+    val context = LocalContext.current
+
+    if (head == null) {
+        Text(
+            text = "Sem aulas hoje",
+            style = WidgetText.serif(26f, theme.ink),
+            maxLines = 2,
+        )
+        return
     }
+
+    val prefix = "Sem aulas até "
+    val spannable = SpannableStringBuilder().apply {
+        append(prefix)
+        val start = length
+        append(head)
+        setSpan(
+            ForegroundColorSpan(WidgetBrand.coral.toArgb()),
+            start, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE,
+        )
+        setSpan(
+            StyleSpan(Typeface.ITALIC),
+            start, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE,
+        )
+    }
+
+    val rv = RemoteViews(context.packageName, R.layout.widget_inline_styled_text).apply {
+        setTextViewText(R.id.widget_inline_styled_text, spannable)
+        // Default text color (the non-spanned prefix) is the theme ink. The
+        // span's ForegroundColorSpan wins for the suffix on a per-run basis.
+        setTextColor(R.id.widget_inline_styled_text, theme.ink.toArgb())
+        // `setMaxLines` keeps the layout from blowing past the card height
+        // on narrower binds — Sem aulas até + amanhã, HH:MM at 26sp wraps
+        // to two lines on the Medium widget; that's expected.
+        setInt(R.id.widget_inline_styled_text, "setMaxLines", 2)
+    }
+
+    // `fillMaxWidth()` is critical: without it Glance sizes the embedded
+    // TextView to its intrinsic content (longest unbroken word ≈ "Sem
+    // aulas") and the rest of the phrase wraps off the visible area. The
+    // explicit width gives Android's text layout the full content row to
+    // break against, matching the wider widget surface.
+    AndroidRemoteViews(
+        remoteViews = rv,
+        modifier = GlanceModifier.fillMaxWidth(),
+    )
 }
 
 @Composable
