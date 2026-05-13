@@ -106,11 +106,14 @@ class NextClassWidgetReceiver : GlanceAppWidgetReceiver() {
 }
 
 // Coarser-than-per-minute cadence for far-from-state-change moments. The
-// eyebrow text reads in hours+minutes when the countdown is over an hour
-// out ("em 3h 47min"), and at a glance the user doesn't notice 47→46. One
-// wake every 15 min keeps the value within a quarter-hour of truth and drops
-// overnight wakes by ~15× vs. the previous unconditional per-minute tick.
-private const val PASSIVE_TICK_MS = 15L * 60_000L
+// eyebrow reads in hours+minutes when the countdown is over an hour out
+// ("em 3h 47min") and at a glance the user doesn't notice 47→46 — but they
+// do notice the value being many minutes stale, so we keep the wake cheap-
+// but-frequent rather than long-and-coarse. 2 min is the floor we care about
+// when the screen is on; when the screen is off, Doze's ~9-min rate limit on
+// `setAndAllowWhileIdle` naturally attenuates this down to ~7 wakes/hour, so
+// we don't need a separate off-screen branch to avoid burning battery.
+private const val PASSIVE_TICK_MS = 2L * 60_000L
 
 // One wall-clock minute, used both as the "active" cadence and to align all
 // scheduled times to a minute boundary (matches iOS WidgetKit's behavior of

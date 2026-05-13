@@ -68,8 +68,9 @@ private fun NextClassWidgetContent() {
     // snapshot is a small JSON file in app filesDir, the derivation is pure)
     // and avoiding caching keeps the widget honest about clock drift between
     // pushes from the host.
-    val entry = remember(size) { resolveEntry(context) }
     val theme = remember { resolveTheme(context) }
+    val isDark = theme === WidgetTheme.dark
+    val entry = remember(size, isDark) { resolveEntry(context, isDark) }
     val background = remember(theme) { MeshBackgroundBitmap.render(theme) }
 
     val layout = chooseLayout(size)
@@ -124,36 +125,30 @@ private fun NextClassWidgetContent() {
     LaunchedEffect(Unit) {}
 }
 
-// Layout selection: pick whichever iOS canonical size the actual cell-grid
-// bind is *closest* to (Small 158², Medium 338×158, Large 338×354). Earlier
-// I used fixed `width >= 250 && height >= 250` thresholds, but cell-snapped
-// dimensions on Pixel Launcher land in the 200-260dp gap — taller than
-// Medium but short of the strict Large cutoff — and the layout never
-// switched. Closest-match routing covers that gap without needing the user
-// to hit the exact iOS dimensions.
+// Layout selection. Width comes first: only wide binds (>= 250dp, the
+// midpoint between Small's 158 and Medium's 338) get the Medium/Large
+// layouts that assume horizontal real estate for code-pill + full title +
+// today strip. Narrow binds — even when stretched tall — route to Small,
+// which adapts vertically (font scales up, topic line appears).
+//
+// Earlier I used closest-canonical-distance routing, but it picked Large
+// for tall narrow widgets and the resulting render broke ugly: the 34sp
+// full title couldn't fit in 230dp of width and wrapped mid-word, the
+// today-strip cells (sized for 338dp) ran off the right edge, and the
+// long meta footer truncated. Width-first avoids all of that by treating
+// "narrow" and "wide" as the primary axis (matches how iOS picks
+// `WidgetFamily` — Small vs Medium is the horizontal decision; Large vs
+// Medium is the vertical one).
 private enum class WidgetLayoutChoice { Small, Medium, Large }
 
-private fun chooseLayout(size: DpSize): WidgetLayoutChoice {
-    val w = size.width.value
-    val h = size.height.value
-    val small = distSq(w, h, 158f, 158f)
-    val medium = distSq(w, h, 338f, 158f)
-    val large = distSq(w, h, 338f, 354f)
-    return when (minOf(small, medium, large)) {
-        small -> WidgetLayoutChoice.Small
-        medium -> WidgetLayoutChoice.Medium
-        else -> WidgetLayoutChoice.Large
-    }
+private fun chooseLayout(size: DpSize): WidgetLayoutChoice = when {
+    size.width < 250.dp -> WidgetLayoutChoice.Small
+    size.height < 250.dp -> WidgetLayoutChoice.Medium
+    else -> WidgetLayoutChoice.Large
 }
 
-private fun distSq(x1: Float, y1: Float, x2: Float, y2: Float): Float {
-    val dx = x1 - x2
-    val dy = y1 - y2
-    return dx * dx + dy * dy
-}
-
-private fun resolveEntry(context: Context): NextClassEntry =
-    loadCurrentEntry(context) ?: NextClassEntry.placeholder
+private fun resolveEntry(context: Context, isDark: Boolean): NextClassEntry =
+    loadCurrentEntry(context, isDark) ?: NextClassEntry.placeholder
 
 // Widgets follow the **system** appearance (not the app's theme override) per
 // the iOS handoff — read it from the host context's UI mode rather than

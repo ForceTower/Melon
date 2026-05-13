@@ -94,7 +94,12 @@ internal data class WidgetSnapshot(
 // fall back to a safe default cadence (the receiver). Shared by the widget
 // composable and the receiver's tick scheduler so both branch on the exact
 // same materialized entry.
-internal fun loadCurrentEntry(context: Context): NextClassEntry? {
+//
+// `isDark` flows into `SubjectPalette` so the discipline color baked into
+// the entry uses the lifted dark-mode hex when the host renders against a
+// dark UI mode. The receiver's tick path is theme-agnostic and can pass
+// false (the bar/subject colors aren't read by the alarm scheduler).
+internal fun loadCurrentEntry(context: Context, isDark: Boolean = false): NextClassEntry? {
     val snapshot = WidgetSnapshot.load(context) ?: return null
     val tz = TimeZone.getDefault()
     val now = Calendar.getInstance(tz)
@@ -110,6 +115,7 @@ internal fun loadCurrentEntry(context: Context): NextClassEntry? {
         nowDateIso = nowDateIso,
         nowMinutes = nowMinutes,
         weekdayResolver = ::weekdayLabelForIsoDay,
+        isDark = isDark,
     )
 }
 
@@ -122,6 +128,7 @@ internal fun WidgetSnapshot.renderEntry(
     nowDateIso: String,
     nowMinutes: Int,
     weekdayResolver: (isoDay: String) -> String? = { null },
+    isDark: Boolean = false,
 ): NextClassEntry {
     val todayIsToday = todayDateIso == nowDateIso
     val currentClasses = if (todayIsToday) today else emptyList()
@@ -158,7 +165,7 @@ internal fun WidgetSnapshot.renderEntry(
             code = shortCode(c.code),
             time = c.startTime,
             state = state,
-            colorArgb = SubjectPalette.argb(c.code),
+            colorArgb = SubjectPalette.argb(c.code, isDark),
         )
     }
 
@@ -189,7 +196,7 @@ internal fun WidgetSnapshot.renderEntry(
                 todayBars = bars,
                 dayDoneLine = null,
                 completedTodayCount = completedCount,
-                subjectColorArgb = SubjectPalette.argb(running.code),
+                subjectColorArgb = SubjectPalette.argb(running.code, isDark),
             )
         }
     }
@@ -214,7 +221,7 @@ internal fun WidgetSnapshot.renderEntry(
             todayBars = bars,
             dayDoneLine = null,
             completedTodayCount = completedCount,
-            subjectColorArgb = SubjectPalette.argb(upcoming.code),
+            subjectColorArgb = SubjectPalette.argb(upcoming.code, isDark),
         )
     }
 
@@ -245,7 +252,7 @@ internal fun WidgetSnapshot.renderEntry(
             todayBars = bars,
             dayDoneLine = formatDayDoneLine(n, daysAway, weekdayResolver),
             completedTodayCount = completedCount,
-            subjectColorArgb = SubjectPalette.argb(n.first.code),
+            subjectColorArgb = SubjectPalette.argb(n.first.code, isDark),
         )
     }
 
@@ -325,8 +332,14 @@ private fun shortTitle(title: String): String {
 // `WidgetColor.subjectHex` and Android `ColorFor.discipline`. Carried here
 // instead of consumed from the design system because Glance code is read
 // outside `MaterialTheme` (which the design-system palette requires).
+//
+// Dark variants mirror `MelonPaletteColors` lifted-for-dark hexes
+// (`apps/android/design-system/.../Color.kt`). The light slots are dim
+// against the cool/dark plum mesh — particularly plum and indigo, which
+// effectively disappear on dark surfaces — so we resolve to the lifted
+// variant whenever the widget renders against the dark theme.
 internal object SubjectPalette {
-    private val palette = longArrayOf(
+    private val light = longArrayOf(
         0xFFE85D4E, // coral
         0xFFF4A23C, // amber
         0xFFB23A7A, // magenta
@@ -339,7 +352,21 @@ internal object SubjectPalette {
         0xFFA0741F, // mustard
     )
 
-    fun argb(code: String): Int {
+    private val dark = longArrayOf(
+        0xFFF27E6E, // coral
+        0xFFF4A23C, // amber
+        0xFFD46299, // magenta
+        0xFF5BB8C6, // teal
+        0xFFB39DDB, // plum (lifted — was 0x2D1B4E, invisible on plum surface)
+        0xFFE88AA5, // rose
+        0xFF79AEE8, // sky
+        0xFF5FC48E, // emerald
+        0xFF8A9EE8, // indigo
+        0xFFD4A84C, // mustard
+    )
+
+    fun argb(code: String, isDark: Boolean = false): Int {
+        val palette = if (isDark) dark else light
         val bucket = (stableHash(code).let { if (it < 0) -it else it }) % palette.size
         return palette[bucket].toInt()
     }
