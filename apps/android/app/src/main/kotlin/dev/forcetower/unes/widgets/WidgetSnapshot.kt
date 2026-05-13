@@ -225,18 +225,27 @@ internal fun WidgetSnapshot.renderEntry(
         )
     }
 
-    // No class left today. If tomorrow (or the next populated day) has one,
-    // surface it as upcoming so the main subject area on Small / Large
-    // renders real data — countdown spans the day boundary. The Medium
-    // widget keeps its dedicated dayDone treatment via `dayDoneLine`.
+    // No class left in `currentClasses`. If the snapshot's `nextDay` points
+    // at the next populated day, surface it as upcoming so the main subject
+    // area on Small / Large renders real data — countdown spans the day
+    // boundary. The Medium widget keeps its dedicated dayDone treatment via
+    // `dayDoneLine`.
+    //
+    // Re-derive `daysAway` against render time: `n.daysAway` was computed
+    // when the snapshot was written, so it drifts on day rollover before
+    // the host writes a fresh snapshot. When the re-derivation lands at
+    // 0 — i.e. the next populated day is *today* — emit `Upcoming` instead
+    // of `DayDone` so the copy doesn't read "Sem aulas até hoje, 07:30"
+    // while a class is genuinely coming up later today.
     val n = nextDay
     if (n != null) {
         val nextStart = parseHhMm(n.first.startTime) ?: 0
         val nextEnd = parseHhMm(n.first.endTime) ?: nextStart
-        val daysAway = n.daysAway.coerceAtLeast(0)
+        val daysAway = (daysBetweenIsoDays(nowDateIso, n.dateIso) ?: n.daysAway).coerceAtLeast(0)
         val startsIn = (daysAway * 1440 - nowMinutes + nextStart).coerceAtLeast(0)
+        val isToday = daysAway == 0
         return NextClassEntry(
-            state = NextClassState.DayDone,
+            state = if (isToday) NextClassState.Upcoming else NextClassState.DayDone,
             code = n.first.code,
             shortCode = shortCode(n.first.code),
             title = n.first.title,
@@ -250,7 +259,7 @@ internal fun WidgetSnapshot.renderEntry(
             endTime = n.first.endTime.orEmpty(),
             topic = n.first.topic,
             todayBars = bars,
-            dayDoneLine = formatDayDoneLine(n, daysAway, weekdayResolver),
+            dayDoneLine = if (isToday) null else formatDayDoneLine(n, daysAway, weekdayResolver),
             completedTodayCount = completedCount,
             subjectColorArgb = SubjectPalette.argb(n.first.code, isDark),
         )
@@ -296,6 +305,32 @@ private fun formatDayDoneLine(
     val room = nextDay.first.room
     if (!room.isNullOrEmpty()) line += " — $room"
     return line
+}
+
+// Calendar-day distance between two `YYYY-MM-DD` strings, signed so a future
+// `to` returns positive. Used to re-derive `daysAway` at render time from
+// `nowDateIso` and the snapshot's `nextDay.dateIso` so the dayDone / upcoming
+// branch picks the right state even when the snapshot is stale across a day
+// boundary. Returns null if either input doesn't parse.
+internal fun daysBetweenIsoDays(from: String, to: String): Int? {
+    val a = parseIsoDay(from) ?: return null
+    val b = parseIsoDay(to) ?: return null
+    val diffMs = b.timeInMillis - a.timeInMillis
+    // Use the per-day midpoint rounding to absorb DST transitions without
+    // ever crossing a calendar-day boundary.
+    return ((diffMs + (if (diffMs >= 0) 43_200_000L else -43_200_000L)) / 86_400_000L).toInt()
+}
+
+private fun parseIsoDay(iso: String): Calendar? {
+    val parts = iso.split("-")
+    if (parts.size != 3) return null
+    val year = parts[0].toIntOrNull() ?: return null
+    val month = parts[1].toIntOrNull() ?: return null
+    val day = parts[2].toIntOrNull() ?: return null
+    return Calendar.getInstance().apply {
+        clear()
+        set(year, month - 1, day)
+    }
 }
 
 internal fun parseHhMm(value: String?): Int? {

@@ -229,25 +229,31 @@ extension WidgetSnapshot {
             )
         }
 
-        // No class left today. If tomorrow (or the next populated day) has
-        // one, surface it as upcoming so the main subject area on Small /
-        // Large renders real data — countdown spans the day boundary. The
-        // Medium widget keeps its dedicated dayDone treatment via the
-        // `dayDoneLine` carried alongside.
+        // No class left in `currentClasses`. If the snapshot's `nextDay`
+        // points at the next populated day, surface it as upcoming so the
+        // main subject area on Small / Large renders real data — countdown
+        // spans the day boundary. The Medium widget keeps its dedicated
+        // dayDone treatment via the `dayDoneLine` carried alongside.
+        //
+        // Re-derive `daysAway` against render time: `n.daysAway` was
+        // computed when the snapshot was written, so it drifts if the
+        // snapshot is a few hours stale (production day-rollover before the
+        // host writes a fresh snapshot) or in widget visual testing with a
+        // debug clock override. When the re-derivation lands at 0 — i.e.
+        // the next populated day is *today* — emit `.upcoming` instead of
+        // `.dayDone` so the copy doesn't read "Sem aulas até hoje, 07:30"
+        // while a class is genuinely coming up later today.
         if let n = nextDay {
             let nextStart = parseHhMm(n.first.startTime) ?? 0
             let nextEnd = parseHhMm(n.first.endTime) ?? nextStart
-            // Re-derive against render time. `n.daysAway` was computed when
-            // the snapshot was written, so it drifts if the snapshot is a
-            // few hours stale (production) or in widget visual testing with
-            // a debug clock override.
             let daysAway = max(0, calendarDaysBetween(now, isoDay: n.dateIso, calendar: calendar) ?? n.daysAway)
             let startsIn = max(0, daysAway * 1440 - nowMinutes + nextStart)
             let startDate = absoluteDate(forMinutes: nextStart, on: now, daysAhead: daysAway, calendar: calendar)
             let endDate = absoluteDate(forMinutes: nextEnd, on: now, daysAhead: daysAway, calendar: calendar)
+            let isToday = daysAway == 0
             return NextClassEntry(
                 date: now,
-                state: .dayDone,
+                state: isToday ? .upcoming : .dayDone,
                 code: n.first.code,
                 shortCode: shortCode(from: n.first.code),
                 title: n.first.title,
@@ -264,7 +270,7 @@ extension WidgetSnapshot {
                 referenceStart: startDate,
                 referenceEnd: endDate,
                 todayBars: bars,
-                dayDoneLine: dayDoneLine(at: now, calendar: calendar),
+                dayDoneLine: isToday ? nil : dayDoneLine(at: now, calendar: calendar),
                 completedTodayCount: completedCount
             )
         }
