@@ -1,14 +1,20 @@
 package dev.forcetower.melon.feature.calendar.domain.model
 
+import kotlin.experimental.ExperimentalObjCName
+import kotlin.native.ObjCName
 import kotlinx.datetime.LocalDate
 
 // Strongly-typed projection of an academic calendar event for UI consumers.
 // The use case parses the Room row's strings into LocalDate / enums here so
 // no view code has to deal with the wire format.
+@OptIn(ExperimentalObjCName::class)
 data class CalendarEventFeed(
     val id: String,
     val platformId: String,
-    val description: String,
+    // `description` collides with `KotlinBase.description()` in Swift; expose
+    // it as `text` to ObjC/Swift so the binding is stable (not the SKIE-
+    // generated `description_` fallback).
+    @property:ObjCName("text") val description: String,
     val start: LocalDate,
     val end: LocalDate?,
     val fixed: Boolean,

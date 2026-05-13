@@ -10,7 +10,7 @@ enum CalendarMapping {
         let end = feed.end.map(parseDate)
         return CalendarEvent(
             id: feed.id,
-            description: feed.description_,
+            description: feed.text,
             start: start,
             end: end,
             fixed: feed.fixed,
