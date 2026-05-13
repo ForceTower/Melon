@@ -455,7 +455,7 @@
 		6C3995F32F930602005557AF /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon_V1;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon_UNES_Aurora;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = UNES/UNES.entitlements;
 				CODE_SIGN_STYLE = Automatic;
@@ -469,6 +469,7 @@
 				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = UNES/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = unes;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Use Face ID para visualizar sua senha armazenada.";
@@ -504,7 +505,7 @@
 		6C3995F42F930602005557AF /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon_V1;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon_UNES_Aurora;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = UNES/UNES.entitlements;
 				CODE_SIGN_STYLE = Automatic;
@@ -518,6 +519,7 @@
 				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = UNES/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = unes;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Use Face ID para visualizar sua senha armazenada.";
@@ -560,7 +562,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = UNESWidgets/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = UNES;
+				INFOPLIST_KEY_CFBundleDisplayName = unes;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -593,7 +595,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = UNESWidgets/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = UNES;
+				INFOPLIST_KEY_CFBundleDisplayName = unes;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				LD_RUNPATH_SEARCH_PATHS = (

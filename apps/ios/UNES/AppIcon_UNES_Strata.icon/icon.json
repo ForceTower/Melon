@@ -1,0 +1,124 @@
+{
+  "fill" : "automatic",
+  "groups" : [
+    {
+      "hidden-specializations" : [
+        {
+          "appearance" : "dark",
+          "value" : true
+        }
+      ],
+      "layers" : [
+        {
+          "glass" : false,
+          "image-name" : "L5-glyph.svg",
+          "name" : "L5-glyph"
+        },
+        {
+          "glass" : false,
+          "image-name" : "L4-band-amber.svg",
+          "name" : "L4-band-amber"
+        },
+        {
+          "glass" : false,
+          "image-name" : "L3-band-coral.svg",
+          "name" : "L3-band-coral"
+        },
+        {
+          "glass" : false,
+          "image-name" : "L2-band-rose.svg",
+          "name" : "L2-band-rose"
+        },
+        {
+          "glass" : false,
+          "image-name" : "L1-band-magenta.svg",
+          "name" : "L1-band-magenta"
+        },
+        {
+          "glass" : false,
+          "image-name" : "L0-band-plum.svg",
+          "name" : "L0-band-plum"
+        }
+      ],
+      "position" : {
+        "scale" : 1.07,
+        "translation-in-points" : [
+          0,
+          0
+        ]
+      },
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.5
+      }
+    },
+    {
+      "hidden-specializations" : [
+        {
+          "value" : true
+        },
+        {
+          "appearance" : "dark",
+          "value" : false
+        }
+      ],
+      "layers" : [
+        {
+          "glass" : false,
+          "image-name" : "L5-glyph 2.svg",
+          "name" : "L5-glyph 2"
+        },
+        {
+          "glass" : false,
+          "image-name" : "L4-band-coral.svg",
+          "name" : "L4-band-coral"
+        },
+        {
+          "glass" : false,
+          "image-name" : "L3-band-rose.svg",
+          "name" : "L3-band-rose"
+        },
+        {
+          "glass" : false,
+          "image-name" : "L2-band-magenta.svg",
+          "name" : "L2-band-magenta"
+        },
+        {
+          "glass" : false,
+          "image-name" : "L1-band-plum.svg",
+          "name" : "L1-band-plum"
+        },
+        {
+          "glass" : false,
+          "image-name" : "L0-band-jet.svg",
+          "name" : "L0-band-jet"
+        }
+      ],
+      "position" : {
+        "scale" : 1.07,
+        "translation-in-points" : [
+          0,
+          0
+        ]
+      },
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.5
+      }
+    }
+  ],
+  "supported-platforms" : {
+    "circles" : [
+      "watchOS"
+    ],
+    "squares" : "shared"
+  }
+}

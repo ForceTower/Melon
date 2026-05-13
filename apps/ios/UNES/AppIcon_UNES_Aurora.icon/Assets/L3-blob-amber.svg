@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+<defs><clipPath id="sq"><rect x="0" y="0" width="1024" height="1024" rx="229" ry="229"></rect></clipPath></defs>
+<g clip-path="url(#sq)">
+<defs><filter id="b3" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="92"></feGaussianBlur></filter></defs>
+<circle cx="120" cy="940" r="420" fill="#F4A23C" fill-opacity="0.92" filter="url(#b3)"></circle>
+</g>
+</svg>
