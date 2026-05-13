@@ -954,4 +954,9 @@
     <string name="licenses_footer_build_format">V%1$s · BUILD %2$s</string>
     <string name="licenses_footer_compliance">EM CONFORMIDADE COM OS TERMOS\nDE CADA LICENÇA REPRODUZIDA ACIMA</string>
     <!-- endregion -->
+
+    <!-- region Widget · "Próxima aula" -->
+    <string name="widget_next_class_title">Próxima aula</string>
+    <string name="widget_next_class_description">A próxima aula do dia, com horário, sala e topo de prioridades.</string>
+    <!-- endregion -->
 </resources>

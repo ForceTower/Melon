@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Initial layout the system shows between widget bind and the first Glance
+    composition lands. Plum-tinted background matches the dark surface so the
+    handoff to the rendered widget reads smoothly even on the first frame.
+-->
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/widget_loading_background" />

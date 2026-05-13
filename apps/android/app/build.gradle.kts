@@ -137,6 +137,12 @@ dependencies {
 
     implementation(libs.androidx.biometric)
 
+    // Glance — backs the home-screen widget. Compiles to RemoteViews so layouts
+    // run in the system widget host process, but the receiver + snapshot writer
+    // live alongside the rest of the app code.
+    implementation(libs.androidx.glance.appwidget)
+    implementation(libs.androidx.glance.material3)
+
     // Firebase BoM pins all SDK versions in lockstep — Analytics for usage
     // tracking, Crashlytics for crash reporting, Messaging for FCM push.
     implementation(platform(libs.firebase.bom))

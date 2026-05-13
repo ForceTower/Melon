@@ -36,6 +36,20 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
+        <!-- "Próxima aula" home-screen widget. The receiver runs in the host
+             app process; Glance handles the actual RemoteViews rendering. -->
+        <receiver
+            android:name=".widgets.NextClassWidgetReceiver"
+            android:exported="true"
+            android:label="@string/widget_next_class_title">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/next_class_widget_info" />
+        </receiver>
     </application>
 
 </manifest>

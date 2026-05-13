@@ -35,6 +35,7 @@ import dev.forcetower.melon.feature.overview.domain.usecase.ObserveOverviewHeade
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveTodayTimelineUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveUnreadMessagesTileUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.BackfillMirrorUseCase
+import dev.forcetower.melon.feature.schedule.domain.usecase.ObserveNextClassDayUseCase
 import dev.forcetower.melon.feature.schedule.domain.usecase.ObserveScheduleWeekUseCase
 import dev.forcetower.melon.feature.settings.domain.usecase.ObserveSettingsUseCase
 import dev.forcetower.melon.feature.settings.domain.usecase.UpdateSettingsUseCase
@@ -161,6 +162,12 @@ object UmbrellaBridgeModule {
     // the current week number; nowMin ticks in the ViewModel.
     @Provides fun provideObserveScheduleWeekUseCase(graph: UmbrellaGraph): ObserveScheduleWeekUseCase =
         graph.observeScheduleWeekUseCase
+
+    // First future day with at least one scheduled class. Drives the home
+    // widget's `dayDone` copy so a Friday widget can name Monday's first
+    // class even when the rest of the current week is empty.
+    @Provides fun provideObserveNextClassDayUseCase(graph: UmbrellaGraph): ObserveNextClassDayUseCase =
+        graph.observeNextClassDayUseCase
 
     // Mensagens tab — inbox observation, per-message detail observation, and
     // the local mark-as-read mutation (idempotent, so list and detail can

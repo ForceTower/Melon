@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Drawable used as the initial widget surface. Solid plum (matches
+    `WidgetTheme.dark.surface`) with rounded corners that match the system
+    widget frame radius. Replaced by the Glance composition on first render.
+-->
+<shape
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="#FF1A0F28" />
+    <corners android:radius="28dp" />
+</shape>

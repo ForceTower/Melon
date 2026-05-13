@@ -8,6 +8,7 @@ import dev.forcetower.melon.core.common.Outcome
 import dev.forcetower.melon.feature.sync.domain.usecase.BackfillMirrorUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.PingActivityUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.RefreshSessionUseCase
+import dev.forcetower.unes.widgets.WidgetSnapshotPublisher
 import javax.inject.Inject
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
@@ -26,6 +27,7 @@ internal class ConnectedViewModel @Inject constructor(
     private val refreshSession: RefreshSessionUseCase,
     private val backfillMirror: BackfillMirrorUseCase,
     private val pingActivity: PingActivityUseCase,
+    private val widgetSnapshotPublisher: WidgetSnapshotPublisher,
     logger: Logger,
 ) : ViewModel() {
     private val log = logger.withTag("ConnectedViewModel")
@@ -43,6 +45,10 @@ internal class ConnectedViewModel @Inject constructor(
             backfillStarted = true
             viewModelScope.launch { runBackfill() }
         }
+        // Idempotent — `start()` short-circuits if the publisher's flows are
+        // already subscribed. Mirrors iOS `ConnectedView`'s `.task` mounting
+        // of `WidgetSnapshotPublisher`.
+        widgetSnapshotPublisher.start()
     }
 
     private suspend fun runRefresh(reason: String) {
