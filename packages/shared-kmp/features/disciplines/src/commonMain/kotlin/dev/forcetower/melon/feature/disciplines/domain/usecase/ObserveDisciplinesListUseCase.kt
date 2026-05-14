@@ -97,7 +97,11 @@ private fun buildItem(
     val head = rows.first()
     val studentClassIds = rows.map { it.studentClassId }
     val hours = head.disciplineHours
-    val missedHours = rows.sumOf { it.missedClasses ?: 0 }
+    // Upstream reports `totalFaltas` once at the discipline level; the backend's
+    // `applyResult` replicates it onto every StudentClass row in the offer. Take
+    // the first non-null value instead of summing so multi-group disciplines
+    // (theory + practice) don't double-count.
+    val missedHours = rows.firstNotNullOfOrNull { it.missedClasses } ?: 0
     val allowedMissedHours = ceil(hours * 0.25).toInt()
 
     // Dedup by upstream id: multi-group disciplines have the same grade set

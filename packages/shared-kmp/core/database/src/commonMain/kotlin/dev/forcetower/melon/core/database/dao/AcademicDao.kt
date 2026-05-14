@@ -291,14 +291,25 @@ abstract class AcademicDao {
 
     // Semester-wide miss/hours aggregate. Percentage (100 - missed/hours*100)
     // and allowed-absences (hours * 0.25) are derived on the client.
+    //
+    // Aggregates per DisciplineOffer (one row per discipline) — `applyResult`
+    // replicates `missedClasses` onto every StudentClass row in the offer and
+    // upstream's `cargaHoraria` is replicated onto every Class row, so summing
+    // across the raw StudentClass/Class join would double-count multi-group
+    // disciplines (theory + practice).
     @Query(
         """
-        SELECT COALESCE(SUM(sc.missedClasses), 0) AS totalMissed,
-               COALESCE(SUM(c.hours), 0) AS totalHours
-          FROM StudentClass sc
-          JOIN Class c ON c.id = sc.classId
-          JOIN DisciplineOffer o ON o.id = c.offerId
-         WHERE o.semesterId = :semesterId
+        SELECT COALESCE(SUM(per_offer.missed), 0) AS totalMissed,
+               COALESCE(SUM(per_offer.hours), 0) AS totalHours
+          FROM (
+            SELECT MAX(sc.missedClasses) AS missed,
+                   o.hours AS hours
+              FROM DisciplineOffer o
+              JOIN Class c ON c.offerId = o.id
+              JOIN StudentClass sc ON sc.classId = c.id
+             WHERE o.semesterId = :semesterId
+             GROUP BY o.id, o.hours
+          ) AS per_offer
         """,
     )
     abstract fun observeAttendanceSummary(semesterId: String): Flow<AttendanceSummaryRow>

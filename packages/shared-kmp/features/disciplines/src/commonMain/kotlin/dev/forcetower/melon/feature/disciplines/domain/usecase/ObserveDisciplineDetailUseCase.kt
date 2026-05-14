@@ -61,9 +61,10 @@ private fun build(
     // FIS110 carry the same 90h on each class row). Summing would double-count
     // multi-group disciplines, so read straight from the offer/catalog hours.
     val hours = head.offerHours ?: head.disciplineHours
-    val missedHours = enrollments
-        .distinctBy { it.studentClassId }
-        .sumOf { it.missedClasses ?: 0 }
+    // `missedClasses` is also a discipline-level value replicated onto every
+    // StudentClass row by `applyResult`; take the first non-null instead of
+    // summing so multi-group disciplines don't double-count.
+    val missedHours = enrollments.firstNotNullOfOrNull { it.missedClasses } ?: 0
     val allowedMissedHours = ceil(hours * 0.25).toInt()
     val finalGradeString = enrollments.firstOrNull { !it.finalGrade.isNullOrBlank() }?.finalGrade
     val finalGrade = finalGradeString?.replace(",", ".")?.toDoubleOrNull()
