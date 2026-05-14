@@ -12,6 +12,12 @@ struct AboutSheet: View {
 
     @Environment(\.dismiss) private var dismiss
     @State private var copied: Bool = false
+    /// `info` is built synchronously and starts with the release defaults
+    /// ("estável" / "App Store"). `.task` swaps in the StoreKit-refined values
+    /// so TestFlight builds get the correct label.
+    @State private var resolvedInfo: AppInfo?
+
+    private var displayInfo: AppInfo { resolvedInfo ?? info }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -40,6 +46,9 @@ struct AboutSheet: View {
         )
         .onPreferenceChange(AboutSheetHeightKey.self) { height in
             measuredHeight?.wrappedValue = height
+        }
+        .task {
+            resolvedInfo = await info.resolved()
         }
     }
 

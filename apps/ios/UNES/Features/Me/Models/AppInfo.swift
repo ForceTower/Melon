@@ -1,3 +1,4 @@
+import StoreKit
 import SwiftUI
 
 /// Snapshot of the build / device metadata surfaced in the "Sobre o aplicativo"
@@ -20,13 +21,30 @@ struct AppInfo {
 
     static var current: AppInfo {
         let device = UIDevice.current
+        let initial = initialChannel()
         return AppInfo(
             version: Bundle.main.appVersion,
             build: Bundle.main.buildNumber,
             machineId: device.identifierForVendor?.uuidString.lowercased() ?? "—",
             phoneModel: "\(modelIdentifier()) · iOS \(device.systemVersion)",
-            channel: detectedChannel().channel,
-            installSource: detectedChannel().installSource
+            channel: initial.channel,
+            installSource: initial.installSource
+        )
+    }
+
+    /// Returns a copy with `channel`/`installSource` refined via
+    /// `AppTransaction.shared` so we can distinguish TestFlight from App Store
+    /// without the (deprecated) `appStoreReceiptURL` heuristic. Falls back to
+    /// the release defaults if the StoreKit receipt is unavailable.
+    func resolved() async -> AppInfo {
+        let resolved = await Self.resolvedChannel()
+        return AppInfo(
+            version: version,
+            build: build,
+            machineId: machineId,
+            phoneModel: phoneModel,
+            channel: resolved.channel,
+            installSource: resolved.installSource
         )
     }
 
@@ -54,12 +72,29 @@ struct AppInfo {
             .trimmingCharacters(in: .controlCharacters) ?? "unknown"
     }
 
-    private static func detectedChannel() -> (channel: String, installSource: String) {
+    /// Synchronous default used at `AppInfo.current` time. Release builds
+    /// assume App Store; `resolved()` upgrades the label to TestFlight when
+    /// the StoreKit environment reports a sandbox receipt.
+    private static func initialChannel() -> (channel: String, installSource: String) {
         #if DEBUG
         return ("desenvolvimento", "Xcode")
         #else
-        if Bundle.main.appStoreReceiptURL?.lastPathComponent == "sandboxReceipt" {
-            return ("TestFlight", "TestFlight")
+        return ("estável", "App Store")
+        #endif
+    }
+
+    private static func resolvedChannel() async -> (channel: String, installSource: String) {
+        #if DEBUG
+        return ("desenvolvimento", "Xcode")
+        #else
+        do {
+            let result = try await AppTransaction.shared
+            if case .verified(let transaction) = result,
+               transaction.environment == .sandbox {
+                return ("TestFlight", "TestFlight")
+            }
+        } catch {
+            // Receipt unavailable — fall through to the release default.
         }
         return ("estável", "App Store")
         #endif
