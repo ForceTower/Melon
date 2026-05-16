@@ -28,7 +28,7 @@ Este repositório é a parte cliente do UNES — um monorepo poliglota que reún
 - [`mise`](https://mise.jdx.dev/) gerencia versões de ferramentas (`bun`, `gradle`, `java`, `license-plist`). Rode `mise install` uma vez.
 - `bun install` para dependências Node (usamos `bun`, não `npm`/`yarn`/`pnpm`).
 - `./gradlew` para o lado JVM/Android; o composite build do Gradle integra `build-logic/` e `packages/shared-kmp/`.
-- iOS é um projeto Xcode padrão (`apps/ios`). O app iOS depende do XCFramework do umbrella KMP — gere com `bun run kmp:xcframework`.
+- iOS é um projeto Xcode padrão (`apps/ios`). O build script do Xcode já reconstrói o XCFramework do umbrella KMP automaticamente como parte do build do app — não precisa rodar nenhum passo manual antes.
 - `oxlint` para lint e `oxfmt` para formatação. Use `bun run fix` para aplicar ambos.
 
 ### Compilando o Melon
@@ -55,6 +55,3 @@ Me mande um email joaopaulo761@gmail.com, ou me encontre no [LinkedIn](https://w
 ## Licença
 
 Veja [`LICENSE`](./LICENSE).
-
-### AAAAAAAAAAAAAAAAA
-![Android Studio Mickey Mousing](https://github.com/ForceTower/Melon/blob/development/repoimages/as_mm.png)

@@ -1,102 +1,137 @@
+# Contribuindo com o UNES
 
 ## Introdução
-Obrigado pelo seu interesse em contribuir com o projeto!. Todos os tipos de contribuição são bem vindos e valorizados. Veja a [tabela de conteudos](#toc) para maneiras diferentes de ajudar e detalhes sobre como o projeto lida com cada uma delas!📝
 
-Leia a seção relativa à sua contribuição antes de envia-la! Isso faz o trabalho da verificação da contribuição mais facil e deixa a experiencia mais legal para todos
+Obrigado pelo seu interesse em contribuir com o projeto! Todos os tipos de contribuição são bem vindos e valorizados — código, documentação, traduções, design, ideias e relatos de bug. Leia a seção relativa à sua contribuição antes de enviá-la; isso facilita a revisão e deixa a experiência mais legal para todos.
 
 ## Pedir ajuda
 
-Se você tem alguma pergunta sobre este projeto, como usa-lo, ou só quer tirar alguma dúvida sobre algo:
+Se você tem alguma pergunta sobre o projeto, como usá-lo, ou só quer tirar uma dúvida:
 
-* Abra uma issue mp https://github.com/ForceTower/Melon/issues
-* Coloque o máximo de contexto na sua pergunta.
+- Abra uma issue em https://github.com/ForceTower/Melon/issues
+- Coloque o máximo de contexto possível na pergunta.
 
-Quando você terminar:
-
-* A issue será marcada
-* Alguem vai tentar responde-la
+A issue será marcada e alguém vai tentar responder.
 
 ## Reportar um erro
 
-Se você encontrar um erro no projeto:
-
-* Abra uma issue no https://github.com/ForceTower/Melon/issues
-* Siga o modelo de reportar erro :)
+- Abra uma issue em https://github.com/ForceTower/Melon/issues
+- Siga o modelo de bug report.
+- Inclua plataforma (iOS / Android / landing), versão do app, e passos para reproduzir.
 
 ## Pedir uma função
 
 Se o UNES não faz algo que você queria que ele fizesse:
 
-* Abra uma issue no https://github.com/ForceTower/Melon/issues
-* Siga o modelo de pedidos de funções
+- Abra uma issue em https://github.com/ForceTower/Melon/issues
+- Siga o modelo de pedido de função.
 
-Quando você enviar:
-
-* O pedido da função será avaliado, possivelmente perguntando mais perguntas sobre a criação e os requisitos. Se a issue for fechada, será sugerido um caminho alternativo para a atingir o resultado.
-* Se o pedido for aceito, ele será marcado para implementação com `feature-accepted`, que poderá ser feito por qualquer um do time ou por qualquer um da comunidade que quiser [contribuir](#contribute-code).
+O pedido será avaliado e talvez surjam mais perguntas sobre requisitos. Se for aceito, a issue recebe a label `feature-accepted` e pode ser implementada por qualquer pessoa do time ou da comunidade.
 
 ## Preparação do Projeto UNES [Melon]
 
-Então você quer contribuir com o UNES? Que demais! O UNES GitHub Pull Requests para gerenciar as contribuições, então [leia sobre como fazer um fork de um projeto do GitHub e como criar um PR](https://guides.github.com/activities/forking) se você nunca fez isso antes.
+O UNES virou um monorepo poliglota: iOS nativo, Android nativo, uma landing page e uma camada de lógica compartilhada em Kotlin Multiplatform. O backend mora num repositório privado separado e não é necessário para rodar os apps localmente — eles funcionam contra a API de produção/staging.
 
-Eu tento manter o projeto sempre o mais atualizado possível, então todas as dependências serão atualizadas constantemente inclusive o projeto sempre deve ser aberto na versão do Android Studio mais atual possível.
+O fluxo de PR continua o mesmo: faça [fork do projeto](https://guides.github.com/activities/forking), clone o seu fork e abra um Pull Request contra a branch `development` quando estiver pronto.
 
-A partir de agora vamos demorar um tempo (ou não):
- 1. [Instale a versão mais recente do Android Studio](https://developer.android.com/studio) e configure os passos iniciais (se você ainda não possui ele instalado).
- 2. [Faça um Fork do UNES](https://guides.github.com/activities/forking/#fork), opcional, você pode fazer um clone do projeto diretamente e configurar o repositorio git depois
- 3. [Faça um clone do seu fork](https://help.github.com/articles/cloning-a-repository/)
- 4. [Abra o projeto no Android Studio](https://github.com/dogriffiths/HeadFirstAndroid/wiki/How-to-open-a-project-in-Android-Studio)
- 5. [Espere muito tempo, aproveite a música](https://www.youtube.com/watch?v=BdhGQMDjBSQ), se esta for a primeira vez abrindo ou criando um projeto, instale tudo que o Android Studio pedir
- 6. [Fique calmo, espere mais um pouco](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
- 
-O UNES utiliza o Firebase como backend, então temos uns passos adicionais, ou você será apresentado a um erro de processamento no Android Studio... (google-services.json not found)
+### 1. Instale o `mise`
 
-* [Crie um projeto no Firebase](https://console.firebase.google.com/), você pode dar o nome que você quiser.
-* Após criar o projeto você vai ser apresentado com uma tela onde ele fala para adicionar o firebase ao seu aplicativo. Como estamos num aplicativo nativo Android, selecione `Adicionar o Firebase ao seu aplicativo Android`.
-* O primeiro passo é dizer o nome do pacote do aplicativo, no caso do UNES é: `com.forcetower.uefs`
-* As informações do Certificado e Assinatura de debug podem ser deixadas em branco, ou siga as instruções mostradas no firebase para encontrar as suas.
-* Após clicar em registrar app o próximo passo é baixar o `google-services.json`, baixe-o e mova-o para a pasta `app` do projeto.
-* Pronto, você não precisa mais fazer qualquer alteração, se quiser, ative os recursos de autenticação com email e senha, o firestore, o storage e o functions. Estes são os 4 serviços principais para o aplicativo funcionar com todos os recursos, mas este passo não é obrigatório e a maioria dos recursos irão funcionar corretamente sem fazer este passo. Ah, se você quiser o código das functions do UNES elas estão [aqui](https://github.com/ForceTower/FireMelon).
+[`mise`](https://mise.jdx.dev/) gerencia as versões de `bun`, `gradle`, `java` e `license-plist` que o projeto precisa. Depois de instalar o `mise`, na raiz do repositório rode:
 
-Isso deve ser tudo, nem parece que demoramos 7 horas para fazer o projeto rodar.
+```sh
+mise install
+```
 
-Uma coisa importante, o projeto utiliza o [ktlint](https://ktlint.github.io/) para manter o estilo de código Kotlin, essa ferramenta irá manter tudo organizadinho =D
+Isso baixa as versões corretas de todas as ferramentas. Não use `npm`, `yarn` ou `pnpm` — o projeto usa `bun` (e `bunx` no lugar de `npx`).
+
+### 2. Instale as dependências Node
+
+Na raiz do repo:
+
+```sh
+bun install
+```
+
+### 3. Escolha o que você quer mexer
+
+Dependendo do app que você quer alterar, os próximos passos mudam:
+
+#### Android (`apps/android`)
+
+- Abra `apps/android` no Android Studio mais recente (estável).
+- O Gradle composite build já integra `build-logic/` e `packages/shared-kmp/` automaticamente.
+- Rode o app diretamente pelo Android Studio ou via `./gradlew :apps:android:app:installDebug` (na raiz do repo).
+
+#### iOS (`apps/ios`)
+
+- Você precisa de um Mac com Xcode atualizado.
+- Abra `apps/ios` no Xcode e rode o app.
+- O projeto compila com **Swift 6** e `SWIFT_STRICT_CONCURRENCY = complete`. Código que compila ainda pode quebrar em runtime se você violar isolamento de actor — escreva código seguro, não só código que satisfaz o compilador.
+
+#### Landing (`apps/landing`)
+
+- Site em Astro, publicado no Cloudflare Pages.
+- Para rodar localmente, entre no workspace e use os scripts do `bun`:
+
+  ```sh
+  bun run --filter @melon/landing dev
+  ```
+
+#### Shared KMP (`packages/shared-kmp`)
+
+- Lógica de negócio compartilhada entre iOS e Android (banco de dados, rede, features de domínio).
+- Mudou algo aqui? Lembre-se que o codigo precisa ser compativel com ambas as plataformas.
+
+## Estilo de código
+
+- **TypeScript / Astro / JS**: `oxlint` (lint) e `oxfmt` (formatação). Rode `bun run fix` para aplicar lint + format automaticamente, ou `bun run check` para só verificar.
+- **Kotlin (Android + KMP)**: siga o estilo do Kotlin oficial. Declare classes, funções e propriedades top-level como `internal` por padrão; só use `public` quando o símbolo for realmente consumido por outro módulo Gradle. `private` quando ficar dentro de um arquivo.
+- **Swift (iOS)**: convenções padrão do Swift. `PascalCase.swift` para tipos.
+- **Android — Design System**: nada de cores, tipografia ou animações hardcoded em código de feature. Tudo vem de `MaterialTheme.colorScheme.*`, `MaterialTheme.melon.*`, `MaterialTheme.typography.*` e `MelonMotion.*`. Se um token não existe, adicione ao design system primeiro. Strings de UI sempre via `stringResource(R.string.…)`.
+
+Antes de abrir o PR, execute o linter correto para a linguagem: rode `bun run fix` para typescript para garantir que o lint/format está limpo.
+
+## Mensagens de commit
+
+- Mensagens claras e concisas.
+- Não adicione co-autores automáticos (Claude ou qualquer outro bot) nos commits.
+- Prefira commits pequenos e focados.
 
 ## Contribuindo com documentação
-Documentação é importante para que entendamos o que estamos fazendo, o que fizemos e porque fizemos certas escolhas.
-Se quiser comentar o código e/ou criar readme's pode começar!
-Sinta-se livre para criar um PR mesmo que seu commit seja somente reordenar as palavras para que elas façam sentido.
 
-Para contribuir:
-* [Prepare o projeto](#preparação-do-projeto-unes-melon)
-* Faça as mudanças
-* Abra um Pull Request
+Documentação é importante. Se quiser melhorar o README, esse próprio guia, comentar código não óbvio, ou traduzir algo — manda bala.
 
-Se seu PR for aceito, seu nome irá aparecer na lista de contribuidores dentro do aplicativo o/
+Para contribuir com docs:
+
+- [Prepare o projeto](#preparação-do-projeto-unes-melon)
+- Faça as mudanças
+- Abra um Pull Request
+
+Se seu PR for aceito, seu nome aparece na lista de contribuidores dentro do aplicativo.
 
 ## Contribuindo com código
-Contribuições com código tambem são bem vindas.
-O projeto atualmente está misto entre Kotlin e Java, o uso de Kotlin é o mais desejado, mas Java tambem é aceito.
 
-Você pode:
-* Implementar uma feature marcada nas issues.
-* Atualizar alguma tela, design
-* Corrigir erros nas strings do aplicativo (strings.xml)
-* Traduzir strings
-* Corrigir bugs e erros
-* Transferir uma classe Java para uma classe em Kotlin
+Algumas ideias para começar:
+
+- Implementar uma feature marcada como `feature-accepted` nas issues
+- Atualizar uma tela ou ajustar design para alinhar iOS e Android
+- Corrigir bugs
+- Adicionar/atualizar strings em `strings.xml` ou traduzir o app
+- Migrar lógica duplicada entre iOS e Android para `shared-kmp`
+- Melhorar a landing page
 
 Para contribuir com código:
-* [Prepare o projeto](#preparação-do-projeto-unes-melon)
-* Faça as mudanças realizadas, tentando manter a identação utilizada ao redor do código
-* Inclua comentários sobre o que foi feito na mudança
-* Escreva mensagens de commits claras e concisas.
-* O UNES utiliza o [ktlint](https://ktlint.github.io/) para manter o estilo de código do projeto, se você mandar o PR com o código fora do estilo, o CircleCI irá acusar um erro. Você pode verificar se o seu código está de acordo com o estilo executando o comando: `gradlew lintKotlin` e também pode corrigir automáticamente os erros de estilo com o comando: `gradlew formatKotlin`.
+
+- [Prepare o projeto](#preparação-do-projeto-unes-melon)
+- Faça as mudanças tentando manter o estilo do código ao redor
+- Rode `bun run fix` (TS/Astro) e teste em ambos os apps quando a mudança for cross-platform
+- Escreva mensagens de commit claras
+- Abra um Pull Request contra `development`
 
 Quando você enviar:
-* O PR somente será analisado se passar por todas as verificações (CircleCI)
-* Caso sejam necessárias mudanças você será notificado(a).
-* Caso seu PR seja recusado, será dada uma explicação do motivo que o levou a isso. Mas não fique triste, sua consideração pelo projeto é bem vinda e será lembrada
-* Se seu PR for aceito, ele será incluido na branch `development` e seu nome irá aparecer na lista de contribuidores dentro do aplicativo
-* O novo código será distribuído para todos quando uma release for feita. (Geralmente a cada 2 dias na versão beta)
 
+- O PR só é analisado se passar pelas verificações de CI.
+- Se forem necessárias mudanças, você será notificado(a).
+- Caso o PR seja recusado, é dada uma explicação. Sua consideração pelo projeto é bem vinda e será lembrada.
+- Se aceito, o PR entra na `development` e seu nome aparece na lista de contribuidores do app.
+- O novo código é distribuído quando sai uma release.

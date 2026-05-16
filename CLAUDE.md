@@ -22,14 +22,39 @@ All `bun` scripts should be run from the root of the repo.
 - `bun install` to install dependencies
 - `bun run check` to format-check and lint without applying fixes
 - `bun run fix` to format and lint with applying fixes
-- `bun run fmt` to only format
-- `bun run lint` to only lint
 
 **Important**: Run `bun run fix` frequently throughout your task to find issues, and always run it after your task completes.
 
 - Do NOT fix formatting issues yourself, use `bun run fix`.
 - For TypeScript typechecking, run `bun run --filter '@melon/*' typecheck` or `bun run tsc --noEmit` inside the specific workspace.
 - If you need to run a command in a specific package, use `bun run --filter @melon/package-name ...` or cd into the workspace.
+
+**Scope**: `bun run fix` / `bun run check` only operate on the TypeScript side (the bun workspace: `apps/landing`, configs, scripts). If your task touched only Kotlin, Swift, or other non-TS files, do NOT run them — they will do nothing useful and add noise. Run them when, and only when, you have modified files in the bun workspace.
+
+## Development Workflow for Android
+
+The Android side is a Gradle composite build rooted at the repo root. Run `./gradlew` from the repo root (not from `apps/android/`); `settings.gradle.kts` already wires in `build-logic/`, the Android modules, and every `packages/shared-kmp/*` module.
+
+Android Gradle modules:
+
+- `:apps:android:app` — the main app.
+- `:apps:android:design-system` — Compose-based design tokens, theme, and shared UI primitives.
+- `:apps:android:mvi` — shared MVI scaffolding for feature screens.
+
+Useful commands (run from repo root):
+
+- `./gradlew :apps:android:app:assembleDebug` — build the debug APK.
+- `./gradlew :apps:android:app:installDebug` — build + install on a connected device/emulator.
+- `./gradlew :apps:android:app:lintDebug` — run the Android Lint task.
+- `./gradlew <module>:compileDebugKotlin` — quick compile check for a single module (faster than a full assemble when you just want to know it builds).
+
+Guidance:
+
+- Prefer using Android Studio for builds/runs when possible; reach for `./gradlew` from the CLI for targeted compile checks or CI-style runs.
+- Don't run a full `./gradlew build` to validate a small Kotlin change — it's slow and pulls in unrelated modules. Compile the specific module instead.
+- After Kotlin/Compose changes, you do NOT need to run `bun run fix` — that's TypeScript only. See the scope note above.
+- If you touched `packages/shared-kmp/*`, a Gradle sync (or rerunning the relevant `compile*Kotlin` task) is enough on the Android side. On iOS you don't need to rebuild the XCFramework manually — the Xcode build script rebuilds it as part of the iOS app build.
+- Honor the design-system rules below (no hardcoded colors/typography/motion, strings via `stringResource`). Lint won't always catch violations; the rules are enforced by review.
 
 ## Development Workflow for iOS
 
@@ -61,18 +86,6 @@ The backend (API, scrapers, shared TS types/utils, infra) lives in a separate pr
 - **Type safety**: Avoid `any` and type casting. Use `zod` for validating unknown data at boundaries.
 - **Config files**: Use `.ts` extension for config files when possible.
 - **Typing**: Avoid adding explicit types when TypeScript can infer them; only add typings when you're confident inference is insufficient.
-- **Casting**: Instead of casting a variable to a type, add type guarding (e.g. with zod).
-- **Zod schema composition**: Never use `.merge()` or `.extend()` on Zod schemas — these create deeply nested generic types that can hit TypeScript's instantiation depth limit (TS2589). Instead, spread `.shape` into a flat `z.object()`:
-
-```ts
-// Bad — deep nested type
-const extendedBad = schemaA.extend({ newField: z.string() });
-const mergedBad = schemaA.merge(schemaB);
-
-// Good — flat type
-const extended = z.object({ ...schemaA.shape, newField: z.string() });
-const merged = z.object({ ...schemaA.shape, ...schemaB.shape });
-```
 
 ### Coding
 
@@ -126,10 +139,6 @@ If the M3 mapping in `Theme.kt` doesn't give you the exact iOS look on a specifi
 ### Typography
 
 `MaterialTheme.typography` is wired to mirror `UNESFont`: display + headline roles use **Fraunces** (iOS "serif moments"), title/body/label roles use **Inter** (iOS sans). Both are downloaded via Google Fonts on first request. If iOS uses `UNESFont.serif(28)` reach for `MaterialTheme.typography.headlineSmall` (or the closest size); if iOS uses `UNESFont.sans(16, weight: .medium)` reach for `titleMedium`. Do not declare ad-hoc `TextStyle(fontFamily = FontFamily.Default, …)` in feature code.
-
-### Animations
-
-`UNESMotion` (`spring`, `pop`, `ease`, `easeSlow`, `easeEmphasized`) does **not** yet have an Android equivalent. When porting an iOS flow that uses `UNESMotion.X`, add a matching `MelonMotion.X` to the design-system first (Compose `spring()`/`tween()` with the same response/damping/duration), then use it from the feature.
 
 ### Strings
 
