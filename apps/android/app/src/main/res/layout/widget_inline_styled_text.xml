@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Single TextView the day-done hero embeds via Glance's `AndroidRemoteViews`
+    escape hatch so a SpannableString can render with a foreground + italic
+    span on the date portion. Glance's own `Text` composable accepts only a
+    String, which forces two separate composables stacked vertically — the
+    escape hatch is what gets us iOS-style inline-wrapped accent text.
+-->
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_inline_styled_text"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fontFamily="serif"
+    android:lineSpacingExtra="0sp"
+    android:textSize="26sp" />

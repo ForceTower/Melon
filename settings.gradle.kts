@@ -1,42 +1,42 @@
-/*
- * This file is part of the UNES Open Source Project.
- * UNES is licensed under the GNU GPLv3.
- *
- * Copyright (c) 2020. João Paulo Sena <joaopaulo761@gmail.com>
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
-
 pluginManagement {
+    includeBuild("build-logic")
     repositories {
-        google {
-            content {
-                includeGroupByRegex("com\\.android.*")
-                includeGroupByRegex("com\\.google.*")
-                includeGroupByRegex("androidx.*")
-            }
-        }
+        google()
         mavenCentral()
         gradlePluginPortal()
     }
 }
 
-include(":app")
-include(":core")
-include(":dynamic-features:aeri")
-include(":dynamic-features:dashboard")
-include(":dynamic-features:conference")
-include(":dynamic-features:event")
-//include(":dynamic-features:map")
-include(":dynamic-features:disciplines")
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+rootProject.name = "Melon"
+
+include(":apps:android:app")
+include(":apps:android:design-system")
+include(":apps:android:mvi")
+
+include(":packages:shared-kmp:core:common")
+include(":packages:shared-kmp:core:logging")
+include(":packages:shared-kmp:core:network")
+include(":packages:shared-kmp:core:database")
+include(":packages:shared-kmp:core:storage")
+include(":packages:shared-kmp:core:session")
+include(":packages:shared-kmp:core:sync")
+include(":packages:shared-kmp:features:auth")
+include(":packages:shared-kmp:features:calendar")
+include(":packages:shared-kmp:features:dashboard")
+include(":packages:shared-kmp:features:disciplines")
+include(":packages:shared-kmp:features:me")
+include(":packages:shared-kmp:features:messages")
+include(":packages:shared-kmp:features:notifications")
+include(":packages:shared-kmp:features:overview")
+include(":packages:shared-kmp:features:schedule")
+include(":packages:shared-kmp:features:settings")
+include(":packages:shared-kmp:features:sync")
+include(":packages:shared-kmp:umbrella")

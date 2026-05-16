@@ -1,0 +1,113 @@
+---
+---
+
+<section class="showcase land" id="telas">
+  <div class="showcase-head">
+    <div>
+      <div class="section-eyebrow">◦ por dentro do app</div>
+      <h2 class="section-title">Cada tela ganhou <em>cuidado</em>.</h2>
+    </div>
+    <div class="showcase-tabs">
+      <button class="on" data-tab="home">Início</button>
+      <button data-tab="cal">Calendário</button>
+      <button data-tab="msg">Mensagens</button>
+      <button data-tab="grade">Notas</button>
+    </div>
+  </div>
+
+  <div class="showcase-row">
+    <div class="sc-card">
+      <div class="sc-eyb">◦ calendário</div>
+      <div class="sc-title">Mês <em>inteiro</em>, num gesto</div>
+      <div class="sc-body">
+        Provas em vermelho, entregas em ciano, feriados marcados. Toque pra ver o que tem no dia.
+        Arrasta pra próxima semana.
+      </div>
+      <div class="sc-mock mock-cal">
+        <div class="mock-cal-hd">
+          <span class="a">abril</span><span class="b">2026</span>
+        </div>
+        <div class="mock-cal-grid">
+          <div>S</div><div>T</div><div>Q</div><div>Q</div><div>S</div><div>S</div><div>D</div>
+          <div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div><div>7</div>
+          <div>8</div><div>9</div><div class="f">10</div><div>11</div><div>12</div><div>13</div><div>
+            14
+          </div>
+          <div>15</div><div>16</div><div class="g">17</div><div>18</div><div>19</div><div>20</div>
+          <div>21</div>
+          <div class="e">22</div><div>23</div><div>24</div><div>25</div><div class="f">26</div><div>
+            27
+          </div><div>28</div>
+          <div>29</div><div>30</div><div></div><div></div><div></div><div></div><div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sc-card">
+      <div class="sc-eyb">◦ mensagens</div>
+      <div class="sc-title">Recados que <em>importam</em></div>
+      <div class="sc-body">
+        Da coordenação, dos professores, da sua turma. Filtrado por urgência — não é o portal todo,
+        só o que mexe com você.
+      </div>
+      <div class="sc-mock mock-msg">
+        <div class="mock-msg-hd">3 não lidos</div>
+        <div class="mock-msg-row">
+          <div class="mock-msg-av a"></div>
+          <div class="mock-msg-content">
+            <div class="nm">Prof. Adriana Matos</div>
+            <div class="tx">Gabarito da P1 publicado na pasta da turma.</div>
+            <div class="tm">há 12 min · CALC II</div>
+          </div>
+        </div>
+        <div class="mock-msg-row">
+          <div class="mock-msg-av b"></div>
+          <div class="mock-msg-content">
+            <div class="nm">Coordenação</div>
+            <div class="tx">Calendário de provas atualizado para 2026.1.</div>
+            <div class="tm">há 2h · GERAL</div>
+          </div>
+        </div>
+        <div class="mock-msg-row">
+          <div class="mock-msg-av c"></div>
+          <div class="mock-msg-content">
+            <div class="nm">Lab. de Algoritmos</div>
+            <div class="tx">Reposição da prática de quarta confirmada.</div>
+            <div class="tm">ontem · ALGI</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sc-card">
+      <div class="sc-eyb">◦ notas</div>
+      <div class="sc-title">Sem <em>surpresa</em> no final</div>
+      <div class="sc-body">
+        Sua parcial calculada toda semana, com o que falta tirar pra passar bem. Acompanhamento por
+        matéria, semestre por semestre.
+      </div>
+      <div class="sc-mock mock-grade">
+        <div class="mock-grade-num">8<em>,</em>5</div>
+        <div class="mock-grade-lab">coeficiente atual</div>
+        <div class="mock-grade-rows">
+          <div><span>POO</span><span>9,4</span></div>
+          <div><span>Algoritmos I</span><span>8,8</span></div>
+          <div><span>Projeto de Software</span><span>8,1</span></div>
+          <div><span>Cálculo II</span><span>7,5</span></div>
+          <div><span>Física II</span><span>—</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>(".showcase-tabs button").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      document
+        .querySelectorAll(".showcase-tabs button")
+        .forEach((b) => b.classList.remove("on"));
+      btn.classList.add("on");
+    });
+  });
+</script>

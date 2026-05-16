@@ -1,0 +1,533 @@
+package dev.forcetower.unes.ui.feature.onboarding.login
+
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.AccountBox
+import androidx.compose.material.icons.filled.Key
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.activity.compose.LocalActivity
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.forcetower.unes.R
+import dev.forcetower.unes.designsystem.components.MelonGhostButton
+import dev.forcetower.unes.designsystem.components.MelonPrimaryButton
+import dev.forcetower.unes.designsystem.foundation.Mesh
+import dev.forcetower.unes.designsystem.foundation.MeshVariant
+import dev.forcetower.unes.designsystem.foundation.fadeInOnAppear
+import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
+import dev.forcetower.unes.designsystem.theme.MelonTheme
+import dev.forcetower.unes.designsystem.theme.melon
+import dev.forcetower.unes.mvi.collectAsEffect
+
+private enum class LoginField { Id, Password }
+
+@Composable
+fun LoginScreen(
+    onSubmit: (String) -> Unit,
+    onBack: () -> Unit,
+    vm: LoginViewModel = hiltViewModel(),
+) {
+    val state by vm.state.collectAsStateWithLifecycle()
+
+    vm.effects.collectAsEffect { effect ->
+        when (effect) {
+            is LoginEffect.Authenticated -> onSubmit(effect.firstName)
+        }
+    }
+
+    LoginContent(
+        state = state,
+        onIntent = vm::onIntent,
+        onBack = onBack,
+    )
+}
+
+@Composable
+private fun LoginContent(
+    state: LoginUiState,
+    onIntent: (LoginIntent) -> Unit,
+    onBack: () -> Unit,
+) {
+    var focused by remember { mutableStateOf<LoginField?>(null) }
+    var showForgotPasswordSheet by remember { mutableStateOf(false) }
+    val activity = LocalActivity.current
+
+    val ink = MaterialTheme.colorScheme.onBackground
+    val ink3 = MaterialTheme.colorScheme.onSurfaceVariant
+    val ink4 = MaterialTheme.colorScheme.outline
+    val accent = MaterialTheme.colorScheme.primary
+    val surface = MaterialTheme.colorScheme.surface
+    val card = MaterialTheme.melon.surface.card
+    val line = MaterialTheme.melon.surface.line
+    val surface2 = MaterialTheme.colorScheme.surfaceVariant
+    val errorColor = MaterialTheme.colorScheme.error
+
+    val id = state.username
+    val pw = state.password
+    val showPw = state.showPassword
+    val loading = state.isLoading
+
+    Box(
+        Modifier
+            .fillMaxSize()
+            .background(surface),
+    ) {
+        // Soft mesh hero behind the title — fades into surface vertically.
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .height(340.dp),
+        ) {
+            Mesh(
+                variant = MeshVariant.Warm,
+                intensity = 0.55f,
+                modifier = Modifier.fillMaxSize(),
+            )
+            // Vertical fade-out approximating the iOS LinearGradient mask.
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .background(
+                        androidx.compose.ui.graphics.Brush.verticalGradient(
+                            0f to Color.Transparent,
+                            0.85f to surface,
+                            1f to surface,
+                        ),
+                    ),
+            )
+        }
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(start = 28.dp, end = 28.dp, top = 120.dp, bottom = 40.dp),
+        ) {
+            Text(
+                text = stringResource(R.string.onboarding_login_eyebrow),
+                style = MaterialTheme.typography.labelSmall.copy(
+                    fontSize = 12.sp,
+                    letterSpacing = 1.4.sp,
+                    fontWeight = FontWeight.Medium,
+                ),
+                color = ink3,
+                modifier = Modifier.fadeUpOnAppear(delayMs = 50, durationMs = 500),
+            )
+            Spacer(Modifier.height(10.dp))
+            Text(
+                text = loginHeadline(ink, accent),
+                style = MaterialTheme.typography.displayLarge.copy(
+                    fontSize = 42.sp,
+                    lineHeight = 42.sp,
+                    letterSpacing = (-1.05).sp,
+                    fontWeight = FontWeight.Normal,
+                ),
+                modifier = Modifier.fadeUpOnAppear(delayMs = 150),
+            )
+            Spacer(Modifier.height(28.dp))
+
+            InputGroup(
+                focused = focused,
+                line = line,
+                ink = ink,
+                cardBg = card,
+                modifier = Modifier.fadeUpOnAppear(delayMs = 350),
+            ) {
+                    InputRow(
+                        label = stringResource(R.string.onboarding_login_id_label),
+                        placeholder = stringResource(R.string.onboarding_login_id_placeholder),
+                        value = id,
+                        onValueChange = { onIntent(LoginIntent.UsernameChanged(it)) },
+                        onFocusChanged = { f ->
+                            focused = when {
+                                f -> LoginField.Id
+                                focused == LoginField.Id -> null
+                                else -> focused
+                            }
+                        },
+                        keyboardType = KeyboardType.Text,
+                        isPassword = false,
+                        showPassword = false,
+                        ink = ink,
+                        ink3 = ink3,
+                        ink4 = ink4,
+                        trailing = {
+                            Box(
+                                Modifier
+                                    .size(32.dp)
+                                    .clip(RoundedCornerShape(10.dp))
+                                    .background(surface2),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.AccountBox,
+                                    contentDescription = null,
+                                    tint = ink3,
+                                    modifier = Modifier.size(14.dp),
+                                )
+                            }
+                        },
+                    )
+                    Box(Modifier.fillMaxWidth().height(1.dp).background(line))
+                    InputRow(
+                        label = stringResource(R.string.onboarding_login_password_label),
+                        placeholder = stringResource(R.string.onboarding_login_password_placeholder),
+                        value = pw,
+                        onValueChange = { onIntent(LoginIntent.PasswordChanged(it)) },
+                        onFocusChanged = { f ->
+                            focused = when {
+                                f -> LoginField.Password
+                                focused == LoginField.Password -> null
+                                else -> focused
+                            }
+                        },
+                        keyboardType = KeyboardType.Password,
+                        isPassword = true,
+                        showPassword = showPw,
+                        ink = ink,
+                        ink3 = ink3,
+                        ink4 = ink4,
+                        trailing = {
+                            val toggleLabel = stringResource(
+                                if (showPw) R.string.onboarding_login_hide_password
+                                else R.string.onboarding_login_show_password,
+                            )
+                            Box(
+                                Modifier
+                                    .size(32.dp)
+                                    .clip(RoundedCornerShape(10.dp))
+                                    .background(surface2)
+                                    .clickable(
+                                        role = Role.Button,
+                                        onClickLabel = toggleLabel,
+                                    ) { onIntent(LoginIntent.TogglePasswordVisibility) },
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                Icon(
+                                    imageVector = if (showPw) Icons.Filled.VisibilityOff else Icons.Filled.Visibility,
+                                    contentDescription = toggleLabel,
+                                    tint = ink3,
+                                    modifier = Modifier.size(14.dp),
+                                )
+                            }
+                        },
+                    )
+                }
+
+            Text(
+                text = stringResource(R.string.onboarding_login_forgot_password),
+                style = MaterialTheme.typography.labelLarge.copy(
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Medium,
+                ),
+                color = ink3,
+                modifier = Modifier
+                    .padding(top = 10.dp, start = 0.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .clickable(
+                        role = Role.Button,
+                        onClickLabel = stringResource(R.string.onboarding_login_forgot_password_label),
+                    ) { showForgotPasswordSheet = true }
+                    .padding(vertical = 8.dp)
+                    .fadeUpOnAppear(delayMs = 450),
+            )
+
+            AnimatedVisibility(visible = state.errorRes != null) {
+                val errorRes = state.errorRes
+                if (errorRes != null) {
+                    val message = state.errorArg
+                        ?.let { stringResource(errorRes, it) }
+                        ?: stringResource(errorRes)
+                    Text(
+                        text = message,
+                        style = MaterialTheme.typography.bodyMedium.copy(fontSize = 13.sp),
+                        color = errorColor,
+                        modifier = Modifier.padding(top = 12.dp),
+                    )
+                }
+            }
+
+            Spacer(Modifier.height(24.dp))
+
+            MelonPrimaryButton(
+                text = stringResource(R.string.onboarding_login_submit),
+                onClick = { onIntent(LoginIntent.Submit) },
+                enabled = state.canSubmit,
+                isLoading = loading,
+                modifier = Modifier.fadeUpOnAppear(delayMs = 500),
+            )
+
+            Spacer(Modifier.height(18.dp))
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fadeInOnAppear(delayMs = 550, durationMs = 500),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                Box(Modifier.weight(1f).height(1.dp).background(line))
+                Text(
+                    text = stringResource(R.string.onboarding_login_or_separator),
+                    style = MaterialTheme.typography.labelSmall.copy(
+                        fontSize = 10.sp,
+                        letterSpacing = 1.5.sp,
+                        fontFamily = FontFamily.Monospace,
+                    ),
+                    color = ink4,
+                )
+                Box(Modifier.weight(1f).height(1.dp).background(line))
+            }
+
+            Spacer(Modifier.height(18.dp))
+
+            MelonGhostButton(
+                text = stringResource(R.string.onboarding_login_passkey),
+                onClick = {
+                    val current = activity ?: return@MelonGhostButton
+                    onIntent(LoginIntent.SubmitPasskey(current))
+                },
+                leading = {
+                    Icon(
+                        imageVector = Icons.Filled.Key,
+                        contentDescription = null,
+                        tint = ink,
+                        modifier = Modifier.size(20.dp),
+                    )
+                },
+                modifier = Modifier.fadeUpOnAppear(delayMs = 600),
+            )
+
+            Spacer(Modifier.height(16.dp))
+
+            Text(
+                text = termsFooter(ink4, MaterialTheme.colorScheme.onSurface),
+                style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fadeInOnAppear(delayMs = 700, durationMs = 500),
+            )
+        }
+
+        // Back chip — drawn last so it sits above the scrollable column.
+        Box(
+            Modifier
+                .padding(top = 58.dp, start = 14.dp)
+                .size(40.dp)
+                .clip(CircleShape)
+                .background(surface.copy(alpha = 0.6f))
+                .border(1.dp, line, CircleShape)
+                .clickable(
+                    role = Role.Button,
+                    onClickLabel = stringResource(R.string.onboarding_login_back),
+                    onClick = onBack,
+                ),
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = stringResource(R.string.onboarding_login_back),
+                tint = ink,
+                modifier = Modifier.size(16.dp),
+            )
+        }
+    }
+
+    if (showForgotPasswordSheet) {
+        ForgotPasswordSheet(onDismiss = { showForgotPasswordSheet = false })
+    }
+}
+
+@Composable
+private fun InputGroup(
+    focused: LoginField?,
+    line: Color,
+    ink: Color,
+    cardBg: Color,
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit,
+) {
+    val borderColor by animateDpAsState(
+        targetValue = if (focused != null) 1.5.dp else 1.dp,
+        animationSpec = tween(200),
+        label = "border-w",
+    )
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(18.dp))
+            .background(cardBg)
+            .border(
+                width = borderColor,
+                color = if (focused != null) ink else line,
+                shape = RoundedCornerShape(18.dp),
+            ),
+    ) { content() }
+}
+
+@Composable
+private fun InputRow(
+    label: String,
+    placeholder: String,
+    value: String,
+    onValueChange: (String) -> Unit,
+    onFocusChanged: (Boolean) -> Unit,
+    keyboardType: KeyboardType,
+    isPassword: Boolean,
+    showPassword: Boolean,
+    ink: Color,
+    ink3: Color,
+    ink4: Color,
+    trailing: @Composable () -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(min = 60.dp)
+            .padding(horizontal = 18.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = label.uppercase(),
+                style = MaterialTheme.typography.labelSmall.copy(
+                    fontSize = 11.sp,
+                    letterSpacing = 0.9.sp,
+                    fontWeight = FontWeight.Medium,
+                ),
+                color = ink3,
+            )
+            Spacer(Modifier.height(4.dp))
+            BasicTextField(
+                value = value,
+                onValueChange = onValueChange,
+                singleLine = true,
+                cursorBrush = SolidColor(ink),
+                keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
+                visualTransformation = if (isPassword && !showPassword) PasswordVisualTransformation() else androidx.compose.ui.text.input.VisualTransformation.None,
+                textStyle = LocalTextStyle.current.copy(
+                    fontSize = 17.sp,
+                    color = ink,
+                    letterSpacing = (-0.17).sp,
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .onFocusChanged { onFocusChanged(it.isFocused) },
+                decorationBox = { inner ->
+                    Box {
+                        if (value.isEmpty()) {
+                            Text(
+                                text = placeholder,
+                                style = LocalTextStyle.current.copy(
+                                    fontSize = 17.sp,
+                                    color = ink4,
+                                    letterSpacing = (-0.17).sp,
+                                ),
+                            )
+                        }
+                        inner()
+                    }
+                },
+            )
+        }
+        Spacer(Modifier.size(10.dp))
+        trailing()
+    }
+}
+
+@Composable
+private fun loginHeadline(ink: Color, accent: Color): AnnotatedString =
+    buildAnnotatedString {
+        withStyle(SpanStyle(color = ink)) {
+            append(stringResource(R.string.onboarding_login_headline_top))
+        }
+        withStyle(SpanStyle(color = accent, fontStyle = FontStyle.Italic)) {
+            append(stringResource(R.string.onboarding_login_headline_accent))
+        }
+    }
+
+@Preview
+@Composable
+private fun LoginScreenPreview() {
+    MelonTheme {
+        LoginContent(
+            state = LoginUiState(username = "21345678", password = "secret"),
+            onIntent = {},
+            onBack = {},
+        )
+    }
+}
+
+@Composable
+private fun termsFooter(ink4: Color, ink2: Color): AnnotatedString =
+    buildAnnotatedString {
+        withStyle(SpanStyle(color = ink4)) {
+            append(stringResource(R.string.onboarding_login_terms_prefix))
+        }
+        withStyle(SpanStyle(color = ink2, textDecoration = TextDecoration.Underline)) {
+            append(stringResource(R.string.onboarding_login_terms_link_terms))
+        }
+        withStyle(SpanStyle(color = ink4)) {
+            append(stringResource(R.string.onboarding_login_terms_separator))
+        }
+        withStyle(SpanStyle(color = ink2, textDecoration = TextDecoration.Underline)) {
+            append(stringResource(R.string.onboarding_login_terms_link_privacy))
+        }
+        withStyle(SpanStyle(color = ink4)) {
+            append(stringResource(R.string.onboarding_login_terms_suffix))
+        }
+    }

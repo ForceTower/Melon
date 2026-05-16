@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    AppWidgetProviderInfo for the "Próxima aula" widget.
+
+    Sizing strategy: lower bounds intentionally permissive so the launcher
+    snaps to its native cell grid (≈ 70dp/cell on Pixel) without rejecting
+    intermediate sizes. The Kotlin side branches on the actual reported
+    DpSize (`SizeMode.Exact`), so the layout swaps to small / medium / large
+    as the user drags the resize handles.
+
+    `targetCellWidth=4` × `targetCellHeight=2` lands the initial drop at
+    medium on launchers that honor the API 31+ hint; `minWidth=110dp` lets
+    the user shrink to ≈2 cells (small) on the same launchers, and
+    `maxResize*` lets them grow to the full Large footprint.
+
+    No `android:configure` activity (the widget self-configures from the
+    snapshot file) and no `widgetFeatures="reconfigurable"` (Pixel Launcher
+    silently deletes the bind when the flag is set without a corresponding
+    configure activity). `updatePeriodMillis="1800000"` (30 min — the system
+    floor) acts as a safety net: the primary refresh is driven by
+    `NextClassWidgetReceiver`'s self-rescheduled AlarmManager tick, but if
+    that chain ever breaks (process kill without resurrection, OEM background
+    restrictions, etc.) the launcher will still poke us at least every half
+    hour. The system call also lands as `onUpdate`, which reschedules our
+    own tick — so a single launcher poll is enough to self-heal.
+-->
+<appwidget-provider
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:description="@string/widget_next_class_description"
+    android:initialKeyguardLayout="@layout/widget_loading"
+    android:initialLayout="@layout/widget_loading"
+    android:minWidth="110dp"
+    android:minHeight="110dp"
+    android:targetCellWidth="4"
+    android:targetCellHeight="2"
+    android:minResizeWidth="110dp"
+    android:minResizeHeight="110dp"
+    android:maxResizeWidth="400dp"
+    android:maxResizeHeight="500dp"
+    android:resizeMode="horizontal|vertical"
+    android:updatePeriodMillis="1800000"
+    android:widgetCategory="home_screen" />

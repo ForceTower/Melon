@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <text
+    x="209"
+    y="340"
+    font-family="'Instrument Serif', Georgia, 'Times New Roman', serif"
+    font-size="240"
+    font-weight="400"
+    fill="#ffffff"
+    text-anchor="middle"
+  >u</text>
+  <circle cx="331" cy="318" r="30" fill="#ffffff"/>
+</svg>

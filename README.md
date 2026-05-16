@@ -1,8 +1,6 @@
 # UNES - (UNES Não É Sagres)
 ![Preview-Screens](https://github.com/ForceTower/Melon/blob/development/repoimages/screens.png)
 
-[![Android Publisher CI](https://github.com/ForceTower/Melon/workflows/Android%20Publisher%20CI/badge.svg)](https://github.com/ForceTower/Melon/actions)
-
 O aplicativo oficial pode ser encontrado na [PlayStore](https://play.google.com/store/apps/details?id=com.forcetower.uefs)
 
 ### Por que?
@@ -28,17 +26,11 @@ O Juice é uma biblioteca sem dependência com a framework Android, logo, você 
 O UNES tenta tirar vantagem das coisas novas que o Google está trazendo para os desenvolvedores, então você irá encontrar uso dos componentes Jetpack, Funções Dinâmicas e PlayCore, Dagger/Hilt para injeção de depencias e outras coisas.
 
 ### Quer entrar em contato?
-Me mande um email joaopaulo761@gmail.com, ou me encontre no [LinkedIn](https://www.linkedin.com/in/forcetower/), [Facebook](https://www.facebook.com/ForceTower) ou [Instagram](https://www.instagram.com/joaopauloforce/).
+Me mande um email joaopaulo761@gmail.com, ou me encontre no [LinkedIn](https://www.linkedin.com/in/forcetower/) ou [Instagram](https://www.instagram.com/joaopauloforce/).
 
 ### Suporte a outras universidades
 Apesar do foco do aplicativo ser a Universidade Estadual de Feira de Santana (UEFS), se você quiser fazer um port para a sua universidade ou faculdade, sinta-se em casa.
 Para adicionar suporte a outras universidades/faculdades basta adicionar os endereços base nas [constantes](https://github.com/ForceTower/Juice/blob/unsuspended/src/main/kotlin/com/forcetower/sagres/Constants.kt) do aplicativo.
-
-### Adicionando uma mensagem nova ao login
-Você tambem pode contribuir com o projeto colocando uma mensagem aleatória que será exibida durante o carregamento dos dados iniciais.
-Você pode editar o arquivo [login_messages.json](https://github.com/ForceTower/Melon/blob/development/app/src/main/assets/login_messages.json) e mandar o seu PR :)
-
-As suas mensagens serão avaliadas e se aprovadas elas poderão aparecer no aplicativo!
 
 ### Aviso
 Este aplicativo não é licenciado nem tem qualquer ligação com a Tecnotrends, a empresa que mantem o Website e o serviço Sagres da UEFS. O aplicativo filtra as informações disponibilizadas pelo portal do estudante e então exibe no aplicativo.

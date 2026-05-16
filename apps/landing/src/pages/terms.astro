@@ -1,0 +1,149 @@
+---
+import Base from "../layouts/base.astro";
+import Nav from "../components/nav.astro";
+import Footer from "../components/footer.astro";
+---
+
+<Base
+  title="Termos de Uso — UNES"
+  description="As regras do jogo pra usar o UNES. Escritas pra ser legíveis."
+>
+  <Nav />
+  <main class="legal">
+    <header class="legal-head">
+      <div class="section-eyebrow">◦ documento legal</div>
+      <h1 class="legal-title">Termos de <em>Uso</em></h1>
+      <p class="legal-meta">Última atualização: 25 de abril de 2026</p>
+    </header>
+
+    <article class="legal-body">
+      <p class="lede">
+        Esses termos regulam o uso do app UNES. Ao usar o UNES, você concorda com eles.
+        Tenta ler com atenção — escrevemos pra ser legível, sem juridiquês desnecessário.
+      </p>
+
+      <h2>Quem somos</h2>
+      <p>
+        O UNES é um app independente desenvolvido por João Sena, em Feira de Santana — BA.
+        <strong>Não é um produto oficial da UEFS</strong> e não é endossado, mantido nem
+        afiliado à Universidade Estadual de Feira de Santana. A gente apenas conecta no
+        portal oficial pra organizar suas informações de forma melhor.
+      </p>
+
+      <h2>Quem pode usar</h2>
+      <p>
+        Estudantes da UEFS com matrícula ativa. Pra usar o app, você precisa das suas
+        credenciais do portal acadêmico.
+      </p>
+
+      <h2>Sua conta</h2>
+      <ul>
+        <li>Você é responsável por manter suas credenciais em segurança.</li>
+        <li>Não compartilhe sua conta com terceiros.</li>
+        <li>
+          Se desconfiar de acesso indevido, troque sua senha no portal da UEFS e fale com a
+          gente em <a href="mailto:me@forcetower.dev">me@forcetower.dev</a>.
+        </li>
+      </ul>
+
+      <h2>Uso aceitável</h2>
+      <p>Você concorda em <strong>não</strong>:</p>
+      <ul>
+        <li>Tentar acessar contas de outras pessoas ou se passar por alguém.</li>
+        <li>
+          Fazer scraping, engenharia reversa ou tentar burlar limites técnicos do app, além
+          do permitido em lei.
+        </li>
+        <li>Usar o app pra fins ilegais ou que violem regulamentos da UEFS.</li>
+        <li>
+          Sobrecarregar nossos servidores com requisições automatizadas ou tráfego abusivo.
+        </li>
+      </ul>
+
+      <h2>Sobre os dados que aparecem no app</h2>
+      <p>
+        Os dados acadêmicos (notas, horário, mensagens, calendário) vêm direto dos sistemas
+        da UEFS. A gente faz o melhor pra mostrar tudo corretamente, mas:
+      </p>
+      <ul>
+        <li>
+          Se o portal estiver fora do ar ou lento, alguns dados podem ficar desatualizados.
+        </li>
+        <li>Se houver erro no SAGRES, esse erro pode aparecer no app.</li>
+        <li>
+          <strong>A versão oficial sempre é a do portal da UEFS.</strong> Em caso de
+          divergência, vale o que está lá.
+        </li>
+      </ul>
+
+      <h2>Disponibilidade</h2>
+      <p>
+        A gente faz o possível pra manter o app sempre no ar, mas não garante uptime de
+        100%. Manutenções, instabilidades do portal da UEFS ou incidentes técnicos podem
+        deixar o app temporariamente indisponível.
+      </p>
+
+      <h2>Preço</h2>
+      <p>
+        O UNES é gratuito pra estudantes. Não tem assinatura, não tem compra dentro do app,
+        não tem anúncio.
+      </p>
+
+      <h2>Propriedade intelectual</h2>
+      <p>
+        O código-fonte, o design, a marca UNES e os conteúdos do app pertencem a João Sena.
+        Você recebe uma licença pessoal, não-exclusiva e não-transferível pra usar o app
+        pra fins próprios.
+      </p>
+      <p>Os dados acadêmicos exibidos pertencem a você e à UEFS.</p>
+
+      <h2>Encerramento</h2>
+      <p>
+        Você pode parar de usar o UNES e apagar sua conta a qualquer momento — direto no
+        app ou solicitando por email.
+      </p>
+      <p>
+        A gente pode suspender ou encerrar seu acesso se identificarmos uso abusivo,
+        fraudulento ou em desacordo com estes termos. Quando possível, avisamos antes.
+      </p>
+
+      <h2>Limitação de responsabilidade</h2>
+      <p>
+        O UNES é fornecido "como está". Na máxima extensão permitida pela legislação
+        brasileira, a gente não se responsabiliza por:
+      </p>
+      <ul>
+        <li>
+          Decisões tomadas com base em informações desatualizadas ou divergentes do portal
+          da UEFS.
+        </li>
+        <li>Indisponibilidade temporária do serviço.</li>
+        <li>
+          Perdas indiretas decorrentes do uso ou da impossibilidade de uso do app.
+        </li>
+      </ul>
+      <p>Isso não exclui as responsabilidades obrigatórias pela legislação consumerista.</p>
+
+      <h2>Mudanças nestes termos</h2>
+      <p>
+        Se mudarmos materialmente esses termos, avisamos dentro do app antes de a mudança
+        entrar em vigor. A data da última atualização sempre aparece no topo desta página.
+      </p>
+
+      <h2>Lei e foro</h2>
+      <p>
+        Esses termos são regidos pelas leis brasileiras. Fica eleito o foro da Comarca de
+        Feira de Santana — BA pra dirimir qualquer questão decorrente destes termos, sem
+        prejuízo dos foros consumeristas previstos em lei.
+      </p>
+
+      <h2>Contato</h2>
+      <p>
+        <a href="mailto:me@forcetower.dev">me@forcetower.dev</a> — João Sena, Feira de Santana — BA.
+      </p>
+    </article>
+  </main>
+  <div class="land-shell">
+    <Footer />
+  </div>
+</Base>

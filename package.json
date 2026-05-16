@@ -1,0 +1,17 @@
+{
+  "name": "melon-clients",
+  "private": true,
+  "workspaces": ["apps/landing"],
+  "scripts": {
+    "check": "oxlint --deny-warnings --type-aware && oxfmt --check",
+    "fix": "oxfmt --write && oxlint --deny-warnings --fix --type-aware",
+    "fmt": "oxfmt --write",
+    "lint": "oxlint --type-aware",
+    "kmp:xcframework": "./gradlew :packages:shared-kmp:umbrella:assembleUmbrellaReleaseXCFramework"
+  },
+  "devDependencies": {
+    "oxfmt": "^0.45.0",
+    "oxlint": "^1.60.0",
+    "oxlint-tsgolint": "^0.21.1"
+  }
+}

@@ -1,0 +1,51 @@
+package dev.forcetower.melon.core.logging
+
+import co.touchlab.kermit.Logger
+import co.touchlab.kermit.LoggerConfig
+import co.touchlab.kermit.StaticConfig
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesTo
+import dev.zacsweers.metro.Provides
+import dev.zacsweers.metro.SingleIn
+
+@ContributesTo(AppScope::class)
+interface LoggingGraph {
+    companion object {
+        @Provides
+        @SingleIn(AppScope::class)
+        fun loggerConfig(
+            config: LoggingConfig,
+            remote: RemoteLogWriters,
+            crashReporter: CrashReporter,
+        ): LoggerConfig {
+            val writers = buildList {
+                addAll(platformDefaultLogWriters(config))
+                addAll(remote.writers)
+                if (config.enableCrashReporting && crashReporter !is NoopCrashReporter) {
+                    add(
+                        CrashReporterLogWriter(
+                            reporter = crashReporter,
+                            minSeverity = config.minCrashBreadcrumbSeverity,
+                            minCrashSeverity = config.minCrashReportSeverity,
+                        ),
+                    )
+                }
+            }
+            // The Logger short-circuits anything below its minSeverity before
+            // asking writers — so it must be the floor of every writer's own
+            // minimum, otherwise writers that want more-verbose logs never see
+            // them. Each writer then does its own final filtering via
+            // isLoggable/minSeverity.
+            val floor = listOf(
+                config.minLocalSeverity,
+                config.minRemoteSeverity,
+                config.minCrashBreadcrumbSeverity,
+            ).min()
+            return StaticConfig(minSeverity = floor, logWriterList = writers)
+        }
+
+        @Provides
+        @SingleIn(AppScope::class)
+        fun logger(loggerConfig: LoggerConfig): Logger = Logger(loggerConfig)
+    }
+}
