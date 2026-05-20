@@ -142,6 +142,7 @@ dependencies {
     // live alongside the rest of the app code.
     implementation(libs.androidx.glance.appwidget)
     implementation(libs.androidx.glance.material3)
+    implementation(libs.androidx.work.runtime.ktx)
 
     // Firebase BoM pins all SDK versions in lockstep — Analytics for usage
     // tracking, Crashlytics for crash reporting, Messaging for FCM push.
