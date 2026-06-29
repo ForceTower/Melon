@@ -10,7 +10,14 @@ struct MeView: View {
     // Shortcut grid + settings rows are UI affordances, not user data — they
     // keep reading from `MeFixtures`. Only the hero / semester strip / CR /
     // credits are viewmodel-driven.
-    private let pinned = MeFixtures.pinned(from: [.calendar, .countdown])
+    // Pinned shortcuts; "Matrícula" only appears while the enrollment window
+    // is open (`MeViewModel.enrollmentAvailable`).
+    private var pinned: [Shortcut] {
+        var ids: [Shortcut.Kind] = []
+        if viewModel.enrollmentAvailable { ids.append(.enrollment) }
+        ids.append(contentsOf: [.calendar, .countdown])
+        return MeFixtures.pinned(from: ids)
+    }
     private let settingsFactory: SettingsFactory?
     private let calendarFactory: CalendarFactory?
     private let onLoggedOut: () -> Void
@@ -21,6 +28,11 @@ struct MeView: View {
     // Same intrinsic-height pattern for the "Sobre o aplicativo" sheet.
     @State private var aboutSheetHeight: CGFloat = 540
     @State private var aboutPresented: Bool = false
+    // The enrollment flow's view model — loads the live window + offers and owns
+    // the in-progress proposal. Pushed onto the hub stack (value-routed via
+    // `EnrollmentRoute`) so every step gets the native back chevron and the
+    // entry screen returns here.
+    @State private var enrollVM: EnrollmentViewModel
     // Type-erased path — the Me hub can push both `Shortcut.Kind` (from the
     // shortcut grid) and `MeSettingsRow.Kind` (from the settings list) onto
     // the same stack.
@@ -28,6 +40,7 @@ struct MeView: View {
 
     init(factory: MeFactory, onLoggedOut: @escaping () -> Void = {}) {
         _viewModel = State(initialValue: factory.makeViewModel())
+        _enrollVM = State(initialValue: factory.enrollmentFactory.makeViewModel())
         self.settingsFactory = factory.settingsFactory
         self.calendarFactory = factory.calendarFactory
         self.onLoggedOut = onLoggedOut
@@ -37,9 +50,22 @@ struct MeView: View {
     // `MeFixtures` without a live graph.
     init() {
         _viewModel = State(initialValue: MeViewModel())
+        _enrollVM = State(initialValue: EnrollmentViewModel())
         self.settingsFactory = nil
         self.calendarFactory = nil
         self.onLoggedOut = {}
+    }
+
+    // Identity strip for the enrollment entry screen, sourced from the signed-in
+    // profile (the enrollment feed doesn't carry the student).
+    private var enrollStudent: EnrollmentStudent {
+        guard let identity = viewModel.identity else { return EnrollmentFixtures.student }
+        return EnrollmentStudent(
+            name: identity.name,
+            course: identity.course,
+            period: identity.semester,
+            avatarInitial: identity.avatarInitial
+        )
     }
 
     // Nil until the profile flow emits — `screenBody` hides the hero in that
@@ -67,6 +93,11 @@ struct MeView: View {
                     default:
                         EmptyView()
                     }
+                }
+                .navigationDestination(for: EnrollmentRoute.self) { route in
+                    enrollmentDestination(for: route)
+                        .toolbar(.hidden, for: .tabBar)
+                        .task { await enrollVM.loadIfNeeded() }
                 }
                 .navigationDestination(for: MeSettingsRow.Kind.self) { kind in
                     switch kind {
@@ -244,8 +275,91 @@ struct MeView: View {
         switch kind {
         case .countdown, .calendar:
             path.append(kind)
+        case .enrollment:
+            guard viewModel.enrollmentAvailable else { return }
+            path.append(EnrollmentRoute.window)
         default:
             break
+        }
+    }
+
+    // Builds each screen of the matrícula flow for this hub's stack, mirroring
+    // `OnboardingFlow.destination(for:)`. The entry screen owns the load / empty
+    // states so the inner screens always receive a resolved `window`.
+    @ViewBuilder
+    private func enrollmentDestination(for route: EnrollmentRoute) -> some View {
+        switch route {
+        case .window:
+            if let window = enrollVM.window {
+                WindowStatusView(
+                    enroll: enrollVM.enroll, window: window, windowState: enrollVM.windowState, student: enrollStudent,
+                    onStart: { path.append(EnrollmentRoute.offers) },
+                    onReview: { path.append(EnrollmentRoute.review) }
+                )
+            } else if let error = enrollVM.loadError {
+                EnrollmentLoadFailedView(message: error) { await enrollVM.retry() }
+            } else {
+                EnrollmentLoadingView()
+            }
+        case .offers:
+            enrollmentScreen { window in
+                if enrollVM.offersLoading {
+                    EnrollmentLoadingView()
+                } else {
+                    OffersView(
+                        enroll: enrollVM.enroll, window: window, disciplines: enrollVM.disciplines,
+                        onOpenDiscipline: { path.append(EnrollmentRoute.picker($0.id)) },
+                        onTimetable: { path.append(EnrollmentRoute.timetable) },
+                        onReview: { path.append(EnrollmentRoute.review) }
+                    )
+                }
+            }
+        case .picker(let id):
+            enrollmentScreen { window in
+                if let discipline = enrollVM.disciplines.first(where: { $0.id == id }) {
+                    SectionPickerView(
+                        discipline: discipline, enroll: enrollVM.enroll, window: window,
+                        onTimetable: { path.append(EnrollmentRoute.timetable) }
+                    )
+                }
+            }
+        case .timetable:
+            enrollmentScreen { window in
+                EnrollmentTimetableView(
+                    enroll: enrollVM.enroll, window: window,
+                    onReview: { path.append(EnrollmentRoute.review) }
+                )
+            }
+        case .review:
+            enrollmentScreen { window in
+                ReviewView(
+                    enroll: enrollVM.enroll, window: window, windowState: enrollVM.windowState,
+                    onTimetable: { path.append(EnrollmentRoute.timetable) },
+                    onSubmit: {
+                        let error = await enrollVM.submit()
+                        if error == nil { path.append(EnrollmentRoute.success) }
+                        return error
+                    }
+                )
+            }
+        case .success:
+            enrollmentScreen { window in
+                SuccessView(
+                    enroll: enrollVM.enroll, window: window,
+                    onDone: { path = NavigationPath() }
+                )
+            }
+        }
+    }
+
+    // Inner matrícula screens need a resolved window; show the loader until the
+    // entry screen's fetch lands it.
+    @ViewBuilder
+    private func enrollmentScreen(@ViewBuilder _ content: (EnrollmentWindow) -> some View) -> some View {
+        if let window = enrollVM.window {
+            content(window)
+        } else {
+            EnrollmentLoadingView()
         }
     }
 

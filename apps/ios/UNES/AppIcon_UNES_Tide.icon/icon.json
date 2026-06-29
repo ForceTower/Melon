@@ -1,165 +1,142 @@
 {
-  "fill" : "automatic",
-  "groups" : [
+  "fill": "automatic",
+  "groups": [
     {
-      "blur-material" : null,
-      "hidden-specializations" : [
+      "blur-material": null,
+      "hidden-specializations": [
         {
-          "value" : false
+          "value": false
         },
         {
-          "appearance" : "dark",
-          "value" : true
+          "appearance": "dark",
+          "value": true
         }
       ],
-      "layers" : [
+      "layers": [
         {
-          "glass" : false,
-          "image-name" : "L5-sheen.svg",
-          "name" : "L5-sheen",
-          "position" : {
-            "scale" : 1.07,
-            "translation-in-points" : [
-              0,
-              0
-            ]
+          "glass": false,
+          "image-name": "L5-sheen.svg",
+          "name": "L5-sheen",
+          "position": {
+            "scale": 1.07,
+            "translation-in-points": [0, 0]
           }
         },
         {
-          "glass" : false,
-          "image-name" : "L4-wave-front.svg",
-          "name" : "L4-wave-front",
-          "position" : {
-            "scale" : 1.07,
-            "translation-in-points" : [
-              0,
-              0
-            ]
+          "glass": false,
+          "image-name": "L4-wave-front.svg",
+          "name": "L4-wave-front",
+          "position": {
+            "scale": 1.07,
+            "translation-in-points": [0, 0]
           }
         },
         {
-          "glass" : false,
-          "image-name" : "L3-glyph.svg",
-          "name" : "L3-glyph",
-          "position" : {
-            "scale" : 1.07,
-            "translation-in-points" : [
-              0,
-              0
-            ]
+          "glass": false,
+          "image-name": "L3-glyph.svg",
+          "name": "L3-glyph",
+          "position": {
+            "scale": 1.07,
+            "translation-in-points": [0, 0]
           }
         },
         {
-          "glass" : false,
-          "image-name" : "L2-wave-mid.svg",
-          "name" : "L2-wave-mid",
-          "position" : {
-            "scale" : 1.07,
-            "translation-in-points" : [
-              0,
-              0
-            ]
+          "glass": false,
+          "image-name": "L2-wave-mid.svg",
+          "name": "L2-wave-mid",
+          "position": {
+            "scale": 1.07,
+            "translation-in-points": [0, 0]
           }
         },
         {
-          "glass" : false,
-          "image-name" : "L1-wave-back.svg",
-          "name" : "L1-wave-back",
-          "position" : {
-            "scale" : 1.07,
-            "translation-in-points" : [
-              0,
-              0
-            ]
+          "glass": false,
+          "image-name": "L1-wave-back.svg",
+          "name": "L1-wave-back",
+          "position": {
+            "scale": 1.07,
+            "translation-in-points": [0, 0]
           }
         },
         {
-          "glass" : false,
-          "image-name" : "L0-sky.svg",
-          "name" : "L0-sky",
-          "position" : {
-            "scale" : 1.07,
-            "translation-in-points" : [
-              0,
-              0
-            ]
+          "glass": false,
+          "image-name": "L0-sky.svg",
+          "name": "L0-sky",
+          "position": {
+            "scale": 1.07,
+            "translation-in-points": [0, 0]
           }
         }
       ],
-      "lighting" : "individual",
-      "shadow" : {
-        "kind" : "neutral",
-        "opacity" : 0.5
+      "lighting": "individual",
+      "shadow": {
+        "kind": "neutral",
+        "opacity": 0.5
       },
-      "specular" : true,
-      "translucency" : {
-        "enabled" : true,
-        "value" : 0.5
+      "specular": true,
+      "translucency": {
+        "enabled": true,
+        "value": 0.5
       }
     },
     {
-      "hidden-specializations" : [
+      "hidden-specializations": [
         {
-          "value" : true
+          "value": true
         },
         {
-          "appearance" : "dark",
-          "value" : false
+          "appearance": "dark",
+          "value": false
         }
       ],
-      "layers" : [
+      "layers": [
         {
-          "glass" : false,
-          "image-name" : "L5-sheen 2.svg",
-          "name" : "L5-sheen 2"
+          "glass": false,
+          "image-name": "L5-sheen 2.svg",
+          "name": "L5-sheen 2"
         },
         {
-          "glass" : false,
-          "image-name" : "L4-wave-front 2.svg",
-          "name" : "L4-wave-front 2"
+          "glass": false,
+          "image-name": "L4-wave-front 2.svg",
+          "name": "L4-wave-front 2"
         },
         {
-          "glass" : false,
-          "image-name" : "L3-glyph 2.svg",
-          "name" : "L3-glyph 2"
+          "glass": false,
+          "image-name": "L3-glyph 2.svg",
+          "name": "L3-glyph 2"
         },
         {
-          "glass" : false,
-          "image-name" : "L2-wave-mid 2.svg",
-          "name" : "L2-wave-mid 2"
+          "glass": false,
+          "image-name": "L2-wave-mid 2.svg",
+          "name": "L2-wave-mid 2"
         },
         {
-          "glass" : false,
-          "image-name" : "L1-wave-back 2.svg",
-          "name" : "L1-wave-back 2"
+          "glass": false,
+          "image-name": "L1-wave-back 2.svg",
+          "name": "L1-wave-back 2"
         },
         {
-          "glass" : false,
-          "image-name" : "L0-sky 2.svg",
-          "name" : "L0-sky 2"
+          "glass": false,
+          "image-name": "L0-sky 2.svg",
+          "name": "L0-sky 2"
         }
       ],
-      "position" : {
-        "scale" : 1.07,
-        "translation-in-points" : [
-          0,
-          0
-        ]
+      "position": {
+        "scale": 1.07,
+        "translation-in-points": [0, 0]
       },
-      "shadow" : {
-        "kind" : "neutral",
-        "opacity" : 0.5
+      "shadow": {
+        "kind": "neutral",
+        "opacity": 0.5
       },
-      "translucency" : {
-        "enabled" : true,
-        "value" : 0.5
+      "translucency": {
+        "enabled": true,
+        "value": 0.5
       }
     }
   ],
-  "supported-platforms" : {
-    "circles" : [
-      "watchOS"
-    ],
-    "squares" : "shared"
+  "supported-platforms": {
+    "circles": ["watchOS"],
+    "squares": "shared"
   }
 }

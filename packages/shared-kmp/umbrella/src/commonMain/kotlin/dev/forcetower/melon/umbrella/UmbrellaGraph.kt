@@ -16,6 +16,9 @@ import dev.forcetower.melon.feature.dashboard.domain.usecase.GetReadyOverviewUse
 import dev.forcetower.melon.feature.disciplines.domain.usecase.CalculateOverallScoreUseCase
 import dev.forcetower.melon.feature.disciplines.domain.usecase.ObserveDisciplineDetailUseCase
 import dev.forcetower.melon.feature.disciplines.domain.usecase.ObserveDisciplinesListUseCase
+import dev.forcetower.melon.feature.enrollment.domain.usecase.GetEnrollmentOffersUseCase
+import dev.forcetower.melon.feature.enrollment.domain.usecase.GetEnrollmentWindowUseCase
+import dev.forcetower.melon.feature.enrollment.domain.usecase.SubmitEnrollmentUseCase
 import dev.forcetower.melon.feature.me.domain.usecase.ObserveCurrentCredentialsUseCase
 import dev.forcetower.melon.feature.me.domain.usecase.ObserveMeProfileUseCase
 import dev.forcetower.melon.feature.messages.domain.usecase.MarkAllMessagesAsReadUseCase
@@ -123,6 +126,13 @@ interface UmbrellaGraph {
     // Eu (Me) reactive surface — emits the hero identity, semester strip data,
     // CR/hours rollup, and the closest upcoming evaluation as one snapshot.
     val observeMeProfileUseCase: ObserveMeProfileUseCase
+
+    // Matrícula (enrollment) — all live/uncached. `window` is the cheap hub-gate
+    // + entry-screen check, `offers` is the full disciplines tree, and `submit`
+    // runs the open → publish → close transaction server-side.
+    val getEnrollmentWindowUseCase: GetEnrollmentWindowUseCase
+    val getEnrollmentOffersUseCase: GetEnrollmentOffersUseCase
+    val submitEnrollmentUseCase: SubmitEnrollmentUseCase
 
     // Configurações reactive surface — emits the active session's typed
     // upstream credentials so the Settings vault card can render them.

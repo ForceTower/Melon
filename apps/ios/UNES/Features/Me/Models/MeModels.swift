@@ -53,7 +53,7 @@ enum ShortcutTone {
 struct Shortcut: Identifiable {
     enum Kind: String, CaseIterable {
         case account, zhonya, flowchart, bandejao, calendar,
-             countdown, request, theme, reminders, adventure
+             countdown, request, theme, reminders, adventure, enrollment
     }
 
     let id: Kind

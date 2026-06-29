@@ -19,6 +19,9 @@ struct MeFactory {
     let settingsFactory: SettingsFactory
     // Same idea for the "Calendário" shortcut destination.
     let calendarFactory: CalendarFactory
+    // And for the "Matrícula" shortcut — the enrollment flow lives on the Me
+    // hub's stack, so it gets its use cases through here.
+    let enrollmentFactory: EnrollmentFactory
 
     func makeViewModel() -> MeViewModel {
         MeViewModel(useCases: useCases, sessionStore: sessionStore)

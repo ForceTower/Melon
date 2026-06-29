@@ -44,6 +44,7 @@ kotlin {
             api(project(":packages:shared-kmp:features:calendar"))
             api(project(":packages:shared-kmp:features:dashboard"))
             api(project(":packages:shared-kmp:features:disciplines"))
+            api(project(":packages:shared-kmp:features:enrollment"))
             api(project(":packages:shared-kmp:features:me"))
             api(project(":packages:shared-kmp:features:messages"))
             api(project(":packages:shared-kmp:features:notifications"))

@@ -45,6 +45,8 @@ enum MeFixtures {
                              systemImage: "bell",               tone: .coral),
         .adventure: Shortcut(id: .adventure, label: "Adventure",       hint: "easter egg",
                              systemImage: "safari",             tone: .amber),
+        .enrollment: Shortcut(id: .enrollment, label: "Matrícula",     hint: "montar semestre",
+                             systemImage: "checklist",          tone: .teal),
     ]
 
     static let shortcutSets: [MeShortcutSet] = [

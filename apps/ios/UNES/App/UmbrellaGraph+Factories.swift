@@ -69,6 +69,17 @@ extension UmbrellaGraph {
     }
 
     @MainActor
+    var enrollmentFactory: EnrollmentFactory {
+        EnrollmentFactory(
+            useCases: EnrollmentUseCases(
+                window: getEnrollmentWindowUseCase,
+                offers: getEnrollmentOffersUseCase,
+                submit: submitEnrollmentUseCase
+            )
+        )
+    }
+
+    @MainActor
     var messagesFactory: MessagesFactory {
         MessagesFactory(
             useCases: MessagesUseCases(
@@ -90,7 +101,8 @@ extension UmbrellaGraph {
             ),
             sessionStore: sessionStore,
             settingsFactory: settingsFactory,
-            calendarFactory: calendarFactory
+            calendarFactory: calendarFactory,
+            enrollmentFactory: enrollmentFactory
         )
     }
 

@@ -18,6 +18,10 @@ final class MeViewModel {
     }
 
     private(set) var identity: ProfileIdentity?
+    /// Gates the "Matrícula" shortcut in the hub — the enrollment flow only
+    /// surfaces while the selection window is open. Fixture-driven for now
+    /// (defaults on); will be fed by the open-window check from upstream.
+    private(set) var enrollmentAvailable: Bool = true
     private(set) var logoutStep: LogoutStep = .idle
     private(set) var logoutName: String = "Estudante"
     private(set) var lastSyncIso: String?
