@@ -321,47 +321,8 @@ private struct CoefficientWidget: View {
         }
     }
 
-    /// Truncated to one decimal — UFF-style grades are never rounded up.
     private var display: String {
-        guard let coefficient else { return "—" }
-        let truncated = (coefficient * 10).rounded(.down) / 10
-        return String(format: "%.1f", truncated).replacingOccurrences(of: ".", with: ",")
-    }
-
-    private struct Sparkline: View {
-        let values: [Double]
-
-        var body: some View {
-            let low = values.min() ?? 0
-            let high = values.max() ?? 1
-            let span = max(high - low, 0.1)
-            let width: CGFloat = 90
-            let height: CGFloat = 26
-            let points = values.enumerated().map { index, value in
-                CGPoint(
-                    x: CGFloat(index) / CGFloat(values.count - 1) * width,
-                    y: height - (value - low) / span * height
-                )
-            }
-
-            ZStack(alignment: .topLeading) {
-                Path { path in
-                    path.addLines(points)
-                }
-                .stroke(
-                    UNESColor.tangerine,
-                    style: StrokeStyle(lineWidth: 2.2, lineCap: .round, lineJoin: .round)
-                )
-
-                if let last = points.last {
-                    Circle()
-                        .fill(UNESColor.tangerine)
-                        .frame(width: 6, height: 6)
-                        .position(last)
-                }
-            }
-            .frame(width: width, height: height)
-        }
+        formatGrade(coefficient)
     }
 }
 

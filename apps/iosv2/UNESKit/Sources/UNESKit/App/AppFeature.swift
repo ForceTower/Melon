@@ -4,22 +4,23 @@ import ComposableArchitecture
 struct AppFeature {
     @ObservableState
     struct State: Equatable {
-        var tab: Tab = .overview
-        var overview = OverviewFeature.State()
+        var tab: Tab = .home
+        var home = HomeFeature.State()
         var schedule = ScheduleFeature.State()
         var disciplines = DisciplinesFeature.State()
         var messages = MessagesFeature.State()
         var me = MeFeature.State()
+        var unreadMessages = 0
         @Shared(.appStorage("theme")) var theme: AppTheme = .system
     }
 
     enum Tab: String, CaseIterable, Hashable, Sendable {
-        case overview, schedule, classes, messages, me
+        case home, schedule, classes, messages, me
     }
 
     enum Action: Equatable {
         case tabChanged(Tab)
-        case overview(OverviewFeature.Action)
+        case home(HomeFeature.Action)
         case schedule(ScheduleFeature.Action)
         case disciplines(DisciplinesFeature.Action)
         case messages(MessagesFeature.Action)
@@ -27,7 +28,7 @@ struct AppFeature {
     }
 
     var body: some ReducerOf<Self> {
-        Scope(state: \.overview, action: \.overview) { OverviewFeature() }
+        Scope(state: \.home, action: \.home) { HomeFeature() }
         Scope(state: \.schedule, action: \.schedule) { ScheduleFeature() }
         Scope(state: \.disciplines, action: \.disciplines) { DisciplinesFeature() }
         Scope(state: \.messages, action: \.messages) { MessagesFeature() }
@@ -39,15 +40,22 @@ struct AppFeature {
                 state.tab = tab
                 return .none
 
-            case .overview(.delegate(.openMessages)):
-                state.tab = .messages
+            case let .home(.delegate(delegate)):
+                switch delegate {
+                case .openSchedule:
+                    state.tab = .schedule
+                case .openClasses:
+                    state.tab = .classes
+                case .openMessages:
+                    state.tab = .messages
+                case .openMe:
+                    state.tab = .me
+                case let .unreadMessagesChanged(count):
+                    state.unreadMessages = count
+                }
                 return .none
 
-            case .overview(.delegate(.openSchedule)):
-                state.tab = .schedule
-                return .none
-
-            case .overview, .schedule, .disciplines, .messages, .me:
+            case .home, .schedule, .disciplines, .messages, .me:
                 return .none
             }
         }

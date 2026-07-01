@@ -64,8 +64,25 @@ enum UNESColor {
 
     static let teal = Color(hex: 0x3B9EAE)
     static let tangerine = Color(hex: 0xE8894E)
+    static let violet = Color(hex: 0x7A6CE0)
     static let liveGreen = Color(hex: 0x34C759)
     static let successGreen = Color(hex: 0x2F9E5E)
+    static let alertRed = Color(hex: 0xFF3B30)
+
+    /// Stable per-discipline tints, assigned by the discipline's color index.
+    static let disciplinePalette: [Color] = [coral, teal, magenta, violet, amber]
+
+    static func disciplineColor(_ index: Int) -> Color {
+        let count = disciplinePalette.count
+        return disciplinePalette[((index % count) + count) % count]
+    }
+
+    // MARK: Mensagens widget (always dark, like the hero)
+
+    /// Backdrop behind the rose mesh.
+    static let roseBg = Color(hex: 0x1A0F28)
+    /// Base of the scrim layered over the rose mesh.
+    static let roseScrim = Color(hex: 0x100A1A)
 
     // MARK: Always-dark screens (splash / welcome / sync)
 

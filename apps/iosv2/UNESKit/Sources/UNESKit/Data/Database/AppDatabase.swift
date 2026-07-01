@@ -1,3 +1,4 @@
+import ComposableArchitecture
 import Foundation
 import GRDB
 
@@ -8,11 +9,129 @@ func appDatabase() throws -> any DatabaseWriter {
     )
     let path = URL.applicationSupportDirectory.appending(path: "unes.sqlite").path(percentEncoded: false)
     let database = try DatabaseQueue(path: path)
+    try migrator().migrate(database)
+    return database
+}
 
+/// A fresh, fully migrated queue for tests and previews.
+func inMemoryDatabase() throws -> any DatabaseWriter {
+    let database = try DatabaseQueue()
+    try migrator().migrate(database)
+    return database
+}
+
+private func migrator() -> DatabaseMigrator {
     var migrator = DatabaseMigrator()
     #if DEBUG
     migrator.eraseDatabaseOnSchemaChange = true
     #endif
-    try migrator.migrate(database)
-    return database
+
+    // One table per api/sync payload array (plus messages and sync metadata).
+    // Every semester-scoped table carries `semesterId` so a re-sync can
+    // replace one semester's rows atomically. Disciplines, teachers, and
+    // spaces are shared across semesters upstream, so their mirror rows are
+    // keyed by (semesterId, id); the rest have globally unique upstream ids.
+    migrator.registerMigration("v1") { db in
+        try db.create(table: "semesters") { t in
+            t.primaryKey("id", .text)
+            t.column("code", .text).notNull()
+            t.column("description", .text).notNull()
+            t.column("startDate", .text).notNull()
+            t.column("endDate", .text).notNull()
+        }
+        try db.create(table: "disciplines") { t in
+            t.column("semesterId", .text).notNull()
+            t.column("id", .text).notNull()
+            t.column("code", .text)
+            t.column("name", .text).notNull()
+            t.primaryKey(["semesterId", "id"])
+        }
+        try db.create(table: "disciplineOffers") { t in
+            t.primaryKey("id", .text)
+            t.column("semesterId", .text).notNull().indexed()
+            t.column("disciplineId", .text).notNull()
+        }
+        try db.create(table: "classes") { t in
+            t.primaryKey("id", .text)
+            t.column("semesterId", .text).notNull().indexed()
+            t.column("offerId", .text).notNull()
+            t.column("hours", .integer).notNull()
+        }
+        try db.create(table: "teachers") { t in
+            t.column("semesterId", .text).notNull()
+            t.column("id", .text).notNull()
+            t.column("name", .text).notNull()
+            t.primaryKey(["semesterId", "id"])
+        }
+        try db.create(table: "classTeachers") { t in
+            t.column("semesterId", .text).notNull().indexed()
+            t.column("classId", .text).notNull()
+            t.column("teacherId", .text).notNull()
+            t.primaryKey(["classId", "teacherId"])
+        }
+        try db.create(table: "spaces") { t in
+            t.column("semesterId", .text).notNull()
+            t.column("id", .text).notNull()
+            t.column("location", .text).notNull()
+            t.primaryKey(["semesterId", "id"])
+        }
+        try db.create(table: "allocations") { t in
+            t.primaryKey("id", .text)
+            t.column("semesterId", .text).notNull().indexed()
+            t.column("classId", .text).notNull()
+            t.column("spaceId", .text)
+            t.column("day", .integer)
+            t.column("startTime", .text)
+            t.column("endTime", .text)
+        }
+        try db.create(table: "studentClasses") { t in
+            t.primaryKey("id", .text)
+            t.column("semesterId", .text).notNull().indexed()
+            t.column("classId", .text).notNull()
+            t.column("missedClasses", .integer)
+        }
+        try db.create(table: "studentGrades") { t in
+            t.primaryKey("id", .text)
+            t.column("semesterId", .text).notNull().indexed()
+            t.column("studentClassId", .text).notNull()
+            t.column("name", .text)
+            t.column("nameShort", .text)
+            t.column("ordinal", .integer).notNull()
+            t.column("value", .text)
+            t.column("date", .text)
+        }
+        try db.create(table: "lectures") { t in
+            t.primaryKey("id", .text)
+            t.column("semesterId", .text).notNull().indexed()
+            t.column("classId", .text).notNull()
+            t.column("date", .text)
+            t.column("subject", .text)
+        }
+        try db.create(table: "messages") { t in
+            t.primaryKey("id", .text)
+            t.column("subject", .text)
+            t.column("content", .text)
+            t.column("senderName", .text)
+            t.column("timestamp", .text)
+            t.column("read", .boolean)
+        }
+        try db.create(table: "syncState") { t in
+            t.primaryKey("key", .text)
+            t.column("value", .text).notNull()
+        }
+    }
+    return migrator
+}
+
+private enum DatabaseKey: DependencyKey {
+    static let liveValue: any DatabaseWriter = try! appDatabase()
+    static var testValue: any DatabaseWriter { try! inMemoryDatabase() }
+    static var previewValue: any DatabaseWriter { try! inMemoryDatabase() }
+}
+
+extension DependencyValues {
+    var database: any DatabaseWriter {
+        get { self[DatabaseKey.self] }
+        set { self[DatabaseKey.self] = newValue }
+    }
 }

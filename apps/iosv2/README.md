@@ -13,7 +13,7 @@ apps/iosv2/
   UNES.xcodeproj        thin app shell (Swift 6 + complete concurrency, MainActor default isolation)
   UNES/UNESApp.swift    @main App — imports UNESKit and hosts RootView()
   UNESKit/              local Swift package — all feature code lives here
-    Package.swift        swiftLanguageModes: [.v6], depends on swift-composable-architecture
+    Package.swift        swiftLanguageModes: [.v6], depends on swift-composable-architecture + GRDB
     Sources/UNESKit/
       Domain/            pure Swift — no networking
         Models/          domain models (Profile, …) — what reducers and views speak
@@ -21,7 +21,8 @@ apps/iosv2/
       Data/              implements the Domain interfaces
         DTO/             Codable wire models (mirror packages/shared-types) + mapping to domain
         Network/         APIClient (URLSession data source) + APIError
-        Repositories/    live repository values (liveValue) — HTTP + DTO→domain mapping
+        Database/        GRDB SQLite mirror — schema (AppDatabase), records, SemesterSnapshot + mappings, MirrorStore
+        Repositories/    live repository values (liveValue) — HTTP + mirror + DTO→domain mapping
       Features/          UI — one folder per tab: <Feature>Feature.swift (@Reducer) + <Feature>View.swift
       App/               AppFeature (root @Reducer) + AppView (tab shell) + RootView (public entry)
       Components/        shared, design-agnostic views
@@ -82,6 +83,22 @@ sync → ready on a native `NavigationStack` (value-routed `StackState`).
 - **Initial sync**: `SyncFeature` runs the six-step first sync against
   `api/sync/onboarding-status` (phase-1 terminal gate + applied-semesters
   gate), then snapshots the active semester for the Ready screen.
+- **Home v2** (`Features/Home`): the "Hoje" tab from the v2 design — native
+  collapsing large title (accent date eyebrow as the first content line,
+  avatar in the toolbar), mesh hero with a live countdown to the next class,
+  widget grid (coefficient sparkline, attendance ring, next exam, messages),
+  the "Seu dia" list with a live now-line, and the Turmas carousel. Data is
+  stale-while-revalidate over a local **SQLite mirror** (GRDB, `Data/Database`):
+  on `.task` the reducer hydrates instantly from the mirror (no spinner when
+  data exists) and kicks a network refresh — the active
+  `api/sync/semesters/:id` payload transactionally replaces that semester's
+  rows (upstream deletions disappear locally), the first `api/sync/messages`
+  page is upserted by id, and both the wire and DB paths fold into the same
+  `HomeOverview` mapping through `SemesterSnapshot`. The persisted
+  `lastSyncedAt` drives the "Atualizado há X min" footer across relaunches,
+  and an offline refresh (pull or hero rollover) recomputes hero/"Seu dia"
+  from mirrored data so the screen still advances with time.
 
-The connected tabs are still minimal placeholder reducers; per-feature data
-wiring and the Home v2 redesign layer on top of this shell next.
+The remaining tabs (Horário, Turmas, Mensagens, Eu) are still minimal
+placeholder reducers; Home's day rows and discipline cards value-route to a
+placeholder detail until the discipline detail screen ships.

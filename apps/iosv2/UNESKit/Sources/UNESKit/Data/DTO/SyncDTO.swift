@@ -78,6 +78,10 @@ extension SemesterListDTO.ItemDTO {
     var domain: Semester {
         Semester(id: id, code: code, description: description, startDate: startDate, endDate: endDate)
     }
+
+    var record: SemesterRecord {
+        SemesterRecord(id: id, code: code, description: description, startDate: startDate, endDate: endDate)
+    }
 }
 
 // MARK: - api/sync/semesters/:id (subset — decoding ignores the rest)
@@ -96,11 +100,16 @@ struct SemesterPayloadDTO: Decodable {
     let lectures: [LectureDTO]
 
     struct SemesterDTO: Decodable {
+        let id: String
         let code: String
+        let description: String
+        let startDate: String
+        let endDate: String
     }
 
     struct DisciplineDTO: Decodable {
         let id: String
+        let code: String?
         let name: String
     }
 
@@ -131,6 +140,7 @@ struct SemesterPayloadDTO: Decodable {
     }
 
     struct AllocationDTO: Decodable {
+        let id: String
         let classId: String
         let spaceId: String?
         /// Upstream day encoding: 0=Sunday … 6=Saturday.
@@ -146,7 +156,11 @@ struct SemesterPayloadDTO: Decodable {
     }
 
     struct StudentGradeDTO: Decodable {
+        let id: String
         let studentClassId: String
+        let name: String?
+        /// Compact evaluation label, e.g. "P2".
+        let nameShort: String?
         let ordinal: Int
         /// Decimal string, e.g. "8.5"; null while ungraded.
         let value: String?
@@ -154,104 +168,75 @@ struct SemesterPayloadDTO: Decodable {
     }
 
     struct LectureDTO: Decodable {
+        let id: String
         let classId: String
         /// yyyy-MM-dd; null when not yet scheduled.
         let date: String?
+        let subject: String?
     }
 }
 
 extension SemesterPayloadDTO {
-    func readyOverview(now: Date, calendar: Calendar = .current) -> ReadyOverview {
-        let enrolledIds = Set(studentClasses.map(\.classId))
-        let enrolledClasses = classes.filter { enrolledIds.contains($0.id) }
-        let spark = gradeSpark
-
-        return ReadyOverview(
-            semesterCode: semester.code,
-            classCount: enrolledClasses.count,
-            // 1 credit = 15 class-hours (a 60h course is 4 credits).
-            totalCredits: enrolledClasses.reduce(0) { $0 + $1.hours } / 15,
-            nextClass: nextClass(enrolledIds: enrolledIds, now: now, calendar: calendar),
-            coefficient: spark.isEmpty ? nil : spark.reduce(0, +) / Double(spark.count),
-            gradeSpark: spark,
-            attendancePercent: attendancePercent(enrolledIds: enrolledIds, now: now)
-        )
-    }
-
-    /// Posted grade values in (date, ordinal) order. Grade values are decimal
-    /// strings with a dot separator.
-    private var gradeSpark: [Double] {
-        studentGrades
-            .filter { $0.value != nil }
-            .sorted { ($0.date ?? "", $0.ordinal) < ($1.date ?? "", $1.ordinal) }
-            .compactMap { $0.value.flatMap(Double.init) }
-    }
-
-    /// Presence over lectures already held (dated up to today).
-    private func attendancePercent(enrolledIds: Set<String>, now: Date) -> Int? {
-        let today = now.dayStamp
-        let held = lectures.count { lecture in
-            guard let date = lecture.date else { return false }
-            return enrolledIds.contains(lecture.classId) && date <= today
-        }
-        guard held > 0 else { return nil }
-        let missed = studentClasses.reduce(0) { $0 + ($1.missedClasses ?? 0) }
-        return max(0, min(100, 100 - (missed * 100 + held / 2) / held))
-    }
-
-    /// The allocation with the smallest forward distance in the week from
-    /// `now`, using the same week-slot arithmetic as the KMP dashboard.
-    private func nextClass(enrolledIds: Set<String>, now: Date, calendar: Calendar) -> NextClassInfo? {
-        let minutesInDay = 24 * 60
-        let minutesInWeek = 7 * minutesInDay
-        let parts = calendar.dateComponents([.weekday, .hour, .minute], from: now)
-        // Calendar weekday is 1=Sunday..7; upstream is 0=Sunday..6.
-        let nowSlot = (parts.weekday! - 1) * minutesInDay + parts.hour! * 60 + parts.minute!
-
-        var winner: (delta: Int, allocation: AllocationDTO)?
-        for allocation in allocations where enrolledIds.contains(allocation.classId) {
-            guard let day = allocation.day, let start = parseHhMm(allocation.startTime) else { continue }
-            let slot = day * minutesInDay + start
-            let delta = ((slot - nowSlot) % minutesInWeek + minutesInWeek) % minutesInWeek
-            if winner.map({ delta < $0.delta }) ?? true {
-                winner = (delta, allocation)
+    /// Every record carries the owning semester id so the mirror can replace
+    /// one semester's scope atomically.
+    var snapshot: SemesterSnapshot {
+        let semesterId = semester.id
+        return SemesterSnapshot(
+            semester: SemesterRecord(
+                id: semester.id,
+                code: semester.code,
+                description: semester.description,
+                startDate: semester.startDate,
+                endDate: semester.endDate
+            ),
+            disciplines: disciplines.map {
+                DisciplineRecord(id: $0.id, semesterId: semesterId, code: $0.code, name: $0.name)
+            },
+            disciplineOffers: disciplineOffers.map {
+                DisciplineOfferRecord(id: $0.id, semesterId: semesterId, disciplineId: $0.disciplineId)
+            },
+            classes: classes.map {
+                ClassRecord(id: $0.id, semesterId: semesterId, offerId: $0.offerId, hours: $0.hours)
+            },
+            teachers: teachers.map {
+                TeacherRecord(id: $0.id, semesterId: semesterId, name: $0.name)
+            },
+            classTeachers: classTeachers.map {
+                ClassTeacherRecord(semesterId: semesterId, classId: $0.classId, teacherId: $0.teacherId)
+            },
+            spaces: spaces.map {
+                SpaceRecord(id: $0.id, semesterId: semesterId, location: $0.location)
+            },
+            allocations: allocations.map {
+                AllocationRecord(
+                    id: $0.id,
+                    semesterId: semesterId,
+                    classId: $0.classId,
+                    spaceId: $0.spaceId,
+                    day: $0.day,
+                    startTime: $0.startTime,
+                    endTime: $0.endTime
+                )
+            },
+            studentClasses: studentClasses.map {
+                StudentClassRecord(id: $0.id, semesterId: semesterId, classId: $0.classId, missedClasses: $0.missedClasses)
+            },
+            studentGrades: studentGrades.map {
+                StudentGradeRecord(
+                    id: $0.id,
+                    semesterId: semesterId,
+                    studentClassId: $0.studentClassId,
+                    name: $0.name,
+                    nameShort: $0.nameShort,
+                    ordinal: $0.ordinal,
+                    value: $0.value,
+                    date: $0.date
+                )
+            },
+            lectures: lectures.map {
+                LectureRecord(id: $0.id, semesterId: semesterId, classId: $0.classId, date: $0.date, subject: $0.subject)
             }
-        }
-        guard let winner else { return nil }
-
-        let classesById = Dictionary(classes.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
-        let offersById = Dictionary(disciplineOffers.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
-        let disciplinesById = Dictionary(disciplines.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
-        let spacesById = Dictionary(spaces.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
-        let teachersById = Dictionary(teachers.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
-        let teacherIdByClass = Dictionary(classTeachers.map { ($0.classId, $0.teacherId) }, uniquingKeysWith: { first, _ in first })
-
-        let allocation = winner.allocation
-        let discipline = classesById[allocation.classId]
-            .flatMap { offersById[$0.offerId] }
-            .flatMap { disciplinesById[$0.disciplineId] }
-
-        return NextClassInfo(
-            disciplineName: discipline?.name ?? "",
-            startTime: hhMm(allocation.startTime) ?? "",
-            endTime: hhMm(allocation.endTime),
-            location: allocation.spaceId.flatMap { spacesById[$0]?.location },
-            teacherName: teacherIdByClass[allocation.classId].flatMap { teachersById[$0]?.name },
-            startsInMinutes: winner.delta
         )
-    }
-
-    /// Upstream times come as "HH:mm:ss"; the UI speaks "HH:mm".
-    private func hhMm(_ time: String?) -> String? {
-        guard let time, time.count >= 5 else { return time }
-        return String(time.prefix(5))
-    }
-
-    private func parseHhMm(_ value: String?) -> Int? {
-        guard let value, !value.isEmpty else { return nil }
-        let parts = value.split(separator: ":")
-        guard parts.count >= 2, let h = Int(parts[0]), let m = Int(parts[1].prefix(2)) else { return nil }
-        return h * 60 + m
     }
 }
 

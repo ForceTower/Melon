@@ -20,7 +20,7 @@ extension SyncRepository: DependencyKey {
         readyOverview: { semester, now in
             @Dependency(\.apiClient) var apiClient
             let dto: SemesterPayloadDTO = try await apiClient.get(from: "api/sync/semesters/\(semester.id)")
-            return dto.readyOverview(now: now)
+            return dto.snapshot.readyOverview(now: now)
         },
         fetchFirstMessagesPage: {
             @Dependency(\.apiClient) var apiClient
