@@ -67,7 +67,21 @@ cd UNESKit && swift test
 
 ## Status
 
-Foundation scaffold only: the tab shell, cross-tab navigation via child
-`delegate` actions, the API dependency seam, and a `TestStore` test. Every tab is
-a real (minimal) reducer with a native placeholder screen. The redesign and the
-per-feature data wiring layer on top of this store-driven shell.
+Onboarding v2 is implemented end to end: `RootFeature` gates between the
+onboarding flow and the tab shell based on the Keychain session, and
+`OnboardingFeature` drives splash → welcome → intro carousel → login →
+sync → ready on a native `NavigationStack` (value-routed `StackState`).
+
+- **DesignSystem/** carries the first real tokens from the v2 design:
+  `UNESColor` (adaptive neutrals + fixed brand palette), `UNESMotion`
+  (the `cubic-bezier(.2,.9,.3,x)` entrance family), the animated `MeshView`
+  gradient, entrance modifiers, and the filled `UNESButtonStyle`.
+- **Auth data layer**: `AuthRepository` (SAGRES credentials + passkey via
+  `ASAuthorizationController`), Keychain-backed `SessionStore`, and the
+  envelope-aware `APIClient` with bearer injection.
+- **Initial sync**: `SyncFeature` runs the six-step first sync against
+  `api/sync/onboarding-status` (phase-1 terminal gate + applied-semesters
+  gate), then snapshots the active semester for the Ready screen.
+
+The connected tabs are still minimal placeholder reducers; per-feature data
+wiring and the Home v2 redesign layer on top of this shell next.
