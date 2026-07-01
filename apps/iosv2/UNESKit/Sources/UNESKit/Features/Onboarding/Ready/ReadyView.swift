@@ -381,20 +381,23 @@ private struct AttendanceWidget: View {
             Spacer(minLength: 8)
 
             HStack(alignment: .bottom) {
-                (
-                    Text(percent.map(String.init) ?? "—")
-                        + Text("%").font(.system(size: 15, weight: .heavy)).foregroundStyle(UNESColor.ink3)
-                )
-                .font(.system(size: 30, weight: .heavy))
-                .tracking(-1.2)
-                .monospacedDigit()
-                .foregroundStyle(UNESColor.ink)
+                percentLabel
+                    .font(.system(size: 30, weight: .heavy))
+                    .tracking(-1.2)
+                    .monospacedDigit()
+                    .foregroundStyle(UNESColor.ink)
 
                 Spacer(minLength: 8)
 
                 ring
             }
         }
+    }
+
+    private var percentLabel: Text {
+        guard let percent else { return Text("—") }
+        return Text("\(percent)")
+            + Text("%").font(.system(size: 15, weight: .heavy)).foregroundStyle(UNESColor.ink3)
     }
 
     private var ring: some View {
