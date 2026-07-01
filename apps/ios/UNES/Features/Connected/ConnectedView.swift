@@ -14,12 +14,14 @@ struct ConnectedView: View {
     let refreshSession: SyncRefreshSessionUseCase
     let backfillMirror: SyncBackfillMirrorUseCase
     let pingActivity: SyncPingActivityUseCase
+    let foregroundSignal: CommonForegroundSignal
     let widgetSnapshotPublisher: WidgetSnapshotPublisher
     var onLoggedOut: () -> Void = {}
 
     @State private var activeTab: ConnectedTab = .overview
     @State private var refreshInFlight = false
     @State private var pingInFlight = false
+    @State private var wasBackgrounded = false
     @Environment(\.scenePhase) private var scenePhase
     @AppStorage(ScheduleVariant.storageKey) private var scheduleVariantRaw: String = ScheduleVariant.default.rawValue
 
@@ -92,16 +94,29 @@ struct ConnectedView: View {
                 log.warn("mirror backfill failed", error: error)
             }
         }
-        .onChange(of: scenePhase) { oldPhase, newPhase in
-            // SwiftUI's `.task` only fires the first time the view mounts, so
-            // a backgrounded-then-foregrounded app would otherwise keep
-            // showing stale data until the user force-quit. Re-fire on the
-            // .background → .active transition only — .inactive → .active
-            // covers transient interruptions (control center, incoming call)
-            // that don't warrant a network round-trip.
-            guard oldPhase == .background, newPhase == .active else { return }
-            Task { await runSessionRefresh(reason: "foreground") }
-            Task { await runPing(reason: "foreground") }
+        .onChange(of: scenePhase) { _, newPhase in
+            // SwiftUI's `.task` only fires the first time the view mounts, so a
+            // backgrounded-then-resumed app would otherwise keep showing the day
+            // it was suspended on. iOS resumes via .background → .inactive →
+            // .active, so we can't key off the immediate previous phase — track
+            // whether we truly reached .background instead. Transient .inactive
+            // blips (control center, call banner, app-switcher peek) never do,
+            // so they don't trigger work.
+            switch newPhase {
+            case .background:
+                wasBackgrounded = true
+            case .active:
+                guard wasBackgrounded else { return }
+                wasBackgrounded = false
+                // Recompute wall-clock-derived UI (today/now class, schedule,
+                // next test) immediately rather than waiting on the in-process
+                // ticker, which doesn't reliably fire after a long suspension.
+                foregroundSignal.pulse()
+                Task { await runSessionRefresh(reason: "foreground") }
+                Task { await runPing(reason: "foreground") }
+            default:
+                break
+            }
         }
     }
 

@@ -1,6 +1,8 @@
 package dev.forcetower.melon.feature.overview.domain.usecase
 
+import dev.forcetower.melon.core.common.ForegroundSignal
 import dev.forcetower.melon.core.common.parseHhMm
+import dev.forcetower.melon.core.common.tickerFlow
 import dev.forcetower.melon.core.common.toUpstreamDay
 import dev.forcetower.melon.core.common.weekSlot
 import dev.forcetower.melon.core.common.weekSlotDelta
@@ -9,7 +11,6 @@ import dev.forcetower.melon.core.database.dao.SemesterDao
 import dev.forcetower.melon.core.database.query.SemesterAllocationRow
 import dev.forcetower.melon.core.database.query.TodayLectureRow
 import dev.forcetower.melon.feature.overview.domain.internal.pickActiveSemester
-import dev.forcetower.melon.feature.overview.domain.internal.ticker
 import dev.forcetower.melon.feature.overview.domain.model.OverviewNowClass
 import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -29,13 +30,14 @@ import kotlinx.datetime.LocalDateTime
 class ObserveNowClassUseCase internal constructor(
     private val semesterDao: SemesterDao,
     private val academicDao: AcademicDao,
+    private val foreground: ForegroundSignal,
 ) {
     operator fun invoke(): Flow<OverviewNowClass?> {
         // (semesterId, dateIso) pair: resubs happen only when the semester
         // changes or the local day rolls over, not on every ticker beat.
         val keyFlow: Flow<Pair<String, String>?> = combine(
             semesterDao.observeAll(),
-            ticker(),
+            tickerFlow(30_000, foreground.pulses),
         ) { semesters, now ->
             val dateIso = now.date.toString()
             pickActiveSemester(semesters, dateIso)?.let { it.id to dateIso }
@@ -46,7 +48,7 @@ class ObserveNowClassUseCase internal constructor(
             combine(
                 academicDao.observeSemesterAllocations(key.first),
                 academicDao.observeTodayLecturesForSemester(key.first, key.second),
-                ticker(),
+                tickerFlow(30_000, foreground.pulses),
             ) { allocations, lectures, now -> pickNowClass(allocations, lectures, now) }
                 .distinctUntilChanged()
         }

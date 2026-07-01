@@ -1,0 +1,20 @@
+import ComposableArchitecture
+
+@Reducer
+struct DisciplinesFeature {
+    @ObservableState
+    struct State: Equatable {}
+
+    enum Action: Equatable {
+        case onAppear
+    }
+
+    var body: some ReducerOf<Self> {
+        Reduce { _, action in
+            switch action {
+            case .onAppear:
+                return .none
+            }
+        }
+    }
+}

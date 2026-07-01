@@ -2,6 +2,7 @@ package dev.forcetower.melon.umbrella
 
 import co.touchlab.kermit.Logger
 import dev.forcetower.melon.core.common.ApplicationContext
+import dev.forcetower.melon.core.common.ForegroundSignal
 import dev.forcetower.melon.core.logging.CrashReporter
 import dev.forcetower.melon.core.logging.LoggingConfig
 import dev.forcetower.melon.core.logging.NoopCrashReporter
@@ -62,6 +63,12 @@ interface UmbrellaGraph {
     val registerNotificationTokenUseCase: RegisterNotificationTokenUseCase
     val sessionStore: SessionStore
     val logger: Logger
+
+    // App-lifecycle foreground pulse. The native shell calls pulse() on resume;
+    // time-derived flows (today/now class, schedule week, next class, next test)
+    // merge it into their ticker so they recompute the current day/time instantly
+    // instead of showing the day the app was backgrounded.
+    val foregroundSignal: ForegroundSignal
 
     // SyncView orchestration surface (iOS). Each step calls one of these.
     val syncProfileUseCase: SyncProfileUseCase

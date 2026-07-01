@@ -1,12 +1,13 @@
 package dev.forcetower.melon.feature.schedule.domain.usecase
 
+import dev.forcetower.melon.core.common.ForegroundSignal
 import dev.forcetower.melon.core.common.parseHhMm
+import dev.forcetower.melon.core.common.tickerFlow
 import dev.forcetower.melon.core.database.dao.AcademicDao
 import dev.forcetower.melon.core.database.dao.SemesterDao
 import dev.forcetower.melon.core.database.entity.SemesterEntity
 import dev.forcetower.melon.core.database.query.SemesterAllocationRow
 import dev.forcetower.melon.core.database.query.WeekLectureRow
-import dev.forcetower.melon.feature.schedule.domain.internal.ticker
 import dev.forcetower.melon.feature.schedule.domain.model.ScheduleClass
 import dev.forcetower.melon.feature.schedule.domain.model.ScheduleDay
 import dev.forcetower.melon.feature.schedule.domain.model.ScheduleWeek
@@ -35,11 +36,12 @@ import kotlinx.datetime.plus
 class ObserveScheduleWeekUseCase internal constructor(
     private val semesterDao: SemesterDao,
     private val academicDao: AcademicDao,
+    private val foreground: ForegroundSignal,
 ) {
     operator fun invoke(): Flow<ScheduleWeek> {
         val keyFlow: Flow<WeekKey> = combine(
             semesterDao.observeAll(),
-            ticker(),
+            tickerFlow(60_000, foreground.pulses),
         ) { semesters, now ->
             val today = now.date
             val todayIso = today.toString()

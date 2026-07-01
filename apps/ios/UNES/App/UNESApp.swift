@@ -26,6 +26,7 @@ struct UNESApp: App {
                 refreshSession: graph.refreshSessionUseCase,
                 backfillMirror: graph.backfillMirrorUseCase,
                 pingActivity: graph.pingActivityUseCase,
+                foregroundSignal: graph.foregroundSignal,
                 widgetSnapshotPublisher: graph.makeWidgetSnapshotPublisher()
             )
         }

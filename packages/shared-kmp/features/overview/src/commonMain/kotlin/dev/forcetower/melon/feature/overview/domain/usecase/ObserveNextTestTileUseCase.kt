@@ -1,9 +1,10 @@
 package dev.forcetower.melon.feature.overview.domain.usecase
 
+import dev.forcetower.melon.core.common.ForegroundSignal
+import dev.forcetower.melon.core.common.tickerFlow
 import dev.forcetower.melon.core.database.dao.AcademicDao
 import dev.forcetower.melon.core.database.dao.SemesterDao
 import dev.forcetower.melon.feature.overview.domain.internal.pickActiveSemester
-import dev.forcetower.melon.feature.overview.domain.internal.ticker
 import dev.forcetower.melon.feature.overview.domain.model.OverviewNextTestTile
 import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -23,11 +24,12 @@ import kotlinx.datetime.LocalDate
 class ObserveNextTestTileUseCase internal constructor(
     private val semesterDao: SemesterDao,
     private val academicDao: AcademicDao,
+    private val foreground: ForegroundSignal,
 ) {
     operator fun invoke(): Flow<OverviewNextTestTile?> {
         val keyFlow: Flow<Pair<String, String>?> = combine(
             semesterDao.observeAll(),
-            ticker(),
+            tickerFlow(30_000, foreground.pulses),
         ) { semesters, now ->
             val dateIso = now.date.toString()
             pickActiveSemester(semesters, dateIso)?.let { it.id to dateIso }
@@ -37,7 +39,7 @@ class ObserveNextTestTileUseCase internal constructor(
             if (key == null) return@flatMapLatest flowOf(null)
             combine(
                 academicDao.observeClosestUpcomingEvaluation(key.first, key.second),
-                ticker(),
+                tickerFlow(30_000, foreground.pulses),
             ) { row, now ->
                 row?.let {
                     val evalDate = runCatching { LocalDate.parse(it.date) }.getOrNull()
