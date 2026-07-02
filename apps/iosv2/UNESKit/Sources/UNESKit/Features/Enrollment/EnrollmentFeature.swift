@@ -51,6 +51,8 @@ struct EnrollmentFeature {
     @Dependency(\.profileRepository) var profileRepository
     @Dependency(\.date.now) var now
 
+    private let log = Log.scoped("EnrollmentFeature")
+
     private enum CancelID { case load }
 
     var body: some ReducerOf<Self> {
@@ -69,6 +71,7 @@ struct EnrollmentFeature {
             case .retryTapped:
                 state.isLoading = true
                 state.errorMessage = nil
+                log.info("enrollment retry tapped")
                 return load()
 
             case let .windowLoaded(window):
@@ -119,7 +122,8 @@ struct EnrollmentFeature {
             guard window != nil else { return }
             let disciplines = try await enrollmentRepository.offers()
             await send(.offersLoaded(disciplines))
-        } catch: { error, send in
+        } catch: { [log] error, send in
+            log.warn("enrollment load failed err=\(EnrollmentFormat.message(for: error))", error: error)
             await send(.loadFailed(EnrollmentFormat.message(for: error)))
         }
         .cancellable(id: CancelID.load, cancelInFlight: true)
@@ -127,10 +131,14 @@ struct EnrollmentFeature {
 
     private func loadProfileIfNeeded(_ state: State) -> Effect<Action> {
         guard state.profile == nil else { return .none }
-        return .run { send in
+        return .run { [log] send in
             // Only feeds the identity strip — ignore failures.
-            guard let profile = try? await profileRepository.current() else { return }
-            await send(.profileLoaded(profile))
+            do {
+                let profile = try await profileRepository.current()
+                await send(.profileLoaded(profile))
+            } catch {
+                log.debug("enrollment profile load failed")
+            }
         }
     }
 }

@@ -7,6 +7,8 @@ import UNESKit
 import UserNotifications
 
 final class AppDelegate: NSObject, UIApplicationDelegate {
+    private let log = Log.scoped("AppDelegate")
+
     /// Xcode previews launch the app delegate too — configuring Firebase
     /// there bugs Xcode out, so all of it is skipped.
     private var isPreview: Bool {
@@ -17,9 +19,11 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
+        log.info("app launching preview=\(isPreview)")
         guard !isPreview else { return true }
 
         FirebaseApp.configure()
+        log.info("firebase configured")
         #if DEBUG
         Crashlytics.crashlytics().setCrashlyticsCollectionEnabled(false)
         #endif
@@ -29,6 +33,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         application.registerForRemoteNotifications()
 
         configureRemoteConfig()
+        log.info("app launch finished")
         return true
     }
 
@@ -43,13 +48,18 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         remoteConfig.configSettings = settings
         #endif
 
-        Task {
+        Task { [log] in
             _ = try? await remoteConfig.fetchAndActivate()
+            log.debug("remote config baseline fetch+activate completed")
             Self.publishFlags()
         }
 
-        _ = remoteConfig.addOnConfigUpdateListener { update, error in
+        _ = remoteConfig.addOnConfigUpdateListener { [log] update, error in
+            if let error {
+                log.warn("remote config update stream error", error: error)
+            }
             guard update != nil, error == nil else { return }
+            log.debug("remote config update received -> republishing flags")
             RemoteConfig.remoteConfig().activate { _, _ in
                 Self.publishFlags()
             }
@@ -68,13 +78,19 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         _ application: UIApplication,
         didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
     ) {
+        log.info("APNS token registered bytes=\(deviceToken.count)")
         Messaging.messaging().apnsToken = deviceToken
     }
 }
 
 extension AppDelegate: MessagingDelegate, UNUserNotificationCenterDelegate {
     nonisolated func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
-        guard let fcmToken else { return }
+        let log = Log.scoped("AppDelegate")
+        guard let fcmToken else {
+            log.warn("FCM token was nil")
+            return
+        }
+        log.info("FCM token received length=\(fcmToken.count)")
         Task { await PushTokens.received(fcmToken) }
     }
 

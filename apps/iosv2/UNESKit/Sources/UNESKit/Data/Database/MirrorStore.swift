@@ -1,6 +1,8 @@
 import Foundation
 import GRDB
 
+private let log = Log.scoped("MirrorStore")
+
 /// Read/write access to the local SQLite mirror of the apps/api sync data.
 struct MirrorStore: Sendable {
     var writer: any DatabaseWriter
@@ -14,15 +16,21 @@ struct MirrorStore: Sendable {
     /// replaces the fetched semester's whole scope (so rows deleted upstream
     /// disappear locally), and stamps `lastSyncedAt`.
     func apply(semesters: [SemesterRecord], snapshot: SemesterSnapshot?, syncedAt: Date) async throws {
-        try await writer.write { db in
-            for semester in semesters {
-                try semester.upsert(db)
+        do {
+            try await writer.write { db in
+                for semester in semesters {
+                    try semester.upsert(db)
+                }
+                if let snapshot {
+                    try Self.replaceScope(with: snapshot, db: db)
+                }
+                let stamp = syncedAt.formatted(Self.timestampFormat)
+                try SyncStateRecord(key: Self.lastSyncedAtKey, value: stamp).upsert(db)
             }
-            if let snapshot {
-                try Self.replaceScope(with: snapshot, db: db)
-            }
-            let stamp = syncedAt.formatted(Self.timestampFormat)
-            try SyncStateRecord(key: Self.lastSyncedAtKey, value: stamp).upsert(db)
+            log.info("upsert semesters count=\(semesters.count)")
+        } catch {
+            log.error("apply sync failed semesters=\(semesters.count)", error: error)
+            throw error
         }
     }
 
@@ -92,24 +100,30 @@ struct MirrorStore: Sendable {
     /// Empties the whole mirror — the logout path that does not keep data.
     /// The schema stays in place; only rows go.
     func wipe() async throws {
-        try await writer.write { db in
-            try SemesterRecord.deleteAll(db)
-            try DisciplineRecord.deleteAll(db)
-            try DisciplineOfferRecord.deleteAll(db)
-            try ClassRecord.deleteAll(db)
-            try TeacherRecord.deleteAll(db)
-            try ClassTeacherRecord.deleteAll(db)
-            try SpaceRecord.deleteAll(db)
-            try AllocationRecord.deleteAll(db)
-            try StudentClassRecord.deleteAll(db)
-            try StudentGradeRecord.deleteAll(db)
-            try LectureRecord.deleteAll(db)
-            try LectureMaterialRecord.deleteAll(db)
-            try MessageRecord.deleteAll(db)
-            try MessageScopeRecord.deleteAll(db)
-            try MessageAttachmentRecord.deleteAll(db)
-            try MessageStateRecord.deleteAll(db)
-            try SyncStateRecord.deleteAll(db)
+        do {
+            try await writer.write { db in
+                try SemesterRecord.deleteAll(db)
+                try DisciplineRecord.deleteAll(db)
+                try DisciplineOfferRecord.deleteAll(db)
+                try ClassRecord.deleteAll(db)
+                try TeacherRecord.deleteAll(db)
+                try ClassTeacherRecord.deleteAll(db)
+                try SpaceRecord.deleteAll(db)
+                try AllocationRecord.deleteAll(db)
+                try StudentClassRecord.deleteAll(db)
+                try StudentGradeRecord.deleteAll(db)
+                try LectureRecord.deleteAll(db)
+                try LectureMaterialRecord.deleteAll(db)
+                try MessageRecord.deleteAll(db)
+                try MessageScopeRecord.deleteAll(db)
+                try MessageAttachmentRecord.deleteAll(db)
+                try MessageStateRecord.deleteAll(db)
+                try SyncStateRecord.deleteAll(db)
+            }
+            log.info("mirror wiped")
+        } catch {
+            log.error("mirror wipe failed", error: error)
+            throw error
         }
     }
 
@@ -259,6 +273,7 @@ struct MirrorStore: Sendable {
         for row in snapshot.studentGrades { try row.insert(db) }
         for row in snapshot.lectures { try row.insert(db) }
         for row in snapshot.lectureMaterials { try row.insert(db) }
+        log.info("mirror semester written id=\(snapshot.semester.id) classes=\(snapshot.classes.count) lectures=\(snapshot.lectures.count)")
     }
 
     static func snapshot(for semester: SemesterRecord, db: Database) throws -> SemesterSnapshot {

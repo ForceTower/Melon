@@ -1,12 +1,27 @@
 import ComposableArchitecture
 import Foundation
 
+private let log = Log.scoped("PasskeyAuthenticator")
+
 extension PasskeyClient: DependencyKey {
     static let liveValue = PasskeyClient(
         assert: { challenge in
             #if os(iOS)
-            try await PasskeyAuthenticator().assert(challenge: challenge)
+            log.info("assert attempt rpId=\(challenge.rpId)")
+            do {
+                let assertion = try await PasskeyAuthenticator().assert(challenge: challenge)
+                log.info("assert ok")
+                return assertion
+            } catch {
+                if case AuthError.cancelled = error {
+                    log.info("assert cancelled")
+                } else {
+                    log.warn("assert failed", error: error)
+                }
+                throw error
+            }
             #else
+            log.warn("assert unavailable: platform not supported")
             throw AuthError.passkeyUnavailable
             #endif
         }
@@ -25,6 +40,7 @@ private final class PasskeyAuthenticator: NSObject {
 
     func assert(challenge: PasskeyChallenge) async throws -> PasskeyAssertion {
         guard let challengeData = Data(base64URLEncoded: challenge.challenge) else {
+            log.warn("assert failed: invalid challenge encoding")
             throw AuthError.server("Desafio inválido recebido do servidor.")
         }
 
@@ -58,6 +74,7 @@ extension PasskeyAuthenticator: ASAuthorizationControllerDelegate {
     ) {
         Task { @MainActor in
             guard let credential = authorization.credential as? ASAuthorizationPlatformPublicKeyCredentialAssertion else {
+                log.warn("assertion completion failed: unexpected credential type")
                 continuation?.resume(throwing: AuthError.passkeyUnavailable)
                 continuation = nil
                 return
@@ -72,6 +89,7 @@ extension PasskeyAuthenticator: ASAuthorizationControllerDelegate {
                 signature: credential.signature.base64URLEncodedString(),
                 userHandle: credential.userID.base64URLEncodedString()
             )
+            log.debug("assertion completion ok")
             continuation?.resume(returning: assertion)
             continuation = nil
         }
@@ -83,8 +101,10 @@ extension PasskeyAuthenticator: ASAuthorizationControllerDelegate {
     ) {
         Task { @MainActor in
             if let authError = error as? ASAuthorizationError, authError.code == .canceled {
+                log.info("assertion cancelled")
                 continuation?.resume(throwing: AuthError.cancelled)
             } else {
+                log.warn("assertion completion error", error: error)
                 continuation?.resume(throwing: AuthError.server(error.localizedDescription))
             }
             continuation = nil

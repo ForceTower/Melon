@@ -38,6 +38,8 @@ struct DisciplinesFeature {
     @Dependency(\.disciplinesRepository) var disciplinesRepository
     @Dependency(\.date.now) var now
 
+    private let log = Log.scoped("DisciplinesFeature")
+
     private enum CancelID { case observation, refresh }
 
     var body: some ReducerOf<Self> {
@@ -68,6 +70,7 @@ struct DisciplinesFeature {
                 return .none
 
             case let .overviewFailed(message):
+                log.warn("disciplines refresh failed err=\(message)")
                 state.isLoading = false
                 // A stale overview beats an error screen; only surface the
                 // failure when there is nothing to show.
@@ -79,11 +82,14 @@ struct DisciplinesFeature {
             case let .downloadSemesterTapped(semesterId):
                 guard !state.downloadingSemesterIds.contains(semesterId) else { return .none }
                 state.downloadingSemesterIds.insert(semesterId)
-                return .run { send in
+                log.info("semester sync start code=\(semesterId)")
+                return .run { [log] send in
                     do {
                         try await disciplinesRepository.downloadSemester(semesterId: semesterId, now: now)
+                        log.info("semester sync ok code=\(semesterId)")
                         await send(.semesterDownloaded(semesterId))
                     } catch {
+                        log.warn("semester sync failed code=\(semesterId) err=\(error.localizedDescription)", error: error)
                         await send(.semesterDownloadFailed(semesterId, error.localizedDescription))
                     }
                 }
@@ -142,13 +148,14 @@ struct DisciplinesFeature {
     /// Rewrites the mirror from upstream; the fresh overview arrives through
     /// the observation.
     private func refresh() -> Effect<Action> {
-        .run { send in
+        .run { [log] send in
             do {
                 try await disciplinesRepository.refresh(now: now)
             } catch {
                 // Offline with a mirror: recompute from local data so the
                 // time-derived pieces (countdowns, status) still advance.
                 if let cached = try? await disciplinesRepository.cached(now: now) {
+                    log.warn("refresh failed, using cached overview", error: error)
                     await send(.overviewUpdated(cached))
                 } else {
                     await send(.overviewFailed(error.localizedDescription))

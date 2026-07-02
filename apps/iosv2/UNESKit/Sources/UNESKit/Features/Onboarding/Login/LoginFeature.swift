@@ -38,6 +38,8 @@ struct LoginFeature {
     @Dependency(\.passkeyClient) var passkeyClient
     @Dependency(\.openURL) var openURL
 
+    private let log = Log.scoped("LoginFeature")
+
     var body: some ReducerOf<Self> {
         BindingReducer()
 
@@ -55,6 +57,7 @@ struct LoginFeature {
 
             case .submitTapped:
                 guard state.canSubmit else { return .none }
+                log.info("login submit for student=\(state.username)")
                 state.isLoading = true
                 state.errorMessage = nil
                 return .run { [username = state.username, password = state.password] send in
@@ -65,6 +68,7 @@ struct LoginFeature {
 
             case .passkeyTapped:
                 guard !state.isLoading else { return .none }
+                log.info("passkey login start")
                 state.isLoading = true
                 state.errorMessage = nil
                 return .run { send in
@@ -80,15 +84,18 @@ struct LoginFeature {
 
             case let .loginResponse(.success(session)):
                 state.isLoading = false
+                log.info("login ok for student=\(state.username)")
                 return .send(.delegate(.loggedIn(username: state.username, session: session)))
 
             case let .passkeyResponse(.success(session)):
                 state.isLoading = false
+                log.info("passkey ok")
                 return .send(.delegate(.loggedIn(username: nil, session: session)))
 
             case let .loginResponse(.failure(error)), let .passkeyResponse(.failure(error)):
                 state.isLoading = false
                 state.errorMessage = error.message
+                log.warn("login/passkey failed username=\(state.username) err=\(String(describing: error))")
                 return .none
 
             case .delegate:

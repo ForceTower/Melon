@@ -83,6 +83,8 @@ struct MeFeature {
     @Dependency(\.locale) var locale
     @Dependency(\.continuousClock) var clock
 
+    private let log = Log.scoped("MeFeature")
+
     private enum CancelID { case observation, aboutResolve, aboutCopyFeedback }
 
     var body: some ReducerOf<Self> {
@@ -174,6 +176,7 @@ struct MeFeature {
                 )
 
             case .logoutTapped:
+                log.info("begin logout")
                 state.isLogoutPromptPresented = true
                 return .none
 
@@ -182,17 +185,23 @@ struct MeFeature {
                 return .none
 
             case let .logoutConfirmed(keepData):
+                log.info("confirm logout")
                 state.isLogoutPromptPresented = false
                 if !keepData {
                     state.$theme.withLock { $0 = .system }
                 }
                 let firstName = firstName(of: state.displayName)
-                return .run { send in
+                return .run { [log] send in
                     let summary = keepData ? (try? await meRepository.localData()) : nil
                     if !keepData {
                         try? await meRepository.wipeLocalData()
                     }
-                    try? sessionStore.clear()
+                    do {
+                        try sessionStore.clear()
+                        log.info("session logout ok")
+                    } catch {
+                        log.warn("session logout failed; continuing", error: error)
+                    }
                     await send(.delegate(.loggedOut(
                         firstName: firstName,
                         keptData: keepData,
@@ -270,10 +279,14 @@ struct MeFeature {
     }
 
     private func loadProfile() -> Effect<Action> {
-        .run { send in
+        .run { [log] send in
             // Only feeds the course line — ignore failures.
-            guard let profile = try? await profileRepository.current() else { return }
-            await send(.profileLoaded(profile))
+            do {
+                let profile = try await profileRepository.current()
+                await send(.profileLoaded(profile))
+            } catch {
+                log.debug("me profile load failed")
+            }
         }
     }
 

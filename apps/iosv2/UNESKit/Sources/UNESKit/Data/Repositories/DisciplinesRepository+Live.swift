@@ -1,6 +1,8 @@
 import ComposableArchitecture
 import Foundation
 
+private let log = Log.scoped("DisciplinesRepository")
+
 extension DisciplinesRepository: DependencyKey {
     static let liveValue = DisciplinesRepository(
         cached: { now in
@@ -14,13 +16,31 @@ extension DisciplinesRepository: DependencyKey {
             let apiClient = wrappedClient
             let mirror = MirrorStore(writer: wrappedDatabase)
 
-            let list: SemesterListDTO = try await apiClient.get(from: "api/sync/semesters")
-            var snapshot: SemesterSnapshot?
-            if let active = list.semesters.map(\.domain).active(today: now.dayStamp) {
-                let payload: SemesterPayloadDTO = try await apiClient.get(from: "api/sync/semesters/\(active.id)")
-                snapshot = payload.snapshot
+            log.debug("refresh start")
+            do {
+                let list: SemesterListDTO = try await apiClient.get(from: "api/sync/semesters")
+                var snapshot: SemesterSnapshot?
+                if let active = list.semesters.map(\.domain).active(today: now.dayStamp) {
+                    let payload: SemesterPayloadDTO = try await apiClient.get(from: "api/sync/semesters/\(active.id)")
+                    snapshot = payload.snapshot
+                }
+                try await mirror.apply(semesters: list.semesters.map(\.record), snapshot: snapshot, syncedAt: now)
+                log.info("refresh ok semesters=\(list.semesters.count) activeSnapshot=\(snapshot != nil)")
+            } catch {
+                switch error {
+                case APIError.server(401, _):
+                    log.warn("refresh unauthorized")
+                case let APIError.server(status, message):
+                    log.warn("refresh server \(status) message=\(message ?? "<none>")")
+                case APIError.emptyEnvelope:
+                    log.warn("refresh 2xx envelope had null data")
+                case is URLError:
+                    log.warn("refresh transport failure", error: error)
+                default:
+                    log.error("refresh failed", error: error)
+                }
+                throw error
             }
-            try await mirror.apply(semesters: list.semesters.map(\.record), snapshot: snapshot, syncedAt: now)
         },
         downloadSemester: { semesterId, now in
             @Dependency(\.apiClient) var wrappedClient
@@ -28,14 +48,33 @@ extension DisciplinesRepository: DependencyKey {
             let apiClient = wrappedClient
             let mirror = MirrorStore(writer: wrappedDatabase)
 
-            let payload: SemesterPayloadDTO = try await apiClient.get(from: "api/sync/semesters/\(semesterId)")
-            try await mirror.apply(semesters: [], snapshot: payload.snapshot, syncedAt: now)
+            log.debug("downloadSemester start id=\(semesterId)")
+            do {
+                let payload: SemesterPayloadDTO = try await apiClient.get(from: "api/sync/semesters/\(semesterId)")
+                try await mirror.apply(semesters: [], snapshot: payload.snapshot, syncedAt: now)
+                log.info("downloadSemester ok id=\(semesterId)")
+            } catch {
+                switch error {
+                case APIError.server(401, _):
+                    log.warn("downloadSemester unauthorized")
+                case let APIError.server(status, message):
+                    log.warn("downloadSemester server \(status) message=\(message ?? "<none>")")
+                case APIError.emptyEnvelope:
+                    log.warn("downloadSemester 2xx envelope had null data")
+                case is URLError:
+                    log.warn("downloadSemester transport failure", error: error)
+                default:
+                    log.error("downloadSemester failed", error: error)
+                }
+                throw error
+            }
         },
         observe: {
             @Dependency(\.database) var wrappedDatabase
             @Dependency(\.date) var wrappedDate
             let date = wrappedDate
             let mirror = MirrorStore(writer: wrappedDatabase)
+            log.debug("observe subscribed")
             return AsyncStream { continuation in
                 let task = Task {
                     // Observation only fails if the database itself is gone;
@@ -46,7 +85,9 @@ extension DisciplinesRepository: DependencyKey {
                                 continuation.yield(overview)
                             }
                         }
-                    } catch {}
+                    } catch {
+                        log.error("observe failed", error: error)
+                    }
                     continuation.finish()
                 }
                 continuation.onTermination = { _ in task.cancel() }
@@ -57,6 +98,7 @@ extension DisciplinesRepository: DependencyKey {
             @Dependency(\.date) var wrappedDate
             let date = wrappedDate
             let mirror = MirrorStore(writer: wrappedDatabase)
+            log.debug("observeDetail subscribed semesterId=\(semesterId) disciplineId=\(disciplineId)")
             return AsyncStream { continuation in
                 let task = Task {
                     do {
@@ -70,7 +112,9 @@ extension DisciplinesRepository: DependencyKey {
                                 continuation.yield(detail)
                             }
                         }
-                    } catch {}
+                    } catch {
+                        log.error("observeDetail failed", error: error)
+                    }
                     continuation.finish()
                 }
                 continuation.onTermination = { _ in task.cancel() }

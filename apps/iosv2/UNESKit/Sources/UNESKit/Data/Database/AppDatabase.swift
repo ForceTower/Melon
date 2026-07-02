@@ -2,22 +2,36 @@ import ComposableArchitecture
 import Foundation
 import GRDB
 
+private let log = Log.scoped("AppDatabase")
+
 func appDatabase() throws -> any DatabaseWriter {
     try FileManager.default.createDirectory(
         at: .applicationSupportDirectory,
         withIntermediateDirectories: true
     )
     let path = URL.applicationSupportDirectory.appending(path: "unes.sqlite").path(percentEncoded: false)
-    let database = try DatabaseQueue(path: path)
-    try migrator().migrate(database)
-    return database
+    do {
+        let database = try DatabaseQueue(path: path)
+        try migrator().migrate(database)
+        log.info("database opened path=\(path) migrations=applied")
+        return database
+    } catch {
+        log.error("database open or migration failed path=\(path)", error: error)
+        throw error
+    }
 }
 
 /// A fresh, fully migrated queue for tests and previews.
 func inMemoryDatabase() throws -> any DatabaseWriter {
-    let database = try DatabaseQueue()
-    try migrator().migrate(database)
-    return database
+    do {
+        let database = try DatabaseQueue()
+        try migrator().migrate(database)
+        log.debug("in-memory database opened migrations=applied")
+        return database
+    } catch {
+        log.error("in-memory database open or migration failed", error: error)
+        throw error
+    }
 }
 
 private func migrator() -> DatabaseMigrator {

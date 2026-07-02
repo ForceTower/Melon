@@ -47,6 +47,8 @@ struct EnrollmentReviewFeature {
     @Dependency(\.enrollmentRepository) var enrollmentRepository
     @Dependency(\.dismiss) var dismiss
 
+    private let log = Log.scoped("EnrollmentReviewFeature")
+
     private enum CancelID { case submit }
 
     var body: some ReducerOf<Self> {
@@ -72,10 +74,13 @@ struct EnrollmentReviewFeature {
             case .submitTapped:
                 guard state.canSubmit, !state.isSubmitting else { return .none }
                 state.isSubmitting = true
-                return .run { [selections = state.session.selections] send in
+                log.info("enrollment submit tapped picks=\(state.session.selections.count)")
+                return .run { [selections = state.session.selections, log] send in
                     try await enrollmentRepository.submit(selections)
+                    log.info("enrollment submit ok picks=\(selections.count)")
                     await send(.submitSucceeded)
-                } catch: { error, send in
+                } catch: { [log] error, send in
+                    log.warn("enrollment submit failed err=\(EnrollmentFormat.message(for: error))", error: error)
                     await send(.submitFailed(EnrollmentFormat.message(for: error)))
                 }
                 .cancellable(id: CancelID.submit, cancelInFlight: true)

@@ -1,6 +1,8 @@
 import ComposableArchitecture
 import Foundation
 
+private let log = Log.scoped("APIClient")
+
 /// Production origin of the Melon API (`apps/api`).
 enum MelonAPI {
     static let baseURL = URL(string: "https://melon.forcetower.dev")!
@@ -118,12 +120,18 @@ extension APIClient {
                 request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
             }
 
+            log.debug("request start method=\(apiRequest.method) path=\(apiRequest.path)")
             let (data, response) = try await session.data(for: request)
-            guard let http = response as? HTTPURLResponse else { throw APIError.invalidResponse }
+            guard let http = response as? HTTPURLResponse else {
+                log.warn("request failed method=\(apiRequest.method) path=\(apiRequest.path): invalid response")
+                throw APIError.invalidResponse
+            }
             guard 200..<300 ~= http.statusCode else {
                 let message = try? JSONDecoder().decode(ErrorBody.self, from: data).message
+                log.warn("request failed method=\(apiRequest.method) path=\(apiRequest.path) status=\(http.statusCode)")
                 throw APIError.server(status: http.statusCode, message: message)
             }
+            log.debug("request ok method=\(apiRequest.method) path=\(apiRequest.path) status=\(http.statusCode)")
             return data
         })
     }

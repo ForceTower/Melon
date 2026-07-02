@@ -1,6 +1,8 @@
 import Foundation
 import GRDB
 
+private let log = Log.scoped("MirrorStore")
+
 /// One `api/sync/messages` page as mirror rows.
 struct MessageMirrorPage: Sendable {
     var messages: [MessageRecord]
@@ -17,51 +19,75 @@ extension MirrorStore {
     /// rows. `messageStates` (the local read/star overlay) is deliberately
     /// left alone so sync never resurrects an unread dot.
     func upsertMessages(_ page: MessageMirrorPage, syncedAt: Date) async throws {
-        try await writer.write { db in
-            for message in page.messages {
-                try message.upsert(db)
+        do {
+            try await writer.write { db in
+                for message in page.messages {
+                    try message.upsert(db)
+                }
+                let ids = page.messages.map(\.id)
+                try MessageScopeRecord.filter(ids.contains(Column("messageId"))).deleteAll(db)
+                try MessageAttachmentRecord.filter(ids.contains(Column("messageId"))).deleteAll(db)
+                for scope in page.scopes { try scope.insert(db) }
+                for attachment in page.attachments { try attachment.insert(db) }
+                let stamp = syncedAt.formatted(Self.timestampFormat)
+                try SyncStateRecord(key: Self.messagesSyncedAtKey, value: stamp).upsert(db)
             }
-            let ids = page.messages.map(\.id)
-            try MessageScopeRecord.filter(ids.contains(Column("messageId"))).deleteAll(db)
-            try MessageAttachmentRecord.filter(ids.contains(Column("messageId"))).deleteAll(db)
-            for scope in page.scopes { try scope.insert(db) }
-            for attachment in page.attachments { try attachment.insert(db) }
-            let stamp = syncedAt.formatted(Self.timestampFormat)
-            try SyncStateRecord(key: Self.messagesSyncedAtKey, value: stamp).upsert(db)
+            log.info("upsert messages count=\(page.messages.count)")
+        } catch {
+            log.error("upsert messages failed count=\(page.messages.count)", error: error)
+            throw error
         }
     }
 
     func markMessageRead(id: String, now: Date) async throws {
-        try await writer.write { db in
-            var state = try MessageStateRecord.fetchOne(db, key: id)
-                ?? MessageStateRecord(messageId: id, readAt: nil, starred: false)
-            guard state.readAt == nil else { return }
-            state.readAt = now.formatted(Self.timestampFormat)
-            try state.upsert(db)
+        do {
+            try await writer.write { db in
+                var state = try MessageStateRecord.fetchOne(db, key: id)
+                    ?? MessageStateRecord(messageId: id, readAt: nil, starred: false)
+                guard state.readAt == nil else { return }
+                state.readAt = now.formatted(Self.timestampFormat)
+                try state.upsert(db)
+            }
+            log.debug("mark message read id=\(id)")
+        } catch {
+            log.error("mark message read failed id=\(id)", error: error)
+            throw error
         }
     }
 
     func markAllMessagesRead(now: Date) async throws {
-        try await writer.write { db in
-            let stamp = now.formatted(Self.timestampFormat)
-            let states = try MessageStateRecord.fetchAll(db)
-                .reduce(into: [String: MessageStateRecord]()) { $0[$1.messageId] = $1 }
-            for message in try MessageRecord.fetchAll(db) where message.read != true {
-                var state = states[message.id]
-                    ?? MessageStateRecord(messageId: message.id, readAt: nil, starred: false)
-                guard state.readAt == nil else { continue }
-                state.readAt = stamp
-                try state.upsert(db)
+        do {
+            try await writer.write { db in
+                let stamp = now.formatted(Self.timestampFormat)
+                let states = try MessageStateRecord.fetchAll(db)
+                    .reduce(into: [String: MessageStateRecord]()) { $0[$1.messageId] = $1 }
+                for message in try MessageRecord.fetchAll(db) where message.read != true {
+                    var state = states[message.id]
+                        ?? MessageStateRecord(messageId: message.id, readAt: nil, starred: false)
+                    guard state.readAt == nil else { continue }
+                    state.readAt = stamp
+                    try state.upsert(db)
+                }
             }
+            log.debug("mark all messages read")
+        } catch {
+            log.error("mark all messages read failed", error: error)
+            throw error
         }
     }
 
     func setMessageStarred(id: String, starred: Bool) async throws {
-        try await writer.write { db in
-            var state = try MessageStateRecord.fetchOne(db, key: id)
-                ?? MessageStateRecord(messageId: id, readAt: nil, starred: false)
-            state.starred = starred
-            try state.upsert(db)
+        do {
+            try await writer.write { db in
+                var state = try MessageStateRecord.fetchOne(db, key: id)
+                    ?? MessageStateRecord(messageId: id, readAt: nil, starred: false)
+                state.starred = starred
+                try state.upsert(db)
+            }
+            log.debug("set message starred id=\(id) starred=\(starred)")
+        } catch {
+            log.error("set message starred failed id=\(id)", error: error)
+            throw error
         }
     }
 

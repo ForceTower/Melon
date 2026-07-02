@@ -34,6 +34,7 @@ struct AppFeature {
     }
 
     @Dependency(\.push) var push
+    private let log = Log.scoped("AppFeature")
 
     var body: some ReducerOf<Self> {
         Scope(state: \.home, action: \.home) { HomeFeature() }
@@ -63,6 +64,7 @@ struct AppFeature {
                 // real return from background.
                 guard state.wasBackgrounded else { return .none }
                 state.wasBackgrounded = false
+                log.debug("scene returned from background -> refreshing all tabs")
                 // Overviews bake "today" in at compute time and the mirror
                 // observations only re-emit on writes, so a suspension that
                 // crosses midnight leaves every tab rendering the old day.

@@ -36,6 +36,8 @@ struct MessagesFeature {
     @Dependency(\.messagesRepository) var messagesRepository
     @Dependency(\.date.now) var now
 
+    private let log = Log.scoped("MessagesFeature")
+
     private enum CancelID { case observation, refresh }
 
     var body: some ReducerOf<Self> {
@@ -80,6 +82,7 @@ struct MessagesFeature {
 
             case .markAllReadTapped:
                 guard var overview = state.overview, overview.unreadCount > 0 else { return .none }
+                log.info("mark all messages read")
                 // Optimistic: the digest settles instantly; the write's own
                 // mirror emission then confirms (or corrects) it.
                 for index in overview.messages.indices {
@@ -88,7 +91,13 @@ struct MessagesFeature {
                 state.overview = overview
                 return .merge(
                     .send(.delegate(.unreadChanged(0))),
-                    .run { _ in try? await messagesRepository.markAllRead(now: now) }
+                    .run { [log] _ in
+                        do {
+                            try await messagesRepository.markAllRead(now: now)
+                        } catch {
+                            log.warn("mark all messages read failed", error: error)
+                        }
+                    }
                 )
 
             case let .messageTapped(message):
@@ -99,9 +108,16 @@ struct MessagesFeature {
                 }
                 state.path.append(.detail(MessageDetailFeature.State(message: opened)))
                 guard message.unread else { return .none }
+                log.info("mark message read id=\(message.id)")
                 return .merge(
                     .send(.delegate(.unreadChanged(state.overview?.unreadCount ?? 0))),
-                    .run { _ in try? await messagesRepository.markRead(id: message.id, now: now) }
+                    .run { [log] _ in
+                        do {
+                            try await messagesRepository.markRead(id: message.id, now: now)
+                        } catch {
+                            log.warn("mark message read failed id=\(message.id)", error: error)
+                        }
+                    }
                 )
 
             case let .path(.element(id: _, action: .detail(.delegate(.starredChanged(id, starred))))):
@@ -134,14 +150,16 @@ struct MessagesFeature {
     /// Rewrites the mirror from upstream; the fresh inbox arrives through
     /// the observation.
     private func refresh() -> Effect<Action> {
-        .run { send in
+        .run { [log] send in
             do {
                 try await messagesRepository.refresh(now: now)
             } catch {
                 // Offline with a mirror: keep serving the local inbox.
                 if let cached = try? await messagesRepository.cached(now: now) {
+                    log.warn("messages refresh failed; serving cached inbox", error: error)
                     await send(.overviewUpdated(cached))
                 } else {
+                    log.warn("messages refresh failed", error: error)
                     await send(.refreshFailed(error.localizedDescription))
                 }
             }

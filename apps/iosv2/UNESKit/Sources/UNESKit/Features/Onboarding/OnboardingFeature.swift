@@ -32,6 +32,8 @@ struct OnboardingFeature {
 
     @Dependency(\.continuousClock) var clock
 
+    private let log = Log.scoped("OnboardingFeature")
+
     var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
@@ -59,16 +61,19 @@ struct OnboardingFeature {
                 return .none
 
             case let .path(.element(id: _, action: .login(.delegate(.loggedIn(username, session))))):
+                log.info("logged in username=\(username ?? "<passkey>"), advancing to sync")
                 state.session = session
                 state.path.append(.sync(SyncFeature.State(greeting: username ?? "estudante")))
                 return .none
 
             case let .path(.element(id: _, action: .sync(.delegate(.done(profile, overview))))):
+                log.info("onboarding sync done, advancing to ready")
                 let name = firstName(of: profile?.name ?? state.session?.user.name) ?? "estudante"
                 state.path.append(.ready(ReadyFeature.State(userName: name, overview: overview ?? .empty)))
                 return .none
 
             case .path(.element(id: _, action: .sync(.delegate(.authFailed)))):
+                log.warn("onboarding sync auth failed, returning to login")
                 // Sync hit a 401 — back to login with an explanation.
                 state.path.removeLast()
                 if let id = state.path.ids.last, case .login(var login) = state.path[id: id] {
@@ -78,6 +83,7 @@ struct OnboardingFeature {
                 return .none
 
             case .path(.element(id: _, action: .ready(.delegate(.enter)))):
+                log.info("onboarding finished")
                 return .send(.delegate(.finished))
 
             case .path, .delegate:

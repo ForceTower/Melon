@@ -1,6 +1,8 @@
 import Foundation
 import WidgetKit
 
+private let log = Log.scoped("NextClassProvider")
+
 /// What the "Próxima aula" widget shows at one timeline moment.
 enum NextClassStatus: Equatable {
     /// Before a class: the mesh hero counting down (absolute time farther out).
@@ -35,7 +37,9 @@ struct NextClassProvider: TimelineProvider {
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<NextClassEntry>) -> Void) {
-        completion(Self.timeline(now: Date(), schedule: WidgetSnapshotStore.load()))
+        let timeline = Self.timeline(now: Date(), schedule: WidgetSnapshotStore.load())
+        log.debug("widget timeline built entries=\(timeline.entries.count)")
+        completion(timeline)
     }
 
     /// Entries cover from `now` until the end of the current (or next) class;

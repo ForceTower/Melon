@@ -25,6 +25,8 @@ struct FarewellFeature {
 
     @Dependency(\.continuousClock) var clock
 
+    private let log = Log.scoped("FarewellFeature")
+
     var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {

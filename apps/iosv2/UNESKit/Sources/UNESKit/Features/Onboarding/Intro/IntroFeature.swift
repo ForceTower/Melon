@@ -22,6 +22,8 @@ struct IntroFeature {
 
     @Dependency(\.push) var push
 
+    private let log = Log.scoped("IntroFeature")
+
     var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
@@ -33,6 +35,7 @@ struct IntroFeature {
                 guard state.slide < Self.slideCount - 1 else {
                     // The last slide sells notifications — ask for permission
                     // right as it's accepted, before moving on to login.
+                    log.info("intro finished, requesting notification permission and advancing to login")
                     return .run { send in
                         await push.requestAuthorization()
                         await send(.delegate(.login))
@@ -42,6 +45,7 @@ struct IntroFeature {
                 return .none
 
             case .skipTapped:
+                log.info("intro skipped, advancing to login")
                 return .send(.delegate(.login))
 
             case .delegate:

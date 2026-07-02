@@ -6,6 +6,8 @@ import UIKit
 import AppKit
 #endif
 
+private let log = Log.scoped("PasteboardClient")
+
 extension PasteboardClient: DependencyKey {
     static let liveValue = PasteboardClient(
         copy: { text in
@@ -17,6 +19,7 @@ extension PasteboardClient: DependencyKey {
                 NSPasteboard.general.setString(text, forType: .string)
                 #endif
             }
+            log.info("copied to pasteboard")
         }
     )
 }

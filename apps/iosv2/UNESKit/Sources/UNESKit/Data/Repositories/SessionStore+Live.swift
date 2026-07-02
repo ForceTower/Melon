@@ -2,18 +2,34 @@ import ComposableArchitecture
 import Foundation
 import Security
 
+private let log = Log.scoped("SessionStore")
+
 extension SessionStore: DependencyKey {
     static let liveValue: SessionStore = {
-        let cached = LockIsolated<Session?>(Keychain.readSession())
+        let initial = Keychain.readSession()
+        log.info("session bootstrapped tokenPresent=\(initial != nil)")
+        let cached = LockIsolated<Session?>(initial)
         return SessionStore(
             current: { cached.value },
             save: { session in
-                try Keychain.writeSession(session)
+                do {
+                    try Keychain.writeSession(session)
+                } catch {
+                    log.error("session persist failed userId=\(session.user.id)", error: error)
+                    throw error
+                }
                 cached.setValue(session)
+                log.info("session persisted userId=\(session.user.id)")
             },
             clear: {
-                try Keychain.deleteSession()
+                do {
+                    try Keychain.deleteSession()
+                } catch {
+                    log.error("session clear failed", error: error)
+                    throw error
+                }
                 cached.setValue(nil)
+                log.info("session cleared")
             }
         )
     }()
@@ -44,7 +60,12 @@ private enum Keychain {
         guard SecItemCopyMatching(query as CFDictionary, &result) == errSecSuccess,
               let data = result as? Data
         else { return nil }
-        return try? JSONDecoder().decode(Session.self, from: data)
+        do {
+            return try JSONDecoder().decode(Session.self, from: data)
+        } catch {
+            log.warn("session decode failed", error: error)
+            return nil
+        }
     }
 
     static func writeSession(_ session: Session) throws {

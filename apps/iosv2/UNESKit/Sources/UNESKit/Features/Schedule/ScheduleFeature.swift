@@ -32,6 +32,8 @@ struct ScheduleFeature {
     @Dependency(\.scheduleRepository) var scheduleRepository
     @Dependency(\.date.now) var now
 
+    private let log = Log.scoped("ScheduleFeature")
+
     private enum CancelID { case observation, refresh }
 
     var body: some ReducerOf<Self> {
@@ -62,6 +64,7 @@ struct ScheduleFeature {
                 return .none
 
             case let .refreshFailed(message):
+                log.warn("schedule refresh failed err=\(message)")
                 state.isLoading = false
                 // A stale week beats an error screen; only surface the
                 // failure when there is nothing to show.
@@ -112,13 +115,14 @@ struct ScheduleFeature {
     /// Rewrites the mirror from upstream; the fresh week arrives through the
     /// observation.
     private func refresh() -> Effect<Action> {
-        .run { send in
+        .run { [log] send in
             do {
                 try await scheduleRepository.refresh(now: now)
             } catch {
                 // Offline with a mirror: recompute from local data so the
                 // week's dates and topics still track the calendar.
                 if let cached = try? await scheduleRepository.cached(now: now) {
+                    log.warn("refresh failed, using cached overview", error: error)
                     await send(.overviewUpdated(cached))
                 } else {
                     await send(.refreshFailed(error.localizedDescription))

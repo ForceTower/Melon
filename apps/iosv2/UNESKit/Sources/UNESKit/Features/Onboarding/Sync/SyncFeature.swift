@@ -64,21 +64,26 @@ struct SyncFeature {
     @Dependency(\.continuousClock) var clock
     @Dependency(\.date.now) var now
 
+    private let log = Log.scoped("SyncFeature")
+
     var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
             case .task:
                 guard state.completedSteps == 0 else { return .none }
-                return .run { send in
+                log.info("onboarding sync start")
+                return .run { [log] send in
                     do {
                         try await runSync(send: send)
                     } catch {
+                        log.warn("onboarding sync finished with broken auth", error: error)
                         await send(.authFailed)
                     }
                 }
 
             case let .stepCompleted(step):
                 state.completedSteps = step.rawValue + 1
+                log.debug("onboarding sync step done step=\(step)")
                 return .none
 
             case let .profileLoaded(profile):
@@ -87,9 +92,11 @@ struct SyncFeature {
 
             case let .overviewLoaded(overview):
                 state.overview = overview
+                log.info("ready overview loaded classes=\(overview.classCount) semester=\(overview.semesterCode ?? "<nil>")")
                 return .none
 
             case .finished:
+                log.info("onboarding sync finished ok")
                 return .send(.delegate(.done(profile: state.profile, overview: state.overview)))
 
             case .authFailed:

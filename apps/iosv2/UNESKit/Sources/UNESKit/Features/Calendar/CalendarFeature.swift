@@ -69,6 +69,8 @@ struct CalendarFeature {
     @Dependency(\.calendar) var calendar
     @Dependency(\.date.now) var now
 
+    private let log = Log.scoped("CalendarFeature")
+
     var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
@@ -77,11 +79,12 @@ struct CalendarFeature {
                 if state.fetchedAt == nil {
                     state.selectedDay = state.today
                 }
-                return .run { send in
+                return .run { [log] send in
                     do {
                         let events = try await eventsRepository.calendar(now)
                         await send(.eventsLoaded(events.compactMap { CalendarEvent($0) }))
                     } catch {
+                        log.warn("calendar events fetch failed", error: error)
                         await send(.eventsFailed)
                     }
                 }

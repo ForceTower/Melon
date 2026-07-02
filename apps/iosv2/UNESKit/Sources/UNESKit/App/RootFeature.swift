@@ -27,6 +27,7 @@ struct RootFeature {
     }
 
     @Dependency(\.widgetSync) var widgetSync
+    private let log = Log.scoped("RootFeature")
 
     var body: some ReducerOf<Self> {
         Reduce { state, action in
@@ -37,10 +38,12 @@ struct RootFeature {
                 return .run { _ in await widgetSync.run() }
 
             case .onboarding(.delegate(.finished)):
+                log.info("onboarding completed -> connected")
                 state = .connected(AppFeature.State())
                 return .none
 
             case let .connected(.me(.delegate(.loggedOut(firstName, keptData, dataSummary)))):
+                log.info("user logged out -> farewell keptData=\(keptData)")
                 state = .farewell(FarewellFeature.State(
                     firstName: firstName,
                     keptData: keptData,
@@ -49,6 +52,7 @@ struct RootFeature {
                 return .none
 
             case .farewell(.delegate(.signIn)):
+                log.info("farewell -> onboarding sign-in")
                 var onboarding = OnboardingFeature.State(splash: false)
                 onboarding.path.append(.login(LoginFeature.State()))
                 state = .onboarding(onboarding)

@@ -2,10 +2,16 @@ import ComposableArchitecture
 import Foundation
 import StoreKit
 
+private let log = Log.scoped("AppInfoClient")
+
 extension AppInfoClient: DependencyKey {
     static let liveValue = AppInfoClient(
         current: { .live(channel: initialChannel) },
-        resolved: { .live(channel: await resolvedChannel()) }
+        resolved: {
+            let channel = await resolvedChannel()
+            log.debug("resolved channel=\(channel.channel)")
+            return .live(channel: channel)
+        }
     )
 
     private typealias Channel = (channel: String, installSource: String)

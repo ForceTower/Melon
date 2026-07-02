@@ -17,6 +17,8 @@ struct ReadyFeature {
         }
     }
 
+    private let log = Log.scoped("ReadyFeature")
+
     var body: some ReducerOf<Self> {
         Reduce { _, action in
             switch action {

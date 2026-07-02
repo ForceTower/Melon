@@ -1,5 +1,7 @@
 import Foundation
 
+private let log = Log.scoped("FeatureFlags")
+
 /// Remote Config flags, pushed by the app target after each fetch. Values
 /// land in UserDefaults so `@Shared(.appStorage(...))` readers update
 /// reactively and the last-known value gates the next launch.
@@ -9,5 +11,6 @@ public enum FeatureFlags {
 
     public static func update(enrollmentEnabled: Bool) {
         UserDefaults.standard.set(enrollmentEnabled, forKey: enrollmentEnabledKey)
+        log.info("feature flags updated enrollment=\(enrollmentEnabled)")
     }
 }

@@ -93,12 +93,19 @@ struct FinalCountdownFeature {
     @Dependency(\.date.now) var now
     @Dependency(\.uuid) var uuid
 
+    private let log = Log.scoped("FinalCountdownFeature")
+
     var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
             case .task:
-                return .run { send in
-                    let overview = try? await disciplinesRepository.cached(now: now)
+                return .run { [log] send in
+                    var overview: DisciplinesOverview?
+                    do {
+                        overview = try await disciplinesRepository.cached(now: now)
+                    } catch {
+                        log.warn("final countdown overview load failed", error: error)
+                    }
                     await send(.overviewLoaded(overview))
                 }
 

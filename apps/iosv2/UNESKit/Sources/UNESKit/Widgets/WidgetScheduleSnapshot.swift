@@ -1,5 +1,7 @@
 import Foundation
 
+private let log = Log.scoped("WidgetSnapshotStore")
+
 /// Widget kinds registered by the UNESWidgets extension, shared so the app
 /// can reload exactly the timelines it feeds.
 enum UNESWidgetKind {
@@ -121,12 +123,24 @@ enum WidgetSnapshotStore {
 
     static func load() -> WidgetScheduleSnapshot? {
         guard let fileURL, let data = try? Data(contentsOf: fileURL) else { return nil }
-        return try? JSONDecoder().decode(WidgetScheduleSnapshot.self, from: data)
+        guard let snapshot = try? JSONDecoder().decode(WidgetScheduleSnapshot.self, from: data) else {
+            log.warn("widget snapshot decode failed")
+            return nil
+        }
+        return snapshot
     }
 
     static func save(_ snapshot: WidgetScheduleSnapshot) {
-        guard let fileURL, let data = try? JSONEncoder().encode(snapshot) else { return }
-        try? data.write(to: fileURL, options: .atomic)
+        guard let fileURL, let data = try? JSONEncoder().encode(snapshot) else {
+            log.warn("widget snapshot write failed reason=encode")
+            return
+        }
+        do {
+            try data.write(to: fileURL, options: .atomic)
+            log.info("widget snapshot published sessions=\(snapshot.sessions.count) topics=\(snapshot.topics.count)")
+        } catch {
+            log.warn("widget snapshot write failed reason=file", error: error)
+        }
     }
 
     static func clear() {

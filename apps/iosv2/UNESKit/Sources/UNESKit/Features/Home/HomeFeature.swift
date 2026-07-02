@@ -46,6 +46,8 @@ struct HomeFeature {
     @Dependency(\.date.now) var now
     @Dependency(\.continuousClock) var clock
 
+    private let log = Log.scoped("HomeFeature")
+
     private enum CancelID { case observation, refresh, heroRollover }
 
     var body: some ReducerOf<Self> {
@@ -82,6 +84,7 @@ struct HomeFeature {
                 )
 
             case let .refreshFailed(message):
+                log.warn("home refresh failed err=\(message)")
                 state.isLoading = false
                 // A stale overview beats an error screen; only surface the
                 // failure when there is nothing to show.
@@ -142,13 +145,14 @@ struct HomeFeature {
     /// Rewrites the mirror from upstream; the fresh snapshot arrives through
     /// the observation.
     private func refresh() -> Effect<Action> {
-        .run { send in
+        .run { [log] send in
             do {
                 try await homeRepository.refresh(now: now)
             } catch {
                 // Offline with a mirror: recompute from local data so the
                 // time-derived pieces (hero, "Seu dia") still advance.
                 if let cached = try? await homeRepository.cached(now: now) {
+                    log.warn("refresh failed, using cached overview", error: error)
                     await send(.mirrorUpdated(cached))
                 } else {
                     await send(.refreshFailed(error.localizedDescription))
