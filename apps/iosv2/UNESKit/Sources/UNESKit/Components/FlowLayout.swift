@@ -16,7 +16,11 @@ struct FlowLayout: Layout {
         for (subview, slot) in zip(subviews, slots) {
             subview.place(
                 at: CGPoint(x: bounds.minX + slot.origin.x, y: bounds.minY + slot.origin.y),
-                proposal: ProposedViewSize(slot.size)
+                // Re-proposing the measured size squeezes chips whose content
+                // is flexible — an HStack of two Texts offered exactly its
+                // ideal width splits it evenly and truncates the wider Text.
+                // Unclamped chips re-take their ideal size instead.
+                proposal: slot.clamped ? ProposedViewSize(slot.size) : .unspecified
             )
         }
     }
@@ -24,15 +28,16 @@ struct FlowLayout: Layout {
     private func arrange(
         _ subviews: Subviews,
         in width: CGFloat
-    ) -> (slots: [(origin: CGPoint, size: CGSize)], size: CGSize) {
-        var slots: [(origin: CGPoint, size: CGSize)] = []
+    ) -> (slots: [(origin: CGPoint, size: CGSize, clamped: Bool)], size: CGSize) {
+        var slots: [(origin: CGPoint, size: CGSize, clamped: Bool)] = []
         var cursor = CGPoint.zero
         var lineHeight: CGFloat = 0
         var maxX: CGFloat = 0
 
         for subview in subviews {
             var size = subview.sizeThatFits(.unspecified)
-            if size.width > width {
+            let clamped = size.width > width
+            if clamped {
                 size = subview.sizeThatFits(ProposedViewSize(width: width, height: nil))
                 size.width = min(size.width, width)
             }
@@ -41,7 +46,7 @@ struct FlowLayout: Layout {
                 cursor.y += lineHeight + lineSpacing
                 lineHeight = 0
             }
-            slots.append((cursor, size))
+            slots.append((cursor, size, clamped))
             cursor.x += size.width + spacing
             lineHeight = max(lineHeight, size.height)
             maxX = max(maxX, cursor.x - spacing)
