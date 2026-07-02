@@ -19,6 +19,7 @@ struct DisciplinesFeature {
     @Reducer
     enum Path {
         case detail(DisciplineDetailFeature)
+        case countdown(FinalCountdownFeature)
     }
 
     enum Action: Equatable {
@@ -106,6 +107,17 @@ struct DisciplinesFeature {
                 state.path.append(
                     .detail(DisciplineDetailFeature.State(summary: discipline, semesterId: semesterId))
                 )
+                return .none
+
+            case let .path(.element(id: id, action: .detail(.delegate(.openCountdown)))):
+                guard case let .detail(detailState) = state.path[id: id],
+                      let detail = detailState.detail
+                else { return .none }
+                state.path.append(.countdown(FinalCountdownFeature.State(
+                    detail: detail,
+                    selectedGroup: detailState.selectedGroup,
+                    semesterCode: state.overview?.semesterCode(for: detail.semesterId)
+                )))
                 return .none
 
             case .path, .alert:

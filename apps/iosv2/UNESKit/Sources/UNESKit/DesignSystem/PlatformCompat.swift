@@ -53,6 +53,16 @@ extension View {
         self
         #endif
     }
+
+    /// Decimal-pad keyboard for grade inputs.
+    @ViewBuilder
+    func decimalKeyboard() -> some View {
+        #if os(iOS)
+        keyboardType(.decimalPad)
+        #else
+        self
+        #endif
+    }
 }
 
 extension ToolbarItemPlacement {

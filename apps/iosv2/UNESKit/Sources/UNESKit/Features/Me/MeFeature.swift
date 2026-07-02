@@ -1,8 +1,8 @@
 import ComposableArchitecture
 import Foundation
 
-/// The two pinned shortcuts. Both grow into features of their own later;
-/// until then each opens its teaser sheet.
+/// The two pinned shortcuts. Countdown pushes the calculator; the calendar
+/// opens its teaser sheet until the feature lands.
 enum MeShortcut: String, Equatable, Sendable, Identifiable, CaseIterable {
     case calendar, countdown
 
@@ -36,6 +36,7 @@ struct MeFeature {
     @Reducer
     enum Path {
         case settings(SettingsFeature)
+        case countdown(FinalCountdownFeature)
     }
 
     enum Action: Equatable {
@@ -92,7 +93,12 @@ struct MeFeature {
                 return .none
 
             case let .shortcutTapped(shortcut):
-                state.activeShortcut = shortcut
+                switch shortcut {
+                case .calendar:
+                    state.activeShortcut = shortcut
+                case .countdown:
+                    state.path.append(.countdown(FinalCountdownFeature.State()))
+                }
                 return .none
 
             case .shortcutDismissed:

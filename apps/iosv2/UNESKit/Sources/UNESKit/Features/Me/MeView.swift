@@ -16,12 +16,13 @@ struct MeView: View {
             switch store.case {
             case let .settings(store):
                 SettingsView(store: store)
+            case let .countdown(store):
+                FinalCountdownView(store: store)
             }
         }
         .task { await store.send(.task).finish() }
-        .sheet(item: shortcutBinding) { shortcut in
+        .sheet(item: shortcutBinding) { _ in
             MeShortcutSheet(
-                shortcut: shortcut,
                 overview: store.overview,
                 events: store.events
             ) {

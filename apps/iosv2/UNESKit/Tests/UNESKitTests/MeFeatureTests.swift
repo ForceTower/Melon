@@ -91,6 +91,17 @@ struct MeFeatureTests {
     }
 
     @Test
+    func countdownShortcutPushesTheCalculator() async {
+        let store = TestStore(initialState: MeFeature.State()) {
+            MeFeature()
+        }
+
+        await store.send(.shortcutTapped(.countdown)) {
+            $0.path.append(.countdown(FinalCountdownFeature.State()))
+        }
+    }
+
+    @Test
     func settingsRowPushesTheSettingsScreen() async {
         let store = TestStore(initialState: MeFeature.State(userName: "Mariana Souza")) {
             MeFeature()

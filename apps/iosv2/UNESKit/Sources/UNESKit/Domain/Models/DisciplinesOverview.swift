@@ -13,6 +13,12 @@ struct DisciplinesOverview: Equatable, Sendable {
     var isEmpty: Bool {
         current == nil && past.isEmpty && pending.isEmpty
     }
+
+    /// The raw code ("20261") of a mirrored semester, current or past.
+    func semesterCode(for id: String) -> String? {
+        if current?.id == id { return current?.code }
+        return past.first { $0.id == id }?.code
+    }
 }
 
 struct SemesterDisciplines: Equatable, Sendable, Identifiable {

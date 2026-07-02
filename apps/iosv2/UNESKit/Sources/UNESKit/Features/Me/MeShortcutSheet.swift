@@ -1,9 +1,8 @@
 import SwiftUI
 
-/// The teaser sheet behind a shortcut tile — a preview of the feature the
-/// tile will eventually open.
+/// The calendar teaser sheet behind the shortcut tile — a preview of the
+/// feature the tile will eventually open.
 struct MeShortcutSheet: View {
-    var shortcut: MeShortcut
     var overview: MeOverview?
     var events: [AcademicEvent]
     var onClose: () -> Void
@@ -12,7 +11,7 @@ struct MeShortcutSheet: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
                 header
-                content
+                calendarRows
                     .padding(.top, 18)
             }
             .padding(EdgeInsets(top: 24, leading: 18, bottom: 24, trailing: 18))
@@ -25,15 +24,15 @@ struct MeShortcutSheet: View {
 
     private var header: some View {
         HStack(spacing: 12) {
-            Image(systemName: shortcut.icon)
+            Image(systemName: MeShortcut.calendar.icon)
                 .font(.system(size: 21, weight: .medium))
                 .foregroundStyle(.white)
                 .frame(width: 42, height: 42)
-                .background(shortcut.tone, in: RoundedRectangle(cornerRadius: 13, style: .continuous))
-                .shadow(color: shortcut.tone.opacity(0.33), radius: 7, y: 6)
+                .background(MeShortcut.calendar.tone, in: RoundedRectangle(cornerRadius: 13, style: .continuous))
+                .shadow(color: MeShortcut.calendar.tone.opacity(0.33), radius: 7, y: 6)
 
             VStack(alignment: .leading, spacing: 2) {
-                Text(title)
+                Text("Calendário acadêmico")
                     .font(.system(size: 22, weight: .bold))
                     .tracking(-0.66)
                     .foregroundStyle(UNESColor.ink)
@@ -54,29 +53,9 @@ struct MeShortcutSheet: View {
         }
     }
 
-    private var title: String {
-        switch shortcut {
-        case .calendar: "Calendário acadêmico"
-        case .countdown: "Final Countdown"
-        }
-    }
-
     private var subtitle: String {
         let semester = overview?.semesterCode.map(DisciplinesFormat.semesterLabel)
-        switch shortcut {
-        case .calendar:
-            return [semester, "próximos eventos"].compactMap(\.self).joined(separator: " · ")
-        case .countdown:
-            return ["fim do semestre", semester].compactMap(\.self).joined(separator: " ")
-        }
-    }
-
-    @ViewBuilder
-    private var content: some View {
-        switch shortcut {
-        case .calendar: calendarRows
-        case .countdown: countdownBody
-        }
+        return [semester, "próximos eventos"].compactMap(\.self).joined(separator: " · ")
     }
 
     // MARK: Calendar teaser
@@ -141,69 +120,6 @@ struct MeShortcutSheet: View {
         .padding(EdgeInsets(top: 12, leading: 2, bottom: 12, trailing: 2))
     }
 
-    // MARK: Final Countdown teaser
-
-    @ViewBuilder
-    private var countdownBody: some View {
-        if let countdown = overview?.countdown {
-            VStack(spacing: 10) {
-                HStack(alignment: .lastTextBaseline, spacing: 10) {
-                    Text("\(countdown.daysLeft)")
-                        .font(.system(size: 52, weight: .bold))
-                        .tracking(-2.08)
-                        .monospacedDigit()
-                        .foregroundStyle(UNESColor.ink)
-                    VStack(alignment: .leading, spacing: 3) {
-                        Text("dias")
-                            .font(.system(size: 18, weight: .semibold))
-                            .foregroundStyle(shortcut.tone)
-                        Text("\(countdown.weeksLeft) semanas · \(countdown.hoursLeft)h")
-                            .font(.system(size: 12, weight: .medium))
-                            .monospacedDigit()
-                            .foregroundStyle(UNESColor.ink3)
-                    }
-                    Spacer(minLength: 0)
-                }
-                .padding(18)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .background(UNESColor.card)
-                .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
-                .overlay {
-                    RoundedRectangle(cornerRadius: 18, style: .continuous)
-                        .strokeBorder(UNESColor.cardLine)
-                }
-
-                LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 2), spacing: 8) {
-                    breakdownTile(label: "provas marcadas", value: countdown.scheduledExams)
-                    breakdownTile(label: "aulas restantes", value: countdown.classesLeft)
-                    breakdownTile(label: "fins de semana", value: countdown.weekendsLeft)
-                    breakdownTile(label: "disciplinas em curso", value: countdown.disciplineCount)
-                }
-            }
-        } else {
-            Text("Sem semestre em andamento")
-                .font(.system(size: 13, weight: .medium))
-                .foregroundStyle(UNESColor.ink4)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 28)
-        }
-    }
-
-    private func breakdownTile(label: String, value: Int) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(label)
-                .font(.system(size: 11, weight: .medium))
-                .foregroundStyle(UNESColor.ink4)
-            Text("\(value)")
-                .font(.system(size: 16, weight: .bold))
-                .tracking(-0.32)
-                .monospacedDigit()
-                .foregroundStyle(UNESColor.ink)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(EdgeInsets(top: 11, leading: 13, bottom: 11, trailing: 13))
-        .background(UNESColor.surface2, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-    }
 }
 
 extension AcademicEvent.Origin {
@@ -230,23 +146,11 @@ extension View {
     }
 }
 
-#Preview("Calendário") {
+#Preview {
     Color.clear.sheet(isPresented: .constant(true)) {
         MeShortcutSheet(
-            shortcut: .calendar,
             overview: .preview,
             events: .preview(),
-            onClose: {}
-        )
-    }
-}
-
-#Preview("Final Countdown") {
-    Color.clear.sheet(isPresented: .constant(true)) {
-        MeShortcutSheet(
-            shortcut: .countdown,
-            overview: .preview,
-            events: [],
             onClose: {}
         )
     }

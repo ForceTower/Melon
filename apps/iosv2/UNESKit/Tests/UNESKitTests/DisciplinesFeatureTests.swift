@@ -148,6 +148,35 @@ struct DisciplinesFeatureTests {
             )
         }
     }
+
+    @Test
+    func countdownDelegatePushesTheCalculatorSeededFromTheDetail() async {
+        let overview = DisciplinesOverview.preview(now: Self.referenceDate)
+        let detail = DisciplineDetail.preview(now: Self.referenceDate)
+
+        var detailState = DisciplineDetailFeature.State(
+            summary: overview.current!.disciplines[0],
+            semesterId: "sem-2026-1"
+        )
+        detailState.detail = detail
+
+        var seeded = DisciplinesFeature.State()
+        seeded.overview = overview
+        seeded.path.append(.detail(detailState))
+
+        let store = TestStore(initialState: seeded) {
+            DisciplinesFeature()
+        }
+
+        await store.send(.path(.element(id: 0, action: .detail(.countdownTapped))))
+        await store.receive(.path(.element(id: 0, action: .detail(.delegate(.openCountdown))))) {
+            $0.path[id: 1] = .countdown(FinalCountdownFeature.State(
+                detail: detail,
+                selectedGroup: nil,
+                semesterCode: "20261"
+            ))
+        }
+    }
 }
 
 @MainActor

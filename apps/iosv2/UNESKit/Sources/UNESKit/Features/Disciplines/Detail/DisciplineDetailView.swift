@@ -57,7 +57,15 @@ struct DisciplineDetailView: View {
 
                     DisciplineGradesBlock(detail: detail, color: color, selectedGroup: store.selectedGroup)
                         .fadeUp(delay: 0.24)
-                        .padding(.bottom, 22)
+                        .padding(.bottom, detail.approved == nil ? 12 : 22)
+
+                    // The calculator only makes sense while the result is
+                    // still open.
+                    if detail.approved == nil {
+                        countdownRow
+                            .fadeUp(delay: 0.28)
+                            .padding(.bottom, 22)
+                    }
 
                     DisciplinePresencaCard(detail: detail)
                         .fadeUp(delay: 0.3)
@@ -219,6 +227,49 @@ struct DisciplineDetailView: View {
         case .warning: UNESColor.caution
         case .ok: UNESColor.ink
         }
+    }
+
+    // MARK: Final Countdown
+
+    /// Entry to the grade calculator, seeded from this discipline.
+    private var countdownRow: some View {
+        let tone = UNESColor.readable(0xB23A7A)
+        return Button {
+            store.send(.countdownTapped)
+        } label: {
+            HStack(spacing: 13) {
+                Image(systemName: "timer")
+                    .font(.system(size: 18, weight: .medium))
+                    .foregroundStyle(.white)
+                    .frame(width: 40, height: 40)
+                    .background(tone, in: RoundedRectangle(cornerRadius: 11, style: .continuous))
+                    .shadow(color: tone.opacity(0.33), radius: 6, y: 5)
+
+                VStack(alignment: .leading, spacing: 1) {
+                    Text("Final Countdown")
+                        .font(.system(size: 15, weight: .semibold))
+                        .tracking(-0.15)
+                        .foregroundStyle(UNESColor.ink)
+                    Text("simule as notas e veja quanto falta pra passar")
+                        .font(.system(size: 12.5, weight: .medium))
+                        .foregroundStyle(UNESColor.ink3)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundStyle(UNESColor.ink4)
+            }
+            .padding(EdgeInsets(top: 12, leading: 14, bottom: 12, trailing: 14))
+            .background(UNESColor.card)
+            .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+            .overlay {
+                RoundedRectangle(cornerRadius: 20, style: .continuous)
+                    .strokeBorder(UNESColor.cardLine)
+            }
+            .shadow(color: Color(hex: 0x141020, opacity: 0.05), radius: 9, y: 6)
+        }
+        .buttonStyle(TilePressStyle())
     }
 
     // MARK: Footer

@@ -36,6 +36,14 @@ struct DisciplineDetailFeature {
         case task
         case detailUpdated(DisciplineDetail)
         case groupSelected(String?)
+        case countdownTapped
+        case delegate(Delegate)
+
+        enum Delegate: Equatable {
+            /// The parent stack pushes the calculator seeded from this
+            /// discipline.
+            case openCountdown
+        }
     }
 
     @Dependency(\.disciplinesRepository) var disciplinesRepository
@@ -67,6 +75,12 @@ struct DisciplineDetailFeature {
 
             case let .groupSelected(code):
                 state.selectedGroup = code
+                return .none
+
+            case .countdownTapped:
+                return .send(.delegate(.openCountdown))
+
+            case .delegate:
                 return .none
             }
         }
