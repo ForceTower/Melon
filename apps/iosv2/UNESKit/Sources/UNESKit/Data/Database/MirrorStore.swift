@@ -58,10 +58,59 @@ struct MirrorStore: Sendable {
         try await writer.read { db in try Self.messagesSummary(db) }
     }
 
+    /// The Turmas snapshot as mirrored on disk; nil until the first
+    /// successful refresh lands.
+    func cachedDisciplinesOverview(now: Date) async throws -> DisciplinesOverview? {
+        try await writer.read { db in
+            guard try Self.lastSyncedAt(db) != nil else { return nil }
+            return try Self.disciplinesOverview(now: now, db: db)
+        }
+    }
+
+    func disciplinesOverview(now: Date) async throws -> DisciplinesOverview {
+        try await writer.read { db in try Self.disciplinesOverview(now: now, db: db) }
+    }
+
+    private static func disciplinesOverview(now: Date, db: Database) throws -> DisciplinesOverview {
+        let semesters = try SemesterRecord.order(Column("startDate").desc).fetchAll(db)
+        // Enrollment rows are the ground truth for "payload mirrored".
+        let downloadedIds = try Set(
+            String.fetchAll(db, StudentClassRecord.select(Column("semesterId"), as: String.self).distinct())
+        )
+        let activeId = semesters.map(\.domain).active(today: now.dayStamp)?.id
+
+        var overview = DisciplinesOverview()
+        for record in semesters {
+            if downloadedIds.contains(record.id) {
+                let group = SemesterDisciplines(
+                    id: record.id,
+                    code: record.code,
+                    disciplines: try snapshot(for: record, db: db).disciplineSummaries(now: now)
+                )
+                if record.id == activeId {
+                    overview.current = group
+                } else {
+                    overview.past.append(group)
+                }
+            } else {
+                overview.pending.append(
+                    PendingSemester(id: record.id, code: record.code, disciplineCount: record.disciplineCount)
+                )
+            }
+        }
+        return overview
+    }
+
     // MARK: Queries
 
     private static func replaceScope(with snapshot: SemesterSnapshot, db: Database) throws {
-        try snapshot.semester.upsert(db)
+        // The payload's semester row carries no disciplineCount — keep the
+        // one the semester list wrote instead of nulling it.
+        var semester = snapshot.semester
+        if semester.disciplineCount == nil {
+            semester.disciplineCount = try SemesterRecord.fetchOne(db, key: semester.id)?.disciplineCount
+        }
+        try semester.upsert(db)
 
         let scope = Column("semesterId") == snapshot.semester.id
         try DisciplineRecord.filter(scope).deleteAll(db)

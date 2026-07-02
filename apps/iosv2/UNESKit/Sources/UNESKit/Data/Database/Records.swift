@@ -11,6 +11,10 @@ struct SemesterRecord: Codable, Equatable, Sendable, FetchableRecord, Persistabl
     /// yyyy-MM-dd, compared lexicographically.
     var startDate: String
     var endDate: String
+    /// Enrolled disciplines as counted upstream — sizes the "download this
+    /// semester" cards before the payload is mirrored. Only the semester
+    /// list carries it.
+    var disciplineCount: Int? = nil
 }
 
 extension SemesterRecord {
@@ -25,6 +29,8 @@ struct DisciplineRecord: Codable, Equatable, Sendable, FetchableRecord, Persista
     var semesterId: String
     var code: String?
     var name: String
+    /// Catalog class-hours of the whole discipline (all groups combined).
+    var hours: Int? = nil
 }
 
 struct DisciplineOfferRecord: Codable, Equatable, Sendable, FetchableRecord, PersistableRecord {
@@ -40,6 +46,10 @@ struct ClassRecord: Codable, Equatable, Sendable, FetchableRecord, PersistableRe
     var semesterId: String
     var offerId: String
     var hours: Int
+    /// SAGRES group name, e.g. "T01" / "T01P01".
+    var groupName: String? = nil
+    /// Group kind, e.g. "Teórica" / "Prática".
+    var type: String? = nil
 }
 
 struct TeacherRecord: Codable, Equatable, Sendable, FetchableRecord, PersistableRecord {
@@ -81,8 +91,16 @@ struct StudentClassRecord: Codable, Equatable, Sendable, FetchableRecord, Persis
     var id: String
     var semesterId: String
     var classId: String
-    /// Class-hours of absence (SAGRES totalFaltas).
+    /// Class-hours of absence (SAGRES totalFaltas). Upstream reports it once
+    /// per discipline and the backend replicates it onto every group row —
+    /// read it with first-non-null per offer, never summed.
     var missedClasses: Int?
+    /// Closing mean as a decimal string (e.g. "7.7"); null while ongoing.
+    var finalGrade: String? = nil
+    /// Authoritative pass/fail from upstream; null until the result is posted.
+    var approved: Bool? = nil
+    /// Whether a Prova Final evaluation exists for this class.
+    var wentToFinals: Bool? = nil
 }
 
 struct StudentGradeRecord: Codable, Equatable, Sendable, FetchableRecord, PersistableRecord {
@@ -98,6 +116,11 @@ struct StudentGradeRecord: Codable, Equatable, Sendable, FetchableRecord, Persis
     var value: String?
     /// yyyy-MM-dd.
     var date: String?
+    /// Upstream grade id. The backend replicates the same grade set onto
+    /// every group row of a multi-group discipline; this is the dedup key.
+    var platformId: String? = nil
+    /// Evaluation weight as a decimal string.
+    var weight: String? = nil
 }
 
 struct LectureRecord: Codable, Equatable, Sendable, FetchableRecord, PersistableRecord {

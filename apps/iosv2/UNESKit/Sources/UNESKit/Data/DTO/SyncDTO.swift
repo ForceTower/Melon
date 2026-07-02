@@ -71,6 +71,11 @@ struct SemesterListDTO: Decodable {
         let description: String
         let startDate: String
         let endDate: String
+        /// Last time the worker applied upstream data for this semester —
+        /// re-pulling a downloaded semester is warranted when it moves.
+        var dirtyAt: String? = nil
+        /// Enrolled disciplines, for the "download this semester" cards.
+        var disciplineCount: Int? = nil
     }
 }
 
@@ -80,7 +85,14 @@ extension SemesterListDTO.ItemDTO {
     }
 
     var record: SemesterRecord {
-        SemesterRecord(id: id, code: code, description: description, startDate: startDate, endDate: endDate)
+        SemesterRecord(
+            id: id,
+            code: code,
+            description: description,
+            startDate: startDate,
+            endDate: endDate,
+            disciplineCount: disciplineCount
+        )
     }
 }
 
@@ -111,6 +123,7 @@ struct SemesterPayloadDTO: Decodable {
         let id: String
         let code: String?
         let name: String
+        var hours: Int? = nil
     }
 
     struct OfferDTO: Decodable {
@@ -122,6 +135,8 @@ struct SemesterPayloadDTO: Decodable {
         let id: String
         let offerId: String
         let hours: Int
+        var groupName: String? = nil
+        var type: String? = nil
     }
 
     struct TeacherDTO: Decodable {
@@ -153,6 +168,10 @@ struct SemesterPayloadDTO: Decodable {
         let id: String
         let classId: String
         let missedClasses: Int?
+        /// Decimal string, e.g. "7.7"; null while the semester is ongoing.
+        var finalGrade: String? = nil
+        var approved: Bool? = nil
+        var wentToFinals: Bool? = nil
     }
 
     struct StudentGradeDTO: Decodable {
@@ -165,6 +184,10 @@ struct SemesterPayloadDTO: Decodable {
         /// Decimal string, e.g. "8.5"; null while ungraded.
         let value: String?
         let date: String?
+        /// Upstream grade id — dedup key across replicated group rows.
+        var platformId: String? = nil
+        /// Decimal string.
+        var weight: String? = nil
     }
 
     struct LectureDTO: Decodable {
@@ -190,13 +213,20 @@ extension SemesterPayloadDTO {
                 endDate: semester.endDate
             ),
             disciplines: disciplines.map {
-                DisciplineRecord(id: $0.id, semesterId: semesterId, code: $0.code, name: $0.name)
+                DisciplineRecord(id: $0.id, semesterId: semesterId, code: $0.code, name: $0.name, hours: $0.hours)
             },
             disciplineOffers: disciplineOffers.map {
                 DisciplineOfferRecord(id: $0.id, semesterId: semesterId, disciplineId: $0.disciplineId)
             },
             classes: classes.map {
-                ClassRecord(id: $0.id, semesterId: semesterId, offerId: $0.offerId, hours: $0.hours)
+                ClassRecord(
+                    id: $0.id,
+                    semesterId: semesterId,
+                    offerId: $0.offerId,
+                    hours: $0.hours,
+                    groupName: $0.groupName,
+                    type: $0.type
+                )
             },
             teachers: teachers.map {
                 TeacherRecord(id: $0.id, semesterId: semesterId, name: $0.name)
@@ -219,7 +249,15 @@ extension SemesterPayloadDTO {
                 )
             },
             studentClasses: studentClasses.map {
-                StudentClassRecord(id: $0.id, semesterId: semesterId, classId: $0.classId, missedClasses: $0.missedClasses)
+                StudentClassRecord(
+                    id: $0.id,
+                    semesterId: semesterId,
+                    classId: $0.classId,
+                    missedClasses: $0.missedClasses,
+                    finalGrade: $0.finalGrade,
+                    approved: $0.approved,
+                    wentToFinals: $0.wentToFinals
+                )
             },
             studentGrades: studentGrades.map {
                 StudentGradeRecord(
@@ -230,7 +268,9 @@ extension SemesterPayloadDTO {
                     nameShort: $0.nameShort,
                     ordinal: $0.ordinal,
                     value: $0.value,
-                    date: $0.date
+                    date: $0.date,
+                    platformId: $0.platformId,
+                    weight: $0.weight
                 )
             },
             lectures: lectures.map {

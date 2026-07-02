@@ -68,6 +68,18 @@ enum UNESColor {
     static let liveGreen = Color(hex: 0x34C759)
     static let successGreen = Color(hex: 0x2F9E5E)
     static let alertRed = Color(hex: 0xFF3B30)
+    /// Warning orange — shaky grades and absence bars running hot.
+    static let caution = Color(hex: 0xD9852E)
+
+    /// The grade ramp: teal for excellent, ink for solid, caution for
+    /// passing-but-shaky, coral below the cutoff, muted while unreleased.
+    static func score(_ value: Double?) -> Color {
+        guard let value else { return ink4 }
+        if value >= 8.5 { return teal }
+        if value >= 7 { return ink }
+        if value >= 5 { return caution }
+        return coral
+    }
 
     /// Stable per-discipline tints, assigned by the discipline's color index.
     static let disciplinePalette: [Color] = [coral, teal, magenta, violet, amber]

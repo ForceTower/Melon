@@ -37,7 +37,7 @@ extension SemesterSnapshot {
             return enrolledIds.contains(lecture.classId) && date <= today
         }
         guard held > 0 else { return nil }
-        let missed = studentClasses.reduce(0) { $0 + ($1.missedClasses ?? 0) }
+        let missed = totalMissedClassHours
         return max(0, min(100, 100 - (missed * 100 + held / 2) / held))
     }
 

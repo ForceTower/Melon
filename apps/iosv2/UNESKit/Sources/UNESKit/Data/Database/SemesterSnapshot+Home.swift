@@ -155,7 +155,7 @@ extension SemesterSnapshot {
         }
         guard totalHours > 0, held else { return nil }
 
-        let totalMissed = studentClasses.reduce(0) { $0 + ($1.missedClasses ?? 0) }
+        let totalMissed = totalMissedClassHours
         let percent = ((1 - Double(totalMissed) / Double(totalHours)) * 100).rounded()
         return AttendanceSummary(
             percent: max(0, min(100, Int(percent))),

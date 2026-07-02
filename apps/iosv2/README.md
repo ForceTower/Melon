@@ -35,13 +35,13 @@ apps/iosv2/
 `Data → Domain ← Features`. It's a single target, so the boundaries are by
 convention (folders), not the compiler:
 
-- **Domain** — models + repository interfaces. A repository is a TCA *dependency
-  client*: a `struct` of `async` closures (not a protocol/class), registered on
+- **Domain** — models + repository interfaces. A repository is a TCA _dependency
+  client_: a `struct` of `async` closures (not a protocol/class), registered on
   `DependencyValues`. Its interface and `testValue`/`previewValue` live here.
 - **Data** — the `liveValue` for each repository, the `APIClient` HTTP data
   source, DTOs, and DTO→domain mapping. Nothing here leaks upward.
 - **Features (UI)** — reducers reach repositories via `@Dependency`, never the
-  `APIClient` or DTOs directly. Repositories are called *directly from reducers*
+  `APIClient` or DTOs directly. Repositories are called _directly from reducers_
   (the reducer is the interactor); a use-case layer is added only where logic
   spans multiple repositories.
 
@@ -99,6 +99,17 @@ sync → ready on a native `NavigationStack` (value-routed `StackState`).
   and an offline refresh (pull or hero rollover) recomputes hero/"Seu dia"
   from mirrored data so the screen still advances with time.
 
-The remaining tabs (Horário, Turmas, Mensagens, Eu) are still minimal
-placeholder reducers; Home's day rows and discipline cards value-route to a
-placeholder detail until the discipline detail screen ships.
+- **Turmas v2** (`Features/Disciplines`): the disciplines tab — semester
+  scorecard hero (partial mean, last-grade delta, staggered equalizer bars,
+  attention line), one card per discipline (grade ring, evaluation chips,
+  absence bar, next-evaluation countdown), and the Histórico section with
+  collapsible past semesters plus on-demand "Baixar" cards that pull
+  `api/sync/semesters/:id` for semesters not mirrored yet. Reuses the Home
+  mirror through `DisciplinesRepository` (same stale-while-revalidate shape);
+  multi-group disciplines (theory + practice) merge into one card — grades
+  dedup by upstream id and totalFaltas reads first-non-null per offer, since
+  the backend replicates both onto every group row.
+
+The remaining tabs (Horário, Mensagens, Eu) are still minimal placeholder
+reducers; day rows and discipline cards value-route to a placeholder detail
+until the discipline detail screen ships.

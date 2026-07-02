@@ -19,6 +19,21 @@ struct SemesterSnapshot: Equatable, Sendable {
 }
 
 extension SemesterSnapshot {
+    /// Semester-wide class-hours of absence. Upstream reports totalFaltas
+    /// once per discipline and the backend replicates it onto every group
+    /// row, so count one value per offer — summing the raw rows would
+    /// double-count multi-group (theory + practice) disciplines.
+    var totalMissedClassHours: Int {
+        let offerByClass = Dictionary(classes.map { ($0.id, $0.offerId) }, uniquingKeysWith: { first, _ in first })
+        var missedByOffer: [String: Int] = [:]
+        for studentClass in studentClasses {
+            guard let missed = studentClass.missedClasses else { continue }
+            let offerId = offerByClass[studentClass.classId] ?? studentClass.classId
+            missedByOffer[offerId] = missedByOffer[offerId] ?? missed
+        }
+        return missedByOffer.values.reduce(0, +)
+    }
+
     /// Upstream times come as "HH:mm:ss"; the UI speaks "HH:mm".
     func hhMm(_ time: String?) -> String? {
         guard let time, time.count >= 5 else { return time }

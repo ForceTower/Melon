@@ -38,12 +38,14 @@ private func migrator() -> DatabaseMigrator {
             t.column("description", .text).notNull()
             t.column("startDate", .text).notNull()
             t.column("endDate", .text).notNull()
+            t.column("disciplineCount", .integer)
         }
         try db.create(table: "disciplines") { t in
             t.column("semesterId", .text).notNull()
             t.column("id", .text).notNull()
             t.column("code", .text)
             t.column("name", .text).notNull()
+            t.column("hours", .integer)
             t.primaryKey(["semesterId", "id"])
         }
         try db.create(table: "disciplineOffers") { t in
@@ -56,6 +58,8 @@ private func migrator() -> DatabaseMigrator {
             t.column("semesterId", .text).notNull().indexed()
             t.column("offerId", .text).notNull()
             t.column("hours", .integer).notNull()
+            t.column("groupName", .text)
+            t.column("type", .text)
         }
         try db.create(table: "teachers") { t in
             t.column("semesterId", .text).notNull()
@@ -89,6 +93,9 @@ private func migrator() -> DatabaseMigrator {
             t.column("semesterId", .text).notNull().indexed()
             t.column("classId", .text).notNull()
             t.column("missedClasses", .integer)
+            t.column("finalGrade", .text)
+            t.column("approved", .boolean)
+            t.column("wentToFinals", .boolean)
         }
         try db.create(table: "studentGrades") { t in
             t.primaryKey("id", .text)
@@ -99,6 +106,8 @@ private func migrator() -> DatabaseMigrator {
             t.column("ordinal", .integer).notNull()
             t.column("value", .text)
             t.column("date", .text)
+            t.column("platformId", .text)
+            t.column("weight", .text)
         }
         try db.create(table: "lectures") { t in
             t.primaryKey("id", .text)
