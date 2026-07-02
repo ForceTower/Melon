@@ -94,6 +94,9 @@ struct DisciplineDetailView: View {
             }
             .padding(.top, 16)
             .padding(.bottom, 12)
+            // Pin the content to the viewport width — anything wider would
+            // let the vertical scroller pan sideways.
+            .containerRelativeFrame(.horizontal)
         }
         .onScrollGeometryChange(for: CGFloat.self) { geometry in
             geometry.contentOffset.y + geometry.contentInsets.top
