@@ -8,6 +8,11 @@ struct ScheduleDayTimeline: View {
     let nowMinutes: Int
     var onClassTap: (ScheduleClass) -> Void
 
+    // Easter egg: long-pressing the free-day mascot opens the Folio runner.
+    // State lives here so it can't exist on a day that has classes — the
+    // empty state is the only entry point.
+    @State private var showRunner = false
+
     var body: some View {
         if day.classes.isEmpty {
             emptyDay
@@ -51,14 +56,9 @@ struct ScheduleDayTimeline: View {
 
     private var emptyDay: some View {
         VStack(spacing: 0) {
-            ZStack {
-                Circle().fill(UNESColor.surface2)
-                Image(systemName: "calendar")
-                    .font(.system(size: 26, weight: .medium))
-                    .foregroundStyle(UNESColor.ink4)
-            }
-            .frame(width: 64, height: 64)
-            .padding(.bottom, 16)
+            BlinkingFolio(size: 88)
+                .opacity(0.9)
+                .padding(.bottom, 12)
 
             Text("Dia livre")
                 .font(.system(size: 20, weight: .bold))
@@ -71,6 +71,17 @@ struct ScheduleDayTimeline: View {
         }
         .frame(maxWidth: .infinity)
         .padding(EdgeInsets(top: 60, leading: 30, bottom: 40, trailing: 30))
+        .contentShape(Rectangle())
+        // Held distinctly longer than the system long-press (~0.5s) so an
+        // accidental hold won't open the easter egg — discovery should feel
+        // like a deliberate secret.
+        .onLongPressGesture(minimumDuration: 1.2) {
+            showRunner = true
+        }
+        .sensoryFeedback(.impact(weight: .medium), trigger: showRunner)
+        .fullScreenCoverCompat(isPresented: $showRunner) {
+            FolioRunnerView()
+        }
     }
 }
 

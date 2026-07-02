@@ -66,6 +66,32 @@ extension View {
         #endif
     }
 
+    /// Hides the status bar and home indicator for an immersive full-screen
+    /// scene. iOS-only; the package also builds for macOS.
+    @ViewBuilder
+    func immersiveChromeHidden() -> some View {
+        #if os(iOS)
+        statusBarHidden(true)
+            .persistentSystemOverlays(.hidden)
+        #else
+        self
+        #endif
+    }
+
+    /// A full-screen modal on iOS; falls back to a sheet on macOS, which has
+    /// no `fullScreenCover`.
+    @ViewBuilder
+    func fullScreenCoverCompat(
+        isPresented: Binding<Bool>,
+        @ViewBuilder content: @escaping () -> some View
+    ) -> some View {
+        #if os(iOS)
+        fullScreenCover(isPresented: isPresented, content: content)
+        #else
+        sheet(isPresented: isPresented, content: content)
+        #endif
+    }
+
     @ViewBuilder
     func noAutocapitalization() -> some View {
         #if os(iOS)
