@@ -165,11 +165,14 @@ struct MeView: View {
 
     // MARK: Sheet bindings
 
+    // Both setters only send when state still shows the sheet as presented:
+    // SwiftUI re-writes the binding when a dismissal animation completes, and
+    // by then the reducer (or even the root, on logout) may have moved on.
     private var aboutBinding: Binding<AppInfo?> {
         Binding(
             get: { store.aboutInfo },
             set: { value in
-                if value == nil { store.send(.aboutDismissed) }
+                if value == nil, store.aboutInfo != nil { store.send(.aboutDismissed) }
             }
         )
     }
@@ -178,7 +181,7 @@ struct MeView: View {
         Binding(
             get: { store.isLogoutPromptPresented },
             set: { value in
-                if !value { store.send(.logoutPromptDismissed) }
+                if !value, store.isLogoutPromptPresented { store.send(.logoutPromptDismissed) }
             }
         )
     }
