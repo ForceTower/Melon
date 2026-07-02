@@ -11,6 +11,9 @@ struct AppFeature {
         var messages = MessagesFeature.State()
         var me = MeFeature.State()
         var unreadMessages = 0
+        /// Whether the scene truly reached .background — transient .inactive
+        /// blips (control center, app-switcher peek) never set it.
+        var wasBackgrounded = false
         @Shared(.appStorage("theme")) var theme: AppTheme = .system
     }
 
@@ -20,6 +23,8 @@ struct AppFeature {
 
     enum Action: Equatable {
         case tabChanged(Tab)
+        case sceneBackgrounded
+        case sceneActivated
         case home(HomeFeature.Action)
         case schedule(ScheduleFeature.Action)
         case disciplines(DisciplinesFeature.Action)
@@ -39,6 +44,29 @@ struct AppFeature {
             case let .tabChanged(tab):
                 state.tab = tab
                 return .none
+
+            case .sceneBackgrounded:
+                state.wasBackgrounded = true
+                return .none
+
+            case .sceneActivated:
+                // Resume arrives as .background → .inactive → .active, so the
+                // latch — not the previous phase — decides whether this is a
+                // real return from background.
+                guard state.wasBackgrounded else { return .none }
+                state.wasBackgrounded = false
+                // Overviews bake "today" in at compute time and the mirror
+                // observations only re-emit on writes, so a suspension that
+                // crosses midnight leaves every tab rendering the old day.
+                // Re-sending .task restarts each observation (cancelInFlight)
+                // and its initial replay recomputes with the current date.
+                return .concatenate(
+                    .send(.home(.task)),
+                    .send(.schedule(.task)),
+                    .send(.disciplines(.task)),
+                    .send(.messages(.task)),
+                    .send(.me(.task))
+                )
 
             case let .home(.delegate(delegate)):
                 switch delegate {

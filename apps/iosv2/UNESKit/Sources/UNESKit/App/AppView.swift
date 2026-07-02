@@ -3,6 +3,7 @@ import SwiftUI
 
 struct AppView: View {
     @Bindable var store: StoreOf<AppFeature>
+    @Environment(\.scenePhase) private var scenePhase
 
     private var tabBinding: Binding<AppFeature.Tab> {
         Binding(get: { store.tab }, set: { store.send(.tabChanged($0)) })
@@ -28,6 +29,13 @@ struct AppView: View {
             }
         }
         .preferredColorScheme(store.theme.colorScheme)
+        .onChange(of: scenePhase) { _, newPhase in
+            switch newPhase {
+            case .background: store.send(.sceneBackgrounded)
+            case .active: store.send(.sceneActivated)
+            default: break
+            }
+        }
     }
 }
 
