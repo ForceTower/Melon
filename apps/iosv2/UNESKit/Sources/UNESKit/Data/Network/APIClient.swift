@@ -1,6 +1,11 @@
 import ComposableArchitecture
 import Foundation
 
+/// Production origin of the Melon API (`apps/api`).
+enum MelonAPI {
+    static let baseURL = URL(string: "https://melon.forcetower.dev")!
+}
+
 struct APIRequest: Sendable {
     var method = "GET"
     var path: String
@@ -93,7 +98,7 @@ extension DependencyValues {
 
 extension APIClient {
     static func live(
-        baseURL: URL = URL(string: "https://melon.forcetower.dev")!,
+        baseURL: URL = MelonAPI.baseURL,
         session: URLSession = .shared
     ) -> APIClient {
         APIClient(send: { apiRequest in

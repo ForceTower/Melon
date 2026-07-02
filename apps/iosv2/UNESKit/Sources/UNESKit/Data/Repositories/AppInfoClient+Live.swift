@@ -1,5 +1,4 @@
 import ComposableArchitecture
-import CryptoKit
 import Foundation
 import StoreKit
 
@@ -41,26 +40,12 @@ private extension AppInfo {
         AppInfo(
             version: Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "dev",
             build: Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "0",
-            machineId: machineId(),
+            machineId: MachineIdentity.id,
             deviceModel: modelIdentifier(),
             osVersion: osVersionLabel(),
             channel: channel.channel,
             installSource: channel.installSource
         )
-    }
-
-    /// The legacy apps' recipe: a UUID minted on first launch and persisted,
-    /// exposed only as its MD5 hex digest.
-    private static func machineId() -> String {
-        let defaults = UserDefaults.standard
-        let installationId = defaults.string(forKey: "installationId") ?? {
-            let minted = UUID().uuidString
-            defaults.set(minted, forKey: "installationId")
-            return minted
-        }()
-        return Insecure.MD5.hash(data: Data(installationId.utf8))
-            .map { String(format: "%02x", $0) }
-            .joined()
     }
 
     /// Hardware identifier from `uname` (e.g. `iPhone15,3`). On the Simulator

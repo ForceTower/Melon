@@ -23,6 +23,7 @@ apps/iosv2/
         Network/         APIClient (URLSession data source) + APIError
         Database/        GRDB SQLite mirror — schema (AppDatabase), records, SemesterSnapshot + mappings, MirrorStore
         Repositories/    live repository values (liveValue) — HTTP + mirror + DTO→domain mapping
+      Logging/           Log facade (Log.scoped) — OSLog locally + batched shipping to apps/api /api/logs → OTel
       Features/          UI — one folder per tab: <Feature>Feature.swift (@Reducer) + <Feature>View.swift
       App/               AppFeature (root @Reducer) + AppView (tab shell) + RootView (public entry)
       Components/        shared, design-agnostic views
