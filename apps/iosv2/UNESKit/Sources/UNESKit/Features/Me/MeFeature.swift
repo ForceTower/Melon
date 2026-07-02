@@ -74,6 +74,8 @@ struct MeFeature {
     @Dependency(\.sessionStore) var sessionStore
     @Dependency(\.appInfo) var appInfo
     @Dependency(\.pasteboard) var pasteboard
+    @Dependency(\.openURL) var openURL
+    @Dependency(\.locale) var locale
     @Dependency(\.continuousClock) var clock
 
     private enum CancelID { case observation, aboutResolve, aboutCopyFeedback }
@@ -132,8 +134,14 @@ struct MeFeature {
                         await send(.aboutInfoResolved(appInfo.resolved()))
                     }
                     .cancellable(id: CancelID.aboutResolve, cancelInFlight: true)
-                case .sync, .feedback:
-                    // The remaining destinations land with their features.
+                case .feedback:
+                    let url = feedbackSMSURL(for: appInfo.current())
+                    return .run { _ in
+                        guard let url else { return }
+                        await openURL(url)
+                    }
+                case .sync:
+                    // Sync's destination lands with its feature.
                     break
                 }
                 return .none
@@ -270,6 +278,20 @@ struct MeFeature {
 
     private func firstName(of name: String?) -> String? {
         name?.split(separator: " ").first.map(String.init)
+    }
+
+    /// `sms:` deep link that opens Messages addressed to the maintainer with
+    /// the build/device header prefilled — same recipe as the v1 app.
+    private func feedbackSMSURL(for info: AppInfo) -> URL? {
+        let body = """
+        UNES \(info.version)(\(info.build)) - \(info.deviceModel) \(locale.identifier)
+        id: \(info.machineId)
+        Os dados acima me ajudam a encontrar o erro, não apaga se puder :)
+        """
+        guard let encoded = body.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) else {
+            return nil
+        }
+        return URL(string: "sms:joaopaulo761@gmail.com?&body=\(encoded)")
     }
 }
 
