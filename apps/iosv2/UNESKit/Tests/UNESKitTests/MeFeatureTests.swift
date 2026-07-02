@@ -91,6 +91,19 @@ struct MeFeatureTests {
     }
 
     @Test
+    func settingsRowPushesTheSettingsScreen() async {
+        let store = TestStore(initialState: MeFeature.State(userName: "Mariana Souza")) {
+            MeFeature()
+        }
+
+        await store.send(.settingsRowTapped(.settings)) {
+            $0.path[id: 0] = .settings(SettingsFeature.State(userName: "Mariana Souza"))
+        }
+        // The other rows still wait for their features.
+        await store.send(.settingsRowTapped(.about))
+    }
+
+    @Test
     func logoutKeepingDataClearsOnlyTheSession() async {
         let summary = LocalDataSummary(semesters: 7, messages: 142)
         let sessionStore = SessionStore.inMemory(initial: .preview)

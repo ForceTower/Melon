@@ -2,16 +2,21 @@ import ComposableArchitecture
 import SwiftUI
 
 struct MeView: View {
-    let store: StoreOf<MeFeature>
+    @Bindable var store: StoreOf<MeFeature>
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $store.scope(state: \.path, action: \.path)) {
             ZStack(alignment: .top) {
                 UNESColor.surface.ignoresSafeArea()
                 ambientWash
                 content
             }
             .navigationTitle("Eu")
+        } destination: { store in
+            switch store.case {
+            case let .settings(store):
+                SettingsView(store: store)
+            }
         }
         .task { await store.send(.task).finish() }
         .sheet(item: shortcutBinding) { shortcut in

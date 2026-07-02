@@ -26,6 +26,11 @@ enum MeFormat {
         "UNES v\(marketingVersion)"
     }
 
+    /// "UNES v1.2 · build 34" — the Configurações footer.
+    static var versionBuildLabel: String {
+        "\(versionLabel) · build \(buildNumber)"
+    }
+
     private static var marketingVersion: String {
         Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "dev"
     }

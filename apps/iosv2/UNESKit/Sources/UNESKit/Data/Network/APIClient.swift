@@ -45,6 +45,19 @@ extension APIClient {
         _ = try await send(APIRequest(method: "POST", path: path))
     }
 
+    func patch<T: Decodable>(
+        _ type: T.Type = T.self,
+        at path: String,
+        body: some Encodable & Sendable
+    ) async throws -> T {
+        let request = APIRequest(
+            method: "PATCH",
+            path: path,
+            body: try JSONEncoder().encode(body)
+        )
+        return try Self.unwrap(await send(request))
+    }
+
     private static func unwrap<T: Decodable>(_ data: Data) throws -> T {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601

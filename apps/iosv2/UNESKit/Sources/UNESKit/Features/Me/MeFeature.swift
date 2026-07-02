@@ -9,8 +9,8 @@ enum MeShortcut: String, Equatable, Sendable, Identifiable, CaseIterable {
     var id: String { rawValue }
 }
 
-/// The "Definições" rows. None navigates yet — their destinations land with
-/// the Settings and Licenses features.
+/// The "Definições" rows. Settings pushes its screen; the remaining
+/// destinations land with their features.
 enum MeSettingsRow: String, Equatable, Sendable, CaseIterable {
     case settings, sync, about, feedback, licenses
 }
@@ -27,9 +27,15 @@ struct MeFeature {
         var events: [AcademicEvent] = []
         var activeShortcut: MeShortcut?
         var isLogoutPromptPresented = false
+        var path = StackState<Path.State>()
         @Shared(.appStorage("theme")) var theme: AppTheme = .system
 
         var displayName: String? { profile?.name ?? userName }
+    }
+
+    @Reducer
+    enum Path {
+        case settings(SettingsFeature)
     }
 
     enum Action: Equatable {
@@ -43,6 +49,7 @@ struct MeFeature {
         case logoutTapped
         case logoutPromptDismissed
         case logoutConfirmed(keepData: Bool)
+        case path(StackActionOf<Path>)
         case delegate(Delegate)
 
         enum Delegate: Equatable {
@@ -92,8 +99,17 @@ struct MeFeature {
                 state.activeShortcut = nil
                 return .none
 
-            case .settingsRowTapped:
-                // Destinations arrive with the Settings/Licenses features.
+            case let .settingsRowTapped(row):
+                switch row {
+                case .settings:
+                    state.path.append(.settings(SettingsFeature.State(
+                        profile: state.profile,
+                        userName: state.userName
+                    )))
+                case .sync, .about, .feedback, .licenses:
+                    // The remaining destinations land with their features.
+                    break
+                }
                 return .none
 
             case .logoutTapped:
@@ -123,10 +139,11 @@ struct MeFeature {
                     )))
                 }
 
-            case .delegate:
+            case .path, .delegate:
                 return .none
             }
         }
+        .forEach(\.path, action: \.path)
     }
 
     private func observeMirror() -> Effect<Action> {
@@ -158,3 +175,6 @@ struct MeFeature {
         name?.split(separator: " ").first.map(String.init)
     }
 }
+
+extension MeFeature.Path.State: Equatable {}
+extension MeFeature.Path.Action: Equatable {}
