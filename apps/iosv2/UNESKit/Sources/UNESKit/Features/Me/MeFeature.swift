@@ -9,8 +9,8 @@ enum MeShortcut: String, Equatable, Sendable, Identifiable, CaseIterable {
     var id: String { rawValue }
 }
 
-/// The "Definições" rows. Settings pushes its screen; the remaining
-/// destinations land with their features.
+/// The "Definições" rows. Settings and Licenses push their screens; the
+/// remaining destinations land with their features.
 enum MeSettingsRow: String, Equatable, Sendable, CaseIterable {
     case settings, sync, about, feedback, licenses
 }
@@ -37,6 +37,7 @@ struct MeFeature {
     enum Path {
         case settings(SettingsFeature)
         case countdown(FinalCountdownFeature)
+        case licenses(LicensesFeature)
     }
 
     enum Action: Equatable {
@@ -112,7 +113,9 @@ struct MeFeature {
                         profile: state.profile,
                         userName: state.userName
                     )))
-                case .sync, .about, .feedback, .licenses:
+                case .licenses:
+                    state.path.append(.licenses(LicensesFeature.State()))
+                case .sync, .about, .feedback:
                     // The remaining destinations land with their features.
                     break
                 }

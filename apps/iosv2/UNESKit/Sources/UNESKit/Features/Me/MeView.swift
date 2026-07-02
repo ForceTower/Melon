@@ -18,6 +18,8 @@ struct MeView: View {
                 SettingsView(store: store)
             case let .countdown(store):
                 FinalCountdownView(store: store)
+            case let .licenses(store):
+                LicensesView(store: store)
             }
         }
         .task { await store.send(.task).finish() }

@@ -115,6 +115,17 @@ struct MeFeatureTests {
     }
 
     @Test
+    func licensesRowPushesTheLicensesScreen() async {
+        let store = TestStore(initialState: MeFeature.State()) {
+            MeFeature()
+        }
+
+        await store.send(.settingsRowTapped(.licenses)) {
+            $0.path[id: 0] = .licenses(LicensesFeature.State())
+        }
+    }
+
+    @Test
     func logoutKeepingDataClearsOnlyTheSession() async {
         let summary = LocalDataSummary(semesters: 7, messages: 142)
         let sessionStore = SessionStore.inMemory(initial: .preview)
