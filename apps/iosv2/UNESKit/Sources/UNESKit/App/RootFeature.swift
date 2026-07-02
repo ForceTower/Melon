@@ -20,14 +20,22 @@ struct RootFeature {
     }
 
     enum Action {
+        case task
         case onboarding(OnboardingFeature.Action)
         case connected(AppFeature.Action)
         case farewell(FarewellFeature.Action)
     }
 
+    @Dependency(\.widgetSync) var widgetSync
+
     var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
+            case .task:
+                // App-lifetime mirror → widget republishing, alive across
+                // login/logout so a wipe also clears the widgets.
+                return .run { _ in await widgetSync.run() }
+
             case .onboarding(.delegate(.finished)):
                 state = .connected(AppFeature.State())
                 return .none

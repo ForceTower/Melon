@@ -29,6 +29,7 @@ public struct RootView: View {
             }
         }
         .animation(.easeInOut(duration: 0.4), value: phase)
+        .task { await store.send(.task).finish() }
     }
 
     /// Which of the three shells is on screen — the crossfade trigger.

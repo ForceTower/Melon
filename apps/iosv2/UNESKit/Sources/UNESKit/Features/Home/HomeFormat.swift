@@ -80,4 +80,9 @@ enum HomeFormat {
     static func nowLabel(minutes: Int) -> String {
         "\(minutes / 60):" + String(format: "%02d", minutes % 60)
     }
+
+    /// Full SAGRES names run long — first two names read naturally.
+    static func teacherShort(_ name: String) -> String {
+        name.split(separator: " ").prefix(2).joined(separator: " ")
+    }
 }

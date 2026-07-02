@@ -261,7 +261,7 @@ struct MirrorStore: Sendable {
         for row in snapshot.lectureMaterials { try row.insert(db) }
     }
 
-    private static func snapshot(for semester: SemesterRecord, db: Database) throws -> SemesterSnapshot {
+    static func snapshot(for semester: SemesterRecord, db: Database) throws -> SemesterSnapshot {
         func scoped<R: FetchableRecord & TableRecord>(_ type: R.Type) throws -> [R] {
             try R.filter(Column("semesterId") == semester.id).orderByPrimaryKey().fetchAll(db)
         }

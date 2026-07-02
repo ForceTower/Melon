@@ -52,27 +52,51 @@ struct MeshView: View {
     /// A soft blob as a radial gradient approximating a solid circle under a
     /// 48pt gaussian blur — a per-frame blur filter is far too expensive here.
     private func fillBlob(_ blob: MeshBlob, at center: CGPoint, scale: CGFloat, in context: inout GraphicsContext) {
-        let sigma: CGFloat = 48
-        let radius = blob.size / 2 * scale
-        let outer = radius + 2 * sigma
-        let base = blob.color.opacity(0.85 * intensity)
-
+        let (gradient, outer) = blob.softGradient(intensity: intensity, scale: scale)
         let rect = CGRect(x: center.x - outer, y: center.y - outer, width: outer * 2, height: outer * 2)
         context.fill(
             Ellipse().path(in: rect),
-            with: .radialGradient(
-                Gradient(stops: [
-                    .init(color: base, location: 0),
-                    .init(color: base, location: max(0, (radius - sigma) / outer)),
-                    .init(color: base.opacity(0.5), location: radius / outer),
-                    .init(color: base.opacity(0.16), location: (radius + sigma) / outer),
-                    .init(color: base.opacity(0), location: 1),
-                ]),
-                center: center,
-                startRadius: 0,
-                endRadius: outer
-            )
+            with: .radialGradient(gradient, center: center, startRadius: 0, endRadius: outer)
         )
+    }
+}
+
+/// One frozen frame of the mesh, for surfaces WidgetKit renders statically.
+/// Same blobs at their resting positions, drawn with plain SwiftUI gradients
+/// instead of the animated Canvas.
+struct StaticMeshView: View {
+    var variant: MeshView.Variant
+    var intensity: Double = 1
+
+    var body: some View {
+        GeometryReader { proxy in
+            ZStack {
+                ForEach(Array(variant.blobs.enumerated()), id: \.offset) { _, blob in
+                    let (gradient, outer) = blob.softGradient(intensity: intensity, scale: 1)
+                    Circle()
+                        .fill(RadialGradient(
+                            gradient: gradient,
+                            center: .center,
+                            startRadius: 0,
+                            endRadius: outer
+                        ))
+                        .frame(width: outer * 2, height: outer * 2)
+                        .position(
+                            x: blob.x * proxy.size.width + blob.size / 2,
+                            y: blob.y * proxy.size.height + blob.size / 2
+                        )
+                }
+                // Film grain highlight for warmth, as in the animated mesh.
+                RadialGradient(
+                    colors: [.white.opacity(0.08), .clear],
+                    center: UnitPoint(x: 0.3, y: 0.2),
+                    startRadius: 0,
+                    endRadius: max(proxy.size.width, proxy.size.height) * 0.6
+                )
+                .blendMode(.overlay)
+            }
+        }
+        .allowsHitTesting(false)
     }
 }
 
@@ -96,6 +120,23 @@ private struct MeshBlob {
         var phase = (time / duration).truncatingRemainder(dividingBy: 1)
         if reversed { phase = 1 - phase }
         return path.drift(at: phase)
+    }
+
+    /// Radial stops approximating a solid circle under a 48pt gaussian blur,
+    /// shared by the animated Canvas and the static widget rendering.
+    func softGradient(intensity: Double, scale: CGFloat) -> (gradient: Gradient, outer: CGFloat) {
+        let sigma: CGFloat = 48
+        let radius = size / 2 * scale
+        let outer = radius + 2 * sigma
+        let base = color.opacity(0.85 * intensity)
+        let gradient = Gradient(stops: [
+            .init(color: base, location: 0),
+            .init(color: base, location: max(0, (radius - sigma) / outer)),
+            .init(color: base.opacity(0.5), location: radius / outer),
+            .init(color: base.opacity(0.16), location: (radius + sigma) / outer),
+            .init(color: base.opacity(0), location: 1),
+        ])
+        return (gradient, outer)
     }
 }
 

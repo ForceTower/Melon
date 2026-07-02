@@ -165,9 +165,8 @@ struct HomeHeroCard: View {
         .foregroundStyle(.white.opacity(0.88))
     }
 
-    /// Full SAGRES names run long — first two names read naturally.
     private var teacherLabel: String? {
-        hero.teacherName.map { $0.split(separator: " ").prefix(2).joined(separator: " ") }
+        hero.teacherName.map(HomeFormat.teacherShort)
     }
 
     private var timeRange: String {
