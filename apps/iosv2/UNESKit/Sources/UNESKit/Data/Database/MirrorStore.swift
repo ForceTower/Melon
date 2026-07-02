@@ -300,4 +300,20 @@ struct MirrorStore: Sendable {
         try SyncStateRecord.fetchOne(db, key: lastSyncedAtKey)
             .flatMap { try? Date($0.value, strategy: timestampFormat) }
     }
+
+    // MARK: Backfill flag
+
+    private static let backfillMirrorCompleteKey = "backfillMirrorComplete"
+
+    func isBackfillMirrorComplete() async throws -> Bool {
+        try await writer.read { db in
+            try SyncStateRecord.fetchOne(db, key: Self.backfillMirrorCompleteKey)?.value == "true"
+        }
+    }
+
+    func setBackfillMirrorComplete() async throws {
+        try await writer.write { db in
+            try SyncStateRecord(key: Self.backfillMirrorCompleteKey, value: "true").upsert(db)
+        }
+    }
 }

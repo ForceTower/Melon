@@ -34,7 +34,10 @@ struct AppFeature {
     }
 
     @Dependency(\.push) var push
+    @Dependency(\.syncRepository) var syncRepository
     private let log = Log.scoped("AppFeature")
+
+    private enum CancelID { case ping, backfill }
 
     var body: some ReducerOf<Self> {
         Scope(state: \.home, action: \.home) { HomeFeature() }
@@ -48,7 +51,12 @@ struct AppFeature {
             case .task:
                 // Safety net for accounts that never saw the intro's prompt
                 // (skip path, reinstalls) — a no-op once iOS has asked.
-                return .run { _ in await push.requestAuthorization() }
+                return .merge(
+                    .run { _ in await push.requestAuthorization() },
+                    pingEffect(),
+                    .run { _ in try? await syncRepository.backfillMirror() }
+                        .cancellable(id: CancelID.backfill, cancelInFlight: true)
+                )
 
             case let .tabChanged(tab):
                 state.tab = tab
@@ -70,12 +78,15 @@ struct AppFeature {
                 // crosses midnight leaves every tab rendering the old day.
                 // Re-sending .task restarts each observation (cancelInFlight)
                 // and its initial replay recomputes with the current date.
-                return .concatenate(
-                    .send(.home(.task)),
-                    .send(.schedule(.task)),
-                    .send(.disciplines(.task)),
-                    .send(.messages(.task)),
-                    .send(.me(.task))
+                return .merge(
+                    pingEffect(),
+                    .concatenate(
+                        .send(.home(.task)),
+                        .send(.schedule(.task)),
+                        .send(.disciplines(.task)),
+                        .send(.messages(.task)),
+                        .send(.me(.task))
+                    )
                 )
 
             case let .home(.delegate(delegate)):
@@ -101,5 +112,10 @@ struct AppFeature {
                 return .none
             }
         }
+    }
+
+    private func pingEffect() -> Effect<Action> {
+        .run { _ in try? await syncRepository.ping() }
+            .cancellable(id: CancelID.ping, cancelInFlight: true)
     }
 }

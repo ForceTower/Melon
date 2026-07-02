@@ -121,6 +121,89 @@ extension SyncRepository: DependencyKey {
                 }
                 throw error
             }
+        },
+        backfillMirror: {
+            @Dependency(\.apiClient) var apiClient
+            @Dependency(\.database) var database
+            @Dependency(\.date.now) var now
+            let mirror = MirrorStore(writer: database)
+
+            if try await mirror.isBackfillMirrorComplete() {
+                log.debug("backfill skipped: already complete")
+                return
+            }
+            log.info("backfill start")
+            do {
+                // Mirroring before the server's Phase 2 settles would persist a
+                // partial archive that the completion flag then locks in.
+                try await awaitTerminalOnboardingStatus()
+
+                let list: SemesterListDTO = try await apiClient.get(from: "api/sync/semesters")
+                try await mirror.apply(semesters: list.semesters.map(\.record), snapshot: nil, syncedAt: now)
+                let semesters = list.semesters.map(\.domain)
+                log.info("backfill mirroring semesters count=\(semesters.count)")
+                for semester in semesters {
+                    let payload: SemesterPayloadDTO = try await apiClient.get(from: "api/sync/semesters/\(semester.id)")
+                    try await mirror.apply(semesters: [], snapshot: payload.snapshot, syncedAt: now)
+                }
+
+                var cursor: String?
+                var pages = 0
+                while pages < backfillMaxMessagePages {
+                    let query = cursor.map { [URLQueryItem(name: "cursor", value: $0)] } ?? []
+                    let inbox: MessageListDTO = try await apiClient.get(from: "api/sync/messages", query: query)
+                    try await mirror.upsertMessages(inbox.page, syncedAt: now)
+                    pages += 1
+                    guard let next = inbox.nextCursor else { break }
+                    cursor = next
+                }
+                if pages == backfillMaxMessagePages {
+                    log.warn("backfill messages pagination hit page cap=\(backfillMaxMessagePages)")
+                }
+
+                try await mirror.setBackfillMirrorComplete()
+                log.info("backfill complete pages=\(pages)")
+            } catch {
+                switch error {
+                case APIError.server(401, _):
+                    log.warn("backfill unauthorized")
+                case let APIError.server(status, message):
+                    log.warn("backfill server \(status) message=\(message ?? "<none>")")
+                case APIError.emptyEnvelope:
+                    log.warn("backfill 2xx envelope had null data")
+                case is URLError:
+                    log.warn("backfill transport failure", error: error)
+                default:
+                    log.error("backfill failed", error: error)
+                }
+                throw error
+            }
         }
     )
+}
+
+private let backfillPollInterval: Duration = .seconds(5)
+private let backfillMaxPollIterations = 60
+private let backfillMaxMessagePages = 200
+
+private func awaitTerminalOnboardingStatus() async throws {
+    @Dependency(\.apiClient) var apiClient
+    @Dependency(\.continuousClock) var clock
+    for iteration in 0 ..< backfillMaxPollIterations {
+        let dto: OnboardingStatusDTO = try await apiClient.get(from: "api/sync/onboarding-status")
+        if isBackfillTerminal(dto.domain) { return }
+        if iteration == backfillMaxPollIterations - 1 {
+            log.warn("backfill polling hit cap without terminal status")
+            return
+        }
+        try await clock.sleep(for: backfillPollInterval)
+    }
+}
+
+// Phase 1 failure short-circuits Phase 2 server-side, so a failed initial phase
+// is terminal for everything; otherwise both Phase 2 streams must settle.
+private func isBackfillTerminal(_ status: OnboardingStatus) -> Bool {
+    if status.initial.state == .failed { return true }
+    guard status.initial.state == .done else { return false }
+    return status.semesters.state.isTerminal && status.messages.state.isTerminal
 }

@@ -10,6 +10,7 @@ struct SyncRepository: Sendable {
     var semesters: @Sendable () async throws -> [Semester]
     var readyOverview: @Sendable (_ semester: Semester, _ now: Date) async throws -> ReadyOverview
     var fetchFirstMessagesPage: @Sendable () async throws -> Void
+    var backfillMirror: @Sendable () async throws -> Void
 }
 
 extension SyncRepository: TestDependencyKey {
@@ -30,7 +31,8 @@ extension SyncRepository: TestDependencyKey {
             [Semester(id: "preview", code: "2026.1", description: "Semestre 2026.1", startDate: "2026-03-01", endDate: "2026-08-01")]
         },
         readyOverview: { _, _ in .preview },
-        fetchFirstMessagesPage: {}
+        fetchFirstMessagesPage: {},
+        backfillMirror: {}
     )
 }
 
