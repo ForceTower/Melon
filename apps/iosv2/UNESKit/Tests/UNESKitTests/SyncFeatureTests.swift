@@ -40,7 +40,8 @@ struct SyncFeatureTests {
                     #expect(semester == activeSemester)
                     return .preview
                 },
-                fetchFirstMessagesPage: {}
+                fetchFirstMessagesPage: {},
+                backfillMirror: {}
             )
         }
 
@@ -105,7 +106,8 @@ struct SyncFeatureTests {
                 onboardingStatus: { throw APIError.server(status: 500, message: nil) },
                 semesters: { throw APIError.server(status: 500, message: nil) },
                 readyOverview: { _, _ in .preview },
-                fetchFirstMessagesPage: {}
+                fetchFirstMessagesPage: {},
+                backfillMirror: {}
             )
         }
 

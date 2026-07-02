@@ -62,6 +62,7 @@ struct AppFeatureTests {
             AppFeature()
         } withDependencies: {
             $0.date = .constant(Self.referenceDate)
+            $0.syncRepository.ping = {}
             $0.homeRepository.observe = { .finished }
             $0.scheduleRepository.observe = {
                 AsyncStream { continuation in
