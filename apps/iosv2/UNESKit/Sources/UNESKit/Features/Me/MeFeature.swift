@@ -1,10 +1,10 @@
 import ComposableArchitecture
 import Foundation
 
-/// The two pinned shortcuts. Countdown pushes the calculator; the calendar
-/// opens its teaser sheet until the feature lands.
+/// The pinned shortcuts. Matrícula and Countdown push their flows; the
+/// calendar opens its teaser sheet until the feature lands.
 enum MeShortcut: String, Equatable, Sendable, Identifiable, CaseIterable {
-    case calendar, countdown
+    case enrollment, calendar, countdown
 
     var id: String { rawValue }
 }
@@ -42,6 +42,12 @@ struct MeFeature {
         case settings(SettingsFeature)
         case countdown(FinalCountdownFeature)
         case licenses(LicensesFeature)
+        case enrollment(EnrollmentFeature)
+        case enrollmentOffers(EnrollmentOffersFeature)
+        case enrollmentDiscipline(EnrollmentDisciplineFeature)
+        case enrollmentTimetable(EnrollmentTimetableFeature)
+        case enrollmentReview(EnrollmentReviewFeature)
+        case enrollmentSuccess(EnrollmentSuccessFeature)
     }
 
     enum Action: Equatable {
@@ -106,6 +112,8 @@ struct MeFeature {
 
             case let .shortcutTapped(shortcut):
                 switch shortcut {
+                case .enrollment:
+                    state.path.append(.enrollment(EnrollmentFeature.State(profile: state.profile)))
                 case .calendar:
                     state.activeShortcut = shortcut
                 case .countdown:
@@ -193,11 +201,57 @@ struct MeFeature {
                     )))
                 }
 
+            case let .path(.element(id: _, action: pathAction)):
+                return routeEnrollment(pathAction, state: &state)
+
             case .path, .delegate:
                 return .none
             }
         }
         .forEach(\.path, action: \.path)
+    }
+
+    /// The matrícula steps are sibling path elements sharing one in-memory
+    /// session; their routing delegates all land here.
+    private func routeEnrollment(_ action: Path.Action, state: inout State) -> Effect<Action> {
+        switch action {
+        case .enrollment(.delegate(.openOffers)):
+            state.path.append(.enrollmentOffers(EnrollmentOffersFeature.State()))
+
+        case let .enrollment(.delegate(.openDiscipline(id))),
+             let .enrollmentOffers(.delegate(.openDiscipline(id))):
+            state.path.append(.enrollmentDiscipline(EnrollmentDisciplineFeature.State(disciplineId: id)))
+
+        case .enrollment(.delegate(.openReview)),
+             .enrollmentOffers(.delegate(.openReview)),
+             .enrollmentTimetable(.delegate(.openReview)):
+            state.path.append(.enrollmentReview(EnrollmentReviewFeature.State()))
+
+        case .enrollmentOffers(.delegate(.openTimetable)),
+             .enrollmentDiscipline(.delegate(.openTimetable)),
+             .enrollmentReview(.delegate(.openTimetable)):
+            state.path.append(.enrollmentTimetable(EnrollmentTimetableFeature.State()))
+
+        case .enrollmentReview(.delegate(.submitted)):
+            // Collapse the flow to its entry screen underneath the
+            // confirmation, so back navigation can't reenter the review.
+            // Bounded to enrollment steps so it can never strip screens
+            // beneath the flow.
+            while let last = state.path.last, last.isEnrollmentStep {
+                state.path.removeLast()
+            }
+            state.path.append(.enrollmentSuccess(EnrollmentSuccessFeature.State()))
+
+        case .enrollmentSuccess(.delegate(.finished)):
+            // Guarded so a duplicate delivery can't pop the entry screen too.
+            if case .enrollmentSuccess = state.path.last {
+                state.path.removeLast()
+            }
+
+        default:
+            break
+        }
+        return .none
     }
 
     private func observeMirror() -> Effect<Action> {
@@ -232,3 +286,16 @@ struct MeFeature {
 
 extension MeFeature.Path.State: Equatable {}
 extension MeFeature.Path.Action: Equatable {}
+
+extension MeFeature.Path.State {
+    /// An intermediate step of the matrícula flow — not the entry screen,
+    /// not the confirmation.
+    fileprivate var isEnrollmentStep: Bool {
+        switch self {
+        case .enrollmentOffers, .enrollmentDiscipline, .enrollmentTimetable, .enrollmentReview:
+            true
+        default:
+            false
+        }
+    }
+}

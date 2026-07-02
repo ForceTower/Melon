@@ -45,6 +45,17 @@ extension View {
         #endif
     }
 
+    /// Hides the tab bar while a pushed flow owns the whole screen
+    /// (bottom-docked actions would collide with it).
+    @ViewBuilder
+    func hiddenTabBar() -> some View {
+        #if os(iOS)
+        toolbar(.hidden, for: .tabBar)
+        #else
+        self
+        #endif
+    }
+
     @ViewBuilder
     func noAutocapitalization() -> some View {
         #if os(iOS)

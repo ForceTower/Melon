@@ -51,6 +51,8 @@ struct MeShortcutGrid: View {
 
     private func hint(for shortcut: MeShortcut) -> String {
         switch shortcut {
+        case .enrollment:
+            "montar proposta"
         case .calendar:
             "datas acadêmicas"
         case .countdown:
@@ -62,6 +64,7 @@ struct MeShortcutGrid: View {
 extension MeShortcut {
     var label: String {
         switch self {
+        case .enrollment: "Matrícula"
         case .calendar: "Calendário"
         case .countdown: "Final Countdown"
         }
@@ -69,6 +72,7 @@ extension MeShortcut {
 
     var icon: String {
         switch self {
+        case .enrollment: "checklist"
         case .calendar: "calendar"
         case .countdown: "timer"
         }
@@ -76,6 +80,7 @@ extension MeShortcut {
 
     var tone: Color {
         switch self {
+        case .enrollment: UNESColor.readable(0x3B9EAE)
         case .calendar: UNESColor.readable(0xE85D4E)
         case .countdown: UNESColor.readable(0xB23A7A)
         }

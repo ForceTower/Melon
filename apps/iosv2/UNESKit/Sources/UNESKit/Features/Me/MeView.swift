@@ -20,6 +20,18 @@ struct MeView: View {
                 FinalCountdownView(store: store)
             case let .licenses(store):
                 LicensesView(store: store)
+            case let .enrollment(store):
+                EnrollmentView(store: store)
+            case let .enrollmentOffers(store):
+                EnrollmentOffersView(store: store)
+            case let .enrollmentDiscipline(store):
+                EnrollmentDisciplineView(store: store)
+            case let .enrollmentTimetable(store):
+                EnrollmentTimetableView(store: store)
+            case let .enrollmentReview(store):
+                EnrollmentReviewView(store: store)
+            case let .enrollmentSuccess(store):
+                EnrollmentSuccessView(store: store)
             }
         }
         .task { await store.send(.task).finish() }

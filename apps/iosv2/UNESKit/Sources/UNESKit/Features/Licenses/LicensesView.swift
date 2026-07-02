@@ -40,7 +40,7 @@ struct LicensesView: View {
 
                     VStack(spacing: 0) {
                         sectionHeader("Dependências")
-                        LicensesSearchField(query: store.query) {
+                        SearchField(placeholder: "Buscar pacote ou autor", query: store.query) {
                             store.send(.queryChanged($0))
                         }
                         .padding(.bottom, 11)
