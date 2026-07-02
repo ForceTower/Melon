@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+<defs><clipPath id="sq"><rect x="0" y="0" width="1024" height="1024" rx="229" ry="229"></rect></clipPath></defs>
+<g clip-path="url(#sq)">
+<defs><radialGradient id="sky" cx="50%" cy="40%" r="85%">
+<stop offset="0%" stop-color="#5C2870"></stop><stop offset="100%" stop-color="#15101A"></stop>
+</radialGradient></defs><rect width="1024" height="1024" fill="url(#sky)"></rect>
+</g>
+</svg>
