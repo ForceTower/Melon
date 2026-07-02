@@ -59,7 +59,6 @@ extension SemesterSnapshot {
 
         return WidgetScheduleSnapshot(
             semesterCode: semester.code,
-            semesterEnd: semester.endDate,
             sessions: sessions,
             topics: topics
         )

@@ -16,7 +16,7 @@ struct NextClassProviderTests {
         calendar.date(from: DateComponents(year: 2026, month: 4, day: day, hour: hour, minute: minute))!
     }
 
-    private func schedule(semesterEnd: String? = nil) -> WidgetScheduleSnapshot {
+    private func schedule() -> WidgetScheduleSnapshot {
         func session(_ classId: String, day: Int, start: Int, end: Int, code: String) -> WidgetScheduleSnapshot.Session {
             WidgetScheduleSnapshot.Session(
                 classId: classId, day: day, startMinute: start, endMinute: end,
@@ -25,7 +25,6 @@ struct NextClassProviderTests {
         }
         return WidgetScheduleSnapshot(
             semesterCode: "20261",
-            semesterEnd: semesterEnd,
             sessions: [
                 session("c1", day: 4, start: 8 * 60, end: 10 * 60, code: "ALGI"),
                 session("c2", day: 4, start: 10 * 60 + 20, end: 12 * 60, code: "CALC"),
@@ -128,14 +127,16 @@ struct NextClassProviderTests {
     }
 
     @Test
-    func nothingPastTheSemesterEndIsMaterialized() {
-        let timeline = timeline(at: date(day: 16, hour: 13), schedule: schedule(semesterEnd: "2026-04-16"))
+    func patternRepeatsBeyondTheSemesterDates() {
+        // The app keeps showing the most recent semester's week after its
+        // end date (active(today:) falls back to it) — the widget must too.
+        let timeline = timeline(at: date(day: 16, hour: 13).addingTimeInterval(400 * 24 * 3600), schedule: schedule())
 
         guard case let .dayDone(_, next) = timeline.entries.first?.status else {
             Issue.record("expected dayDone, got \(String(describing: timeline.entries.first?.status))")
             return
         }
-        #expect(next == nil)
+        #expect(next != nil)
     }
 
     @Test
@@ -148,7 +149,7 @@ struct NextClassProviderTests {
 
     @Test
     func emptySemesterFallsBackToTheQuietCard() {
-        let empty = WidgetScheduleSnapshot(semesterCode: "20261", semesterEnd: nil, sessions: [])
+        let empty = WidgetScheduleSnapshot(semesterCode: "20261", sessions: [])
         let timeline = timeline(at: date(day: 16, hour: 7), schedule: empty)
 
         #expect(timeline.entries.first?.status == .dayDone(completed: 0, next: nil))

@@ -9,10 +9,11 @@ enum UNESWidgetKind {
 /// The weekly class pattern the app publishes to the shared App Group
 /// container. The widget materializes concrete occurrences from the pattern
 /// at timeline time, so it stays correct across days without the app opening.
+/// Like the app, the pattern repeats regardless of the semester's dates —
+/// `active(today:)` already falls back to the most recent semester, and the
+/// widget must show whatever Home shows.
 struct WidgetScheduleSnapshot: Codable, Equatable, Sendable {
     var semesterCode: String?
-    /// yyyy-MM-dd; no occurrences are materialized past this day.
-    var semesterEnd: String?
     var sessions: [Session] = []
     var topics: [Topic] = []
 
@@ -80,7 +81,6 @@ extension WidgetScheduleSnapshot {
         for offset in 0..<days {
             guard let dayStart = calendar.date(byAdding: .day, value: offset, to: firstDay) else { continue }
             let stamp = dayStart.dayStamp
-            if let semesterEnd, stamp > semesterEnd { break }
             let weekday = calendar.component(.weekday, from: dayStart) - 1
             for session in sessions where session.day == weekday {
                 guard let start = calendar.date(byAdding: .minute, value: session.startMinute, to: dayStart)
