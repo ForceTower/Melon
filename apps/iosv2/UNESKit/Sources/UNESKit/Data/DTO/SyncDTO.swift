@@ -110,6 +110,8 @@ struct SemesterPayloadDTO: Decodable {
     let studentClasses: [StudentClassDTO]
     let studentGrades: [StudentGradeDTO]
     let lectures: [LectureDTO]
+    /// Absent on pre-materials servers.
+    var lectureMaterials: [LectureMaterialDTO]? = nil
 
     struct SemesterDTO: Decodable {
         let id: String
@@ -124,11 +126,18 @@ struct SemesterPayloadDTO: Decodable {
         let code: String?
         let name: String
         var hours: Int? = nil
+        /// Owning department, e.g. "Departamento de Ciências Exatas".
+        var department: String? = nil
+        /// Upstream "ementa" — the syllabus text.
+        var program: String? = nil
     }
 
     struct OfferDTO: Decodable {
         let id: String
         let disciplineId: String
+        /// Offer-level class-hours; unlike group hours these are never
+        /// replicated per group, so they're the safe multi-group fallback.
+        var hours: Int? = nil
     }
 
     struct ClassDTO: Decodable {
@@ -193,9 +202,19 @@ struct SemesterPayloadDTO: Decodable {
     struct LectureDTO: Decodable {
         let id: String
         let classId: String
+        /// Upstream position within the class; orders undated lectures.
+        var ordinal: Int? = nil
         /// yyyy-MM-dd; null when not yet scheduled.
         let date: String?
         let subject: String?
+    }
+
+    struct LectureMaterialDTO: Decodable {
+        let id: String
+        let lectureId: String
+        let description: String?
+        let url: String
+        var position: Int? = nil
     }
 }
 
@@ -213,10 +232,18 @@ extension SemesterPayloadDTO {
                 endDate: semester.endDate
             ),
             disciplines: disciplines.map {
-                DisciplineRecord(id: $0.id, semesterId: semesterId, code: $0.code, name: $0.name, hours: $0.hours)
+                DisciplineRecord(
+                    id: $0.id,
+                    semesterId: semesterId,
+                    code: $0.code,
+                    name: $0.name,
+                    hours: $0.hours,
+                    department: $0.department,
+                    program: $0.program
+                )
             },
             disciplineOffers: disciplineOffers.map {
-                DisciplineOfferRecord(id: $0.id, semesterId: semesterId, disciplineId: $0.disciplineId)
+                DisciplineOfferRecord(id: $0.id, semesterId: semesterId, disciplineId: $0.disciplineId, hours: $0.hours)
             },
             classes: classes.map {
                 ClassRecord(
@@ -274,7 +301,24 @@ extension SemesterPayloadDTO {
                 )
             },
             lectures: lectures.map {
-                LectureRecord(id: $0.id, semesterId: semesterId, classId: $0.classId, date: $0.date, subject: $0.subject)
+                LectureRecord(
+                    id: $0.id,
+                    semesterId: semesterId,
+                    classId: $0.classId,
+                    ordinal: $0.ordinal,
+                    date: $0.date,
+                    subject: $0.subject
+                )
+            },
+            lectureMaterials: (lectureMaterials ?? []).map {
+                LectureMaterialRecord(
+                    id: $0.id,
+                    semesterId: semesterId,
+                    lectureId: $0.lectureId,
+                    caption: $0.description,
+                    url: $0.url,
+                    position: $0.position
+                )
             }
         )
     }

@@ -108,4 +108,68 @@ struct DisciplinesFeatureTests {
             }
         }
     }
+
+    @Test
+    func tappingADisciplinePushesItsDetail() async {
+        let discipline = DisciplinesOverview.preview(now: Self.referenceDate).current!.disciplines[0]
+
+        let store = TestStore(initialState: DisciplinesFeature.State()) {
+            DisciplinesFeature()
+        }
+
+        await store.send(.disciplineTapped(semesterId: "sem-2026-1", discipline: discipline)) {
+            $0.path.append(
+                .detail(DisciplineDetailFeature.State(summary: discipline, semesterId: "sem-2026-1"))
+            )
+        }
+    }
+}
+
+@MainActor
+struct DisciplineDetailFeatureTests {
+    static nonisolated let referenceDate = Date(timeIntervalSince1970: 1_776_000_000)
+
+    @Test
+    func taskLoadsTheDetailFromTheMirror() async {
+        let summary = DisciplinesOverview.preview(now: Self.referenceDate).current!.disciplines[0]
+        let detail = DisciplineDetail.preview(now: Self.referenceDate)
+
+        let store = TestStore(
+            initialState: DisciplineDetailFeature.State(summary: summary, semesterId: "sem-2026-1")
+        ) {
+            DisciplineDetailFeature()
+        } withDependencies: {
+            $0.date = .constant(Self.referenceDate)
+            $0.disciplinesRepository.detail = { semesterId, disciplineId, _ in
+                #expect(semesterId == "sem-2026-1")
+                #expect(disciplineId == summary.id)
+                return detail
+            }
+        }
+
+        await store.send(.task)
+        await store.receive(.detailLoaded(detail)) {
+            $0.detail = detail
+            $0.name = detail.name
+            $0.colorIndex = detail.colorIndex
+        }
+    }
+
+    @Test
+    func groupFilterSticksInState() async {
+        let summary = DisciplinesOverview.preview(now: Self.referenceDate).current!.disciplines[2]
+
+        let store = TestStore(
+            initialState: DisciplineDetailFeature.State(summary: summary, semesterId: "sem-2026-1")
+        ) {
+            DisciplineDetailFeature()
+        }
+
+        await store.send(.groupSelected("T01P01")) {
+            $0.selectedGroup = "T01P01"
+        }
+        await store.send(.groupSelected(nil)) {
+            $0.selectedGroup = nil
+        }
+    }
 }

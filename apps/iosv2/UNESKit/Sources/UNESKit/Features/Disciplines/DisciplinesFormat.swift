@@ -23,7 +23,59 @@ enum DisciplinesFormat {
         daysUntil == 0 ? "hoje" : "\(daysUntil)d"
     }
 
+    /// "hoje" / "em 1 dia" / "em 5 dias" for the detail grade rows.
+    static func inDaysLabel(_ days: Int) -> String {
+        switch days {
+        case 0: "hoje"
+        case 1: "em 1 dia"
+        default: "em \(days) dias"
+        }
+    }
+
     static func disciplineCountLabel(_ count: Int) -> String {
         count == 1 ? "1 disciplina" : "\(count) disciplinas"
+    }
+
+    /// "31/03/2026" from a yyyy-MM-dd stamp; other shapes pass through.
+    static func longDate(_ stamp: String) -> String {
+        let parts = stamp.split(separator: "-")
+        guard parts.count == 3 else { return stamp }
+        return "\(parts[2])/\(parts[1])/\(parts[0])"
+    }
+
+    /// "24/03" from a yyyy-MM-dd stamp; other shapes pass through.
+    static func shortDate(_ stamp: String) -> String {
+        let parts = stamp.split(separator: "-")
+        guard parts.count == 3 else { return stamp }
+        return "\(parts[2])/\(parts[1])"
+    }
+
+    /// "Dep. de Ciências Exatas" from the upstream "Departamento de …";
+    /// unexpected shapes render verbatim.
+    static func departmentLabel(_ raw: String) -> String {
+        let prefix = "departamento de "
+        guard raw.lowercased().hasPrefix(prefix) else { return raw }
+        return "Dep. de " + raw.dropFirst(prefix.count)
+    }
+
+    /// Grades needed to reach a target round *up* — telling a student 6,9
+    /// when 6,95 is required would let them fall short. Display truncates.
+    static func neededGrade(_ value: Double) -> String {
+        let raised = (value * 10).rounded(.up) / 10
+        return String(format: "%.1f", raised).replacingOccurrences(of: ".", with: ",")
+    }
+}
+
+extension DisciplineStatus {
+    /// The pt-BR pill label, shared by the list and the detail hero.
+    var label: String {
+        switch self {
+        case .approved: "aprovado"
+        case .failed: "reprovado"
+        case .finals: "prova final"
+        case .lowGrade: "nota baixa"
+        case .noGrades: "sem notas"
+        case .ongoing: "em andamento"
+        }
     }
 }

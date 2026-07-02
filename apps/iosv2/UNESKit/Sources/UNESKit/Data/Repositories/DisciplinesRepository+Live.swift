@@ -34,6 +34,11 @@ extension DisciplinesRepository: DependencyKey {
             try await mirror.apply(semesters: [], snapshot: payload.snapshot, syncedAt: now)
 
             return try await mirror.disciplinesOverview(now: now)
+        },
+        detail: { semesterId, disciplineId, now in
+            @Dependency(\.database) var wrappedDatabase
+            let mirror = MirrorStore(writer: wrappedDatabase)
+            return try await mirror.disciplineDetail(semesterId: semesterId, disciplineId: disciplineId, now: now)
         }
     )
 }

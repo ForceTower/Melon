@@ -129,6 +129,29 @@ private func migrator() -> DatabaseMigrator {
             t.column("value", .text).notNull()
         }
     }
+
+    // Discipline detail: syllabus + department on disciplines, offer-level
+    // hours, lecture ordering, and the lecture materials ("Anexos") table.
+    migrator.registerMigration("v2") { db in
+        try db.alter(table: "disciplines") { t in
+            t.add(column: "department", .text)
+            t.add(column: "program", .text)
+        }
+        try db.alter(table: "disciplineOffers") { t in
+            t.add(column: "hours", .integer)
+        }
+        try db.alter(table: "lectures") { t in
+            t.add(column: "ordinal", .integer)
+        }
+        try db.create(table: "lectureMaterials") { t in
+            t.primaryKey("id", .text)
+            t.column("semesterId", .text).notNull().indexed()
+            t.column("lectureId", .text).notNull()
+            t.column("caption", .text)
+            t.column("url", .text).notNull()
+            t.column("position", .integer)
+        }
+    }
     return migrator
 }
 

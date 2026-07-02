@@ -7,12 +7,18 @@ import SwiftUI
 struct PastSemesterCard: View {
     let semester: SemesterDisciplines
     var initiallyExpanded = false
+    var onDisciplineTap: (DisciplineSummary) -> Void = { _ in }
 
     @State private var isExpanded: Bool
 
-    init(semester: SemesterDisciplines, initiallyExpanded: Bool = false) {
+    init(
+        semester: SemesterDisciplines,
+        initiallyExpanded: Bool = false,
+        onDisciplineTap: @escaping (DisciplineSummary) -> Void = { _ in }
+    ) {
         self.semester = semester
         self.initiallyExpanded = initiallyExpanded
+        self.onDisciplineTap = onDisciplineTap
         _isExpanded = State(initialValue: initiallyExpanded)
     }
 
@@ -30,7 +36,9 @@ struct PastSemesterCard: View {
             if isExpanded {
                 VStack(spacing: 8) {
                     ForEach(semester.disciplines) { discipline in
-                        PastDisciplineRow(discipline: discipline)
+                        PastDisciplineRow(discipline: discipline) {
+                            onDisciplineTap(discipline)
+                        }
                     }
                 }
             }
@@ -100,14 +108,16 @@ struct PastSemesterCard: View {
     }
 }
 
-/// One discipline of a closed semester: final grade + verdict.
+/// One discipline of a closed semester: final grade + verdict. Tapping
+/// pushes the discipline detail.
 struct PastDisciplineRow: View {
     let discipline: DisciplineSummary
+    var onTap: () -> Void = {}
 
     private var color: Color { UNESColor.disciplineColor(discipline.colorIndex) }
 
     var body: some View {
-        NavigationLink(value: DisciplinesRoute.discipline(id: discipline.id, name: discipline.name)) {
+        Button(action: onTap) {
             HStack(spacing: 12) {
                 VStack(alignment: .leading, spacing: 1) {
                     Text(discipline.code)

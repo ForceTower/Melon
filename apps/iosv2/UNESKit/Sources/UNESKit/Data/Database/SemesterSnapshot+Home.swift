@@ -197,12 +197,6 @@ extension SemesterSnapshot {
         )
     }
 
-    private func parseDayStamp(_ stamp: String, calendar: Calendar) -> Date? {
-        let parts = stamp.split(separator: "-").compactMap { Int($0) }
-        guard parts.count == 3 else { return nil }
-        return calendar.date(from: DateComponents(year: parts[0], month: parts[1], day: parts[2]))
-    }
-
     private func minutesLabel(_ minutes: Int) -> String {
         String(format: "%02d:%02d", minutes / 60, minutes % 60)
     }

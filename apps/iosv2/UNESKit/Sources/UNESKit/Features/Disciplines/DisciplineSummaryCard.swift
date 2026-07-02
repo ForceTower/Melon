@@ -1,14 +1,16 @@
 import SwiftUI
 
 /// One current-semester discipline: code + status, grade ring, one chip per
-/// evaluation, absence bar, and the next-evaluation countdown.
+/// evaluation, absence bar, and the next-evaluation countdown. Tapping pushes
+/// the discipline detail.
 struct DisciplineSummaryCard: View {
     let discipline: DisciplineSummary
+    var onTap: () -> Void = {}
 
     private var color: Color { UNESColor.disciplineColor(discipline.colorIndex) }
 
     var body: some View {
-        NavigationLink(value: DisciplinesRoute.discipline(id: discipline.id, name: discipline.name)) {
+        Button(action: onTap) {
             VStack(alignment: .leading, spacing: 14) {
                 header
                 chips
@@ -177,7 +179,7 @@ struct StatusPill: View {
     let status: DisciplineStatus
 
     var body: some View {
-        Text(label)
+        Text(status.label)
             .font(.system(size: 10.5, weight: .semibold))
             .tracking(0.1)
             .lineLimit(1)
@@ -185,17 +187,6 @@ struct StatusPill: View {
             .padding(.vertical, 2)
             .foregroundStyle(foreground)
             .background(background, in: RoundedRectangle(cornerRadius: 7))
-    }
-
-    private var label: String {
-        switch status {
-        case .approved: "aprovado"
-        case .failed: "reprovado"
-        case .finals: "prova final"
-        case .lowGrade: "nota baixa"
-        case .noGrades: "sem notas"
-        case .ongoing: "em andamento"
-        }
     }
 
     private var foreground: Color {
@@ -318,6 +309,9 @@ struct GradeRing: View {
     var color: Color
     var size: CGFloat = 56
     var stroke: CGFloat = 4.5
+    var trackColor: Color = UNESColor.surface3
+    /// Overrides the ink/ink4 value color — the hero ring renders in white.
+    var textColor: Color?
 
     @State private var swept = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -330,7 +324,7 @@ struct GradeRing: View {
     var body: some View {
         ZStack {
             Circle()
-                .stroke(UNESColor.surface3, lineWidth: stroke)
+                .stroke(trackColor, lineWidth: stroke)
             Circle()
                 .trim(from: 0, to: swept ? fraction : 0)
                 .stroke(color, style: StrokeStyle(lineWidth: stroke, lineCap: .round))
@@ -340,7 +334,7 @@ struct GradeRing: View {
                 .font(.system(size: size * 0.34, weight: .bold))
                 .tracking(-size * 0.01)
                 .monospacedDigit()
-                .foregroundStyle(score == nil ? UNESColor.ink4 : UNESColor.ink)
+                .foregroundStyle(textColor ?? (score == nil ? UNESColor.ink4 : UNESColor.ink))
         }
         .padding(stroke / 2)
         .frame(width: size, height: size)

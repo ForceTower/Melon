@@ -11,6 +11,8 @@ struct DisciplinesRepository: Sendable {
     var cached: @Sendable (_ now: Date) async throws -> DisciplinesOverview?
     var refresh: @Sendable (_ now: Date) async throws -> DisciplinesOverview
     var downloadSemester: @Sendable (_ semesterId: String, _ now: Date) async throws -> DisciplinesOverview
+    /// The detail feed for one mirrored discipline — a pure local read.
+    var detail: @Sendable (_ semesterId: String, _ disciplineId: String, _ now: Date) async throws -> DisciplineDetail?
 }
 
 extension DisciplinesRepository: TestDependencyKey {
@@ -19,7 +21,8 @@ extension DisciplinesRepository: TestDependencyKey {
     static let previewValue = DisciplinesRepository(
         cached: { now in .preview(now: now) },
         refresh: { now in .preview(now: now) },
-        downloadSemester: { _, now in .preview(now: now) }
+        downloadSemester: { _, now in .preview(now: now) },
+        detail: { _, _, now in .preview(now: now) }
     )
 }
 

@@ -89,6 +89,15 @@ enum UNESColor {
         return disciplinePalette[((index % count) + count) % count]
     }
 
+    // MARK: On-dark hero accents (discipline detail "precisa de" line)
+
+    /// Unreachable-target red, legible over the dark mesh.
+    static let dangerOnDark = Color(hex: 0xFF6B5C)
+    /// Softer variant for the emphasized value next to it.
+    static let dangerSoftOnDark = Color(hex: 0xFF9A8F)
+    /// Reachable-target green over the dark mesh.
+    static let successOnDark = Color(hex: 0x54D08A)
+
     // MARK: Mensagens widget (always dark, like the hero)
 
     /// Backdrop behind the rose mesh.

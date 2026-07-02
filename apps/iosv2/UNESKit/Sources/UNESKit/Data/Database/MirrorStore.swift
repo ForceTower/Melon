@@ -71,6 +71,18 @@ struct MirrorStore: Sendable {
         try await writer.read { db in try Self.disciplinesOverview(now: now, db: db) }
     }
 
+    /// The detail feed for one mirrored discipline; nil while the semester's
+    /// payload (or the discipline itself) isn't mirrored.
+    func disciplineDetail(semesterId: String, disciplineId: String, now: Date) async throws -> DisciplineDetail? {
+        try await writer.read { db in
+            guard let semester = try SemesterRecord.fetchOne(db, key: semesterId) else { return nil }
+            var detail = try Self.snapshot(for: semester, db: db)
+                .disciplineDetail(disciplineId: disciplineId, now: now)
+            detail?.syncedAt = try Self.lastSyncedAt(db)
+            return detail
+        }
+    }
+
     private static func disciplinesOverview(now: Date, db: Database) throws -> DisciplinesOverview {
         let semesters = try SemesterRecord.order(Column("startDate").desc).fetchAll(db)
         // Enrollment rows are the ground truth for "payload mirrored".
@@ -123,6 +135,7 @@ struct MirrorStore: Sendable {
         try StudentClassRecord.filter(scope).deleteAll(db)
         try StudentGradeRecord.filter(scope).deleteAll(db)
         try LectureRecord.filter(scope).deleteAll(db)
+        try LectureMaterialRecord.filter(scope).deleteAll(db)
 
         for row in snapshot.disciplines { try row.insert(db) }
         for row in snapshot.disciplineOffers { try row.insert(db) }
@@ -134,6 +147,7 @@ struct MirrorStore: Sendable {
         for row in snapshot.studentClasses { try row.insert(db) }
         for row in snapshot.studentGrades { try row.insert(db) }
         for row in snapshot.lectures { try row.insert(db) }
+        for row in snapshot.lectureMaterials { try row.insert(db) }
     }
 
     private static func snapshot(for semester: SemesterRecord, db: Database) throws -> SemesterSnapshot {
@@ -151,7 +165,8 @@ struct MirrorStore: Sendable {
             allocations: scoped(AllocationRecord.self),
             studentClasses: scoped(StudentClassRecord.self),
             studentGrades: scoped(StudentGradeRecord.self),
-            lectures: scoped(LectureRecord.self)
+            lectures: scoped(LectureRecord.self),
+            lectureMaterials: scoped(LectureMaterialRecord.self)
         )
     }
 

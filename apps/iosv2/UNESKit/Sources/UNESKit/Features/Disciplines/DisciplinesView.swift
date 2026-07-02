@@ -1,23 +1,11 @@
 import ComposableArchitecture
 import SwiftUI
 
-/// Value routes pushed from Turmas onto its NavigationStack. Destinations
-/// are placeholders until the discipline detail ships.
-enum DisciplinesRoute: Hashable {
-    case discipline(id: String, name: String)
-
-    var title: String {
-        switch self {
-        case let .discipline(_, name): name
-        }
-    }
-}
-
 struct DisciplinesView: View {
     @Bindable var store: StoreOf<DisciplinesFeature>
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $store.scope(state: \.path, action: \.path)) {
             ZStack(alignment: .top) {
                 UNESColor.surface.ignoresSafeArea()
                 ambientWash
@@ -32,12 +20,12 @@ struct DisciplinesView: View {
                 }
             }
             .navigationTitle("Turmas")
-            .navigationDestination(for: DisciplinesRoute.self) { route in
-                PlaceholderScreen(title: route.title, systemImage: "text.book.closed")
-                    .navigationTitle(route.title)
-                    .bareNavigationBar()
-            }
             .alert($store.scope(state: \.alert, action: \.alert))
+        } destination: { store in
+            switch store.case {
+            case let .detail(store):
+                DisciplineDetailView(store: store)
+            }
         }
         .task { await store.send(.task).finish() }
     }
@@ -60,8 +48,10 @@ struct DisciplinesView: View {
 
                         VStack(spacing: 12) {
                             ForEach(Array(current.disciplines.enumerated()), id: \.element.id) { index, discipline in
-                                DisciplineSummaryCard(discipline: discipline)
-                                    .fadeUp(delay: 0.18 + Double(index) * 0.06)
+                                DisciplineSummaryCard(discipline: discipline) {
+                                    store.send(.disciplineTapped(semesterId: current.id, discipline: discipline))
+                                }
+                                .fadeUp(delay: 0.18 + Double(index) * 0.06)
                             }
                         }
                     }
@@ -105,7 +95,9 @@ struct DisciplinesView: View {
                 PastSemesterCard(
                     semester: semester,
                     initiallyExpanded: index == 0 || store.recentlyDownloadedIds.contains(semester.id)
-                )
+                ) { discipline in
+                    store.send(.disciplineTapped(semesterId: semester.id, discipline: discipline))
+                }
             }
             ForEach(overview.pending) { pending in
                 DownloadSemesterCard(

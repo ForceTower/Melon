@@ -16,6 +16,7 @@ struct SemesterSnapshot: Equatable, Sendable {
     var studentClasses: [StudentClassRecord] = []
     var studentGrades: [StudentGradeRecord] = []
     var lectures: [LectureRecord] = []
+    var lectureMaterials: [LectureMaterialRecord] = []
 }
 
 extension SemesterSnapshot {
@@ -45,5 +46,11 @@ extension SemesterSnapshot {
         let parts = value.split(separator: ":")
         guard parts.count >= 2, let h = Int(parts[0]), let m = Int(parts[1].prefix(2)) else { return nil }
         return h * 60 + m
+    }
+
+    func parseDayStamp(_ stamp: String, calendar: Calendar) -> Date? {
+        let parts = stamp.split(separator: "-").compactMap { Int($0) }
+        guard parts.count == 3 else { return nil }
+        return calendar.date(from: DateComponents(year: parts[0], month: parts[1], day: parts[2]))
     }
 }

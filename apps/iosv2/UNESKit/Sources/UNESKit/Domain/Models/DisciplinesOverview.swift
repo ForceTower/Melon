@@ -92,34 +92,19 @@ enum AbsenceRisk: Equatable, Sendable {
 }
 
 extension DisciplineSummary {
-    /// SAGRES 75% attendance rule: the most class-hours a student can miss
-    /// while keeping attendance ≥ 75% — always the floor; rounding up would
-    /// admit a miss count that already fails the rule.
-    var allowedMissedHours: Int { hours / 4 }
+    var allowedMissedHours: Int { DisciplineRules.allowedMissedHours(ofTotal: hours) }
 
     var absenceRisk: AbsenceRisk {
-        guard allowedMissedHours > 0 else { return missedHours > 0 ? .critical : .ok }
-        let ratio = Double(missedHours) / Double(allowedMissedHours)
-        if ratio >= 0.75 { return .critical }
-        if ratio >= 0.5 { return .warning }
-        return .ok
+        DisciplineRules.absenceRisk(missed: missedHours, allowed: allowedMissedHours)
     }
 
     var status: DisciplineStatus {
-        // Upstream's `approved` is authoritative: a finals-passer closes with
-        // a 5–7 mean, so any grade-threshold fallback would misclassify them.
-        if let approved {
-            return approved ? .approved : .failed
-        }
-        if wentToFinals { return .finals }
-        if let finalGrade {
-            // Result mean posted but no verdict yet — infer from the cutoffs.
-            if finalGrade >= 7 { return .approved }
-            if finalGrade >= 5 { return .finals }
-            return .failed
-        }
-        guard let partialAverage else { return .noGrades }
-        return partialAverage < 5.5 ? .lowGrade : .ongoing
+        DisciplineRules.status(
+            approved: approved,
+            wentToFinals: wentToFinals,
+            finalGrade: finalGrade,
+            partialAverage: partialAverage
+        )
     }
 
     /// Pass/fail for history rows; nil when upstream never posted a result.

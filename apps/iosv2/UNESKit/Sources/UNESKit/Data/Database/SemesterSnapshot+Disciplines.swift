@@ -24,8 +24,8 @@ extension SemesterSnapshot {
             .sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
 
         return sortedDisciplines.enumerated().compactMap { position, discipline in
-            let enrollments = disciplineOffers
-                .filter { $0.disciplineId == discipline.id }
+            let offers = disciplineOffers.filter { $0.disciplineId == discipline.id }
+            let enrollments = offers
                 .flatMap { enrollmentsByOffer[$0.id] ?? [] }
                 // Theory groups ("T01") sort ahead of practice ("T01P01"), so
                 // "first" picks (teacher, result flags) land on the main group.
@@ -60,7 +60,11 @@ extension SemesterSnapshot {
                 name: discipline.name,
                 teacherName: enrollments
                     .firstNonNil { teacherIdByClass[$0.group.id].flatMap { teachersById[$0]?.name } },
-                hours: discipline.hours ?? enrollments.reduce(0) { $0 + $1.group.hours },
+                // Group hours are per-group slices of the same catalog total,
+                // so summing them double-counts multi-group disciplines —
+                // fall back through the offer instead.
+                hours: discipline.hours ?? offers.firstNonNil(\.hours)
+                    ?? enrollments.map(\.group.hours).max() ?? 0,
                 // totalFaltas is replicated per group row — first, never summed.
                 missedHours: enrollments.firstNonNil(\.studentClass.missedClasses) ?? 0,
                 groupsLabel: groupsLabel(for: enrollments.map(\.group)),
@@ -82,24 +86,16 @@ extension SemesterSnapshot {
         }
     }
 
-    /// Weighted mean of the released grades; upstream always sends weights,
-    /// but fall back to the plain mean rather than dropping the average when
-    /// they come through malformed.
     private func partialAverage(of grades: [StudentGradeRecord]) -> Double? {
-        let released = grades.compactMap { grade in
-            grade.value.flatMap(parseDecimal).map { (value: $0, weight: grade.weight.flatMap(parseDecimal)) }
-        }
-        guard !released.isEmpty else { return nil }
-
-        let weighted = released.compactMap { entry in entry.weight.map { (entry.value, $0) } }
-        let weightSum = weighted.reduce(0) { $0 + $1.1 }
-        guard weighted.count == released.count, weightSum > 0 else {
-            return released.reduce(0) { $0 + $1.value } / Double(released.count)
-        }
-        return weighted.reduce(0) { $0 + $1.0 * $1.1 } / weightSum
+        DisciplineRules.partialAverage(
+            of: grades.compactMap { grade in
+                grade.value.flatMap(parseDecimal).map { ($0, grade.weight.flatMap(parseDecimal)) }
+            }
+        )
     }
 
-    private func gradeLabel(_ grade: StudentGradeRecord) -> String {
+    // Shared with the discipline-detail mapping.
+    func gradeLabel(_ grade: StudentGradeRecord) -> String {
         [grade.nameShort, grade.name]
             .compactMap { $0?.trimmingCharacters(in: .whitespaces) }
             .first { !$0.isEmpty } ?? "AV\(grade.ordinal)"
@@ -117,7 +113,7 @@ extension SemesterSnapshot {
         return slugs.joined(separator: " · ")
     }
 
-    private func displayCode(for discipline: DisciplineRecord) -> String {
+    func displayCode(for discipline: DisciplineRecord) -> String {
         if let code = discipline.code?.trimmingCharacters(in: .whitespaces), !code.isEmpty {
             return code
         }
@@ -125,14 +121,8 @@ extension SemesterSnapshot {
     }
 
     /// Decimal strings arrive dot-separated; tolerate a comma just in case.
-    private func parseDecimal(_ value: String) -> Double? {
+    func parseDecimal(_ value: String) -> Double? {
         Double(value.replacingOccurrences(of: ",", with: "."))
-    }
-
-    private func parseDayStamp(_ stamp: String, calendar: Calendar) -> Date? {
-        let parts = stamp.split(separator: "-").compactMap { Int($0) }
-        guard parts.count == 3 else { return nil }
-        return calendar.date(from: DateComponents(year: parts[0], month: parts[1], day: parts[2]))
     }
 }
 

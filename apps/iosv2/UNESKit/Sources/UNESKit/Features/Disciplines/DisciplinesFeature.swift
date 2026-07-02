@@ -12,7 +12,13 @@ struct DisciplinesFeature {
         /// Semesters pulled through the "Baixar" card this session — their
         /// history group starts expanded.
         var recentlyDownloadedIds: Set<String> = []
+        var path = StackState<Path.State>()
         @Presents var alert: AlertState<Never>?
+    }
+
+    @Reducer
+    enum Path {
+        case detail(DisciplineDetailFeature)
     }
 
     enum Action: Equatable {
@@ -24,6 +30,8 @@ struct DisciplinesFeature {
         case downloadSemesterTapped(String)
         case semesterDownloaded(String, DisciplinesOverview)
         case semesterDownloadFailed(String, String)
+        case disciplineTapped(semesterId: String, discipline: DisciplineSummary)
+        case path(StackActionOf<Path>)
         case alert(PresentationAction<Never>)
     }
 
@@ -92,10 +100,17 @@ struct DisciplinesFeature {
                 }
                 return .none
 
-            case .alert:
+            case let .disciplineTapped(semesterId, discipline):
+                state.path.append(
+                    .detail(DisciplineDetailFeature.State(summary: discipline, semesterId: semesterId))
+                )
+                return .none
+
+            case .path, .alert:
                 return .none
             }
         }
+        .forEach(\.path, action: \.path)
         .ifLet(\.$alert, action: \.alert)
     }
 
@@ -130,3 +145,6 @@ struct DisciplinesFeature {
         }
     }
 }
+
+extension DisciplinesFeature.Path.State: Equatable {}
+extension DisciplinesFeature.Path.Action: Equatable {}

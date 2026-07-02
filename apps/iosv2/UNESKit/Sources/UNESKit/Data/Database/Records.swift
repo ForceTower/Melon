@@ -31,6 +31,10 @@ struct DisciplineRecord: Codable, Equatable, Sendable, FetchableRecord, Persista
     var name: String
     /// Catalog class-hours of the whole discipline (all groups combined).
     var hours: Int? = nil
+    /// Owning department, e.g. "Departamento de Ciências Exatas".
+    var department: String? = nil
+    /// Upstream "ementa" — the syllabus text.
+    var program: String? = nil
 }
 
 struct DisciplineOfferRecord: Codable, Equatable, Sendable, FetchableRecord, PersistableRecord {
@@ -38,6 +42,9 @@ struct DisciplineOfferRecord: Codable, Equatable, Sendable, FetchableRecord, Per
     var id: String
     var semesterId: String
     var disciplineId: String
+    /// Offer-level class-hours; unlike group hours these are never replicated
+    /// per group, so they're the safe multi-group fallback.
+    var hours: Int? = nil
 }
 
 struct ClassRecord: Codable, Equatable, Sendable, FetchableRecord, PersistableRecord {
@@ -128,9 +135,22 @@ struct LectureRecord: Codable, Equatable, Sendable, FetchableRecord, Persistable
     var id: String
     var semesterId: String
     var classId: String
+    /// Upstream position within the class; orders undated lectures.
+    var ordinal: Int? = nil
     /// yyyy-MM-dd; null when not yet scheduled.
     var date: String?
     var subject: String?
+}
+
+struct LectureMaterialRecord: Codable, Equatable, Sendable, FetchableRecord, PersistableRecord {
+    static let databaseTableName = "lectureMaterials"
+    var id: String
+    var semesterId: String
+    var lectureId: String
+    /// Upstream `description` — the display name of the material.
+    var caption: String?
+    var url: String
+    var position: Int?
 }
 
 struct MessageRecord: Codable, Equatable, Sendable, FetchableRecord, PersistableRecord {

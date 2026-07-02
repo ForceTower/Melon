@@ -25,6 +25,16 @@ extension View {
         #endif
     }
 
+    /// Inline navigation bar keeping the system's scroll-edge glass.
+    @ViewBuilder
+    func inlineNavigationBar() -> some View {
+        #if os(iOS)
+        navigationBarTitleDisplayMode(.inline)
+        #else
+        self
+        #endif
+    }
+
     /// Fully hidden navigation bar (root screens with their own chrome).
     @ViewBuilder
     func hiddenNavigationBar() -> some View {
