@@ -13,8 +13,9 @@ struct ProfileDTO: Decodable {
     }
 
     struct CourseDTO: Decodable {
+        // `resumedName` is intentionally ignored: SAGRES appends the
+        // curriculum code to it ("Engenharia de Computação-614").
         let name: String
-        let resumedName: String?
     }
 }
 
@@ -24,7 +25,7 @@ extension ProfileDTO {
             id: user.id,
             name: user.name,
             email: user.email,
-            course: course.map { $0.resumedName ?? $0.name }
+            course: course?.name
         )
     }
 }
