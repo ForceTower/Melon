@@ -28,14 +28,40 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         Messaging.messaging().delegate = self
         application.registerForRemoteNotifications()
 
-        Task {
-            let remoteConfig = RemoteConfig.remoteConfig()
-            _ = try? await remoteConfig.fetchAndActivate()
-            FeatureFlags.update(
-                enrollmentEnabled: remoteConfig.configValue(forKey: "enable_enrollment").boolValue
-            )
-        }
+        configureRemoteConfig()
         return true
+    }
+
+    /// Launch fetch for the baseline, then the real-time stream so console
+    /// publishes land while the app is running.
+    private func configureRemoteConfig() {
+        let remoteConfig = RemoteConfig.remoteConfig()
+        #if DEBUG
+        // No 12h fetch cache while developing — flag flips apply right away.
+        let settings = RemoteConfigSettings()
+        settings.minimumFetchInterval = 0
+        remoteConfig.configSettings = settings
+        #endif
+
+        Task {
+            _ = try? await remoteConfig.fetchAndActivate()
+            Self.publishFlags()
+        }
+
+        _ = remoteConfig.addOnConfigUpdateListener { update, error in
+            guard update != nil, error == nil else { return }
+            RemoteConfig.remoteConfig().activate { _, _ in
+                Self.publishFlags()
+            }
+        }
+    }
+
+    /// Off the main actor — the update stream calls back on a Firebase queue.
+    private nonisolated static func publishFlags() {
+        FeatureFlags.update(
+            enrollmentEnabled: RemoteConfig.remoteConfig()
+                .configValue(forKey: "enable_enrollment").boolValue
+        )
     }
 
     func application(
