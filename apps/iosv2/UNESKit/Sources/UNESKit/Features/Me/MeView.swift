@@ -75,7 +75,7 @@ struct MeView: View {
 
                 VStack(spacing: 0) {
                     sectionHeader("Atalhos")
-                    MeShortcutGrid(countdown: store.overview?.countdown) { shortcut in
+                    MeShortcutGrid { shortcut in
                         store.send(.shortcutTapped(shortcut))
                     }
                 }

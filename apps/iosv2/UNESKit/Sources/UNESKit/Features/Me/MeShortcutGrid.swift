@@ -1,17 +1,17 @@
 import SwiftUI
 
-/// The pinned shortcut tiles. Sized as a three-column grid so tiles keep
-/// their proportions as more shortcuts land.
+/// The pinned shortcut tiles. Equal-width columns, and every tile stretches
+/// to match the tallest one so the row reads as a uniform grid.
 struct MeShortcutGrid: View {
-    var countdown: SemesterCountdown?
     var onOpen: (MeShortcut) -> Void
 
     var body: some View {
-        LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 10), count: 3), spacing: 10) {
+        HStack(alignment: .top, spacing: 10) {
             ForEach(MeShortcut.allCases) { shortcut in
                 tile(shortcut)
             }
         }
+        .fixedSize(horizontal: false, vertical: true)
     }
 
     private func tile(_ shortcut: MeShortcut) -> some View {
@@ -31,13 +31,16 @@ struct MeShortcutGrid: View {
                     .tracking(-0.13)
                     .foregroundStyle(UNESColor.ink)
                     .multilineTextAlignment(.leading)
-                Text(hint(for: shortcut))
-                    .font(.system(size: 11, weight: .medium))
-                    .foregroundStyle(UNESColor.ink4)
-                    .padding(.top, 3)
+                if let hint = shortcut.hint {
+                    Text(hint)
+                        .font(.system(size: 11, weight: .medium))
+                        .foregroundStyle(UNESColor.ink4)
+                        .padding(.top, 3)
+                }
             }
             .padding(EdgeInsets(top: 13, leading: 12, bottom: 12, trailing: 12))
-            .frame(maxWidth: .infinity, minHeight: 100, alignment: .topLeading)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            .frame(minHeight: 100)
             .background(UNESColor.card)
             .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
             .overlay {
@@ -48,17 +51,6 @@ struct MeShortcutGrid: View {
         }
         .buttonStyle(TilePressStyle())
     }
-
-    private func hint(for shortcut: MeShortcut) -> String {
-        switch shortcut {
-        case .enrollment:
-            "montar proposta"
-        case .calendar:
-            "datas acadêmicas"
-        case .countdown:
-            countdown.map { "semestre · \($0.weeksLeft) sem" } ?? "fim do semestre"
-        }
-    }
 }
 
 extension MeShortcut {
@@ -67,6 +59,14 @@ extension MeShortcut {
         case .enrollment: "Matrícula"
         case .calendar: "Calendário"
         case .countdown: "Final Countdown"
+        }
+    }
+
+    var hint: String? {
+        switch self {
+        case .enrollment: "montar proposta"
+        case .calendar: "datas acadêmicas"
+        case .countdown: nil
         }
     }
 
@@ -97,7 +97,7 @@ struct TilePressStyle: ButtonStyle {
 }
 
 #Preview {
-    MeShortcutGrid(countdown: MeOverview.preview.countdown, onOpen: { _ in })
+    MeShortcutGrid(onOpen: { _ in })
         .padding(16)
         .frame(maxHeight: .infinity)
         .background(UNESColor.surface)
