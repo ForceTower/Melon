@@ -58,6 +58,20 @@ struct MirrorStore: Sendable {
         try await writer.read { db in try Self.messagesSummary(db) }
     }
 
+    /// The Horário week as mirrored on disk; nil until the first successful
+    /// refresh lands.
+    func cachedScheduleOverview(now: Date) async throws -> ScheduleOverview? {
+        let today = now.dayStamp
+        return try await writer.read { db in
+            guard try Self.lastSyncedAt(db) != nil else { return nil }
+            let semesters = try SemesterRecord.order(Column("startDate").desc).fetchAll(db)
+            guard let active = semesters.map(\.domain).active(today: today),
+                  let record = semesters.first(where: { $0.id == active.id })
+            else { return .empty }
+            return try Self.snapshot(for: record, db: db).scheduleOverview(now: now)
+        }
+    }
+
     /// The Turmas snapshot as mirrored on disk; nil until the first
     /// successful refresh lands.
     func cachedDisciplinesOverview(now: Date) async throws -> DisciplinesOverview? {

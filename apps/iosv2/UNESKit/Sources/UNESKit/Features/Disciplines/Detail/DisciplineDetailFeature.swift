@@ -15,11 +15,20 @@ struct DisciplineDetailFeature {
         /// Selected group code; nil renders every group ("Tudo").
         var selectedGroup: String?
 
-        init(summary: DisciplineSummary, semesterId: String) {
+        init(semesterId: String, disciplineId: String, name: String, colorIndex: Int) {
             self.semesterId = semesterId
-            self.disciplineId = summary.id
-            self.name = summary.name
-            self.colorIndex = summary.colorIndex
+            self.disciplineId = disciplineId
+            self.name = name
+            self.colorIndex = colorIndex
+        }
+
+        init(summary: DisciplineSummary, semesterId: String) {
+            self.init(
+                semesterId: semesterId,
+                disciplineId: summary.id,
+                name: summary.name,
+                colorIndex: summary.colorIndex
+            )
         }
     }
 

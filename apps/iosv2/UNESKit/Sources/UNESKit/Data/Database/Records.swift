@@ -77,7 +77,13 @@ struct SpaceRecord: Codable, Equatable, Sendable, FetchableRecord, PersistableRe
     static let databaseTableName = "spaces"
     var id: String
     var semesterId: String
+    /// Room number/code within the module (upstream "numero").
     var location: String
+    /// Campus label (upstream "pavilhao"); upstream coalesces absent to "".
+    var campus: String? = nil
+    /// Building/module label (upstream "localizacao") — a short code ("MT")
+    /// or descriptive prose ("Pavilhão de aula padrão 2° andar").
+    var modulo: String? = nil
 }
 
 struct AllocationRecord: Codable, Equatable, Sendable, FetchableRecord, PersistableRecord {

@@ -21,17 +21,18 @@ struct Eyebrow: View {
 /// Green dot pulsing an expanding, fading ring.
 struct LiveDot: View {
     var size: CGFloat = 7
+    var color: Color = UNESColor.liveGreen
 
     @State private var pulsing = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         Circle()
-            .fill(UNESColor.liveGreen)
+            .fill(color)
             .frame(width: size, height: size)
             .background {
                 Circle()
-                    .fill(UNESColor.liveGreen.opacity(pulsing ? 0 : 0.35))
+                    .fill(color.opacity(pulsing ? 0 : 0.35))
                     .scaleEffect(pulsing ? 2.4 : 1)
             }
             .onAppear {

@@ -152,6 +152,14 @@ private func migrator() -> DatabaseMigrator {
             t.column("position", .integer)
         }
     }
+    // Schedule v2: the campus + module labels the spaces table was dropping
+    // on the way in.
+    migrator.registerMigration("v3") { db in
+        try db.alter(table: "spaces") { t in
+            t.add(column: "campus", .text)
+            t.add(column: "modulo", .text)
+        }
+    }
     return migrator
 }
 

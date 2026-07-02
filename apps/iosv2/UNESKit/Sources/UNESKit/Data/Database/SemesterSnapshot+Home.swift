@@ -4,7 +4,7 @@ import Foundation
 
 extension SemesterSnapshot {
     func homeOverview(now: Date, calendar: Calendar = .current) -> HomeOverview {
-        let index = HomeSnapshotIndex(snapshot: self)
+        let index = SnapshotIndex(snapshot: self)
         let today = now.dayStamp
         let weekday = calendar.component(.weekday, from: now) - 1
 
@@ -15,7 +15,7 @@ extension SemesterSnapshot {
             attendance: attendanceSummary(index: index, today: today),
             nextExam: nextExam(index: index, now: now, calendar: calendar),
             messages: nil,
-            today: sessions(on: weekday, index: index).map { session in
+            today: mergedSessions(on: weekday, index: index).map { session in
                 TodayClass(
                     id: session.allocationId,
                     classId: session.classId,
@@ -44,7 +44,7 @@ extension SemesterSnapshot {
 
     // MARK: Hero — next class occurrence in the week
 
-    private func hero(index: HomeSnapshotIndex, now: Date, calendar: Calendar) -> HomeHeroClass? {
+    private func hero(index: SnapshotIndex, now: Date, calendar: Calendar) -> HomeHeroClass? {
         let minutesInDay = 24 * 60
         let minutesInWeek = 7 * minutesInDay
         let nowSlot = (calendar.component(.weekday, from: now) - 1) * minutesInDay
@@ -63,7 +63,7 @@ extension SemesterSnapshot {
         guard let winner, let startMinute = parseHhMm(winner.allocation.startTime) else { return nil }
 
         // The winner's merged session provides the real end of the block.
-        let session = sessions(on: winner.day, index: index)
+        let session = mergedSessions(on: winner.day, index: index)
             .first { $0.classId == winner.allocation.classId && $0.startMinute <= startMinute
                 && startMinute <= ($0.endMinute ?? $0.startMinute) }
 
@@ -92,42 +92,6 @@ extension SemesterSnapshot {
         )
     }
 
-    // MARK: Day sessions — contiguous same-class slots merged into one block
-
-    private func sessions(on day: Int, index: HomeSnapshotIndex) -> [HomeDaySession] {
-        // SAGRES may encode one class morning as several back-to-back slots;
-        // fold runs of the same class (gaps ≤ 15 min) into a single session.
-        let slots = allocations
-            .compactMap { allocation -> HomeDaySession? in
-                guard index.enrolledClassIds.contains(allocation.classId),
-                      allocation.day == day,
-                      let start = parseHhMm(allocation.startTime)
-                else { return nil }
-                return HomeDaySession(
-                    allocationId: allocation.id,
-                    classId: allocation.classId,
-                    startMinute: start,
-                    endMinute: parseHhMm(allocation.endTime),
-                    spaceId: allocation.spaceId
-                )
-            }
-            .sorted { ($0.startMinute, $0.allocationId) < ($1.startMinute, $1.allocationId) }
-
-        var merged: [HomeDaySession] = []
-        for slot in slots {
-            if var last = merged.last,
-               last.classId == slot.classId,
-               let lastEnd = last.endMinute,
-               slot.startMinute <= lastEnd + 15 {
-                last.endMinute = max(lastEnd, slot.endMinute ?? slot.startMinute)
-                merged[merged.count - 1] = last
-            } else {
-                merged.append(slot)
-            }
-        }
-        return merged
-    }
-
     // MARK: Coefficient
 
     private var coefficientSummary: CoefficientSummary? {
@@ -145,7 +109,7 @@ extension SemesterSnapshot {
 
     // MARK: Attendance — SAGRES counts absences in class-hours
 
-    private func attendanceSummary(index: HomeSnapshotIndex, today: String) -> AttendanceSummary? {
+    private func attendanceSummary(index: SnapshotIndex, today: String) -> AttendanceSummary? {
         let totalHours = classes
             .filter { index.enrolledClassIds.contains($0.id) }
             .reduce(0) { $0 + $1.hours }
@@ -165,7 +129,7 @@ extension SemesterSnapshot {
 
     // MARK: Next exam — earliest future-dated evaluation still ungraded
 
-    private func nextExam(index: HomeSnapshotIndex, now: Date, calendar: Calendar) -> ExamSummary? {
+    private func nextExam(index: SnapshotIndex, now: Date, calendar: Calendar) -> ExamSummary? {
         let today = now.dayStamp
         let candidate = studentGrades
             .filter { $0.value == nil && ($0.date ?? "") >= today }
@@ -202,94 +166,3 @@ extension SemesterSnapshot {
     }
 }
 
-/// One merged block of a class on a given weekday.
-private struct HomeDaySession {
-    var allocationId: String
-    var classId: String
-    var startMinute: Int
-    var endMinute: Int?
-    var spaceId: String?
-}
-
-// MARK: - Lookup tables shared by the mapping above
-
-private struct HomeSnapshotIndex {
-    let enrolledClassIds: Set<String>
-    let spacesById: [String: SpaceRecord]
-    let studentClassesById: [String: StudentClassRecord]
-    /// Disciplines in card order (locale-aware by name); index == colorIndex.
-    let sortedDisciplines: [DisciplineRecord]
-
-    private let snapshot: SemesterSnapshot
-    private let classesById: [String: ClassRecord]
-    private let offersById: [String: DisciplineOfferRecord]
-    private let disciplinesById: [String: DisciplineRecord]
-    private let teachersById: [String: TeacherRecord]
-    private let teacherIdByClass: [String: String]
-    private let colorIndexByDisciplineId: [String: Int]
-
-    init(snapshot: SemesterSnapshot) {
-        self.snapshot = snapshot
-        enrolledClassIds = Set(snapshot.studentClasses.map(\.classId))
-        classesById = Dictionary(snapshot.classes.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
-        offersById = Dictionary(snapshot.disciplineOffers.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
-        disciplinesById = Dictionary(snapshot.disciplines.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
-        spacesById = Dictionary(snapshot.spaces.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
-        teachersById = Dictionary(snapshot.teachers.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
-        teacherIdByClass = Dictionary(snapshot.classTeachers.map { ($0.classId, $0.teacherId) }, uniquingKeysWith: { first, _ in first })
-        studentClassesById = Dictionary(snapshot.studentClasses.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
-        sortedDisciplines = snapshot.disciplines
-            .sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
-        colorIndexByDisciplineId = Dictionary(
-            sortedDisciplines.enumerated().map { ($0.element.id, $0.offset) },
-            uniquingKeysWith: { first, _ in first }
-        )
-    }
-
-    func discipline(forClass classId: String) -> DisciplineRecord? {
-        classesById[classId]
-            .flatMap { offersById[$0.offerId] }
-            .flatMap { disciplinesById[$0.disciplineId] }
-    }
-
-    func teacherName(forClass classId: String) -> String? {
-        teacherIdByClass[classId].flatMap { teachersById[$0]?.name }
-    }
-
-    func colorIndex(forClass classId: String) -> Int {
-        discipline(forClass: classId).flatMap { colorIndexByDisciplineId[$0.id] } ?? 0
-    }
-
-    func displayCode(forClass classId: String) -> String {
-        discipline(forClass: classId).map(displayCode(for:)) ?? ""
-    }
-
-    func displayCode(for discipline: DisciplineRecord) -> String {
-        if let code = discipline.code?.trimmingCharacters(in: .whitespaces), !code.isEmpty {
-            return code
-        }
-        return String(discipline.name.prefix(4)).uppercased()
-    }
-
-    /// Subject of the lecture posted for `date`, when the plan is filled in.
-    func topic(forClass classId: String, on date: String) -> String? {
-        snapshot.lectures
-            .first {
-                $0.classId == classId && $0.date == date
-                    && $0.subject?.trimmingCharacters(in: .whitespaces).isEmpty == false
-            }?
-            .subject
-    }
-
-    /// Plain mean of the grades posted across every class of the discipline.
-    func partialGrade(forDiscipline disciplineId: String) -> Double? {
-        let offerIds = Set(snapshot.disciplineOffers.filter { $0.disciplineId == disciplineId }.map(\.id))
-        let classIds = Set(snapshot.classes.filter { offerIds.contains($0.offerId) }.map(\.id))
-        let studentClassIds = Set(snapshot.studentClasses.filter { classIds.contains($0.classId) }.map(\.id))
-        let values = snapshot.studentGrades
-            .filter { studentClassIds.contains($0.studentClassId) }
-            .compactMap { $0.value.flatMap(Double.init) }
-        guard !values.isEmpty else { return nil }
-        return values.reduce(0, +) / Double(values.count)
-    }
-}

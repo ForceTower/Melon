@@ -82,11 +82,65 @@ enum UNESColor {
     }
 
     /// Stable per-discipline tints, assigned by the discipline's color index.
-    static let disciplinePalette: [Color] = [coral, teal, magenta, violet, amber]
+    static let disciplinePalette: [Color] = disciplineHexes.map { Color(hex: $0) }
+
+    /// The same palette lifted for dark-mode legibility: hues darker than 50%
+    /// lightness get saturation ≥ 0.5 and lightness ≥ 0.62 in dark mode, so
+    /// accent rails and badges stay readable on card surfaces.
+    static let disciplineReadablePalette: [Color] = disciplineHexes.map(readableOnDark)
 
     static func disciplineColor(_ index: Int) -> Color {
-        let count = disciplinePalette.count
-        return disciplinePalette[((index % count) + count) % count]
+        disciplinePalette[wrapped(index)]
+    }
+
+    static func disciplineReadableColor(_ index: Int) -> Color {
+        disciplineReadablePalette[wrapped(index)]
+    }
+
+    /// coral, teal, magenta, violet, amber.
+    private static let disciplineHexes: [UInt32] = [0xE85D4E, 0x3B9EAE, 0xB23A7A, 0x7A6CE0, 0xF4A23C]
+
+    private static func wrapped(_ index: Int) -> Int {
+        let count = disciplineHexes.count
+        return ((index % count) + count) % count
+    }
+
+    private static func readableOnDark(_ hex: UInt32) -> Color {
+        let r = Double((hex >> 16) & 0xFF) / 255
+        let g = Double((hex >> 8) & 0xFF) / 255
+        let b = Double(hex & 0xFF) / 255
+        let mx = Swift.max(r, g, b), mn = Swift.min(r, g, b)
+        let l = (mx + mn) / 2
+        guard l < 0.5 else { return Color(hex: hex) }
+
+        let d = mx - mn
+        var h = 0.0, s = 0.0
+        if d > 0 {
+            s = d / (mx + mn)
+            switch mx {
+            case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6
+            case g: h = ((b - r) / d + 2) / 6
+            default: h = ((r - g) / d + 4) / 6
+            }
+        }
+        let (lr, lg, lb) = rgb(h: h, s: Swift.max(s, 0.5), l: Swift.max(l, 0.62))
+        return Color(light: Color(hex: hex), dark: Color(.sRGB, red: lr, green: lg, blue: lb, opacity: 1))
+    }
+
+    private static func rgb(h: Double, s: Double, l: Double) -> (Double, Double, Double) {
+        guard s > 0 else { return (l, l, l) }
+        let q = l < 0.5 ? l * (1 + s) : l + s - l * s
+        let p = 2 * l - q
+        func channel(_ t: Double) -> Double {
+            var t = t
+            if t < 0 { t += 1 }
+            if t > 1 { t -= 1 }
+            if t < 1 / 6 { return p + (q - p) * 6 * t }
+            if t < 1 / 2 { return q }
+            if t < 2 / 3 { return p + (q - p) * (2 / 3 - t) * 6 }
+            return p
+        }
+        return (channel(h + 1 / 3), channel(h), channel(h - 1 / 3))
     }
 
     // MARK: On-dark hero accents (discipline detail "precisa de" line)

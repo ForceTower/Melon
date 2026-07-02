@@ -160,7 +160,13 @@ struct SemesterPayloadDTO: Decodable {
 
     struct SpaceDTO: Decodable {
         let id: String
+        /// Room number/code within the module (upstream "numero").
         let location: String
+        /// Campus label (upstream "pavilhao"); "" when not set.
+        var campus: String? = nil
+        /// Building/module label (upstream "localizacao") — a short code
+        /// ("MT") or descriptive prose; "" when not set.
+        var modulo: String? = nil
     }
 
     struct AllocationDTO: Decodable {
@@ -262,7 +268,7 @@ extension SemesterPayloadDTO {
                 ClassTeacherRecord(semesterId: semesterId, classId: $0.classId, teacherId: $0.teacherId)
             },
             spaces: spaces.map {
-                SpaceRecord(id: $0.id, semesterId: semesterId, location: $0.location)
+                SpaceRecord(id: $0.id, semesterId: semesterId, location: $0.location, campus: $0.campus, modulo: $0.modulo)
             },
             allocations: allocations.map {
                 AllocationRecord(
