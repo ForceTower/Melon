@@ -3,11 +3,12 @@ import SwiftUI
 /// The pinned shortcut tiles. Equal-width columns, and every tile stretches
 /// to match the tallest one so the row reads as a uniform grid.
 struct MeShortcutGrid: View {
+    var shortcuts: [MeShortcut] = MeShortcut.allCases
     var onOpen: (MeShortcut) -> Void
 
     var body: some View {
         HStack(alignment: .top, spacing: 10) {
-            ForEach(MeShortcut.allCases) { shortcut in
+            ForEach(shortcuts) { shortcut in
                 tile(shortcut)
             }
         }
@@ -19,13 +20,20 @@ struct MeShortcutGrid: View {
             onOpen(shortcut)
         } label: {
             VStack(alignment: .leading, spacing: 0) {
-                Image(systemName: shortcut.icon)
-                    .font(.system(size: 20, weight: .medium))
-                    .foregroundStyle(.white)
-                    .frame(width: 40, height: 40)
-                    .background(shortcut.tone, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
-                    .shadow(color: shortcut.tone.opacity(0.33), radius: 6, y: 5)
-                    .padding(.bottom, 11)
+                HStack(alignment: .top) {
+                    Image(systemName: shortcut.icon)
+                        .font(.system(size: 20, weight: .medium))
+                        .foregroundStyle(.white)
+                        .frame(width: 40, height: 40)
+                        .background(shortcut.tone, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                        .shadow(color: shortcut.tone.opacity(0.33), radius: 6, y: 5)
+                    if shortcut.isBeta {
+                        Spacer(minLength: 6)
+                        BetaTag()
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.bottom, 11)
                 Text(shortcut.label)
                     .font(.system(size: 13, weight: .semibold))
                     .tracking(-0.13)
@@ -76,6 +84,10 @@ extension MeShortcut {
         case .calendar: "calendar"
         case .countdown: "timer"
         }
+    }
+
+    var isBeta: Bool {
+        self == .enrollment
     }
 
     var tone: Color {

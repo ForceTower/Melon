@@ -23,6 +23,7 @@ struct SyncFeatureTests {
             $0.continuousClock = clock
             $0.date = .constant(Date(timeIntervalSince1970: 1_782_864_000))
             $0.profileRepository.current = { @Sendable in .preview }
+            $0.push.registerStoredToken = {}
             $0.syncRepository = SyncRepository(
                 ping: {},
                 onboardingStatus: {
@@ -98,6 +99,7 @@ struct SyncFeatureTests {
             $0.continuousClock = clock
             $0.date = .constant(Date(timeIntervalSince1970: 1_782_864_000))
             $0.profileRepository.current = { @Sendable in throw APIError.server(status: 500, message: nil) }
+            $0.push.registerStoredToken = {}
             $0.syncRepository = SyncRepository(
                 ping: {},
                 onboardingStatus: { throw APIError.server(status: 500, message: nil) },

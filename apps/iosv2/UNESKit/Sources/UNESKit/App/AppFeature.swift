@@ -22,6 +22,7 @@ struct AppFeature {
     }
 
     enum Action: Equatable {
+        case task
         case tabChanged(Tab)
         case sceneBackgrounded
         case sceneActivated
@@ -32,6 +33,8 @@ struct AppFeature {
         case me(MeFeature.Action)
     }
 
+    @Dependency(\.push) var push
+
     var body: some ReducerOf<Self> {
         Scope(state: \.home, action: \.home) { HomeFeature() }
         Scope(state: \.schedule, action: \.schedule) { ScheduleFeature() }
@@ -41,6 +44,11 @@ struct AppFeature {
 
         Reduce { state, action in
             switch action {
+            case .task:
+                // Safety net for accounts that never saw the intro's prompt
+                // (skip path, reinstalls) — a no-op once iOS has asked.
+                return .run { _ in await push.requestAuthorization() }
+
             case let .tabChanged(tab):
                 state.tab = tab
                 return .none

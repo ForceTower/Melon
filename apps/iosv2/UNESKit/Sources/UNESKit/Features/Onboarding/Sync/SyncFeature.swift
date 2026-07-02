@@ -60,6 +60,7 @@ struct SyncFeature {
 
     @Dependency(\.syncRepository) var sync
     @Dependency(\.profileRepository) var profileRepository
+    @Dependency(\.push) var push
     @Dependency(\.continuousClock) var clock
     @Dependency(\.date.now) var now
 
@@ -118,6 +119,10 @@ struct SyncFeature {
 
         // 1. auth — validates the token server-side
         _ = try await step(.auth) { try await sync.ping() }
+
+        // The FCM token usually lands before login (the app delegate stores
+        // it); now that the session exists, forward it to apps/api.
+        await push.registerStoredToken()
 
         // 2. profile
         if let profile = try await step(.profile, { try await profileRepository.current() }) {

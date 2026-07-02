@@ -29,6 +29,7 @@ struct AppView: View {
             }
         }
         .preferredColorScheme(store.theme.colorScheme)
+        .task { await store.send(.task).finish() }
         .onChange(of: scenePhase) { _, newPhase in
             switch newPhase {
             case .background: store.send(.sceneBackgrounded)

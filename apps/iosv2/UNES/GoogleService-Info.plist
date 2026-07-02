@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>371085821263-tlonnsqt54jood1euk5aq1ohbeitki0h.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.371085821263-tlonnsqt54jood1euk5aq1ohbeitki0h</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>371085821263-0opfct2b8pm3l32d9t9el0hte7baa0ok.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyACXVua6g4jfegQY-sL8E9TPrUMIDpIAeE</string>
+	<key>GCM_SENDER_ID</key>
+	<string>371085821263</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>dev.forcetower.unes.ios</string>
+	<key>PROJECT_ID</key>
+	<string>unes-uefs</string>
+	<key>STORAGE_BUCKET</key>
+	<string>unes-uefs.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:371085821263:ios:4f12e6d70c53da0e15313a</string>
+	<key>DATABASE_URL</key>
+	<string>https://unes-uefs.firebaseio.com</string>
+</dict>
+</plist>

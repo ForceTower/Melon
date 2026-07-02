@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CAFEFB0000000000000000A2 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = CAFEFB0000000000000000A1 /* FirebaseCore */; };
+		CAFEFB0000000000000000A4 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = CAFEFB0000000000000000A3 /* FirebaseCrashlytics */; };
+		CAFEFB0000000000000000A6 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = CAFEFB0000000000000000A5 /* FirebaseMessaging */; };
+		CAFEFB0000000000000000AA /* FirebaseRemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = CAFEFB0000000000000000A9 /* FirebaseRemoteConfig */; };
 		CAFECAFE0000000000000003 /* UNESKit in Frameworks */ = {isa = PBXBuildFile; productRef = CAFECAFE0000000000000002 /* UNESKit */; };
 		CAFECAFE0000000000000006 /* UNESKit in Frameworks */ = {isa = PBXBuildFile; productRef = CAFECAFE0000000000000005 /* UNESKit */; };
 		CAFECAFE0000000000000014 /* UNESWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = CAFECAFE0000000000000007 /* UNESWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -43,6 +47,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		CAFEFB0000000000000000A8 /* Exceptions for "UNES" folder in "UNES" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 6CF5E0FA2FF5A43F00953BC4 /* UNES */;
+		};
 		CAFECAFE0000000000000009 /* Exceptions for "UNESWidgets" folder in "UNESWidgets" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -55,6 +66,9 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		6CF5E0FD2FF5A43F00953BC4 /* UNES */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				CAFEFB0000000000000000A8 /* Exceptions for "UNES" folder in "UNES" target */,
+			);
 			path = UNES;
 			sourceTree = "<group>";
 		};
@@ -73,6 +87,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CAFEFB0000000000000000A2 /* FirebaseCore in Frameworks */,
+				CAFEFB0000000000000000A4 /* FirebaseCrashlytics in Frameworks */,
+				CAFEFB0000000000000000A6 /* FirebaseMessaging in Frameworks */,
+				CAFEFB0000000000000000AA /* FirebaseRemoteConfig in Frameworks */,
 				CAFECAFE0000000000000003 /* UNESKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -118,6 +136,7 @@
 				6CF5E0F82FF5A43F00953BC4 /* Frameworks */,
 				6CF5E0F92FF5A43F00953BC4 /* Resources */,
 				CAFECAFE0000000000000013 /* Embed Foundation Extensions */,
+				CAFEFB0000000000000000A7 /* Upload Symbols (Firebase Crashlytics) */,
 			);
 			buildRules = (
 			);
@@ -130,6 +149,10 @@
 			name = UNES;
 			packageProductDependencies = (
 				CAFECAFE0000000000000002 /* UNESKit */,
+				CAFEFB0000000000000000A1 /* FirebaseCore */,
+				CAFEFB0000000000000000A3 /* FirebaseCrashlytics */,
+				CAFEFB0000000000000000A5 /* FirebaseMessaging */,
+				CAFEFB0000000000000000A9 /* FirebaseRemoteConfig */,
 			);
 			productName = UNES;
 			productReference = 6CF5E0FB2FF5A43F00953BC4 /* UNES.app */;
@@ -184,6 +207,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				CAFECAFE0000000000000001 /* XCLocalSwiftPackageReference "UNESKit" */,
+				CAFEFB0000000000000000A0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 6CF5E0FC2FF5A43F00953BC4 /* Products */;
@@ -212,6 +236,30 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		CAFEFB0000000000000000A7 /* Upload Symbols (Firebase Crashlytics) */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",
+				"$(SRCROOT)/$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
+			);
+			name = "Upload Symbols (Firebase Crashlytics)";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${BUILD_DIR%/Build/*}/SourcePackages/checkouts/firebase-ios-sdk/Crashlytics/run\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		6CF5E0F72FF5A43F00953BC4 /* Sources */ = {
@@ -273,7 +321,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 5GH6Q6KS69;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -370,7 +418,9 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 5GH6Q6KS69;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = UNES/Info.plist;
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "O Face ID confirma que é você antes de mostrar a senha guardada.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -405,7 +455,9 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 5GH6Q6KS69;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = UNES/Info.plist;
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "O Face ID confirma que é você antes de mostrar a senha guardada.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -529,7 +581,38 @@
 		};
 /* End XCLocalSwiftPackageReference section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		CAFEFB0000000000000000A0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.12.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
+		CAFEFB0000000000000000A1 /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CAFEFB0000000000000000A0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
+		CAFEFB0000000000000000A3 /* FirebaseCrashlytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CAFEFB0000000000000000A0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCrashlytics;
+		};
+		CAFEFB0000000000000000A5 /* FirebaseMessaging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CAFEFB0000000000000000A0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseMessaging;
+		};
+		CAFEFB0000000000000000A9 /* FirebaseRemoteConfig */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CAFEFB0000000000000000A0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseRemoteConfig;
+		};
 		CAFECAFE0000000000000002 /* UNESKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = UNESKit;

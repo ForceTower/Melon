@@ -20,6 +20,8 @@ struct IntroFeature {
         }
     }
 
+    @Dependency(\.push) var push
+
     var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
@@ -29,7 +31,12 @@ struct IntroFeature {
 
             case .continueTapped:
                 guard state.slide < Self.slideCount - 1 else {
-                    return .send(.delegate(.login))
+                    // The last slide sells notifications — ask for permission
+                    // right as it's accepted, before moving on to login.
+                    return .run { send in
+                        await push.requestAuthorization()
+                        await send(.delegate(.login))
+                    }
                 }
                 state.slide += 1
                 return .none

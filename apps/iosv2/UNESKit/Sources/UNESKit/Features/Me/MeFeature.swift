@@ -29,8 +29,14 @@ struct MeFeature {
         var isLogoutPromptPresented = false
         var path = StackState<Path.State>()
         @Shared(.appStorage("theme")) var theme: AppTheme = .system
+        @Shared(.appStorage(FeatureFlags.enrollmentEnabledKey)) var isEnrollmentEnabled = false
 
         var displayName: String? { profile?.name ?? userName }
+
+        /// The tiles the grid shows — matrícula only while its flag is on.
+        var shortcuts: [MeShortcut] {
+            MeShortcut.allCases.filter { $0 != .enrollment || isEnrollmentEnabled }
+        }
     }
 
     @Reducer

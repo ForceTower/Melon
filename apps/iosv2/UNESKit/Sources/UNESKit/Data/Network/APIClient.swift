@@ -50,6 +50,11 @@ extension APIClient {
         _ = try await send(APIRequest(method: "POST", path: path))
     }
 
+    /// POST whose response carries no data payload (e.g. token registration).
+    func post(to path: String, body: some Encodable & Sendable) async throws {
+        _ = try await send(APIRequest(method: "POST", path: path, body: try JSONEncoder().encode(body)))
+    }
+
     func patch<T: Decodable>(
         _ type: T.Type = T.self,
         at path: String,
