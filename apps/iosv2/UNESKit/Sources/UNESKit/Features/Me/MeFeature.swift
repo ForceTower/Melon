@@ -9,8 +9,8 @@ enum MeShortcut: String, Equatable, Sendable, Identifiable, CaseIterable {
     var id: String { rawValue }
 }
 
-/// The "Definições" rows. Settings and Licenses push their screens; the
-/// remaining destinations land with their features.
+/// The "Definições" rows. Settings and Licenses push their screens, About
+/// opens its sheet; the remaining destinations land with their features.
 enum MeSettingsRow: String, Equatable, Sendable, CaseIterable {
     case settings, sync, about, feedback, licenses
 }
@@ -26,6 +26,10 @@ struct MeFeature {
         var syncedAt: Date?
         var events: [AcademicEvent] = []
         var activeShortcut: MeShortcut?
+        /// Presents the about sheet while non-nil.
+        var aboutInfo: AppInfo?
+        /// Drives the sheet's transient "copiado" feedback.
+        var isAboutCopied = false
         var isLogoutPromptPresented = false
         var path = StackState<Path.State>()
         @Shared(.appStorage("theme")) var theme: AppTheme = .system
@@ -48,6 +52,10 @@ struct MeFeature {
         case shortcutTapped(MeShortcut)
         case shortcutDismissed
         case settingsRowTapped(MeSettingsRow)
+        case aboutInfoResolved(AppInfo)
+        case aboutCopyTapped
+        case aboutCopyFeedbackExpired
+        case aboutDismissed
         case logoutTapped
         case logoutPromptDismissed
         case logoutConfirmed(keepData: Bool)
@@ -63,9 +71,12 @@ struct MeFeature {
     @Dependency(\.profileRepository) var profileRepository
     @Dependency(\.eventsRepository) var eventsRepository
     @Dependency(\.sessionStore) var sessionStore
+    @Dependency(\.appInfo) var appInfo
+    @Dependency(\.pasteboard) var pasteboard
+    @Dependency(\.continuousClock) var clock
     @Dependency(\.date.now) var now
 
-    private enum CancelID { case observation }
+    private enum CancelID { case observation, aboutResolve, aboutCopyFeedback }
 
     var body: some ReducerOf<Self> {
         Reduce { state, action in
@@ -115,11 +126,45 @@ struct MeFeature {
                     )))
                 case .licenses:
                     state.path.append(.licenses(LicensesFeature.State()))
-                case .sync, .about, .feedback:
+                case .about:
+                    // The sheet opens with the synchronous snapshot; StoreKit
+                    // refines the channel label right behind it.
+                    state.aboutInfo = appInfo.current()
+                    return .run { send in
+                        await send(.aboutInfoResolved(appInfo.resolved()))
+                    }
+                    .cancellable(id: CancelID.aboutResolve, cancelInFlight: true)
+                case .sync, .feedback:
                     // The remaining destinations land with their features.
                     break
                 }
                 return .none
+
+            case let .aboutInfoResolved(info):
+                state.aboutInfo = info
+                return .none
+
+            case .aboutCopyTapped:
+                guard let info = state.aboutInfo else { return .none }
+                state.isAboutCopied = true
+                return .run { send in
+                    await pasteboard.copy(info.debugText)
+                    try await clock.sleep(for: .milliseconds(1800))
+                    await send(.aboutCopyFeedbackExpired)
+                }
+                .cancellable(id: CancelID.aboutCopyFeedback, cancelInFlight: true)
+
+            case .aboutCopyFeedbackExpired:
+                state.isAboutCopied = false
+                return .none
+
+            case .aboutDismissed:
+                state.aboutInfo = nil
+                state.isAboutCopied = false
+                return .merge(
+                    .cancel(id: CancelID.aboutResolve),
+                    .cancel(id: CancelID.aboutCopyFeedback)
+                )
 
             case .logoutTapped:
                 state.isLogoutPromptPresented = true

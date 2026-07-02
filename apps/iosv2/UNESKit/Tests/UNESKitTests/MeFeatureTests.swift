@@ -111,7 +111,70 @@ struct MeFeatureTests {
             $0.path[id: 0] = .settings(SettingsFeature.State(userName: "Mariana Souza"))
         }
         // The other rows still wait for their features.
-        await store.send(.settingsRowTapped(.about))
+        await store.send(.settingsRowTapped(.feedback))
+    }
+
+    @Test
+    func aboutRowPresentsTheSheetAndRefinesTheChannel() async {
+        let resolved = AppInfo(
+            version: AppInfo.preview.version,
+            build: AppInfo.preview.build,
+            machineId: AppInfo.preview.machineId,
+            deviceModel: AppInfo.preview.deviceModel,
+            osVersion: AppInfo.preview.osVersion,
+            channel: "TestFlight",
+            installSource: "TestFlight"
+        )
+
+        let store = TestStore(initialState: MeFeature.State()) {
+            MeFeature()
+        } withDependencies: {
+            $0.appInfo.current = { .preview }
+            $0.appInfo.resolved = { resolved }
+        }
+
+        await store.send(.settingsRowTapped(.about)) {
+            $0.aboutInfo = .preview
+        }
+        await store.receive(.aboutInfoResolved(resolved)) {
+            $0.aboutInfo = resolved
+        }
+        await store.send(.aboutDismissed) {
+            $0.aboutInfo = nil
+        }
+    }
+
+    @Test
+    func aboutCopyPutsTheDebugBlockOnThePasteboard() async {
+        let clock = TestClock()
+        let copied = LockIsolated<String?>(nil)
+
+        let store = TestStore(initialState: MeFeature.State()) {
+            MeFeature()
+        } withDependencies: {
+            $0.appInfo.current = { .preview }
+            $0.appInfo.resolved = { .preview }
+            $0.pasteboard.copy = { copied.setValue($0) }
+            $0.continuousClock = clock
+        }
+
+        await store.send(.settingsRowTapped(.about)) {
+            $0.aboutInfo = .preview
+        }
+        await store.receive(.aboutInfoResolved(.preview))
+
+        await store.send(.aboutCopyTapped) {
+            $0.isAboutCopied = true
+        }
+        await clock.advance(by: .milliseconds(1800))
+        await store.receive(.aboutCopyFeedbackExpired) {
+            $0.isAboutCopied = false
+        }
+        #expect(copied.value == AppInfo.preview.debugText)
+
+        await store.send(.aboutDismissed) {
+            $0.aboutInfo = nil
+        }
     }
 
     @Test

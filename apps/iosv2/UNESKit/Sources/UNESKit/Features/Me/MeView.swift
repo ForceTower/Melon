@@ -31,6 +31,13 @@ struct MeView: View {
                 store.send(.shortcutDismissed)
             }
         }
+        .sheet(item: aboutBinding) { info in
+            MeAboutSheet(info: info, isCopied: store.isAboutCopied) {
+                store.send(.aboutCopyTapped)
+            } onClose: {
+                store.send(.aboutDismissed)
+            }
+        }
         .sheet(isPresented: logoutPromptBinding) {
             MeLogoutSheet(userName: store.displayName) {
                 store.send(.logoutPromptDismissed)
@@ -156,6 +163,15 @@ struct MeView: View {
             get: { store.activeShortcut },
             set: { value in
                 if value == nil { store.send(.shortcutDismissed) }
+            }
+        )
+    }
+
+    private var aboutBinding: Binding<AppInfo?> {
+        Binding(
+            get: { store.aboutInfo },
+            set: { value in
+                if value == nil { store.send(.aboutDismissed) }
             }
         )
     }
