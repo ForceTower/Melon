@@ -9,9 +9,9 @@ enum MeShortcut: String, Equatable, Sendable, Identifiable, CaseIterable {
 }
 
 /// The "Definições" rows. Settings and Licenses push their screens, About
-/// opens its sheet; the remaining destinations land with their features.
+/// opens its sheet, Feedback deep-links into Messages.
 enum MeSettingsRow: String, Equatable, Sendable, CaseIterable {
-    case settings, sync, about, feedback, licenses
+    case settings, about, feedback, licenses
 }
 
 @Reducer
@@ -22,7 +22,6 @@ struct MeFeature {
         var userName: String?
         var profile: Profile?
         var overview: MeOverview?
-        var syncedAt: Date?
         /// Presents the about sheet while non-nil.
         var aboutInfo: AppInfo?
         /// Drives the sheet's transient "copiado" feedback.
@@ -99,7 +98,6 @@ struct MeFeature {
 
             case let .overviewUpdated(cached):
                 state.overview = cached.overview
-                state.syncedAt = cached.syncedAt
                 return .none
 
             case let .profileLoaded(profile):
@@ -140,9 +138,6 @@ struct MeFeature {
                         guard let url else { return }
                         await openURL(url)
                     }
-                case .sync:
-                    // Sync's destination lands with its feature.
-                    break
                 }
                 return .none
 

@@ -3,22 +3,19 @@ import SwiftUI
 /// The "Definições" card: one row per app-level surface. Rows highlight on
 /// press; navigation arrives with the features they point at.
 struct MeSettingsList: View {
-    var syncedAt: Date?
     var onSelect: (MeSettingsRow) -> Void
 
     var body: some View {
-        TimelineView(.everyMinute) { context in
-            VStack(spacing: 0) {
-                ForEach(Array(MeSettingsRow.allCases.enumerated()), id: \.element) { position, row in
-                    button(row, now: context.date)
-                        .overlay(alignment: .bottom) {
-                            if position < MeSettingsRow.allCases.count - 1 {
-                                Rectangle()
-                                    .fill(UNESColor.line)
-                                    .frame(height: 0.5)
-                            }
+        VStack(spacing: 0) {
+            ForEach(Array(MeSettingsRow.allCases.enumerated()), id: \.element) { position, row in
+                button(row)
+                    .overlay(alignment: .bottom) {
+                        if position < MeSettingsRow.allCases.count - 1 {
+                            Rectangle()
+                                .fill(UNESColor.line)
+                                .frame(height: 0.5)
                         }
-                }
+                    }
             }
         }
         .background(UNESColor.card)
@@ -30,7 +27,7 @@ struct MeSettingsList: View {
         .shadow(color: Color(hex: 0x141020, opacity: 0.05), radius: 9, y: 6)
     }
 
-    private func button(_ row: MeSettingsRow, now: Date) -> some View {
+    private func button(_ row: MeSettingsRow) -> some View {
         Button {
             onSelect(row)
         } label: {
@@ -46,22 +43,11 @@ struct MeSettingsList: View {
                         .font(.system(size: 15, weight: .medium))
                         .tracking(-0.15)
                         .foregroundStyle(UNESColor.ink)
-                    Text(hint(for: row, now: now))
+                    Text(row.hint)
                         .font(.system(size: 12, weight: .medium))
                         .foregroundStyle(UNESColor.ink4)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
-
-                if row == .sync, syncedAt != nil {
-                    HStack(spacing: 5) {
-                        Circle()
-                            .fill(UNESColor.successGreen)
-                            .frame(width: 6, height: 6)
-                        Text("OK")
-                            .font(.system(size: 12, weight: .semibold))
-                            .foregroundStyle(UNESColor.successGreen)
-                    }
-                }
 
                 Image(systemName: "chevron.right")
                     .font(.system(size: 11, weight: .semibold))
@@ -72,33 +58,30 @@ struct MeSettingsList: View {
         }
         .buttonStyle(RowPressStyle())
     }
-
-    private func hint(for row: MeSettingsRow, now: Date) -> String {
-        switch row {
-        case .settings: "tema, notificações, dados"
-        case .sync: MeFormat.lastSyncHint(syncedAt: syncedAt, now: now)
-        case .about: MeFormat.versionHint
-        case .feedback: "fale com os mantenedores"
-        case .licenses: "pacotes open source"
-        }
-    }
 }
 
 extension MeSettingsRow {
     var label: String {
         switch self {
         case .settings: "Configurações"
-        case .sync: "Sincronização"
         case .about: "Sobre o aplicativo"
         case .feedback: "Erros & sugestões"
         case .licenses: "Licenças open source"
         }
     }
 
+    var hint: String {
+        switch self {
+        case .settings: "tema, notificações, dados"
+        case .about: MeFormat.versionHint
+        case .feedback: "fale com os mantenedores"
+        case .licenses: "pacotes open source"
+        }
+    }
+
     var icon: String {
         switch self {
         case .settings: "gearshape"
-        case .sync: "arrow.triangle.2.circlepath"
         case .about: "info.circle"
         case .feedback: "ladybug"
         case .licenses: "c.circle"
@@ -108,7 +91,6 @@ extension MeSettingsRow {
     var tone: Color {
         switch self {
         case .settings: UNESColor.readable(0x8E8E93)
-        case .sync: UNESColor.readable(0x2F9E5E)
         case .about: UNESColor.readable(0x0A84FF)
         case .feedback: UNESColor.readable(0xE8894E)
         case .licenses: UNESColor.readable(0x7A5AD0)
@@ -126,7 +108,7 @@ struct RowPressStyle: ButtonStyle {
 }
 
 #Preview {
-    MeSettingsList(syncedAt: .now.addingTimeInterval(-120), onSelect: { _ in })
+    MeSettingsList(onSelect: { _ in })
         .padding(16)
         .frame(maxHeight: .infinity)
         .background(UNESColor.surface)

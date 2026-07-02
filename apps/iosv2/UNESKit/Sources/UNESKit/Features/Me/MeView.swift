@@ -84,7 +84,7 @@ struct MeView: View {
 
                 VStack(spacing: 0) {
                     sectionHeader("Definições")
-                    MeSettingsList(syncedAt: store.syncedAt) { row in
+                    MeSettingsList { row in
                         store.send(.settingsRowTapped(row))
                     }
                 }

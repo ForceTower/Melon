@@ -2,18 +2,6 @@ import Foundation
 
 /// pt-BR display strings for the Eu screen.
 enum MeFormat {
-    /// "última: agora" / "última: há 2 min" — the Sincronização row hint.
-    static func lastSyncHint(syncedAt: Date?, now: Date) -> String {
-        guard let syncedAt else { return "aguardando a primeira sincronização" }
-        let seconds = max(0, now.timeIntervalSince(syncedAt))
-        switch seconds {
-        case ..<90: return "última: agora"
-        case ..<3600: return "última: há \(Int(seconds / 60)) min"
-        case ..<86_400: return "última: há \(Int(seconds / 3600))h"
-        default: return "última: há \(Int(seconds / 86_400))d"
-        }
-    }
-
     /// "versão 1.2 · build 34" — the Sobre row hint.
     static var versionHint: String {
         "versão \(marketingVersion) · build \(buildNumber)"
