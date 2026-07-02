@@ -98,6 +98,7 @@ struct DisciplineDetailView: View {
             // let the vertical scroller pan sideways.
             .containerRelativeFrame(.horizontal)
         }
+        .scrollIndicators(.hidden)
         .onScrollGeometryChange(for: CGFloat.self) { geometry in
             geometry.contentOffset.y + geometry.contentInsets.top
         } action: { _, offset in

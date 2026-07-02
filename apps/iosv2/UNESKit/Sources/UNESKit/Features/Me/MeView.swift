@@ -99,6 +99,7 @@ struct MeView: View {
             }
             .padding(EdgeInsets(top: 8, leading: 16, bottom: 12, trailing: 16))
         }
+        .scrollIndicators(.hidden)
     }
 
     private func sectionHeader(_ title: String) -> some View {

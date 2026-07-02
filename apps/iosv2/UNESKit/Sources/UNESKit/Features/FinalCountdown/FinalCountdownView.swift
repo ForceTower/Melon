@@ -76,6 +76,7 @@ struct FinalCountdownView: View {
             .padding(.top, 16)
             .padding(.bottom, 12)
         }
+        .scrollIndicators(.hidden)
         .scrollDismissesKeyboard(.interactively)
         .onScrollGeometryChange(for: CGFloat.self) { geometry in
             geometry.contentOffset.y + geometry.contentInsets.top

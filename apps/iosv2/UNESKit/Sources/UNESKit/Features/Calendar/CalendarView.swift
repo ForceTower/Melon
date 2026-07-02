@@ -72,6 +72,7 @@ struct CalendarView: View {
             .padding(.top, 16)
             .padding(.bottom, 12)
         }
+        .scrollIndicators(.hidden)
         .onScrollGeometryChange(for: CGFloat.self) { geometry in
             geometry.contentOffset.y + geometry.contentInsets.top
         } action: { _, offset in

@@ -82,6 +82,7 @@ struct ScheduleView: View {
                 }
                 .padding(.bottom, 12)
             }
+            .scrollIndicators(.hidden)
             .refreshable {
                 await store.send(.refreshPulled).finish()
             }
