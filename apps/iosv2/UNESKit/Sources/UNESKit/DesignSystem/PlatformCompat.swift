@@ -56,6 +56,16 @@ extension View {
         #endif
     }
 
+    /// `presentationCornerRadius` is iOS-only; the package also builds for macOS.
+    @ViewBuilder
+    func presentationCornerRadiusCompat(_ radius: CGFloat) -> some View {
+        #if os(iOS)
+        presentationCornerRadius(radius)
+        #else
+        self
+        #endif
+    }
+
     @ViewBuilder
     func noAutocapitalization() -> some View {
         #if os(iOS)

@@ -11,6 +11,9 @@ struct EventDTO: Decodable {
     /// yyyy-MM-dd.
     let start: String
     let end: String?
+    let fixed: Bool
+    let closed: Bool
+    let scope: String
     let origin: String
 }
 
@@ -21,6 +24,9 @@ extension EventDTO {
             summary: description,
             start: start,
             end: end,
+            fixed: fixed,
+            closed: closed,
+            scope: AcademicEvent.Scope(rawValue: scope) ?? .unknown,
             origin: AcademicEvent.Origin(rawValue: origin) ?? .unknown
         )
     }

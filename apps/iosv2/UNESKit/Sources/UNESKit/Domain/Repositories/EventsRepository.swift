@@ -3,16 +3,16 @@ import Foundation
 
 @DependencyClient
 struct EventsRepository: Sendable {
-    /// Ongoing and future academic events, soonest first. The backend serves
-    /// a window of roughly one month around today.
-    var upcoming: @Sendable (_ now: Date) async throws -> [AcademicEvent]
+    /// The academic calendar around `now`, earliest first — a window wide
+    /// enough to cover the running academic year, past events included.
+    var calendar: @Sendable (_ now: Date) async throws -> [AcademicEvent]
 }
 
 extension EventsRepository: TestDependencyKey {
     static let testValue = EventsRepository()
 
     static let previewValue = EventsRepository(
-        upcoming: { now in .preview(now: now) }
+        calendar: { now in .preview(now: now) }
     )
 }
 

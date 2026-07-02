@@ -7,7 +7,21 @@ struct AcademicEvent: Equatable, Sendable, Identifiable {
     /// yyyy-MM-dd.
     var start: String
     var end: String?
+    /// Repeats every year (national holidays and the like).
+    var fixed: Bool
+    /// Campus-shut day — renders as a holiday regardless of origin.
+    var closed: Bool
+    var scope: Scope
     var origin: Origin
+
+    enum Scope: String, Equatable, Sendable {
+        case general = "GENERAL"
+        case faculty = "FACULTY"
+        case course = "COURSE"
+        case classScope = "CLASS"
+        case campus = "CAMPUS"
+        case unknown
+    }
 
     enum Origin: String, Equatable, Sendable {
         case manual = "MANUAL"
@@ -24,12 +38,37 @@ extension [AcademicEvent] {
         func stamp(daysFromNow: Int) -> String {
             Calendar.current.date(byAdding: .day, value: daysFromNow, to: now)!.dayStamp
         }
+        func event(
+            _ id: String,
+            _ summary: String,
+            start: Int,
+            end: Int? = nil,
+            fixed: Bool = false,
+            closed: Bool = false,
+            scope: AcademicEvent.Scope = .general,
+            origin: AcademicEvent.Origin
+        ) -> AcademicEvent {
+            AcademicEvent(
+                id: id,
+                summary: summary,
+                start: stamp(daysFromNow: start),
+                end: end.map { stamp(daysFromNow: $0) },
+                fixed: fixed,
+                closed: closed,
+                scope: scope,
+                origin: origin
+            )
+        }
         return [
-            AcademicEvent(id: "e1", summary: "Trancamento parcial", start: stamp(daysFromNow: 3), end: nil, origin: .manual),
-            AcademicEvent(id: "e2", summary: "Prova 2 · Cálculo II", start: stamp(daysFromNow: 10), end: nil, origin: .evaluation),
-            AcademicEvent(id: "e3", summary: "Semana de recesso", start: stamp(daysFromNow: 17), end: stamp(daysFromNow: 22), origin: .manual),
-            AcademicEvent(id: "e4", summary: "Provas finais", start: stamp(daysFromNow: 28), end: nil, origin: .finalExam),
-            AcademicEvent(id: "e5", summary: "Segunda chamada", start: stamp(daysFromNow: 31), end: nil, origin: .secondCall),
+            event("e0", "Feriado — Páscoa", start: -14, end: -12, fixed: true, closed: true, origin: .manual),
+            event("e1", "Período para trancamento de disciplinas — Estudante", start: -4, end: 3, origin: .manual),
+            event("e2", "P2 — Cálculo Diferencial II", start: 10, scope: .classScope, origin: .evaluation),
+            event("e3", "Feriado — Tiradentes", start: 12, fixed: true, closed: true, origin: .manual),
+            event("e4", "Semana de aulas especiais — Engenharia", start: 17, end: 22, scope: .faculty, origin: .manual),
+            event("e5", "Período de Demanda para a Matrícula Web — Estudante", start: 24, end: 28, origin: .manual),
+            event("e6", "Período de prova final", start: 38, end: 42, origin: .finalExam),
+            event("e7", "Segunda chamada", start: 45, scope: .classScope, origin: .secondCall),
+            event("e8", "Encerramento do semestre", start: 52, origin: .manual),
         ]
     }
 }

@@ -4,6 +4,7 @@ import Foundation
 struct APIRequest: Sendable {
     var method = "GET"
     var path: String
+    var query: [URLQueryItem] = []
     var body: Data?
     var authenticated = true
 }
@@ -21,8 +22,12 @@ private struct APIEnvelope<T: Decodable>: Decodable {
 }
 
 extension APIClient {
-    func get<T: Decodable>(_ type: T.Type = T.self, from path: String) async throws -> T {
-        try Self.unwrap(await send(APIRequest(path: path)))
+    func get<T: Decodable>(
+        _ type: T.Type = T.self,
+        from path: String,
+        query: [URLQueryItem] = []
+    ) async throws -> T {
+        try Self.unwrap(await send(APIRequest(path: path, query: query)))
     }
 
     func post<T: Decodable>(
@@ -89,7 +94,11 @@ extension APIClient {
         APIClient(send: { apiRequest in
             @Dependency(\.sessionStore) var sessionStore
 
-            var request = URLRequest(url: baseURL.appending(path: apiRequest.path))
+            var url = baseURL.appending(path: apiRequest.path)
+            if !apiRequest.query.isEmpty {
+                url.append(queryItems: apiRequest.query)
+            }
+            var request = URLRequest(url: url)
             request.httpMethod = apiRequest.method
             if let body = apiRequest.body {
                 request.httpBody = body

@@ -16,6 +16,8 @@ struct MeView: View {
             switch store.case {
             case let .settings(store):
                 SettingsView(store: store)
+            case let .calendar(store):
+                CalendarView(store: store)
             case let .countdown(store):
                 FinalCountdownView(store: store)
             case let .licenses(store):
@@ -35,14 +37,6 @@ struct MeView: View {
             }
         }
         .task { await store.send(.task).finish() }
-        .sheet(item: shortcutBinding) { _ in
-            MeShortcutSheet(
-                overview: store.overview,
-                events: store.events
-            ) {
-                store.send(.shortcutDismissed)
-            }
-        }
         .sheet(item: aboutBinding) { info in
             MeAboutSheet(info: info, isCopied: store.isAboutCopied) {
                 store.send(.aboutCopyTapped)
@@ -169,15 +163,6 @@ struct MeView: View {
     }
 
     // MARK: Sheet bindings
-
-    private var shortcutBinding: Binding<MeShortcut?> {
-        Binding(
-            get: { store.activeShortcut },
-            set: { value in
-                if value == nil { store.send(.shortcutDismissed) }
-            }
-        )
-    }
 
     private var aboutBinding: Binding<AppInfo?> {
         Binding(

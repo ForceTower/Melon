@@ -22,7 +22,6 @@ struct MeFeatureTests {
             $0.sessionStore = .inMemory(initial: .preview)
             $0.meRepository.observe = { updates }
             $0.profileRepository.current = { throw APIError.emptyEnvelope }
-            $0.eventsRepository.upcoming = { _ in throw APIError.emptyEnvelope }
         }
 
         await store.send(.task) {
@@ -43,7 +42,6 @@ struct MeFeatureTests {
             $0.sessionStore = .inMemory(initial: .preview)
             $0.meRepository.observe = { .finished }
             $0.profileRepository.current = { .preview }
-            $0.eventsRepository.upcoming = { _ in throw APIError.emptyEnvelope }
         }
 
         await store.send(.task) {
@@ -55,38 +53,48 @@ struct MeFeatureTests {
     }
 
     @Test
-    func eventsFeedTheCalendarTeaser() async {
-        let events: [AcademicEvent] = .preview(now: Self.referenceDate)
-
-        let store = TestStore(initialState: MeFeature.State()) {
-            MeFeature()
-        } withDependencies: {
-            $0.date = .constant(Self.referenceDate)
-            $0.sessionStore = .inMemory(initial: .preview)
-            $0.meRepository.observe = { .finished }
-            $0.profileRepository.current = { throw APIError.emptyEnvelope }
-            $0.eventsRepository.upcoming = { _ in events }
-        }
-
-        await store.send(.task) {
-            $0.userName = "Mariana Souza"
-        }
-        await store.receive(.eventsLoaded(events)) {
-            $0.events = events
-        }
-    }
-
-    @Test
-    func shortcutsOpenAndCloseTheirSheet() async {
+    func calendarShortcutPushesTheCalendar() async {
         let store = TestStore(initialState: MeFeature.State()) {
             MeFeature()
         }
 
         await store.send(.shortcutTapped(.calendar)) {
-            $0.activeShortcut = .calendar
+            $0.path.append(.calendar(CalendarFeature.State()))
         }
-        await store.send(.shortcutDismissed) {
-            $0.activeShortcut = nil
+    }
+
+    @Test
+    func resumeWakesAPushedCalendar() async {
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Self.referenceDate)
+
+        var initialState = MeFeature.State(userName: "Mariana Souza")
+        initialState.overview = .preview
+        initialState.path.append(.calendar(CalendarFeature.State()))
+
+        let store = TestStore(initialState: initialState) {
+            MeFeature()
+        } withDependencies: {
+            $0.calendar = calendar
+            $0.date = .constant(Self.referenceDate)
+            $0.sessionStore = .inMemory(initial: .preview)
+            $0.meRepository.observe = { .finished }
+            $0.eventsRepository.calendar = { _ in [] }
+        }
+
+        await store.send(.task)
+        await store.receive(.path(.element(id: 0, action: .calendar(.task)))) {
+            var woken = CalendarFeature.State()
+            woken.today = today
+            woken.selectedDay = today
+            $0.path[id: 0] = .calendar(woken)
+        }
+        await store.receive(.path(.element(id: 0, action: .calendar(.eventsLoaded([]))))) {
+            var refreshed = CalendarFeature.State()
+            refreshed.today = today
+            refreshed.selectedDay = today
+            refreshed.fetchedAt = Self.referenceDate
+            $0.path[id: 0] = .calendar(refreshed)
         }
     }
 

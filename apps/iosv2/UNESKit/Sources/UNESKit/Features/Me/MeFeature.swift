@@ -1,8 +1,7 @@
 import ComposableArchitecture
 import Foundation
 
-/// The pinned shortcuts. Matrícula and Countdown push their flows; the
-/// calendar opens its teaser sheet until the feature lands.
+/// The pinned shortcuts — each pushes its flow.
 enum MeShortcut: String, Equatable, Sendable, Identifiable, CaseIterable {
     case enrollment, calendar, countdown
 
@@ -24,8 +23,6 @@ struct MeFeature {
         var profile: Profile?
         var overview: MeOverview?
         var syncedAt: Date?
-        var events: [AcademicEvent] = []
-        var activeShortcut: MeShortcut?
         /// Presents the about sheet while non-nil.
         var aboutInfo: AppInfo?
         /// Drives the sheet's transient "copiado" feedback.
@@ -40,6 +37,7 @@ struct MeFeature {
     @Reducer
     enum Path {
         case settings(SettingsFeature)
+        case calendar(CalendarFeature)
         case countdown(FinalCountdownFeature)
         case licenses(LicensesFeature)
         case enrollment(EnrollmentFeature)
@@ -54,9 +52,7 @@ struct MeFeature {
         case task
         case overviewUpdated(CachedMeOverview)
         case profileLoaded(Profile)
-        case eventsLoaded([AcademicEvent])
         case shortcutTapped(MeShortcut)
-        case shortcutDismissed
         case settingsRowTapped(MeSettingsRow)
         case aboutInfoResolved(AppInfo)
         case aboutCopyTapped
@@ -75,12 +71,10 @@ struct MeFeature {
 
     @Dependency(\.meRepository) var meRepository
     @Dependency(\.profileRepository) var profileRepository
-    @Dependency(\.eventsRepository) var eventsRepository
     @Dependency(\.sessionStore) var sessionStore
     @Dependency(\.appInfo) var appInfo
     @Dependency(\.pasteboard) var pasteboard
     @Dependency(\.continuousClock) var clock
-    @Dependency(\.date.now) var now
 
     private enum CancelID { case observation, aboutResolve, aboutCopyFeedback }
 
@@ -92,10 +86,14 @@ struct MeFeature {
                     state.userName = sessionStore.current()?.user.name
                 }
                 // The observation replays the mirror on subscription, so
-                // every appearance rehydrates; the one-shot fetches only run
-                // on the first one.
-                guard state.overview == nil else { return observeMirror() }
-                return .merge(observeMirror(), loadProfile(), loadEvents())
+                // every appearance rehydrates; the one-shot fetch only runs
+                // on the first one. A pushed calendar sits outside the tab's
+                // own task, so the resume wake-up is forwarded — it re-anchors
+                // "hoje" and refreshes the feed.
+                let effects = [observeMirror()]
+                    + (state.overview == nil ? [loadProfile()] : [])
+                    + wakeCalendar(in: state)
+                return .merge(effects)
 
             case let .overviewUpdated(cached):
                 state.overview = cached.overview
@@ -106,23 +104,15 @@ struct MeFeature {
                 state.profile = profile
                 return .none
 
-            case let .eventsLoaded(events):
-                state.events = events
-                return .none
-
             case let .shortcutTapped(shortcut):
                 switch shortcut {
                 case .enrollment:
                     state.path.append(.enrollment(EnrollmentFeature.State(profile: state.profile)))
                 case .calendar:
-                    state.activeShortcut = shortcut
+                    state.path.append(.calendar(CalendarFeature.State()))
                 case .countdown:
                     state.path.append(.countdown(FinalCountdownFeature.State()))
                 }
-                return .none
-
-            case .shortcutDismissed:
-                state.activeShortcut = nil
                 return .none
 
             case let .settingsRowTapped(row):
@@ -254,6 +244,13 @@ struct MeFeature {
         return .none
     }
 
+    private func wakeCalendar(in state: State) -> [Effect<Action>] {
+        state.path.ids.compactMap { id in
+            guard case .calendar = state.path[id: id] else { return nil }
+            return .send(.path(.element(id: id, action: .calendar(.task))))
+        }
+    }
+
     private func observeMirror() -> Effect<Action> {
         .run { send in
             for await cached in meRepository.observe() {
@@ -268,14 +265,6 @@ struct MeFeature {
             // Only feeds the course line — ignore failures.
             guard let profile = try? await profileRepository.current() else { return }
             await send(.profileLoaded(profile))
-        }
-    }
-
-    private func loadEvents() -> Effect<Action> {
-        .run { send in
-            // The calendar teaser is a garnish — ignore failures.
-            guard let events = try? await eventsRepository.upcoming(now) else { return }
-            await send(.eventsLoaded(events))
         }
     }
 
