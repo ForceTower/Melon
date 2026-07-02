@@ -44,12 +44,15 @@ struct HomeHeroClass: Equatable, Sendable {
 }
 
 struct CoefficientSummary: Equatable, Sendable {
-    /// Plain mean of the grades posted so far. Truncate (never round) to one
-    /// decimal for display.
+    /// The coefficient (CR): mean of every discipline taken across the
+    /// mirrored semesters, weighted by class-hours, abandonments counting as
+    /// 0. Until a first result closes it falls back to the plain mean of the
+    /// posted grades. Truncate (never round) to one decimal for display.
     var value: Double
-    /// Posted grades in evaluation order, for the sparkline.
+    /// The CR as it stood after each semester, oldest first — the sparkline.
+    /// In fallback mode, the posted grades in evaluation order.
     var spark: [Double]
-    /// Last posted grade minus the one before it; nil under two grades.
+    /// Movement since the previous spark point; nil under two points.
     var delta: Double?
 }
 
@@ -107,11 +110,12 @@ struct DisciplineCard: Equatable, Sendable, Identifiable {
 }
 
 /// UFF-style grade display: truncated to one decimal (6,95 → 6,9 — never
-/// rounded up), comma separator. `nil` renders as an em dash.
+/// rounded up), with the current locale's decimal separator (pt-BR "6,9",
+/// en "6.9"). `nil` renders as an em dash.
 func formatGrade(_ value: Double?) -> String {
     guard let value else { return "—" }
     let truncated = (value * 10).rounded(.down) / 10
-    return String(format: "%.1f", truncated).replacingOccurrences(of: ".", with: ",")
+    return truncated.formatted(.number.precision(.fractionLength(1)))
 }
 
 extension HomeOverview {

@@ -60,6 +60,9 @@ struct MirrorStore: Sendable {
            let record = semesters.first(where: { $0.id == active.id }) {
             overview = try snapshot(for: record, db: db).homeOverview(now: now)
         }
+        if let coefficient = try coefficientHistory(semesters: semesters, db: db).summary() {
+            overview.coefficient = coefficient
+        }
         overview.messages = try messagesSummary(db)
         return CachedHomeOverview(overview: overview, syncedAt: syncedAt)
     }
@@ -80,6 +83,9 @@ struct MirrorStore: Sendable {
         if let active = semesters.map(\.domain).active(today: now.dayStamp),
            let record = semesters.first(where: { $0.id == active.id }) {
             overview = try snapshot(for: record, db: db).meOverview(now: now)
+        }
+        if let coefficient = try coefficientHistory(semesters: semesters, db: db).summary() {
+            overview.coefficient = coefficient
         }
         return CachedMeOverview(overview: overview, syncedAt: syncedAt)
     }
@@ -262,6 +268,20 @@ struct MirrorStore: Sendable {
         for row in snapshot.lectures { try row.insert(db) }
         for row in snapshot.lectureMaterials { try row.insert(db) }
         log.info("mirror semester written id=\(snapshot.semester.id) classes=\(snapshot.classes.count) lectures=\(snapshot.lectures.count)")
+    }
+
+    /// The cross-semester coefficient inputs: every mirrored enrollment with
+    /// the rows that resolve its discipline and hours. `summary()` is nil
+    /// until a first result closes, and the caller then keeps the active
+    /// snapshot's partial mean.
+    private static func coefficientHistory(semesters: [SemesterRecord], db: Database) throws -> CoefficientHistory {
+        try CoefficientHistory(
+            semesters: semesters,
+            disciplines: DisciplineRecord.fetchAll(db),
+            disciplineOffers: DisciplineOfferRecord.fetchAll(db),
+            classes: ClassRecord.fetchAll(db),
+            studentClasses: StudentClassRecord.fetchAll(db)
+        )
     }
 
     static func snapshot(for semester: SemesterRecord, db: Database) throws -> SemesterSnapshot {

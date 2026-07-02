@@ -125,14 +125,14 @@ extension View {
         Spacer()
         EnrollmentDock(
             session: .preview,
-            primaryLabel: "Revisar",
+            primaryLabel: .localized(.enrollmentActionReview),
             onPrimary: {},
-            secondaryLabel: "Grade",
+            secondaryLabel: String.localized(.enrollmentActionGrid),
             onSecondary: {}
         )
         EnrollmentDock(
             session: EnrollmentSession(window: .preview),
-            primaryLabel: "Revisar",
+            primaryLabel: .localized(.enrollmentActionReview),
             onPrimary: {}
         )
     }

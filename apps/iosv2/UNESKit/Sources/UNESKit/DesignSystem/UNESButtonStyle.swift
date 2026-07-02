@@ -80,7 +80,7 @@ extension ButtonStyle where Self == UNESButtonStyle {
 
 /// Standard CTA label: text with the trailing arrow.
 struct UNESButtonLabel: View {
-    var text: String
+    var text: LocalizedStringResource
 
     var body: some View {
         HStack(spacing: 8) {
@@ -93,13 +93,13 @@ struct UNESButtonLabel: View {
 
 #Preview {
     VStack(spacing: 12) {
-        Button {} label: { UNESButtonLabel(text: "Continuar") }
+        Button {} label: { UNESButtonLabel(text: .commonSeeAll) }
             .buttonStyle(.unesDark)
-        Button {} label: { UNESButtonLabel(text: "Conhecer o app") }
+        Button {} label: { UNESButtonLabel(text: .commonTryAgain) }
             .buttonStyle(.unesLight)
-        Button("Já tenho matrícula") {}
+        Button {} label: { Text(.commonSeeAll) }
             .buttonStyle(.unesGlass)
-        Button("Entrar") {}
+        Button {} label: { Text(.commonTryAgain) }
             .buttonStyle(.unesDark)
             .disabled(true)
     }

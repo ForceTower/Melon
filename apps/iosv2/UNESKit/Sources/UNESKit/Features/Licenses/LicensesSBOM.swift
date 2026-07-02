@@ -21,7 +21,7 @@ enum LicensesSBOM {
     }()
 
     /// "CycloneDX · JSON · 4 KB" — the share row subtitle.
-    static let sizeLabel = "CycloneDX · JSON · \(max(1, data.count / 1024)) KB"
+    static let sizeLabel = String.localized(.licensesSbomSizeLabel(max(1, data.count / 1024)))
 
     private struct Document: Encodable {
         let bomFormat = "CycloneDX"

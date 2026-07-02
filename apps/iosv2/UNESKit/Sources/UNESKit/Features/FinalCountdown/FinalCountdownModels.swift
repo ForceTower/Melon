@@ -129,79 +129,81 @@ extension FCVerdict {
         switch kind {
         case .passed:
             return FCVerdictStyle(
-                eyebrow: "aprovação direta", mesh: .fresh, hue: Color(hex: 0x4FD69C), icon: "trophy.fill",
-                title: "Fechou.", lead: "Média acima de 7,0. Sem Prova Final.",
-                statLabel: "média final", statValue: avgText,
-                detail: "A média de \(avgText) já garante aprovação direta. Pode respirar."
+                eyebrow: String.localized(.finalCountdownVerdictPassedEyebrow), mesh: .fresh, hue: Color(hex: 0x4FD69C), icon: "trophy.fill",
+                title: String.localized(.finalCountdownVerdictPassedTitle), lead: String.localized(.finalCountdownVerdictPassedLead),
+                statLabel: String.localized(.finalCountdownVerdictPassedStatLabel), statValue: avgText,
+                detail: String.localized(.finalCountdownVerdictPassedDetail(avgText))
             )
         case .ontrack:
             let needed = wildcardNeeded.map(FinalCountdownMath.formatGrade)
             return FCVerdictStyle(
-                eyebrow: "no caminho", mesh: .cool, hue: Color(hex: 0x5AD1E0), icon: "checkmark",
-                title: "Tá firme.", lead: needed != nil ? "Só não entregue zerada." : "Termine as avaliações.",
-                statLabel: needed != nil ? "precisa na próxima" : "projeção",
+                eyebrow: String.localized(.finalCountdownVerdictOntrackEyebrow), mesh: .cool, hue: Color(hex: 0x5AD1E0), icon: "checkmark",
+                title: String.localized(.finalCountdownVerdictOntrackTitle),
+                lead: needed != nil
+                    ? String.localized(.finalCountdownVerdictOntrackLeadNeeded)
+                    : String.localized(.finalCountdownVerdictOntrackLeadComplete),
+                statLabel: needed != nil
+                    ? String.localized(.finalCountdownVerdictNeededNextLabel)
+                    : String.localized(.finalCountdownVerdictOntrackStatLabelProjection),
                 statValue: needed.map { "≥ \($0)" } ?? "OK",
                 detail: needed.map {
-                    "Qualquer coisa acima de \($0) na última avaliação te dá aprovação direta."
-                } ?? "A média provável leva à aprovação direta. Continue assim."
+                    String.localized(.finalCountdownVerdictOntrackDetailNeeded($0))
+                } ?? String.localized(.finalCountdownVerdictOntrackDetailComplete)
             )
         case .borderline:
             let needed = FinalCountdownMath.formatGrade(wildcardNeeded)
             return FCVerdictStyle(
-                eyebrow: "dá pra passar", mesh: .sun, hue: Color(hex: 0xF4B54C), icon: "bolt.fill",
-                title: "Dá pra passar.", lead: "Apertado, mas possível.",
-                statLabel: "precisa na próxima", statValue: needed,
-                detail: "Você precisa de \(needed) ou mais na última avaliação pra evitar a Prova Final."
+                eyebrow: String.localized(.finalCountdownVerdictBorderlineEyebrow), mesh: .sun, hue: Color(hex: 0xF4B54C), icon: "bolt.fill",
+                title: String.localized(.finalCountdownVerdictBorderlineTitle), lead: String.localized(.finalCountdownVerdictBorderlineLead),
+                statLabel: String.localized(.finalCountdownVerdictNeededNextLabel), statValue: needed,
+                detail: String.localized(.finalCountdownVerdictBorderlineDetail(needed))
             )
         case .borderlineFinal:
             return FCVerdictStyle(
-                eyebrow: "rumo à final", mesh: .warm, hue: Color(hex: 0xF0805E), icon: "flag.fill",
-                title: "Vai ter Prova Final.", lead: "Sem tragédia. Ainda é passável.",
-                statLabel: "nem com 10", statValue: "> 10",
-                detail: "Mesmo com 10 na última avaliação a média não chega a 7,0. A Prova Final vai acontecer."
+                eyebrow: String.localized(.finalCountdownVerdictBorderlineFinalEyebrow), mesh: .warm, hue: Color(hex: 0xF0805E), icon: "flag.fill",
+                title: String.localized(.finalCountdownVerdictBorderlineFinalTitle), lead: String.localized(.finalCountdownVerdictBorderlineFinalLead),
+                statLabel: String.localized(.finalCountdownVerdictBorderlineFinalStatLabel), statValue: "> 10",
+                detail: String.localized(.finalCountdownVerdictBorderlineFinalDetail)
             )
         case .final:
             let needText = FinalCountdownMath.formatGrade(need)
             return FCVerdictStyle(
-                eyebrow: "indo pra final", mesh: .warm, hue: Color(hex: 0xF0805E), icon: "flag.fill",
-                title: "Calma.", lead: "Passa na Prova Final.",
-                statLabel: "precisa na final", statValue: needText,
-                detail: "Com média \(avgText), você precisa de \(needText) na Prova Final. "
-                    + "Fórmula: 0,6·média + 0,4·final ≥ 5."
+                eyebrow: String.localized(.finalCountdownVerdictFinalEyebrow), mesh: .warm, hue: Color(hex: 0xF0805E), icon: "flag.fill",
+                title: String.localized(.finalCountdownVerdictFinalTitle), lead: String.localized(.finalCountdownVerdictFinalLead),
+                statLabel: String.localized(.finalCountdownVerdictFinalStatLabel), statValue: needText,
+                detail: String.localized(.finalCountdownVerdictFinalDetail(avgText, needText))
             )
         case .impossible:
             let needText = FinalCountdownMath.formatGrade(need)
             return FCVerdictStyle(
-                eyebrow: "matemática perdida", mesh: .rose, hue: Color(hex: 0xC97BD6), icon: "xmark.seal.fill",
-                title: "Não rola.", lead: "Nem com 10 na final.",
-                statLabel: "necessário na final", statValue: needText,
-                detail: "Com média \(avgText), seria preciso \(needText) na Prova Final. "
-                    + "O máximo é 10, então não passa pela final."
+                eyebrow: String.localized(.finalCountdownVerdictImpossibleEyebrow), mesh: .rose, hue: Color(hex: 0xC97BD6), icon: "xmark.seal.fill",
+                title: String.localized(.finalCountdownVerdictImpossibleTitle), lead: String.localized(.finalCountdownVerdictImpossibleLead),
+                statLabel: String.localized(.finalCountdownVerdictImpossibleStatLabel), statValue: needText,
+                detail: String.localized(.finalCountdownVerdictImpossibleDetail(avgText, needText))
             )
         case .failed:
             return FCVerdictStyle(
-                eyebrow: "reprovada", mesh: .rose, hue: Color(hex: 0xC97BD6), icon: "xmark.seal.fill",
-                title: "Ciclo encerrado.", lead: nextSemesterLabel.map { "Volta em \($0)." } ?? "Fica pra próxima.",
-                statLabel: "média · sem final", statValue: avgText,
-                detail: "Média abaixo do piso de 3,0, sem direito à Prova Final. "
-                    + "Não é o fim do mundo. Na próxima."
+                eyebrow: String.localized(.finalCountdownVerdictFailedEyebrow), mesh: .rose, hue: Color(hex: 0xC97BD6), icon: "xmark.seal.fill",
+                title: String.localized(.finalCountdownVerdictFailedTitle),
+                lead: nextSemesterLabel.map { String.localized(.finalCountdownVerdictFailedLeadWithSemester($0)) }
+                    ?? String.localized(.finalCountdownVerdictFailedLeadNoSemester),
+                statLabel: String.localized(.finalCountdownVerdictFailedStatLabel), statValue: avgText,
+                detail: String.localized(.finalCountdownVerdictFailedDetail)
             )
         case .failingTrack:
             let bestText = FinalCountdownMath.formatGrade(best)
             return FCVerdictStyle(
-                eyebrow: "caminho difícil", mesh: .warm, hue: Color(hex: 0xF0805E), icon: "flag.fill",
-                title: "Complicado.", lead: "Acerte a próxima.",
-                statLabel: "melhor cenário", statValue: bestText,
-                detail: "Mesmo tirando 10 na avaliação restante, a média fica em \(bestText). "
-                    + "Dá pra ir pra final, mas caprichando."
+                eyebrow: String.localized(.finalCountdownVerdictFailingTrackEyebrow), mesh: .warm, hue: Color(hex: 0xF0805E), icon: "flag.fill",
+                title: String.localized(.finalCountdownVerdictFailingTrackTitle), lead: String.localized(.finalCountdownVerdictFailingTrackLead),
+                statLabel: String.localized(.finalCountdownVerdictFailingTrackStatLabel), statValue: bestText,
+                detail: String.localized(.finalCountdownVerdictFailingTrackDetail(bestText))
             )
         case .empty:
             return FCVerdictStyle(
-                eyebrow: "comece a preencher", mesh: .cool, hue: Color(hex: 0x5AD1E0), icon: "sparkles",
-                title: "Preencha as notas.", lead: "Pra ver o veredicto.",
-                statLabel: "média atual", statValue: "—",
-                detail: "Toque nos campos abaixo e preencha as avaliações que já aconteceram. "
-                    + "Deixe em branco a que ainda vem."
+                eyebrow: String.localized(.finalCountdownVerdictEmptyEyebrow), mesh: .cool, hue: Color(hex: 0x5AD1E0), icon: "sparkles",
+                title: String.localized(.finalCountdownVerdictEmptyTitle), lead: String.localized(.finalCountdownVerdictEmptyLead),
+                statLabel: String.localized(.finalCountdownVerdictEmptyStatLabel), statValue: "—",
+                detail: String.localized(.finalCountdownVerdictEmptyDetail)
             )
         }
     }

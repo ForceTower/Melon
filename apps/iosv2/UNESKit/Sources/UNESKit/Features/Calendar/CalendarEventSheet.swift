@@ -112,17 +112,17 @@ struct CalendarEventSheet: View {
 
     private var metaGrid: some View {
         LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 2), spacing: 8) {
-            metaCell(label: "Quando", value: range)
-            metaCell(label: "Duração", value: CalendarFormat.duration(days: event.spanDays))
-            metaCell(label: "Âmbito", value: event.scope.label)
-            metaCell(label: "Situação", value: situation)
+            metaCell(label: .localized(.calendarMetaWhen), value: range)
+            metaCell(label: .localized(.calendarMetaDuration), value: CalendarFormat.duration(days: event.spanDays))
+            metaCell(label: .localized(.calendarMetaScope), value: event.scope.label)
+            metaCell(label: .localized(.calendarMetaStatus), value: situation)
         }
     }
 
     private var situation: String {
         switch status {
-        case .active: "Em andamento"
-        case .past: "Encerrado"
+        case .active: .localized(.calendarStatusActive)
+        case .past: .localized(.calendarStatusPast)
         case .future: countdown.phrase.prefix(1).uppercased() + countdown.phrase.dropFirst()
         }
     }
@@ -147,7 +147,7 @@ struct CalendarEventSheet: View {
         HStack(spacing: 6) {
             Image(systemName: "repeat")
                 .font(.system(size: 11, weight: .semibold))
-            Text("Data fixa · repete todo ano")
+            Text(.calendarEventFixedBadge)
                 .font(.system(size: 12, weight: .semibold))
         }
         .foregroundStyle(UNESColor.ink3)
@@ -164,7 +164,7 @@ struct CalendarEventSheet: View {
             HStack(spacing: 7) {
                 Image(systemName: "calendar.badge.plus")
                     .font(.system(size: 14, weight: .semibold))
-                Text("Adicionar ao Calendário")
+                Text(.calendarEventAddToCalendar)
                     .font(.system(size: 14, weight: .semibold))
                     .tracking(-0.14)
             }
@@ -194,7 +194,7 @@ private struct CalendarEventEditor: UIViewControllerRepresentable {
         entry.isAllDay = true
         entry.startDate = event.start
         entry.endDate = event.endOrStart
-        entry.notes = "Calendário acadêmico da UEFS · via UNES"
+        entry.notes = .localized(.calendarSystemEventNotes)
 
         let controller = EKEventEditViewController()
         controller.eventStore = store

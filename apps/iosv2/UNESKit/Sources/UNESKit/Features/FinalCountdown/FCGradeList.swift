@@ -14,19 +14,21 @@ struct FCWeightedRow: View {
                 .background(Color(hex: 0x2AA5B8), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
 
             VStack(alignment: .leading, spacing: 1) {
-                Text("Modo ponderado")
+                Text(.finalCountdownWeightedTitle)
                     .font(.system(size: 15, weight: .semibold))
                     .tracking(-0.15)
                     .foregroundStyle(UNESColor.ink)
-                Text(weighted ? "pesos ativos · ajuste ×" : "média simples · todas valem igual")
+                Text(weighted ? .finalCountdownWeightedActiveSubtitle : .finalCountdownWeightedSimpleSubtitle)
                     .font(.system(size: 12, weight: .medium))
                     .foregroundStyle(UNESColor.ink4)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
 
-            Toggle("Modo ponderado", isOn: Binding(get: { weighted }, set: { onChange($0) }))
-                .labelsHidden()
-                .tint(UNESColor.liveGreen)
+            Toggle(isOn: Binding(get: { weighted }, set: { onChange($0) })) {
+                Text(.finalCountdownWeightedTitle)
+            }
+            .labelsHidden()
+            .tint(UNESColor.liveGreen)
         }
         .padding(EdgeInsets(top: 12, leading: 14, bottom: 12, trailing: 14))
         .background(UNESColor.card)
@@ -40,7 +42,7 @@ struct FCWeightedRow: View {
 }
 
 /// The editable evaluation list: label + grade fields per row, an optional
-/// weight stepper, remove buttons, and the trailing "Adicionar avaliação".
+/// weight stepper, remove buttons, and the trailing "add evaluation" action.
 struct FCGradeList: View {
     var rows: [FCRow]
     var weighted: Bool
@@ -80,13 +82,16 @@ struct FCGradeList: View {
 
     private func gradeRow(_ row: FCRow) -> some View {
         HStack(spacing: 11) {
-            TextField("Nome", text: Binding(get: { row.label }, set: { onLabel(row.id, $0) }))
-                .textFieldStyle(.plain)
-                .autocorrectionDisabled()
-                .font(.system(size: 15, weight: .semibold))
-                .tracking(-0.15)
-                .foregroundStyle(UNESColor.ink)
-                .frame(width: 46)
+            TextField(
+                "", text: Binding(get: { row.label }, set: { onLabel(row.id, $0) }),
+                prompt: Text(.finalCountdownGradeNamePlaceholder)
+            )
+            .textFieldStyle(.plain)
+            .autocorrectionDisabled()
+            .font(.system(size: 15, weight: .semibold))
+            .tracking(-0.15)
+            .foregroundStyle(UNESColor.ink)
+            .frame(width: 46)
 
             scoreField(row)
 
@@ -105,7 +110,7 @@ struct FCGradeList: View {
                         .contentShape(Rectangle().inset(by: -7))
                 }
                 .buttonStyle(.plain)
-                .accessibilityLabel("Remover \(row.label)")
+                .accessibilityLabel(String.localized(.finalCountdownGradeRemoveRow(row.label)))
             }
         }
         .padding(EdgeInsets(top: 10, leading: 14, bottom: 10, trailing: 14))
@@ -136,13 +141,13 @@ struct FCGradeList: View {
 
     private func weightStepper(_ row: FCRow) -> some View {
         HStack(spacing: 2) {
-            stepButton(icon: "minus", label: "Diminuir peso") { onWeight(row.id, -1) }
+            stepButton(icon: "minus", label: String.localized(.finalCountdownGradeDecreaseWeight)) { onWeight(row.id, -1) }
             Text("×\(row.weight)")
                 .font(.system(size: 14, weight: .bold))
                 .monospacedDigit()
                 .foregroundStyle(UNESColor.ink)
                 .frame(minWidth: 24)
-            stepButton(icon: "plus", label: "Aumentar peso") { onWeight(row.id, +1) }
+            stepButton(icon: "plus", label: String.localized(.finalCountdownGradeIncreaseWeight)) { onWeight(row.id, +1) }
         }
         .background(UNESColor.surface2, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
     }
@@ -171,7 +176,7 @@ struct FCGradeList: View {
                     .foregroundStyle(UNESColor.accent)
                     .frame(width: 24, height: 24)
                     .background(UNESColor.surface2, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
-                Text("Adicionar avaliação")
+                Text(.finalCountdownGradeAddEvaluation)
                     .font(.system(size: 15, weight: .semibold))
                     .tracking(-0.15)
                     .foregroundStyle(UNESColor.accent)

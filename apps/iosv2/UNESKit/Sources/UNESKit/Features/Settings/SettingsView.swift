@@ -16,7 +16,7 @@ struct SettingsView: View {
         }
         .toolbar {
             ToolbarItem(placement: .principal) {
-                Text("Configurações")
+                Text(.settingsTitle)
                     .font(.system(size: 16, weight: .semibold))
                     .tracking(-0.32)
                     .foregroundStyle(UNESColor.ink)
@@ -36,7 +36,7 @@ struct SettingsView: View {
 
                 VStack(spacing: 0) {
                     SettingsCredentialsHero(
-                        name: store.displayName ?? "Estudante",
+                        name: store.displayName ?? String.localized(.settingsDefaultName),
                         email: store.profile?.email,
                         credentials: store.credentials,
                         isRevealed: store.isPasswordRevealed,
@@ -48,7 +48,7 @@ struct SettingsView: View {
                     .padding(.bottom, 22)
 
                     VStack(spacing: 0) {
-                        sectionHeader("Aparência")
+                        sectionHeader(String.localized(.settingsAppearance))
                         SettingsAppearanceCard(theme: store.theme) {
                             store.send(.themeSelected($0))
                         }
@@ -57,7 +57,7 @@ struct SettingsView: View {
                     .padding(.bottom, 12)
 
                     VStack(spacing: 0) {
-                        sectionHeader("Notas", meta: "privacidade")
+                        sectionHeader(String.localized(.settingsGrades), meta: String.localized(.settingsGradesPrivacyMeta))
                         SettingsSpoilerSection(spoiler: store.settings.gradeSpoiler) {
                             store.send(.spoilerSelected($0))
                         }
@@ -67,8 +67,11 @@ struct SettingsView: View {
 
                     VStack(spacing: 0) {
                         sectionHeader(
-                            "Notificações",
-                            meta: "\(store.settings.activeNotificationCount)/\(NotificationToggle.allCases.count) ativas"
+                            String.localized(.settingsNotifications),
+                            meta: String.localized(.settingsNotificationsActiveCount(
+                                store.settings.activeNotificationCount,
+                                NotificationToggle.allCases.count
+                            ))
                         )
                         VStack(spacing: 12) {
                             ForEach(SettingsNotificationGroup.all) { group in
@@ -98,11 +101,11 @@ struct SettingsView: View {
 
     private var header: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text("Configurações")
+            Text(.settingsTitle)
                 .font(.system(size: 40, weight: .bold))
                 .tracking(-1.6)
                 .foregroundStyle(UNESColor.ink)
-            Text("Suas credenciais, privacidade e o que te interrompe durante o dia.")
+            Text(.settingsSubtitle)
                 .font(.system(size: 14, weight: .medium))
                 .tracking(-0.14)
                 .foregroundStyle(UNESColor.ink3)
@@ -131,7 +134,7 @@ struct SettingsView: View {
     private var footer: some View {
         VStack(spacing: 3) {
             Text(MeFormat.versionBuildLabel)
-            Text("sinc. e cadência no servidor · o cliente só escuta")
+            Text(.settingsFooterNote)
         }
         .font(.system(size: 11.5, weight: .medium))
         .foregroundStyle(UNESColor.ink4)

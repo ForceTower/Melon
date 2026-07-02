@@ -22,7 +22,7 @@ extension AppInfoClient: DependencyKey {
         #if DEBUG
         ("desenvolvimento", "Xcode")
         #else
-        ("estável", "App Store")
+        (String.localized(.dataChannelStable), "App Store")
         #endif
     }
 
@@ -36,7 +36,7 @@ extension AppInfoClient: DependencyKey {
            transaction.environment == .sandbox {
             return ("TestFlight", "TestFlight")
         }
-        return ("estável", "App Store")
+        return (String.localized(.dataChannelStable), "App Store")
         #endif
     }
 }

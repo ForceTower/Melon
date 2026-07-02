@@ -210,16 +210,16 @@ struct DisciplineDetailView: View {
             DisciplineStatCard(
                 icon: "clock",
                 tint: color,
-                label: "Carga",
+                label: .disciplinesDetailLoad,
                 value: "\(detail.hours)h",
-                sub: "carga horária"
+                sub: String.localized(.disciplinesDetailClassHours)
             )
             DisciplineStatCard(
                 icon: "flame",
                 tint: detail.absenceRisk == .ok ? UNESColor.ink3 : UNESColor.caution,
-                label: "Faltas",
+                label: .disciplinesAbsences,
                 value: "\(detail.missedHours)",
-                sub: "\(max(0, detail.allowedMissedHours - detail.missedHours)) disponíveis",
+                sub: String.localized(.disciplinesDetailAvailable(max(0, detail.allowedMissedHours - detail.missedHours))),
                 valueColor: absenceValueColor(detail.absenceRisk)
             )
         }
@@ -250,11 +250,11 @@ struct DisciplineDetailView: View {
                     .shadow(color: tone.opacity(0.33), radius: 6, y: 5)
 
                 VStack(alignment: .leading, spacing: 1) {
-                    Text("Final Countdown")
+                    Text(.disciplinesDetailFinalCountdownTitle)
                         .font(.system(size: 15, weight: .semibold))
                         .tracking(-0.15)
                         .foregroundStyle(UNESColor.ink)
-                    Text("simule as notas e veja quanto falta pra passar")
+                    Text(.disciplinesDetailFinalCountdownSubtitle)
                         .font(.system(size: 12.5, weight: .medium))
                         .foregroundStyle(UNESColor.ink3)
                 }
@@ -330,9 +330,9 @@ struct DisciplineGroupSegmented: View {
 
     var body: some View {
         HStack(spacing: 3) {
-            segment(kind: "Tudo", code: nil)
+            segment(kind: String.localized(.commonAll), code: nil)
             ForEach(groups) { group in
-                segment(kind: group.kind ?? group.code ?? "Turma", code: group.code)
+                segment(kind: group.kind ?? group.code ?? String.localized(.disciplinesDetailGroupFallback), code: group.code)
             }
         }
         .padding(3)

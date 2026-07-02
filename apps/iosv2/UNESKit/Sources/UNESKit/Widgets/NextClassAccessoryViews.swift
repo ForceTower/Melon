@@ -29,14 +29,14 @@ struct RectangularAccessoryView: View {
                     .lineLimit(1)
                     .minimumScaleFactor(0.8)
                     .widgetAccentable()
-                Text([occurrence.startTime, occurrence.room.map { "Sala \($0)" }].compactMap { $0 }.joined(separator: " · "))
+                Text([occurrence.startTime, occurrence.room.map { String.localized(.commonRoom($0)) }].compactMap { $0 }.joined(separator: " · "))
                     .font(.system(size: 12, weight: .medium))
                     .monospacedDigit()
                     .opacity(0.8)
             }
         case let .inClass(occurrence):
             VStack(alignment: .leading, spacing: 1) {
-                Text("Agora")
+                Text(.commonNow)
                     .textCase(.uppercase)
                     .font(.system(size: 11, weight: .semibold))
                     .opacity(0.9)
@@ -45,7 +45,7 @@ struct RectangularAccessoryView: View {
                     .lineLimit(1)
                     .minimumScaleFactor(0.8)
                     .widgetAccentable()
-                Text([occurrence.endTime.map { "até \($0)" }, occurrence.room].compactMap { $0 }.joined(separator: " · "))
+                Text([occurrence.endTime.map { String.localized(.widgetUntilTime($0)) }, occurrence.room].compactMap { $0 }.joined(separator: " · "))
                     .font(.system(size: 12, weight: .medium))
                     .monospacedDigit()
                     .opacity(0.8)
@@ -55,7 +55,7 @@ struct RectangularAccessoryView: View {
                 HStack(spacing: 4) {
                     Image(systemName: "checkmark")
                         .font(.system(size: 10, weight: .bold))
-                    Text("Tudo certo por hoje")
+                    Text(.widgetAllDoneToday)
                         .font(.system(size: 12, weight: .semibold))
                 }
                 .opacity(0.9)
@@ -70,7 +70,7 @@ struct RectangularAccessoryView: View {
                         .monospacedDigit()
                         .opacity(0.8)
                 } else {
-                    Text("Sem próximas aulas")
+                    Text(.widgetNoUpcomingClasses)
                         .font(.system(size: 14, weight: .semibold))
                         .lineLimit(1)
                 }
@@ -80,7 +80,7 @@ struct RectangularAccessoryView: View {
                 Text("UNES")
                     .font(.system(size: 15, weight: .bold))
                     .widgetAccentable()
-                Text("Toque para fazer login")
+                Text(.widgetTapToSignIn)
                     .font(.system(size: 12, weight: .medium))
                     .opacity(0.8)
             }
@@ -91,7 +91,7 @@ struct RectangularAccessoryView: View {
     static func untilShort(for next: ClassOccurrence, at date: Date, calendar: Calendar = .current) -> String {
         if let tomorrow = calendar.date(byAdding: .day, value: 1, to: date),
            calendar.isDate(next.start, inSameDayAs: tomorrow) {
-            return "amanhã"
+            return String.localized(.widgetTomorrow)
         }
         return HomeFormat.weekdayName(for: next.start).lowercased()
     }
@@ -122,7 +122,7 @@ struct CircularAccessoryView: View {
             ZStack {
                 ring(for: occurrence.start...occurrence.endOrEstimate, countsDown: false)
                 VStack(spacing: -1) {
-                    Text("fim")
+                    Text(.widgetEnd)
                         .font(.system(size: 9, weight: .semibold))
                         .opacity(0.85)
                     Text(occurrence.endTime ?? shortCode(occurrence.code))
@@ -188,15 +188,15 @@ struct InlineAccessoryView: View {
                 Text(clock)
             }
         case let .inClass(occurrence):
-            Text(["Em aula", occurrence.endTime.map { "até \($0)" }].compactMap { $0 }.joined(separator: " · "))
+            Text([String.localized(.widgetInClass), occurrence.endTime.map { String.localized(.widgetUntilTime($0)) }].compactMap { $0 }.joined(separator: " · "))
         case let .dayDone(_, next):
             if let next {
-                Text("Livre · \(RectangularAccessoryView.untilShort(for: next, at: entry.date)) \(next.startTime)")
+                Text(.widgetFreeUntil(RectangularAccessoryView.untilShort(for: next, at: entry.date), next.startTime))
             } else {
-                Text("Sem próximas aulas")
+                Text(.widgetNoUpcomingClasses)
             }
         case .signedOut:
-            Text("UNES · faça login")
+            Text(.widgetSignedOutInline)
         }
     }
 }

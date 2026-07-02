@@ -65,7 +65,7 @@ struct DisciplineSummaryCard: View {
 
             VStack(spacing: 5) {
                 GradeRing(score: discipline.partialAverage, color: color)
-                Text("média")
+                Text(.disciplinesAverage)
                     .textCase(.uppercase)
                     .font(.system(size: 10, weight: .semibold))
                     .tracking(0.4)
@@ -111,7 +111,7 @@ struct DisciplineSummaryCard: View {
     private var footer: some View {
         HStack(alignment: .bottom, spacing: 14) {
             VStack(alignment: .leading, spacing: 7) {
-                Text("Faltas")
+                Text(.disciplinesAbsences)
                     .textCase(.uppercase)
                     .font(.system(size: 10.5, weight: .semibold))
                     .tracking(0.4)
@@ -129,7 +129,7 @@ struct DisciplineSummaryCard: View {
                     HStack(spacing: 4) {
                         Image(systemName: "clock")
                             .font(.system(size: 10, weight: .semibold))
-                        Text("Próxima")
+                        Text(.disciplinesNext)
                             .textCase(.uppercase)
                             .font(.system(size: 10.5, weight: .semibold))
                             .tracking(0.4)
@@ -149,7 +149,7 @@ struct DisciplineSummaryCard: View {
                 }
             } else {
                 VStack(alignment: .trailing, spacing: 5) {
-                    Text("Avaliações")
+                    Text(.disciplinesEvaluations)
                         .textCase(.uppercase)
                         .font(.system(size: 10.5, weight: .semibold))
                         .tracking(0.4)
@@ -297,7 +297,7 @@ struct AbsenceBar: View {
 
     private var remainingLabel: String {
         let remaining = max(0, allowed - used)
-        return remaining == 1 ? "1 livre" : "\(remaining) livres"
+        return .localized(.disciplinesAbsencesFree(remaining))
     }
 }
 

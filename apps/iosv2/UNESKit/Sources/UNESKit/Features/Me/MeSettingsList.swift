@@ -63,19 +63,19 @@ struct MeSettingsList: View {
 extension MeSettingsRow {
     var label: String {
         switch self {
-        case .settings: "Configurações"
-        case .about: "Sobre o aplicativo"
-        case .feedback: "Erros & sugestões"
-        case .licenses: "Licenças open source"
+        case .settings: .localized(.meSettingsSettings)
+        case .about: .localized(.meSettingsAbout)
+        case .feedback: .localized(.meSettingsFeedback)
+        case .licenses: .localized(.meSettingsLicenses)
         }
     }
 
     var hint: String {
         switch self {
-        case .settings: "tema, notificações, dados"
+        case .settings: .localized(.meSettingsSettingsHint)
         case .about: MeFormat.versionHint
-        case .feedback: "fale com os mantenedores"
-        case .licenses: "pacotes open source"
+        case .feedback: .localized(.meSettingsFeedbackHint)
+        case .licenses: .localized(.meSettingsLicensesHint)
         }
     }
 

@@ -76,7 +76,7 @@ struct EnrollmentHeroCard: View {
                             .font(.system(size: 26, weight: .bold))
                             .tracking(-0.78)
                             .monospacedDigit()
-                        Text("dias")
+                        Text(.commonUnitDays)
                             .font(.system(size: 9.5, weight: .semibold))
                             .tracking(0.4)
                             .opacity(0.72)
@@ -99,12 +99,12 @@ struct EnrollmentHeroCard: View {
 
     private var boundsFooter: some View {
         HStack(spacing: 0) {
-            bound("Abertura", EnrollmentFormat.dayLabel(window.startDate))
+            bound(.localized(.enrollmentHeroOpensLabel), EnrollmentFormat.dayLabel(window.startDate))
             Rectangle()
                 .fill(.white.opacity(0.18))
                 .frame(width: 1)
                 .padding(.horizontal, 16)
-            bound("Encerramento", EnrollmentFormat.endLabel(window.endDate))
+            bound(.localized(.enrollmentHeroClosesLabel), EnrollmentFormat.endLabel(window.endDate))
         }
         .fixedSize(horizontal: false, vertical: true)
         .padding(.top, 14)
@@ -133,25 +133,25 @@ struct EnrollmentHeroCard: View {
 
     private var statusLabel: String {
         switch window.state {
-        case .open: "Matrícula aberta"
-        case .upcoming: "Abre em breve"
-        case .closed: "Proposta enviada"
+        case .open: .localized(.enrollmentHeroStatusOpen)
+        case .upcoming: .localized(.enrollmentHeroStatusUpcoming)
+        case .closed: .localized(.enrollmentProposalSent)
         }
     }
 
     private var headline: String {
         switch window.state {
-        case .open: "Aberta até \(EnrollmentFormat.dayLabel(window.endDate))"
-        case .upcoming: "Abre \(EnrollmentFormat.dayLabel(window.startDate))"
-        case .closed: "Em processamento"
+        case .open: .localized(.enrollmentHeroHeadlineOpen(EnrollmentFormat.dayLabel(window.endDate)))
+        case .upcoming: .localized(.enrollmentHeroHeadlineUpcoming(EnrollmentFormat.dayLabel(window.startDate)))
+        case .closed: .localized(.enrollmentHeroHeadlineClosed)
         }
     }
 
     private var lead: String {
         switch window.state {
-        case .open: "Salve e ajuste quantas vezes quiser antes de enviar."
-        case .upcoming: "Prepare suas escolhas com antecedência."
-        case .closed: "Aguardando confirmação das vagas por mensagem."
+        case .open: .localized(.enrollmentHeroLeadOpen)
+        case .upcoming: .localized(.enrollmentHeroLeadUpcoming)
+        case .closed: .localized(.enrollmentHeroLeadClosed)
         }
     }
 }
@@ -240,9 +240,9 @@ struct EnrollmentStatTile: View {
                 return window
             }(), now: .now)
             HStack(spacing: 12) {
-                EnrollmentStatTile(label: "disciplinas", value: 4, hint: "turmas")
-                EnrollmentStatTile(label: "conflitos", value: 1, hint: "resolver", tone: EnrollmentTone.danger)
-                EnrollmentStatTile(label: "em fila", value: 0, hint: "espera")
+                EnrollmentStatTile(label: .localized(.enrollmentStatDisciplines), value: 4, hint: .localized(.enrollmentStatClassesHintOther))
+                EnrollmentStatTile(label: .localized(.enrollmentStatConflicts), value: 1, hint: .localized(.enrollmentStatResolve), tone: EnrollmentTone.danger)
+                EnrollmentStatTile(label: .localized(.enrollmentStatQueue), value: 0, hint: .localized(.enrollmentStatWaitingHint))
             }
         }
         .padding(16)

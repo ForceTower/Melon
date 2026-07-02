@@ -8,7 +8,7 @@ struct HomeClassesCarousel: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            HomeSectionHeader(title: "Turmas", action: "Ver todas", onAction: onSeeAll)
+            HomeSectionHeader(title: .homeSectionClasses, action: .commonSeeAll, onAction: onSeeAll)
                 .padding(.horizontal, 18)
 
             ScrollView(.horizontal) {
@@ -52,7 +52,7 @@ struct HomeClassesCarousel: View {
 
                 Spacer(minLength: 8)
 
-                Text("Parcial")
+                Text(.homeCardPartial)
                     .textCase(.uppercase)
                     .font(.system(size: 11, weight: .semibold))
                     .tracking(0.3)

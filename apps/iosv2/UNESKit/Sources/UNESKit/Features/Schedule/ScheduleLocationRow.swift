@@ -28,14 +28,14 @@ struct ScheduleLocationRow: View {
         if cls.modulo == nil, cls.room == nil, cls.campus == nil {
             HStack(spacing: 6) {
                 icon("exclamationmark.circle")
-                Text("Local a definir")
+                Text(.scheduleLocationUnset)
                     .font(.system(size: 13, weight: .medium))
             }
             .foregroundStyle(ink3)
         } else if cls.isOnline {
             HStack(spacing: 6) {
                 icon("globe")
-                Text("Online")
+                Text(.scheduleLocationOnline)
                     .font(.system(size: 13, weight: .semibold))
             }
             .foregroundStyle(ink)

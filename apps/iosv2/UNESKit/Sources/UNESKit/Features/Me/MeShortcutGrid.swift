@@ -64,16 +64,16 @@ struct MeShortcutGrid: View {
 extension MeShortcut {
     var label: String {
         switch self {
-        case .enrollment: "Matrícula"
-        case .calendar: "Calendário"
-        case .countdown: "Final Countdown"
+        case .enrollment: .localized(.meShortcutEnrollment)
+        case .calendar: .localized(.meShortcutCalendar)
+        case .countdown: .localized(.meShortcutCountdown)
         }
     }
 
     var hint: String? {
         switch self {
-        case .enrollment: "montar proposta"
-        case .calendar: "datas acadêmicas"
+        case .enrollment: .localized(.meShortcutEnrollmentHint)
+        case .calendar: .localized(.meShortcutCalendarHint)
         case .countdown: nil
         }
     }

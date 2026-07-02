@@ -39,7 +39,7 @@ struct SettingsCredentialsHero: View {
         HStack {
             HStack(spacing: 7) {
                 LiveDot()
-                Text("Credenciais")
+                Text(.settingsCredentials)
                     .textCase(.uppercase)
                     .font(.system(size: 12, weight: .semibold))
                     .tracking(0.2)
@@ -48,7 +48,7 @@ struct SettingsCredentialsHero: View {
 
             Spacer()
 
-            Text(isRevealed ? "visível · oculta em 30s" : "criptografada · Face ID")
+            Text(isRevealed ? .settingsCredentialsRevealed : .settingsCredentialsEncrypted)
                 .font(.system(size: 12, weight: .medium))
                 .foregroundStyle(.white.opacity(0.55))
         }
@@ -105,7 +105,7 @@ struct SettingsCredentialsHero: View {
             HStack(spacing: 6) {
                 Image(systemName: isRevealed ? "eye.slash" : "eye")
                     .font(.system(size: 12, weight: .semibold))
-                Text(isRevealed ? "Ocultar" : "Ver")
+                Text(isRevealed ? .commonHide : .commonShow)
                     .font(.system(size: 12.5, weight: .semibold))
                     .tracking(-0.13)
             }
@@ -124,7 +124,7 @@ struct SettingsCredentialsHero: View {
     private var credentialsBox: some View {
         VStack(spacing: 0) {
             field(
-                label: "Usuário",
+                label: String.localized(.commonUsername),
                 value: credentials?.username ?? "—",
                 field: .username,
                 canCopy: credentials != nil
@@ -133,7 +133,7 @@ struct SettingsCredentialsHero: View {
                 .fill(.white.opacity(0.1))
                 .frame(height: 1)
             field(
-                label: "Senha",
+                label: String.localized(.commonPassword),
                 value: passwordDisplay,
                 field: .password,
                 canCopy: credentials != nil && isRevealed
@@ -178,7 +178,7 @@ struct SettingsCredentialsHero: View {
                     if copied == field {
                         Image(systemName: "checkmark")
                             .font(.system(size: 11, weight: .semibold))
-                        Text("copiado")
+                        Text(.settingsCopied)
                             .font(.system(size: 11.5, weight: .semibold))
                     } else {
                         Image(systemName: "doc.on.doc")

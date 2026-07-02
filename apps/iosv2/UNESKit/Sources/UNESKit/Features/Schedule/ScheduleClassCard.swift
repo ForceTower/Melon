@@ -137,7 +137,7 @@ struct ScheduleClassRow: View {
                 agoraPill
             }
             if isNext {
-                Text("PRÓXIMA")
+                Text(.scheduleClassRowNext)
                     .font(.system(size: 10, weight: .bold))
                     .tracking(0.3)
                     .foregroundStyle(.white)
@@ -160,7 +160,7 @@ struct ScheduleClassRow: View {
     private var agoraPill: some View {
         HStack(spacing: 5) {
             LiveDot(size: 5, color: .white)
-            Text("agora")
+            Text(.commonNow)
                 .textCase(.uppercase)
                 .font(.system(size: 10.5, weight: .bold))
                 .tracking(0.42)

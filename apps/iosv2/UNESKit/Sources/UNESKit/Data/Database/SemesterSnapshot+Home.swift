@@ -110,8 +110,11 @@ extension SemesterSnapshot {
         )
     }
 
-    // MARK: Coefficient (shared with the Me overview)
+    // MARK: Coefficient stand-in (shared with the Me overview)
 
+    /// Plain mean of the semester's posted grades. MirrorStore replaces this
+    /// with the cross-semester CR (`CoefficientHistory`) once any discipline
+    /// has a closed result, so it only shows before the first one does.
     var coefficientSummary: CoefficientSummary? {
         let spark = studentGrades
             .filter { $0.value != nil }
@@ -171,7 +174,7 @@ extension SemesterSnapshot {
             .compactMap { $0?.trimmingCharacters(in: .whitespaces) }
             .first { !$0.isEmpty }
         return ExamSummary(
-            label: label ?? "Avaliação",
+            label: label ?? String.localized(.commonAssessment),
             disciplineName: index.discipline(forClass: classId)?.name ?? "",
             date: date,
             time: time.map(minutesLabel),

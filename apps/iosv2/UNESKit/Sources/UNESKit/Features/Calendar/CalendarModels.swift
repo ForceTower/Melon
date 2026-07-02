@@ -74,9 +74,9 @@ enum CalendarCategory: CaseIterable, Equatable, Sendable {
 
     var label: String {
         switch self {
-        case .deadline: "Prazo"
-        case .exam: "Avaliação"
-        case .holiday: "Feriado"
+        case .deadline: .localized(.calendarCategoryDeadline)
+        case .exam: .localized(.calendarCategoryExam)
+        case .holiday: .localized(.calendarCategoryHoliday)
         }
     }
 
@@ -143,21 +143,48 @@ enum CalendarMath {
         let toEnd = daysBetween(today, event.endOrStart, calendar: calendar)
         switch (toStart, toEnd) {
         case (0, _):
-            return CalendarCountdown(phrase: "hoje", number: "hoje", tail: "")
+            return CalendarCountdown(
+                phrase: .localized(.calendarCountdownToday),
+                number: .localized(.calendarCountdownToday),
+                tail: ""
+            )
         case (1, _):
-            return CalendarCountdown(phrase: "amanhã", number: "amanhã", tail: "")
+            return CalendarCountdown(
+                phrase: .localized(.calendarCountdownTomorrow),
+                number: .localized(.calendarCountdownTomorrow),
+                tail: ""
+            )
         case (let s, _) where s > 1:
-            return CalendarCountdown(phrase: "em \(s) dias", number: "\(s)", tail: "dias")
+            return CalendarCountdown(
+                phrase: .localized(.calendarCountdownInDays(s)),
+                number: "\(s)",
+                tail: .localized(.calendarCountdownDaysUnit)
+            )
         case (_, 0):
-            return CalendarCountdown(phrase: "termina hoje", number: "hoje", tail: "último dia")
+            return CalendarCountdown(
+                phrase: .localized(.calendarCountdownEndsToday),
+                number: .localized(.calendarCountdownToday),
+                tail: .localized(.calendarCountdownLastDay)
+            )
         case (_, 1):
-            return CalendarCountdown(phrase: "termina amanhã", number: "1", tail: "dia restante")
+            return CalendarCountdown(
+                phrase: .localized(.calendarCountdownEndsTomorrow),
+                number: .localized(.calendarCountdownTomorrow),
+                tail: .localized(.calendarCountdownDayLeft)
+            )
         case (_, let e) where e > 1:
-            return CalendarCountdown(phrase: "termina em \(e) dias", number: "\(e)", tail: "dias restantes")
+            return CalendarCountdown(
+                phrase: .localized(.calendarCountdownEndsInDays(e)),
+                number: "\(e)",
+                tail: .localized(.calendarCountdownDaysLeft)
+            )
         default:
             let since = -toStart
-            let days = since == 1 ? "1 dia" : "\(since) dias"
-            return CalendarCountdown(phrase: "há \(days)", number: "\(since)", tail: since == 1 ? "dia atrás" : "dias atrás")
+            return CalendarCountdown(
+                phrase: .localized(.calendarCountdownDaysAgo(since)),
+                number: "\(since)",
+                tail: .localized(since == 1 ? .calendarCountdownAgoUnitOne : .calendarCountdownAgoUnitOther)
+            )
         }
     }
 
@@ -190,10 +217,10 @@ enum CalendarCategoryFilter: String, CaseIterable, Equatable, Sendable {
 
     var label: String {
         switch self {
-        case .all: "Tudo"
-        case .deadline: "Prazos"
-        case .exam: "Provas"
-        case .holiday: "Feriados"
+        case .all: .localized(.calendarFilterAll)
+        case .deadline: .localized(.calendarFilterDeadlines)
+        case .exam: .localized(.calendarFilterExams)
+        case .holiday: .localized(.calendarFilterHolidays)
         }
     }
 
@@ -217,11 +244,11 @@ enum CalendarScopeFilter: String, CaseIterable, Equatable, Sendable {
 
     var label: String {
         switch self {
-        case .all: "Todos"
-        case .general: "Geral"
-        case .faculty: "Universidade"
-        case .course: "Curso"
-        case .classScope: "Turma"
+        case .all: .localized(.calendarScopeAll)
+        case .general: .localized(.calendarScopeGeneral)
+        case .faculty: .localized(.calendarScopeFaculty)
+        case .course: .localized(.calendarScopeCourse)
+        case .classScope: .localized(.calendarScopeClassScope)
         }
     }
 
@@ -244,11 +271,11 @@ extension AcademicEvent.Scope {
     /// "Âmbito" display label.
     var label: String {
         switch self {
-        case .general: "Geral"
-        case .faculty: "Universidade"
-        case .course: "Curso"
-        case .classScope: "Turma"
-        case .campus: "Campus"
+        case .general: .localized(.calendarScopeGeneral)
+        case .faculty: .localized(.calendarScopeFaculty)
+        case .course: .localized(.calendarScopeCourse)
+        case .classScope: .localized(.calendarScopeClassScope)
+        case .campus: .localized(.calendarScopeCampus)
         case .unknown: "—"
         }
     }

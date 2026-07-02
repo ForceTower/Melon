@@ -41,7 +41,7 @@ private final class PasskeyAuthenticator: NSObject {
     func assert(challenge: PasskeyChallenge) async throws -> PasskeyAssertion {
         guard let challengeData = Data(base64URLEncoded: challenge.challenge) else {
             log.warn("assert failed: invalid challenge encoding")
-            throw AuthError.server("Desafio inválido recebido do servidor.")
+            throw AuthError.server(String.localized(.dataErrorInvalidChallenge))
         }
 
         let provider = ASAuthorizationPlatformPublicKeyCredentialProvider(

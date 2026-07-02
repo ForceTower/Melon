@@ -19,7 +19,7 @@ struct DisciplinesView: View {
                         .frame(maxHeight: .infinity)
                 }
             }
-            .navigationTitle("Turmas")
+            .navigationTitle(Text(.disciplinesTitle))
             .alert($store.scope(state: \.alert, action: \.alert))
         } destination: { store in
             switch store.case {
@@ -59,7 +59,7 @@ struct DisciplinesView: View {
                     }
 
                     if !overview.past.isEmpty || !overview.pending.isEmpty {
-                        DividerLabel(text: "Histórico")
+                        DividerLabel(text: .disciplinesHistory)
                             .fadeUp(delay: 0.5)
                             .padding(EdgeInsets(top: 26, leading: 4, bottom: 12, trailing: 4))
 
@@ -83,7 +83,7 @@ struct DisciplinesView: View {
 
     /// The accent semester line under the system large title.
     private func eyebrow(code: String) -> some View {
-        Text("Semestre \(DisciplinesFormat.semesterLabel(code))")
+        Text(.disciplinesSemesterEyebrow(DisciplinesFormat.semesterLabel(code)))
             .textCase(.uppercase)
             .font(.system(size: 13, weight: .semibold))
             .tracking(0.2)
@@ -115,11 +115,11 @@ struct DisciplinesView: View {
 
     private var emptyState: some View {
         VStack(spacing: 8) {
-            Text("Nenhuma turma por aqui")
+            Text(.disciplinesEmptyTitle)
                 .font(.system(size: 17, weight: .semibold))
                 .tracking(-0.34)
                 .foregroundStyle(UNESColor.ink)
-            Text("Suas disciplinas aparecem assim que a primeira sincronização terminar.")
+            Text(.disciplinesEmptyMessage)
                 .font(.system(size: 13))
                 .foregroundStyle(UNESColor.ink3)
                 .multilineTextAlignment(.center)
@@ -150,7 +150,7 @@ struct DisciplinesView: View {
 
     private func errorState(_ message: String) -> some View {
         VStack(spacing: 8) {
-            Text("Não deu para carregar suas turmas")
+            Text(.disciplinesErrorTitle)
                 .font(.system(size: 17, weight: .semibold))
                 .tracking(-0.34)
                 .foregroundStyle(UNESColor.ink)
@@ -158,8 +158,10 @@ struct DisciplinesView: View {
                 .font(.system(size: 13))
                 .foregroundStyle(UNESColor.ink3)
                 .multilineTextAlignment(.center)
-            Button("Tentar novamente") {
+            Button {
                 store.send(.refreshPulled)
+            } label: {
+                Text(.commonTryAgain)
             }
             .font(.system(size: 15, weight: .semibold))
             .foregroundStyle(UNESColor.accent)
@@ -172,7 +174,7 @@ struct DisciplinesView: View {
 
 /// "── HISTÓRICO ──" — hairlines flanking an uppercase label.
 struct DividerLabel: View {
-    var text: String
+    var text: LocalizedStringResource
 
     var body: some View {
         HStack(spacing: 12) {

@@ -82,7 +82,7 @@ struct SettingsSpoilerSection: View {
                         .font(.system(size: 12, weight: .bold))
                         .tracking(-0.12)
                     Spacer()
-                    Text("agora")
+                    Text(.commonNow)
                         .font(.system(size: 11, weight: .medium))
                         .foregroundStyle(.white.opacity(0.6))
                 }
@@ -104,7 +104,7 @@ struct SettingsSpoilerSection: View {
     private static func lockScreenDate(_ date: Date) -> String {
         date.formatted(
             .dateTime.weekday(.wide).day().month(.wide)
-                .locale(Locale(identifier: "pt_BR"))
+                .locale(Locale.autoupdatingCurrent)
         )
     }
 
@@ -120,11 +120,11 @@ struct SettingsSpoilerSection: View {
                     .background(UNESColor.coral, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
 
                 VStack(alignment: .leading, spacing: 1) {
-                    Text("Privacidade das notas")
+                    Text(.settingsSpoilerTitle)
                         .font(.system(size: 15, weight: .semibold))
                         .tracking(-0.15)
                         .foregroundStyle(UNESColor.ink)
-                    Text("o que aparece nas notificações")
+                    Text(.settingsSpoilerSubtitle)
                         .font(.system(size: 12, weight: .medium))
                         .foregroundStyle(UNESColor.ink4)
                 }
@@ -151,18 +151,18 @@ struct SettingsSpoilerSection: View {
 extension GradeSpoiler {
     var label: String {
         switch self {
-        case .value: "Valor"
-        case .summary: "Resumo"
-        case .discreet: "Discreto"
+        case .value: String.localized(.settingsSpoilerValue)
+        case .summary: String.localized(.settingsSpoilerSummary)
+        case .discreet: String.localized(.settingsSpoilerDiscreet)
         }
     }
 
     /// What the mock push shows for a fresh Cálculo Diferencial B2 grade.
     var lockScreenPreview: String {
         switch self {
-        case .value: "Cálculo Diferencial B2 · 8,5"
-        case .summary: "nova nota em Cálc. Diferencial B2"
-        case .discreet: "uma nota foi publicada"
+        case .value: String.localized(.settingsSpoilerPreviewValue)
+        case .summary: String.localized(.settingsSpoilerPreviewSummary)
+        case .discreet: String.localized(.settingsSpoilerPreviewDiscreet)
         }
     }
 }

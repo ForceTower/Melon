@@ -30,7 +30,7 @@ struct LicensesFeature {
                 guard !query.isEmpty else { return true }
                 return package.name.localizedStandardContains(query)
                     || package.author.localizedStandardContains(query)
-                    || package.category.localizedStandardContains(query)
+                    || String.localized(package.category).localizedStandardContains(query)
             }
         }
     }

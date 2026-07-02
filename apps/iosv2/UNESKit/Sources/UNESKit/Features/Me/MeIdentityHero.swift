@@ -103,16 +103,16 @@ struct MeIdentityHero: View {
 
     private var statsRow: some View {
         HStack(alignment: .top, spacing: 4) {
-            stat(label: "CR atual", value: formatGrade(coefficient?.value), delta: delta)
-            stat(label: "Frequência", value: attendancePercent.map { "\($0)" } ?? "—",
+            stat(label: .meStatScore, value: formatGrade(coefficient?.value), delta: delta)
+            stat(label: .meStatAttendance, value: attendancePercent.map { "\($0)" } ?? "—",
                  sub: attendancePercent != nil ? "%" : nil)
-            stat(label: "Semestre", value: progress.map { "\($0.week)" } ?? "—",
-                 sub: progress.map { "/ \($0.totalWeeks) sem" })
+            stat(label: .meStatSemester, value: progress.map { "\($0.week)" } ?? "—",
+                 sub: progress.map { String.localized(.meStatWeeksShort($0.totalWeeks)) })
         }
     }
 
     private func stat(
-        label: String,
+        label: LocalizedStringResource,
         value: String,
         sub: String? = nil,
         delta: (text: String, rising: Bool)? = nil

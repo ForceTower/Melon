@@ -59,7 +59,7 @@ struct FCVerdictHero: View {
 
             Spacer()
 
-            Text(weighted ? "ponderado" : "média simples")
+            Text(weighted ? .finalCountdownHeroWeightedBadge : .finalCountdownHeroSimpleBadge)
                 .font(.system(size: 11.5, weight: .semibold))
                 .foregroundStyle(.white.opacity(0.55))
                 .padding(.horizontal, 10)
@@ -149,11 +149,11 @@ struct FCVerdictHero: View {
             .frame(height: 6)
 
             HStack {
-                Text("fácil · 0")
+                Text(.finalCountdownHeroEasyMark)
                 Spacer()
-                Text("cruel · 5")
+                Text(.finalCountdownHeroCruelMark)
                 Spacer()
-                Text("brutal · 10")
+                Text(.finalCountdownHeroBrutalMark)
             }
             .textCase(.uppercase)
             .font(.system(size: 10, weight: .semibold))
@@ -213,7 +213,7 @@ struct FCVerdictRing: View {
                     .tracking(-1.2)
                     .monospacedDigit()
                     .foregroundStyle(.white)
-                Text("MÉDIA")
+                Text(.finalCountdownHeroAverageLabel)
                     .font(.system(size: 9.5, weight: .semibold))
                     .tracking(0.4)
                     .foregroundStyle(.white.opacity(0.62))

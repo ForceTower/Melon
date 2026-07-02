@@ -27,7 +27,7 @@ struct CalendarMonthGridSection: View {
                 .padding(.bottom, 16)
 
             HStack(alignment: .lastTextBaseline, spacing: 8) {
-                Text(isTodaySelected ? "Hoje" : CalendarFormat.dayTitle(selectedDay))
+                Text(isTodaySelected ? String.localized(.commonToday) : CalendarFormat.dayTitle(selectedDay))
                     .font(.system(size: 19, weight: .bold))
                     .tracking(-0.38)
                     .foregroundStyle(UNESColor.ink)
@@ -63,7 +63,7 @@ struct CalendarMonthGridSection: View {
     }
 
     private var emptyDayCard: some View {
-        Text("Sem eventos neste dia.")
+        Text(.calendarGridEmptyDay)
             .font(.system(size: 13, weight: .medium))
             .foregroundStyle(UNESColor.ink4)
             .frame(maxWidth: .infinity)
@@ -89,7 +89,7 @@ private struct CalendarMonthView: UIViewRepresentable {
     func makeUIView(context: Context) -> UICalendarView {
         let view = UICalendarView()
         view.calendar = Calendar.current
-        view.locale = Locale(identifier: "pt_BR")
+        view.locale = Locale.autoupdatingCurrent
         view.tintColor = UIColor(UNESColor.accent)
         view.backgroundColor = .clear
         view.delegate = context.coordinator

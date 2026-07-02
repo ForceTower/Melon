@@ -17,7 +17,7 @@ struct MessagesDigestHero: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text(unreadCount == 0 ? "Caixa de entrada" : "Não lidas")
+            Text(unreadCount == 0 ? String.localized(.messagesDigestInbox) : String.localized(.messagesFilterUnread))
                 .textCase(.uppercase)
                 .font(.system(size: 12, weight: .semibold))
                 .tracking(0.4)
@@ -32,7 +32,7 @@ struct MessagesDigestHero: View {
                         .tracking(-0.78)
                         .monospacedDigit()
                         .foregroundStyle(UNESColor.ink)
-                    Text("no total")
+                    Text(.messagesDigestTotal)
                         .font(.system(size: 11, weight: .medium))
                         .foregroundStyle(UNESColor.ink3)
                 }
@@ -51,7 +51,7 @@ struct MessagesDigestHero: View {
                         Image(systemName: "checkmark")
                             .font(.system(size: 13, weight: .semibold))
                             .foregroundStyle(UNESColor.accent)
-                        Text("Marcar todas como lidas")
+                        Text(.messagesDigestMarkAllRead)
                             .font(.system(size: 14, weight: .semibold))
                             .tracking(-0.14)
                             .foregroundStyle(UNESColor.ink)
@@ -87,7 +87,7 @@ struct MessagesDigestHero: View {
                             .font(.system(size: 18, weight: .semibold))
                             .foregroundStyle(UNESColor.tealReadable)
                     }
-                Text("Tudo em dia")
+                Text(.messagesDigestAllCaughtUp)
                     .font(.system(size: 24, weight: .bold))
                     .tracking(-0.72)
                     .foregroundStyle(UNESColor.ink)
@@ -99,7 +99,11 @@ struct MessagesDigestHero: View {
                     .tracking(-2.34)
                     .monospacedDigit()
                     .foregroundStyle(UNESColor.ink)
-                Text(unreadCount == 1 ? "mensagem nova" : "mensagens novas")
+                Text(
+                    unreadCount == 1
+                        ? String.localized(.messagesDigestNewMessage)
+                        : String.localized(.messagesDigestNewMessages)
+                )
                     .font(.system(size: 14, weight: .medium))
                     .foregroundStyle(UNESColor.ink3)
             }

@@ -23,7 +23,7 @@ struct LoginView: View {
                         .padding(.top, 10)
                         .fadeUp(delay: 0.12, duration: 0.6)
 
-                    Text("As mesmas credenciais do SAGRES.")
+                    Text(.onboardingLoginSubtitle)
                         .font(.system(size: 15.5))
                         .foregroundStyle(UNESColor.ink3)
                         .padding(.top, 8)
@@ -41,8 +41,10 @@ struct LoginView: View {
                             .transition(.opacity.combined(with: .move(edge: .top)))
                     }
 
-                    Button("Esqueci minha senha") {
+                    Button {
                         store.send(.forgotPasswordTapped)
+                    } label: {
+                        Text(.onboardingLoginForgotPassword)
                     }
                     .font(.system(size: 15, weight: .semibold))
                     .tint(UNESColor.accent)
@@ -84,8 +86,8 @@ struct LoginView: View {
 
     private var title: some View {
         VStack(alignment: .leading, spacing: -6) {
-            titleLine("Entre com seu", color: UNESColor.ink)
-            titleLine("usuário.", color: UNESColor.accent)
+            titleLine(String.localized(.onboardingLoginTitleLine1), color: UNESColor.ink)
+            titleLine(String.localized(.onboardingLoginTitleLine2), color: UNESColor.accent)
         }
     }
 
@@ -102,10 +104,10 @@ struct LoginView: View {
         VStack(spacing: 0) {
             fieldRow(
                 icon: "person",
-                label: "Usuário",
+                label: String.localized(.commonUsername),
                 isFocused: focus == .username
             ) {
-                TextField("seu.usuario", text: $store.username)
+                TextField("", text: $store.username, prompt: Text(.onboardingLoginUsernamePlaceholder))
                     .textContentType(.username)
                     .noAutocapitalization()
                     .autocorrectionDisabled()
@@ -120,7 +122,7 @@ struct LoginView: View {
 
             fieldRow(
                 icon: "lock",
-                label: "Senha",
+                label: String.localized(.commonPassword),
                 isFocused: focus == .password
             ) {
                 Group {
@@ -203,7 +205,7 @@ struct LoginView: View {
                         speed: 0.7
                     )
                 } else {
-                    UNESButtonLabel(text: "Entrar")
+                    UNESButtonLabel(text: .commonSignIn)
                 }
             }
             .buttonStyle(.unesDark)
@@ -220,7 +222,7 @@ struct LoginView: View {
                 HStack(spacing: 9) {
                     Image(systemName: "person.badge.key")
                         .font(.system(size: 17, weight: .medium))
-                    Text("Entrar com passkey").tracking(-0.17)
+                    Text(.onboardingLoginPasskey).tracking(-0.17)
                 }
             }
             .buttonStyle(.unesNeutral)
@@ -240,7 +242,7 @@ struct LoginView: View {
     private var divider: some View {
         HStack(spacing: 12) {
             UNESColor.line.frame(height: 1)
-            Text("ou")
+            Text(.commonOr)
                 .textCase(.uppercase)
                 .font(.system(size: 11, weight: .semibold))
                 .tracking(1.1)
@@ -251,11 +253,11 @@ struct LoginView: View {
 
     private var terms: some View {
         (
-            Text("Ao continuar, você concorda com nossos ")
-                + Text("Termos").fontWeight(.medium).foregroundStyle(UNESColor.ink2)
-                + Text(" e ")
-                + Text("Privacidade").fontWeight(.medium).foregroundStyle(UNESColor.ink2)
-                + Text(".")
+            Text(.onboardingLoginTermsPrefix)
+                + Text(.onboardingLoginTermsLink).fontWeight(.medium).foregroundStyle(UNESColor.ink2)
+                + Text(.onboardingLoginTermsConnector)
+                + Text(.onboardingLoginPrivacyLink).fontWeight(.medium).foregroundStyle(UNESColor.ink2)
+                + Text(verbatim: ".")
         )
         .font(.system(size: 12.5))
         .foregroundStyle(UNESColor.ink4)

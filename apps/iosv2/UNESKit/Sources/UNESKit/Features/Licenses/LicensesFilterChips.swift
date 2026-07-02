@@ -25,7 +25,7 @@ struct LicensesFilterChips: View {
         return Button {
             onChange(family)
         } label: {
-            Text(family?.rawValue ?? "Todos")
+            Text(family?.rawValue ?? String.localized(.commonAll))
                 .font(.system(size: 13, weight: .semibold))
                 .tracking(-0.13)
                 .foregroundStyle(on ? activeLabel(for: family) : UNESColor.ink2)

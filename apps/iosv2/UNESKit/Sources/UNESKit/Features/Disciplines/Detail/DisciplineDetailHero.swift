@@ -73,7 +73,7 @@ struct DisciplineDetailHero: View {
     private var averageRow: some View {
         HStack(alignment: .bottom, spacing: 16) {
             VStack(alignment: .leading, spacing: 3) {
-                Text(selectedGroup.map { "Média parcial · \($0)" } ?? "Média parcial")
+                (Text(.disciplinesPartialAverage) + Text(verbatim: selectedGroup.map { " · \($0)" } ?? ""))
                     .textCase(.uppercase)
                     .font(.system(size: 12, weight: .semibold))
                     .tracking(0.5)
@@ -86,7 +86,7 @@ struct DisciplineDetailHero: View {
                         .monospacedDigit()
                         .foregroundStyle(.white)
 
-                    Text("\(releasedCount)/\(grades.count) lançadas")
+                    Text(.disciplinesDetailReleasedTally(releasedCount, grades.count))
                         .font(.system(size: 14, weight: .semibold))
                         .monospacedDigit()
                         .foregroundStyle(.white.opacity(0.6))
@@ -117,7 +117,6 @@ struct DisciplineDetailHero: View {
     /// value rounds *up*; unreachable targets (>10) render as "—".
     private func neededRow(_ needed: Double, pendingCount: Int) -> some View {
         let reachable = needed <= 10
-        let plural = pendingCount > 1
         return HStack(alignment: .center, spacing: 9) {
             Image(systemName: reachable ? "flame" : "exclamationmark.triangle")
                 .font(.system(size: 14, weight: .medium))
@@ -128,13 +127,13 @@ struct DisciplineDetailHero: View {
                 )
 
             (
-                Text("Precisa de ")
+                Text(.disciplinesDetailNeedsPrefix)
                     + Text(reachable ? DisciplinesFormat.neededGrade(needed) : "—")
                     .fontWeight(.bold)
                     .foregroundStyle(reachable ? .white : UNESColor.dangerSoftOnDark)
-                    + Text(" na\(plural ? "s" : "") \(pendingCount) restante\(plural ? "s" : "") para fechar em ")
-                    + Text("7,0").fontWeight(.bold)
-                    + Text(".")
+                    + Text(.disciplinesDetailNeedsMiddle(pendingCount))
+                    + Text(formatGrade(7)).fontWeight(.bold)
+                    + Text(verbatim: ".")
             )
             .font(.system(size: 13))
             .lineSpacing(2)

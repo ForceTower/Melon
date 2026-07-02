@@ -73,9 +73,10 @@ struct HomeHeroCard: View {
     }
 
     private func eyebrowLabel(now: Date) -> String {
-        guard inProgress, let endsAt = hero.endsAt else { return "Próxima aula" }
-        guard let left = HomeFormat.countdown(until: endsAt, now: now) else { return "Agora" }
-        return "Agora · termina em \(left.big)\(left.unit.map { " \($0)" } ?? "")"
+        guard inProgress, let endsAt = hero.endsAt else { return .localized(.homeHeroNextClass) }
+        guard let left = HomeFormat.countdown(until: endsAt, now: now) else { return .localized(.commonNow) }
+        let remaining = "\(left.big)\(left.unit.map { " \($0)" } ?? "")"
+        return .localized(.homeHeroNowEndsIn(remaining))
     }
 
     /// The live class bar: elapsed fill with the started/ends labels under it.
@@ -93,10 +94,10 @@ struct HomeHeroCard: View {
             }
             .frame(height: 6)
             HStack {
-                Text("\(hero.startTime) · iniciada")
+                Text(.homeHeroStarted(hero.startTime))
                 Spacer()
                 if let endTime = hero.endTime {
-                    Text("\(endTime) · fim")
+                    Text(.homeHeroEnded(endTime))
                 }
             }
             .font(.system(size: 12, weight: .medium))
@@ -133,7 +134,7 @@ struct HomeHeroCard: View {
     private func countdown(now: Date) -> some View {
         VStack(alignment: .trailing, spacing: 3) {
             if let countdown = HomeFormat.countdown(until: hero.startsAt, now: now) {
-                Text("Começa em")
+                Text(.homeHeroStartsIn)
                     .font(.system(size: 11, weight: .semibold))
                     .tracking(0.4)
                     .opacity(0.6)
@@ -166,7 +167,7 @@ struct HomeHeroCard: View {
     private var footer: some View {
         HStack(spacing: 14) {
             if let room = hero.room {
-                meta(icon: "mappin.and.ellipse", label: "Sala \(room)")
+                meta(icon: "mappin.and.ellipse", label: .localized(.commonRoom(room)))
             }
             if hero.room != nil && teacherLabel != nil {
                 Rectangle()

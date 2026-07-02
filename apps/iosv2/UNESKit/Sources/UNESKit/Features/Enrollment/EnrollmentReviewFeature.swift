@@ -95,9 +95,9 @@ struct EnrollmentReviewFeature {
             case let .submitFailed(message):
                 state.isSubmitting = false
                 state.alert = AlertState {
-                    TextState("Não deu para enviar a proposta")
+                    TextState(verbatim: String.localized(.enrollmentReviewSubmitFailTitle))
                 } message: {
-                    TextState(message)
+                    TextState(verbatim: message)
                 }
                 return .none
 

@@ -38,7 +38,7 @@ struct EnrollmentSuccessView: View {
                 .popIn(delay: 0.05, duration: 0.5, from: 0.7, offsetY: 10, overshoot: 1.3)
                 .padding(.bottom, 26)
 
-            Text("Matrícula · \(store.session.window?.semester ?? "")")
+            Text(verbatim: "\(String.localized(.enrollmentTitle)) · \(store.session.window?.semester ?? "")")
                 .textCase(.uppercase)
                 .font(.system(size: 11, weight: .semibold))
                 .tracking(0.66)
@@ -46,7 +46,7 @@ struct EnrollmentSuccessView: View {
                 .fadeUp(delay: 0.2)
                 .padding(.bottom, 12)
 
-            Text("Proposta enviada")
+            Text(.enrollmentProposalSent)
                 .font(.system(size: 36, weight: .bold))
                 .tracking(-1.26)
                 .foregroundStyle(UNESColor.paper)
@@ -61,8 +61,10 @@ struct EnrollmentSuccessView: View {
                 .fadeUp(delay: 0.38)
                 .padding(.bottom, 30)
 
-            Button("Concluir") {
+            Button {
                 store.send(.doneTapped)
+            } label: {
+                Text(.commonDone)
             }
             .buttonStyle(.unesLight)
             .frame(maxWidth: 320)
@@ -90,11 +92,11 @@ struct EnrollmentSuccessView: View {
         var count = AttributedString(DisciplinesFormat.disciplineCountLabel(store.session.picks.count))
         count.font = .system(size: 15, weight: .bold)
 
-        var text = AttributedString("Sua matrícula de ")
+        var text = AttributedString(String.localized(.enrollmentSuccessMessagePrefix))
         text += hours
-        text += AttributedString(" em ")
+        text += AttributedString(String.localized(.enrollmentSuccessMessageMiddle))
         text += count
-        text += AttributedString(" foi registrada. A confirmação das vagas chega por mensagem.")
+        text += AttributedString(String.localized(.enrollmentSuccessMessageSuffix))
 
         return Text(text)
             .font(.system(size: 15, weight: .medium))
@@ -106,9 +108,9 @@ struct EnrollmentSuccessView: View {
 
     private var stats: some View {
         HStack(spacing: 10) {
-            stat(store.session.picks.count, "disciplinas")
-            stat(store.session.waitlistedCount, "em fila")
-            stat(store.allowsOtherCount, "aceitam troca")
+            stat(store.session.picks.count, .localized(.enrollmentStatDisciplines))
+            stat(store.session.waitlistedCount, .localized(.enrollmentStatQueue))
+            stat(store.allowsOtherCount, .localized(.enrollmentSuccessAcceptSwap))
         }
         .frame(maxWidth: 320)
     }

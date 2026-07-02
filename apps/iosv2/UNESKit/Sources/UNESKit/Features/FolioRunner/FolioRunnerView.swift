@@ -66,7 +66,7 @@ struct FolioRunnerView: View {
                 Spacer()
                 VStack(alignment: .trailing, spacing: 2) {
                     if engine.bestScore > 0 {
-                        Text("HI \(scoreString(engine.bestScore))")
+                        Text(.folioHudHighScore(scoreString(engine.bestScore)))
                             .font(.system(size: 11, weight: .medium, design: .monospaced))
                             .foregroundStyle(FolioSprite.ink.opacity(0.4))
                     }
@@ -83,11 +83,11 @@ struct FolioRunnerView: View {
 
     private var readyOverlay: some View {
         VStack(spacing: 10) {
-            Text("Folio")
+            Text(.folioMascotName)
                 .font(.system(size: 38, weight: .bold))
                 .tracking(-0.5)
                 .foregroundStyle(FolioSprite.ink)
-            Text("toque para pular · arraste pra baixo para abaixar")
+            Text(.folioReadyInstructions)
                 .font(.system(size: 12))
                 .tracking(0.2)
                 .foregroundStyle(FolioSprite.ink.opacity(0.55))
@@ -101,14 +101,14 @@ struct FolioRunnerView: View {
 
     private var gameOverOverlay: some View {
         VStack(spacing: 6) {
-            Text("acabou")
+            Text(.folioGameOverTitle)
                 .font(.system(size: 34, weight: .bold))
                 .tracking(-0.4)
                 .foregroundStyle(FolioSprite.ink)
             Text(scoreString(engine.score))
                 .font(.system(size: 22, weight: .medium, design: .monospaced))
                 .foregroundStyle(FolioSprite.ink)
-            Text("toque para tentar de novo")
+            Text(.folioGameOverRetry)
                 .font(.system(size: 12))
                 .tracking(0.2)
                 .foregroundStyle(FolioSprite.ink.opacity(0.55))

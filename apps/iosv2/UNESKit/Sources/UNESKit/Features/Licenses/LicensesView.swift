@@ -16,7 +16,7 @@ struct LicensesView: View {
         }
         .toolbar {
             ToolbarItem(placement: .principal) {
-                Text("Licenças")
+                Text(.licensesTitle)
                     .font(.system(size: 16, weight: .semibold))
                     .tracking(-0.32)
                     .foregroundStyle(UNESColor.ink)
@@ -39,8 +39,8 @@ struct LicensesView: View {
                         .padding(.bottom, 22)
 
                     VStack(spacing: 0) {
-                        sectionHeader("Dependências")
-                        SearchField(placeholder: "Buscar pacote ou autor", query: store.query) {
+                        sectionHeader(.licensesDependenciesTitle)
+                        SearchField(placeholder: .licensesSearch, query: store.query) {
                             store.send(.queryChanged($0))
                         }
                         .padding(.bottom, 11)
@@ -75,7 +75,7 @@ struct LicensesView: View {
         }
     }
 
-    private func sectionHeader(_ title: String) -> some View {
+    private func sectionHeader(_ title: LocalizedStringResource) -> some View {
         Text(title)
             .font(.system(size: 22, weight: .bold))
             .tracking(-0.66)
@@ -86,11 +86,11 @@ struct LicensesView: View {
 
     private var header: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text("Licenças")
+            Text(.licensesTitle)
                 .font(.system(size: 40, weight: .bold))
                 .tracking(-1.6)
                 .foregroundStyle(UNESColor.ink)
-            Text("UNES é construído sobre o trabalho de pessoas que compartilham seu código abertamente. Aqui está quem.")
+            Text(.licensesSubtitle)
                 .font(.system(size: 14, weight: .medium))
                 .tracking(-0.14)
                 .foregroundStyle(UNESColor.ink3)
@@ -123,11 +123,11 @@ struct LicensesView: View {
 
     private var emptyState: some View {
         VStack(spacing: 4) {
-            Text("Nada por aqui")
+            Text(.licensesEmptyTitle)
                 .font(.system(size: 17, weight: .bold))
                 .tracking(-0.34)
                 .foregroundStyle(UNESColor.ink)
-            Text("Tente outra busca ou filtro.")
+            Text(.licensesEmptySubtitle)
                 .font(.system(size: 13, weight: .medium))
                 .foregroundStyle(UNESColor.ink4)
         }

@@ -69,7 +69,7 @@ struct LicenseGroupCard: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
 
-            Text("\(group.packages.count) de \(group.familyCount)")
+            Text(.licensesGroupCountOfTotal(group.packages.count, group.familyCount))
                 .font(.system(size: 11.5, weight: .semibold))
                 .monospacedDigit()
                 .foregroundStyle(UNESColor.ink3)
@@ -151,13 +151,17 @@ private struct LicenseRow: View {
                 LicensePill(icon: "arrow.up.right", label: package.homepage, primary: true, action: onHomepage)
                 LicensePill(
                     icon: copied ? "checkmark" : "doc.on.doc",
-                    label: copied ? "copiado" : package.pin,
+                    label: copied ? String.localized(.licensesCopiedFeedback) : package.pin,
                     action: onCopy
                 )
-                LicensePill(icon: "doc.plaintext", label: "Texto · \(package.family.rawValue)", action: onLicenseText)
+                LicensePill(
+                    icon: "doc.plaintext",
+                    label: String.localized(.licensesLicenseTextLabel(package.family.rawValue)),
+                    action: onLicenseText
+                )
             }
 
-            Text("Categoria · \(package.category)")
+            Text(.licensesCategoryLabel(String.localized(package.category)))
                 .font(.system(size: 11.5, weight: .medium))
                 .foregroundStyle(UNESColor.ink4)
                 .padding(.top, 1)
@@ -168,15 +172,15 @@ private struct LicenseRow: View {
 
     private var copyrightBlurb: some View {
         (
-            Text("© ")
+            Text(.licensesCopyrightPrefix)
                 + Text(package.author)
                 .fontWeight(.semibold)
                 .foregroundStyle(UNESColor.ink)
-                + Text(". Distribuído sob a licença ")
+                + Text(.licensesCopyrightMiddle)
                 + Text(package.family.rawValue)
                 .fontWeight(.semibold)
                 .foregroundStyle(UNESColor.ink)
-                + Text(". Fornecido \u{201C}como está\u{201D}, sem garantia de qualquer espécie.")
+                + Text(.licensesCopyrightSuffix)
         )
         .font(.system(size: 13.5, weight: .medium))
         .tracking(-0.14)

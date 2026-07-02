@@ -10,11 +10,11 @@ enum AuthError: Error, Equatable {
     /// User-facing message; `nil` when the failure should be silent (user cancelled).
     var message: String? {
         switch self {
-        case .invalidCredentials: "Usuário ou senha incorretos. Confira suas credenciais do SAGRES."
-        case .network: "Sem conexão. Verifique sua internet e tente de novo."
-        case .passkeyUnavailable: "Passkey não é suportada neste dispositivo."
+        case .invalidCredentials: String.localized(.dataErrorInvalidCredentials)
+        case .network: String.localized(.dataErrorNetwork)
+        case .passkeyUnavailable: String.localized(.dataErrorPasskeyUnavailable)
         case .cancelled: nil
-        case .server: "Não foi possível entrar agora. Tente novamente em instantes."
+        case .server: String.localized(.dataErrorSignInFailed)
         }
     }
 }

@@ -9,7 +9,7 @@ struct EnrollmentReviewView: View {
     @State private var titleProgress: CGFloat = 0
 
     private var title: String {
-        store.isReadonly ? "Comprovante" : "Revisar"
+        store.isReadonly ? .localized(.enrollmentReviewReceiptTitle) : .localized(.enrollmentReviewTitle)
     }
 
     var body: some View {
@@ -46,8 +46,8 @@ struct EnrollmentReviewView: View {
 
                 VStack(spacing: 0) {
                     if store.isReadonly {
-                        EnrollmentBanner(tone: .info, title: "Proposta enviada") {
-                            Text("Sua proposta está registrada no SAGRES. Somente leitura — reabra a matrícula para editar.")
+                        EnrollmentBanner(tone: .info, title: String.localized(.enrollmentProposalSent)) {
+                            Text(.enrollmentReviewReadonlyBody)
                         }
                         .fadeUp(delay: 0.06)
                         .padding(.bottom, 14)
@@ -84,7 +84,7 @@ struct EnrollmentReviewView: View {
     private var header: some View {
         VStack(alignment: .leading, spacing: 5) {
             if store.isReadonly, let window = store.session.window {
-                Text("Matrícula · \(window.semester)")
+                Text(verbatim: "\(String.localized(.enrollmentTitle)) · \(window.semester)")
                     .textCase(.uppercase)
                     .font(.system(size: 12, weight: .semibold))
                     .tracking(0.48)
@@ -106,7 +106,7 @@ struct EnrollmentReviewView: View {
 
     private var subtitle: String {
         let picks = store.session.picks
-        guard !picks.isEmpty else { return "Proposta vazia" }
+        guard !picks.isEmpty else { return .localized(.enrollmentReviewEmptyProposal) }
         return "\(DisciplinesFormat.disciplineCountLabel(picks.count)) · \(store.session.totalHours)h"
     }
 
@@ -122,30 +122,33 @@ struct EnrollmentReviewView: View {
                 if !session.conflicts.isEmpty {
                     EnrollmentBanner(
                         tone: .danger,
-                        title: "Conflitos de horário",
-                        action: "Ver na grade",
+                        title: String.localized(.enrollmentReviewConflictsTitle),
+                        action: String.localized(.enrollmentReviewSeeInGrid),
                         onAction: { store.send(.timetableTapped) }
                     ) {
                         VStack(alignment: .leading, spacing: 2) {
                             ForEach(Array(session.conflicts.enumerated()), id: \.offset) { _, conflict in
-                                Text("\(conflict.aCode) \(conflict.aLabel) × \(conflict.bCode) \(conflict.bLabel) · \(EnrollmentFormat.dayFull(conflict.day))")
+                                Text(verbatim: "\(conflict.aCode) \(conflict.aLabel) × \(conflict.bCode) \(conflict.bLabel) · \(EnrollmentFormat.dayFull(conflict.day))")
                             }
                         }
                     }
                 }
                 if let window = session.window, session.totalHours < window.minHours {
-                    EnrollmentBanner(tone: .warn, title: "Carga horária insuficiente") {
-                        Text("Faltam \(window.minHours - session.totalHours)h para o mínimo de \(window.minHours)h.")
+                    EnrollmentBanner(tone: .warn, title: String.localized(.enrollmentReviewUnderMinTitle)) {
+                        Text(.enrollmentReviewUnderMinBody(window.minHours - session.totalHours, window.minHours))
                     }
                 }
                 if let window = session.window, session.totalHours > window.maxHours {
-                    EnrollmentBanner(tone: .danger, title: "Carga horária excedida") {
-                        Text("Você está \(session.totalHours - window.maxHours)h acima do máximo de \(window.maxHours)h.")
+                    EnrollmentBanner(tone: .danger, title: String.localized(.enrollmentReviewOverMaxTitle)) {
+                        Text(.enrollmentReviewOverMaxBody(session.totalHours - window.maxHours, window.maxHours))
                     }
                 }
                 if !unmet.isEmpty {
-                    EnrollmentBanner(tone: .warn, title: "Pré-requisitos pendentes") {
-                        Text("\(unmet.map(\.discipline.code).joined(separator: ", ")) \(unmet.count > 1 ? "dependem" : "depende") de análise do colegiado.")
+                    let codes = unmet.map(\.discipline.code).joined(separator: ", ")
+                    EnrollmentBanner(tone: .warn, title: String.localized(.enrollmentReviewPrereqPendingTitle)) {
+                        Text(unmet.count > 1
+                            ? .enrollmentReviewPrereqPendingBodyMany(codes)
+                            : .enrollmentReviewPrereqPendingBodyOne(codes))
                     }
                 }
             }
@@ -160,11 +163,11 @@ struct EnrollmentReviewView: View {
         let resolved = store.session.resolvedPicks
         if resolved.isEmpty {
             VStack(spacing: 4) {
-                Text("Nenhuma disciplina na proposta ainda")
+                Text(.enrollmentReviewNoPicksTitle)
                     .font(.system(size: 17, weight: .bold))
                     .tracking(-0.34)
                     .foregroundStyle(UNESColor.ink)
-                Text("Volte ao catálogo e escolha suas turmas.")
+                Text(.enrollmentReviewNoPicksBody)
                     .font(.system(size: 13, weight: .medium))
                     .foregroundStyle(UNESColor.ink4)
             }
@@ -173,7 +176,7 @@ struct EnrollmentReviewView: View {
             .enrollmentCard()
         } else {
             VStack(spacing: 0) {
-                EnrollmentSectionHeader(title: "Selecionadas · \(resolved.count)")
+                EnrollmentSectionHeader(title: .enrollmentReviewSelectedCount(resolved.count))
                 VStack(spacing: 12) {
                     ForEach(resolved) { pick in
                         EnrollmentReviewItem(
@@ -224,7 +227,7 @@ struct EnrollmentReviewView: View {
                         }
                 }
                 .buttonStyle(TilePressStyle())
-                .accessibilityLabel("Salvar rascunho")
+                .accessibilityLabel(Text(.enrollmentReviewSaveDraft))
 
                 Button {
                     store.send(.submitTapped)
@@ -232,9 +235,9 @@ struct EnrollmentReviewView: View {
                     HStack(spacing: 8) {
                         if store.isSubmitting {
                             SpinnerRing(size: 16, color: .white, trackColor: .white.opacity(0.4))
-                            Text("Enviando…")
+                            Text(.enrollmentReviewSubmitting)
                         } else {
-                            Text("Enviar proposta")
+                            Text(.enrollmentReviewSubmit)
                             Image(systemName: "paperplane.fill")
                                 .font(.system(size: 13, weight: .semibold))
                         }
@@ -325,7 +328,7 @@ struct EnrollmentReviewItem: View {
                         }
                 }
                 .buttonStyle(.plain)
-                .accessibilityLabel("Remover \(pick.discipline.code)")
+                .accessibilityLabel(Text(.enrollmentReviewRemove(pick.discipline.code)))
             }
         }
     }
@@ -335,7 +338,7 @@ struct EnrollmentReviewItem: View {
         if pick.discipline.hasUnmetPrereq || pick.waitlist || !pick.section.hasSchedule {
             HStack(spacing: 8) {
                 if pick.discipline.hasUnmetPrereq {
-                    EnrollmentBadge(kind: .prereq, text: "Pré-req. pendente")
+                    EnrollmentBadge(kind: .prereq, text: .localized(.enrollmentBadgePrereqPending))
                 }
                 // Keyed on the pick, not the seats — the student may have
                 // opted out of the queue for a full section.
@@ -343,7 +346,7 @@ struct EnrollmentReviewItem: View {
                     EnrollmentBadge(kind: .waitlist, text: waitlistBadgeText)
                 }
                 if !pick.section.hasSchedule {
-                    EnrollmentBadge(kind: .optional, text: "Horário a definir")
+                    EnrollmentBadge(kind: .optional, text: .localized(.enrollmentScheduleTbd))
                 }
             }
         }
@@ -351,22 +354,22 @@ struct EnrollmentReviewItem: View {
 
     private var waitlistBadgeText: String {
         let ahead = pick.section.waitlistCount
-        return ahead > 0 ? "Fila · \(ahead + 1)º" : "Fila · na espera"
+        return ahead > 0 ? .localized(.enrollmentWaitlistPosition(ahead + 1)) : .localized(.enrollmentWaitlistWaiting)
     }
 
     private var toggles: some View {
         VStack(spacing: 12) {
             toggleRow(
-                title: "Aceitar outra turma",
-                subtitle: "Sem vaga na \(pick.section.label)? Me aloque em outra turma de \(pick.discipline.code).",
+                title: .localized(.enrollmentAllowOtherTitle),
+                subtitle: .localized(.enrollmentAllowOtherBody(pick.section.label, pick.discipline.code)),
                 isOn: pick.allowsOther,
                 onChange: onAllowsOther
             )
             if pick.section.seats.isFull {
                 Divider().overlay(UNESColor.line)
                 toggleRow(
-                    title: "Entrar na fila de espera",
-                    subtitle: "Turma lotada — você concorre conforme a fila.",
+                    title: .localized(.enrollmentJoinWaitlist),
+                    subtitle: .localized(.enrollmentWaitlistBody),
                     isOn: pick.waitlist,
                     onChange: onWaitlist
                 )

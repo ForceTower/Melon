@@ -24,13 +24,13 @@ struct EnrollmentSectionCard: View {
                     .padding(.top, 11)
 
                 if isBlocked, let clash {
-                    EnrollmentBanner(tone: .danger, title: "Conflito de horário") {
+                    EnrollmentBanner(tone: .danger, title: String.localized(.enrollmentConflictTitle)) {
                         Text(clashLine(clash))
                     }
                     .padding(.top, 12)
                 }
                 if section.seats.isFull, !isBlocked {
-                    EnrollmentBanner(tone: .warn, title: "Turma lotada") {
+                    EnrollmentBanner(tone: .warn, title: String.localized(.enrollmentClassFullTitle)) {
                         Text(fullLine)
                     }
                     .padding(.top, 12)
@@ -83,7 +83,7 @@ struct EnrollmentSectionCard: View {
                 Circle()
                     .fill(EnrollmentTone.ok)
                     .frame(width: 6, height: 6)
-                    .accessibilityLabel("Prioridade do curso")
+                    .accessibilityLabel(Text(.enrollmentCoursePriority))
             }
 
             Spacer()
@@ -106,13 +106,13 @@ struct EnrollmentSectionCard: View {
                         Image(systemName: "house")
                             .font(.system(size: 10, weight: .medium))
                             .foregroundStyle(UNESColor.ink4)
-                        Text(meeting.room ?? "Sala a definir")
+                        Text(meeting.room ?? String.localized(.enrollmentRoomTbd))
                     }
 
                     Text("·").opacity(0.35)
 
                     if meeting.professors.isEmpty {
-                        Text("Prof. a definir")
+                        Text(.enrollmentProfTbd)
                             .italic()
                             .foregroundStyle(UNESColor.ink4)
                     } else {
@@ -155,10 +155,10 @@ struct EnrollmentSectionCard: View {
     }
 
     private var footerLabel: String {
-        if isSelected { return "Selecionada · tocar para remover" }
-        if isBlocked { return "Indisponível — conflito" }
-        if section.seats.isFull { return useQueue ? "Entrar na fila de espera" : "Sem vagas" }
-        return "Selecionar esta turma"
+        if isSelected { return .localized(.enrollmentSectionCardSelectedTapToRemove) }
+        if isBlocked { return .localized(.enrollmentSectionCardUnavailableConflict) }
+        if section.seats.isFull { return .localized(useQueue ? .enrollmentJoinWaitlist : .enrollmentSectionCardNoSeats) }
+        return .localized(.enrollmentSectionCardSelect)
     }
 
     private var footerIcon: String? {
@@ -185,24 +185,24 @@ struct EnrollmentSectionCard: View {
     // MARK: Copy
 
     private func clashLine(_ clash: EnrollmentClash) -> AttributedString {
-        var line = AttributedString("Choca com ")
+        var line = AttributedString(String.localized(.enrollmentClashPrefix))
         var other = AttributedString("\(clash.discipline.code) \(clash.section.label)")
         other.font = .system(size: 12.5, weight: .bold)
         line += other
-        line += AttributedString(" na ")
+        line += AttributedString(String.localized(.enrollmentClashOn))
         var day = AttributedString(EnrollmentFormat.dayFull(clash.day))
         day.font = .system(size: 12.5, weight: .bold)
         line += day
-        line += AttributedString(". Troque uma das turmas.")
+        line += AttributedString(String.localized(.enrollmentClashSuffix))
         return line
     }
 
     private var fullLine: AttributedString {
-        guard useQueue else { return AttributedString("Sem vagas disponíveis.") }
-        var line = AttributedString("Entre na fila de espera")
+        guard useQueue else { return AttributedString(String.localized(.enrollmentClassFullNoSeatsBody)) }
+        var line = AttributedString(String.localized(.enrollmentWaitlistJoinInline))
         if section.waitlistCount > 0 {
             line += AttributedString(" — ")
-            var ahead = AttributedString("\(section.waitlistCount) na frente")
+            var ahead = AttributedString(String.localized(.enrollmentWaitlistAhead(section.waitlistCount)))
             ahead.font = .system(size: 12.5, weight: .bold)
             line += ahead
         }

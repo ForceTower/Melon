@@ -25,7 +25,7 @@ struct IntroView: View {
                 pageDots
             }
             ToolbarItem(placement: .trailingCompat) {
-                Button("Pular") { store.send(.skipTapped) }
+                Button { store.send(.skipTapped) } label: { Text(.onboardingIntroSkip) }
                     .font(.system(size: 15, weight: .semibold))
                     .tint(UNESColor.ink3)
             }
@@ -73,7 +73,7 @@ private struct IntroSlidePage: View {
                 .fadeUp(delay: 0.26, duration: 0.6)
 
             Button(action: onContinue) {
-                UNESButtonLabel(text: isLast ? "Entrar na conta" : "Continuar")
+                UNESButtonLabel(text: isLast ? .onboardingIntroSignIn : .commonContinue)
             }
             .buttonStyle(.unesDark)
             .padding(.top, 26)

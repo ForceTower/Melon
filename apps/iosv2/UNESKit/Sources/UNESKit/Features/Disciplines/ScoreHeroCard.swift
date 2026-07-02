@@ -8,7 +8,7 @@ struct ScoreHeroCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text("Média parcial")
+            Text(.disciplinesPartialAverage)
                 .textCase(.uppercase)
                 .font(.system(size: 12, weight: .semibold))
                 .tracking(0.4)
@@ -44,7 +44,7 @@ struct ScoreHeroCard: View {
                         .tracking(-0.78)
                         .monospacedDigit()
                         .foregroundStyle(UNESColor.ink)
-                    Text(semester.disciplines.count == 1 ? "disciplina" : "disciplinas")
+                    Text(semester.disciplines.count == 1 ? .disciplinesCourseWordOne : .disciplinesCourseWordOther)
                         .font(.system(size: 11, weight: .medium))
                         .foregroundStyle(UNESColor.ink3)
                 }
@@ -114,7 +114,7 @@ struct ScoreHeroCard: View {
             Image(systemName: "exclamationmark.triangle")
                 .font(.system(size: 12, weight: .semibold))
                 .foregroundStyle(UNESColor.caution)
-            Text(count == 1 ? "1 disciplina pede atenção" : "\(count) disciplinas pedem atenção")
+            Text(.disciplinesNeedAttention(count))
                 .font(.system(size: 13, weight: .medium))
                 .foregroundStyle(UNESColor.ink2)
         }

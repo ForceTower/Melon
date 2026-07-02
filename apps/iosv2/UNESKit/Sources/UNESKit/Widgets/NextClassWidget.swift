@@ -11,8 +11,8 @@ public struct NextClassWidget: Widget {
         StaticConfiguration(kind: UNESWidgetKind.nextClass, provider: NextClassProvider()) { entry in
             NextClassWidgetView(entry: entry)
         }
-        .configurationDisplayName("Próxima aula")
-        .description("Contagem para a próxima aula, com sala, professor e o seu dia.")
+        .configurationDisplayName(.homeHeroNextClass)
+        .description(.widgetDisplayDescription)
         .supportedFamilies([
             .systemSmall, .systemMedium, .systemLarge,
             .accessoryRectangular, .accessoryCircular, .accessoryInline,
@@ -158,13 +158,13 @@ private struct HeroFooter: View {
     var body: some View {
         HStack(spacing: 12) {
             if let room = occurrence.room {
-                HeroMeta(icon: "mappin.and.ellipse", label: "Sala \(room)")
+                HeroMeta(icon: "mappin.and.ellipse", label: String.localized(.commonRoom(room)))
             }
             if occurrence.room != nil, occurrence.teacherName != nil {
                 Rectangle().fill(.white.opacity(0.2)).frame(width: 1, height: 12)
             }
             if let teacher = occurrence.teacherName.map(HomeFormat.teacherShort) {
-                HeroMeta(icon: "person", label: teacherTitle ? "Prof. \(teacher)" : teacher)
+                HeroMeta(icon: "person", label: teacherTitle ? String.localized(.widgetProfessorPrefix(teacher)) : teacher)
             }
             Spacer(minLength: 0)
         }
@@ -221,9 +221,9 @@ enum HeroClock {
     /// "em 39 min" / "às 10:20" / "amanhã · 08:00" / "Seg · 08:00".
     var inlineLabel: String {
         switch self {
-        case let .minutes(big, unit): "em \(big)\(unit.map { " \($0)" } ?? "")"
-        case let .sameDay(time): "às \(time)"
-        case let .tomorrow(time): "amanhã · \(time)"
+        case let .minutes(big, unit): String.localized(.widgetInMinutes("\(big)\(unit.map { " \($0)" } ?? "")"))
+        case let .sameDay(time): String.localized(.widgetAtTime(time))
+        case let .tomorrow(time): "\(String.localized(.widgetTomorrow)) · \(time)"
         case let .weekday(name, time): "\(name) · \(time)"
         }
     }
@@ -253,7 +253,7 @@ private struct HeroCountdown: View {
                     // Timer-interval text greedily claims the whole row —
                     // bound it so the line hugs the number's right edge and
                     // stops squeezing the title column.
-                    (Text("em ") + Text(timerInterval: date...occurrence.start, countsDown: true))
+                    (Text(.widgetInPrefix) + Text(timerInterval: date...occurrence.start, countsDown: true))
                         .font(.system(size: 11, weight: .semibold))
                         .monospacedDigit()
                         .opacity(0.6)
@@ -263,10 +263,10 @@ private struct HeroCountdown: View {
                 }
             case let .sameDay(time):
                 bigText(time)
-                subText("hoje")
+                subText(String.localized(.widgetToday))
             case let .tomorrow(time):
                 bigText(time)
-                subText("amanhã")
+                subText(String.localized(.widgetTomorrow))
             case let .weekday(name, time):
                 bigText(name)
                 subText(time)
@@ -300,7 +300,7 @@ private struct SmallUpcomingView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            HeroEyebrow(text: Text("Próxima"))
+            HeroEyebrow(text: Text(.widgetNext))
             Spacer(minLength: 8)
             CodeChip(code: occurrence.code)
             Text(occurrence.title)
@@ -339,7 +339,7 @@ private struct MediumUpcomingView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack {
-                HeroEyebrow(text: Text("Próxima aula"))
+                HeroEyebrow(text: Text(.homeHeroNextClass))
                 Spacer()
                 Text(occurrence.timeRange)
                     .font(.system(size: 13, weight: .medium))
@@ -375,7 +375,7 @@ private struct LargeUpcomingView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack {
-                HeroEyebrow(text: Text("Próxima aula"))
+                HeroEyebrow(text: Text(.homeHeroNextClass))
                 Spacer()
                 Text(occurrence.timeRange)
                     .font(.system(size: 13, weight: .medium))
@@ -416,7 +416,7 @@ private struct DayStrip: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 9) {
-            Text("Seu dia")
+            Text(.homeSectionYourDay)
                 .textCase(.uppercase)
                 .font(.system(size: 11, weight: .semibold))
                 .tracking(0.55)
@@ -466,7 +466,7 @@ private struct SmallInClassView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            HeroEyebrow(text: Text("Agora"))
+            HeroEyebrow(text: Text(.commonNow))
             Spacer(minLength: 8)
             CodeChip(code: occurrence.code)
             Text(occurrence.title)
@@ -478,7 +478,7 @@ private struct SmallInClassView: View {
                 .padding(.top, 7)
             HStack {
                 if let end = occurrence.endTime {
-                    Text("até \(end)")
+                    Text(.widgetUntilTime(end))
                         .foregroundStyle(.white.opacity(0.82))
                 }
                 Spacer(minLength: 8)
@@ -511,10 +511,10 @@ private struct ClassProgress: View {
             }
             .tint(UNESColor.liveGreen)
             HStack {
-                Text("\(occurrence.startTime) · iniciada")
+                Text(.homeHeroStarted(occurrence.startTime))
                 Spacer()
                 if let end = occurrence.endTime {
-                    Text("\(end) · fim")
+                    Text(.homeHeroEnded(end))
                 }
             }
             .font(.system(size: 12, weight: .medium))
@@ -554,10 +554,10 @@ private struct MediumInClassView: View {
 
     private var eyebrowText: Text {
         if date < occurrence.endOrEstimate {
-            Text("Agora · termina em ")
+            Text(.widgetNowEndsInPrefix)
                 + Text(timerInterval: date...occurrence.endOrEstimate, countsDown: true)
         } else {
-            Text("Agora")
+            Text(.commonNow)
         }
     }
 }
@@ -569,7 +569,7 @@ private struct LargeInClassView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack {
-                HeroEyebrow(text: Text("Agora"))
+                HeroEyebrow(text: Text(.commonNow))
                 Spacer()
                 Text(occurrence.timeRange)
                     .font(.system(size: 13, weight: .medium))
@@ -643,7 +643,7 @@ private struct DayDoneView: View {
             Image(systemName: "checkmark")
                 .font(.system(size: 11, weight: .bold))
                 .foregroundStyle(UNESColor.successGreen)
-            Text(completed > 0 ? "Tudo certo por hoje" : "Sem aulas hoje")
+            (completed > 0 ? Text(.widgetAllDoneToday) : Text(.homeDayEmpty))
                 .textCase(.uppercase)
                 .font(.system(size: family == .systemSmall ? 11 : 12, weight: .semibold))
                 .tracking(0.2)
@@ -657,10 +657,10 @@ private struct DayDoneView: View {
         let size: CGFloat = family == .systemSmall ? 18 : 22
         let text: Text
         if let next {
-            text = Text("Sem aulas até ")
+            text = Text(.widgetNoClassesUntilPrefix)
                 + Text(untilLabel(for: next)).foregroundStyle(UNESColor.accent)
         } else {
-            text = Text("Sem próximas aulas")
+            text = Text(.widgetNoUpcomingClasses)
         }
         return text
             .font(.system(size: size, weight: .bold))
@@ -670,7 +670,7 @@ private struct DayDoneView: View {
 
     private var footer: some View {
         HStack {
-            Text(completed == 1 ? "1 aula concluída" : "\(completed) aulas concluídas")
+            Text(.widgetClassesCompleted(completed))
                 .font(.system(size: family == .systemSmall ? 12 : 13, weight: .medium))
                 .foregroundStyle(UNESColor.ink3)
                 .lineLimit(1)
@@ -688,7 +688,7 @@ private struct DayDoneView: View {
     private func untilLabel(for next: ClassOccurrence, calendar: Calendar = .current) -> String {
         if let tomorrow = calendar.date(byAdding: .day, value: 1, to: entry.date),
            calendar.isDate(next.start, inSameDayAs: tomorrow) {
-            return "amanhã, \(next.startTime)"
+            return "\(String.localized(.widgetTomorrow)), \(next.startTime)"
         }
         return "\(HomeFormat.weekdayName(for: next.start).lowercased()), \(next.startTime)"
     }
@@ -703,7 +703,7 @@ private struct CardDayStrip: View {
             EmptyView()
         } else {
             VStack(alignment: .leading, spacing: 9) {
-                Text("Seu dia")
+                Text(.homeSectionYourDay)
                     .textCase(.uppercase)
                     .font(.system(size: 11, weight: .semibold))
                     .tracking(0.55)
@@ -742,13 +742,13 @@ private struct SignedOutView: View {
         VStack(alignment: .leading, spacing: 0) {
             HeroEyebrow(text: Text("UNES"), dotColor: nil)
             Spacer(minLength: 8)
-            Text(compact ? "Entre no app" : "Entre para ver sua próxima aula")
+            (compact ? Text(.widgetSignInCompact) : Text(.widgetSignInToSeeNextClass))
                 .font(.system(size: compact ? 20 : 22, weight: .bold))
                 .tracking(-0.6)
                 .foregroundStyle(.white)
                 .lineLimit(3)
                 .minimumScaleFactor(0.8)
-            Text(compact ? "Toque para abrir" : "Toque para abrir o UNES e fazer login")
+            (compact ? Text(.widgetTapToOpen) : Text(.widgetTapToOpenAndSignIn))
                 .font(.system(size: 13, weight: .medium))
                 .foregroundStyle(.white.opacity(0.7))
                 .lineLimit(2)

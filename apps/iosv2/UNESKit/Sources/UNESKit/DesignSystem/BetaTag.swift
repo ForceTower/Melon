@@ -6,7 +6,7 @@ struct BetaTag: View {
     private let tone = UNESColor.readable(0xE85D4E)
 
     var body: some View {
-        Text("Beta")
+        Text(.commonBeta)
             .textCase(.uppercase)
             .font(.system(size: 10, weight: .heavy))
             .tracking(0.7)

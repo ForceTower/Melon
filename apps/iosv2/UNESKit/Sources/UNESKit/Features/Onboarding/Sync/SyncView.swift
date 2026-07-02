@@ -10,7 +10,7 @@ struct SyncView: View {
                 .ignoresSafeArea()
 
             VStack(alignment: .leading, spacing: 0) {
-                Eyebrow(text: "Preparando seu semestre", color: .white.opacity(0.92), live: true)
+                Eyebrow(text: String.localized(.onboardingSyncEyebrow), color: .white.opacity(0.92), live: true)
                     .fadeUp(duration: 0.5)
 
                 title
@@ -51,11 +51,11 @@ struct SyncView: View {
 
     private var title: some View {
         VStack(alignment: .leading, spacing: -6) {
-            Text("Quase lá,")
+            Text(.onboardingSyncAlmostThere)
                 .foregroundStyle(UNESColor.paper)
             (
                 Text(store.greeting).foregroundStyle(UNESColor.accent)
-                    + Text(".").foregroundStyle(UNESColor.accent)
+                    + Text(verbatim: ".").foregroundStyle(UNESColor.accent)
             )
             .lineLimit(1)
         }

@@ -38,7 +38,7 @@ struct SettingsNotificationGroupCard: View {
                 .tracking(-0.3)
                 .foregroundStyle(UNESColor.ink)
             Spacer()
-            Text("\(activeCount)/\(group.rows.count) ativas")
+            Text(.settingsNotificationsActiveCount(activeCount, group.rows.count))
                 .font(.system(size: 11.5, weight: .semibold))
                 .monospacedDigit()
                 .foregroundStyle(UNESColor.ink4)
@@ -102,29 +102,38 @@ struct SettingsNotificationGroup: Identifiable {
     }
 
     static let all: [SettingsNotificationGroup] = [
-        SettingsNotificationGroup(id: "messages", title: "Mensagens", rows: [
+        SettingsNotificationGroup(id: "messages", title: String.localized(.settingsMessages), rows: [
             Row(toggle: .messageBroadcast, icon: "megaphone", tone: Tone.amber,
-                label: "Broadcasts", hint: "Avisos da universidade"),
+                label: String.localized(.settingsNotificationsBroadcastLabel),
+                hint: String.localized(.settingsNotificationsBroadcastHint)),
             Row(toggle: .messageClass, icon: "person.2", tone: Tone.teal,
-                label: "Da turma", hint: "Mensagens enviadas à classe"),
+                label: String.localized(.settingsNotificationsMessageClassLabel),
+                hint: String.localized(.settingsNotificationsMessageClassHint)),
             Row(toggle: .messageDirect, icon: "envelope", tone: Tone.plum,
-                label: "Diretas", hint: "Professor ou secretaria"),
+                label: String.localized(.settingsNotificationsDirectLabel),
+                hint: String.localized(.settingsNotificationsDirectHint)),
         ]),
-        SettingsNotificationGroup(id: "grades", title: "Notas", rows: [
+        SettingsNotificationGroup(id: "grades", title: String.localized(.settingsGrades), rows: [
             Row(toggle: .gradePosted, icon: "sparkle", tone: Tone.coral,
-                label: "Publicada", hint: "Uma nota nova apareceu"),
+                label: String.localized(.settingsNotificationsGradePostedLabel),
+                hint: String.localized(.settingsNotificationsGradePostedHint)),
             Row(toggle: .gradeChanged, icon: "pencil", tone: Tone.magenta,
-                label: "Alterada", hint: "O valor foi corrigido"),
+                label: String.localized(.settingsNotificationsGradeChangedLabel),
+                hint: String.localized(.settingsNotificationsGradeChangedHint)),
             Row(toggle: .gradeDateChanged, icon: "calendar", tone: Tone.plum,
-                label: "Data alterada", hint: "Prazo da avaliação mudou"),
+                label: String.localized(.settingsNotificationsGradeDateLabel),
+                hint: String.localized(.settingsNotificationsGradeDateHint)),
         ]),
-        SettingsNotificationGroup(id: "classes", title: "Aulas", rows: [
+        SettingsNotificationGroup(id: "classes", title: String.localized(.settingsClasses), rows: [
             Row(toggle: .classLocation, icon: "mappin.and.ellipse", tone: Tone.teal,
-                label: "Sala alterada", hint: "Mudança de localização"),
+                label: String.localized(.settingsNotificationsClassLocationLabel),
+                hint: String.localized(.settingsNotificationsClassLocationHint)),
             Row(toggle: .classMaterial, icon: "book", tone: Tone.amber,
-                label: "Material publicado", hint: "Slides, enunciados, listas"),
+                label: String.localized(.settingsNotificationsClassMaterialLabel),
+                hint: String.localized(.settingsNotificationsClassMaterialHint)),
             Row(toggle: .classSubject, icon: "tag", tone: Tone.coral,
-                label: "Assunto da aula", hint: "O tópico previsto mudou"),
+                label: String.localized(.settingsNotificationsClassSubjectLabel),
+                hint: String.localized(.settingsNotificationsClassSubjectHint)),
         ]),
     ]
 

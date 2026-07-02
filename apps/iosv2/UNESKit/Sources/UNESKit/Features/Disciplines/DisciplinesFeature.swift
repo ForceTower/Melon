@@ -103,7 +103,7 @@ struct DisciplinesFeature {
             case let .semesterDownloadFailed(semesterId, message):
                 state.downloadingSemesterIds.remove(semesterId)
                 state.alert = AlertState {
-                    TextState("Não deu para baixar o semestre")
+                    TextState(String.localized(.disciplinesDownloadFailedTitle))
                 } message: {
                     TextState(message)
                 }

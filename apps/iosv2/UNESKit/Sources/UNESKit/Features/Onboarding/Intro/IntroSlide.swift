@@ -24,49 +24,52 @@ struct IntroSlide: Identifiable {
         IntroSlide(
             id: 0,
             variant: .cool,
-            eyebrow: "Horário",
+            eyebrow: String.localized(.onboardingIntroScheduleEyebrow),
             accent: UNESColor.teal,
             titleLines: [
-                [Segment(text: "Sua semana,")],
-                [Segment(text: "organizada.", accented: true)],
+                [Segment(text: String.localized(.onboardingIntroScheduleTitleLine1))],
+                [Segment(text: String.localized(.onboardingIntroScheduleTitleLine2), accented: true)],
             ],
-            body: "A grade da UEFS puxada direto do SAGRES. Aulas canceladas, salas trocadas e provas em tempo real.",
+            body: String.localized(.onboardingIntroScheduleBody),
             illustration: .schedule
         ),
         IntroSlide(
             id: 1,
             variant: .sun,
-            eyebrow: "Notas",
+            eyebrow: String.localized(.onboardingIntroGradesEyebrow),
             accent: UNESColor.tangerine,
             titleLines: [
-                [Segment(text: "Acompanhe seu")],
-                [Segment(text: "desempenho.", accented: true)],
+                [Segment(text: String.localized(.onboardingIntroGradesTitleLine1))],
+                [Segment(text: String.localized(.onboardingIntroGradesTitleLine2), accented: true)],
             ],
-            body: "Notas parciais, coeficiente e histórico. Sem precisar entrar no SAGRES pelo navegador toda semana.",
+            body: String.localized(.onboardingIntroGradesBody),
             illustration: .grades
         ),
         IntroSlide(
             id: 2,
             variant: .rose,
-            eyebrow: "Recados",
+            eyebrow: String.localized(.onboardingIntroMessagesEyebrow),
             accent: UNESColor.magenta,
             titleLines: [
-                [Segment(text: "Tudo o que você")],
-                [Segment(text: "precisa saber.", accented: true)],
+                [Segment(text: String.localized(.onboardingIntroMessagesTitleLine1))],
+                [Segment(text: String.localized(.onboardingIntroMessagesTitleLine2), accented: true)],
             ],
-            body: "Recados de professores, coordenação e DCE. Sem perder prazos nem assembleias importantes.",
+            body: String.localized(.onboardingIntroMessagesBody),
             illustration: .messages
         ),
         IntroSlide(
             id: 3,
             variant: .warm,
-            eyebrow: "Notificações",
+            eyebrow: String.localized(.onboardingIntroNotificationsEyebrow),
             accent: UNESColor.accent,
             titleLines: [
-                [Segment(text: "Avisa no instante")],
-                [Segment(text: "que "), Segment(text: "acontece.", accented: true)],
+                [Segment(text: String.localized(.onboardingIntroNotificationsTitleLine1))],
+                [
+                    Segment(text: String.localized(.onboardingIntroNotificationsTitleLine2A)),
+                    Segment(text: String.localized(.onboardingIntroNotificationsTitleLine2B), accented: true),
+                ],
             ],
-            body: "Nota nova, recado de professor, material publicado, sala trocada. Um toque no bolso antes de você abrir o app.",
+            body: String.localized(.onboardingIntroNotificationsBody),
             illustration: .notifications
         ),
     ]

@@ -120,10 +120,11 @@ extension SemesterSnapshot {
         return String(discipline.name.prefix(4)).uppercased()
     }
 
-    /// Decimal strings arrive dot-separated; tolerate a comma just in case.
-    func parseDecimal(_ value: String) -> Double? {
-        Double(value.replacingOccurrences(of: ",", with: "."))
-    }
+}
+
+/// Decimal strings arrive dot-separated; tolerate a comma just in case.
+func parseDecimal(_ value: String) -> Double? {
+    Double(value.replacingOccurrences(of: ",", with: "."))
 }
 
 extension Sequence {

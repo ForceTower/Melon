@@ -9,9 +9,9 @@ enum EnrollmentOfferFilter: String, Equatable, Sendable, CaseIterable, Identifia
 
     var label: String {
         switch self {
-        case .all: "Todas"
-        case .mandatory: "Obrigatórias"
-        case .optional: "Optativas"
+        case .all: .localized(.enrollmentOffersFilterAll)
+        case .mandatory: .localized(.enrollmentOffersFilterMandatory)
+        case .optional: .localized(.enrollmentOffersFilterOptional)
         }
     }
 }

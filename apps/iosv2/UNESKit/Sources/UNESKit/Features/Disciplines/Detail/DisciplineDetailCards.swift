@@ -5,7 +5,7 @@ import SwiftUI
 /// "Notas ......... peso igual" — a 22pt section title with an optional
 /// trailing caption, shared by every detail section.
 struct DisciplineSectionHeader: View {
-    var title: String
+    var title: LocalizedStringResource
     var trailing: String?
 
     var body: some View {
@@ -32,7 +32,7 @@ struct DisciplineSectionHeader: View {
 struct DisciplineStatCard: View {
     var icon: String
     var tint: Color
-    var label: String
+    var label: LocalizedStringResource
     var value: String
     var sub: String?
     var valueColor: Color = UNESColor.ink
@@ -87,12 +87,14 @@ struct DisciplineGradesBlock: View {
         let sections = detail.sections(forGroup: selectedGroup)
         VStack(spacing: 0) {
             DisciplineSectionHeader(
-                title: "Notas",
-                trailing: detail.hasEqualWeights ? "peso igual" : "média ponderada"
+                title: .disciplinesDetailGrades,
+                trailing: detail.hasEqualWeights
+                    ? String.localized(.disciplinesDetailEqualWeight)
+                    : String.localized(.disciplinesDetailWeightedAverage)
             )
 
             if sections.isEmpty {
-                DetailEmptyCard(message: "O professor ainda não cadastrou avaliações.")
+                DetailEmptyCard(message: .disciplinesDetailNoGrades)
             } else {
                 VStack(spacing: 14) {
                     ForEach(sections) { section in
@@ -110,7 +112,7 @@ struct DisciplineGradesBlock: View {
 
     private func sectionLabel(_ section: DisciplineGradeSection) -> some View {
         HStack(spacing: 7) {
-            Text(section.name ?? "Notas")
+            Text(section.name ?? String.localized(.disciplinesDetailGrades))
                 .font(.system(size: 11.5, weight: .bold))
                 .tracking(0.3)
                 .foregroundStyle(color)
@@ -194,7 +196,7 @@ private struct GradeDetailRow: View {
     private var dateLabel: String {
         if let days = grade.daysUntil { return DisciplinesFormat.inDaysLabel(days) }
         if let date = grade.date { return DisciplinesFormat.longDate(date) }
-        return "data não divulgada"
+        return .localized(.disciplinesDetailDateUnannounced)
     }
 }
 
@@ -215,7 +217,7 @@ struct DisciplinePresencaCard: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            DisciplineSectionHeader(title: "Presença")
+            DisciplineSectionHeader(title: .disciplinesDetailAttendance)
 
             VStack(spacing: 14) {
                 HStack(alignment: .bottom, spacing: 12) {
@@ -226,12 +228,12 @@ struct DisciplinePresencaCard: View {
                                 .tracking(-1.36)
                                 .monospacedDigit()
                                 .foregroundStyle(tone)
-                            Text("de \(detail.allowedMissedHours)")
+                            Text(.disciplinesDetailOfCount(detail.allowedMissedHours))
                                 .font(.system(size: 16, weight: .semibold))
                                 .monospacedDigit()
                                 .foregroundStyle(UNESColor.ink4)
                         }
-                        Text("faltas registradas")
+                        Text(.disciplinesDetailAbsencesLogged)
                             .font(.system(size: 13, weight: .medium))
                             .foregroundStyle(UNESColor.ink3)
                     }
@@ -243,7 +245,7 @@ struct DisciplinePresencaCard: View {
                             .tracking(-0.66)
                             .monospacedDigit()
                             .foregroundStyle(UNESColor.ink)
-                        Text("restantes")
+                        Text(.disciplinesDetailRemaining)
                             .textCase(.uppercase)
                             .font(.system(size: 11, weight: .semibold))
                             .tracking(0.4)
@@ -294,8 +296,8 @@ struct DisciplinePresencaCard: View {
                 .font(.system(size: 13, weight: .medium))
             Text(
                 detail.absenceRisk == .critical
-                    ? "Atenção: \(percent)% do limite atingido."
-                    : "Monitore suas faltas com cuidado."
+                    ? .disciplinesDetailAbsenceCritical(percent)
+                    : .disciplinesDetailAbsenceWarning
             )
             .font(.system(size: 12.5, weight: .medium))
         }
@@ -317,7 +319,7 @@ struct DisciplineEmentaCard: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            DisciplineSectionHeader(title: "Ementa")
+            DisciplineSectionHeader(title: .disciplinesDetailSyllabus)
 
             if let ementa = detail.ementa {
                 let isLong = ementa.count > 150
@@ -328,8 +330,10 @@ struct DisciplineEmentaCard: View {
                         .foregroundStyle(UNESColor.ink2)
 
                     if isLong {
-                        Button(expanded ? "mostrar menos" : "ler mais") {
+                        Button {
                             expanded.toggle()
+                        } label: {
+                            Text(expanded ? .disciplinesDetailShowLess : .disciplinesDetailReadMore)
                         }
                         .font(.system(size: 13, weight: .semibold))
                         .foregroundStyle(color)
@@ -361,7 +365,7 @@ struct DisciplineEmentaCard: View {
 
 /// A quiet, centered placeholder card shared by the empty sections.
 struct DetailEmptyCard: View {
-    var message: String
+    var message: LocalizedStringResource
 
     var body: some View {
         Text(message)

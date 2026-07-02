@@ -19,7 +19,7 @@ struct HomeView: View {
                         .frame(maxHeight: .infinity)
                 }
             }
-            .navigationTitle("Hoje")
+            .navigationTitle(Text(.commonToday))
             .toolbar {
                 ToolbarItem(placement: .trailingCompat) {
                     avatarButton
@@ -160,7 +160,7 @@ struct HomeView: View {
 
     private func errorState(_ message: String) -> some View {
         VStack(spacing: 8) {
-            Text("Não deu para carregar seu dia")
+            Text(.homeErrorTitle)
                 .font(.system(size: 17, weight: .semibold))
                 .tracking(-0.34)
                 .foregroundStyle(UNESColor.ink)
@@ -168,8 +168,10 @@ struct HomeView: View {
                 .font(.system(size: 13))
                 .foregroundStyle(UNESColor.ink3)
                 .multilineTextAlignment(.center)
-            Button("Tentar novamente") {
+            Button {
                 store.send(.refreshPulled)
+            } label: {
+                Text(.commonTryAgain)
             }
             .font(.system(size: 15, weight: .semibold))
             .foregroundStyle(UNESColor.accent)

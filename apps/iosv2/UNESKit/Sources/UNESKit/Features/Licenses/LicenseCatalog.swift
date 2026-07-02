@@ -8,10 +8,10 @@ enum LicenseFamily: String, CaseIterable, Identifiable, Sendable {
     var id: String { rawValue }
 
     /// The group card subtitle.
-    var blurb: String {
+    var blurb: LocalizedStringResource {
         switch self {
-        case .mit: "Permissiva · atribuição · sem garantia"
-        case .apache2: "Permissiva · concessão de patentes"
+        case .mit: .licensesFamilyMitBlurb
+        case .apache2: .licensesFamilyApache2Blurb
         }
     }
 
@@ -44,7 +44,7 @@ struct LicensePackage: Equatable, Identifiable, Sendable {
     let version: String
     let family: LicenseFamily
     let author: String
-    let category: String
+    let category: LocalizedStringResource
     /// Repository, scheme-less — rows show it verbatim.
     let homepage: String
 
@@ -66,7 +66,7 @@ enum LicenseCatalog {
             version: "1.26.0",
             family: .mit,
             author: "Point-Free, Inc.",
-            category: "Arquitetura",
+            category: .licensesCategoryArchitecture,
             homepage: "github.com/pointfreeco/swift-composable-architecture"
         ),
         LicensePackage(
@@ -74,7 +74,7 @@ enum LicenseCatalog {
             version: "7.11.1",
             family: .mit,
             author: "Gwendal Roué",
-            category: "Banco de dados",
+            category: .licensesCategoryDatabase,
             homepage: "github.com/groue/GRDB.swift"
         ),
         LicensePackage(
@@ -82,7 +82,7 @@ enum LicenseCatalog {
             version: "1.2.0",
             family: .mit,
             author: "Point-Free, Inc.",
-            category: "Concorrência",
+            category: .licensesCategoryConcurrency,
             homepage: "github.com/pointfreeco/combine-schedulers"
         ),
         LicensePackage(
@@ -90,7 +90,7 @@ enum LicenseCatalog {
             version: "1.8.0",
             family: .mit,
             author: "Point-Free, Inc.",
-            category: "Arquitetura",
+            category: .licensesCategoryArchitecture,
             homepage: "github.com/pointfreeco/swift-case-paths"
         ),
         LicensePackage(
@@ -98,7 +98,7 @@ enum LicenseCatalog {
             version: "1.1.0",
             family: .mit,
             author: "Point-Free, Inc.",
-            category: "Concorrência",
+            category: .licensesCategoryConcurrency,
             homepage: "github.com/pointfreeco/swift-clocks"
         ),
         LicensePackage(
@@ -106,7 +106,7 @@ enum LicenseCatalog {
             version: "1.4.0",
             family: .mit,
             author: "Point-Free, Inc.",
-            category: "Concorrência",
+            category: .licensesCategoryConcurrency,
             homepage: "github.com/pointfreeco/swift-concurrency-extras"
         ),
         LicensePackage(
@@ -114,7 +114,7 @@ enum LicenseCatalog {
             version: "1.6.1",
             family: .mit,
             author: "Point-Free, Inc.",
-            category: "Diagnóstico",
+            category: .licensesCategoryDiagnostics,
             homepage: "github.com/pointfreeco/swift-custom-dump"
         ),
         LicensePackage(
@@ -122,7 +122,7 @@ enum LicenseCatalog {
             version: "1.14.1",
             family: .mit,
             author: "Point-Free, Inc.",
-            category: "Arquitetura",
+            category: .licensesCategoryArchitecture,
             homepage: "github.com/pointfreeco/swift-dependencies"
         ),
         LicensePackage(
@@ -130,7 +130,7 @@ enum LicenseCatalog {
             version: "1.1.1",
             family: .mit,
             author: "Point-Free, Inc.",
-            category: "Estruturas de dados",
+            category: .licensesCategoryDataStructures,
             homepage: "github.com/pointfreeco/swift-identified-collections"
         ),
         LicensePackage(
@@ -138,7 +138,7 @@ enum LicenseCatalog {
             version: "2.10.2",
             family: .mit,
             author: "Point-Free, Inc.",
-            category: "Navegação",
+            category: .licensesCategoryNavigation,
             homepage: "github.com/pointfreeco/swift-navigation"
         ),
         LicensePackage(
@@ -146,7 +146,7 @@ enum LicenseCatalog {
             version: "2.0.10",
             family: .mit,
             author: "Point-Free, Inc.",
-            category: "Arquitetura",
+            category: .licensesCategoryArchitecture,
             homepage: "github.com/pointfreeco/swift-perception"
         ),
         LicensePackage(
@@ -154,7 +154,7 @@ enum LicenseCatalog {
             version: "2.9.1",
             family: .mit,
             author: "Point-Free, Inc.",
-            category: "Arquitetura",
+            category: .licensesCategoryArchitecture,
             homepage: "github.com/pointfreeco/swift-sharing"
         ),
         LicensePackage(
@@ -162,7 +162,7 @@ enum LicenseCatalog {
             version: "1.10.1",
             family: .mit,
             author: "Point-Free, Inc.",
-            category: "Diagnóstico",
+            category: .licensesCategoryDiagnostics,
             homepage: "github.com/pointfreeco/xctest-dynamic-overlay"
         ),
         LicensePackage(
@@ -170,7 +170,7 @@ enum LicenseCatalog {
             version: "1.6.0",
             family: .apache2,
             author: "Apple & projeto Swift",
-            category: "Estruturas de dados",
+            category: .licensesCategoryDataStructures,
             homepage: "github.com/apple/swift-collections"
         ),
         LicensePackage(
@@ -178,7 +178,7 @@ enum LicenseCatalog {
             version: "601.0.1",
             family: .apache2,
             author: "Apple & projeto Swift",
-            category: "Macros",
+            category: .licensesCategoryMacros,
             homepage: "github.com/swiftlang/swift-syntax"
         ),
     ]

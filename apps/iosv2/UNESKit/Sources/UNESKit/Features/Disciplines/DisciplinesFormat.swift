@@ -20,20 +20,16 @@ enum DisciplinesFormat {
 
     /// "hoje" / "3d" for the next-evaluation countdown.
     static func countdownLabel(daysUntil: Int) -> String {
-        daysUntil == 0 ? "hoje" : "\(daysUntil)d"
+        daysUntil == 0 ? String.localized(.disciplinesToday) : "\(daysUntil)d"
     }
 
     /// "hoje" / "em 1 dia" / "em 5 dias" for the detail grade rows.
     static func inDaysLabel(_ days: Int) -> String {
-        switch days {
-        case 0: "hoje"
-        case 1: "em 1 dia"
-        default: "em \(days) dias"
-        }
+        days == 0 ? String.localized(.disciplinesToday) : String.localized(.disciplinesInDays(days))
     }
 
     static func disciplineCountLabel(_ count: Int) -> String {
-        count == 1 ? "1 disciplina" : "\(count) disciplinas"
+        .localized(.disciplinesCourseCount(count))
     }
 
     /// "31/03/2026" from a yyyy-MM-dd stamp; other shapes pass through.
@@ -67,15 +63,15 @@ enum DisciplinesFormat {
 }
 
 extension DisciplineStatus {
-    /// The pt-BR pill label, shared by the list and the detail hero.
+    /// The status pill label, shared by the list and the detail hero.
     var label: String {
         switch self {
-        case .approved: "aprovado"
-        case .failed: "reprovado"
-        case .finals: "prova final"
-        case .lowGrade: "nota baixa"
-        case .noGrades: "sem notas"
-        case .ongoing: "em andamento"
+        case .approved: .localized(.disciplinesStatusApproved)
+        case .failed: .localized(.disciplinesStatusFailed)
+        case .finals: .localized(.disciplinesStatusFinals)
+        case .lowGrade: .localized(.disciplinesStatusLowGrade)
+        case .noGrades: .localized(.disciplinesStatusNoGrades)
+        case .ongoing: .localized(.disciplinesStatusOngoing)
         }
     }
 }

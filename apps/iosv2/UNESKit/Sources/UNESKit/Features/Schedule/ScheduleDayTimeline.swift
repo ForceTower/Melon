@@ -60,11 +60,11 @@ struct ScheduleDayTimeline: View {
                 .opacity(0.9)
                 .padding(.bottom, 12)
 
-            Text("Dia livre")
+            Text(.scheduleDayEmptyTitle)
                 .font(.system(size: 20, weight: .bold))
                 .tracking(-0.4)
                 .foregroundStyle(UNESColor.ink)
-            Text("Nenhuma aula agendada. Aproveite.")
+            Text(.scheduleDayEmptyMessage)
                 .font(.system(size: 14, weight: .medium))
                 .foregroundStyle(UNESColor.ink3)
                 .padding(.top, 4)
@@ -92,7 +92,7 @@ private struct ScheduleGapMarker: View {
     var body: some View {
         HStack(spacing: 10) {
             line
-            Text("\(ScheduleFormat.durationLabel(minutes)) livre")
+            Text(.scheduleDayGapFree(ScheduleFormat.durationLabel(minutes)))
                 .font(.system(size: 11, weight: .semibold))
                 .tracking(0.2)
                 .monospacedDigit()

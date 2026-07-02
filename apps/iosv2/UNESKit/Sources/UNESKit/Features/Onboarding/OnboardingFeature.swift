@@ -77,12 +77,12 @@ struct OnboardingFeature {
             case let .path(.element(id: _, action: .login(.delegate(.loggedIn(username, session))))):
                 log.info("logged in username=\(username ?? "<passkey>"), advancing to sync")
                 state.session = session
-                state.path.append(.sync(SyncFeature.State(greeting: username ?? "estudante")))
+                state.path.append(.sync(SyncFeature.State(greeting: username ?? String.localized(.onboardingDefaultName))))
                 return .none
 
             case let .path(.element(id: _, action: .sync(.delegate(.done(profile, overview))))):
                 log.info("onboarding sync done, advancing to ready")
-                let name = firstName(of: profile?.name ?? state.session?.user.name) ?? "estudante"
+                let name = firstName(of: profile?.name ?? state.session?.user.name) ?? String.localized(.onboardingDefaultName)
                 state.path.append(.ready(ReadyFeature.State(userName: name, overview: overview ?? .empty)))
                 return .none
 
@@ -91,7 +91,7 @@ struct OnboardingFeature {
                 // Sync hit a 401 — back to login with an explanation.
                 state.path.removeLast()
                 if let id = state.path.ids.last, case .login(var login) = state.path[id: id] {
-                    login.errorMessage = "Sua sessão expirou. Entre novamente."
+                    login.errorMessage = String.localized(.onboardingLoginSessionExpired)
                     state.path[id: id] = .login(login)
                 }
                 return .none

@@ -175,7 +175,7 @@ extension SemesterSnapshot {
     private func gradeTitle(_ grade: StudentGradeRecord) -> String {
         [grade.name, grade.nameShort]
             .compactMap { $0?.trimmingCharacters(in: .whitespaces) }
-            .first { !$0.isEmpty } ?? "Avaliação \(grade.ordinal)"
+            .first { !$0.isEmpty } ?? String.localized(.commonAssessmentOrdinal(grade.ordinal))
     }
 
     private func daysUntil(grade: StudentGradeRecord, today: String, calendar: Calendar) -> Int? {

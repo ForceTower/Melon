@@ -30,9 +30,9 @@ struct EnrollmentDisciplineView: View {
         .safeAreaInset(edge: .bottom) {
             EnrollmentDock(
                 session: store.session,
-                primaryLabel: "Concluir",
+                primaryLabel: .localized(.commonDone),
                 onPrimary: { store.send(.doneTapped) },
-                secondaryLabel: "Grade",
+                secondaryLabel: String.localized(.enrollmentActionGrid),
                 onSecondary: { store.send(.timetableTapped) }
             )
         }
@@ -52,7 +52,7 @@ struct EnrollmentDisciplineView: View {
                     }
 
                     VStack(spacing: 0) {
-                        EnrollmentSectionHeader(title: "Escolha uma turma")
+                        EnrollmentSectionHeader(title: .enrollmentDisciplineChooseSection)
                         VStack(spacing: 12) {
                             ForEach(discipline.sections) { section in
                                 EnrollmentSectionCard(
@@ -90,7 +90,7 @@ struct EnrollmentDisciplineView: View {
 
     private func header(_ discipline: EnrollmentDiscipline) -> some View {
         VStack(alignment: .leading, spacing: 5) {
-            Text("\(discipline.code) · \(discipline.mandatory ? "Obrigatória" : "Optativa")")
+            Text(verbatim: "\(discipline.code) · \(String.localized(discipline.mandatory ? .enrollmentBadgeMandatory : .enrollmentBadgeOptional))")
                 .textCase(.uppercase)
                 .font(.system(size: 12, weight: .semibold))
                 .tracking(0.48)
@@ -100,13 +100,13 @@ struct EnrollmentDisciplineView: View {
                 .tracking(-1.19)
                 .foregroundStyle(UNESColor.ink)
                 .fixedSize(horizontal: false, vertical: true)
-            Text("\(discipline.workload)h · \(EnrollmentFormat.sectionCountLabel(discipline.sections.count))")
+            Text(verbatim: "\(discipline.workload)h · \(EnrollmentFormat.sectionCountLabel(discipline.sections.count))")
                 .font(.system(size: 14, weight: .medium))
                 .tracking(-0.14)
                 .monospacedDigit()
                 .foregroundStyle(UNESColor.ink3)
             if discipline.suggestion {
-                EnrollmentBadge(kind: .suggested, text: "Sugerida pelo curso")
+                EnrollmentBadge(kind: .suggested, text: .localized(.enrollmentBadgeSuggestedByCourse))
                     .padding(.top, 8)
             }
         }
@@ -118,12 +118,12 @@ struct EnrollmentDisciplineView: View {
         let unmet = discipline.hasUnmetPrereq
         return EnrollmentBanner(
             tone: unmet ? .danger : .info,
-            title: unmet ? "Pré-requisito não cumprido" : "Pré-requisitos cumpridos"
+            title: String.localized(unmet ? .enrollmentPrereqUnmetTitle : .enrollmentPrereqMetTitle)
         ) {
             VStack(alignment: .leading, spacing: 4) {
                 Text(prereqLine(discipline.prereqs))
                 if unmet {
-                    Text("Você pode selecionar, mas depende de análise do colegiado.")
+                    Text(.enrollmentPrereqUnmetNote)
                         .foregroundStyle(UNESColor.ink3)
                 }
             }
@@ -139,7 +139,7 @@ struct EnrollmentDisciplineView: View {
             line += code
             line += AttributedString(" \(prereq.name)")
             if !prereq.met {
-                var pending = AttributedString(" — pendente")
+                var pending = AttributedString(" — " + String.localized(.enrollmentPrereqPending))
                 pending.foregroundColor = EnrollmentTone.danger
                 line += pending
             }
@@ -150,18 +150,18 @@ struct EnrollmentDisciplineView: View {
     private func allowsOtherCard(_ discipline: EnrollmentDiscipline, section: EnrollmentSection, pick: EnrollmentPick) -> some View {
         HStack(spacing: 12) {
             VStack(alignment: .leading, spacing: 3) {
-                Text("Aceitar outra turma")
+                Text(.enrollmentAllowOtherTitle)
                     .font(.system(size: 14, weight: .semibold))
                     .tracking(-0.14)
                     .foregroundStyle(UNESColor.ink)
-                Text("Sem vaga na \(section.label)? Me matricule em outra turma de \(discipline.code) com vaga.")
+                Text(.enrollmentAllowOtherBody(section.label, discipline.code))
                     .font(.system(size: 12.5, weight: .medium))
                     .lineSpacing(2)
                     .foregroundStyle(UNESColor.ink3)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
 
-            Toggle("Aceitar outra turma", isOn: Binding(
+            Toggle(String.localized(.enrollmentAllowOtherTitle), isOn: Binding(
                 get: { pick.allowsOther },
                 set: { store.send(.allowsOtherChanged($0)) }
             ))

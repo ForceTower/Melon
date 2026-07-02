@@ -10,7 +10,7 @@ struct WelcomeView: View {
                 .ignoresSafeArea()
 
             VStack(alignment: .leading, spacing: 0) {
-                Eyebrow(text: "Boas vindas ao UNES", color: .white.opacity(0.92))
+                Eyebrow(text: String.localized(.onboardingWelcomeEyebrow), color: .white.opacity(0.92))
                     .fadeUp(delay: 0.1, duration: 0.6)
 
                 Spacer()
@@ -18,7 +18,7 @@ struct WelcomeView: View {
                 title
                     .fadeUp(delay: 0.22, duration: 0.75)
 
-                Text("Horários, notas, recados da coordenação e turmas da UEFS. Tudo conectado à sua matrícula.")
+                Text(.onboardingWelcomeBody)
                     .font(.system(size: 17))
                     .tracking(-0.17)
                     .lineSpacing(3.5)
@@ -29,12 +29,12 @@ struct WelcomeView: View {
 
                 VStack(spacing: 10) {
                     Button(action: onExplore) {
-                        UNESButtonLabel(text: "Conhecer o app")
+                        UNESButtonLabel(text: .onboardingWelcomeExplore)
                     }
                     .buttonStyle(.unesLight)
 
                     Button(action: onLogin) {
-                        Text("Já tenho matrícula").tracking(-0.17)
+                        Text(.onboardingWelcomeHaveAccount).tracking(-0.17)
                     }
                     .buttonStyle(.unesGlass)
                 }
@@ -65,9 +65,9 @@ struct WelcomeView: View {
 
     private var title: some View {
         VStack(alignment: .leading, spacing: -9) {
-            titleLine("Seu semestre,", color: UNESColor.paper)
-            titleLine("num só", color: UNESColor.accent)
-            titleLine("lugar.", color: UNESColor.paper)
+            titleLine(String.localized(.onboardingWelcomeTitleLine1), color: UNESColor.paper)
+            titleLine(String.localized(.onboardingWelcomeTitleLine2), color: UNESColor.accent)
+            titleLine(String.localized(.onboardingWelcomeTitleLine3), color: UNESColor.paper)
         }
     }
 

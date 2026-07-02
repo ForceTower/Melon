@@ -39,7 +39,7 @@ struct LicensesHero: View {
     private var eyebrow: some View {
         HStack(spacing: 7) {
             LiveDot()
-            Text("Código aberto")
+            Text(.licensesHeroEyebrow)
                 .textCase(.uppercase)
                 .font(.system(size: 12, weight: .semibold))
                 .tracking(0.2)
@@ -54,14 +54,14 @@ struct LicensesHero: View {
                 .tracking(-2.08)
                 .monospacedDigit()
                 .foregroundStyle(.white)
-            Text("pacotes")
+            Text(total == 1 ? .licensesHeroPackageUnitOne : .licensesHeroPackageUnitOther)
                 .font(.system(size: 17, weight: .semibold))
                 .foregroundStyle(.white.opacity(0.62))
         }
     }
 
     private var tribute: some View {
-        Text("Nada disso existiria sem quem publicou seu código de graça.")
+        Text(.licensesHeroTribute)
             .font(.system(size: 14, weight: .medium))
             .lineSpacing(3)
             .foregroundStyle(.white.opacity(0.82))

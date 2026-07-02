@@ -15,7 +15,7 @@ struct EnrollmentOffersView: View {
         }
         .toolbar {
             ToolbarItem(placement: .principal) {
-                Text("Disciplinas ofertadas")
+                Text(.enrollmentOffersNavTitle)
                     .font(.system(size: 16, weight: .semibold))
                     .tracking(-0.32)
                     .foregroundStyle(UNESColor.ink)
@@ -28,9 +28,9 @@ struct EnrollmentOffersView: View {
         .safeAreaInset(edge: .bottom) {
             EnrollmentDock(
                 session: store.session,
-                primaryLabel: "Revisar",
+                primaryLabel: .localized(.enrollmentActionReview),
                 onPrimary: { store.send(.reviewTapped) },
-                secondaryLabel: "Grade",
+                secondaryLabel: String.localized(.enrollmentActionGrid),
                 onSecondary: { store.send(.timetableTapped) }
             )
         }
@@ -43,12 +43,12 @@ struct EnrollmentOffersView: View {
                     .fadeUp(delay: 0.02)
 
                 VStack(spacing: 12) {
-                    SearchField(placeholder: "Buscar por código ou nome", query: store.query) {
+                    SearchField(placeholder: .enrollmentOffersSearch, query: store.query) {
                         store.send(.queryChanged($0))
                     }
                     .fadeUp(delay: 0.06)
 
-                    Picker("Filtro", selection: $store.filter.sending(\.filterChanged)) {
+                    Picker(String.localized(.commonFilter), selection: $store.filter.sending(\.filterChanged)) {
                         ForEach(EnrollmentOfferFilter.allCases) { filter in
                             Text(filter.label).tag(filter)
                         }
@@ -73,11 +73,11 @@ struct EnrollmentOffersView: View {
 
     private var header: some View {
         VStack(alignment: .leading, spacing: 5) {
-            Text("Ofertadas")
+            Text(.enrollmentOffersTitle)
                 .font(.system(size: 40, weight: .bold))
                 .tracking(-1.6)
                 .foregroundStyle(UNESColor.ink)
-            Text(DisciplinesFormat.disciplineCountLabel(store.session.disciplines.count) + " disponíveis")
+            Text(.enrollmentOffersAvailableCount(store.session.disciplines.count))
                 .font(.system(size: 14, weight: .medium))
                 .tracking(-0.14)
                 .foregroundStyle(UNESColor.ink3)
@@ -94,7 +94,7 @@ struct EnrollmentOffersView: View {
             VStack(spacing: 0) {
                 ForEach(Array(store.groups.enumerated()), id: \.element.id) { index, group in
                     VStack(spacing: 0) {
-                        EnrollmentSectionHeader(title: group.period == 0 ? "Optativas" : "\(group.period)º período")
+                        EnrollmentSectionHeader(title: group.period == 0 ? .enrollmentOffersFilterOptional : .enrollmentOffersPeriodTitle(group.period))
                         VStack(spacing: 10) {
                             ForEach(group.disciplines) { discipline in
                                 EnrollmentOfferRow(
@@ -115,11 +115,11 @@ struct EnrollmentOffersView: View {
 
     private var emptyState: some View {
         VStack(spacing: 4) {
-            Text("Nada por aqui")
+            Text(.enrollmentOffersEmptyTitle)
                 .font(.system(size: 17, weight: .bold))
                 .tracking(-0.34)
                 .foregroundStyle(UNESColor.ink)
-            Text("Nenhuma disciplina para \"\(store.query.trimmingCharacters(in: .whitespaces))\".")
+            Text(.enrollmentOffersEmptyBody(store.query.trimmingCharacters(in: .whitespaces)))
                 .font(.system(size: 13, weight: .medium))
                 .foregroundStyle(UNESColor.ink4)
         }
@@ -150,7 +150,7 @@ struct EnrollmentOfferRow: View {
                 HStack(spacing: 8) {
                     EnrollmentCodeChip(code: discipline.code, color: discipline.tint)
                     if discipline.suggestion {
-                        EnrollmentBadge(kind: .suggested, text: "Sugerida")
+                        EnrollmentBadge(kind: .suggested, text: .localized(.enrollmentBadgeSuggested))
                     }
                     Spacer()
                     if let pickedSection {
@@ -178,10 +178,10 @@ struct EnrollmentOfferRow: View {
                     Spacer()
                     EnrollmentBadge(
                         kind: discipline.mandatory ? .mandatory : .optional,
-                        text: discipline.mandatory ? "Obrigatória" : "Optativa"
+                        text: .localized(discipline.mandatory ? .enrollmentBadgeMandatory : .enrollmentBadgeOptional)
                     )
                     if discipline.hasUnmetPrereq {
-                        EnrollmentBadge(kind: .prereq, text: "Pré-requisito")
+                        EnrollmentBadge(kind: .prereq, text: .localized(.enrollmentBadgePrereq))
                     }
                 }
                 .font(.system(size: 13, weight: .medium))

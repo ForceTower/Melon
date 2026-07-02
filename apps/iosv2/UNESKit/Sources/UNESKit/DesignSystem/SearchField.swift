@@ -3,7 +3,7 @@ import SwiftUI
 /// The v2 inline search field: accent border while focused, clear button
 /// while anything is typed.
 struct SearchField: View {
-    var placeholder: String
+    var placeholder: LocalizedStringResource
     var query: String
     var onQueryChange: (String) -> Void
 
@@ -16,8 +16,9 @@ struct SearchField: View {
                 .foregroundStyle(UNESColor.ink3)
 
             TextField(
-                placeholder,
-                text: Binding(get: { query }, set: { onQueryChange($0) })
+                "",
+                text: Binding(get: { query }, set: { onQueryChange($0) }),
+                prompt: Text(placeholder)
             )
             .font(.system(size: 16, weight: .medium))
             .tracking(-0.16)
@@ -53,8 +54,8 @@ struct SearchField: View {
 
 #Preview {
     VStack(spacing: 11) {
-        SearchField(placeholder: "Buscar pacote ou autor", query: "", onQueryChange: { _ in })
-        SearchField(placeholder: "Buscar por código ou nome", query: "estruturas", onQueryChange: { _ in })
+        SearchField(placeholder: .commonSearch, query: "", onQueryChange: { _ in })
+        SearchField(placeholder: .commonSearch, query: "estruturas", onQueryChange: { _ in })
     }
     .padding(16)
     .background(UNESColor.surface)

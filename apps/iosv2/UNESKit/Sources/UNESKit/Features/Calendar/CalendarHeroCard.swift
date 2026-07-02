@@ -62,7 +62,7 @@ struct CalendarHeroCard: View {
         HStack {
             HStack(spacing: 7) {
                 haloDot
-                Text(isActive ? "Acontecendo agora" : "Próxima ação")
+                Text(isActive ? String.localized(.calendarHeroHappeningNow) : String.localized(.calendarHeroNextAction))
                     .font(.system(size: 11.5, weight: .semibold))
                     .tracking(-0.06)
             }
@@ -155,10 +155,10 @@ struct CalendarHeroCard: View {
             }
 
             HStack {
-                Text("\(Int((progress * 100).rounded()))% decorrido")
+                Text(.calendarHeroPercentElapsed(Int((progress * 100).rounded())))
                 Spacer()
                 if let end = event.end {
-                    Text("termina \(CalendarFormat.dateShort(end))")
+                    Text(.calendarHeroEndsOn(CalendarFormat.dateShort(end)))
                 }
             }
             .font(.system(size: 11, weight: .medium))

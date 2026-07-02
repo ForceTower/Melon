@@ -23,7 +23,7 @@ struct ScheduleView: View {
                         .frame(maxHeight: .infinity)
                 }
             }
-            .navigationTitle("Horário")
+            .navigationTitle(Text(.navSchedule))
         } destination: { store in
             switch store.case {
             case let .detail(store):
@@ -118,7 +118,7 @@ struct ScheduleView: View {
 
     private func dayHeader(_ day: ScheduleDay, index: Int, isToday: Bool) -> some View {
         HStack(alignment: .lastTextBaseline) {
-            Text(isToday ? "Hoje" : ScheduleFormat.dayNames[index])
+            Text(isToday ? String.localized(.commonToday) : ScheduleFormat.dayNames[index])
                 .font(.system(size: 22, weight: .bold))
                 .tracking(-0.66)
                 .foregroundStyle(UNESColor.ink)
@@ -141,7 +141,7 @@ struct ScheduleView: View {
             HStack(spacing: 6) {
                 Image(systemName: "smallcircle.filled.circle")
                     .font(.system(size: 11, weight: .semibold))
-                Text("Hoje")
+                Text(.commonToday)
                     .font(.system(size: 13, weight: .semibold))
                     .tracking(-0.13)
             }
@@ -156,11 +156,11 @@ struct ScheduleView: View {
 
     private var emptyState: some View {
         VStack(spacing: 8) {
-            Text("Sem horário por aqui")
+            Text(.scheduleEmptyStateTitle)
                 .font(.system(size: 17, weight: .semibold))
                 .tracking(-0.34)
                 .foregroundStyle(UNESColor.ink)
-            Text("Suas aulas aparecem assim que a primeira sincronização terminar.")
+            Text(.scheduleEmptyStateMessage)
                 .font(.system(size: 13))
                 .foregroundStyle(UNESColor.ink3)
                 .multilineTextAlignment(.center)
@@ -171,7 +171,7 @@ struct ScheduleView: View {
 
     private func errorState(_ message: String) -> some View {
         VStack(spacing: 8) {
-            Text("Não deu para carregar seu horário")
+            Text(.scheduleErrorTitle)
                 .font(.system(size: 17, weight: .semibold))
                 .tracking(-0.34)
                 .foregroundStyle(UNESColor.ink)
@@ -179,8 +179,10 @@ struct ScheduleView: View {
                 .font(.system(size: 13))
                 .foregroundStyle(UNESColor.ink3)
                 .multilineTextAlignment(.center)
-            Button("Tentar novamente") {
+            Button {
                 store.send(.refreshPulled)
+            } label: {
+                Text(.commonTryAgain)
             }
             .font(.system(size: 15, weight: .semibold))
             .foregroundStyle(UNESColor.accent)

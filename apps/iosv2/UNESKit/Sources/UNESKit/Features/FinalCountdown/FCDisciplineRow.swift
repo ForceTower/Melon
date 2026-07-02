@@ -13,7 +13,7 @@ struct FCDisciplineRow: View {
             badge
 
             VStack(alignment: .leading, spacing: 1) {
-                Text(discipline?.name ?? "Modo livre")
+                Text(discipline?.name ?? String.localized(.finalCountdownDisciplineFreeMode))
                     .font(.system(size: 16, weight: .semibold))
                     .tracking(-0.32)
                     .lineLimit(1)
@@ -27,7 +27,7 @@ struct FCDisciplineRow: View {
 
             if canChange {
                 Button(action: onChange) {
-                    Text("Trocar")
+                    Text(.finalCountdownDisciplineChange)
                         .font(.system(size: 13, weight: .semibold))
                         .tracking(-0.13)
                         .foregroundStyle(UNESColor.accent)
@@ -70,7 +70,7 @@ struct FCDisciplineRow: View {
     }
 
     private var subtitle: String {
-        guard let discipline else { return "só a matemática, sem disciplina" }
+        guard let discipline else { return String.localized(.finalCountdownDisciplineFreeModeSubtitle) }
         return [
             discipline.teacherName,
             discipline.semesterCode.map(DisciplinesFormat.semesterLabel),
@@ -121,11 +121,11 @@ struct FCDisciplinePicker: View {
     private var header: some View {
         HStack(spacing: 12) {
             VStack(alignment: .leading, spacing: 2) {
-                Text("Trocar disciplina")
+                Text(.finalCountdownPickerTitle)
                     .font(.system(size: 22, weight: .bold))
                     .tracking(-0.66)
                     .foregroundStyle(UNESColor.ink)
-                Text("as notas lançadas entram no cálculo")
+                Text(.finalCountdownPickerSubtitle)
                     .font(.system(size: 13, weight: .medium))
                     .foregroundStyle(UNESColor.ink3)
             }
@@ -155,11 +155,11 @@ struct FCDisciplinePicker: View {
                     .background(UNESColor.slate, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
 
                 VStack(alignment: .leading, spacing: 1) {
-                    Text("Modo livre")
+                    Text(.finalCountdownDisciplineFreeMode)
                         .font(.system(size: 15, weight: .semibold))
                         .tracking(-0.23)
                         .foregroundStyle(UNESColor.ink)
-                    Text("comece em branco e teste qualquer hipótese")
+                    Text(.finalCountdownPickerFreeModeDescription)
                         .font(.system(size: 12, weight: .medium))
                         .foregroundStyle(UNESColor.ink4)
                 }
@@ -203,7 +203,7 @@ struct FCDisciplinePicker: View {
                         .tracking(-0.23)
                         .lineLimit(1)
                         .foregroundStyle(UNESColor.ink)
-                    Text("\(choice.releasedCount)/\(choice.grades.count) lançadas")
+                    Text(.finalCountdownPickerReleasedCount(choice.releasedCount, choice.grades.count))
                         .font(.system(size: 12, weight: .medium))
                         .monospacedDigit()
                         .foregroundStyle(UNESColor.ink4)

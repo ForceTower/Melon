@@ -54,7 +54,7 @@ struct PastSemesterCard: View {
                         .tracking(-0.34)
                         .monospacedDigit()
                         .foregroundStyle(UNESColor.ink)
-                    Text(semester.disciplines.count == 1 ? "1 disc." : "\(semester.disciplines.count) disc.")
+                    Text(.disciplinesCourseCountShort(semester.disciplines.count))
                         .font(.system(size: 12, weight: .medium))
                         .foregroundStyle(UNESColor.ink4)
                 }
@@ -91,7 +91,8 @@ struct PastSemesterCard: View {
         HStack(spacing: 8) {
             if let mean = semester.finalMean {
                 (
-                    Text("média ")
+                    Text(.disciplinesAverage)
+                        + Text(verbatim: " ")
                         + Text(formatGrade(mean))
                         .fontWeight(.bold)
                         .foregroundStyle(UNESColor.score(mean))
@@ -99,7 +100,7 @@ struct PastSemesterCard: View {
                 .monospacedDigit()
                 Text("·").opacity(0.4)
             }
-            Text("\(semester.approvedCount)/\(semester.disciplines.count) aprovadas")
+            Text(.disciplinesApprovedTally(semester.approvedCount, semester.disciplines.count))
                 .monospacedDigit()
         }
         .font(.system(size: 13, weight: .medium))
@@ -139,7 +140,7 @@ struct PastDisciplineRow: View {
                         .monospacedDigit()
                         .foregroundStyle(UNESColor.score(discipline.finalGrade))
                     if let passed = discipline.passed {
-                        Text(passed ? "aprovado" : "reprovado")
+                        Text(passed ? .disciplinesStatusApproved : .disciplinesStatusFailed)
                             .textCase(.uppercase)
                             .font(.system(size: 9.5, weight: .bold))
                             .tracking(0.2)
@@ -189,23 +190,23 @@ struct DownloadSemesterCard: View {
                             .monospacedDigit()
                             .foregroundStyle(isDownloading ? UNESColor.ink3 : UNESColor.ink)
                         if isDownloading {
-                            Text("baixando…")
+                            Text(.disciplinesDownloading)
                                 .font(.system(size: 12, weight: .medium))
                                 .foregroundStyle(UNESColor.ink4)
                         } else if let count = semester.disciplineCount {
-                            Text("~\(DisciplinesFormat.disciplineCountLabel(count))")
+                            Text(verbatim: "~\(DisciplinesFormat.disciplineCountLabel(count))")
                                 .font(.system(size: 12, weight: .medium))
                                 .foregroundStyle(UNESColor.ink4)
                         }
                     }
-                    Text(isDownloading ? "Buscando notas e faltas…" : "Toque para baixar o histórico.")
+                    Text(isDownloading ? .disciplinesDownloadingDetail : .disciplinesDownloadHint)
                         .font(.system(size: 13, weight: .medium))
                         .foregroundStyle(UNESColor.ink3)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
 
                 if !isDownloading {
-                    Text("Baixar")
+                    Text(.disciplinesDownload)
                         .font(.system(size: 13, weight: .semibold))
                         .foregroundStyle(UNESColor.accent)
                 }

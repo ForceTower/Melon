@@ -15,7 +15,7 @@ struct MeLogoutSheet: View {
         VStack(alignment: .leading, spacing: 0) {
             header
                 .padding(.bottom, 14)
-            Text("Seus dados serão removidos deste aparelho. Você precisará entrar com as suas informações novamente para ver a matrícula, notas e mensagens.")
+            Text(.meLogoutBody)
                 .font(.system(size: 13.5, weight: .medium))
                 .lineSpacing(3)
                 .foregroundStyle(UNESColor.ink2)
@@ -47,12 +47,12 @@ struct MeLogoutSheet: View {
                 }
 
             VStack(alignment: .leading, spacing: 2) {
-                Text("Sair da conta?")
+                Text(.meLogoutTitle)
                     .font(.system(size: 22, weight: .bold))
                     .tracking(-0.66)
                     .foregroundStyle(UNESColor.ink)
                 if let userName {
-                    Text("Sessão · \(userName)")
+                    Text(.meLogoutSession(userName))
                         .font(.system(size: 12.5, weight: .medium))
                         .foregroundStyle(UNESColor.ink3)
                         .lineLimit(1)
@@ -65,7 +65,7 @@ struct MeLogoutSheet: View {
     private var actions: some View {
         HStack(spacing: 8) {
             Button(action: onCancel) {
-                Text("Cancelar")
+                Text(.commonCancel)
                     .font(.system(size: 14, weight: .semibold))
                     .foregroundStyle(UNESColor.ink)
                     .frame(maxWidth: .infinity)
@@ -83,7 +83,7 @@ struct MeLogoutSheet: View {
                 HStack(spacing: 7) {
                     Image(systemName: "rectangle.portrait.and.arrow.right")
                         .font(.system(size: 13, weight: .semibold))
-                    Text("Sair agora")
+                    Text(.meLogoutConfirm)
                         .font(.system(size: 14, weight: .semibold))
                 }
                 .foregroundStyle(.white)

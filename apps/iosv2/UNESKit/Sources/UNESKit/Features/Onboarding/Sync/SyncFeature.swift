@@ -10,12 +10,12 @@ struct SyncFeature {
 
         var label: String {
             switch self {
-            case .auth: "Verificando matrícula"
-            case .profile: "Carregando seu perfil"
-            case .schedule: "Montando seu horário"
-            case .classes: "Conectando às turmas"
-            case .grades: "Baixando notas do semestre"
-            case .messages: "Sincronizando recados"
+            case .auth: String.localized(.onboardingSyncStepAuth)
+            case .profile: String.localized(.onboardingSyncStepProfile)
+            case .schedule: String.localized(.onboardingSyncStepSchedule)
+            case .classes: String.localized(.onboardingSyncStepClasses)
+            case .grades: String.localized(.onboardingSyncStepGrades)
+            case .messages: String.localized(.onboardingSyncStepMessages)
             }
         }
     }

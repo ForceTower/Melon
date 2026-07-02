@@ -60,7 +60,7 @@ struct SplashView: View {
                     .padding(.bottom, 6)
                     .popIn(delay: 0.7, duration: 0.5, from: 0, overshoot: 1.6)
             }
-            Text("Universidade · Notas · Semestre")
+            Text(.onboardingSplashTagline)
                 .font(.system(size: 12.5, weight: .semibold))
                 .tracking(0.25)
                 .foregroundStyle(UNESColor.paper.opacity(0.6))
@@ -75,7 +75,7 @@ struct SplashView: View {
                 trackColor: UNESColor.paper.opacity(0.2)
             )
             (
-                Text("para ").foregroundStyle(UNESColor.paper.opacity(0.5))
+                Text(.onboardingSplashForPrefix).foregroundStyle(UNESColor.paper.opacity(0.5))
                     + Text("UEFS").fontWeight(.semibold).foregroundStyle(UNESColor.paper.opacity(0.82))
                     + Text(" · Feira de Santana").foregroundStyle(UNESColor.paper.opacity(0.5))
             )

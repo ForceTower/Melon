@@ -70,8 +70,8 @@ struct EnrollmentAmbientWash: View {
 // MARK: - Section header
 
 struct EnrollmentSectionHeader: View {
-    var title: String
-    var action: String?
+    var title: LocalizedStringResource
+    var action: LocalizedStringResource?
     var onAction: (() -> Void)?
 
     var body: some View {
@@ -82,7 +82,7 @@ struct EnrollmentSectionHeader: View {
                 .foregroundStyle(UNESColor.ink)
             Spacer()
             if let action {
-                Button(action) { onAction?() }
+                Button { onAction?() } label: { Text(action) }
                     .font(.system(size: 15, weight: .medium))
                     .foregroundStyle(UNESColor.accent)
                     .buttonStyle(.plain)
@@ -298,9 +298,9 @@ struct EnrollmentSeatMeter: View {
     }
 
     private var caption: String {
-        if seats.isFull { return "lotada" }
-        if seats.isTight { return "quase cheia" }
-        return "vagas"
+        if seats.isFull { return .localized(.enrollmentSeatsFull) }
+        if seats.isTight { return .localized(.enrollmentSeatsTight) }
+        return .localized(.enrollmentSeatsOpen)
     }
 }
 
@@ -329,7 +329,7 @@ struct EnrollmentScheduleLines: View {
             HStack(spacing: 6) {
                 Image(systemName: "clock")
                     .font(.system(size: 11, weight: .medium))
-                Text("Horário a definir")
+                Text(.enrollmentScheduleTbd)
                     .font(.system(size: 12.5, weight: .medium))
             }
             .foregroundStyle(UNESColor.ink4)
@@ -342,23 +342,23 @@ struct EnrollmentScheduleLines: View {
         VStack(alignment: .leading, spacing: 14) {
             HStack(spacing: 8) {
                 EnrollmentCodeChip(code: "EXA427", color: UNESColor.disciplineReadableColor(1))
-                EnrollmentBadge(kind: .suggested, text: "Sugerida")
-                EnrollmentBadge(kind: .mandatory, text: "Obrigatória")
-                EnrollmentBadge(kind: .optional, text: "Optativa")
+                EnrollmentBadge(kind: .suggested, text: .localized(.enrollmentBadgeSuggested))
+                EnrollmentBadge(kind: .mandatory, text: .localized(.enrollmentBadgeMandatory))
+                EnrollmentBadge(kind: .optional, text: .localized(.enrollmentBadgeOptional))
             }
             HStack(spacing: 8) {
-                EnrollmentBadge(kind: .prereq, text: "Pré-requisito")
-                EnrollmentBadge(kind: .waitlist, text: "Fila · 7º")
+                EnrollmentBadge(kind: .prereq, text: .localized(.enrollmentBadgePrereq))
+                EnrollmentBadge(kind: .waitlist, text: .localized(.enrollmentWaitlistPosition(7)))
                 EnrollmentBadge(kind: .selected, text: "T01")
             }
-            EnrollmentBanner(tone: .danger, title: "Conflito de horário") {
+            EnrollmentBanner(tone: .danger, title: .localized(.enrollmentConflictTitle)) {
                 Text("Choca com TEC502 T01 na segunda. Troque uma das turmas.")
             }
-            EnrollmentBanner(tone: .warn, title: "Turma lotada") {
+            EnrollmentBanner(tone: .warn, title: .localized(.enrollmentClassFullTitle)) {
                 Text("Entre na fila de espera — 6 na frente.")
             }
-            EnrollmentBanner(tone: .info, title: "Sem conflitos") {
-                Text("Suas 4 turmas encaixam sem sobreposição.")
+            EnrollmentBanner(tone: .info, title: .localized(.enrollmentNoConflictsTitle)) {
+                Text(.enrollmentTimetableNoConflictBody(4))
             }
             HStack(spacing: 20) {
                 EnrollmentSeatMeter(seats: EnrollmentSeats(filled: 31, total: 50))

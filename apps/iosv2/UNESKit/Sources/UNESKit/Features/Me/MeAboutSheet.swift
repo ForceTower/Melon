@@ -49,11 +49,11 @@ struct MeAboutSheet: View {
                 .shadow(color: Self.infoBlue.opacity(0.33), radius: 7, y: 6)
 
             VStack(alignment: .leading, spacing: 2) {
-                Text("Sobre o aplicativo")
+                Text(.meAboutTitle)
                     .font(.system(size: 22, weight: .bold))
                     .tracking(-0.66)
                     .foregroundStyle(UNESColor.ink)
-                Text("versão, build e depuração")
+                Text(.meAboutSubtitle)
                     .font(.system(size: 13, weight: .medium))
                     .foregroundStyle(UNESColor.ink3)
             }
@@ -91,7 +91,7 @@ struct MeAboutSheet: View {
                         .font(.system(size: 23, weight: .bold))
                         .tracking(-0.92)
                         .foregroundStyle(.white)
-                    Text("o semestre da UEFS no bolso")
+                    Text(.meAboutTagline)
                         .font(.system(size: 12, weight: .medium))
                         .foregroundStyle(.white.opacity(0.64))
                 }
@@ -135,12 +135,15 @@ struct MeAboutSheet: View {
     private var techGrid: some View {
         VStack(spacing: 8) {
             HStack(spacing: 8) {
-                cell(label: "Build", value: info.build, sub: "origem · \(info.installSource)")
-                cell(label: "Canal", value: info.channel, sub: "versão \(info.version)")
+                cell(label: .localized(.meAboutCellBuild), value: info.build,
+                     sub: .localized(.meAboutCellBuildSub(info.installSource)))
+                cell(label: .localized(.meAboutCellChannel), value: info.channel,
+                     sub: .localized(.meAboutCellChannelSub(info.version)))
             }
             HStack(spacing: 8) {
-                cell(label: "Aparelho", value: info.deviceModel, sub: info.osVersion)
-                cell(label: "Machine ID", value: truncatedMachineId, sub: "para depuração", mono: true)
+                cell(label: .localized(.meAboutCellDevice), value: info.deviceModel, sub: info.osVersion)
+                cell(label: .localized(.meAboutCellMachineId), value: truncatedMachineId,
+                     sub: .localized(.meAboutCellMachineIdSub), mono: true)
             }
         }
     }
@@ -181,7 +184,7 @@ struct MeAboutSheet: View {
             HStack(spacing: 8) {
                 Image(systemName: isCopied ? "checkmark" : "doc.on.doc")
                     .font(.system(size: 13, weight: .semibold))
-                Text(isCopied ? "Copiado para a área de transferência" : "Copiar informações de depuração")
+                Text(isCopied ? .meAboutCopied : .meAboutCopy)
                     .font(.system(size: 14, weight: .semibold))
             }
             .foregroundStyle(isCopied ? .white : UNESColor.surface)
@@ -202,7 +205,7 @@ struct MeAboutSheet: View {
     }
 
     private var footer: some View {
-        Text("feito com ♥ em Feira de Santana")
+        Text(.meAboutMadeWith)
             .font(.system(size: 11, weight: .medium))
             .tracking(0.2)
             .foregroundStyle(UNESColor.ink4)

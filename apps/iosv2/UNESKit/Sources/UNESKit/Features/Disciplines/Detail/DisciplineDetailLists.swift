@@ -15,12 +15,12 @@ struct DisciplineClassesTimeline: View {
 
         VStack(spacing: 0) {
             DisciplineSectionHeader(
-                title: "Aulas",
-                trailing: lectures.isEmpty ? nil : "\(lectures.count) aulas"
+                title: .disciplinesDetailClasses,
+                trailing: lectures.isEmpty ? nil : String.localized(.disciplinesDetailClassCount(lectures.count))
             )
 
             if lectures.isEmpty {
-                DetailEmptyCard(message: "O professor ainda não registrou aulas.")
+                DetailEmptyCard(message: .disciplinesDetailNoClasses)
             } else {
                 VStack(spacing: 8) {
                     ForEach(lectures) { lecture in
@@ -51,7 +51,7 @@ private struct LectureRow: View {
 
             VStack(alignment: .leading, spacing: 5) {
                 if isNext {
-                    Text("próxima aula")
+                    Text(.disciplinesDetailNextClass)
                         .textCase(.uppercase)
                         .font(.system(size: 10.5, weight: .bold))
                         .tracking(0.5)
@@ -59,7 +59,7 @@ private struct LectureRow: View {
                         .padding(.bottom, -1)
                 }
 
-                Text(lecture.subject ?? "Aula")
+                Text(lecture.subject ?? String.localized(.disciplinesDetailClassSession))
                     .font(.system(size: 15, weight: .semibold))
                     .tracking(-0.23)
                     .lineSpacing(2)
@@ -121,10 +121,10 @@ struct DisciplineAttachmentsBlock: View {
         let attachments = detail.attachments(forGroup: selectedGroup)
 
         VStack(spacing: 0) {
-            DisciplineSectionHeader(title: "Anexos", trailing: "\(attachments.count)")
+            DisciplineSectionHeader(title: .disciplinesDetailAttachments, trailing: "\(attachments.count)")
 
             if attachments.isEmpty {
-                DetailEmptyCard(message: "Sem anexos desta turma.")
+                DetailEmptyCard(message: .disciplinesDetailNoAttachments)
             } else {
                 VStack(spacing: 0) {
                     ForEach(Array(attachments.enumerated()), id: \.element.id) { index, attachment in
@@ -251,10 +251,10 @@ private enum AttachmentKind {
 
     var label: String {
         switch self {
-        case .pdf: "PDF"
-        case .slides: "SLIDES"
-        case .notes: "NOTAS"
-        case .link: "LINK"
+        case .pdf: .localized(.disciplinesDetailAttachmentPdf)
+        case .slides: .localized(.disciplinesDetailAttachmentSlides)
+        case .notes: .localized(.disciplinesDetailAttachmentNotes)
+        case .link: .localized(.disciplinesDetailAttachmentLink)
         }
     }
 }

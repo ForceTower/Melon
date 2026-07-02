@@ -19,7 +19,7 @@ struct FinalCountdownView: View {
         }
         .toolbar {
             ToolbarItem(placement: .principal) {
-                Text("Final Countdown")
+                Text(.finalCountdownTitle)
                     .font(.system(size: 16, weight: .semibold))
                     .tracking(-0.32)
                     .foregroundStyle(UNESColor.ink)
@@ -87,11 +87,11 @@ struct FinalCountdownView: View {
 
     private var header: some View {
         VStack(alignment: .leading, spacing: 5) {
-            Text("Final Countdown")
+            Text(.finalCountdownTitle)
                 .font(.system(size: 40, weight: .bold))
                 .tracking(-1.6)
                 .foregroundStyle(UNESColor.ink)
-            Text("Preencha o que já rolou e veja, na matemática fria, quanto falta pra passar.")
+            Text(.finalCountdownSubtitle)
                 .font(.system(size: 14, weight: .medium))
                 .tracking(-0.14)
                 .foregroundStyle(UNESColor.ink3)
@@ -106,12 +106,12 @@ struct FinalCountdownView: View {
     private var evaluationsSection: some View {
         VStack(spacing: 0) {
             HStack(alignment: .lastTextBaseline) {
-                Text("Suas avaliações")
+                Text(.finalCountdownEvaluationsTitle)
                     .font(.system(size: 22, weight: .bold))
                     .tracking(-0.66)
                     .foregroundStyle(UNESColor.ink)
                 Spacer()
-                Text("\(filledCount)/\(store.rows.count) preenchidas")
+                Text(.finalCountdownEvaluationsFilledCount(filledCount, store.rows.count))
                     .font(.system(size: 13, weight: .semibold))
                     .monospacedDigit()
                     .foregroundStyle(UNESColor.ink3)
@@ -144,7 +144,7 @@ struct FinalCountdownView: View {
             HStack(spacing: 8) {
                 Image(systemName: "arrow.counterclockwise")
                     .font(.system(size: 13, weight: .semibold))
-                Text("Limpar tudo")
+                Text(.finalCountdownEvaluationsClearAll)
                     .font(.system(size: 15, weight: .semibold))
                     .tracking(-0.15)
             }
@@ -176,13 +176,13 @@ struct FinalCountdownView: View {
                 )
 
             (
-                Text("Cálculo não oficial. A UEFS considera aprovação direta com média ")
+                Text(.finalCountdownInfoIntro)
                     + Text("≥ 7,0").fontWeight(.semibold).foregroundColor(UNESColor.ink)
-                    + Text(", Prova Final para ")
+                    + Text(.finalCountdownInfoFinalRange)
                     + Text("3,0 ≤ m < 7,0").fontWeight(.semibold).foregroundColor(UNESColor.ink)
-                    + Text(" e reprovação direta para ")
+                    + Text(.finalCountdownInfoFailRange)
                     + Text("m < 3,0").fontWeight(.semibold).foregroundColor(UNESColor.ink)
-                    + Text(". Deixe uma avaliação em branco para ver quanto precisa nela.")
+                    + Text(.finalCountdownInfoOutro)
             )
             .font(.system(size: 12.5, weight: .medium))
             .lineSpacing(4)
@@ -200,7 +200,7 @@ struct FinalCountdownView: View {
     }
 
     private var footerQuip: some View {
-        Text("faça as contas antes que a final faça você")
+        Text(.finalCountdownFooterQuip)
             .font(.system(size: 11.5, weight: .medium))
             .foregroundStyle(UNESColor.ink4)
             .frame(maxWidth: .infinity)

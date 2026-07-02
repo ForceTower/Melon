@@ -15,7 +15,7 @@ struct EnrollmentTimetableView: View {
         }
         .toolbar {
             ToolbarItem(placement: .principal) {
-                Text("Sua grade")
+                Text(.enrollmentTimetableTitle)
                     .font(.system(size: 16, weight: .semibold))
                     .tracking(-0.32)
                     .foregroundStyle(UNESColor.ink)
@@ -28,7 +28,7 @@ struct EnrollmentTimetableView: View {
         .safeAreaInset(edge: .bottom) {
             EnrollmentDock(
                 session: store.session,
-                primaryLabel: "Revisar",
+                primaryLabel: .localized(.enrollmentActionReview),
                 onPrimary: { store.send(.reviewTapped) }
             )
         }
@@ -74,7 +74,7 @@ struct EnrollmentTimetableView: View {
 
     private var header: some View {
         VStack(alignment: .leading, spacing: 5) {
-            Text("Sua grade")
+            Text(.enrollmentTimetableTitle)
                 .font(.system(size: 40, weight: .bold))
                 .tracking(-1.6)
                 .foregroundStyle(UNESColor.ink)
@@ -89,30 +89,30 @@ struct EnrollmentTimetableView: View {
 
     private var subtitle: String {
         let scheduled = store.scheduledPicks.count
-        if store.session.picks.isEmpty { return "Nenhuma turma selecionada" }
-        return "\(EnrollmentFormat.sectionCountLabel(scheduled)) com horário"
+        if store.session.picks.isEmpty { return .localized(.enrollmentTimetableNoneSelected) }
+        return .localized(.enrollmentTimetableScheduledCount(scheduled))
     }
 
     @ViewBuilder
     private var summaryBanner: some View {
         let conflicts = store.session.conflicts
         if !conflicts.isEmpty {
-            EnrollmentBanner(tone: .danger, title: EnrollmentFormat.conflictCountLabel(conflicts.count) + " de horário") {
+            EnrollmentBanner(tone: .danger, title: String.localized(.enrollmentTimetableConflictsTitle(conflicts.count))) {
                 VStack(alignment: .leading, spacing: 2) {
                     ForEach(Array(conflicts.enumerated()), id: \.offset) { _, conflict in
-                        Text("\(conflict.aCode) \(conflict.aLabel) × \(conflict.bCode) \(conflict.bLabel) · \(EnrollmentFormat.dayFull(conflict.day))")
+                        Text(verbatim: "\(conflict.aCode) \(conflict.aLabel) × \(conflict.bCode) \(conflict.bLabel) · \(EnrollmentFormat.dayFull(conflict.day))")
                     }
                 }
             }
         } else if store.session.picks.isEmpty {
-            EnrollmentBanner(tone: .neutral, title: "Grade vazia") {
-                Text("Selecione turmas no catálogo para vê-las aqui. Conflitos aparecem em vermelho.")
+            EnrollmentBanner(tone: .neutral, title: String.localized(.enrollmentTimetableEmptyTitle)) {
+                Text(.enrollmentTimetableEmptyBody)
             }
         } else {
-            EnrollmentBanner(tone: .info, title: "Sem conflitos") {
+            EnrollmentBanner(tone: .info, title: String.localized(.enrollmentNoConflictsTitle)) {
                 // Counts every pick — "suas 0 turmas" would read nonsense when
                 // everything picked is still "a definir".
-                Text("Suas \(store.session.resolvedPicks.count) turmas encaixam sem sobreposição.")
+                Text(.enrollmentTimetableNoConflictBody(store.session.resolvedPicks.count))
             }
         }
     }
@@ -123,9 +123,7 @@ struct EnrollmentTimetableView: View {
             Circle()
                 .fill(UNESColor.ink4)
                 .frame(width: 6, height: 6)
-            Text(count == 1
-                ? "1 turma com horário a definir — não exibida na grade."
-                : "\(count) turmas com horário a definir — não exibidas na grade.")
+            Text(.enrollmentTimetablePendingNote(count))
                 .font(.system(size: 12.5, weight: .medium))
                 .foregroundStyle(UNESColor.ink3)
         }

@@ -15,7 +15,7 @@ struct CalendarView: View {
         }
         .toolbar {
             ToolbarItem(placement: .principal) {
-                Text("Calendário")
+                Text(.calendarTitle)
                     .font(.system(size: 16, weight: .semibold))
                     .tracking(-0.32)
                     .foregroundStyle(UNESColor.ink)
@@ -82,11 +82,11 @@ struct CalendarView: View {
 
     private var header: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text("Calendário")
+            Text(.calendarTitle)
                 .font(.system(size: 40, weight: .bold))
                 .tracking(-1.6)
                 .foregroundStyle(UNESColor.ink)
-            Text("Prazos, provas e feriados da UEFS")
+            Text(.calendarSubtitle)
                 .font(.system(size: 14, weight: .medium))
                 .tracking(-0.14)
                 .foregroundStyle(UNESColor.ink3)
@@ -144,7 +144,7 @@ struct CalendarView: View {
                 .foregroundStyle(UNESColor.ink)
                 .contentTransition(.symbolEffect(.replace))
         }
-        .accessibilityLabel(store.viewMode == .agenda ? "Ver mês" : "Ver agenda")
+        .accessibilityLabel(store.viewMode == .agenda ? Text(.calendarActionViewMonth) : Text(.calendarActionViewAgenda))
     }
 
     /// Faint rose mesh washing down from behind the large title.

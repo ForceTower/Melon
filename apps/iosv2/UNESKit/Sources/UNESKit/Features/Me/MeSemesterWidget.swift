@@ -28,9 +28,9 @@ struct MeSemesterWidget: View {
     private var header: some View {
         HStack(alignment: .lastTextBaseline) {
             (
-                Text("Semana ")
+                Text(.meSemesterWeekPrefix)
                     + Text("\(progress.week)").foregroundStyle(UNESColor.accent)
-                    + Text(" de \(progress.totalWeeks)")
+                    + Text(.meSemesterWeekOfSuffix(progress.totalWeeks))
             )
             .font(.system(size: 16, weight: .bold))
             .tracking(-0.32)
@@ -79,17 +79,18 @@ struct MeSemesterWidget: View {
 
     private var footer: some View {
         HStack {
-            Text(dateLabel("Início", stamp: progress.startStamp))
+            Text(dateLabel(.meSemesterStart, stamp: progress.startStamp))
             Spacer()
-            Text(dateLabel("Fim", stamp: progress.endStamp))
+            Text(dateLabel(.meSemesterEnd, stamp: progress.endStamp))
         }
         .font(.system(size: 11, weight: .medium))
         .foregroundStyle(UNESColor.ink4)
     }
 
-    private func dateLabel(_ prefix: String, stamp: String) -> String {
-        guard let date = HomeFormat.shortDate(fromDayStamp: stamp) else { return prefix }
-        return "\(prefix) · \(date)"
+    private func dateLabel(_ prefix: LocalizedStringResource, stamp: String) -> String {
+        let label = String.localized(prefix)
+        guard let date = HomeFormat.shortDate(fromDayStamp: stamp) else { return label }
+        return "\(label) · \(date)"
     }
 }
 

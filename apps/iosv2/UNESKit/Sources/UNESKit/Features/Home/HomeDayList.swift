@@ -9,7 +9,7 @@ struct HomeDaySection: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            HomeSectionHeader(title: "Seu dia", action: "Ver horário", onAction: onSeeSchedule)
+            HomeSectionHeader(title: .homeSectionYourDay, action: .homeActionSeeSchedule, onAction: onSeeSchedule)
 
             TimelineView(.everyMinute) { context in
                 card(now: context.date)
@@ -25,7 +25,7 @@ struct HomeDaySection: View {
 
         return VStack(spacing: 0) {
             if today.isEmpty {
-                Text("Sem aulas hoje")
+                Text(.homeDayEmpty)
                     .font(.system(size: 14, weight: .medium))
                     .foregroundStyle(UNESColor.ink3)
                     .frame(maxWidth: .infinity)
@@ -60,8 +60,8 @@ struct HomeDaySection: View {
 
 /// Shared "Seu dia" / "Turmas" section heading with a trailing accent action.
 struct HomeSectionHeader: View {
-    var title: String
-    var action: String?
+    var title: LocalizedStringResource
+    var action: LocalizedStringResource?
     var onAction: () -> Void = {}
 
     var body: some View {
@@ -116,7 +116,7 @@ private struct HomeDayRow: View {
                             .foregroundStyle(UNESColor.ink)
                             .lineLimit(1)
                         if isNext {
-                            Text("PRÓXIMA")
+                            Text(.homeDayNextBadge)
                                 .font(.system(size: 10, weight: .bold))
                                 .tracking(0.3)
                                 .foregroundStyle(.white)
@@ -156,7 +156,7 @@ private struct HomeDayRow: View {
 
     private var subtitle: String {
         if let topic = item.topic { return topic }
-        return [item.code, item.room.map { "Sala \($0)" }]
+        return [item.code, item.room.map { String.localized(.commonRoom($0)) }]
             .compactMap(\.self)
             .joined(separator: " · ")
     }

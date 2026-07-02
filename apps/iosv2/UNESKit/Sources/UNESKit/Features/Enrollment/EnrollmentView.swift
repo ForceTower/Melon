@@ -15,7 +15,7 @@ struct EnrollmentView: View {
         }
         .toolbar {
             ToolbarItem(placement: .principal) {
-                Text("Matrícula")
+                Text(.enrollmentTitle)
                     .font(.system(size: 16, weight: .semibold))
                     .tracking(-0.32)
                     .foregroundStyle(UNESColor.ink)
@@ -78,17 +78,17 @@ struct EnrollmentView: View {
         } else {
             HStack(spacing: 12) {
                 EnrollmentStatTile(
-                    label: "disciplinas",
+                    label: .localized(.enrollmentStatDisciplines),
                     value: session.picks.count,
-                    hint: session.picks.count == 1 ? "turma" : "turmas"
+                    hint: .localized(session.picks.count == 1 ? .enrollmentStatClassesHintOne : .enrollmentStatClassesHintOther)
                 )
                 EnrollmentStatTile(
-                    label: "conflitos",
+                    label: .localized(.enrollmentStatConflicts),
                     value: conflictCount,
-                    hint: conflictCount == 0 ? "tudo certo" : "resolver",
+                    hint: .localized(conflictCount == 0 ? .enrollmentStatAllClear : .enrollmentStatResolve),
                     tone: conflictCount == 0 ? EnrollmentTone.ok : EnrollmentTone.danger
                 )
-                EnrollmentStatTile(label: "em fila", value: session.waitlistedCount, hint: "espera")
+                EnrollmentStatTile(label: .localized(.enrollmentStatQueue), value: session.waitlistedCount, hint: .localized(.enrollmentStatWaitingHint))
             }
             .fadeUp(delay: 0.16)
             .padding(.bottom, 20)
@@ -111,7 +111,7 @@ struct EnrollmentView: View {
             callToAction(window)
                 .fadeUp(delay: 0.34)
 
-            Text("Carga mínima \(window.minHours)h · máxima \(window.maxHours)h")
+            Text(.enrollmentEntryWorkloadBounds(window.minHours, window.maxHours))
                 .font(.system(size: 12, weight: .medium))
                 .foregroundStyle(UNESColor.ink4)
                 .frame(maxWidth: .infinity)
@@ -123,8 +123,8 @@ struct EnrollmentView: View {
     private func proposalPreview(isClosed: Bool) -> some View {
         VStack(spacing: 0) {
             EnrollmentSectionHeader(
-                title: "Sua proposta",
-                action: isClosed ? nil : "Editar",
+                title: .enrollmentEntryProposalTitle,
+                action: isClosed ? nil : .commonEdit,
                 onAction: { store.send(.startTapped) }
             )
             VStack(spacing: 0) {
@@ -151,12 +151,12 @@ struct EnrollmentView: View {
             Button {
                 store.send(.startTapped)
             } label: {
-                UNESButtonLabel(text: store.session.picks.isEmpty ? "Montar minha matrícula" : "Continuar montagem")
+                UNESButtonLabel(text: store.session.picks.isEmpty ? .enrollmentBuildStart : .enrollmentBuildContinue)
             }
             .buttonStyle(.unesAccent)
 
         case .upcoming:
-            Text("Você será avisado na abertura")
+            Text(.enrollmentEntryUpcomingNotice)
                 .font(.system(size: 16, weight: .semibold))
                 .tracking(-0.16)
                 .foregroundStyle(UNESColor.ink3)
@@ -170,12 +170,16 @@ struct EnrollmentView: View {
 
         case .closed:
             VStack(spacing: 10) {
-                Button("Ver comprovante") {
+                Button {
                     store.send(.reviewTapped)
+                } label: {
+                    Text(.enrollmentEntryViewReceipt)
                 }
                 .buttonStyle(.unesAccent)
-                Button("Reabrir matrícula") {
+                Button {
                     store.send(.startTapped)
+                } label: {
+                    Text(.enrollmentEntryReopen)
                 }
                 .buttonStyle(.unesNeutral)
             }
@@ -187,7 +191,7 @@ struct EnrollmentView: View {
     private var loadingState: some View {
         VStack(spacing: 14) {
             SpinnerRing(size: 26, color: UNESColor.accent, trackColor: UNESColor.surface3)
-            Text("Consultando o SAGRES…")
+            Text(.enrollmentLoading)
                 .font(.system(size: 13, weight: .medium))
                 .foregroundStyle(UNESColor.ink3)
         }
@@ -197,11 +201,13 @@ struct EnrollmentView: View {
 
     private func errorState(_ message: String) -> some View {
         VStack(spacing: 14) {
-            EnrollmentBanner(tone: .danger, title: "Não deu para carregar a matrícula") {
+            EnrollmentBanner(tone: .danger, title: String.localized(.enrollmentEntryLoadFailTitle)) {
                 Text(message)
             }
-            Button("Tentar de novo") {
+            Button {
                 store.send(.retryTapped)
+            } label: {
+                Text(.commonTryAgain)
             }
             .buttonStyle(.unesNeutral)
         }
@@ -214,11 +220,11 @@ struct EnrollmentView: View {
                 .font(.system(size: 26, weight: .medium))
                 .foregroundStyle(UNESColor.ink4)
                 .padding(.bottom, 6)
-            Text("Nenhuma matrícula aberta")
+            Text(.enrollmentEntryEmptyTitle)
                 .font(.system(size: 17, weight: .bold))
                 .tracking(-0.34)
                 .foregroundStyle(UNESColor.ink)
-            Text("Quando a UEFS publicar a janela de matrícula, ela aparece aqui.")
+            Text(.enrollmentEntryEmptyBody)
                 .font(.system(size: 13, weight: .medium))
                 .foregroundStyle(UNESColor.ink3)
                 .multilineTextAlignment(.center)
@@ -235,7 +241,7 @@ struct EnrollmentView: View {
     private var header: some View {
         HStack(alignment: .top, spacing: 12) {
             VStack(alignment: .leading, spacing: 5) {
-                Text("Matrícula")
+                Text(.enrollmentTitle)
                     .font(.system(size: 40, weight: .bold))
                     .tracking(-1.6)
                     .foregroundStyle(UNESColor.ink)

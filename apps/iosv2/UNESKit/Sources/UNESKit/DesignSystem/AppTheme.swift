@@ -5,9 +5,9 @@ enum AppTheme: String, CaseIterable, Equatable, Sendable {
 
     var label: String {
         switch self {
-        case .system: "Sistema"
-        case .light: "Claro"
-        case .dark: "Escuro"
+        case .system: String.localized(.themeSystem)
+        case .light: String.localized(.themeLight)
+        case .dark: String.localized(.themeDark)
         }
     }
 

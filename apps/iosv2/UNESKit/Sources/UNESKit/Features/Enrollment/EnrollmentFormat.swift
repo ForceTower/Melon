@@ -1,17 +1,30 @@
 import Foundation
 
-/// pt-BR display strings for the matrícula flow.
+/// Locale-aware display strings for the matrícula flow.
 enum EnrollmentFormat {
-    /// 0 = Domingo … 6 = Sábado, the upstream weekday scale.
-    static let daysShort = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"]
-    static let daysFull = ["domingo", "segunda", "terça", "quarta", "quinta", "sexta", "sábado"]
+    private static let locale = Locale.autoupdatingCurrent
 
+    /// Weekday names on the upstream 0 = Sunday … 6 = Saturday scale, which
+    /// lines up with `Calendar`'s symbol arrays.
+    private static let calendar: Calendar = {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.locale = locale
+        return calendar
+    }()
+
+    /// "Seg" / "Mon" — abbreviated weekday, capitalized, no trailing dot.
     static func dayShort(_ day: Int) -> String {
-        daysShort.indices.contains(day) ? daysShort[day] : "?"
+        guard calendar.shortWeekdaySymbols.indices.contains(day) else { return "?" }
+        let symbol = calendar.shortWeekdaySymbols[day].replacingOccurrences(of: ".", with: "")
+        return symbol.prefix(1).uppercased() + symbol.dropFirst()
     }
 
+    /// "segunda" / "monday" — wide weekday, lowercased, without the pt-BR "-feira" tail.
     static func dayFull(_ day: Int) -> String {
-        daysFull.indices.contains(day) ? daysFull[day] : "?"
+        guard calendar.weekdaySymbols.indices.contains(day) else { return "?" }
+        return calendar.weekdaySymbols[day]
+            .replacingOccurrences(of: "-feira", with: "")
+            .lowercased()
     }
 
     /// "15 jun" — pt-BR month abbreviation without the trailing period.
@@ -28,7 +41,7 @@ enum EnrollmentFormat {
 
     private static func string(from date: Date, format: String) -> String {
         let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "pt_BR")
+        formatter.locale = locale
         // The deadline is SAGRES wall-clock time (UEFS, no DST); rendering in
         // the device zone would shift it for anyone traveling.
         formatter.timeZone = TimeZone(identifier: "America/Bahia")
@@ -37,45 +50,45 @@ enum EnrollmentFormat {
     }
 
     static func sectionCountLabel(_ count: Int) -> String {
-        count == 1 ? "1 turma" : "\(count) turmas"
+        .localized(.enrollmentSectionsCount(count))
     }
 
     static func conflictCountLabel(_ count: Int) -> String {
-        count == 1 ? "1 conflito" : "\(count) conflitos"
+        .localized(.enrollmentConflictsCount(count))
     }
 
     static func shiftLabel(_ shift: EnrollmentShift) -> String {
         switch shift {
-        case .morning: "Matutino"
-        case .afternoon: "Vespertino"
-        case .night: "Noturno"
-        case .undefined: "A definir"
+        case .morning: .localized(.enrollmentShiftMorning)
+        case .afternoon: .localized(.enrollmentShiftAfternoon)
+        case .night: .localized(.enrollmentShiftNight)
+        case .undefined: .localized(.enrollmentShiftUndefined)
         }
     }
 
     static func blockerLabel(_ blocker: EnrollmentBlocker) -> String {
         switch blocker {
         case let .conflicts(count): conflictCountLabel(count)
-        case let .underMinimum(missing): "\(missing)h abaixo do mínimo"
-        case let .overMaximum(excess): "\(excess)h acima do máximo"
-        case .empty: "nenhuma disciplina"
+        case let .underMinimum(missing): .localized(.enrollmentBlockerUnderMin(missing))
+        case let .overMaximum(excess): .localized(.enrollmentBlockerOverMax(excess))
+        case .empty: .localized(.enrollmentBlockerEmpty)
         }
     }
 
     static func message(for error: any Error) -> String {
         guard let failure = error as? EnrollmentFailure else {
-            return "O SAGRES não conseguiu responder agora. Tente de novo em instantes."
+            return .localized(.enrollmentErrorGeneric)
         }
         // Exhaustive so a new failure case forces its copy here.
         switch failure {
         case .sessionExpired:
-            return "Sua sessão expirou. Entre novamente para continuar."
+            return .localized(.enrollmentErrorSessionExpired)
         case .network:
-            return "Sem conexão. Verifique sua internet e tente de novo."
+            return .localized(.enrollmentErrorNetwork)
         case .server(let message?):
             return message
         case .server(nil):
-            return "O SAGRES não conseguiu responder agora. Tente de novo em instantes."
+            return .localized(.enrollmentErrorGeneric)
         }
     }
 

@@ -7,7 +7,7 @@ import UniformTypeIdentifiers
 struct LicensesFooter: View {
     var body: some View {
         VStack(spacing: 16) {
-            ShareLink(item: SBOMFile(), preview: SharePreview("SBOM · UNES")) {
+            ShareLink(item: SBOMFile(), preview: SharePreview(String.localized(.licensesSbomShareTitle))) {
                 shareRow
                     .contentShape(Rectangle())
             }
@@ -18,7 +18,7 @@ struct LicensesFooter: View {
                     .font(.system(size: 12, weight: .semibold))
                     .tracking(-0.12)
                     .foregroundStyle(UNESColor.ink3)
-                Text("Em conformidade com os termos de cada\nlicença reproduzida acima.")
+                Text(.licensesComplianceNote)
                     .font(.system(size: 11.5, weight: .medium))
                     .lineSpacing(2)
                     .multilineTextAlignment(.center)
@@ -37,7 +37,7 @@ struct LicensesFooter: View {
                 .background(UNESColor.accent, in: RoundedRectangle(cornerRadius: 9, style: .continuous))
 
             VStack(alignment: .leading, spacing: 1) {
-                Text("Baixar SBOM completo")
+                Text(.licensesDownloadSbom)
                     .font(.system(size: 15, weight: .semibold))
                     .tracking(-0.15)
                     .foregroundStyle(UNESColor.ink)

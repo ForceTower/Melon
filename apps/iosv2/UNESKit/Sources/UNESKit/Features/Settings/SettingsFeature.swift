@@ -106,7 +106,7 @@ struct SettingsFeature {
                 }
                 log.info("reveal password tapped")
                 return .run { [log] send in
-                    guard try await localAuth.authenticate("Autentique para ver a senha") else {
+                    guard try await localAuth.authenticate(String.localized(.settingsRevealAuthReason)) else {
                         log.debug("reveal password declined")
                         return
                     }

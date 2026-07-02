@@ -42,7 +42,7 @@ private struct HomeWidget<Content: View>: View {
 
 private struct WidgetHead: View {
     var icon: String
-    var label: String
+    var label: LocalizedStringResource
     var color: Color
 
     var body: some View {
@@ -57,14 +57,14 @@ private struct WidgetHead: View {
     }
 }
 
-// MARK: - Coeficiente
+// MARK: - Score
 
 private struct CoefficientHomeWidget: View {
     let summary: CoefficientSummary?
 
     var body: some View {
         HomeWidget {
-            WidgetHead(icon: "chart.line.uptrend.xyaxis", label: "Coeficiente", color: UNESColor.tangerine)
+            WidgetHead(icon: "chart.line.uptrend.xyaxis", label: .widgetScore, color: UNESColor.tangerine)
 
             Spacer(minLength: 8)
 
@@ -108,7 +108,7 @@ private struct AttendanceHomeWidget: View {
 
     var body: some View {
         HomeWidget {
-            WidgetHead(icon: "flame", label: "Frequência", color: UNESColor.teal)
+            WidgetHead(icon: "flame", label: .widgetAttendance, color: UNESColor.teal)
 
             Spacer(minLength: 8)
 
@@ -147,8 +147,8 @@ private struct AttendanceHomeWidget: View {
     }
 
     private var remainingLabel: String {
-        guard let remaining = summary?.remainingAbsences else { return "Aguardando aulas" }
-        return remaining == 1 ? "1 falta restante" : "\(remaining) faltas restantes"
+        guard let remaining = summary?.remainingAbsences else { return .localized(.homeAttendanceWaiting) }
+        return .localized(.homeAttendanceAbsencesRemaining(remaining))
     }
 
     private var ring: some View {
@@ -171,19 +171,19 @@ private struct ExamHomeWidget: View {
 
     var body: some View {
         HomeWidget {
-            WidgetHead(icon: "calendar", label: "Próxima prova", color: UNESColor.magenta)
+            WidgetHead(icon: "calendar", label: .widgetNextExam, color: UNESColor.magenta)
 
             Spacer(minLength: 8)
 
             if let summary {
                 HStack(alignment: .firstTextBaseline, spacing: 5) {
-                    Text(summary.daysUntil == 0 ? "Hoje" : "\(summary.daysUntil)")
+                    Text(summary.daysUntil == 0 ? String.localized(.commonToday) : "\(summary.daysUntil)")
                         .font(.system(size: summary.daysUntil == 0 ? 34 : 46, weight: .bold))
                         .tracking(-1.84)
                         .monospacedDigit()
                         .foregroundStyle(UNESColor.ink)
                     if summary.daysUntil > 0 {
-                        Text(summary.daysUntil == 1 ? "dia" : "dias")
+                        Text(summary.daysUntil == 1 ? String.localized(.commonUnitDay) : String.localized(.commonUnitDays))
                             .font(.system(size: 18, weight: .semibold))
                             .foregroundStyle(UNESColor.ink3)
                     }
@@ -204,7 +204,7 @@ private struct ExamHomeWidget: View {
                 Text("—")
                     .font(.system(size: 46, weight: .bold))
                     .foregroundStyle(UNESColor.ink4)
-                Text("Sem provas marcadas")
+                Text(.homeExamNone)
                     .font(.system(size: 13, weight: .medium))
                     .foregroundStyle(UNESColor.ink3)
                     .padding(.top, 6)
@@ -228,7 +228,7 @@ private struct MessagesHomeWidget: View {
         Button(action: onTap) {
             VStack(alignment: .leading, spacing: 0) {
                 HStack {
-                    WidgetHead(icon: "envelope", label: "Mensagens", color: .white.opacity(0.85))
+                    WidgetHead(icon: "envelope", label: .widgetMessages, color: .white.opacity(0.85))
                     Spacer()
                     if let unread = summary?.unreadCount, unread > 0 {
                         Text("\(unread)")
@@ -273,7 +273,7 @@ private struct MessagesHomeWidget: View {
                         .multilineTextAlignment(.leading)
                         .padding(.top, 6)
                 } else {
-                    Text("Sem mensagens por aqui")
+                    Text(.homeMessagesEmpty)
                         .font(.system(size: 13, weight: .medium))
                         .foregroundStyle(.white.opacity(0.78))
                 }

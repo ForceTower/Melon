@@ -123,7 +123,7 @@ struct MessageDetailView: View {
 
     private func attachmentsBlock(_ files: [MessageAttachment], accent: Color) -> some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text("Anexos · \(files.count)")
+            Text(.messagesDetailAttachmentsCount(files.count))
                 .textCase(.uppercase)
                 .font(.system(size: 11, weight: .bold))
                 .tracking(0.44)

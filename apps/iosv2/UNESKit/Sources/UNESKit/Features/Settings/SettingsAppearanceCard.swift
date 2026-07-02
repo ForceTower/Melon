@@ -14,7 +14,7 @@ struct SettingsAppearanceCard: View {
                     .frame(width: 30, height: 30)
                     .background(UNESColor.accent, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
 
-                Text("Tema")
+                Text(.settingsTheme)
                     .font(.system(size: 15, weight: .semibold))
                     .tracking(-0.15)
                     .foregroundStyle(UNESColor.ink)

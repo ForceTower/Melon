@@ -291,7 +291,7 @@ struct MeFeature {
         let body = """
         UNES \(info.version)(\(info.build)) - \(info.deviceModel) \(locale.identifier)
         id: \(info.machineId)
-        Os dados acima me ajudam a encontrar o erro, não apaga se puder :)
+        \(String.localized(.meFeedbackSmsFooter))
         """
         guard let encoded = body.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) else {
             return nil

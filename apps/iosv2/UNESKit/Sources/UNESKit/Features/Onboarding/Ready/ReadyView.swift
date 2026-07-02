@@ -14,7 +14,7 @@ struct ReadyView: View {
                     checkBadge
                         .popIn(delay: 0.1, duration: 0.6, from: 0.5, overshoot: 1.5)
 
-                    Eyebrow(text: "Conectado", color: UNESColor.successGreen, live: true)
+                    Eyebrow(text: String.localized(.onboardingReadyEyebrow), color: UNESColor.successGreen, live: true)
                         .padding(.top, 14)
                         .fadeUp(delay: 0.85, duration: 0.5)
 
@@ -88,8 +88,8 @@ struct ReadyView: View {
 
     private var title: some View {
         (
-            Text("Prontinho, ").foregroundStyle(UNESColor.ink)
-                + Text("\(store.userName).").foregroundStyle(UNESColor.accent)
+            Text(.onboardingReadyTitle).foregroundStyle(UNESColor.ink)
+                + Text(verbatim: "\(store.userName).").foregroundStyle(UNESColor.accent)
         )
         .font(.system(size: 38, weight: .heavy))
         .tracking(-1.52)
@@ -99,15 +99,15 @@ struct ReadyView: View {
     private var subtitle: String {
         var parts: [String] = []
         if store.overview.classCount > 0 {
-            parts.append("\(store.overview.classCount) turma\(store.overview.classCount == 1 ? "" : "s")")
+            parts.append(String.localized(.onboardingReadyClassCount(store.overview.classCount)))
         }
         if store.overview.totalCredits > 0 {
-            parts.append("\(store.overview.totalCredits) créditos")
+            parts.append(String.localized(.onboardingReadyCreditCount(store.overview.totalCredits)))
         }
         if let code = store.overview.semesterCode {
-            parts.append("semestre \(Self.formatSemesterCode(code))")
+            parts.append(String.localized(.onboardingReadySemester(Self.formatSemesterCode(code))))
         }
-        return parts.isEmpty ? "Tudo sincronizado e pronto." : parts.joined(separator: " · ")
+        return parts.isEmpty ? String.localized(.onboardingReadyAllSynced) : parts.joined(separator: " · ")
     }
 
     /// Upstream semester codes are "20192"-style; render as "2019.2".
@@ -120,7 +120,7 @@ struct ReadyView: View {
         Button {
             store.send(.enterTapped)
         } label: {
-            UNESButtonLabel(text: "Ver meu semestre")
+            UNESButtonLabel(text: .onboardingReadyEnter)
         }
         .buttonStyle(.unesDark)
         .padding(.horizontal, 20)
@@ -184,7 +184,7 @@ private struct NextClassHero: View {
                 HStack {
                     HStack(spacing: 7) {
                         LiveDot(size: 6.5)
-                        Text("Próxima aula")
+                        Text(.onboardingReadyNextClass)
                             .textCase(.uppercase)
                             .font(.system(size: 11.5, weight: .bold))
                             .tracking(0.23)
@@ -232,7 +232,7 @@ private struct NextClassHero: View {
     private var detail: String {
         var parts: [String] = []
         if let location = nextClass.location, !location.isEmpty {
-            parts.append("Sala \(location)")
+            parts.append(String.localized(.commonRoom(location)))
         }
         if let teacher = nextClass.teacherName, !teacher.isEmpty {
             // Full SAGRES names run long — first two names read naturally.
@@ -260,7 +260,7 @@ private struct NextClassHero: View {
                         .tracking(-0.63)
                         .monospacedDigit()
                         .foregroundStyle(.white)
-                    Text(minutesLeft < 100 ? "min" : "h")
+                    Text(minutesLeft < 100 ? .commonUnitMinuteShort : .commonUnitHourShort)
                         .font(.system(size: 8.5, weight: .bold))
                         .tracking(0.34)
                         .foregroundStyle(.white.opacity(0.65))
@@ -301,7 +301,7 @@ private struct CoefficientWidget: View {
             HStack(spacing: 6) {
                 Image(systemName: "chart.line.uptrend.xyaxis")
                     .font(.system(size: 11, weight: .semibold))
-                Text("Coeficiente")
+                Text(.onboardingReadyCurrentAverage)
                     .font(.system(size: 12, weight: .semibold))
             }
             .foregroundStyle(UNESColor.tangerine)
@@ -334,7 +334,7 @@ private struct AttendanceWidget: View {
             HStack(spacing: 6) {
                 Image(systemName: "flame")
                     .font(.system(size: 11, weight: .semibold))
-                Text("Frequência")
+                Text(.onboardingReadyAttendance)
                     .font(.system(size: 12, weight: .semibold))
             }
             .foregroundStyle(UNESColor.teal)

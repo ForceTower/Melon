@@ -35,12 +35,12 @@ struct FCBreakdownCard: View {
 
     private var header: some View {
         HStack {
-            Text("Composição")
+            Text(.finalCountdownBreakdownTitle)
                 .font(.system(size: 15, weight: .bold))
                 .tracking(-0.3)
                 .foregroundStyle(UNESColor.ink)
             Spacer()
-            Text(weighted ? "nota · peso" : "nota")
+            Text(weighted ? .finalCountdownBreakdownScoreWeightLabel : .finalCountdownBreakdownScoreLabel)
                 .textCase(.uppercase)
                 .font(.system(size: 11.5, weight: .semibold))
                 .tracking(0.4)
@@ -104,9 +104,9 @@ struct FCBreakdownCard: View {
 
     private var rulesGrid: some View {
         HStack(spacing: 8) {
-            ruleTile(label: "piso final", value: "3,0", color: UNESColor.coral)
-            ruleTile(label: "aprovação", value: "7,0", color: UNESColor.successGreen)
-            ruleTile(label: "fórmula final", value: "0,6m+0,4f", color: Color(hex: 0x2AA5B8))
+            ruleTile(label: String.localized(.finalCountdownBreakdownFloorLabel), value: "3,0", color: UNESColor.coral)
+            ruleTile(label: String.localized(.finalCountdownBreakdownPassLabel), value: "7,0", color: UNESColor.successGreen)
+            ruleTile(label: String.localized(.finalCountdownBreakdownFormulaLabel), value: "0,6m+0,4f", color: Color(hex: 0x2AA5B8))
         }
     }
 

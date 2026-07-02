@@ -33,7 +33,7 @@ struct FarewellView: View {
                     RoundedRectangle(cornerRadius: 14, style: .continuous)
                         .strokeBorder(UNESColor.coral.opacity(0.3))
                 }
-            Text("Encerrando sessão…")
+            Text(.meFarewellFlash)
                 .font(.system(size: 12.5, weight: .semibold))
                 .tracking(0.3)
                 .foregroundStyle(UNESColor.ink3)
@@ -46,7 +46,7 @@ struct FarewellView: View {
         ZStack(alignment: .top) {
             mesh
             VStack(alignment: .leading, spacing: 0) {
-                Text("Sessão encerrada")
+                Text(.meFarewellEyebrow)
                     .textCase(.uppercase)
                     .font(.system(size: 13, weight: .semibold))
                     .tracking(0.3)
@@ -56,7 +56,7 @@ struct FarewellView: View {
                 title
                     .padding(.bottom, 14)
 
-                Text("Seus dados foram removidos deste aparelho. Quando quiser voltar, o idUEFS te espera.")
+                Text(.meFarewellBody)
                     .font(.system(size: 15, weight: .medium))
                     .lineSpacing(5)
                     .foregroundStyle(UNESColor.ink2)
@@ -79,9 +79,10 @@ struct FarewellView: View {
     }
 
     private var title: some View {
-        (
-            Text("Até logo,\n")
-                + Text("\(store.firstName ?? "estudante").").foregroundStyle(UNESColor.accent)
+        let name = store.firstName ?? String.localized(.meFarewellDefaultName)
+        return (
+            Text(.meFarewellTitle)
+                + Text(verbatim: "\(name).").foregroundStyle(UNESColor.accent)
         )
         .font(.system(size: 38, weight: .bold))
         .tracking(-1.52)
@@ -93,7 +94,7 @@ struct FarewellView: View {
             store.send(.signInTapped)
         } label: {
             HStack(spacing: 8) {
-                Text("Entrar com idUEFS")
+                Text(.meFarewellSignIn)
                     .font(.system(size: 15, weight: .semibold))
                 Image(systemName: "arrow.right")
                     .font(.system(size: 12, weight: .semibold))

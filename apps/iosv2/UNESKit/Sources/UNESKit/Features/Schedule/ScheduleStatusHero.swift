@@ -78,7 +78,7 @@ struct ScheduleStatusHero: View {
                 } else {
                     Circle().fill(.white).frame(width: 7, height: 7)
                 }
-                Text(isNow ? "Em aula agora" : "Próxima aula")
+                Text(isNow ? String.localized(.scheduleHeroInClassNow) : String.localized(.scheduleHeroNextClass))
                     .textCase(.uppercase)
                     .font(.system(size: 12, weight: .bold))
                     .tracking(0.3)
@@ -102,7 +102,7 @@ struct ScheduleStatusHero: View {
                 .font(.system(size: 30, weight: .bold))
                 .tracking(-1.2)
                 .monospacedDigit()
-            Text(isNow ? "restam" : "até começar")
+            Text(isNow ? String.localized(.scheduleHeroRemaining) : String.localized(.scheduleHeroUntilStart))
                 .font(.system(size: 11, weight: .semibold))
                 .tracking(0.3)
                 .opacity(0.65)
@@ -149,11 +149,11 @@ struct ScheduleStatusHero: View {
             .frame(width: 40, height: 40)
 
             VStack(alignment: .leading, spacing: 1) {
-                Text("Aulas encerradas")
+                Text(.scheduleHeroDayOverTitle)
                     .font(.system(size: 16, weight: .bold))
                     .tracking(-0.32)
                     .foregroundStyle(UNESColor.ink)
-                Text("Você concluiu o dia. Bom descanso.")
+                Text(.scheduleHeroDayOverMessage)
                     .font(.system(size: 13, weight: .medium))
                     .foregroundStyle(UNESColor.ink3)
             }

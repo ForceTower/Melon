@@ -1,13 +1,17 @@
 import SwiftUI
 
 struct PlaceholderScreen: View {
-    let title: String
+    let title: LocalizedStringResource
     let systemImage: String
-    var message: String = "Em construção"
+    var message: LocalizedStringResource = .commonUnderConstruction
 
     var body: some View {
         ContentUnavailableView {
-            Label(title, systemImage: systemImage)
+            Label {
+                Text(title)
+            } icon: {
+                Image(systemName: systemImage)
+            }
         } description: {
             Text(message)
         }
@@ -15,5 +19,5 @@ struct PlaceholderScreen: View {
 }
 
 #Preview {
-    PlaceholderScreen(title: "Horário", systemImage: "square.grid.2x2")
+    PlaceholderScreen(title: .commonToday, systemImage: "square.grid.2x2")
 }

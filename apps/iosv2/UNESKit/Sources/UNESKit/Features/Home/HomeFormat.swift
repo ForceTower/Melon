@@ -1,33 +1,33 @@
 import Foundation
 
-/// pt-BR display strings for the Home screen. Built on `FormatStyle` (Sendable)
-/// rather than cached `DateFormatter`s.
+/// Locale-aware display strings for the Home screen. Built on `FormatStyle`
+/// (Sendable) rather than cached `DateFormatter`s.
 enum HomeFormat {
-    private static let ptBR = Locale(identifier: "pt_BR")
+    private static let locale = Locale.autoupdatingCurrent
 
-    /// "Quinta · 17 abr" — the view renders it uppercase.
+    /// "Quinta · 17 abr" / "Thursday · Apr 17" — the view renders it uppercase.
     static func dayEyebrow(for date: Date) -> String {
         "\(weekdayName(for: date)) · \(shortDate(for: date))"
     }
 
-    /// "Quinta" — the wide pt-BR weekday without the "-feira" tail.
+    /// The wide weekday, capitalized; drops the pt-BR "-feira" tail when present.
     static func weekdayName(for date: Date) -> String {
-        let wide = date.formatted(.dateTime.weekday(.wide).locale(ptBR))
+        let wide = date.formatted(.dateTime.weekday(.wide).locale(locale))
         let trimmed = wide.replacingOccurrences(of: "-feira", with: "")
         return trimmed.prefix(1).uppercased() + trimmed.dropFirst()
     }
 
-    /// "Qui" — abbreviated weekday, capitalized, no trailing dot.
+    /// "Qui" / "Thu" — abbreviated weekday, capitalized, no trailing dot.
     static func weekdayShort(for date: Date) -> String {
-        let short = date.formatted(.dateTime.weekday(.abbreviated).locale(ptBR))
+        let short = date.formatted(.dateTime.weekday(.abbreviated).locale(locale))
             .replacingOccurrences(of: ".", with: "")
         return short.prefix(1).uppercased() + short.dropFirst()
     }
 
-    /// "17 abr".
+    /// "17 abr" / "Apr 17".
     static func shortDate(for date: Date) -> String {
-        let day = date.formatted(.dateTime.day().locale(ptBR))
-        let month = date.formatted(.dateTime.month(.abbreviated).locale(ptBR))
+        let day = date.formatted(.dateTime.day().locale(locale))
+        let month = date.formatted(.dateTime.month(.abbreviated).locale(locale))
             .replacingOccurrences(of: ".", with: "")
         return "\(day) \(month)"
     }
@@ -41,14 +41,14 @@ enum HomeFormat {
         return shortDate(for: date)
     }
 
-    /// "Atualizado há 2 min" footer.
+    /// "Atualizado há 2 min" / "Updated 2 min ago" footer.
     static func updatedLabel(lastRefreshed: Date, now: Date) -> String {
         let seconds = max(0, now.timeIntervalSince(lastRefreshed))
         switch seconds {
-        case ..<90: return "Atualizado agora"
-        case ..<3600: return "Atualizado há \(Int(seconds / 60)) min"
-        case ..<86_400: return "Atualizado há \(Int(seconds / 3600))h"
-        default: return "Atualizado há \(Int(seconds / 86_400))d"
+        case ..<90: return .localized(.homeUpdatedJustNow)
+        case ..<3600: return .localized(.homeUpdatedMinAgo(Int(seconds / 60)))
+        case ..<86_400: return .localized(.homeUpdatedHoursAgo(Int(seconds / 3600)))
+        default: return .localized(.homeUpdatedDaysAgo(Int(seconds / 86_400)))
         }
     }
 

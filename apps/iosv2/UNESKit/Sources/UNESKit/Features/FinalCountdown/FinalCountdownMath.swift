@@ -121,9 +121,9 @@ enum FinalCountdownMath {
         return FCVerdict(kind: .borderlineFinal, avg: avg, best: best, worst: worst, wildcardNeeded: wildcardNeeded)
     }
 
-    /// pt-BR grade formatting — one decimal, comma separator, "—" for nil.
+    /// Locale-aware grade formatting — one decimal, "—" for nil.
     static func formatGrade(_ value: Double?) -> String {
         guard let value, !value.isNaN else { return "—" }
-        return String(format: "%.1f", value).replacingOccurrences(of: ".", with: ",")
+        return value.formatted(.number.precision(.fractionLength(1)))
     }
 }

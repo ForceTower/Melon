@@ -11,7 +11,7 @@ struct MeView: View {
                 ambientWash
                 content
             }
-            .navigationTitle("Eu")
+            .navigationTitle(Text(.meTitle))
         } destination: { store in
             switch store.case {
             case let .settings(store):
@@ -57,7 +57,7 @@ struct MeView: View {
         ScrollView {
             VStack(spacing: 0) {
                 MeIdentityHero(
-                    name: store.displayName ?? "Estudante",
+                    name: store.displayName ?? String.localized(.meDefaultName),
                     course: store.profile?.course,
                     campus: store.overview?.campus,
                     coefficient: store.overview?.coefficient,
@@ -74,7 +74,7 @@ struct MeView: View {
                 }
 
                 VStack(spacing: 0) {
-                    sectionHeader("Atalhos")
+                    sectionHeader(.meSectionShortcuts)
                     MeShortcutGrid(shortcuts: store.shortcuts) { shortcut in
                         store.send(.shortcutTapped(shortcut))
                     }
@@ -83,7 +83,7 @@ struct MeView: View {
                 .padding(.bottom, 26)
 
                 VStack(spacing: 0) {
-                    sectionHeader("Definições")
+                    sectionHeader(.meSectionSettings)
                     MeSettingsList { row in
                         store.send(.settingsRowTapped(row))
                     }
@@ -102,7 +102,7 @@ struct MeView: View {
         .scrollIndicators(.hidden)
     }
 
-    private func sectionHeader(_ title: String) -> some View {
+    private func sectionHeader(_ title: LocalizedStringResource) -> some View {
         Text(title)
             .font(.system(size: 22, weight: .bold))
             .tracking(-0.66)
@@ -118,7 +118,7 @@ struct MeView: View {
             HStack(spacing: 8) {
                 Image(systemName: "rectangle.portrait.and.arrow.right")
                     .font(.system(size: 14, weight: .semibold))
-                Text("Sair da conta")
+                Text(.meSignOut)
                     .font(.system(size: 15, weight: .semibold))
             }
             .foregroundStyle(Color(hex: 0xE5453A))
@@ -136,7 +136,7 @@ struct MeView: View {
     }
 
     private var footer: some View {
-        Text("\(MeFormat.versionLabel) · feito com ♥ em Feira de Santana")
+        Text(.meFooter(MeFormat.versionLabel))
             .font(.system(size: 11.5, weight: .medium))
             .foregroundStyle(UNESColor.ink4)
             .frame(maxWidth: .infinity)

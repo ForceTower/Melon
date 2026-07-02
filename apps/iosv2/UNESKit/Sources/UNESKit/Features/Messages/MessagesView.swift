@@ -23,7 +23,7 @@ struct MessagesView: View {
                         .frame(maxHeight: .infinity)
                 }
             }
-            .navigationTitle("Mensagens")
+            .navigationTitle(Text(.navMessages))
         } destination: { store in
             switch store.case {
             case let .detail(store):
@@ -59,7 +59,7 @@ struct MessagesView: View {
                     .padding(.bottom, 18)
 
                     if inbox.groups.isEmpty {
-                        Text("Nenhuma mensagem neste filtro.")
+                        Text(.messagesFilterEmpty)
                             .font(.system(size: 15, weight: .medium))
                             .foregroundStyle(UNESColor.ink3)
                             .padding(EdgeInsets(top: 70, leading: 40, bottom: 70, trailing: 40))
@@ -175,11 +175,11 @@ struct MessagesView: View {
 
     private var emptyState: some View {
         VStack(spacing: 8) {
-            Text("Sem mensagens por aqui")
+            Text(.homeMessagesEmpty)
                 .font(.system(size: 17, weight: .semibold))
                 .tracking(-0.34)
                 .foregroundStyle(UNESColor.ink)
-            Text("Os recados dos professores e da universidade aparecem aqui assim que chegarem.")
+            Text(.messagesEmptyMessage)
                 .font(.system(size: 13))
                 .foregroundStyle(UNESColor.ink3)
                 .multilineTextAlignment(.center)
@@ -190,7 +190,7 @@ struct MessagesView: View {
 
     private func errorState(_ message: String) -> some View {
         VStack(spacing: 8) {
-            Text("Não deu para carregar suas mensagens")
+            Text(.messagesErrorTitle)
                 .font(.system(size: 17, weight: .semibold))
                 .tracking(-0.34)
                 .foregroundStyle(UNESColor.ink)
@@ -198,8 +198,10 @@ struct MessagesView: View {
                 .font(.system(size: 13))
                 .foregroundStyle(UNESColor.ink3)
                 .multilineTextAlignment(.center)
-            Button("Tentar novamente") {
+            Button {
                 store.send(.refreshPulled)
+            } label: {
+                Text(.commonTryAgain)
             }
             .font(.system(size: 15, weight: .semibold))
             .foregroundStyle(UNESColor.accent)

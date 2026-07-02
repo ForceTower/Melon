@@ -20,17 +20,17 @@ struct EnrollmentWorkloadCard: View {
     }
 
     private var status: String {
-        if totalHours == 0 { return "comece a montar" }
-        if isOver { return "acima do limite" }
-        if isUnder { return "faltam \(minHours - totalHours)h" }
-        return "dentro do limite"
+        if totalHours == 0 { return .localized(.enrollmentWorkloadStatusStart) }
+        if isOver { return .localized(.enrollmentWorkloadStatusOver) }
+        if isUnder { return .localized(.enrollmentWorkloadStatusUnder(minHours - totalHours)) }
+        return .localized(.enrollmentWorkloadStatusOk)
     }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             HStack(alignment: .bottom) {
                 VStack(alignment: .leading, spacing: 6) {
-                    Text("Carga horária")
+                    Text(.enrollmentWorkloadTitle)
                         .textCase(.uppercase)
                         .font(.system(size: 11, weight: .semibold))
                         .tracking(0.6)
@@ -43,7 +43,7 @@ struct EnrollmentWorkloadCard: View {
                             .foregroundStyle(color)
                             .contentTransition(.numericText())
                             .animation(UNESMotion.settle(0.4), value: totalHours)
-                        Text("h selecionadas")
+                        Text(.enrollmentWorkloadHoursSelected)
                             .font(.system(size: 14, weight: .medium))
                             .foregroundStyle(UNESColor.ink3)
                     }
@@ -67,9 +67,9 @@ struct EnrollmentWorkloadCard: View {
             track
 
             HStack {
-                Text("mín \(minHours)h")
+                Text(.enrollmentWorkloadMin(minHours))
                 Spacer()
-                Text("máx \(maxHours)h")
+                Text(.enrollmentWorkloadMax(maxHours))
             }
             .font(.system(size: 11, weight: .medium))
             .monospacedDigit()
