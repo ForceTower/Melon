@@ -93,9 +93,9 @@ extension SemesterSnapshot {
         )
     }
 
-    // MARK: Coefficient
+    // MARK: Coefficient (shared with the Me overview)
 
-    private var coefficientSummary: CoefficientSummary? {
+    var coefficientSummary: CoefficientSummary? {
         let spark = studentGrades
             .filter { $0.value != nil }
             .sorted { ($0.date ?? "", $0.ordinal) < ($1.date ?? "", $1.ordinal) }
@@ -108,9 +108,9 @@ extension SemesterSnapshot {
         )
     }
 
-    // MARK: Attendance — SAGRES counts absences in class-hours
+    // MARK: Attendance — SAGRES counts absences in class-hours (shared with Me)
 
-    private func attendanceSummary(index: SnapshotIndex, today: String) -> AttendanceSummary? {
+    func attendanceSummary(index: SnapshotIndex, today: String) -> AttendanceSummary? {
         let totalHours = classes
             .filter { index.enrolledClassIds.contains($0.id) }
             .reduce(0) { $0 + $1.hours }

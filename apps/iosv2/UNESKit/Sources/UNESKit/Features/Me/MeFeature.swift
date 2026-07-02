@@ -1,47 +1,160 @@
 import ComposableArchitecture
+import Foundation
+
+/// The two pinned shortcuts. Both grow into features of their own later;
+/// until then each opens its teaser sheet.
+enum MeShortcut: String, Equatable, Sendable, Identifiable, CaseIterable {
+    case calendar, countdown
+
+    var id: String { rawValue }
+}
+
+/// The "Definições" rows. None navigates yet — their destinations land with
+/// the Settings and Licenses features.
+enum MeSettingsRow: String, Equatable, Sendable, CaseIterable {
+    case settings, sync, about, feedback, licenses
+}
 
 @Reducer
 struct MeFeature {
     @ObservableState
     struct State: Equatable {
+        /// Session name shown until the profile fetch lands.
+        var userName: String?
         var profile: Profile?
-        var isLoading = false
-        var errorMessage: String?
+        var overview: MeOverview?
+        var syncedAt: Date?
+        var events: [AcademicEvent] = []
+        var activeShortcut: MeShortcut?
+        var isLogoutPromptPresented = false
+        @Shared(.appStorage("theme")) var theme: AppTheme = .system
+
+        var displayName: String? { profile?.name ?? userName }
     }
 
     enum Action: Equatable {
-        case onAppear
+        case task
+        case overviewUpdated(CachedMeOverview)
         case profileLoaded(Profile)
-        case profileFailed(String)
+        case eventsLoaded([AcademicEvent])
+        case shortcutTapped(MeShortcut)
+        case shortcutDismissed
+        case settingsRowTapped(MeSettingsRow)
+        case logoutTapped
+        case logoutPromptDismissed
+        case logoutConfirmed(keepData: Bool)
+        case delegate(Delegate)
+
+        enum Delegate: Equatable {
+            case loggedOut(firstName: String?, keptData: Bool, dataSummary: LocalDataSummary?)
+        }
     }
 
+    @Dependency(\.meRepository) var meRepository
     @Dependency(\.profileRepository) var profileRepository
+    @Dependency(\.eventsRepository) var eventsRepository
+    @Dependency(\.sessionStore) var sessionStore
+    @Dependency(\.date.now) var now
+
+    private enum CancelID { case observation }
 
     var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
-            case .onAppear:
-                guard state.profile == nil, !state.isLoading else { return .none }
-                state.isLoading = true
-                state.errorMessage = nil
-                return .run { send in
-                    do {
-                        await send(.profileLoaded(try await profileRepository.current()))
-                    } catch {
-                        await send(.profileFailed(error.localizedDescription))
-                    }
+            case .task:
+                if state.userName == nil {
+                    state.userName = sessionStore.current()?.user.name
                 }
+                // The observation replays the mirror on subscription, so
+                // every appearance rehydrates; the one-shot fetches only run
+                // on the first one.
+                guard state.overview == nil else { return observeMirror() }
+                return .merge(observeMirror(), loadProfile(), loadEvents())
+
+            case let .overviewUpdated(cached):
+                state.overview = cached.overview
+                state.syncedAt = cached.syncedAt
+                return .none
 
             case let .profileLoaded(profile):
-                state.isLoading = false
                 state.profile = profile
                 return .none
 
-            case let .profileFailed(message):
-                state.isLoading = false
-                state.errorMessage = message
+            case let .eventsLoaded(events):
+                state.events = events
+                return .none
+
+            case let .shortcutTapped(shortcut):
+                state.activeShortcut = shortcut
+                return .none
+
+            case .shortcutDismissed:
+                state.activeShortcut = nil
+                return .none
+
+            case .settingsRowTapped:
+                // Destinations arrive with the Settings/Licenses features.
+                return .none
+
+            case .logoutTapped:
+                state.isLogoutPromptPresented = true
+                return .none
+
+            case .logoutPromptDismissed:
+                state.isLogoutPromptPresented = false
+                return .none
+
+            case let .logoutConfirmed(keepData):
+                state.isLogoutPromptPresented = false
+                if !keepData {
+                    state.$theme.withLock { $0 = .system }
+                }
+                let firstName = firstName(of: state.displayName)
+                return .run { send in
+                    let summary = keepData ? (try? await meRepository.localData()) : nil
+                    if !keepData {
+                        try? await meRepository.wipeLocalData()
+                    }
+                    try? sessionStore.clear()
+                    await send(.delegate(.loggedOut(
+                        firstName: firstName,
+                        keptData: keepData,
+                        dataSummary: summary
+                    )))
+                }
+
+            case .delegate:
                 return .none
             }
         }
+    }
+
+    private func observeMirror() -> Effect<Action> {
+        .run { send in
+            for await cached in meRepository.observe() {
+                await send(.overviewUpdated(cached))
+            }
+        }
+        .cancellable(id: CancelID.observation, cancelInFlight: true)
+    }
+
+    private func loadProfile() -> Effect<Action> {
+        .run { send in
+            // Only feeds the course line — ignore failures.
+            guard let profile = try? await profileRepository.current() else { return }
+            await send(.profileLoaded(profile))
+        }
+    }
+
+    private func loadEvents() -> Effect<Action> {
+        .run { send in
+            // The calendar teaser is a garnish — ignore failures.
+            guard let events = try? await eventsRepository.upcoming(now) else { return }
+            await send(.eventsLoaded(events))
+        }
+    }
+
+    private func firstName(of name: String?) -> String? {
+        name?.split(separator: " ").first.map(String.init)
     }
 }

@@ -21,13 +21,22 @@ public struct RootView: View {
                     AppView(store: store)
                         .transition(.opacity)
                 }
+            case .farewell:
+                if let store = store.scope(state: \.farewell, action: \.farewell) {
+                    FarewellView(store: store)
+                        .transition(.opacity)
+                }
             }
         }
-        .animation(.easeInOut(duration: 0.4), value: isOnboarding)
+        .animation(.easeInOut(duration: 0.4), value: phase)
     }
 
-    private var isOnboarding: Bool {
-        if case .onboarding = store.state { return true }
-        return false
+    /// Which of the three shells is on screen — the crossfade trigger.
+    private var phase: String {
+        switch store.state {
+        case .onboarding: "onboarding"
+        case .connected: "connected"
+        case .farewell: "farewell"
+        }
     }
 }

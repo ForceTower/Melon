@@ -56,6 +56,63 @@ struct MirrorStore: Sendable {
         return CachedHomeOverview(overview: overview, syncedAt: syncedAt)
     }
 
+    /// Emits the mirrored Eu snapshot on subscription and again after every
+    /// write that feeds it.
+    func meOverviewUpdates(now: @escaping @Sendable () -> Date) -> AsyncValueObservation<CachedMeOverview?> {
+        ValueObservation
+            .tracking { db in try Self.cachedMeOverview(db, now: now()) }
+            .values(in: writer)
+    }
+
+    private static func cachedMeOverview(_ db: Database, now: Date) throws -> CachedMeOverview? {
+        guard let syncedAt = try lastSyncedAt(db) else { return nil }
+
+        var overview = MeOverview.empty
+        let semesters = try SemesterRecord.order(Column("startDate").desc).fetchAll(db)
+        if let active = semesters.map(\.domain).active(today: now.dayStamp),
+           let record = semesters.first(where: { $0.id == active.id }) {
+            overview = try snapshot(for: record, db: db).meOverview(now: now)
+        }
+        return CachedMeOverview(overview: overview, syncedAt: syncedAt)
+    }
+
+    /// What a data-keeping logout would leave behind.
+    func localDataSummary() async throws -> LocalDataSummary {
+        try await writer.read { db in
+            LocalDataSummary(
+                semesters: try String.fetchAll(
+                    db,
+                    StudentClassRecord.select(Column("semesterId"), as: String.self).distinct()
+                ).count,
+                messages: try MessageRecord.fetchCount(db)
+            )
+        }
+    }
+
+    /// Empties the whole mirror — the logout path that does not keep data.
+    /// The schema stays in place; only rows go.
+    func wipe() async throws {
+        try await writer.write { db in
+            try SemesterRecord.deleteAll(db)
+            try DisciplineRecord.deleteAll(db)
+            try DisciplineOfferRecord.deleteAll(db)
+            try ClassRecord.deleteAll(db)
+            try TeacherRecord.deleteAll(db)
+            try ClassTeacherRecord.deleteAll(db)
+            try SpaceRecord.deleteAll(db)
+            try AllocationRecord.deleteAll(db)
+            try StudentClassRecord.deleteAll(db)
+            try StudentGradeRecord.deleteAll(db)
+            try LectureRecord.deleteAll(db)
+            try LectureMaterialRecord.deleteAll(db)
+            try MessageRecord.deleteAll(db)
+            try MessageScopeRecord.deleteAll(db)
+            try MessageAttachmentRecord.deleteAll(db)
+            try MessageStateRecord.deleteAll(db)
+            try SyncStateRecord.deleteAll(db)
+        }
+    }
+
     /// The Horário week as mirrored on disk; nil until the first successful
     /// refresh lands.
     func cachedScheduleOverview(now: Date) async throws -> ScheduleOverview? {
