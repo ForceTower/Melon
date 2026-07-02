@@ -43,53 +43,70 @@ extension SemesterSnapshot {
         )
     }
 
-    // MARK: Hero — next class occurrence in the week
+    // MARK: Hero — the running class, or the next occurrence in the week
 
     private func hero(index: SnapshotIndex, now: Date, calendar: Calendar) -> HomeHeroClass? {
-        let minutesInDay = 24 * 60
-        let minutesInWeek = 7 * minutesInDay
-        let nowSlot = (calendar.component(.weekday, from: now) - 1) * minutesInDay
-            + calendar.component(.hour, from: now) * 60
-            + calendar.component(.minute, from: now)
+        let weekday = calendar.component(.weekday, from: now) - 1
+        let nowMinute = calendar.component(.hour, from: now) * 60 + calendar.component(.minute, from: now)
+        let today = mergedSessions(on: weekday, index: index)
 
-        var winner: (delta: Int, day: Int, allocation: AllocationRecord)?
-        for allocation in allocations where index.enrolledClassIds.contains(allocation.classId) {
-            guard let day = allocation.day, let start = parseHhMm(allocation.startTime) else { continue }
-            let slot = day * minutesInDay + start
-            let delta = ((slot - nowSlot) % minutesInWeek + minutesInWeek) % minutesInWeek
-            if winner.map({ delta < $0.delta }) ?? true {
-                winner = (delta, day, allocation)
+        // A running class holds the hero until halfway through — and the
+        // day's last class until it ends — before the next one takes over.
+        if let current = today.first(where: { $0.startMinute <= nowMinute && nowMinute < endEstimate($0) }) {
+            let later = today.first { $0.startMinute > nowMinute }
+            let halfway = (current.startMinute + endEstimate(current)) / 2
+            if nowMinute < halfway || later == nil {
+                return heroClass(for: current, daysAhead: 0, inProgress: true, index: index, now: now, calendar: calendar)
+            }
+            return heroClass(for: later!, daysAhead: 0, inProgress: false, index: index, now: now, calendar: calendar)
+        }
+
+        // Next session, scanning the rest of today then the coming week
+        // (offset 7 wraps back to today's weekday for once-a-week schedules).
+        for daysAhead in 0...7 {
+            let sessions = daysAhead == 0 ? today : mergedSessions(on: (weekday + daysAhead) % 7, index: index)
+            let candidate = daysAhead == 0 ? sessions.first { $0.startMinute > nowMinute } : sessions.first
+            if let candidate {
+                return heroClass(for: candidate, daysAhead: daysAhead, inProgress: false, index: index, now: now, calendar: calendar)
             }
         }
-        guard let winner, let startMinute = parseHhMm(winner.allocation.startTime) else { return nil }
+        return nil
+    }
 
-        // The winner's merged session provides the real end of the block.
-        let session = mergedSessions(on: winner.day, index: index)
-            .first { $0.classId == winner.allocation.classId && $0.startMinute <= startMinute
-                && startMinute <= ($0.endMinute ?? $0.startMinute) }
+    /// Upstream occasionally omits the end slot — assume one class hour.
+    private func endEstimate(_ session: DaySession) -> Int {
+        session.endMinute.map { max($0, session.startMinute + 1) } ?? session.startMinute + 50
+    }
 
-        // Whole midnights between now and the occurrence, so "tomorrow 08:00"
-        // counts as one day even when it is less than 24h away.
-        let minutesOfDay = nowSlot % minutesInDay
-        let dayOffset = (minutesOfDay + winner.delta) / minutesInDay
+    private func heroClass(
+        for session: DaySession,
+        daysAhead: Int,
+        inProgress: Bool,
+        index: SnapshotIndex,
+        now: Date,
+        calendar: Calendar
+    ) -> HomeHeroClass? {
         // Anchoring on the occurrence day's midnight keeps the wall-clock time
         // exact even if a clock shift lands in between.
-        guard let dayStart = calendar.date(byAdding: .day, value: dayOffset, to: calendar.startOfDay(for: now)),
-              let startsAt = calendar.date(byAdding: .minute, value: startMinute, to: dayStart)
+        guard let dayStart = calendar.date(byAdding: .day, value: daysAhead, to: calendar.startOfDay(for: now)),
+              let startsAt = calendar.date(byAdding: .minute, value: session.startMinute, to: dayStart)
         else { return nil }
-        let endMinute = session?.endMinute ?? parseHhMm(winner.allocation.endTime)
+        // The in-progress treatment needs an end to count toward; fall back
+        // to the estimate when upstream omitted the slot's end.
+        let endMinute = session.endMinute ?? (inProgress ? endEstimate(session) : nil)
 
-        let discipline = index.discipline(forClass: winner.allocation.classId)
+        let discipline = index.discipline(forClass: session.classId)
         return HomeHeroClass(
             disciplineId: discipline?.id,
             disciplineName: discipline?.name ?? "",
             startsAt: startsAt,
             endsAt: endMinute.flatMap { calendar.date(byAdding: .minute, value: $0, to: dayStart) },
-            startTime: minutesLabel(startMinute),
-            endTime: endMinute.map(minutesLabel),
-            topic: index.topic(forClass: winner.allocation.classId, on: startsAt.dayStamp),
-            room: winner.allocation.spaceId.flatMap { index.spacesById[$0]?.location },
-            teacherName: index.teacherName(forClass: winner.allocation.classId)
+            startTime: minutesLabel(session.startMinute),
+            endTime: session.endMinute.map(minutesLabel),
+            topic: index.topic(forClass: session.classId, on: startsAt.dayStamp),
+            room: session.spaceId.flatMap { index.spacesById[$0]?.location },
+            teacherName: index.teacherName(forClass: session.classId),
+            isInProgress: inProgress
         )
     }
 

@@ -18,31 +18,44 @@ struct HomeHeroCard: View {
                 angle: 155
             )
 
-            VStack(spacing: 0) {
-                eyebrowRow
-                HStack(alignment: .bottom, spacing: 16) {
-                    titleColumn
-                    countdown
+            TimelineView(.periodic(from: .now, by: 1)) { context in
+                VStack(spacing: 0) {
+                    eyebrowRow(now: context.date)
+                    HStack(alignment: .bottom, spacing: 16) {
+                        titleColumn
+                        if !inProgress {
+                            countdown(now: context.date)
+                        }
+                    }
+                    .padding(.top, 16)
+                    if let endsAt = hero.endsAt, inProgress {
+                        progressSection(endsAt: endsAt, now: context.date)
+                            .padding(.top, 16)
+                    }
+                    footer
+                        .padding(.top, 18)
                 }
-                .padding(.top, 16)
-                footer
-                    .padding(.top, 18)
+                .padding(EdgeInsets(top: 18, leading: 20, bottom: 20, trailing: 20))
             }
-            .padding(EdgeInsets(top: 18, leading: 20, bottom: 20, trailing: 20))
         }
         .environment(\.colorScheme, .dark)
         .clipShape(RoundedRectangle(cornerRadius: 30, style: .continuous))
         .shadow(color: Color(hex: 0x141020, opacity: 0.28), radius: 20, y: 18)
     }
 
-    private var eyebrowRow: some View {
+    private var inProgress: Bool {
+        hero.isInProgress && hero.endsAt != nil
+    }
+
+    private func eyebrowRow(now: Date) -> some View {
         HStack {
             HStack(spacing: 7) {
                 LiveDot()
-                Text("Próxima aula")
+                Text(eyebrowLabel(now: now))
                     .textCase(.uppercase)
                     .font(.system(size: 12, weight: .semibold))
                     .tracking(0.2)
+                    .monospacedDigit()
             }
             .foregroundStyle(.white.opacity(0.9))
 
@@ -52,6 +65,39 @@ struct HomeHeroCard: View {
                 .font(.system(size: 13, weight: .medium))
                 .monospacedDigit()
                 .foregroundStyle(.white.opacity(0.6))
+        }
+    }
+
+    private func eyebrowLabel(now: Date) -> String {
+        guard inProgress, let endsAt = hero.endsAt else { return "Próxima aula" }
+        guard let left = HomeFormat.countdown(until: endsAt, now: now) else { return "Agora" }
+        return "Agora · termina em \(left.big)\(left.unit.map { " \($0)" } ?? "")"
+    }
+
+    /// The live class bar: elapsed fill with the started/ends labels under it.
+    private func progressSection(endsAt: Date, now: Date) -> some View {
+        let total = endsAt.timeIntervalSince(hero.startsAt)
+        let fraction = total > 0 ? min(1, max(0, now.timeIntervalSince(hero.startsAt) / total)) : 0
+        return VStack(spacing: 7) {
+            GeometryReader { proxy in
+                ZStack(alignment: .leading) {
+                    Capsule().fill(.white.opacity(0.16))
+                    Capsule()
+                        .fill(UNESColor.liveGreen)
+                        .frame(width: max(6, proxy.size.width * fraction))
+                }
+            }
+            .frame(height: 6)
+            HStack {
+                Text("\(hero.startTime) · iniciada")
+                Spacer()
+                if let endTime = hero.endTime {
+                    Text("\(endTime) · fim")
+                }
+            }
+            .font(.system(size: 12, weight: .medium))
+            .monospacedDigit()
+            .foregroundStyle(.white.opacity(0.6))
         }
     }
 
@@ -80,40 +126,38 @@ struct HomeHeroCard: View {
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
-    private var countdown: some View {
-        TimelineView(.periodic(from: .now, by: 1)) { context in
-            VStack(alignment: .trailing, spacing: 2) {
-                if let countdown = HomeFormat.countdown(until: hero.startsAt, now: context.date) {
-                    HStack(alignment: .firstTextBaseline, spacing: 3) {
-                        Text(countdown.big)
-                            .font(.system(size: 40, weight: .bold))
-                            .tracking(-1.6)
-                            .monospacedDigit()
-                        if let unit = countdown.unit {
-                            Text(unit)
-                                .font(.system(size: 18, weight: .semibold))
-                                .opacity(0.7)
-                        }
+    private func countdown(now: Date) -> some View {
+        VStack(alignment: .trailing, spacing: 2) {
+            if let countdown = HomeFormat.countdown(until: hero.startsAt, now: now) {
+                HStack(alignment: .firstTextBaseline, spacing: 3) {
+                    Text(countdown.big)
+                        .font(.system(size: 40, weight: .bold))
+                        .tracking(-1.6)
+                        .monospacedDigit()
+                    if let unit = countdown.unit {
+                        Text(unit)
+                            .font(.system(size: 18, weight: .semibold))
+                            .opacity(0.7)
                     }
-                    Text(countdown.sub)
-                        .font(.system(size: 11, weight: .semibold))
-                        .tracking(0.4)
-                        .monospacedDigit()
-                        .opacity(0.6)
-                } else {
-                    // Beyond a day out, the weekday reads better than a timer.
-                    Text(HomeFormat.weekdayShort(for: hero.startsAt))
-                        .font(.system(size: 34, weight: .bold))
-                        .tracking(-1.36)
-                    Text(hero.startTime)
-                        .font(.system(size: 11, weight: .semibold))
-                        .tracking(0.4)
-                        .monospacedDigit()
-                        .opacity(0.6)
                 }
+                Text(countdown.sub)
+                    .font(.system(size: 11, weight: .semibold))
+                    .tracking(0.4)
+                    .monospacedDigit()
+                    .opacity(0.6)
+            } else {
+                // Beyond a day out, the weekday reads better than a timer.
+                Text(HomeFormat.weekdayShort(for: hero.startsAt))
+                    .font(.system(size: 34, weight: .bold))
+                    .tracking(-1.36)
+                Text(hero.startTime)
+                    .font(.system(size: 11, weight: .semibold))
+                    .tracking(0.4)
+                    .monospacedDigit()
+                    .opacity(0.6)
             }
-            .foregroundStyle(.white)
         }
+        .foregroundStyle(.white)
     }
 
     private var footer: some View {
@@ -179,6 +223,17 @@ struct HomeHeroCard: View {
 #Preview {
     NavigationStack {
         HomeHeroCard(hero: HomeOverview.preview().hero!, onDetails: {})
+            .padding(16)
+            .frame(maxHeight: .infinity)
+            .background(UNESColor.surface)
+    }
+}
+
+#Preview("Em aula") {
+    var hero = HomeOverview.preview(now: .now.addingTimeInterval(-45 * 60)).hero!
+    hero.isInProgress = true
+    return NavigationStack {
+        HomeHeroCard(hero: hero, onDetails: {})
             .padding(16)
             .frame(maxHeight: .infinity)
             .background(UNESColor.surface)

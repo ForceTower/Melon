@@ -1,0 +1,156 @@
+import Foundation
+import Testing
+import WidgetKit
+
+@testable import UNESKit
+
+/// State selection of the "Próxima aula" widget timeline.
+///
+/// Fixture week: April 16, 2026 is a Thursday (upstream day 4).
+/// - ALGI: Thursday 08:00–10:00 and Friday 08:00–10:00
+/// - CALC: Thursday 10:20–12:00 (the day's last class)
+struct NextClassProviderTests {
+    let calendar = Calendar.current
+
+    private func date(day: Int, hour: Int, minute: Int = 0) -> Date {
+        calendar.date(from: DateComponents(year: 2026, month: 4, day: day, hour: hour, minute: minute))!
+    }
+
+    private func schedule(semesterEnd: String? = nil) -> WidgetScheduleSnapshot {
+        func session(_ classId: String, day: Int, start: Int, end: Int, code: String) -> WidgetScheduleSnapshot.Session {
+            WidgetScheduleSnapshot.Session(
+                classId: classId, day: day, startMinute: start, endMinute: end,
+                code: code, title: code, room: "MT-14", teacherName: nil, colorIndex: 0
+            )
+        }
+        return WidgetScheduleSnapshot(
+            semesterCode: "20261",
+            semesterEnd: semesterEnd,
+            sessions: [
+                session("c1", day: 4, start: 8 * 60, end: 10 * 60, code: "ALGI"),
+                session("c2", day: 4, start: 10 * 60 + 20, end: 12 * 60, code: "CALC"),
+                session("c1", day: 5, start: 8 * 60, end: 10 * 60, code: "ALGI"),
+            ]
+        )
+    }
+
+    private func timeline(at now: Date, schedule: WidgetScheduleSnapshot?) -> Timeline<NextClassEntry> {
+        NextClassProvider.timeline(now: now, schedule: schedule, calendar: calendar)
+    }
+
+    private func status(of timeline: Timeline<NextClassEntry>, at date: Date) -> NextClassStatus? {
+        timeline.entries.first { $0.date == date }?.status
+    }
+
+    @Test
+    func showsTheUpcomingClassBeforeItStarts() {
+        let timeline = timeline(at: date(day: 16, hour: 7), schedule: schedule())
+
+        guard case let .upcoming(occurrence) = timeline.entries.first?.status else {
+            Issue.record("expected upcoming, got \(String(describing: timeline.entries.first?.status))")
+            return
+        }
+        #expect(occurrence.code == "ALGI")
+        #expect(occurrence.start == date(day: 16, hour: 8))
+    }
+
+    @Test
+    func runningClassHoldsTheWidgetUntilHalfway() {
+        // ALGI runs 08:00–10:00; halfway lands at 09:00.
+        let timeline = timeline(at: date(day: 16, hour: 8, minute: 30), schedule: schedule())
+
+        guard case let .inClass(occurrence) = timeline.entries.first?.status else {
+            Issue.record("expected inClass, got \(String(describing: timeline.entries.first?.status))")
+            return
+        }
+        #expect(occurrence.code == "ALGI")
+    }
+
+    @Test
+    func widgetHandsOverToTheNextClassAtHalfway() {
+        let timeline = timeline(at: date(day: 16, hour: 8, minute: 30), schedule: schedule())
+
+        guard case let .upcoming(occurrence) = status(of: timeline, at: date(day: 16, hour: 9)) else {
+            Issue.record("expected upcoming at the halfway entry")
+            return
+        }
+        #expect(occurrence.code == "CALC")
+        #expect(occurrence.start == date(day: 16, hour: 10, minute: 20))
+    }
+
+    @Test
+    func lastClassHoldsTheWidgetUntilItEnds() {
+        // CALC's halfway (11:10) is past, but nothing follows today.
+        let timeline = timeline(at: date(day: 16, hour: 11, minute: 30), schedule: schedule())
+
+        guard case let .inClass(occurrence) = timeline.entries.first?.status else {
+            Issue.record("expected inClass, got \(String(describing: timeline.entries.first?.status))")
+            return
+        }
+        #expect(occurrence.code == "CALC")
+    }
+
+    @Test
+    func dayIsDoneOnceTheLastClassEnds() {
+        let timeline = timeline(at: date(day: 16, hour: 11, minute: 30), schedule: schedule())
+
+        guard case let .dayDone(completed, next) = status(of: timeline, at: date(day: 16, hour: 12)) else {
+            Issue.record("expected dayDone at the class-end entry")
+            return
+        }
+        #expect(completed == 2)
+        #expect(next?.code == "ALGI")
+        #expect(next?.start == date(day: 17, hour: 8))
+    }
+
+    @Test
+    func dayDonePointsAtTheNextDaysFirstClass() {
+        let timeline = timeline(at: date(day: 16, hour: 13), schedule: schedule())
+
+        guard case let .dayDone(completed, next) = timeline.entries.first?.status else {
+            Issue.record("expected dayDone, got \(String(describing: timeline.entries.first?.status))")
+            return
+        }
+        #expect(completed == 2)
+        #expect(next?.start == date(day: 17, hour: 8))
+    }
+
+    @Test
+    func midnightRollsTheWidgetIntoTheNextDay() {
+        let timeline = timeline(at: date(day: 16, hour: 13), schedule: schedule())
+
+        guard case let .upcoming(occurrence) = status(of: timeline, at: date(day: 17, hour: 0)) else {
+            Issue.record("expected upcoming at the midnight entry")
+            return
+        }
+        #expect(occurrence.code == "ALGI")
+        #expect(occurrence.start == date(day: 17, hour: 8))
+    }
+
+    @Test
+    func nothingPastTheSemesterEndIsMaterialized() {
+        let timeline = timeline(at: date(day: 16, hour: 13), schedule: schedule(semesterEnd: "2026-04-16"))
+
+        guard case let .dayDone(_, next) = timeline.entries.first?.status else {
+            Issue.record("expected dayDone, got \(String(describing: timeline.entries.first?.status))")
+            return
+        }
+        #expect(next == nil)
+    }
+
+    @Test
+    func signedOutWithoutAPublishedSnapshot() {
+        let timeline = timeline(at: date(day: 16, hour: 7), schedule: nil)
+
+        #expect(timeline.entries.count == 1)
+        #expect(timeline.entries.first?.status == .signedOut)
+    }
+
+    @Test
+    func emptySemesterFallsBackToTheQuietCard() {
+        let empty = WidgetScheduleSnapshot(semesterCode: "20261", semesterEnd: nil, sessions: [])
+        let timeline = timeline(at: date(day: 16, hour: 7), schedule: empty)
+
+        #expect(timeline.entries.first?.status == .dayDone(completed: 0, next: nil))
+    }
+}

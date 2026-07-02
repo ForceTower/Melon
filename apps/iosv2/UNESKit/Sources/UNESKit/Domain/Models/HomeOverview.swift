@@ -23,7 +23,9 @@ struct CachedHomeOverview: Equatable, Sendable {
     var syncedAt: Date
 }
 
-/// The next class occurrence in the week — the Live Activity-style hero.
+/// The class the hero spotlights — the next occurrence in the week, or the
+/// one running right now. A running class holds the hero until halfway
+/// through (the day's last class until it ends), then the next one takes over.
 struct HomeHeroClass: Equatable, Sendable {
     var disciplineId: String?
     var disciplineName: String
@@ -36,6 +38,9 @@ struct HomeHeroClass: Equatable, Sendable {
     var topic: String?
     var room: String?
     var teacherName: String?
+    /// The class is running — render the "Agora" treatment instead of the
+    /// start countdown.
+    var isInProgress = false
 }
 
 struct CoefficientSummary: Equatable, Sendable {

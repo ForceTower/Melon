@@ -60,6 +60,12 @@ struct ClassOccurrence: Equatable, Sendable {
         return end
     }
 
+    /// A running class holds displays until here before the day's next class
+    /// takes over.
+    var midpoint: Date {
+        start.addingTimeInterval(endOrEstimate.timeIntervalSince(start) / 2)
+    }
+
     var timeRange: String {
         [startTime, endTime].compactMap { $0 }.joined(separator: " – ")
     }

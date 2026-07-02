@@ -1,4 +1,3 @@
-#if os(iOS)
 import Foundation
 import WidgetKit
 
@@ -67,8 +66,8 @@ struct NextClassProvider: TimelineProvider {
             )
         }
 
-        var moments: Set<Date> = [now]
         let windowEnd = anchor.endOrEstimate
+        var moments: Set<Date> = [now, windowEnd]
 
         // Midnights flip "hoje"/"amanhã" wording and roll the day-done card over.
         var day = calendar.startOfDay(for: now)
@@ -77,18 +76,20 @@ struct NextClassProvider: TimelineProvider {
             day = midnight
         }
 
-        if anchor.start > now {
-            moments.insert(anchor.start)
-            // The countdown band: one entry per minute over the final stretch.
-            let bandStart = anchor.start.addingTimeInterval(-Self.countdownBand)
-            if bandStart > now { moments.insert(bandStart) }
+        // Every state boundary inside the window: class starts and ends, the
+        // halfway hand-over to the next class, and the per-minute countdown
+        // ticks of any class whose final stretch overlaps the window.
+        for occurrence in occurrences {
+            let bandStart = occurrence.start.addingTimeInterval(-Self.countdownBand)
+            if bandStart > windowEnd { break }
+            var candidates = [bandStart, occurrence.start, occurrence.midpoint, occurrence.endOrEstimate]
             for minute in 1...Int(Self.countdownBand / 60) {
-                let tick = anchor.start.addingTimeInterval(TimeInterval(-60 * minute))
-                guard tick > now else { break }
-                moments.insert(tick)
+                candidates.append(occurrence.start.addingTimeInterval(TimeInterval(-60 * minute)))
+            }
+            for candidate in candidates where candidate > now && candidate <= windowEnd {
+                moments.insert(candidate)
             }
         }
-        moments.insert(windowEnd)
 
         let entries = moments.sorted().map { entry(at: $0, occurrences: occurrences, calendar: calendar) }
         return Timeline(entries: entries, policy: .atEnd)
@@ -102,7 +103,14 @@ struct NextClassProvider: TimelineProvider {
         let today = occurrences.filter { calendar.isDate($0.start, inSameDayAs: date) }
         let status: NextClassStatus
         if let current = today.first(where: { $0.start <= date && date < $0.endOrEstimate }) {
-            status = .inClass(current)
+            // A running class holds the widget until halfway through — and
+            // the day's last class until it ends — before the next takes over.
+            let later = today.first { $0.start > date }
+            if let later, date >= current.midpoint {
+                status = .upcoming(later)
+            } else {
+                status = .inClass(current)
+            }
         } else if let nextToday = today.first(where: { $0.start > date }) {
             status = .upcoming(nextToday)
         } else {
@@ -220,4 +228,3 @@ extension NextClassEntry {
         return NextClassEntry(date: now, status: .dayDone(completed: 4, next: next))
     }
 }
-#endif

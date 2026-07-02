@@ -103,6 +103,61 @@ struct HomeOverviewMappingTests {
 
         #expect(hero?.disciplineName == "Algoritmos I")
         #expect(hero?.startsAt == date(day: 17, hour: 8, minute: 0))
+        #expect(hero?.isInProgress == false)
+    }
+
+    // MARK: Hero hand-over rules — a running class holds the hero until
+    // halfway through; the day's last class holds it until it ends.
+
+    @Test
+    func runningClassHoldsTheHeroUntilHalfway() {
+        // ALGI runs Thursday 08:00–10:00; halfway lands at 09:00.
+        let hero = snapshot().homeOverview(now: date(day: 16, hour: 8, minute: 30), calendar: calendar).hero
+
+        #expect(hero?.disciplineName == "Algoritmos I")
+        #expect(hero?.isInProgress == true)
+        #expect(hero?.startsAt == date(day: 16, hour: 8, minute: 0))
+        #expect(hero?.endsAt == date(day: 16, hour: 10, minute: 0))
+    }
+
+    @Test
+    func heroHandsOverToTheNextClassAtHalfway() {
+        let hero = snapshot().homeOverview(now: date(day: 16, hour: 9, minute: 0), calendar: calendar).hero
+
+        #expect(hero?.disciplineName == "Cálculo II")
+        #expect(hero?.isInProgress == false)
+        #expect(hero?.startsAt == date(day: 16, hour: 10, minute: 20))
+    }
+
+    @Test
+    func lastClassOfTheDayHoldsTheHeroUntilItEnds() {
+        // CALC runs Thursday 10:20–12:00 with nothing after; halfway (11:10)
+        // must not hand the hero to another day.
+        let hero = snapshot().homeOverview(now: date(day: 16, hour: 11, minute: 30), calendar: calendar).hero
+
+        #expect(hero?.disciplineName == "Cálculo II")
+        #expect(hero?.isInProgress == true)
+        #expect(hero?.endsAt == date(day: 16, hour: 12, minute: 0))
+    }
+
+    @Test
+    func heroMovesToTheNextDayOnceTheLastClassEnds() {
+        let hero = snapshot().homeOverview(now: date(day: 16, hour: 12, minute: 0), calendar: calendar).hero
+
+        #expect(hero?.disciplineName == "Algoritmos I")
+        #expect(hero?.isInProgress == false)
+        #expect(hero?.startsAt == date(day: 17, hour: 8, minute: 0))
+    }
+
+    @Test
+    func heroWrapsToTheNextWeekAfterTheWeeksLastClass() {
+        // Friday 10:00 — ALGI just ended and nothing else meets until
+        // Thursday comes around again.
+        let hero = snapshot().homeOverview(now: date(day: 17, hour: 10, minute: 0), calendar: calendar).hero
+
+        #expect(hero?.disciplineName == "Algoritmos I")
+        #expect(hero?.isInProgress == false)
+        #expect(hero?.startsAt == date(day: 23, hour: 8, minute: 0))
     }
 
     @Test

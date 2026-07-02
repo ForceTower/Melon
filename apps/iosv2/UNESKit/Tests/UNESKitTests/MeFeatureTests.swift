@@ -29,7 +29,6 @@ struct MeFeatureTests {
         }
         await store.receive(.overviewUpdated(cached)) {
             $0.overview = .preview
-            $0.syncedAt = Self.referenceDate
         }
     }
 
@@ -118,8 +117,6 @@ struct MeFeatureTests {
         await store.send(.settingsRowTapped(.settings)) {
             $0.path[id: 0] = .settings(SettingsFeature.State(userName: "Mariana Souza"))
         }
-        // The other rows still wait for their features.
-        await store.send(.settingsRowTapped(.feedback))
     }
 
     @Test
