@@ -65,12 +65,12 @@ struct MeFeature {
         case aboutDismissed
         case logoutTapped
         case logoutPromptDismissed
-        case logoutConfirmed(keepData: Bool)
+        case logoutConfirmed
         case path(StackActionOf<Path>)
         case delegate(Delegate)
 
         enum Delegate: Equatable {
-            case loggedOut(firstName: String?, keptData: Bool, dataSummary: LocalDataSummary?)
+            case loggedOut(firstName: String?)
         }
     }
 
@@ -184,29 +184,20 @@ struct MeFeature {
                 state.isLogoutPromptPresented = false
                 return .none
 
-            case let .logoutConfirmed(keepData):
+            case .logoutConfirmed:
                 log.info("confirm logout")
                 state.isLogoutPromptPresented = false
-                if !keepData {
-                    state.$theme.withLock { $0 = .system }
-                }
+                state.$theme.withLock { $0 = .system }
                 let firstName = firstName(of: state.displayName)
                 return .run { [log] send in
-                    let summary = keepData ? (try? await meRepository.localData()) : nil
-                    if !keepData {
-                        try? await meRepository.wipeLocalData()
-                    }
+                    try? await meRepository.wipeLocalData()
                     do {
                         try sessionStore.clear()
                         log.info("session logout ok")
                     } catch {
                         log.warn("session logout failed; continuing", error: error)
                     }
-                    await send(.delegate(.loggedOut(
-                        firstName: firstName,
-                        keptData: keepData,
-                        dataSummary: summary
-                    )))
+                    await send(.delegate(.loggedOut(firstName: firstName)))
                 }
 
             case let .path(.element(id: _, action: pathAction)):

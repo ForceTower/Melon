@@ -52,13 +52,6 @@ struct SemesterCountdown: Equatable, Sendable {
     var disciplineCount: Int
 }
 
-/// What stays on the device after a logout that keeps local data.
-struct LocalDataSummary: Equatable, Sendable {
-    /// Semesters whose payload is mirrored, not just listed.
-    var semesters: Int
-    var messages: Int
-}
-
 extension MeOverview {
     static let preview = MeOverview(
         semesterCode: "20261",

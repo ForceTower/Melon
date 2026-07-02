@@ -7,8 +7,6 @@ struct FarewellFeature {
     @ObservableState
     struct State: Equatable {
         var firstName: String?
-        var keptData = true
-        var dataSummary: LocalDataSummary?
         var isFlashing = true
     }
 

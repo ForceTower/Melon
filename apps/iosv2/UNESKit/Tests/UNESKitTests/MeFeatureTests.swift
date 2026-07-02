@@ -194,33 +194,7 @@ struct MeFeatureTests {
     }
 
     @Test
-    func logoutKeepingDataClearsOnlyTheSession() async {
-        let summary = LocalDataSummary(semesters: 7, messages: 142)
-        let sessionStore = SessionStore.inMemory(initial: .preview)
-        let wiped = LockIsolated(false)
-
-        let store = TestStore(initialState: MeFeature.State(userName: "Mariana Souza")) {
-            MeFeature()
-        } withDependencies: {
-            $0.sessionStore = sessionStore
-            $0.meRepository.localData = { summary }
-            $0.meRepository.wipeLocalData = { wiped.setValue(true) }
-        }
-
-        await store.send(.logoutTapped) {
-            $0.isLogoutPromptPresented = true
-        }
-        await store.send(.logoutConfirmed(keepData: true)) {
-            $0.isLogoutPromptPresented = false
-        }
-        await store.receive(.delegate(.loggedOut(firstName: "Mariana", keptData: true, dataSummary: summary)))
-
-        #expect(sessionStore.current() == nil)
-        #expect(wiped.value == false)
-    }
-
-    @Test
-    func logoutWipingDataResetsTheMirrorAndTheme() async {
+    func logoutWipesTheMirrorThemeAndSession() async {
         let sessionStore = SessionStore.inMemory(initial: .preview)
         let wiped = LockIsolated(false)
 
@@ -231,14 +205,17 @@ struct MeFeatureTests {
             MeFeature()
         } withDependencies: {
             $0.sessionStore = sessionStore
-            $0.meRepository.localData = { LocalDataSummary(semesters: 7, messages: 142) }
             $0.meRepository.wipeLocalData = { wiped.setValue(true) }
         }
 
-        await store.send(.logoutConfirmed(keepData: false)) {
+        await store.send(.logoutTapped) {
+            $0.isLogoutPromptPresented = true
+        }
+        await store.send(.logoutConfirmed) {
+            $0.isLogoutPromptPresented = false
             $0.$theme.withLock { $0 = .system }
         }
-        await store.receive(.delegate(.loggedOut(firstName: "Mariana", keptData: false, dataSummary: nil)))
+        await store.receive(.delegate(.loggedOut(firstName: "Mariana")))
 
         #expect(sessionStore.current() == nil)
         #expect(wiped.value == true)

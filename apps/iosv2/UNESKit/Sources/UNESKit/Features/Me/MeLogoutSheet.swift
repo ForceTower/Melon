@@ -1,12 +1,11 @@
 import SwiftUI
 
-/// The logout confirmation: keep-my-data toggle plus the destructive action.
+/// The logout confirmation: data-removal warning plus the destructive action.
 struct MeLogoutSheet: View {
     var userName: String?
     var onCancel: () -> Void
-    var onConfirm: (_ keepData: Bool) -> Void
+    var onConfirm: () -> Void
 
-    @State private var keepData = true
     /// Measured content height so the sheet hugs it instead of a fixed detent.
     @State private var height: CGFloat = 320
 
@@ -16,13 +15,11 @@ struct MeLogoutSheet: View {
         VStack(alignment: .leading, spacing: 0) {
             header
                 .padding(.bottom, 14)
-            Text("Você precisará entrar com as suas informações novamente para ver a matrícula, notas e mensagens.")
+            Text("Seus dados serão removidos deste aparelho. Você precisará entrar com as suas informações novamente para ver a matrícula, notas e mensagens.")
                 .font(.system(size: 13.5, weight: .medium))
                 .lineSpacing(3)
                 .foregroundStyle(UNESColor.ink2)
                 .padding(EdgeInsets(top: 2, leading: 2, bottom: 14, trailing: 2))
-            keepDataToggle
-                .padding(.bottom, 14)
             actions
         }
         .padding(EdgeInsets(top: 24, leading: 18, bottom: 12, trailing: 18))
@@ -65,27 +62,6 @@ struct MeLogoutSheet: View {
         }
     }
 
-    private var keepDataToggle: some View {
-        Toggle(isOn: $keepData) {
-            VStack(alignment: .leading, spacing: 1) {
-                Text("Manter dados no dispositivo")
-                    .font(.system(size: 13.5, weight: .semibold))
-                    .foregroundStyle(UNESColor.ink)
-                Text("notas, horários e mensagens ficam salvos")
-                    .font(.system(size: 11.5, weight: .medium))
-                    .foregroundStyle(UNESColor.ink4)
-            }
-        }
-        .tint(UNESColor.successGreen)
-        .padding(EdgeInsets(top: 11, leading: 13, bottom: 11, trailing: 13))
-        .background(UNESColor.surface2)
-        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
-        .overlay {
-            RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .strokeBorder(UNESColor.line)
-        }
-    }
-
     private var actions: some View {
         HStack(spacing: 8) {
             Button(action: onCancel) {
@@ -103,9 +79,7 @@ struct MeLogoutSheet: View {
             }
             .buttonStyle(TilePressStyle())
 
-            Button {
-                onConfirm(keepData)
-            } label: {
+            Button(action: onConfirm) {
                 HStack(spacing: 7) {
                     Image(systemName: "rectangle.portrait.and.arrow.right")
                         .font(.system(size: 13, weight: .semibold))
@@ -125,6 +99,6 @@ struct MeLogoutSheet: View {
 
 #Preview {
     Color.clear.sheet(isPresented: .constant(true)) {
-        MeLogoutSheet(userName: "Mariana Nogueira", onCancel: {}, onConfirm: { _ in })
+        MeLogoutSheet(userName: "Mariana Nogueira", onCancel: {}, onConfirm: {})
     }
 }

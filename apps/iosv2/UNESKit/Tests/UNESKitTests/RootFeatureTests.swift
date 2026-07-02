@@ -7,21 +7,12 @@ import Testing
 struct RootFeatureTests {
     @Test
     func logoutSwapsTheShellForTheFarewell() async {
-        let summary = LocalDataSummary(semesters: 7, messages: 142)
         let store = TestStore(initialState: RootFeature.State.connected(AppFeature.State())) {
             RootFeature()
         }
 
-        await store.send(.connected(.me(.delegate(.loggedOut(
-            firstName: "Mariana",
-            keptData: true,
-            dataSummary: summary
-        ))))) {
-            $0 = .farewell(FarewellFeature.State(
-                firstName: "Mariana",
-                keptData: true,
-                dataSummary: summary
-            ))
+        await store.send(.connected(.me(.delegate(.loggedOut(firstName: "Mariana"))))) {
+            $0 = .farewell(FarewellFeature.State(firstName: "Mariana"))
         }
     }
 

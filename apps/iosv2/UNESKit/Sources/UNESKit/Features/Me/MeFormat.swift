@@ -24,11 +24,4 @@ enum MeFormat {
     private static var buildNumber: String {
         Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "0"
     }
-
-    /// "7 semestres · 142 mensagens" — the preserved-data card.
-    static func dataSummaryLabel(_ summary: LocalDataSummary) -> String {
-        let semesters = summary.semesters == 1 ? "1 semestre" : "\(summary.semesters) semestres"
-        let messages = summary.messages == 1 ? "1 mensagem" : "\(summary.messages) mensagens"
-        return "\(semesters) · \(messages)"
-    }
 }

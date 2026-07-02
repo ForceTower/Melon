@@ -64,13 +64,9 @@ struct RootFeature {
                 state = .connected(AppFeature.State())
                 return .none
 
-            case let .connected(.me(.delegate(.loggedOut(firstName, keptData, dataSummary)))):
-                log.info("user logged out -> farewell keptData=\(keptData)")
-                state = .farewell(FarewellFeature.State(
-                    firstName: firstName,
-                    keptData: keptData,
-                    dataSummary: dataSummary
-                ))
+            case let .connected(.me(.delegate(.loggedOut(firstName)))):
+                log.info("user logged out -> farewell")
+                state = .farewell(FarewellFeature.State(firstName: firstName))
                 return .none
 
             case .farewell(.delegate(.signIn)):

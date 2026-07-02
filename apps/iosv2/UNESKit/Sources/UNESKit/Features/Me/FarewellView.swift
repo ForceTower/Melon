@@ -56,17 +56,12 @@ struct FarewellView: View {
                 title
                     .padding(.bottom, 14)
 
-                Text(message)
+                Text("Seus dados foram removidos deste aparelho. Quando quiser voltar, o idUEFS te espera.")
                     .font(.system(size: 15, weight: .medium))
                     .lineSpacing(5)
                     .foregroundStyle(UNESColor.ink2)
                     .frame(maxWidth: 280, alignment: .leading)
                     .padding(.bottom, 26)
-
-                if store.keptData, let summary = store.dataSummary {
-                    preservedCard(summary)
-                        .padding(.bottom, 20)
-                }
 
                 signInButton
 
@@ -91,42 +86,6 @@ struct FarewellView: View {
         .font(.system(size: 38, weight: .bold))
         .tracking(-1.52)
         .foregroundStyle(UNESColor.ink)
-    }
-
-    private var message: String {
-        store.keptData
-            ? "Seus dados ficaram guardados aqui no aparelho. Quando quiser voltar, o idUEFS te espera."
-            : "Seus dados foram removidos deste aparelho. Quando quiser voltar, o idUEFS te espera."
-    }
-
-    private func preservedCard(_ summary: LocalDataSummary) -> some View {
-        HStack(spacing: 11) {
-            Circle()
-                .fill(UNESColor.liveGreen)
-                .frame(width: 8, height: 8)
-                .background {
-                    Circle()
-                        .fill(UNESColor.liveGreen.opacity(0.2))
-                        .padding(-3)
-                }
-            VStack(alignment: .leading, spacing: 1) {
-                Text("Dados locais preservados")
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(UNESColor.ink)
-                Text(MeFormat.dataSummaryLabel(summary))
-                    .font(.system(size: 11.5, weight: .medium))
-                    .foregroundStyle(UNESColor.ink4)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-        }
-        .padding(EdgeInsets(top: 12, leading: 14, bottom: 12, trailing: 14))
-        .background(UNESColor.card)
-        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-        .overlay {
-            RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .strokeBorder(UNESColor.cardLine)
-        }
-        .shadow(color: Color(hex: 0x141020, opacity: 0.05), radius: 9, y: 6)
     }
 
     private var signInButton: some View {
@@ -172,12 +131,7 @@ struct FarewellView: View {
 #Preview("Despedida") {
     FarewellView(
         store: Store(
-            initialState: FarewellFeature.State(
-                firstName: "Mariana",
-                keptData: true,
-                dataSummary: LocalDataSummary(semesters: 7, messages: 142),
-                isFlashing: false
-            )
+            initialState: FarewellFeature.State(firstName: "Mariana", isFlashing: false)
         ) {
             FarewellFeature()
         }

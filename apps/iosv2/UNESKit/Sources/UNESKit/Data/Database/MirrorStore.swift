@@ -84,21 +84,9 @@ struct MirrorStore: Sendable {
         return CachedMeOverview(overview: overview, syncedAt: syncedAt)
     }
 
-    /// What a data-keeping logout would leave behind.
-    func localDataSummary() async throws -> LocalDataSummary {
-        try await writer.read { db in
-            LocalDataSummary(
-                semesters: try String.fetchAll(
-                    db,
-                    StudentClassRecord.select(Column("semesterId"), as: String.self).distinct()
-                ).count,
-                messages: try MessageRecord.fetchCount(db)
-            )
-        }
-    }
-
-    /// Empties the whole mirror — the logout path that does not keep data.
-    /// The schema stays in place; only rows go.
+    /// Empties the whole mirror on logout. The schema stays in place; only
+    /// rows go — including the sync-state rows, so the backfill-complete
+    /// flag resets and the next account backfills from scratch.
     func wipe() async throws {
         do {
             try await writer.write { db in

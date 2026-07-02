@@ -29,17 +29,6 @@ extension MeRepository: DependencyKey {
                 continuation.onTermination = { _ in task.cancel() }
             }
         },
-        localData: {
-            @Dependency(\.database) var wrappedDatabase
-            do {
-                let summary = try await MirrorStore(writer: wrappedDatabase).localDataSummary()
-                log.info("localData ok semesters=\(summary.semesters) messages=\(summary.messages)")
-                return summary
-            } catch {
-                log.error("localData failed", error: error)
-                throw error
-            }
-        },
         wipeLocalData: {
             @Dependency(\.database) var wrappedDatabase
             do {

@@ -47,8 +47,8 @@ struct MeView: View {
         .sheet(isPresented: logoutPromptBinding) {
             MeLogoutSheet(userName: store.displayName) {
                 store.send(.logoutPromptDismissed)
-            } onConfirm: { keepData in
-                store.send(.logoutConfirmed(keepData: keepData))
+            } onConfirm: {
+                store.send(.logoutConfirmed)
             }
         }
     }
