@@ -3,6 +3,7 @@ import Foundation
 /// Everything the Home ("Hoje") screen renders, computed from the active
 /// semester payload plus the first inbox page.
 struct HomeOverview: Equatable, Sendable {
+    var semesterId: String?
     var semesterCode: String?
     var hero: HomeHeroClass?
     var coefficient: CoefficientSummary?
@@ -111,6 +112,7 @@ func formatGrade(_ value: Double?) -> String {
 extension HomeOverview {
     static func preview(now: Date = .now) -> HomeOverview {
         HomeOverview(
+            semesterId: "sem1",
             semesterCode: "2026.1",
             hero: HomeHeroClass(
                 disciplineId: "d2",

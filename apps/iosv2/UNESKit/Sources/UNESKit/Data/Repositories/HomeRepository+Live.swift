@@ -28,10 +28,27 @@ extension HomeRepository: DependencyKey {
             if let inbox = try? await inbox {
                 try? await mirror.upsertMessages(inbox.page, syncedAt: now)
             }
-
-            var overview = snapshot?.homeOverview(now: now) ?? .empty
-            overview.messages = try? await mirror.messagesSummary()
-            return overview
+        },
+        observe: {
+            @Dependency(\.database) var wrappedDatabase
+            @Dependency(\.date) var wrappedDate
+            let date = wrappedDate
+            let mirror = MirrorStore(writer: wrappedDatabase)
+            return AsyncStream { continuation in
+                let task = Task {
+                    // Observation only fails if the database itself is gone;
+                    // ending the stream is all there is to do.
+                    do {
+                        for try await cached in mirror.overviewUpdates(now: { date.now }) {
+                            if let cached {
+                                continuation.yield(cached)
+                            }
+                        }
+                    } catch {}
+                    continuation.finish()
+                }
+                continuation.onTermination = { _ in task.cancel() }
+            }
         }
     )
 }

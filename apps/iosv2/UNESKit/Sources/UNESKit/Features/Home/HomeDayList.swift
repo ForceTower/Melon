@@ -5,6 +5,7 @@ import SwiftUI
 struct HomeDaySection: View {
     let today: [TodayClass]
     var onSeeSchedule: () -> Void
+    var onOpenClass: (TodayClass) -> Void
 
     var body: some View {
         VStack(spacing: 0) {
@@ -38,7 +39,8 @@ struct HomeDaySection: View {
                         item: item,
                         isDone: (item.endMinute ?? item.startMinute) <= nowMinutes,
                         isNext: index == nowIndex,
-                        showsDivider: index < today.count - 1 || nowIndex == today.count
+                        showsDivider: index < today.count - 1 || nowIndex == today.count,
+                        onOpen: { onOpenClass(item) }
                     )
                 }
                 if nowIndex == today.count {
@@ -90,9 +92,10 @@ private struct HomeDayRow: View {
     let isDone: Bool
     let isNext: Bool
     let showsDivider: Bool
+    let onOpen: () -> Void
 
     var body: some View {
-        NavigationLink(value: HomeRoute.discipline(id: item.disciplineId, name: item.title)) {
+        Button(action: onOpen) {
             HStack(spacing: 12) {
                 Text(item.startTime)
                     .font(.system(size: 13, weight: isNext ? .bold : .medium))
@@ -214,7 +217,7 @@ private struct HomeNowLine: View {
 #Preview {
     NavigationStack {
         ScrollView {
-            HomeDaySection(today: HomeOverview.preview().today, onSeeSchedule: {})
+            HomeDaySection(today: HomeOverview.preview().today, onSeeSchedule: {}, onOpenClass: { _ in })
                 .padding(16)
         }
         .background(UNESColor.surface)
@@ -222,7 +225,7 @@ private struct HomeNowLine: View {
 }
 
 #Preview("Empty") {
-    HomeDaySection(today: [], onSeeSchedule: {})
+    HomeDaySection(today: [], onSeeSchedule: {}, onOpenClass: { _ in })
         .padding(16)
         .background(UNESColor.surface)
 }

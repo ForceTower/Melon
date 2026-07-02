@@ -4,6 +4,7 @@ import SwiftUI
 /// ticking countdown.
 struct HomeHeroCard: View {
     let hero: HomeHeroClass
+    var onDetails: () -> Void
 
     var body: some View {
         ZStack {
@@ -131,8 +132,8 @@ struct HomeHeroCard: View {
 
             Spacer(minLength: 12)
 
-            if let disciplineId = hero.disciplineId {
-                NavigationLink(value: HomeRoute.discipline(id: disciplineId, name: hero.disciplineName)) {
+            if hero.disciplineId != nil {
+                Button(action: onDetails) {
                     Text("Detalhes")
                         .font(.system(size: 13, weight: .semibold))
                         .tracking(-0.13)
@@ -178,7 +179,7 @@ struct HomeHeroCard: View {
 
 #Preview {
     NavigationStack {
-        HomeHeroCard(hero: HomeOverview.preview().hero!)
+        HomeHeroCard(hero: HomeOverview.preview().hero!, onDetails: {})
             .padding(16)
             .frame(maxHeight: .infinity)
             .background(UNESColor.surface)

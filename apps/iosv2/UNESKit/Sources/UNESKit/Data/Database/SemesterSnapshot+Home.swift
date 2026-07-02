@@ -9,6 +9,7 @@ extension SemesterSnapshot {
         let weekday = calendar.component(.weekday, from: now) - 1
 
         return HomeOverview(
+            semesterId: semester.id,
             semesterCode: semester.code,
             hero: hero(index: index, now: now, calendar: calendar),
             coefficient: coefficientSummary,

@@ -18,7 +18,7 @@ struct HomeRepositoryTests {
         let now = date(day: 16, hour: 9, minute: 41)
         let repository = HomeRepository.liveValue
 
-        let (fresh, cached) = try await withDependencies {
+        let cached = try await withDependencies {
             $0.database = database
             $0.apiClient.send = { request in
                 switch request.path {
@@ -29,21 +29,53 @@ struct HomeRepositoryTests {
                 }
             }
         } operation: {
-            let fresh = try await repository.refresh(now: now)
-            let cached = try await repository.cached(now: now)
-            return (fresh, cached)
+            try await repository.refresh(now: now)
+            return try await repository.cached(now: now)
         }
 
-        #expect(fresh.semesterCode == "20261")
-        #expect(fresh.coefficient?.value == 8.5)
-        #expect(fresh.today.count == 1)
-        #expect(fresh.messages == MessagesSummary(
+        let overview = try #require(cached?.overview)
+        #expect(overview.semesterId == "sem1")
+        #expect(overview.semesterCode == "20261")
+        #expect(overview.coefficient?.value == 8.5)
+        #expect(overview.today.count == 1)
+        #expect(overview.messages == MessagesSummary(
             unreadCount: 1,
             latestSenderName: "Adriana Matos",
             latestPreview: "Aula cancelada amanhã."
         ))
-        #expect(cached?.overview == fresh)
         #expect(cached?.syncedAt == now)
+    }
+
+    @Test
+    func observationEmitsAfterMirrorWrites() async throws {
+        let database = try inMemoryDatabase()
+        let now = date(day: 16, hour: 9, minute: 41)
+        let mirror = MirrorStore(writer: database)
+        let repository = HomeRepository.liveValue
+
+        try await withDependencies {
+            $0.database = database
+            $0.date = .constant(now)
+            $0.apiClient.send = { request in
+                switch request.path {
+                case "api/sync/semesters": Wire.semesterList
+                case "api/sync/semesters/sem1": Wire.semesterPayload
+                case "api/sync/messages": Wire.messages
+                default: throw APIError.invalidResponse
+                }
+            }
+        } operation: {
+            try await repository.refresh(now: now)
+
+            var updates = repository.observe().makeAsyncIterator()
+            let initial = await updates.next()
+            #expect(initial?.overview.messages?.unreadCount == 1)
+
+            // A read marked from another tab lands in the next emission.
+            try await mirror.markMessageRead(id: "m1", now: now)
+            let afterRead = await updates.next()
+            #expect(afterRead?.overview.messages?.unreadCount == 0)
+        }
     }
 
     @Test
@@ -63,7 +95,7 @@ struct HomeRepositoryTests {
             $0.apiClient.send = { _ in throw APIError.invalidResponse }
         } operation: {
             await #expect(throws: APIError.self) {
-                _ = try await repository.refresh(now: now)
+                try await repository.refresh(now: now)
             }
             let cached = try await repository.cached(now: now)
             #expect(cached?.overview == snapshot.homeOverview(now: now, calendar: calendar))

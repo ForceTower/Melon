@@ -1,15 +1,18 @@
 import ComposableArchitecture
 import Foundation
 
-/// The Home ("Hoje") screen surface, stale-while-revalidate: `cached` is the
-/// fast local read from the mirror, `refresh` resolves the active semester
-/// upstream, rewrites the mirror, and returns the fresh snapshot.
+/// The Home ("Hoje") screen surface. The mirror is the source of truth:
+/// `observe` streams the local snapshot on subscription and after every write
+/// that changes it, `refresh` rewrites the mirror from upstream (landing
+/// through `observe`), and `cached` is a one-shot local read for recomputing
+/// time-derived pieces while offline.
 @DependencyClient
 struct HomeRepository: Sendable {
     /// The overview as mirrored on disk; nil until the first successful
     /// refresh lands.
     var cached: @Sendable (_ now: Date) async throws -> CachedHomeOverview?
-    var refresh: @Sendable (_ now: Date) async throws -> HomeOverview
+    var refresh: @Sendable (_ now: Date) async throws -> Void
+    var observe: @Sendable () -> AsyncStream<CachedHomeOverview> = { .finished }
 }
 
 extension HomeRepository: TestDependencyKey {
@@ -17,7 +20,12 @@ extension HomeRepository: TestDependencyKey {
 
     static let previewValue = HomeRepository(
         cached: { now in CachedHomeOverview(overview: .preview(now: now), syncedAt: now) },
-        refresh: { now in .preview(now: now) }
+        refresh: { _ in },
+        observe: {
+            AsyncStream { continuation in
+                continuation.yield(CachedHomeOverview(overview: .preview(now: .now), syncedAt: .now))
+            }
+        }
     )
 }
 

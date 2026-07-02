@@ -31,19 +31,29 @@ struct MirrorStore: Sendable {
     /// The Home snapshot as mirrored on disk; nil until the first successful
     /// refresh lands.
     func cachedOverview(now: Date) async throws -> CachedHomeOverview? {
-        let today = now.dayStamp
-        return try await writer.read { db in
-            guard let syncedAt = try Self.lastSyncedAt(db) else { return nil }
+        try await writer.read { db in try Self.cachedOverview(db, now: now) }
+    }
 
-            var overview = HomeOverview.empty
-            let semesters = try SemesterRecord.order(Column("startDate").desc).fetchAll(db)
-            if let active = semesters.map(\.domain).active(today: today),
-               let record = semesters.first(where: { $0.id == active.id }) {
-                overview = try Self.snapshot(for: record, db: db).homeOverview(now: now)
-            }
-            overview.messages = try Self.messagesSummary(db)
-            return CachedHomeOverview(overview: overview, syncedAt: syncedAt)
+    /// Emits the mirrored Home snapshot on subscription and again after every
+    /// write that feeds it — sync refreshes, message read/star overlays,
+    /// semester downloads.
+    func overviewUpdates(now: @escaping @Sendable () -> Date) -> AsyncValueObservation<CachedHomeOverview?> {
+        ValueObservation
+            .tracking { db in try Self.cachedOverview(db, now: now()) }
+            .values(in: writer)
+    }
+
+    private static func cachedOverview(_ db: Database, now: Date) throws -> CachedHomeOverview? {
+        guard let syncedAt = try lastSyncedAt(db) else { return nil }
+
+        var overview = HomeOverview.empty
+        let semesters = try SemesterRecord.order(Column("startDate").desc).fetchAll(db)
+        if let active = semesters.map(\.domain).active(today: now.dayStamp),
+           let record = semesters.first(where: { $0.id == active.id }) {
+            overview = try snapshot(for: record, db: db).homeOverview(now: now)
         }
+        overview.messages = try messagesSummary(db)
+        return CachedHomeOverview(overview: overview, syncedAt: syncedAt)
     }
 
     /// The Horário week as mirrored on disk; nil until the first successful

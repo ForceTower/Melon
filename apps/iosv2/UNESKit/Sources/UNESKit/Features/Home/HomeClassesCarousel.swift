@@ -4,6 +4,7 @@ import SwiftUI
 struct HomeClassesCarousel: View {
     let disciplines: [DisciplineCard]
     var onSeeAll: () -> Void
+    var onOpen: (DisciplineCard) -> Void
 
     var body: some View {
         VStack(spacing: 0) {
@@ -27,7 +28,9 @@ struct HomeClassesCarousel: View {
 
     private func card(_ discipline: DisciplineCard) -> some View {
         let color = UNESColor.disciplineColor(discipline.colorIndex)
-        return NavigationLink(value: HomeRoute.discipline(id: discipline.id, name: discipline.name)) {
+        return Button {
+            onOpen(discipline)
+        } label: {
             VStack(alignment: .leading, spacing: 0) {
                 Text(discipline.code)
                     .font(.system(size: 10, weight: .bold))
@@ -85,7 +88,7 @@ struct HomeClassesCarousel: View {
 
 #Preview {
     NavigationStack {
-        HomeClassesCarousel(disciplines: HomeOverview.preview().disciplines, onSeeAll: {})
+        HomeClassesCarousel(disciplines: HomeOverview.preview().disciplines, onSeeAll: {}, onOpen: { _ in })
             .frame(maxHeight: .infinity)
             .background(UNESColor.surface)
     }

@@ -1,23 +1,11 @@
 import ComposableArchitecture
 import SwiftUI
 
-/// Value routes pushed from Home onto its NavigationStack. Destinations are
-/// placeholders until the discipline detail ships.
-enum HomeRoute: Hashable {
-    case discipline(id: String, name: String)
-
-    var title: String {
-        switch self {
-        case let .discipline(_, name): name
-        }
-    }
-}
-
 struct HomeView: View {
     @Bindable var store: StoreOf<HomeFeature>
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $store.scope(state: \.path, action: \.path)) {
             ZStack(alignment: .top) {
                 UNESColor.surface.ignoresSafeArea()
                 ambientWash
@@ -37,10 +25,10 @@ struct HomeView: View {
                     avatarButton
                 }
             }
-            .navigationDestination(for: HomeRoute.self) { route in
-                PlaceholderScreen(title: route.title, systemImage: "text.book.closed")
-                    .navigationTitle(route.title)
-                    .bareNavigationBar()
+        } destination: { store in
+            switch store.case {
+            case let .detail(store):
+                DisciplineDetailView(store: store)
             }
         }
         .task { await store.send(.task).finish() }
@@ -56,9 +44,12 @@ struct HomeView: View {
 
                 VStack(spacing: 0) {
                     if let hero = overview.hero {
-                        HomeHeroCard(hero: hero)
-                            .scaleIn(delay: 0.1, duration: 0.62)
-                            .padding(.bottom, 22)
+                        HomeHeroCard(hero: hero) {
+                            guard let id = hero.disciplineId else { return }
+                            store.send(.disciplineTapped(id: id, name: hero.disciplineName))
+                        }
+                        .scaleIn(delay: 0.1, duration: 0.62)
+                        .padding(.bottom, 22)
                     }
 
                     HomeWidgetGrid(overview: overview) {
@@ -69,6 +60,8 @@ struct HomeView: View {
 
                     HomeDaySection(today: overview.today) {
                         store.send(.seeScheduleTapped)
+                    } onOpenClass: { item in
+                        store.send(.disciplineTapped(id: item.disciplineId, name: item.title))
                     }
                     .fadeUp(delay: 0.3)
                     .padding(.bottom, 26)
@@ -78,6 +71,8 @@ struct HomeView: View {
                 if !overview.disciplines.isEmpty {
                     HomeClassesCarousel(disciplines: overview.disciplines) {
                         store.send(.seeAllClassesTapped)
+                    } onOpen: { discipline in
+                        store.send(.disciplineTapped(id: discipline.id, name: discipline.name))
                     }
                     .fadeUp(delay: 0.38)
                     .padding(.bottom, 20)

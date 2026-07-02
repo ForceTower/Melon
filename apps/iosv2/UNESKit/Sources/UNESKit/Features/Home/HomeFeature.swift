@@ -10,19 +10,26 @@ struct HomeFeature {
         var isLoading = false
         var errorMessage: String?
         var lastRefreshed: Date?
+        var path = StackState<Path.State>()
+    }
+
+    @Reducer
+    enum Path {
+        case detail(DisciplineDetailFeature)
     }
 
     enum Action: Equatable {
         case task
         case refreshPulled
-        case hydrated(CachedHomeOverview)
-        case overviewLoaded(HomeOverview)
-        case overviewFailed(String)
+        case mirrorUpdated(CachedHomeOverview)
+        case refreshFailed(String)
         case profileLoaded(Profile)
+        case disciplineTapped(id: String, name: String)
         case seeScheduleTapped
         case seeAllClassesTapped
         case messagesWidgetTapped
         case avatarTapped
+        case path(StackActionOf<Path>)
         case delegate(Delegate)
 
         enum Delegate: Equatable {
@@ -39,16 +46,19 @@ struct HomeFeature {
     @Dependency(\.date.now) var now
     @Dependency(\.continuousClock) var clock
 
-    private enum CancelID { case heroRollover }
+    private enum CancelID { case observation, heroRollover }
 
     var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
             case .task:
-                guard state.overview == nil, !state.isLoading else { return .none }
+                // The observation replays the mirror on subscription, so
+                // every appearance rehydrates; the network refresh only runs
+                // on the first one.
+                guard state.overview == nil, !state.isLoading else { return observeMirror() }
                 state.isLoading = true
                 state.errorMessage = nil
-                return .merge(hydrateThenRefresh(), loadProfile())
+                return .merge(observeMirror(), refresh(), loadProfile())
 
             case .refreshPulled:
                 guard !state.isLoading else { return .none }
@@ -58,7 +68,7 @@ struct HomeFeature {
                 }
                 return refresh()
 
-            case let .hydrated(cached):
+            case let .mirrorUpdated(cached):
                 state.isLoading = false
                 state.errorMessage = nil
                 state.overview = cached.overview
@@ -70,17 +80,7 @@ struct HomeFeature {
                     scheduleHeroRollover(cached.overview)
                 )
 
-            case let .overviewLoaded(overview):
-                state.isLoading = false
-                state.errorMessage = nil
-                state.overview = overview
-                state.lastRefreshed = now
-                return .merge(
-                    .send(.delegate(.unreadMessagesChanged(overview.messages?.unreadCount ?? 0))),
-                    scheduleHeroRollover(overview)
-                )
-
-            case let .overviewFailed(message):
+            case let .refreshFailed(message):
                 state.isLoading = false
                 // A stale overview beats an error screen; only surface the
                 // failure when there is nothing to show.
@@ -91,6 +91,17 @@ struct HomeFeature {
 
             case let .profileLoaded(profile):
                 state.userName = profile.name
+                return .none
+
+            case let .disciplineTapped(id, name):
+                guard let overview = state.overview, let semesterId = overview.semesterId else { return .none }
+                let colorIndex = overview.disciplines.first { $0.id == id }?.colorIndex ?? 0
+                state.path.append(.detail(DisciplineDetailFeature.State(
+                    semesterId: semesterId,
+                    disciplineId: id,
+                    name: name,
+                    colorIndex: colorIndex
+                )))
                 return .none
 
             case .seeScheduleTapped:
@@ -105,38 +116,41 @@ struct HomeFeature {
             case .avatarTapped:
                 return .send(.delegate(.openMe))
 
+            case .path:
+                return .none
+
             case .delegate:
                 return .none
             }
         }
+        .forEach(\.path, action: \.path)
     }
 
-    /// Stale-while-revalidate: hydrate instantly from the mirror (no spinner
-    /// when data exists), then refresh over the network.
-    private func hydrateThenRefresh() -> Effect<Action> {
+    /// The reactive backbone: every mirror write (sync refresh, message
+    /// read/star, semester download — from any tab) lands here as a fresh
+    /// overview.
+    private func observeMirror() -> Effect<Action> {
         .run { send in
-            if let cached = try? await homeRepository.cached(now: now) {
-                await send(.hydrated(cached))
-            }
-            do {
-                await send(.overviewLoaded(try await homeRepository.refresh(now: now)))
-            } catch {
-                await send(.overviewFailed(error.localizedDescription))
+            for await cached in homeRepository.observe() {
+                await send(.mirrorUpdated(cached))
             }
         }
+        .cancellable(id: CancelID.observation, cancelInFlight: true)
     }
 
+    /// Rewrites the mirror from upstream; the fresh snapshot arrives through
+    /// the observation.
     private func refresh() -> Effect<Action> {
         .run { send in
             do {
-                await send(.overviewLoaded(try await homeRepository.refresh(now: now)))
+                try await homeRepository.refresh(now: now)
             } catch {
                 // Offline with a mirror: recompute from local data so the
                 // time-derived pieces (hero, "Seu dia") still advance.
                 if let cached = try? await homeRepository.cached(now: now) {
-                    await send(.hydrated(cached))
+                    await send(.mirrorUpdated(cached))
                 } else {
-                    await send(.overviewFailed(error.localizedDescription))
+                    await send(.refreshFailed(error.localizedDescription))
                 }
             }
         }
@@ -163,3 +177,6 @@ struct HomeFeature {
         }
     }
 }
+
+extension HomeFeature.Path.State: Equatable {}
+extension HomeFeature.Path.Action: Equatable {}
