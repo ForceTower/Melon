@@ -99,6 +99,16 @@ extension AppDelegate: MessagingDelegate, UNUserNotificationCenterDelegate {
         willPresent notification: UNNotification,
         withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
     ) {
+        // FCM data payloads ride along as string entries in userInfo; the
+        // non-string values ("aps" & friends) are system metadata.
+        let data = notification.request.content.userInfo
+            .reduce(into: [String: String]()) { payload, entry in
+                guard let key = entry.key as? String, let value = entry.value as? String else { return }
+                payload[key] = value
+            }
+        if !data.isEmpty {
+            Task { await PushEvents.received(data) }
+        }
         completionHandler([.list, .sound, .banner])
     }
 }

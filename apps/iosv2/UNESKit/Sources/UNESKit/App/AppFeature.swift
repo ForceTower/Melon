@@ -26,6 +26,7 @@ struct AppFeature {
         case tabChanged(Tab)
         case sceneBackgrounded
         case sceneActivated
+        case pushDataReceived(PushDataEvent)
         case home(HomeFeature.Action)
         case schedule(ScheduleFeature.Action)
         case disciplines(DisciplinesFeature.Action)
@@ -35,9 +36,12 @@ struct AppFeature {
 
     @Dependency(\.push) var push
     @Dependency(\.syncRepository) var syncRepository
+    @Dependency(\.homeRepository) var homeRepository
+    @Dependency(\.continuousClock) var clock
+    @Dependency(\.date) var date
     private let log = Log.scoped("AppFeature")
 
-    private enum CancelID { case ping, backfill }
+    private enum CancelID { case ping, backfill, pushEvents, pushRefresh }
 
     var body: some ReducerOf<Self> {
         Scope(state: \.home, action: \.home) { HomeFeature() }
@@ -55,7 +59,13 @@ struct AppFeature {
                     .run { _ in await push.requestAuthorization() },
                     pingEffect(),
                     .run { _ in try? await syncRepository.backfillMirror() }
-                        .cancellable(id: CancelID.backfill, cancelInFlight: true)
+                        .cancellable(id: CancelID.backfill, cancelInFlight: true),
+                    .run { send in
+                        for await event in push.dataEvents() {
+                            await send(.pushDataReceived(event))
+                        }
+                    }
+                    .cancellable(id: CancelID.pushEvents, cancelInFlight: true)
                 )
 
             case let .tabChanged(tab):
@@ -88,6 +98,18 @@ struct AppFeature {
                         .send(.me(.task))
                     )
                 )
+
+            case let .pushDataReceived(event):
+                log.info("data push kind=\(event.kind) -> scheduling mirror refresh")
+                // The backend sends one push per upstream change, so a sync
+                // that lands several grades arrives as a burst — debounce it
+                // into a single refresh. The fresh data reaches every tab
+                // through its mirror observation.
+                return .run { _ in
+                    try await clock.sleep(for: .seconds(2))
+                    try? await homeRepository.refresh(now: date.now)
+                }
+                .cancellable(id: CancelID.pushRefresh, cancelInFlight: true)
 
             case let .home(.delegate(delegate)):
                 switch delegate {

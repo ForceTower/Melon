@@ -35,7 +35,16 @@ extension PushClient: DependencyKey {
                 return
             }
             await register(token)
-        }
+        },
+        dataNotificationReceived: { data in
+            guard let kind = data["kind"] else {
+                log.debug("dataNotificationReceived ignored: no kind key")
+                return
+            }
+            log.info("dataNotificationReceived kind=\(kind) -> publishing")
+            hub.send(PushDataEvent(kind: kind))
+        },
+        dataEvents: { hub.stream() }
     )
 
     private static let tokenKey = "messaging_notification_token"
@@ -70,6 +79,33 @@ extension PushClient: DependencyKey {
                 log.warn("register transport failure", error: error)
             default:
                 log.error("register failed", error: error)
+            }
+        }
+    }
+}
+
+private let hub = PushEventHub()
+
+/// Fans data pushes out from the app-delegate hand-off to whichever reducers
+/// are subscribed at the time; pushes with no subscriber are dropped (the
+/// next foreground sync picks the data up anyway).
+private struct PushEventHub: Sendable {
+    private let subscribers = LockIsolated<[UUID: AsyncStream<PushDataEvent>.Continuation]>([:])
+
+    func stream() -> AsyncStream<PushDataEvent> {
+        let (stream, continuation) = AsyncStream<PushDataEvent>.makeStream()
+        let id = UUID()
+        subscribers.withValue { $0[id] = continuation }
+        continuation.onTermination = { [subscribers] _ in
+            subscribers.withValue { $0[id] = nil }
+        }
+        return stream
+    }
+
+    func send(_ event: PushDataEvent) {
+        subscribers.withValue { active in
+            for continuation in active.values {
+                continuation.yield(event)
             }
         }
     }

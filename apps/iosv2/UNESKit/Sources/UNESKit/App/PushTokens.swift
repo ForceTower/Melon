@@ -2,8 +2,8 @@ import ComposableArchitecture
 
 private let log = Log.scoped("PushTokens")
 
-/// App-delegate entry point for FCM registration tokens — the only push
-/// surface the app target needs; everything else stays inside UNESKit.
+/// App-delegate entry point for FCM registration tokens — the foreground
+/// notification sibling is `PushEvents`; everything else stays inside UNESKit.
 public enum PushTokens {
     public static func received(_ token: String) async {
         @Dependency(\.push) var push
