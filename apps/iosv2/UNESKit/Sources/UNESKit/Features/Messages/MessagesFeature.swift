@@ -3,10 +3,16 @@ import Foundation
 
 @Reducer
 struct MessagesFeature {
+    /// How many rows the inbox renders before parking the rest; scrolling
+    /// near the end reveals another step. Bounds the build cost of a
+    /// ~300-message mirror to what the user actually scrolls through.
+    static let revealStep = 40
+
     @ObservableState
     struct State: Equatable {
         var overview: MessagesOverview?
         var filter: MessageFilter = .all
+        var revealLimit = MessagesFeature.revealStep
         var isLoading = false
         var errorMessage: String?
         var path = StackState<Path.State>()
@@ -23,6 +29,7 @@ struct MessagesFeature {
         case overviewUpdated(MessagesOverview)
         case refreshFailed(String)
         case filterSelected(MessageFilter)
+        case endApproached
         case markAllReadTapped
         case messageTapped(MessageItem)
         case path(StackActionOf<Path>)
@@ -78,6 +85,11 @@ struct MessagesFeature {
 
             case let .filterSelected(filter):
                 state.filter = filter
+                state.revealLimit = Self.revealStep
+                return .none
+
+            case .endApproached:
+                state.revealLimit += Self.revealStep
                 return .none
 
             case .markAllReadTapped:

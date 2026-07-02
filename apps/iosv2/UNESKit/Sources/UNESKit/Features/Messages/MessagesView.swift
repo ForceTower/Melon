@@ -38,7 +38,11 @@ struct MessagesView: View {
     private func loaded(_ overview: MessagesOverview) -> some View {
         TimelineView(.everyMinute) { context in
             let now = context.date
-            let buckets = bucketed(overview.messages.filter { store.filter.matches($0) }, now: now)
+            let inbox = bucketed(
+                overview.messages.filter { store.filter.matches($0) },
+                now: now,
+                limit: store.revealLimit
+            )
 
             ScrollView {
                 VStack(spacing: 0) {
@@ -54,24 +58,24 @@ struct MessagesView: View {
                     .fadeUp(delay: 0.16)
                     .padding(.bottom, 18)
 
-                    if buckets.isEmpty {
+                    if inbox.groups.isEmpty {
                         Text("Nenhuma mensagem neste filtro.")
                             .font(.system(size: 15, weight: .medium))
                             .foregroundStyle(UNESColor.ink3)
                             .padding(EdgeInsets(top: 70, leading: 40, bottom: 70, trailing: 40))
                     }
 
-                    ForEach(Array(buckets.enumerated()), id: \.element.bucket) { index, group in
+                    ForEach(Array(inbox.groups.enumerated()), id: \.element.bucket) { index, group in
                         section(group, now: now)
                             .fadeUp(delay: 0.22 + Double(index) * 0.06)
                             .padding(EdgeInsets(top: 0, leading: 16, bottom: 22, trailing: 16))
                     }
 
-                    if let syncedAt = overview.syncedAt, !buckets.isEmpty {
+                    if let syncedAt = overview.syncedAt, !inbox.groups.isEmpty {
                         Text(HomeFormat.updatedLabel(lastRefreshed: syncedAt, now: now))
                             .font(.system(size: 12, weight: .medium))
                             .foregroundStyle(UNESColor.ink4)
-                            .fadeUp(delay: 0.22 + Double(buckets.count) * 0.06)
+                            .fadeUp(delay: 0.22 + Double(inbox.groups.count) * 0.06)
                             .padding(.bottom, 8)
                     }
                 }
@@ -79,6 +83,16 @@ struct MessagesView: View {
             }
             .refreshable {
                 await store.send(.refreshPulled).finish()
+            }
+            // The rows are eager (plain VStack), so an onAppear sentinel
+            // would fire at build time; proximity has to come from the
+            // scroll geometry instead. ~900pt ≈ one screen of lookahead.
+            .onScrollGeometryChange(for: Bool.self) { geometry in
+                geometry.contentOffset.y + geometry.containerSize.height > geometry.contentSize.height - 900
+            } action: { _, isNearEnd in
+                if isNearEnd, inbox.hiddenCount > 0 {
+                    store.send(.endApproached)
+                }
             }
         }
     }
@@ -90,7 +104,7 @@ struct MessagesView: View {
                     .font(.system(size: 20, weight: .bold))
                     .tracking(-0.6)
                     .foregroundStyle(UNESColor.ink)
-                Text("\(group.messages.count)")
+                Text("\(group.totalCount)")
                     .font(.system(size: 14, weight: .medium))
                     .monospacedDigit()
                     .foregroundStyle(UNESColor.ink4)
@@ -121,16 +135,39 @@ struct MessagesView: View {
 
     private struct MessageBucketGroup {
         var bucket: MessageBucket
+        /// The rows actually rendered — the newest slice of the bucket once
+        /// the reveal limit is spread across sections.
         var messages: [MessageItem]
+        /// Everything the bucket holds under the active filter; the header
+        /// count, so revealing more never changes the numbers.
+        var totalCount: Int
     }
 
-    private func bucketed(_ messages: [MessageItem], now: Date) -> [MessageBucketGroup] {
+    private struct BucketedInbox {
+        var groups: [MessageBucketGroup]
+        var hiddenCount: Int
+    }
+
+    /// Groups the newest `limit` messages into date sections; the rest
+    /// reveal as the scroll nears the end, so a backfilled mirror
+    /// (~300 messages) doesn't build hundreds of rows on tab switch.
+    private func bucketed(_ messages: [MessageItem], now: Date, limit: Int) -> BucketedInbox {
         let grouped = Dictionary(grouping: messages) {
             MessagesFormat.bucket(for: $0.receivedAt, now: now)
         }
-        return MessageBucket.allCases.compactMap { bucket in
-            grouped[bucket].map { MessageBucketGroup(bucket: bucket, messages: $0) }
+        var groups: [MessageBucketGroup] = []
+        var remaining = limit
+        var hiddenCount = 0
+        for bucket in MessageBucket.allCases {
+            guard let all = grouped[bucket] else { continue }
+            let visible = Array(all.prefix(remaining))
+            remaining -= visible.count
+            hiddenCount += all.count - visible.count
+            if !visible.isEmpty {
+                groups.append(MessageBucketGroup(bucket: bucket, messages: visible, totalCount: all.count))
+            }
         }
+        return BucketedInbox(groups: groups, hiddenCount: hiddenCount)
     }
 
     // MARK: States
@@ -208,6 +245,29 @@ struct MessagesView: View {
             $0.messagesRepository.observe = {
                 AsyncStream { continuation in
                     continuation.yield(.empty)
+                }
+            }
+        }
+    )
+}
+
+#Preview("Caixa cheia") {
+    MessagesView(
+        store: Store(initialState: MessagesFeature.State()) {
+            MessagesFeature()
+        } withDependencies: {
+            $0.messagesRepository.observe = {
+                AsyncStream { continuation in
+                    let base = MessagesOverview.preview()
+                    var messages: [MessageItem] = []
+                    for round in 0..<12 {
+                        for var message in base.messages {
+                            message.id += "-\(round)"
+                            message.receivedAt.addTimeInterval(-Double(round) * 5 * 86_400)
+                            messages.append(message)
+                        }
+                    }
+                    continuation.yield(MessagesOverview(messages: messages, syncedAt: base.syncedAt))
                 }
             }
         }
