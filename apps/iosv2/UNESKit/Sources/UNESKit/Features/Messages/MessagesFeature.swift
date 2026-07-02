@@ -20,9 +20,8 @@ struct MessagesFeature {
     enum Action: Equatable {
         case task
         case refreshPulled
-        case hydrated(MessagesOverview)
-        case overviewLoaded(MessagesOverview)
-        case overviewFailed(String)
+        case overviewUpdated(MessagesOverview)
+        case refreshFailed(String)
         case filterSelected(MessageFilter)
         case markAllReadTapped
         case messageTapped(MessageItem)
@@ -37,14 +36,20 @@ struct MessagesFeature {
     @Dependency(\.messagesRepository) var messagesRepository
     @Dependency(\.date.now) var now
 
+    private enum CancelID { case observation, refresh }
+
     var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
             case .task:
-                guard state.overview == nil, !state.isLoading else { return .none }
+                // The observation replays the mirror on subscription, so
+                // every appearance rehydrates; the refresh keeps retrying on
+                // each appearance until the mirror has data, so a first load
+                // cancelled mid-flight (tab switch) can't wedge the spinner.
+                guard state.overview == nil else { return observeMirror() }
                 state.isLoading = true
                 state.errorMessage = nil
-                return hydrateThenRefresh()
+                return .merge(observeMirror(), refresh())
 
             case .refreshPulled:
                 guard !state.isLoading else { return .none }
@@ -54,13 +59,13 @@ struct MessagesFeature {
                 }
                 return refresh()
 
-            case let .hydrated(overview), let .overviewLoaded(overview):
+            case let .overviewUpdated(overview):
                 state.isLoading = false
                 state.errorMessage = nil
                 state.overview = overview
                 return .send(.delegate(.unreadChanged(overview.unreadCount)))
 
-            case let .overviewFailed(message):
+            case let .refreshFailed(message):
                 state.isLoading = false
                 // A stale inbox beats an error screen; only surface the
                 // failure when there is nothing to show.
@@ -75,8 +80,8 @@ struct MessagesFeature {
 
             case .markAllReadTapped:
                 guard var overview = state.overview, overview.unreadCount > 0 else { return .none }
-                // Optimistic: the digest settles instantly; a failed write is
-                // corrected by the next hydrate.
+                // Optimistic: the digest settles instantly; the write's own
+                // mirror emission then confirms (or corrects) it.
                 for index in overview.messages.indices {
                     overview.messages[index].unread = false
                 }
@@ -115,34 +120,33 @@ struct MessagesFeature {
         .forEach(\.path, action: \.path)
     }
 
-    /// Stale-while-revalidate: hydrate instantly from the mirror (no spinner
-    /// when data exists), then refresh over the network.
-    private func hydrateThenRefresh() -> Effect<Action> {
+    /// The reactive backbone: every mirror write (sync refresh from any tab,
+    /// read/star overlays) lands here as a fresh inbox.
+    private func observeMirror() -> Effect<Action> {
         .run { send in
-            if let cached = try? await messagesRepository.cached(now: now) {
-                await send(.hydrated(cached))
-            }
-            do {
-                await send(.overviewLoaded(try await messagesRepository.refresh(now: now)))
-            } catch {
-                await send(.overviewFailed(error.localizedDescription))
+            for await overview in messagesRepository.observe() {
+                await send(.overviewUpdated(overview))
             }
         }
+        .cancellable(id: CancelID.observation, cancelInFlight: true)
     }
 
+    /// Rewrites the mirror from upstream; the fresh inbox arrives through
+    /// the observation.
     private func refresh() -> Effect<Action> {
         .run { send in
             do {
-                await send(.overviewLoaded(try await messagesRepository.refresh(now: now)))
+                try await messagesRepository.refresh(now: now)
             } catch {
                 // Offline with a mirror: keep serving the local inbox.
                 if let cached = try? await messagesRepository.cached(now: now) {
-                    await send(.hydrated(cached))
+                    await send(.overviewUpdated(cached))
                 } else {
-                    await send(.overviewFailed(error.localizedDescription))
+                    await send(.refreshFailed(error.localizedDescription))
                 }
             }
         }
+        .cancellable(id: CancelID.refresh, cancelInFlight: true)
     }
 }
 

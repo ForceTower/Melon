@@ -69,10 +69,20 @@ extension MirrorStore {
 
     /// The inbox as mirrored on disk; nil until a first page has landed.
     func cachedMessagesOverview(now: Date) async throws -> MessagesOverview? {
-        try await writer.read { db in
-            guard try Self.messagesSyncedAt(db) != nil || Self.lastSyncedAt(db) != nil else { return nil }
-            return try Self.messagesOverview(db, now: now)
-        }
+        try await writer.read { db in try Self.cachedMessagesOverview(db, now: now) }
+    }
+
+    /// Emits the mirrored inbox on subscription and again after every write
+    /// that feeds it — message pages, read/star overlays.
+    func messagesOverviewUpdates(now: @escaping @Sendable () -> Date) -> AsyncValueObservation<MessagesOverview?> {
+        ValueObservation
+            .tracking { db in try Self.cachedMessagesOverview(db, now: now()) }
+            .values(in: writer)
+    }
+
+    private static func cachedMessagesOverview(_ db: Database, now: Date) throws -> MessagesOverview? {
+        guard try messagesSyncedAt(db) != nil || lastSyncedAt(db) != nil else { return nil }
+        return try messagesOverview(db, now: now)
     }
 
     func messagesOverview(now: Date) async throws -> MessagesOverview {

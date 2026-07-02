@@ -116,24 +116,43 @@ struct MirrorStore: Sendable {
     /// The Horário week as mirrored on disk; nil until the first successful
     /// refresh lands.
     func cachedScheduleOverview(now: Date) async throws -> ScheduleOverview? {
-        let today = now.dayStamp
-        return try await writer.read { db in
-            guard try Self.lastSyncedAt(db) != nil else { return nil }
-            let semesters = try SemesterRecord.order(Column("startDate").desc).fetchAll(db)
-            guard let active = semesters.map(\.domain).active(today: today),
-                  let record = semesters.first(where: { $0.id == active.id })
-            else { return .empty }
-            return try Self.snapshot(for: record, db: db).scheduleOverview(now: now)
-        }
+        try await writer.read { db in try Self.cachedScheduleOverview(db, now: now) }
+    }
+
+    /// Emits the mirrored Horário week on subscription and again after every
+    /// write that feeds it.
+    func scheduleOverviewUpdates(now: @escaping @Sendable () -> Date) -> AsyncValueObservation<ScheduleOverview?> {
+        ValueObservation
+            .tracking { db in try Self.cachedScheduleOverview(db, now: now()) }
+            .values(in: writer)
+    }
+
+    private static func cachedScheduleOverview(_ db: Database, now: Date) throws -> ScheduleOverview? {
+        guard try lastSyncedAt(db) != nil else { return nil }
+        let semesters = try SemesterRecord.order(Column("startDate").desc).fetchAll(db)
+        guard let active = semesters.map(\.domain).active(today: now.dayStamp),
+              let record = semesters.first(where: { $0.id == active.id })
+        else { return .empty }
+        return try snapshot(for: record, db: db).scheduleOverview(now: now)
     }
 
     /// The Turmas snapshot as mirrored on disk; nil until the first
     /// successful refresh lands.
     func cachedDisciplinesOverview(now: Date) async throws -> DisciplinesOverview? {
-        try await writer.read { db in
-            guard try Self.lastSyncedAt(db) != nil else { return nil }
-            return try Self.disciplinesOverview(now: now, db: db)
-        }
+        try await writer.read { db in try Self.cachedDisciplinesOverview(db, now: now) }
+    }
+
+    /// Emits the mirrored Turmas snapshot on subscription and again after
+    /// every write that feeds it — sync refreshes, semester downloads.
+    func disciplinesOverviewUpdates(now: @escaping @Sendable () -> Date) -> AsyncValueObservation<DisciplinesOverview?> {
+        ValueObservation
+            .tracking { db in try Self.cachedDisciplinesOverview(db, now: now()) }
+            .values(in: writer)
+    }
+
+    private static func cachedDisciplinesOverview(_ db: Database, now: Date) throws -> DisciplinesOverview? {
+        guard try lastSyncedAt(db) != nil else { return nil }
+        return try disciplinesOverview(now: now, db: db)
     }
 
     func disciplinesOverview(now: Date) async throws -> DisciplinesOverview {
@@ -144,12 +163,35 @@ struct MirrorStore: Sendable {
     /// payload (or the discipline itself) isn't mirrored.
     func disciplineDetail(semesterId: String, disciplineId: String, now: Date) async throws -> DisciplineDetail? {
         try await writer.read { db in
-            guard let semester = try SemesterRecord.fetchOne(db, key: semesterId) else { return nil }
-            var detail = try Self.snapshot(for: semester, db: db)
-                .disciplineDetail(disciplineId: disciplineId, now: now)
-            detail?.syncedAt = try Self.lastSyncedAt(db)
-            return detail
+            try Self.disciplineDetail(db, semesterId: semesterId, disciplineId: disciplineId, now: now)
         }
+    }
+
+    /// Emits one mirrored discipline's detail feed on subscription and again
+    /// after every write that feeds it.
+    func disciplineDetailUpdates(
+        semesterId: String,
+        disciplineId: String,
+        now: @escaping @Sendable () -> Date
+    ) -> AsyncValueObservation<DisciplineDetail?> {
+        ValueObservation
+            .tracking { db in
+                try Self.disciplineDetail(db, semesterId: semesterId, disciplineId: disciplineId, now: now())
+            }
+            .values(in: writer)
+    }
+
+    private static func disciplineDetail(
+        _ db: Database,
+        semesterId: String,
+        disciplineId: String,
+        now: Date
+    ) throws -> DisciplineDetail? {
+        guard let semester = try SemesterRecord.fetchOne(db, key: semesterId) else { return nil }
+        var detail = try snapshot(for: semester, db: db)
+            .disciplineDetail(disciplineId: disciplineId, now: now)
+        detail?.syncedAt = try lastSyncedAt(db)
+        return detail
     }
 
     private static func disciplinesOverview(now: Date, db: Database) throws -> DisciplinesOverview {

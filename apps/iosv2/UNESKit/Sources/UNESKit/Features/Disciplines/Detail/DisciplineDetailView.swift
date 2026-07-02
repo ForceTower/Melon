@@ -345,7 +345,11 @@ struct DisciplineGroupSegmented: View {
             ) {
                 DisciplineDetailFeature()
             } withDependencies: {
-                $0.disciplinesRepository.detail = { _, _, now in .previewMultiGroup(now: now) }
+                $0.disciplinesRepository.observeDetail = { _, _ in
+                    AsyncStream { continuation in
+                        continuation.yield(.previewMultiGroup(now: .now))
+                    }
+                }
             }
         )
     }

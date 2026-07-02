@@ -82,6 +82,34 @@ struct HomeFeatureTests {
     }
 
     @Test
+    func taskRetriesTheRefreshAfterACancelledFirstLoad() async {
+        let overview = Self.heroless()
+        let (updates, mirror) = AsyncStream.makeStream(of: CachedHomeOverview.self)
+
+        // isLoading was left true by a first load whose effects were
+        // cancelled mid-refresh (tab switch); the mirror is still empty.
+        let store = TestStore(initialState: HomeFeature.State(isLoading: true)) {
+            HomeFeature()
+        } withDependencies: {
+            $0.date = .constant(Self.referenceDate)
+            $0.homeRepository.observe = { updates }
+            $0.homeRepository.refresh = { now in
+                mirror.yield(CachedHomeOverview(overview: overview, syncedAt: now))
+                mirror.finish()
+            }
+            $0.profileRepository.current = { throw APIError.emptyEnvelope }
+        }
+
+        await store.send(.task)
+        await store.receive(.mirrorUpdated(CachedHomeOverview(overview: overview, syncedAt: Self.referenceDate))) {
+            $0.isLoading = false
+            $0.overview = overview
+            $0.lastRefreshed = Self.referenceDate
+        }
+        await store.receive(.delegate(.unreadMessagesChanged(2)))
+    }
+
+    @Test
     func failureSurfacesOnlyWithoutData() async {
         let store = TestStore(initialState: HomeFeature.State()) {
             HomeFeature()

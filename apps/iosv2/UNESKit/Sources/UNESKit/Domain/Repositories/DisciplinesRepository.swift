@@ -1,18 +1,21 @@
 import ComposableArchitecture
 import Foundation
 
-/// The Turmas screen surface, stale-while-revalidate like Home: `cached` is
-/// the fast local read from the mirror, `refresh` re-pulls the semester list
-/// plus the active semester's payload, and `downloadSemester` pulls one past
-/// semester on demand. Every call resolves to the full overview so the
-/// screen always renders from a single, mirror-backed source.
+/// The Turmas screen surface. The mirror is the source of truth: `observe`
+/// streams the local snapshot on subscription and after every write that
+/// changes it, `refresh` and `downloadSemester` rewrite the mirror from
+/// upstream (landing through `observe`), and `cached` is a one-shot local
+/// read for recomputing time-derived pieces while offline.
 @DependencyClient
 struct DisciplinesRepository: Sendable {
+    /// The overview as mirrored on disk; nil until the first successful
+    /// refresh lands.
     var cached: @Sendable (_ now: Date) async throws -> DisciplinesOverview?
-    var refresh: @Sendable (_ now: Date) async throws -> DisciplinesOverview
-    var downloadSemester: @Sendable (_ semesterId: String, _ now: Date) async throws -> DisciplinesOverview
+    var refresh: @Sendable (_ now: Date) async throws -> Void
+    var downloadSemester: @Sendable (_ semesterId: String, _ now: Date) async throws -> Void
+    var observe: @Sendable () -> AsyncStream<DisciplinesOverview> = { .finished }
     /// The detail feed for one mirrored discipline — a pure local read.
-    var detail: @Sendable (_ semesterId: String, _ disciplineId: String, _ now: Date) async throws -> DisciplineDetail?
+    var observeDetail: @Sendable (_ semesterId: String, _ disciplineId: String) -> AsyncStream<DisciplineDetail> = { _, _ in .finished }
 }
 
 extension DisciplinesRepository: TestDependencyKey {
@@ -20,9 +23,18 @@ extension DisciplinesRepository: TestDependencyKey {
 
     static let previewValue = DisciplinesRepository(
         cached: { now in .preview(now: now) },
-        refresh: { now in .preview(now: now) },
-        downloadSemester: { _, now in .preview(now: now) },
-        detail: { _, _, now in .preview(now: now) }
+        refresh: { _ in },
+        downloadSemester: { _, _ in },
+        observe: {
+            AsyncStream { continuation in
+                continuation.yield(.preview(now: .now))
+            }
+        },
+        observeDetail: { _, _ in
+            AsyncStream { continuation in
+                continuation.yield(.preview(now: .now))
+            }
+        }
     )
 }
 

@@ -24,11 +24,10 @@ struct DisciplinesFeature {
     enum Action: Equatable {
         case task
         case refreshPulled
-        case hydrated(DisciplinesOverview)
-        case overviewLoaded(DisciplinesOverview)
+        case overviewUpdated(DisciplinesOverview)
         case overviewFailed(String)
         case downloadSemesterTapped(String)
-        case semesterDownloaded(String, DisciplinesOverview)
+        case semesterDownloaded(String)
         case semesterDownloadFailed(String, String)
         case disciplineTapped(semesterId: String, discipline: DisciplineSummary)
         case path(StackActionOf<Path>)
@@ -38,14 +37,20 @@ struct DisciplinesFeature {
     @Dependency(\.disciplinesRepository) var disciplinesRepository
     @Dependency(\.date.now) var now
 
+    private enum CancelID { case observation, refresh }
+
     var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
             case .task:
-                guard state.overview == nil, !state.isLoading else { return .none }
+                // The observation replays the mirror on subscription, so
+                // every appearance rehydrates; the refresh keeps retrying on
+                // each appearance until the mirror has data, so a first load
+                // cancelled mid-flight (tab switch) can't wedge the spinner.
+                guard state.overview == nil else { return observeMirror() }
                 state.isLoading = true
                 state.errorMessage = nil
-                return hydrateThenRefresh()
+                return .merge(observeMirror(), refresh())
 
             case .refreshPulled:
                 guard !state.isLoading else { return .none }
@@ -55,7 +60,7 @@ struct DisciplinesFeature {
                 }
                 return refresh()
 
-            case let .hydrated(overview), let .overviewLoaded(overview):
+            case let .overviewUpdated(overview):
                 state.isLoading = false
                 state.errorMessage = nil
                 state.overview = overview
@@ -75,20 +80,17 @@ struct DisciplinesFeature {
                 state.downloadingSemesterIds.insert(semesterId)
                 return .run { send in
                     do {
-                        let overview = try await disciplinesRepository.downloadSemester(
-                            semesterId: semesterId,
-                            now: now
-                        )
-                        await send(.semesterDownloaded(semesterId, overview))
+                        try await disciplinesRepository.downloadSemester(semesterId: semesterId, now: now)
+                        await send(.semesterDownloaded(semesterId))
                     } catch {
                         await send(.semesterDownloadFailed(semesterId, error.localizedDescription))
                     }
                 }
 
-            case let .semesterDownloaded(semesterId, overview):
+            case let .semesterDownloaded(semesterId):
+                // The expanded overview arrives through the observation.
                 state.downloadingSemesterIds.remove(semesterId)
                 state.recentlyDownloadedIds.insert(semesterId)
-                state.overview = overview
                 return .none
 
             case let .semesterDownloadFailed(semesterId, message):
@@ -114,35 +116,34 @@ struct DisciplinesFeature {
         .ifLet(\.$alert, action: \.alert)
     }
 
-    /// Stale-while-revalidate: hydrate instantly from the mirror (no spinner
-    /// when data exists), then refresh over the network.
-    private func hydrateThenRefresh() -> Effect<Action> {
+    /// The reactive backbone: every mirror write (sync refresh, semester
+    /// download — from any tab) lands here as a fresh overview.
+    private func observeMirror() -> Effect<Action> {
         .run { send in
-            if let cached = try? await disciplinesRepository.cached(now: now) {
-                await send(.hydrated(cached))
-            }
-            do {
-                await send(.overviewLoaded(try await disciplinesRepository.refresh(now: now)))
-            } catch {
-                await send(.overviewFailed(error.localizedDescription))
+            for await overview in disciplinesRepository.observe() {
+                await send(.overviewUpdated(overview))
             }
         }
+        .cancellable(id: CancelID.observation, cancelInFlight: true)
     }
 
+    /// Rewrites the mirror from upstream; the fresh overview arrives through
+    /// the observation.
     private func refresh() -> Effect<Action> {
         .run { send in
             do {
-                await send(.overviewLoaded(try await disciplinesRepository.refresh(now: now)))
+                try await disciplinesRepository.refresh(now: now)
             } catch {
                 // Offline with a mirror: recompute from local data so the
                 // time-derived pieces (countdowns, status) still advance.
                 if let cached = try? await disciplinesRepository.cached(now: now) {
-                    await send(.hydrated(cached))
+                    await send(.overviewUpdated(cached))
                 } else {
                     await send(.overviewFailed(error.localizedDescription))
                 }
             }
         }
+        .cancellable(id: CancelID.refresh, cancelInFlight: true)
     }
 }
 

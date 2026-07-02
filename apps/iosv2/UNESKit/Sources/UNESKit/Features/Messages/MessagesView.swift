@@ -205,8 +205,11 @@ struct MessagesView: View {
         store: Store(initialState: MessagesFeature.State()) {
             MessagesFeature()
         } withDependencies: {
-            $0.messagesRepository.cached = { _ in .empty }
-            $0.messagesRepository.refresh = { _ in .empty }
+            $0.messagesRepository.observe = {
+                AsyncStream { continuation in
+                    continuation.yield(.empty)
+                }
+            }
         }
     )
 }

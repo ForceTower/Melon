@@ -14,7 +14,27 @@ extension MessagesRepository: DependencyKey {
 
             let inbox: MessageListDTO = try await apiClient.get(from: "api/sync/messages")
             try await mirror.upsertMessages(inbox.page, syncedAt: now)
-            return try await mirror.messagesOverview(now: now)
+        },
+        observe: {
+            @Dependency(\.database) var database
+            @Dependency(\.date) var wrappedDate
+            let date = wrappedDate
+            let mirror = MirrorStore(writer: database)
+            return AsyncStream { continuation in
+                let task = Task {
+                    // Observation only fails if the database itself is gone;
+                    // ending the stream is all there is to do.
+                    do {
+                        for try await overview in mirror.messagesOverviewUpdates(now: { date.now }) {
+                            if let overview {
+                                continuation.yield(overview)
+                            }
+                        }
+                    } catch {}
+                    continuation.finish()
+                }
+                continuation.onTermination = { _ in task.cancel() }
+            }
         },
         markRead: { id, now in
             @Dependency(\.database) var database

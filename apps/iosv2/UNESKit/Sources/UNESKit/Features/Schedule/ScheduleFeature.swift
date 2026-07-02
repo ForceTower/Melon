@@ -21,9 +21,8 @@ struct ScheduleFeature {
     enum Action: Equatable {
         case task
         case refreshPulled
-        case hydrated(ScheduleOverview)
-        case overviewLoaded(ScheduleOverview)
-        case overviewFailed(String)
+        case overviewUpdated(ScheduleOverview)
+        case refreshFailed(String)
         case daySelected(Int)
         case todayTapped
         case classTapped(ScheduleClass)
@@ -33,14 +32,20 @@ struct ScheduleFeature {
     @Dependency(\.scheduleRepository) var scheduleRepository
     @Dependency(\.date.now) var now
 
+    private enum CancelID { case observation, refresh }
+
     var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
             case .task:
-                guard state.overview == nil, !state.isLoading else { return .none }
+                // The observation replays the mirror on subscription, so
+                // every appearance rehydrates; the refresh keeps retrying on
+                // each appearance until the mirror has data, so a first load
+                // cancelled mid-flight (tab switch) can't wedge the spinner.
+                guard state.overview == nil else { return observeMirror() }
                 state.isLoading = true
                 state.errorMessage = nil
-                return hydrateThenRefresh()
+                return .merge(observeMirror(), refresh())
 
             case .refreshPulled:
                 guard !state.isLoading else { return .none }
@@ -50,13 +55,13 @@ struct ScheduleFeature {
                 }
                 return refresh()
 
-            case let .hydrated(overview), let .overviewLoaded(overview):
+            case let .overviewUpdated(overview):
                 state.isLoading = false
                 state.errorMessage = nil
                 state.overview = overview
                 return .none
 
-            case let .overviewFailed(message):
+            case let .refreshFailed(message):
                 state.isLoading = false
                 // A stale week beats an error screen; only surface the
                 // failure when there is nothing to show.
@@ -93,35 +98,34 @@ struct ScheduleFeature {
         .forEach(\.path, action: \.path)
     }
 
-    /// Stale-while-revalidate: hydrate instantly from the mirror (no spinner
-    /// when data exists), then refresh over the network.
-    private func hydrateThenRefresh() -> Effect<Action> {
+    /// The reactive backbone: every mirror write (sync refresh, semester
+    /// download — from any tab) lands here as a fresh week.
+    private func observeMirror() -> Effect<Action> {
         .run { send in
-            if let cached = try? await scheduleRepository.cached(now: now) {
-                await send(.hydrated(cached))
-            }
-            do {
-                await send(.overviewLoaded(try await scheduleRepository.refresh(now: now)))
-            } catch {
-                await send(.overviewFailed(error.localizedDescription))
+            for await overview in scheduleRepository.observe() {
+                await send(.overviewUpdated(overview))
             }
         }
+        .cancellable(id: CancelID.observation, cancelInFlight: true)
     }
 
+    /// Rewrites the mirror from upstream; the fresh week arrives through the
+    /// observation.
     private func refresh() -> Effect<Action> {
         .run { send in
             do {
-                await send(.overviewLoaded(try await scheduleRepository.refresh(now: now)))
+                try await scheduleRepository.refresh(now: now)
             } catch {
                 // Offline with a mirror: recompute from local data so the
                 // week's dates and topics still track the calendar.
                 if let cached = try? await scheduleRepository.cached(now: now) {
-                    await send(.hydrated(cached))
+                    await send(.overviewUpdated(cached))
                 } else {
-                    await send(.overviewFailed(error.localizedDescription))
+                    await send(.refreshFailed(error.localizedDescription))
                 }
             }
         }
+        .cancellable(id: CancelID.refresh, cancelInFlight: true)
     }
 }
 

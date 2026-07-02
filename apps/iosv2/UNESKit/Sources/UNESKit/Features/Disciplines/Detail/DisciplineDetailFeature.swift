@@ -34,33 +34,35 @@ struct DisciplineDetailFeature {
 
     enum Action: Equatable {
         case task
-        case detailLoaded(DisciplineDetail?)
+        case detailUpdated(DisciplineDetail)
         case groupSelected(String?)
     }
 
     @Dependency(\.disciplinesRepository) var disciplinesRepository
-    @Dependency(\.date.now) var now
+
+    private enum CancelID { case observation }
 
     var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
             case .task:
-                guard state.detail == nil else { return .none }
+                // The observation replays the mirror on subscription, so
+                // every appearance rehydrates and later writes (sync
+                // refreshes from any tab) land live.
                 return .run { [semesterId = state.semesterId, disciplineId = state.disciplineId] send in
-                    let detail = try? await disciplinesRepository.detail(
+                    for await detail in disciplinesRepository.observeDetail(
                         semesterId: semesterId,
-                        disciplineId: disciplineId,
-                        now: now
-                    )
-                    await send(.detailLoaded(detail))
+                        disciplineId: disciplineId
+                    ) {
+                        await send(.detailUpdated(detail))
+                    }
                 }
+                .cancellable(id: CancelID.observation, cancelInFlight: true)
 
-            case let .detailLoaded(detail):
+            case let .detailUpdated(detail):
                 state.detail = detail
-                if let detail {
-                    state.name = detail.name
-                    state.colorIndex = detail.colorIndex
-                }
+                state.name = detail.name
+                state.colorIndex = detail.colorIndex
                 return .none
 
             case let .groupSelected(code):

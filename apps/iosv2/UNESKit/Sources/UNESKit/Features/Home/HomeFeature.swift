@@ -46,16 +46,17 @@ struct HomeFeature {
     @Dependency(\.date.now) var now
     @Dependency(\.continuousClock) var clock
 
-    private enum CancelID { case observation, heroRollover }
+    private enum CancelID { case observation, refresh, heroRollover }
 
     var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
             case .task:
                 // The observation replays the mirror on subscription, so
-                // every appearance rehydrates; the network refresh only runs
-                // on the first one.
-                guard state.overview == nil, !state.isLoading else { return observeMirror() }
+                // every appearance rehydrates; the refresh keeps retrying on
+                // each appearance until the mirror has data, so a first load
+                // cancelled mid-flight (tab switch) can't wedge the spinner.
+                guard state.overview == nil else { return observeMirror() }
                 state.isLoading = true
                 state.errorMessage = nil
                 return .merge(observeMirror(), refresh(), loadProfile())
@@ -154,6 +155,7 @@ struct HomeFeature {
                 }
             }
         }
+        .cancellable(id: CancelID.refresh, cancelInFlight: true)
     }
 
     /// Once the hero class starts, its countdown is spent — reload so the

@@ -14,27 +14,33 @@ struct MessagesFeatureTests {
 
     @Test
     func taskHydratesFromTheMirrorBeforeRefreshing() async {
-        let cached = Self.overview()
+        let stale = Self.overview()
         var fresh = Self.overview()
         fresh.syncedAt = Self.referenceDate
+        let (updates, mirror) = AsyncStream.makeStream(of: MessagesOverview.self)
+        // The observation replays the stale mirror before the refresh lands.
+        mirror.yield(stale)
 
         let store = TestStore(initialState: MessagesFeature.State()) {
             MessagesFeature()
         } withDependencies: {
             $0.date = .constant(Self.referenceDate)
-            $0.messagesRepository.cached = { _ in cached }
-            $0.messagesRepository.refresh = { [fresh] _ in fresh }
+            $0.messagesRepository.observe = { updates }
+            $0.messagesRepository.refresh = { [fresh] _ in
+                mirror.yield(fresh)
+                mirror.finish()
+            }
         }
 
         await store.send(.task) {
             $0.isLoading = true
         }
-        await store.receive(.hydrated(cached)) {
+        await store.receive(.overviewUpdated(stale)) {
             $0.isLoading = false
-            $0.overview = cached
+            $0.overview = stale
         }
         await store.receive(.delegate(.unreadChanged(3)))
-        await store.receive(.overviewLoaded(fresh)) {
+        await store.receive(.overviewUpdated(fresh)) {
             $0.overview = fresh
         }
         await store.receive(.delegate(.unreadChanged(3)))
@@ -46,6 +52,7 @@ struct MessagesFeatureTests {
             MessagesFeature()
         } withDependencies: {
             $0.date = .constant(Self.referenceDate)
+            $0.messagesRepository.observe = { .finished }
             $0.messagesRepository.cached = { _ in nil }
             $0.messagesRepository.refresh = { _ in throw APIError.emptyEnvelope }
         }
@@ -53,10 +60,40 @@ struct MessagesFeatureTests {
         await store.send(.task) {
             $0.isLoading = true
         }
-        await store.receive(.overviewFailed(APIError.emptyEnvelope.localizedDescription)) {
+        await store.receive(.refreshFailed(APIError.emptyEnvelope.localizedDescription)) {
             $0.isLoading = false
             $0.errorMessage = APIError.emptyEnvelope.localizedDescription
         }
+    }
+
+    @Test
+    func offlineTaskKeepsShowingTheMirrorData() async {
+        let cached = Self.overview()
+        let (updates, mirror) = AsyncStream.makeStream(of: MessagesOverview.self)
+        mirror.yield(cached)
+        mirror.finish()
+
+        let store = TestStore(initialState: MessagesFeature.State()) {
+            MessagesFeature()
+        } withDependencies: {
+            $0.date = .constant(Self.referenceDate)
+            $0.messagesRepository.observe = { updates }
+            $0.messagesRepository.cached = { _ in cached }
+            $0.messagesRepository.refresh = { _ in throw APIError.emptyEnvelope }
+        }
+
+        await store.send(.task) {
+            $0.isLoading = true
+        }
+        await store.receive(.overviewUpdated(cached)) {
+            $0.isLoading = false
+            $0.overview = cached
+        }
+        await store.receive(.delegate(.unreadChanged(3)))
+        // Stale beats an error screen: the failed refresh falls back to the
+        // mirror instead of surfacing.
+        await store.receive(.overviewUpdated(cached))
+        await store.receive(.delegate(.unreadChanged(3)))
     }
 
     @Test
