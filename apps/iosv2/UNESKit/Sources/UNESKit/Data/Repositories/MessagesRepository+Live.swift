@@ -3,6 +3,17 @@ import Foundation
 
 private let log = Log.scoped("MessagesRepository")
 
+/// Body of `POST api/sync/messages/read`.
+private struct MarkReadBody: Encodable {
+    let ids: [String]
+}
+
+/// Body of `POST api/sync/messages/star`.
+private struct StarBody: Encodable {
+    let id: String
+    let starred: Bool
+}
+
 extension MessagesRepository: DependencyKey {
     static let liveValue = MessagesRepository(
         cached: { now in
@@ -60,19 +71,40 @@ extension MessagesRepository: DependencyKey {
             }
         },
         markRead: { id, now in
+            @Dependency(\.apiClient) var apiClient
             @Dependency(\.database) var database
             try await MirrorStore(writer: database).markMessageRead(id: id, now: now)
             log.info("markRead ok id=\(id)")
+            // Best-effort ack: the overlay already flipped the row, and the
+            // mirror never resurrects an unread dot, so a lost ack only
+            // leaves the server behind until the next read.
+            do {
+                try await apiClient.post(to: "api/sync/messages/read", body: MarkReadBody(ids: [id]))
+            } catch {
+                log.warn("markRead ack failed id=\(id)", error: error)
+            }
         },
         markAllRead: { now in
+            @Dependency(\.apiClient) var apiClient
             @Dependency(\.database) var database
             try await MirrorStore(writer: database).markAllMessagesRead(now: now)
             log.info("markAllRead ok")
+            do {
+                try await apiClient.post(to: "api/sync/messages/read-all")
+            } catch {
+                log.warn("markAllRead ack failed", error: error)
+            }
         },
         setStarred: { id, starred in
+            @Dependency(\.apiClient) var apiClient
             @Dependency(\.database) var database
             try await MirrorStore(writer: database).setMessageStarred(id: id, starred: starred)
             log.info("setStarred ok id=\(id) starred=\(starred)")
+            do {
+                try await apiClient.post(to: "api/sync/messages/star", body: StarBody(id: id, starred: starred))
+            } catch {
+                log.warn("setStarred ack failed id=\(id)", error: error)
+            }
         }
     )
 }

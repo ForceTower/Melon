@@ -174,8 +174,9 @@ struct MessageRecord: Codable, Equatable, Sendable, FetchableRecord, Persistable
     /// SAGRES `perfilRemetente` — carried for fidelity; nothing in the stack
     /// interprets its values yet.
     var senderType: Int? = nil
-    /// Server-side star, OR-merged across linked students. Always false today
-    /// (no star endpoint); the local overlay lives in `messageStates`.
+    /// Server-side star, OR-merged across linked students. Star toggles flip
+    /// it optimistically alongside the `messageStates` overlay; refreshes
+    /// then re-stamp it with the acked value.
     var starred: Bool? = nil
 }
 

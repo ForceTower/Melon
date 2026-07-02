@@ -83,6 +83,13 @@ extension MirrorStore {
                     ?? MessageStateRecord(messageId: id, readAt: nil, starred: false)
                 state.starred = starred
                 try state.upsert(db)
+                // Also flip the mirrored server value: the display OR-merges
+                // it with the overlay, so an unstar would otherwise stay
+                // shadowed until the ack round-trips through a refresh.
+                if var message = try MessageRecord.fetchOne(db, key: id) {
+                    message.starred = starred
+                    try message.update(db)
+                }
             }
             log.debug("set message starred id=\(id) starred=\(starred)")
         } catch {
