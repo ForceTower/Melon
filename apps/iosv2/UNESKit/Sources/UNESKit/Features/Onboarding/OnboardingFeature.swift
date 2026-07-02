@@ -6,6 +6,9 @@ struct OnboardingFeature {
     struct State: Equatable {
         var splash = true
         var session: Session?
+        /// Username recovered from the legacy app when its session could not
+        /// be migrated silently — softens the forced re-login.
+        var prefillUsername: String?
         var path = StackState<Path.State>()
     }
 
@@ -22,6 +25,7 @@ struct OnboardingFeature {
         case splashFinished
         case exploreTapped
         case loginTapped
+        case legacyUsernameRecovered(String)
         case path(StackActionOf<Path>)
         case delegate(Delegate)
 
@@ -53,11 +57,21 @@ struct OnboardingFeature {
                 return .none
 
             case .loginTapped:
-                state.path.append(.login(LoginFeature.State()))
+                state.path.append(.login(LoginFeature.State(username: state.prefillUsername ?? "")))
+                return .none
+
+            case let .legacyUsernameRecovered(username):
+                state.prefillUsername = username
+                // A login screen may already be up — fill it if untouched.
+                for id in state.path.ids {
+                    guard case .login(var login) = state.path[id: id], login.username.isEmpty else { continue }
+                    login.username = username
+                    state.path[id: id] = .login(login)
+                }
                 return .none
 
             case .path(.element(id: _, action: .intro(.delegate(.login)))):
-                state.path.append(.login(LoginFeature.State()))
+                state.path.append(.login(LoginFeature.State(username: state.prefillUsername ?? "")))
                 return .none
 
             case let .path(.element(id: _, action: .login(.delegate(.loggedIn(username, session))))):

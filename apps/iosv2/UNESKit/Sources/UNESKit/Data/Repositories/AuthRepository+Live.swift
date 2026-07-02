@@ -14,7 +14,7 @@ extension AuthRepository: DependencyKey {
                 let dto: LoginResponseDTO = try await apiClient.post(
                     to: "api/auth/login",
                     body: LoginRequestDTO(username: username, password: password),
-                    authenticated: false
+                    authorization: .unauthenticated
                 )
                 let session = dto.domain
                 try sessionStore.save(session)
@@ -32,7 +32,7 @@ extension AuthRepository: DependencyKey {
                 let dto: PasskeyOptionsResponseDTO = try await apiClient.post(
                     to: "api/passkey/authenticate/options",
                     body: PasskeyOptionsRequestDTO(username: nil),
-                    authenticated: false
+                    authorization: .unauthenticated
                 )
                 let challenge = dto.domain
                 log.info("beginPasskeyLogin ok sessionId=\(challenge.sessionId)")
@@ -50,7 +50,7 @@ extension AuthRepository: DependencyKey {
                 let dto: LoginResponseDTO = try await apiClient.post(
                     to: "api/passkey/authenticate/verify",
                     body: PasskeyVerifyRequestDTO(sessionId: sessionId, assertion: assertion),
-                    authenticated: false
+                    authorization: .unauthenticated
                 )
                 let session = dto.domain
                 try sessionStore.save(session)

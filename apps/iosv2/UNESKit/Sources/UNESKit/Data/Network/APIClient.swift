@@ -13,7 +13,18 @@ struct APIRequest: Sendable {
     var path: String
     var query: [URLQueryItem] = []
     var body: Data?
-    var authenticated = true
+    var authorization: APIAuthorization = .session
+}
+
+/// How a request authenticates against apps/api.
+enum APIAuthorization: Equatable, Sendable {
+    /// Bearer token from the persisted session — the default.
+    case session
+    /// No Authorization header (login, passkey handshake).
+    case unauthenticated
+    /// Explicit token, for the window where a token exists but no session
+    /// does yet (legacy-app migration).
+    case bearer(String)
 }
 
 @DependencyClient
@@ -32,22 +43,23 @@ extension APIClient {
     func get<T: Decodable>(
         _ type: T.Type = T.self,
         from path: String,
-        query: [URLQueryItem] = []
+        query: [URLQueryItem] = [],
+        authorization: APIAuthorization = .session
     ) async throws -> T {
-        try Self.unwrap(await send(APIRequest(path: path, query: query)))
+        try Self.unwrap(await send(APIRequest(path: path, query: query, authorization: authorization)))
     }
 
     func post<T: Decodable>(
         _ type: T.Type = T.self,
         to path: String,
         body: some Encodable & Sendable,
-        authenticated: Bool = true
+        authorization: APIAuthorization = .session
     ) async throws -> T {
         let request = APIRequest(
             method: "POST",
             path: path,
             body: try JSONEncoder().encode(body),
-            authenticated: authenticated
+            authorization: authorization
         )
         return try Self.unwrap(await send(request))
     }
@@ -116,7 +128,14 @@ extension APIClient {
                 request.httpBody = body
                 request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             }
-            if apiRequest.authenticated, let token = sessionStore.current()?.accessToken {
+            switch apiRequest.authorization {
+            case .session:
+                if let token = sessionStore.current()?.accessToken {
+                    request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+                }
+            case .unauthenticated:
+                break
+            case let .bearer(token):
                 request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
             }
 

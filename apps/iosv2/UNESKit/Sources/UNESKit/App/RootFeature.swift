@@ -21,12 +21,14 @@ struct RootFeature {
 
     enum Action {
         case task
+        case legacyMigration(LegacyMigrationOutcome)
         case onboarding(OnboardingFeature.Action)
         case connected(AppFeature.Action)
         case farewell(FarewellFeature.Action)
     }
 
     @Dependency(\.widgetSync) var widgetSync
+    @Dependency(\.legacyMigration) var legacyMigration
     private let log = Log.scoped("RootFeature")
 
     var body: some ReducerOf<Self> {
@@ -35,7 +37,27 @@ struct RootFeature {
             case .task:
                 // App-lifetime mirror → widget republishing, alive across
                 // login/logout so a wipe also clears the widgets.
-                return .run { _ in await widgetSync.run() }
+                let widgets = Effect<Action>.run { _ in await widgetSync.run() }
+                guard case .onboarding = state else {
+                    // Already signed in — sweep anything the legacy app left.
+                    return .merge(widgets, .run { _ in legacyMigration.removeArtifacts() })
+                }
+                return .merge(widgets, .run { send in
+                    await send(.legacyMigration(legacyMigration.attempt()))
+                })
+
+            case let .legacyMigration(.migrated(session)):
+                guard case .onboarding = state else { return .none }
+                log.info("legacy session migrated userId=\(session.user.id) -> connected")
+                state = .connected(AppFeature.State())
+                return .none
+
+            case let .legacyMigration(.loginRequired(prefillUsername)):
+                guard let prefillUsername, case .onboarding = state else { return .none }
+                return .send(.onboarding(.legacyUsernameRecovered(prefillUsername)))
+
+            case .legacyMigration(.retry), .legacyMigration(.nothing):
+                return .none
 
             case .onboarding(.delegate(.finished)):
                 log.info("onboarding completed -> connected")
