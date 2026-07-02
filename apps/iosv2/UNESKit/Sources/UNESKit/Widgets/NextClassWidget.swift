@@ -250,10 +250,16 @@ private struct HeroCountdown: View {
                     }
                 }
                 if date < occurrence.start {
+                    // Timer-interval text greedily claims the whole row —
+                    // bound it so the line hugs the number's right edge and
+                    // stops squeezing the title column.
                     (Text("em ") + Text(timerInterval: date...occurrence.start, countsDown: true))
                         .font(.system(size: 11, weight: .semibold))
                         .monospacedDigit()
                         .opacity(0.6)
+                        .lineLimit(1)
+                        .multilineTextAlignment(.trailing)
+                        .frame(maxWidth: 76, alignment: .trailing)
                 }
             case let .sameDay(time):
                 bigText(time)
