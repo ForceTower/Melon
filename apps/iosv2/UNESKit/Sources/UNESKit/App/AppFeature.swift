@@ -55,6 +55,10 @@ struct AppFeature {
                 }
                 return .none
 
+            case let .messages(.delegate(.unreadChanged(count))):
+                state.unreadMessages = count
+                return .none
+
             case .home, .schedule, .disciplines, .messages, .me:
                 return .none
             }

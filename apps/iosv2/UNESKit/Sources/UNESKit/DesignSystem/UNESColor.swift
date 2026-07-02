@@ -87,7 +87,7 @@ enum UNESColor {
     /// The same palette lifted for dark-mode legibility: hues darker than 50%
     /// lightness get saturation ≥ 0.5 and lightness ≥ 0.62 in dark mode, so
     /// accent rails and badges stay readable on card surfaces.
-    static let disciplineReadablePalette: [Color] = disciplineHexes.map(readableOnDark)
+    static let disciplineReadablePalette: [Color] = disciplineHexes.map(readable)
 
     static func disciplineColor(_ index: Int) -> Color {
         disciplinePalette[wrapped(index)]
@@ -105,7 +105,9 @@ enum UNESColor {
         return ((index % count) + count) % count
     }
 
-    private static func readableOnDark(_ hex: UInt32) -> Color {
+    /// `hex` in light mode, lifted for legibility on dark card surfaces —
+    /// the v2 `mReadable` treatment.
+    static func readable(_ hex: UInt32) -> Color {
         let r = Double((hex >> 16) & 0xFF) / 255
         let g = Double((hex >> 8) & 0xFF) / 255
         let b = Double(hex & 0xFF) / 255
@@ -151,6 +153,15 @@ enum UNESColor {
     static let dangerSoftOnDark = Color(hex: 0xFF9A8F)
     /// Reachable-target green over the dark mesh.
     static let successOnDark = Color(hex: 0x54D08A)
+
+    // MARK: Mensagens origins (dark-readable like the discipline palette)
+
+    /// Secretaria senders + disciplines that aren't mirrored locally.
+    static let slate = readable(0x6B5E70)
+    /// The "App & módulos" digest slice.
+    static let deepViolet = readable(0x6B4B9C)
+    /// App-origin senders + the "Disciplinas" digest slice.
+    static let tealReadable = readable(0x3B9EAE)
 
     // MARK: Mensagens widget (always dark, like the hero)
 

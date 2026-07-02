@@ -160,6 +160,37 @@ private func migrator() -> DatabaseMigrator {
             t.add(column: "modulo", .text)
         }
     }
+    // Messages v2: the rest of the wire shape (source, senderType, starred),
+    // the scope rows that resolve a message's origin, attachments, and the
+    // local read/star overlay (the backend has no mutation endpoint).
+    migrator.registerMigration("v4") { db in
+        try db.alter(table: "messages") { t in
+            t.add(column: "source", .text)
+            t.add(column: "senderType", .integer)
+            t.add(column: "starred", .boolean)
+        }
+        try db.create(table: "messageScopes") { t in
+            t.primaryKey("id", .text)
+            t.column("messageId", .text).notNull().indexed()
+            t.column("scope", .text).notNull()
+            t.column("classId", .text)
+            t.column("disciplineCode", .text)
+            t.column("disciplineName", .text)
+        }
+        try db.create(table: "messageAttachments") { t in
+            t.primaryKey("id", .text)
+            t.column("messageId", .text).notNull().indexed()
+            t.column("kind", .text).notNull()
+            t.column("name", .text)
+            t.column("url", .text).notNull()
+            t.column("position", .integer)
+        }
+        try db.create(table: "messageStates") { t in
+            t.primaryKey("messageId", .text)
+            t.column("readAt", .text)
+            t.column("starred", .boolean).notNull().defaults(to: false)
+        }
+    }
     return migrator
 }
 

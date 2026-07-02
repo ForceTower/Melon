@@ -6,7 +6,7 @@ struct MirrorStore: Sendable {
     var writer: any DatabaseWriter
 
     private static let lastSyncedAtKey = "lastSyncedAt"
-    private static let timestampFormat = Date.ISO8601FormatStyle(includingFractionalSeconds: true)
+    static let timestampFormat = Date.ISO8601FormatStyle(includingFractionalSeconds: true)
 
     // MARK: Write path
 
@@ -23,14 +23,6 @@ struct MirrorStore: Sendable {
             }
             let stamp = syncedAt.formatted(Self.timestampFormat)
             try SyncStateRecord(key: Self.lastSyncedAtKey, value: stamp).upsert(db)
-        }
-    }
-
-    func upsertMessages(_ messages: [MessageRecord]) async throws {
-        try await writer.write { db in
-            for message in messages {
-                try message.upsert(db)
-            }
         }
     }
 
@@ -52,10 +44,6 @@ struct MirrorStore: Sendable {
             overview.messages = try Self.messagesSummary(db)
             return CachedHomeOverview(overview: overview, syncedAt: syncedAt)
         }
-    }
-
-    func messagesSummary() async throws -> MessagesSummary? {
-        try await writer.read { db in try Self.messagesSummary(db) }
     }
 
     /// The Horário week as mirrored on disk; nil until the first successful
@@ -184,20 +172,7 @@ struct MirrorStore: Sendable {
         )
     }
 
-    private static func messagesSummary(_ db: Database) throws -> MessagesSummary? {
-        let messages = try MessageRecord.order(Column("timestamp").desc).fetchAll(db)
-        guard let latest = messages.first else { return nil }
-        let preview = [latest.content, latest.subject]
-            .compactMap { $0?.trimmingCharacters(in: .whitespacesAndNewlines) }
-            .first { !$0.isEmpty }
-        return MessagesSummary(
-            unreadCount: messages.count { $0.read == false },
-            latestSenderName: latest.senderName?.trimmingCharacters(in: .whitespacesAndNewlines),
-            latestPreview: preview
-        )
-    }
-
-    private static func lastSyncedAt(_ db: Database) throws -> Date? {
+    static func lastSyncedAt(_ db: Database) throws -> Date? {
         try SyncStateRecord.fetchOne(db, key: lastSyncedAtKey)
             .flatMap { try? Date($0.value, strategy: timestampFormat) }
     }

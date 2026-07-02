@@ -24,7 +24,10 @@ extension SyncRepository: DependencyKey {
         },
         fetchFirstMessagesPage: {
             @Dependency(\.apiClient) var apiClient
-            _ = try await apiClient.get(MessagesPageDTO.self, from: "api/sync/messages")
+            @Dependency(\.database) var database
+            @Dependency(\.date.now) var now
+            let inbox: MessageListDTO = try await apiClient.get(from: "api/sync/messages")
+            try await MirrorStore(writer: database).upsertMessages(inbox.page, syncedAt: now)
         }
     )
 }

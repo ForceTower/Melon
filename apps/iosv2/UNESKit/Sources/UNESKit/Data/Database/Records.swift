@@ -169,6 +169,48 @@ struct MessageRecord: Codable, Equatable, Sendable, FetchableRecord, Persistable
     /// lexicographically.
     var timestamp: String?
     var read: Bool?
+    /// "upstream" (SAGRES) or "app" (authored by the UNES team).
+    var source: String? = nil
+    /// SAGRES `perfilRemetente` — carried for fidelity; nothing in the stack
+    /// interprets its values yet.
+    var senderType: Int? = nil
+    /// Server-side star, OR-merged across linked students. Always false today
+    /// (no star endpoint); the local overlay lives in `messageStates`.
+    var starred: Bool? = nil
+}
+
+struct MessageScopeRecord: Codable, Equatable, Sendable, FetchableRecord, PersistableRecord {
+    static let databaseTableName = "messageScopes"
+    var id: String
+    var messageId: String
+    /// "university" / "coordination" / "course" / "class" / "personal" / "list".
+    var scope: String
+    var classId: String? = nil
+    /// Populated only on class-scoped rows.
+    var disciplineCode: String? = nil
+    var disciplineName: String? = nil
+}
+
+struct MessageAttachmentRecord: Codable, Equatable, Sendable, FetchableRecord, PersistableRecord {
+    static let databaseTableName = "messageAttachments"
+    var id: String
+    var messageId: String
+    /// "image" / "link" / "pdf" / "video" / "other".
+    var kind: String
+    var name: String?
+    var url: String
+    var position: Int?
+}
+
+/// Local read/star overlay. The backend has no mark-read or star endpoint, so
+/// this table is written only by the app and never touched by sync — a
+/// re-fetched message keeps its local state.
+struct MessageStateRecord: Codable, Equatable, Sendable, FetchableRecord, PersistableRecord {
+    static let databaseTableName = "messageStates"
+    var messageId: String
+    /// ISO8601 stamp of the local read; nil while unread locally.
+    var readAt: String?
+    var starred: Bool
 }
 
 struct SyncStateRecord: Codable, Equatable, Sendable, FetchableRecord, PersistableRecord {

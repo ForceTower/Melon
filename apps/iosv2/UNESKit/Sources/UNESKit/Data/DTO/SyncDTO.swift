@@ -329,7 +329,3 @@ extension SemesterPayloadDTO {
         )
     }
 }
-
-// MARK: - api/sync/messages (fetched for warmth; content unused here)
-
-struct MessagesPageDTO: Decodable {}

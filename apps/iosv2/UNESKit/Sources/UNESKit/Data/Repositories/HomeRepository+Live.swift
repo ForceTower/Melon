@@ -25,8 +25,8 @@ extension HomeRepository: DependencyKey {
             try await mirror.apply(semesters: list.semesters.map(\.record), snapshot: snapshot, syncedAt: now)
 
             // The inbox is a garnish here — a failure should not sink Home.
-            if let page = try? await inbox {
-                try? await mirror.upsertMessages(page.records)
+            if let inbox = try? await inbox {
+                try? await mirror.upsertMessages(inbox.page, syncedAt: now)
             }
 
             var overview = snapshot?.homeOverview(now: now) ?? .empty

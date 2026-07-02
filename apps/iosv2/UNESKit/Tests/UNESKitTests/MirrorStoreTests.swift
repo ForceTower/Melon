@@ -114,16 +114,23 @@ struct MirrorStoreTests {
     @Test
     func messageUpsertsAccumulateIntoTheSummary() async throws {
         let store = MirrorStore(writer: try inMemoryDatabase())
-        try await store.upsertMessages([
-            MessageRecord(
-                id: "m1", subject: "Aviso", content: "Aula cancelada amanhã.",
-                senderName: "Adriana Matos", timestamp: "2026-04-15T18:22:11.123Z", read: false
+        try await store.upsertMessages(
+            MessageMirrorPage(
+                messages: [
+                    MessageRecord(
+                        id: "m1", subject: "Aviso", content: "Aula cancelada amanhã.",
+                        senderName: "Adriana Matos", timestamp: "2026-04-15T18:22:11.123Z", read: false
+                    ),
+                    MessageRecord(
+                        id: "m2", subject: "Material", content: "Slides na plataforma.",
+                        senderName: "João Pereira", timestamp: "2026-04-14T09:10:00.000Z", read: true
+                    ),
+                ],
+                scopes: [],
+                attachments: []
             ),
-            MessageRecord(
-                id: "m2", subject: "Material", content: "Slides na plataforma.",
-                senderName: "João Pereira", timestamp: "2026-04-14T09:10:00.000Z", read: true
-            ),
-        ])
+            syncedAt: .now
+        )
 
         let summary = try await store.messagesSummary()
         #expect(summary == MessagesSummary(
@@ -133,12 +140,19 @@ struct MirrorStoreTests {
         ))
 
         // A later page marks m1 as read — upsert by id, not append.
-        try await store.upsertMessages([
-            MessageRecord(
-                id: "m1", subject: "Aviso", content: "Aula cancelada amanhã.",
-                senderName: "Adriana Matos", timestamp: "2026-04-15T18:22:11.123Z", read: true
+        try await store.upsertMessages(
+            MessageMirrorPage(
+                messages: [
+                    MessageRecord(
+                        id: "m1", subject: "Aviso", content: "Aula cancelada amanhã.",
+                        senderName: "Adriana Matos", timestamp: "2026-04-15T18:22:11.123Z", read: true
+                    ),
+                ],
+                scopes: [],
+                attachments: []
             ),
-        ])
+            syncedAt: .now
+        )
         #expect(try await store.messagesSummary()?.unreadCount == 0)
     }
 }
