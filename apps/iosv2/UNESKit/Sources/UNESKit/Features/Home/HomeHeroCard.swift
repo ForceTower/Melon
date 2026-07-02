@@ -1,45 +1,49 @@
 import SwiftUI
 
 /// Live Activity-style hero: the next class over a drifting cool mesh, with a
-/// ticking countdown.
+/// ticking countdown. The whole card is the tap target.
 struct HomeHeroCard: View {
     let hero: HomeHeroClass
     var onDetails: () -> Void
 
     var body: some View {
-        ZStack {
-            UNESColor.darkBg
-            MeshView(variant: .cool)
-            LinearGradient.css(
-                stops: [
-                    .init(color: UNESColor.scrim.opacity(0.15), location: 0),
-                    .init(color: UNESColor.scrim.opacity(0.62), location: 1),
-                ],
-                angle: 155
-            )
+        Button(action: onDetails) {
+            ZStack {
+                UNESColor.darkBg
+                MeshView(variant: .cool)
+                LinearGradient.css(
+                    stops: [
+                        .init(color: UNESColor.scrim.opacity(0.15), location: 0),
+                        .init(color: UNESColor.scrim.opacity(0.62), location: 1),
+                    ],
+                    angle: 155
+                )
 
-            TimelineView(.periodic(from: .now, by: 1)) { context in
-                VStack(spacing: 0) {
-                    eyebrowRow(now: context.date)
-                    HStack(alignment: .bottom, spacing: 16) {
-                        titleColumn
-                        if !inProgress {
-                            countdown(now: context.date)
+                TimelineView(.periodic(from: .now, by: 1)) { context in
+                    VStack(spacing: 0) {
+                        eyebrowRow(now: context.date)
+                        HStack(alignment: .bottom, spacing: 16) {
+                            titleColumn
+                            if !inProgress {
+                                countdown(now: context.date)
+                            }
                         }
+                        .padding(.top, 16)
+                        if let endsAt = hero.endsAt, inProgress {
+                            progressSection(endsAt: endsAt, now: context.date)
+                                .padding(.top, 16)
+                        }
+                        footer
+                            .padding(.top, 18)
                     }
-                    .padding(.top, 16)
-                    if let endsAt = hero.endsAt, inProgress {
-                        progressSection(endsAt: endsAt, now: context.date)
-                            .padding(.top, 16)
-                    }
-                    footer
-                        .padding(.top, 18)
+                    .padding(EdgeInsets(top: 18, leading: 20, bottom: 20, trailing: 20))
                 }
-                .padding(EdgeInsets(top: 18, leading: 20, bottom: 20, trailing: 20))
             }
+            .environment(\.colorScheme, .dark)
+            .clipShape(RoundedRectangle(cornerRadius: 30, style: .continuous))
         }
-        .environment(\.colorScheme, .dark)
-        .clipShape(RoundedRectangle(cornerRadius: 30, style: .continuous))
+        .buttonStyle(.pressableCard)
+        .disabled(hero.disciplineId == nil)
         .shadow(color: Color(hex: 0x141020, opacity: 0.28), radius: 20, y: 18)
     }
 
@@ -114,7 +118,7 @@ struct HomeHeroCard: View {
             if let topic = hero.topic {
                 HStack(spacing: 7) {
                     Image(systemName: "bell")
-                        .font(.system(size: 12, weight: .medium))
+                        .font(.system(size: 13, weight: .medium))
                         .foregroundStyle(.white.opacity(0.6))
                     Text(topic)
                         .font(.system(size: 14))
@@ -127,8 +131,12 @@ struct HomeHeroCard: View {
     }
 
     private func countdown(now: Date) -> some View {
-        VStack(alignment: .trailing, spacing: 2) {
+        VStack(alignment: .trailing, spacing: 3) {
             if let countdown = HomeFormat.countdown(until: hero.startsAt, now: now) {
+                Text("Começa em")
+                    .font(.system(size: 11, weight: .semibold))
+                    .tracking(0.4)
+                    .opacity(0.6)
                 HStack(alignment: .firstTextBaseline, spacing: 3) {
                     Text(countdown.big)
                         .font(.system(size: 40, weight: .bold))
@@ -140,11 +148,6 @@ struct HomeHeroCard: View {
                             .opacity(0.7)
                     }
                 }
-                Text(countdown.sub)
-                    .font(.system(size: 11, weight: .semibold))
-                    .tracking(0.4)
-                    .monospacedDigit()
-                    .opacity(0.6)
             } else {
                 // Beyond a day out, the weekday reads better than a timer.
                 Text(HomeFormat.weekdayShort(for: hero.startsAt))
@@ -177,16 +180,11 @@ struct HomeHeroCard: View {
             Spacer(minLength: 12)
 
             if hero.disciplineId != nil {
-                Button(action: onDetails) {
-                    Text("Detalhes")
-                        .font(.system(size: 13, weight: .semibold))
-                        .tracking(-0.13)
-                        .foregroundStyle(.white)
-                        .padding(.horizontal, 14)
-                        .padding(.vertical, 8)
-                        .background(.white.opacity(0.16), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-                }
-                .buttonStyle(.plain)
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(.white)
+                    .frame(width: 28, height: 28)
+                    .background(.white.opacity(0.16), in: Circle())
             }
         }
         .padding(.top, 14)

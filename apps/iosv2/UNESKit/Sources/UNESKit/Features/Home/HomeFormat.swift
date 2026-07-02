@@ -53,27 +53,20 @@ enum HomeFormat {
     }
 
     /// The hero countdown, mirroring the design: under an hour "39" + "min",
-    /// under a day "1h05", and a live "em MM:SS" line underneath.
+    /// under a day "1h05".
     struct Countdown {
         var big: String
         var unit: String?
-        var sub: String
     }
 
     static func countdown(until target: Date, now: Date) -> Countdown? {
         let left = max(0, target.timeIntervalSince(now))
         guard left < 24 * 3600 else { return nil }
-        let totalSeconds = Int(left)
-        let totalMinutes = totalSeconds / 60
-        let sub = String(format: "em %02d:%02d", totalMinutes, totalSeconds % 60)
+        let totalMinutes = Int(left) / 60
         if totalMinutes >= 60 {
-            return Countdown(
-                big: "\(totalMinutes / 60)h\(String(format: "%02d", totalMinutes % 60))",
-                unit: nil,
-                sub: sub
-            )
+            return Countdown(big: "\(totalMinutes / 60)h\(String(format: "%02d", totalMinutes % 60))", unit: nil)
         }
-        return Countdown(big: "\(totalMinutes)", unit: "min", sub: sub)
+        return Countdown(big: "\(totalMinutes)", unit: "min")
     }
 
     /// "9:41" — current-time label on the day list's live line.
