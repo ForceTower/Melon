@@ -7342,57 +7342,6 @@
         }
       }
     },
-    "intent.nextClass.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Next class"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Próxima aula"
-          }
-        }
-      }
-    },
-    "intent.openTab.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Open tab"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Abrir aba"
-          }
-        }
-      }
-    },
-    "intent.tab.typeName" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tab"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aba"
-          }
-        }
-      }
-    },
     "intent.today.dialog.andMore" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -7488,23 +7437,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sem aulas hoje."
-          }
-        }
-      }
-    },
-    "intent.today.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Today's classes"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aulas de hoje"
           }
         }
       }

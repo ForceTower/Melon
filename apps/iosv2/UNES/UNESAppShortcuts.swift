@@ -1,14 +1,4 @@
 import AppIntents
-import UNESKit
-
-/// Bridges App Intents metadata across the SPM boundary: the extractor only
-/// scans the app bundle, and `includedPackages` points it at UNESKit, where
-/// the intents live.
-struct UNESIntentsPackage: AppIntentsPackage {
-    static var includedPackages: [any AppIntentsPackage.Type] {
-        [UNESKitIntentsPackage.self]
-    }
-}
 
 /// The curated Siri / Spotlight / Action Button surface. Phrases are written
 /// in pt-BR (the development language); `AppShortcuts.xcstrings` carries the

@@ -5,10 +5,10 @@ import SwiftUI
 /// views, which assume widget backgrounds and sizes.
 
 /// One class: code, title, time range, room, and the posted topic.
-struct IntentClassCardView: View {
+public struct IntentClassCardView: View {
     var occurrence: ClassOccurrence
 
-    var body: some View {
+    public var body: some View {
         VStack(alignment: .leading, spacing: 7) {
             HStack {
                 Text(occurrence.code)
@@ -60,11 +60,11 @@ struct IntentClassCardView: View {
 
 /// The day's map — every class, past ones dimmed, like the widget's
 /// "Seu dia" strip.
-struct IntentDayListView: View {
+public struct IntentDayListView: View {
     var occurrences: [ClassOccurrence]
     var now: Date
 
-    var body: some View {
+    public var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             ForEach(occurrences, id: \.start) { occurrence in
                 row(for: occurrence)

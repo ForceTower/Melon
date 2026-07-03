@@ -5,6 +5,12 @@
       "comment" : "Bundle name",
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "UNES"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "new",
