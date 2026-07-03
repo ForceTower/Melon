@@ -140,12 +140,12 @@ struct HomeHeroCard: View {
                     .opacity(0.6)
                 HStack(alignment: .firstTextBaseline, spacing: 3) {
                     Text(countdown.big)
-                        .font(.system(size: 40, weight: .bold))
-                        .tracking(-1.6)
+                        .font(.system(size: 34, weight: .bold))
+                        .tracking(-1.36)
                         .monospacedDigit()
                     if let unit = countdown.unit {
                         Text(unit)
-                            .font(.system(size: 18, weight: .semibold))
+                            .font(.system(size: 16, weight: .semibold))
                             .opacity(0.7)
                     }
                 }
