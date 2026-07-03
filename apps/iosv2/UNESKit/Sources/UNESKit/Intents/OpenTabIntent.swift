@@ -44,29 +44,21 @@ public struct OpenTabIntent: AppIntent {
     public init() {}
 
     public func perform() async throws -> some IntentResult {
+        // Module-qualified: AppIntents aliases its own `Dependency` wrapper,
+        // and a bare `@Dependency` here is ambiguous. Local (not stored) —
+        // stored properties on an AppIntent crash the metadata extractor.
+        @ComposableArchitecture.Dependency(\.sessionStore) var sessionStore
+        @ComposableArchitecture.Dependency(\.intentRouter) var intentRouter
+
         // Signed out, nothing subscribes — a buffered route would replay
         // after a later login, so don't post at all. The app still
         // foregrounds onto onboarding, which is correct.
-        guard resolvedSessionStore().current() != nil else {
+        guard sessionStore.current() != nil else {
             log.info("open-tab route ignored signed-out")
             return .result()
         }
-        resolvedIntentRouter().open(.tab(tab.appTab))
+        intentRouter.open(.tab(tab.appTab))
         log.info("open-tab route posted tab=\(tab.rawValue)")
         return .result()
     }
-}
-
-/// Dependencies are resolved outside the intent because both `@Dependency`
-/// placements break the App Intents toolchain: a stored property crashes the
-/// metadata const-extractor, and a local wrapper inside `perform()` trips
-/// its associated-type inference.
-private func resolvedSessionStore() -> SessionStore {
-    @Dependency(\.sessionStore) var sessionStore
-    return sessionStore
-}
-
-private func resolvedIntentRouter() -> IntentRouter {
-    @Dependency(\.intentRouter) var intentRouter
-    return intentRouter
 }

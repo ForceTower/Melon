@@ -1,112 +1,81 @@
 {
   "sourceLanguage" : "pt-BR",
   "strings" : {
-    "Abre ${tab} no ${applicationName}" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Go to ${tab} in ${applicationName}"
-          }
-        }
-      }
-    },
     "Abrir ${tab} no ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
       "localizations" : {
         "en" : {
-          "stringUnit" : {
+          "stringSet" : {
             "state" : "translated",
-            "value" : "Open ${tab} in ${applicationName}"
+            "values" : [
+              "Open ${tab} in ${applicationName}",
+              "Go to ${tab} in ${applicationName}",
+              "Show ${tab} in ${applicationName}"
+            ]
+          }
+        },
+        "pt-BR" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Abrir ${tab} no ${applicationName}",
+              "Abre ${tab} no ${applicationName}",
+              "Mostrar ${tab} no ${applicationName}"
+            ]
           }
         }
       }
     },
     "Aulas de hoje no ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
       "localizations" : {
         "en" : {
-          "stringUnit" : {
+          "stringSet" : {
             "state" : "translated",
-            "value" : "Today's classes in ${applicationName}"
+            "values" : [
+              "Today's classes in ${applicationName}",
+              "My schedule today in ${applicationName}",
+              "What classes do I have today in ${applicationName}",
+              "How's my day in ${applicationName}"
+            ]
           }
-        }
-      }
-    },
-    "Como está meu dia no ${applicationName}" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "How's my day in ${applicationName}"
-          }
-        }
-      }
-    },
-    "Meu horário de hoje no ${applicationName}" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "My schedule today in ${applicationName}"
-          }
-        }
-      }
-    },
-    "Mostrar ${tab} no ${applicationName}" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Show ${tab} in ${applicationName}"
-          }
-        }
-      }
-    },
-    "Próxima aula no ${applicationName}" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Next class in ${applicationName}"
-          }
-        }
-      }
-    },
-    "Qual é a próxima aula no ${applicationName}" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "What's the next class in ${applicationName}"
+        },
+        "pt-BR" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Aulas de hoje no ${applicationName}",
+              "Meu horário de hoje no ${applicationName}",
+              "Que aulas eu tenho hoje no ${applicationName}",
+              "Como está meu dia no ${applicationName}"
+            ]
           }
         }
       }
     },
     "Qual minha próxima aula no ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
       "localizations" : {
         "en" : {
-          "stringUnit" : {
+          "stringSet" : {
             "state" : "translated",
-            "value" : "What's my next class in ${applicationName}"
+            "values" : [
+              "What's my next class in ${applicationName}",
+              "Next class in ${applicationName}",
+              "What class do I have now in ${applicationName}",
+              "What's the next class in ${applicationName}"
+            ]
           }
-        }
-      }
-    },
-    "Que aula eu tenho agora no ${applicationName}" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "What class do I have now in ${applicationName}"
-          }
-        }
-      }
-    },
-    "Que aulas eu tenho hoje no ${applicationName}" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "What classes do I have today in ${applicationName}"
+        },
+        "pt-BR" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Qual minha próxima aula no ${applicationName}",
+              "Próxima aula no ${applicationName}",
+              "Que aula eu tenho agora no ${applicationName}",
+              "Qual é a próxima aula no ${applicationName}"
+            ]
           }
         }
       }
