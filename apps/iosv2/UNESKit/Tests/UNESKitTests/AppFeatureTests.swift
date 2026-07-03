@@ -31,6 +31,43 @@ struct AppFeatureTests {
     }
 
     @Test
+    func intentRouteSwitchesTab() async {
+        let store = TestStore(initialState: AppFeature.State()) {
+            AppFeature()
+        }
+
+        await store.send(.intentRoute(.messages)) {
+            $0.tab = .messages
+        }
+    }
+
+    @Test
+    func taskForwardsIntentRoutesIntoTabSwitches() async {
+        let store = TestStore(initialState: AppFeature.State()) {
+            AppFeature()
+        } withDependencies: {
+            $0.push.requestAuthorization = {}
+            $0.push.dataEvents = { .finished }
+            $0.syncRepository.ping = {}
+            $0.syncRepository.backfillMirror = {}
+            $0.intentRouter.routes = {
+                AsyncStream { continuation in
+                    continuation.yield(.tab(.messages))
+                    continuation.finish()
+                }
+            }
+        }
+        // Only the intent-route subscription matters here; the rest of
+        // .task's fan-out is covered elsewhere.
+        store.exhaustivity = .off
+
+        await store.send(.task)
+        await store.receive(.intentRoute(.messages)) {
+            $0.tab = .messages
+        }
+    }
+
+    @Test
     func unreadCountFeedsTheMessagesBadge() async {
         let store = TestStore(initialState: AppFeature.State()) {
             AppFeature()

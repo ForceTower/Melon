@@ -139,6 +139,56 @@ struct NextClassProviderTests {
         #expect(next != nil)
     }
 
+    // MARK: - NextClassStatus.compute (the entry point the Siri intents share)
+
+    @Test
+    func computeReportsTheRunningClass() {
+        let occurrences = schedule().occurrences(from: date(day: 16, hour: 7), days: 9, calendar: calendar)
+
+        let (status, today) = NextClassStatus.compute(
+            at: date(day: 16, hour: 8, minute: 30), occurrences: occurrences, calendar: calendar
+        )
+
+        guard case let .inClass(occurrence) = status else {
+            Issue.record("expected inClass, got \(status)")
+            return
+        }
+        #expect(occurrence.code == "ALGI")
+        #expect(today.count == 2)
+    }
+
+    @Test
+    func computeHandsOverToTheNextClassAtHalfway() {
+        let occurrences = schedule().occurrences(from: date(day: 16, hour: 7), days: 9, calendar: calendar)
+
+        let (status, _) = NextClassStatus.compute(
+            at: date(day: 16, hour: 9), occurrences: occurrences, calendar: calendar
+        )
+
+        guard case let .upcoming(occurrence) = status else {
+            Issue.record("expected upcoming, got \(status)")
+            return
+        }
+        #expect(occurrence.code == "CALC")
+    }
+
+    @Test
+    func computeReportsDayDoneWithTheNextDaysClass() {
+        let occurrences = schedule().occurrences(from: date(day: 16, hour: 7), days: 9, calendar: calendar)
+
+        let (status, today) = NextClassStatus.compute(
+            at: date(day: 16, hour: 12, minute: 30), occurrences: occurrences, calendar: calendar
+        )
+
+        guard case let .dayDone(completed, next) = status else {
+            Issue.record("expected dayDone, got \(status)")
+            return
+        }
+        #expect(completed == 2)
+        #expect(next?.start == date(day: 17, hour: 8))
+        #expect(today.count == 2)
+    }
+
     @Test
     func signedOutWithoutAPublishedSnapshot() {
         let timeline = timeline(at: date(day: 16, hour: 7), schedule: nil)

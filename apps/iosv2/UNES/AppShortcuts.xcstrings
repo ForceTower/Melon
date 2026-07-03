@@ -1,0 +1,116 @@
+{
+  "sourceLanguage" : "pt-BR",
+  "strings" : {
+    "Abre ${tab} no ${applicationName}" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Go to ${tab} in ${applicationName}"
+          }
+        }
+      }
+    },
+    "Abrir ${tab} no ${applicationName}" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open ${tab} in ${applicationName}"
+          }
+        }
+      }
+    },
+    "Aulas de hoje no ${applicationName}" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Today's classes in ${applicationName}"
+          }
+        }
+      }
+    },
+    "Como está meu dia no ${applicationName}" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How's my day in ${applicationName}"
+          }
+        }
+      }
+    },
+    "Meu horário de hoje no ${applicationName}" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "My schedule today in ${applicationName}"
+          }
+        }
+      }
+    },
+    "Mostrar ${tab} no ${applicationName}" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show ${tab} in ${applicationName}"
+          }
+        }
+      }
+    },
+    "Próxima aula no ${applicationName}" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Next class in ${applicationName}"
+          }
+        }
+      }
+    },
+    "Qual é a próxima aula no ${applicationName}" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "What's the next class in ${applicationName}"
+          }
+        }
+      }
+    },
+    "Qual minha próxima aula no ${applicationName}" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "What's my next class in ${applicationName}"
+          }
+        }
+      }
+    },
+    "Que aula eu tenho agora no ${applicationName}" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "What class do I have now in ${applicationName}"
+          }
+        }
+      }
+    },
+    "Que aulas eu tenho hoje no ${applicationName}" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "What classes do I have today in ${applicationName}"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

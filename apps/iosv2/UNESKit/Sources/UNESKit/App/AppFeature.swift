@@ -27,6 +27,7 @@ struct AppFeature {
         case sceneBackgrounded
         case sceneActivated
         case pushDataReceived(PushDataEvent)
+        case intentRoute(Tab)
         case home(HomeFeature.Action)
         case schedule(ScheduleFeature.Action)
         case disciplines(DisciplinesFeature.Action)
@@ -37,11 +38,12 @@ struct AppFeature {
     @Dependency(\.push) var push
     @Dependency(\.syncRepository) var syncRepository
     @Dependency(\.homeRepository) var homeRepository
+    @Dependency(\.intentRouter) var intentRouter
     @Dependency(\.continuousClock) var clock
     @Dependency(\.date) var date
     private let log = Log.scoped("AppFeature")
 
-    private enum CancelID { case ping, backfill, pushEvents, pushRefresh }
+    private enum CancelID { case ping, backfill, pushEvents, pushRefresh, intentRoutes }
 
     var body: some ReducerOf<Self> {
         Scope(state: \.home, action: \.home) { HomeFeature() }
@@ -65,10 +67,23 @@ struct AppFeature {
                             await send(.pushDataReceived(event))
                         }
                     }
-                    .cancellable(id: CancelID.pushEvents, cancelInFlight: true)
+                    .cancellable(id: CancelID.pushEvents, cancelInFlight: true),
+                    .run { send in
+                        for await route in intentRouter.routes() {
+                            switch route {
+                            case let .tab(tab): await send(.intentRoute(tab))
+                            }
+                        }
+                    }
+                    .cancellable(id: CancelID.intentRoutes, cancelInFlight: true)
                 )
 
             case let .tabChanged(tab):
+                state.tab = tab
+                return .none
+
+            case let .intentRoute(tab):
+                log.info("intent route consumed tab=\(tab.rawValue)")
                 state.tab = tab
                 return .none
 

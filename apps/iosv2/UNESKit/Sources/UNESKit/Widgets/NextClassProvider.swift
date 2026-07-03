@@ -3,18 +3,6 @@ import WidgetKit
 
 private let log = Log.scoped("NextClassProvider")
 
-/// What the "Próxima aula" widget shows at one timeline moment.
-enum NextClassStatus: Equatable {
-    /// Before a class: the mesh hero counting down (absolute time farther out).
-    case upcoming(ClassOccurrence)
-    /// While a class runs: live progress toward its end.
-    case inClass(ClassOccurrence)
-    /// After (or without) today's classes: the calm theme-aware card.
-    case dayDone(completed: Int, next: ClassOccurrence?)
-    /// Nothing published — signed out or before the first sync.
-    case signedOut
-}
-
 struct NextClassEntry: TimelineEntry {
     var date: Date
     var status: NextClassStatus
@@ -104,22 +92,7 @@ struct NextClassProvider: TimelineProvider {
     static let countdownBand: TimeInterval = 70 * 60
 
     private static func entry(at date: Date, occurrences: [ClassOccurrence], calendar: Calendar) -> NextClassEntry {
-        let today = occurrences.filter { calendar.isDate($0.start, inSameDayAs: date) }
-        let status: NextClassStatus
-        if let current = today.first(where: { $0.start <= date && date < $0.endOrEstimate }) {
-            // A running class holds the widget until halfway through — and
-            // the day's last class until it ends — before the next takes over.
-            let later = today.first { $0.start > date }
-            if let later, date >= current.midpoint {
-                status = .upcoming(later)
-            } else {
-                status = .inClass(current)
-            }
-        } else if let nextToday = today.first(where: { $0.start > date }) {
-            status = .upcoming(nextToday)
-        } else {
-            status = .dayDone(completed: today.count, next: occurrences.first { $0.start > date })
-        }
+        let (status, today) = NextClassStatus.compute(at: date, occurrences: occurrences, calendar: calendar)
         return NextClassEntry(date: date, status: status, today: today)
     }
 }
