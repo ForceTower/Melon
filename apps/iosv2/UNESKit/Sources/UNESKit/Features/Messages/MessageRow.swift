@@ -214,14 +214,14 @@ struct MessageAttachmentHint: View {
             HStack(spacing: 5) {
                 if files > 0 {
                     Image(systemName: "paperclip")
-                    Text("\(files)")
+                    Text(verbatim: "\(files)")
                 }
                 if images > 0 {
                     if files > 0 {
-                        Text("·").foregroundStyle(UNESColor.ink4.opacity(0.4))
+                        Text(verbatim: "·").foregroundStyle(UNESColor.ink4.opacity(0.4))
                     }
                     Image(systemName: "photo")
-                    Text("\(images)")
+                    Text(verbatim: "\(images)")
                 }
             }
             .font(.system(size: 12, weight: .semibold))

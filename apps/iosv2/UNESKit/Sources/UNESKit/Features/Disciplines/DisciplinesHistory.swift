@@ -98,7 +98,7 @@ struct PastSemesterCard: View {
                         .foregroundStyle(UNESColor.score(mean))
                 )
                 .monospacedDigit()
-                Text("·").opacity(0.4)
+                Text(verbatim: "·").opacity(0.4)
             }
             Text(.disciplinesApprovedTally(semester.approvedCount, semester.disciplines.count))
                 .monospacedDigit()

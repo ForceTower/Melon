@@ -195,7 +195,7 @@ struct DisciplineDetailView: View {
                         .background(UNESColor.surface2, in: RoundedRectangle(cornerRadius: 6))
                 }
                 if let kind {
-                    Text("· \(kind)")
+                    Text(verbatim: "· \(kind)")
                         .font(.system(size: 12.5))
                         .foregroundStyle(UNESColor.ink4)
                 }

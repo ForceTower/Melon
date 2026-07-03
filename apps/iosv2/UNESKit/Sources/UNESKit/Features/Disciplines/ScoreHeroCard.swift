@@ -39,7 +39,7 @@ struct ScoreHeroCard: View {
                 Spacer(minLength: 8)
 
                 VStack(alignment: .trailing, spacing: 2) {
-                    Text("\(semester.disciplines.count)")
+                    Text(verbatim: "\(semester.disciplines.count)")
                         .font(.system(size: 26, weight: .bold))
                         .tracking(-0.78)
                         .monospacedDigit()

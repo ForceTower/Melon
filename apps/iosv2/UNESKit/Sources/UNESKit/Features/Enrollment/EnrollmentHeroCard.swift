@@ -72,7 +72,7 @@ struct EnrollmentHeroCard: View {
             if window.state == .open {
                 EnrollmentRing(fraction: window.remainingFraction(now: now)) {
                     VStack(spacing: 1) {
-                        Text("\(window.daysLeft(now: now))")
+                        Text(verbatim: "\(window.daysLeft(now: now))")
                             .font(.system(size: 26, weight: .bold))
                             .tracking(-0.78)
                             .monospacedDigit()
@@ -206,7 +206,7 @@ struct EnrollmentStatTile: View {
                 .font(.system(size: 10, weight: .semibold))
                 .tracking(0.4)
                 .foregroundStyle(UNESColor.ink3)
-            Text("\(value)")
+            Text(verbatim: "\(value)")
                 .font(.system(size: 28, weight: .bold))
                 .tracking(-1.12)
                 .monospacedDigit()

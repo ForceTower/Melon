@@ -356,9 +356,9 @@ private struct AttendanceWidget: View {
     }
 
     private var percentLabel: Text {
-        guard let percent else { return Text("—") }
-        return Text("\(percent)")
-            + Text("%").font(.system(size: 15, weight: .heavy)).foregroundStyle(UNESColor.ink3)
+        guard let percent else { return Text(verbatim: "—") }
+        return Text(verbatim: "\(percent)")
+            + Text(verbatim: "%").font(.system(size: 15, weight: .heavy)).foregroundStyle(UNESColor.ink3)
     }
 
     private var ring: some View {

@@ -110,7 +110,7 @@ struct ScheduleLocationRow: View {
     }
 
     private var dot: some View {
-        Text("·").opacity(0.4)
+        Text(verbatim: "·").opacity(0.4)
     }
 
     private func chip(_ label: String) -> some View {

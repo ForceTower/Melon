@@ -36,7 +36,7 @@ struct EnrollmentWorkloadCard: View {
                         .tracking(0.6)
                         .foregroundStyle(UNESColor.ink3)
                     HStack(alignment: .firstTextBaseline, spacing: 6) {
-                        Text("\(totalHours)")
+                        Text(verbatim: "\(totalHours)")
                             .font(.system(size: compact ? 32 : 40, weight: .bold))
                             .tracking(compact ? -1.4 : -1.8)
                             .monospacedDigit()

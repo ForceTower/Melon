@@ -130,16 +130,16 @@ private struct AttendanceHomeWidget: View {
     private var percentLabel: some View {
         Group {
             if let percent = summary?.percent {
-                Text("\(percent)")
+                Text(verbatim: "\(percent)")
                     .font(.system(size: 40, weight: .bold))
                     .tracking(-1.6)
                     .monospacedDigit()
                     .foregroundStyle(UNESColor.ink)
-                    + Text("%")
+                    + Text(verbatim: "%")
                     .font(.system(size: 18, weight: .bold))
                     .foregroundStyle(UNESColor.ink3)
             } else {
-                Text("—")
+                Text(verbatim: "—")
                     .font(.system(size: 40, weight: .bold))
                     .foregroundStyle(UNESColor.ink4)
             }
@@ -189,7 +189,7 @@ private struct ExamHomeWidget: View {
                     }
                 }
 
-                Text("\(summary.label) · \(summary.disciplineName)")
+                Text(verbatim: "\(summary.label) · \(summary.disciplineName)")
                     .font(.system(size: 14, weight: .semibold))
                     .tracking(-0.14)
                     .foregroundStyle(UNESColor.ink)
@@ -201,7 +201,7 @@ private struct ExamHomeWidget: View {
                     .foregroundStyle(UNESColor.ink3)
                     .padding(.top, 1)
             } else {
-                Text("—")
+                Text(verbatim: "—")
                     .font(.system(size: 46, weight: .bold))
                     .foregroundStyle(UNESColor.ink4)
                 Text(.homeExamNone)
@@ -231,7 +231,7 @@ private struct MessagesHomeWidget: View {
                     WidgetHead(icon: "envelope", label: .widgetMessages, color: .white.opacity(0.85))
                     Spacer()
                     if let unread = summary?.unreadCount, unread > 0 {
-                        Text("\(unread)")
+                        Text(verbatim: "\(unread)")
                             .font(.system(size: 12, weight: .bold))
                             .foregroundStyle(.white)
                             .padding(.horizontal, 6)

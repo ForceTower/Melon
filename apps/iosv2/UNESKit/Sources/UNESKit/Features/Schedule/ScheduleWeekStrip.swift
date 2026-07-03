@@ -32,7 +32,7 @@ struct ScheduleWeekStrip: View {
                     .tracking(-0.12)
                     .foregroundStyle(isToday ? UNESColor.accent : (isWeekend ? UNESColor.ink4 : UNESColor.ink3))
 
-                Text("\(day.dayNumber)")
+                Text(verbatim: "\(day.dayNumber)")
                     .font(.system(size: 17, weight: isActive || isToday ? .bold : .medium))
                     .tracking(-0.34)
                     .monospacedDigit()

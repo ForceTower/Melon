@@ -82,7 +82,7 @@ struct SyncView: View {
 
             VStack(spacing: 4) {
                 percentLabel
-                Text("\(store.completedSteps)/\(SyncFeature.Step.allCases.count)")
+                Text(verbatim: "\(store.completedSteps)/\(SyncFeature.Step.allCases.count)")
                     .font(.system(size: 10, weight: .bold))
                     .monospacedDigit()
                     .tracking(0.8)
@@ -94,8 +94,8 @@ struct SyncView: View {
 
     private var percentLabel: some View {
         (
-            Text("\(Int((store.progress * 100).rounded()))")
-                + Text("%").font(.system(size: 20, weight: .bold)).foregroundStyle(.white.opacity(0.6))
+            Text(verbatim: "\(Int((store.progress * 100).rounded()))")
+                + Text(verbatim: "%").font(.system(size: 20, weight: .bold)).foregroundStyle(.white.opacity(0.6))
         )
         .font(.system(size: 44, weight: .heavy))
         .monospacedDigit()

@@ -87,7 +87,7 @@ struct MeAboutSheet: View {
             HStack(spacing: 13) {
                 iconTile
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("UNES")
+                    Text(verbatim: "UNES")
                         .font(.system(size: 23, weight: .bold))
                         .tracking(-0.92)
                         .foregroundStyle(.white)
@@ -111,7 +111,7 @@ struct MeAboutSheet: View {
     }
 
     private var iconTile: some View {
-        Text("U")
+        Text(verbatim: "U")
             .font(.system(size: 28, weight: .heavy))
             .foregroundStyle(.white)
             .shadow(color: .black.opacity(0.2), radius: 1, y: 1)

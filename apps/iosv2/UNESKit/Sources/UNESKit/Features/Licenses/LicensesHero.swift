@@ -49,7 +49,7 @@ struct LicensesHero: View {
 
     private var countRow: some View {
         HStack(alignment: .lastTextBaseline, spacing: 8) {
-            Text("\(total)")
+            Text(verbatim: "\(total)")
                 .font(.system(size: 52, weight: .bold))
                 .tracking(-2.08)
                 .monospacedDigit()
@@ -95,7 +95,7 @@ struct LicensesHero: View {
                     Text(share.family.rawValue)
                         .font(.system(size: 11.5, weight: .semibold, design: .monospaced))
                         .foregroundStyle(.white.opacity(0.72))
-                    Text("\(share.count)")
+                    Text(verbatim: "\(share.count)")
                         .font(.system(size: 11.5, weight: .bold))
                         .monospacedDigit()
                         .foregroundStyle(.white)

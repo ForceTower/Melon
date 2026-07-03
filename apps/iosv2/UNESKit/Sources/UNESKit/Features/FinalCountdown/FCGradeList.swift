@@ -117,7 +117,7 @@ struct FCGradeList: View {
     }
 
     private func scoreField(_ row: FCRow) -> some View {
-        TextField("—", text: Binding(get: { row.scoreText }, set: { onScore(row.id, $0) }))
+        TextField(String("—"), text: Binding(get: { row.scoreText }, set: { onScore(row.id, $0) }))
             .textFieldStyle(.plain)
             .decimalKeyboard()
             .focused($focusedScore, equals: row.id)
@@ -142,7 +142,7 @@ struct FCGradeList: View {
     private func weightStepper(_ row: FCRow) -> some View {
         HStack(spacing: 2) {
             stepButton(icon: "minus", label: String.localized(.finalCountdownGradeDecreaseWeight)) { onWeight(row.id, -1) }
-            Text("×\(row.weight)")
+            Text(verbatim: "×\(row.weight)")
                 .font(.system(size: 14, weight: .bold))
                 .monospacedDigit()
                 .foregroundStyle(UNESColor.ink)

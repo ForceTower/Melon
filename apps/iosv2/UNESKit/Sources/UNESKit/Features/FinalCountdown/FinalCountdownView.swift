@@ -177,11 +177,11 @@ struct FinalCountdownView: View {
 
             (
                 Text(.finalCountdownInfoIntro)
-                    + Text("≥ 7,0").fontWeight(.semibold).foregroundColor(UNESColor.ink)
+                    + Text(verbatim: "≥ 7,0").fontWeight(.semibold).foregroundColor(UNESColor.ink)
                     + Text(.finalCountdownInfoFinalRange)
-                    + Text("3,0 ≤ m < 7,0").fontWeight(.semibold).foregroundColor(UNESColor.ink)
+                    + Text(verbatim: "3,0 ≤ m < 7,0").fontWeight(.semibold).foregroundColor(UNESColor.ink)
                     + Text(.finalCountdownInfoFailRange)
-                    + Text("m < 3,0").fontWeight(.semibold).foregroundColor(UNESColor.ink)
+                    + Text(verbatim: "m < 3,0").fontWeight(.semibold).foregroundColor(UNESColor.ink)
                     + Text(.finalCountdownInfoOutro)
             )
             .font(.system(size: 12.5, weight: .medium))

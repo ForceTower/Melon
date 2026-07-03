@@ -170,9 +170,9 @@ struct EnrollmentOfferRow: View {
                     .fixedSize(horizontal: false, vertical: true)
 
                 HStack(spacing: 8) {
-                    Text("\(discipline.workload)h")
+                    Text(verbatim: "\(discipline.workload)h")
                         .monospacedDigit()
-                    Text("·").opacity(0.4)
+                    Text(verbatim: "·").opacity(0.4)
                     Text(EnrollmentFormat.sectionCountLabel(discipline.sections.count))
                         .monospacedDigit()
                     Spacer()

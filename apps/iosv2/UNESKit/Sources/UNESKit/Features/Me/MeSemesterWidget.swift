@@ -29,7 +29,7 @@ struct MeSemesterWidget: View {
         HStack(alignment: .lastTextBaseline) {
             (
                 Text(.meSemesterWeekPrefix)
-                    + Text("\(progress.week)").foregroundStyle(UNESColor.accent)
+                    + Text(verbatim: "\(progress.week)").foregroundStyle(UNESColor.accent)
                     + Text(.meSemesterWeekOfSuffix(progress.totalWeeks))
             )
             .font(.system(size: 16, weight: .bold))
@@ -38,7 +38,7 @@ struct MeSemesterWidget: View {
 
             Spacer()
 
-            Text("\(progress.percent)%")
+            Text(verbatim: "\(progress.percent)%")
                 .font(.system(size: 13, weight: .semibold))
                 .monospacedDigit()
                 .foregroundStyle(UNESColor.ink3)

@@ -31,7 +31,7 @@ struct MessageFilterChips: View {
                     .tracking(-0.13)
                     .foregroundStyle(on ? .white : UNESColor.ink2)
                 if count > 0 {
-                    Text("\(count)")
+                    Text(verbatim: "\(count)")
                         .font(.system(size: 11.5, weight: .bold))
                         .monospacedDigit()
                         .foregroundStyle(on ? .white.opacity(0.85) : UNESColor.ink4)

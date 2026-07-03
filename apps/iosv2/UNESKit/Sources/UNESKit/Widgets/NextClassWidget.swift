@@ -740,7 +740,7 @@ private struct SignedOutView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            HeroEyebrow(text: Text("UNES"), dotColor: nil)
+            HeroEyebrow(text: Text(verbatim: "UNES"), dotColor: nil)
             Spacer(minLength: 8)
             (compact ? Text(.widgetSignInCompact) : Text(.widgetSignInToSeeNextClass))
                 .font(.system(size: compact ? 20 : 22, weight: .bold))

@@ -117,7 +117,7 @@ struct EnrollmentSuccessView: View {
 
     private func stat(_ value: Int, _ label: String) -> some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text("\(value)")
+            Text(verbatim: "\(value)")
                 .font(.system(size: 26, weight: .bold))
                 .tracking(-0.91)
                 .monospacedDigit()

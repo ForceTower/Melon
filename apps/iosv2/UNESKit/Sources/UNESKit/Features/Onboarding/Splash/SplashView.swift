@@ -33,7 +33,7 @@ struct SplashView: View {
     private var appIcon: some View {
         ZStack {
             MeshView(variant: .warm)
-            Text("u")
+            Text(verbatim: "u")
                 .font(.system(size: 40, weight: .heavy))
                 .foregroundStyle(.white)
                 .shadow(color: .black.opacity(0.25), radius: 4, y: 2)
@@ -50,7 +50,7 @@ struct SplashView: View {
     private var wordmark: some View {
         VStack(spacing: 14) {
             HStack(alignment: .bottom, spacing: 3) {
-                Text("unes")
+                Text(verbatim: "unes")
                     .font(.system(size: 46, weight: .heavy))
                     .tracking(-2.3)
                     .foregroundStyle(UNESColor.paper)
@@ -76,8 +76,8 @@ struct SplashView: View {
             )
             (
                 Text(.onboardingSplashForPrefix).foregroundStyle(UNESColor.paper.opacity(0.5))
-                    + Text("UEFS").fontWeight(.semibold).foregroundStyle(UNESColor.paper.opacity(0.82))
-                    + Text(" · Feira de Santana").foregroundStyle(UNESColor.paper.opacity(0.5))
+                    + Text(verbatim: "UEFS").fontWeight(.semibold).foregroundStyle(UNESColor.paper.opacity(0.82))
+                    + Text(verbatim: " · Feira de Santana").foregroundStyle(UNESColor.paper.opacity(0.5))
             )
             .font(.system(size: 13, weight: .medium))
         }

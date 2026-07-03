@@ -105,7 +105,7 @@ struct MessagesView: View {
                     .font(.system(size: 20, weight: .bold))
                     .tracking(-0.6)
                     .foregroundStyle(UNESColor.ink)
-                Text("\(group.totalCount)")
+                Text(verbatim: "\(group.totalCount)")
                     .font(.system(size: 14, weight: .medium))
                     .monospacedDigit()
                     .foregroundStyle(UNESColor.ink4)

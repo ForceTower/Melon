@@ -66,7 +66,7 @@ struct FCBreakdownCard: View {
                     .monospacedDigit()
                     .foregroundStyle(row.score != nil ? UNESColor.ink : UNESColor.ink4)
                 if weighted {
-                    Text("×\(row.weight)")
+                    Text(verbatim: "×\(row.weight)")
                         .font(.system(size: 11, weight: .semibold))
                         .monospacedDigit()
                         .foregroundStyle(UNESColor.ink4)

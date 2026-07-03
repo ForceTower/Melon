@@ -107,7 +107,7 @@ struct LoginView: View {
                 label: String.localized(.commonUsername),
                 isFocused: focus == .username
             ) {
-                TextField("", text: $store.username, prompt: Text(.onboardingLoginUsernamePlaceholder))
+                TextField(String(""), text: $store.username, prompt: Text(.onboardingLoginUsernamePlaceholder))
                     .textContentType(.username)
                     .noAutocapitalization()
                     .autocorrectionDisabled()
@@ -127,11 +127,11 @@ struct LoginView: View {
             ) {
                 Group {
                     if store.showPassword {
-                        TextField("••••••••", text: $store.password)
+                        TextField(String("••••••••"), text: $store.password)
                             .noAutocapitalization()
                             .autocorrectionDisabled()
                     } else {
-                        SecureField("••••••••", text: $store.password)
+                        SecureField(String("••••••••"), text: $store.password)
                     }
                 }
                 .textContentType(.password)

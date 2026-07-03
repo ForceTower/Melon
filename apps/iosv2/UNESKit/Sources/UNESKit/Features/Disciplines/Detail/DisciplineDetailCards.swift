@@ -223,7 +223,7 @@ struct DisciplinePresencaCard: View {
                 HStack(alignment: .bottom, spacing: 12) {
                     VStack(alignment: .leading, spacing: 4) {
                         HStack(alignment: .lastTextBaseline, spacing: 6) {
-                            Text("\(detail.missedHours)")
+                            Text(verbatim: "\(detail.missedHours)")
                                 .font(.system(size: 34, weight: .bold))
                                 .tracking(-1.36)
                                 .monospacedDigit()
@@ -240,7 +240,7 @@ struct DisciplinePresencaCard: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
 
                     VStack(alignment: .trailing, spacing: 3) {
-                        Text("\(max(0, detail.allowedMissedHours - detail.missedHours))")
+                        Text(verbatim: "\(max(0, detail.allowedMissedHours - detail.missedHours))")
                             .font(.system(size: 22, weight: .bold))
                             .tracking(-0.66)
                             .monospacedDigit()

@@ -210,7 +210,7 @@ struct EnrollmentBanner<Content: View>: View {
                     Button {
                         onAction?()
                     } label: {
-                        Text("\(action) →")
+                        Text(verbatim: "\(action) →")
                             .font(.system(size: 12.5, weight: .semibold))
                             .foregroundStyle(color)
                     }
@@ -262,12 +262,12 @@ struct EnrollmentSeatMeter: View {
     var body: some View {
         VStack(alignment: .trailing, spacing: 4) {
             HStack(alignment: .firstTextBaseline, spacing: 3) {
-                Text("\(seats.filled)")
+                Text(verbatim: "\(seats.filled)")
                     .font(.system(size: 15, weight: .bold))
                     .tracking(-0.3)
                     .monospacedDigit()
                     .foregroundStyle(UNESColor.ink)
-                Text("/ \(seats.total)")
+                Text(verbatim: "/ \(seats.total)")
                     .font(.system(size: 11, weight: .medium))
                     .monospacedDigit()
                     .foregroundStyle(UNESColor.ink4)
@@ -352,10 +352,10 @@ struct EnrollmentScheduleLines: View {
                 EnrollmentBadge(kind: .selected, text: "T01")
             }
             EnrollmentBanner(tone: .danger, title: .localized(.enrollmentConflictTitle)) {
-                Text("Choca com TEC502 T01 na segunda. Troque uma das turmas.")
+                Text(verbatim: "Choca com TEC502 T01 na segunda. Troque uma das turmas.")
             }
             EnrollmentBanner(tone: .warn, title: .localized(.enrollmentClassFullTitle)) {
-                Text("Entre na fila de espera — 6 na frente.")
+                Text(verbatim: "Entre na fila de espera — 6 na frente.")
             }
             EnrollmentBanner(tone: .info, title: .localized(.enrollmentNoConflictsTitle)) {
                 Text(.enrollmentTimetableNoConflictBody(4))

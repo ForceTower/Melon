@@ -45,7 +45,7 @@ struct CalendarMonthHeader: View {
                 .font(.system(size: 24, weight: .bold))
                 .tracking(-0.72)
                 .foregroundStyle(isCurrent ? UNESColor.accent : UNESColor.ink)
-            Text("\(String(group.year)) · \(CalendarFormat.eventCount(group.events.count))")
+            Text(verbatim: "\(String(group.year)) · \(CalendarFormat.eventCount(group.events.count))")
                 .font(.system(size: 13, weight: .medium))
                 .monospacedDigit()
                 .foregroundStyle(UNESColor.ink4)
@@ -139,7 +139,7 @@ struct CalendarEventRow: View {
                 Text(category.label)
                     .font(.system(size: 11, weight: .semibold))
                     .foregroundStyle(category.color)
-                Text("· \(event.scope.label)")
+                Text(verbatim: "· \(event.scope.label)")
                     .font(.system(size: 11, weight: .medium))
                     .foregroundStyle(UNESColor.ink4)
                 if status == .active && !event.closed {

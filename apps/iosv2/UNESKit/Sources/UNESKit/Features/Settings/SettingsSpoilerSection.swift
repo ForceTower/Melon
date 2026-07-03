@@ -50,7 +50,7 @@ struct SettingsSpoilerSection: View {
                     .font(.system(size: 13, weight: .semibold))
                     .tracking(0.3)
                 // Apple's canonical lock-screen time — this is a mock.
-                Text("9:41")
+                Text(verbatim: "9:41")
                     .font(.system(size: 46, weight: .bold))
                     .tracking(-1.38)
                     .monospacedDigit()
@@ -61,7 +61,7 @@ struct SettingsSpoilerSection: View {
 
     private var notificationBubble: some View {
         HStack(spacing: 11) {
-            Text("U")
+            Text(verbatim: "U")
                 .font(.system(size: 16, weight: .bold))
                 .foregroundStyle(.white)
                 .frame(width: 32, height: 32)
@@ -78,7 +78,7 @@ struct SettingsSpoilerSection: View {
 
             VStack(alignment: .leading, spacing: 2) {
                 HStack(alignment: .firstTextBaseline) {
-                    Text("UNES")
+                    Text(verbatim: "UNES")
                         .font(.system(size: 12, weight: .bold))
                         .tracking(-0.12)
                     Spacer()

@@ -71,7 +71,7 @@ private struct LectureRow: View {
                         HStack(spacing: 4) {
                             Image(systemName: "link")
                                 .font(.system(size: 10, weight: .medium))
-                            Text("\(lecture.attachmentCount)")
+                            Text(verbatim: "\(lecture.attachmentCount)")
                         }
                     }
                 }

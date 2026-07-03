@@ -311,7 +311,7 @@ struct EnrollmentProposalRow: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
 
-                Text("\(pick.discipline.workload)h")
+                Text(verbatim: "\(pick.discipline.workload)h")
                     .font(.system(size: 12, weight: .medium))
                     .monospacedDigit()
                     .foregroundStyle(UNESColor.ink4)

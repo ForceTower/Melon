@@ -66,7 +66,7 @@ struct EnrollmentDock: View {
 
         return VStack(alignment: .leading, spacing: 3) {
             HStack(alignment: .firstTextBaseline, spacing: 4) {
-                Text("\(total)h")
+                Text(verbatim: "\(total)h")
                     .font(.system(size: 21, weight: .bold))
                     .tracking(-0.75)
                     .monospacedDigit()
@@ -74,7 +74,7 @@ struct EnrollmentDock: View {
                     .contentTransition(.numericText())
                     .animation(UNESMotion.settle(0.4), value: total)
                 if let window = session.window {
-                    Text("/ \(window.maxHours)")
+                    Text(verbatim: "/ \(window.maxHours)")
                         .font(.system(size: 11, weight: .medium))
                         .monospacedDigit()
                         .foregroundStyle(UNESColor.ink4)

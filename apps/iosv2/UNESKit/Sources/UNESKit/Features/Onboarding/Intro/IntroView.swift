@@ -118,7 +118,7 @@ private struct IntroSlidePage: View {
     }
 
     private func titleLine(_ segments: [IntroSlide.Segment]) -> some View {
-        segments.reduce(Text("")) { text, segment in
+        segments.reduce(Text(verbatim: "")) { text, segment in
             text + Text(segment.text)
                 .foregroundStyle(segment.accented ? slide.accent : UNESColor.ink)
         }

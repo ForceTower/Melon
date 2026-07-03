@@ -97,7 +97,7 @@ struct CalendarHeroCard: View {
                 .foregroundStyle(.white)
                 .frame(width: 20, height: 20)
                 .background(category.color, in: RoundedRectangle(cornerRadius: 6, style: .continuous))
-            Text("\(category.label) · \(event.scope.label)")
+            Text(verbatim: "\(category.label) · \(event.scope.label)")
                 .font(.system(size: 11.5, weight: .semibold))
                 .tracking(-0.06)
                 .foregroundStyle(.white)

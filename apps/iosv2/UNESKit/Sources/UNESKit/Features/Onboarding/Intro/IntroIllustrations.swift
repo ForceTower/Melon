@@ -22,12 +22,18 @@ struct ScheduleIllustration: View {
         Block(col: 0, row: 3, height: 1, color: UNESColor.amber, label: "PROJ", room: 104),
     ]
 
+    private let weekdays = [
+        String.localized(.onboardingIntroArtWeekdayMon),
+        String.localized(.onboardingIntroArtWeekdayTue),
+        String.localized(.onboardingIntroArtWeekdayWed),
+    ]
+
     var body: some View {
         ZStack(alignment: .topLeading) {
             grid
 
-            ForEach(["SEG", "TER", "QUA"].indices, id: \.self) { index in
-                Text(["SEG", "TER", "QUA"][index])
+            ForEach(weekdays.indices, id: \.self) { index in
+                Text(weekdays[index])
                     .font(.system(size: 9, weight: .medium))
                     .tracking(1)
                     .foregroundStyle(UNESColor.ink3)
@@ -80,7 +86,7 @@ struct ScheduleIllustration: View {
             Text(block.label)
                 .font(.system(size: 9, weight: .semibold))
                 .tracking(0.45)
-            Text("sala \(block.room)")
+            Text(String.localized(.commonRoom(String(block.room))))
                 .font(.system(size: 7))
                 .opacity(0.8)
         }
@@ -148,7 +154,7 @@ struct GradesIllustration: View {
                 .padding(.top, 16)
                 .fadeUp(delay: 0.1, duration: 0.6)
 
-            Text("coeficiente · 2026.1")
+            Text(.onboardingIntroArtGpaCaption)
                 .textCase(.uppercase)
                 .font(.system(size: 10))
                 .tracking(2)
@@ -169,10 +175,10 @@ struct GradesIllustration: View {
 
     private var headline: some View {
         (
-            Text("8").foregroundStyle(UNESColor.ink)
-                + Text(",").foregroundStyle(UNESColor.accent)
-                + Text("5").foregroundStyle(UNESColor.ink)
-                + Text("/10").font(.system(size: 28, weight: .bold)).italic().foregroundStyle(UNESColor.ink3)
+            Text(verbatim: "8").foregroundStyle(UNESColor.ink)
+                + Text(verbatim: ",").foregroundStyle(UNESColor.accent)
+                + Text(verbatim: "5").foregroundStyle(UNESColor.ink)
+                + Text(verbatim: "/10").font(.system(size: 28, weight: .bold)).italic().foregroundStyle(UNESColor.ink3)
         )
         .font(.system(size: 92, weight: .bold))
         .tracking(-3.68)
@@ -231,9 +237,24 @@ struct MessagesIllustration: View {
     }
 
     private let messages = [
-        Message(from: "Prof. Adriana", preview: "Gabarito da P1 liberado", color: UNESColor.magenta, time: "ag."),
-        Message(from: "Coordenação CC", preview: "Matrícula em optativas", color: UNESColor.coral, time: "09:14"),
-        Message(from: "DCE UEFS", preview: "Assembleia geral quinta…", color: UNESColor.amber, time: "ont."),
+        Message(
+            from: "Prof. Adriana",
+            preview: String.localized(.onboardingIntroArtMsgAnswerKey),
+            color: UNESColor.magenta,
+            time: String.localized(.onboardingIntroArtTimeNow)
+        ),
+        Message(
+            from: "Coordenação CC",
+            preview: String.localized(.onboardingIntroArtMsgElectives),
+            color: UNESColor.coral,
+            time: "09:14"
+        ),
+        Message(
+            from: "DCE UEFS",
+            preview: String.localized(.onboardingIntroArtMsgAssembly),
+            color: UNESColor.amber,
+            time: String.localized(.onboardingIntroArtTimeYesterday)
+        ),
     ]
 
     var body: some View {
@@ -353,30 +374,30 @@ struct NotificationsIllustration: View {
 
     private let pushes = [
         Push(
-            app: "Nota publicada",
+            app: String.localized(.onboardingIntroArtPushAppGrade),
             title: "CÁLCULO II · P2",
-            body: "8,7 lançado por Prof. Ribamar",
+            body: String.localized(.onboardingIntroArtPushBodyGrade),
             chip: UNESColor.amber,
             glyph: .grade
         ),
         Push(
-            app: "Novo recado",
+            app: String.localized(.onboardingIntroArtPushAppNotice),
             title: "Prof. Adriana Souza",
-            body: "Gabarito da P1 está disponível no mural.",
+            body: String.localized(.onboardingIntroArtPushBodyNotice),
             chip: UNESColor.magenta,
             glyph: .message
         ),
         Push(
-            app: "Mudança de horário",
-            title: "ALGI II · quinta",
-            body: "Remanejada: sala 204 → sala 312",
+            app: String.localized(.onboardingIntroArtPushAppSchedule),
+            title: String.localized(.onboardingIntroArtPushTitleSchedule),
+            body: String.localized(.onboardingIntroArtPushBodySchedule),
             chip: UNESColor.coral,
             glyph: .clock
         ),
         Push(
-            app: "Material novo",
+            app: String.localized(.onboardingIntroArtPushAppMaterial),
             title: "FÍSICA II",
-            body: "Lista de exercícios · cap. 7",
+            body: String.localized(.onboardingIntroArtPushBodyMaterial),
             chip: UNESColor.plum,
             glyph: .material
         ),
@@ -410,15 +431,15 @@ struct NotificationsIllustration: View {
     private var clock: some View {
         VStack(spacing: 3) {
             (
-                Text("9")
-                    + Text(":").foregroundStyle(UNESColor.ink.opacity(0.5))
-                    + Text("14")
+                Text(verbatim: "9")
+                    + Text(verbatim: ":").foregroundStyle(UNESColor.ink.opacity(0.5))
+                    + Text(verbatim: "14")
             )
             .font(.system(size: 22, weight: .bold))
             .tracking(-0.44)
             .foregroundStyle(UNESColor.ink)
 
-            Text("qui · 23 abr")
+            Text(.onboardingIntroArtLockDate)
                 .textCase(.uppercase)
                 .font(.system(size: 8))
                 .tracking(1.6)
@@ -440,7 +461,7 @@ struct NotificationsIllustration: View {
                         .tracking(1.19)
                         .foregroundStyle(UNESColor.ink3)
                     Spacer(minLength: 0)
-                    Text("agora")
+                    Text(.onboardingIntroArtPushNow)
                         .foregroundStyle(UNESColor.ink4)
                 }
                 .font(.system(size: 8.5))
@@ -471,7 +492,7 @@ struct NotificationsIllustration: View {
     private func glyph(_ glyph: Push.Glyph) -> some View {
         switch glyph {
         case .grade:
-            Text("9")
+            Text(verbatim: "9")
                 .font(.system(size: 14, weight: .semibold))
                 .italic()
                 .foregroundStyle(UNESColor.paper)

@@ -59,7 +59,7 @@ struct CalendarEventSheet: View {
                 .shadow(color: category.color.opacity(0.33), radius: 7, y: 6)
 
             VStack(alignment: .leading, spacing: 2) {
-                Text("\(category.label) · \(event.scope.label)")
+                Text(verbatim: "\(category.label) · \(event.scope.label)")
                     .font(.system(size: 12, weight: .semibold))
                     .foregroundStyle(category.color)
                 Text(event.title)

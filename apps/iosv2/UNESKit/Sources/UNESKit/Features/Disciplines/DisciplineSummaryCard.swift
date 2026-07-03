@@ -79,13 +79,13 @@ struct DisciplineSummaryCard: View {
             if let teacherName = discipline.teacherName {
                 Text(teacherName)
                     .lineLimit(1)
-                Text("·").opacity(0.4)
+                Text(verbatim: "·").opacity(0.4)
             }
-            Text("\(discipline.hours)h")
+            Text(verbatim: "\(discipline.hours)h")
                 .monospacedDigit()
                 .layoutPriority(1)
             if let groupsLabel = discipline.groupsLabel {
-                Text("·").opacity(0.4)
+                Text(verbatim: "·").opacity(0.4)
                 Text(groupsLabel)
                     .fontWeight(.semibold)
                     .foregroundStyle(color)
@@ -155,9 +155,9 @@ struct DisciplineSummaryCard: View {
                         .tracking(0.4)
                         .foregroundStyle(UNESColor.ink4)
                     (
-                        Text("\(discipline.releasedCount)")
+                        Text(verbatim: "\(discipline.releasedCount)")
                             .foregroundStyle(UNESColor.ink)
-                            + Text("/\(discipline.grades.count)")
+                            + Text(verbatim: "/\(discipline.grades.count)")
                             .foregroundStyle(UNESColor.ink4)
                     )
                     .font(.system(size: 19, weight: .bold))

@@ -9277,6 +9277,346 @@
         }
       }
     },
+    "onboarding.intro.art.gpaCaption": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "coefficient · 2026.1"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "coeficiente · 2026.1"
+          }
+        }
+      }
+    },
+    "onboarding.intro.art.lockDate": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thu · Apr 23"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "qui · 23 abr"
+          }
+        }
+      }
+    },
+    "onboarding.intro.art.msgAnswerKey": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "P1 answer key is up"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gabarito da P1 liberado"
+          }
+        }
+      }
+    },
+    "onboarding.intro.art.msgAssembly": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "General assembly Thursday…"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Assembleia geral quinta…"
+          }
+        }
+      }
+    },
+    "onboarding.intro.art.msgElectives": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elective enrollment open"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Matrícula em optativas"
+          }
+        }
+      }
+    },
+    "onboarding.intro.art.pushAppGrade": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grade posted"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nota publicada"
+          }
+        }
+      }
+    },
+    "onboarding.intro.art.pushAppMaterial": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New material"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Material novo"
+          }
+        }
+      }
+    },
+    "onboarding.intro.art.pushAppNotice": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New notice"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Novo recado"
+          }
+        }
+      }
+    },
+    "onboarding.intro.art.pushAppSchedule": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schedule change"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mudança de horário"
+          }
+        }
+      }
+    },
+    "onboarding.intro.art.pushBodyGrade": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "8.7 posted by Prof. Ribamar"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "8,7 lançado por Prof. Ribamar"
+          }
+        }
+      }
+    },
+    "onboarding.intro.art.pushBodyMaterial": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Problem set · ch. 7"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lista de exercícios · cap. 7"
+          }
+        }
+      }
+    },
+    "onboarding.intro.art.pushBodyNotice": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "P1 answer key is now on the board."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gabarito da P1 está disponível no mural."
+          }
+        }
+      }
+    },
+    "onboarding.intro.art.pushBodySchedule": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moved: room 204 → room 312"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remanejada: sala 204 → sala 312"
+          }
+        }
+      }
+    },
+    "onboarding.intro.art.pushNow": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "now"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "agora"
+          }
+        }
+      }
+    },
+    "onboarding.intro.art.pushTitleSchedule": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ALGI II · Thu"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ALGI II · quinta"
+          }
+        }
+      }
+    },
+    "onboarding.intro.art.timeNow": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "now"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ag."
+          }
+        }
+      }
+    },
+    "onboarding.intro.art.timeYesterday": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "yst"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ont."
+          }
+        }
+      }
+    },
+    "onboarding.intro.art.weekdayMon": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "MON"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SEG"
+          }
+        }
+      }
+    },
+    "onboarding.intro.art.weekdayTue": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TUE"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TER"
+          }
+        }
+      }
+    },
+    "onboarding.intro.art.weekdayWed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WED"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "QUA"
+          }
+        }
+      }
+    },
     "onboarding.intro.grades.body": {
       "extractionState": "manual",
       "localizations": {

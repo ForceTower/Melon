@@ -306,7 +306,7 @@ struct EnrollmentReviewItem: View {
             Text(pick.section.label)
                 .font(.system(size: 11, weight: .semibold))
                 .foregroundStyle(UNESColor.ink2)
-            Text("· \(pick.discipline.workload)h")
+            Text(verbatim: "· \(pick.discipline.workload)h")
                 .font(.system(size: 11, weight: .medium))
                 .monospacedDigit()
                 .foregroundStyle(UNESColor.ink4)

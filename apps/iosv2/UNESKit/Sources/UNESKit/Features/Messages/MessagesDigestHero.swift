@@ -27,7 +27,7 @@ struct MessagesDigestHero: View {
                 headline
                 Spacer(minLength: 12)
                 VStack(alignment: .trailing, spacing: 2) {
-                    Text("\(messages.count)")
+                    Text(verbatim: "\(messages.count)")
                         .font(.system(size: 26, weight: .bold))
                         .tracking(-0.78)
                         .monospacedDigit()
@@ -94,7 +94,7 @@ struct MessagesDigestHero: View {
             }
         } else {
             HStack(alignment: .lastTextBaseline, spacing: 10) {
-                Text("\(unreadCount)")
+                Text(verbatim: "\(unreadCount)")
                     .font(.system(size: 52, weight: .bold))
                     .tracking(-2.34)
                     .monospacedDigit()
@@ -137,7 +137,7 @@ struct MessagesDigestHero: View {
                     Text(slice.category.label)
                         .font(.system(size: 12.5, weight: .medium))
                         .foregroundStyle(UNESColor.ink2)
-                    Text("\(slice.count)")
+                    Text(verbatim: "\(slice.count)")
                         .font(.system(size: 12.5, weight: .semibold))
                         .monospacedDigit()
                         .foregroundStyle(UNESColor.ink4)

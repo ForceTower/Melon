@@ -109,7 +109,7 @@ struct EnrollmentSectionCard: View {
                         Text(meeting.room ?? String.localized(.enrollmentRoomTbd))
                     }
 
-                    Text("·").opacity(0.35)
+                    Text(verbatim: "·").opacity(0.35)
 
                     if meeting.professors.isEmpty {
                         Text(.enrollmentProfTbd)

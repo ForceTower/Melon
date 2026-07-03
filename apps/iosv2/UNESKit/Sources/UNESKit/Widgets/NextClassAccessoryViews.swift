@@ -65,7 +65,7 @@ struct RectangularAccessoryView: View {
                         .lineLimit(1)
                         .minimumScaleFactor(0.8)
                         .widgetAccentable()
-                    Text("\(RectangularAccessoryView.untilShort(for: next, at: entry.date)) · \(next.startTime)")
+                    Text(verbatim: "\(RectangularAccessoryView.untilShort(for: next, at: entry.date)) · \(next.startTime)")
                         .font(.system(size: 12, weight: .medium))
                         .monospacedDigit()
                         .opacity(0.8)
@@ -77,7 +77,7 @@ struct RectangularAccessoryView: View {
             }
         case .signedOut:
             VStack(alignment: .leading, spacing: 1) {
-                Text("UNES")
+                Text(verbatim: "UNES")
                     .font(.system(size: 15, weight: .bold))
                     .widgetAccentable()
                 Text(.widgetTapToSignIn)
@@ -184,7 +184,7 @@ struct InlineAccessoryView: View {
             let clock = HeroClock(for: occurrence, at: entry.date).inlineLabel
             ViewThatFits {
                 Text([occurrence.code, occurrence.room, clock].compactMap { $0 }.joined(separator: " · "))
-                Text("\(occurrence.code) · \(clock)")
+                Text(verbatim: "\(occurrence.code) · \(clock)")
                 Text(clock)
             }
         case let .inClass(occurrence):
