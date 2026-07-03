@@ -41,7 +41,7 @@ struct ScheduleIllustration: View {
             }
 
             ForEach(["08", "10", "12", "14", "16"].indices, id: \.self) { index in
-                Text(["08", "10", "12", "14", "16"][index])
+                Text(verbatim: ["08", "10", "12", "14", "16"][index])
                     .font(.system(size: 9))
                     .foregroundStyle(UNESColor.ink4)
                     .position(x: 4, y: 32 + CGFloat(index) * 40)
