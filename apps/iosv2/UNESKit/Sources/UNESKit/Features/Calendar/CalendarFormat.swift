@@ -13,7 +13,7 @@ enum CalendarFormat {
     }
 
     /// "17 abr" / "Apr 17"
-    static func dateShort(_ date: Date) -> String {
+    static func dateShort(_ date: Date, locale: Locale = CalendarFormat.locale) -> String {
         let day = date.formatted(.dateTime.day(.twoDigits).locale(locale))
         let month = date.formatted(.dateTime.month(.abbreviated).locale(locale))
             .replacingOccurrences(of: ".", with: "")
@@ -21,8 +21,13 @@ enum CalendarFormat {
     }
 
     /// "13 – 20 abr" within a month, "27 abr – 03 mai" across months.
-    static func dateRange(start: Date, end: Date?, calendar: Calendar = .current) -> String {
-        guard let end else { return dateShort(start) }
+    static func dateRange(
+        start: Date,
+        end: Date?,
+        calendar: Calendar = .current,
+        locale: Locale = CalendarFormat.locale
+    ) -> String {
+        guard let end else { return dateShort(start, locale: locale) }
         if calendar.component(.month, from: start) == calendar.component(.month, from: end),
            calendar.component(.year, from: start) == calendar.component(.year, from: end) {
             let startDay = start.formatted(.dateTime.day(.twoDigits).locale(locale))
@@ -31,7 +36,7 @@ enum CalendarFormat {
                 .replacingOccurrences(of: ".", with: "")
             return "\(startDay) – \(endDay) \(month)"
         }
-        return "\(dateShort(start)) – \(dateShort(end))"
+        return "\(dateShort(start, locale: locale)) – \(dateShort(end, locale: locale))"
     }
 
     /// "Abril" / "April" — agenda month headers ask for the capitalized long name.

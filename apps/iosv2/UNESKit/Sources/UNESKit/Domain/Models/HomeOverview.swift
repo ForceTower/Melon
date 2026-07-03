@@ -112,10 +112,10 @@ struct DisciplineCard: Equatable, Sendable, Identifiable {
 /// UFF-style grade display: truncated to one decimal (6,95 → 6,9 — never
 /// rounded up), with the current locale's decimal separator (pt-BR "6,9",
 /// en "6.9"). `nil` renders as an em dash.
-func formatGrade(_ value: Double?) -> String {
+func formatGrade(_ value: Double?, locale: Locale = .autoupdatingCurrent) -> String {
     guard let value else { return "—" }
     let truncated = (value * 10).rounded(.down) / 10
-    return truncated.formatted(.number.precision(.fractionLength(1)))
+    return truncated.formatted(.number.precision(.fractionLength(1)).locale(locale))
 }
 
 extension HomeOverview {

@@ -233,8 +233,9 @@ struct HomeOverviewMappingTests {
 
     @Test
     func gradesTruncateAndNeverRoundUp() {
-        #expect(formatGrade(6.95) == "6,9")
-        #expect(formatGrade(8.5) == "8,5")
+        let ptBR = Locale(identifier: "pt_BR")
+        #expect(formatGrade(6.95, locale: ptBR) == "6,9")
+        #expect(formatGrade(8.5, locale: ptBR) == "8,5")
         #expect(formatGrade(nil) == "—")
     }
 }

@@ -101,14 +101,16 @@ struct CalendarModelsTests {
             CalendarMath.countdown(Self.event(start: start, end: end), today: Self.today).phrase
         }
 
-        #expect(phrase(start: Self.today) == "hoje")
-        #expect(phrase(start: Self.day(2026, 4, 18)) == "amanhã")
-        #expect(phrase(start: Self.day(2026, 4, 22)) == "em 5 dias")
-        #expect(phrase(start: Self.day(2026, 4, 13), end: Self.day(2026, 4, 17)) == "termina hoje")
-        #expect(phrase(start: Self.day(2026, 4, 16), end: Self.day(2026, 4, 18)) == "termina amanhã")
-        #expect(phrase(start: Self.day(2026, 4, 13), end: Self.day(2026, 4, 20)) == "termina em 3 dias")
-        #expect(phrase(start: Self.day(2026, 4, 16)) == "há 1 dia")
-        #expect(phrase(start: Self.day(2026, 4, 10)) == "há 7 dias")
+        // Countdown copy follows the resource-bundle language; assert against
+        // the same symbols the model resolves rather than fixed pt-BR strings.
+        #expect(phrase(start: Self.today) == String.localized(.calendarCountdownToday))
+        #expect(phrase(start: Self.day(2026, 4, 18)) == String.localized(.calendarCountdownTomorrow))
+        #expect(phrase(start: Self.day(2026, 4, 22)) == String.localized(.calendarCountdownInDays(5)))
+        #expect(phrase(start: Self.day(2026, 4, 13), end: Self.day(2026, 4, 17)) == String.localized(.calendarCountdownEndsToday))
+        #expect(phrase(start: Self.day(2026, 4, 16), end: Self.day(2026, 4, 18)) == String.localized(.calendarCountdownEndsTomorrow))
+        #expect(phrase(start: Self.day(2026, 4, 13), end: Self.day(2026, 4, 20)) == String.localized(.calendarCountdownEndsInDays(3)))
+        #expect(phrase(start: Self.day(2026, 4, 16)) == String.localized(.calendarCountdownDaysAgo(1)))
+        #expect(phrase(start: Self.day(2026, 4, 10)) == String.localized(.calendarCountdownDaysAgo(7)))
     }
 
     @Test
@@ -118,17 +120,17 @@ struct CalendarModelsTests {
             today: Self.today
         )
         #expect(running.number == "3")
-        #expect(running.tail == "dias restantes")
+        #expect(running.tail == String.localized(.calendarCountdownDaysLeft))
 
         let endsTomorrow = CalendarMath.countdown(
             Self.event(start: Self.day(2026, 4, 16), end: Self.day(2026, 4, 18)),
             today: Self.today
         )
         #expect(endsTomorrow.number == "1")
-        #expect(endsTomorrow.tail == "dia restante")
+        #expect(endsTomorrow.tail == String.localized(.calendarCountdownDayLeft))
 
         let startsToday = CalendarMath.countdown(Self.event(start: Self.today), today: Self.today)
-        #expect(startsToday.number == "hoje")
+        #expect(startsToday.number == String.localized(.calendarCountdownToday))
         #expect(startsToday.tail.isEmpty)
     }
 
@@ -186,16 +188,20 @@ struct CalendarModelsTests {
 
     @Test
     func dateRangesCollapseWithinAMonth() {
-        #expect(CalendarFormat.dateRange(start: Self.day(2026, 4, 13), end: Self.day(2026, 4, 20)) == "13 – 20 abr")
-        #expect(CalendarFormat.dateRange(start: Self.day(2026, 4, 27), end: Self.day(2026, 5, 1)) == "27 abr – 01 mai")
-        #expect(CalendarFormat.dateRange(start: Self.day(2026, 4, 9), end: nil) == "09 abr")
+        // Month abbreviations are locale-driven, so pin pt-BR for the assertion.
+        let ptBR = Locale(identifier: "pt_BR")
+        #expect(CalendarFormat.dateRange(start: Self.day(2026, 4, 13), end: Self.day(2026, 4, 20), locale: ptBR) == "13 – 20 abr")
+        #expect(CalendarFormat.dateRange(start: Self.day(2026, 4, 27), end: Self.day(2026, 5, 1), locale: ptBR) == "27 abr – 01 mai")
+        #expect(CalendarFormat.dateRange(start: Self.day(2026, 4, 9), end: nil, locale: ptBR) == "09 abr")
     }
 
     @Test
     func syncLabelReadsRelative() {
         let fetchedAt = Self.today
         let fourMinutes = Self.calendar.date(byAdding: .minute, value: 4, to: fetchedAt)!
-        #expect(CalendarFormat.syncLabel(fetchedAt: fetchedAt, now: fetchedAt) == "Sincronizado com o SAGRES · agora")
-        #expect(CalendarFormat.syncLabel(fetchedAt: fetchedAt, now: fourMinutes) == "Sincronizado com o SAGRES · há 4 min")
+        // Copy follows the resource-bundle language; assert against the same
+        // symbols and verify the relative-time bucketing selects the right one.
+        #expect(CalendarFormat.syncLabel(fetchedAt: fetchedAt, now: fetchedAt) == String.localized(.calendarSyncNow))
+        #expect(CalendarFormat.syncLabel(fetchedAt: fetchedAt, now: fourMinutes) == String.localized(.calendarSyncMinAgo(4)))
     }
 }

@@ -169,7 +169,7 @@ enum CalendarMath {
         case (_, 1):
             return CalendarCountdown(
                 phrase: .localized(.calendarCountdownEndsTomorrow),
-                number: .localized(.calendarCountdownTomorrow),
+                number: "1",
                 tail: .localized(.calendarCountdownDayLeft)
             )
         case (_, let e) where e > 1:

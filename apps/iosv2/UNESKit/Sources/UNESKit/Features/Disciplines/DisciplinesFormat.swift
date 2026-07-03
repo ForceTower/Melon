@@ -11,10 +11,11 @@ enum DisciplinesFormat {
     }
 
     /// "+0,2" / "−1,3" — one decimal, truncated toward zero like every other
-    /// grade display.
-    static func signedDelta(_ value: Double) -> String {
+    /// grade display. The decimal separator follows the locale (pt-BR comma,
+    /// en dot); the sign is always the typographic minus/plus.
+    static func signedDelta(_ value: Double, locale: Locale = .autoupdatingCurrent) -> String {
         let truncated = (abs(value) * 10).rounded(.down) / 10
-        let body = String(format: "%.1f", truncated).replacingOccurrences(of: ".", with: ",")
+        let body = truncated.formatted(.number.precision(.fractionLength(1)).locale(locale))
         return (value < 0 ? "−" : "+") + body
     }
 
@@ -55,10 +56,11 @@ enum DisciplinesFormat {
     }
 
     /// Grades needed to reach a target round *up* — telling a student 6,9
-    /// when 6,95 is required would let them fall short. Display truncates.
-    static func neededGrade(_ value: Double) -> String {
+    /// when 6,95 is required would let them fall short. Display truncates, and
+    /// the decimal separator follows the locale (pt-BR comma, en dot).
+    static func neededGrade(_ value: Double, locale: Locale = .autoupdatingCurrent) -> String {
         let raised = (value * 10).rounded(.up) / 10
-        return String(format: "%.1f", raised).replacingOccurrences(of: ".", with: ",")
+        return raised.formatted(.number.precision(.fractionLength(1)).locale(locale))
     }
 }
 

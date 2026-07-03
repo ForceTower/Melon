@@ -206,13 +206,17 @@ struct DisciplineDetailMappingTests {
     func detailFormattersSpeakPtBr() {
         #expect(DisciplinesFormat.longDate("2026-03-31") == "31/03/2026")
         #expect(DisciplinesFormat.shortDate("2026-03-31") == "31/03")
-        #expect(DisciplinesFormat.inDaysLabel(0) == "hoje")
-        #expect(DisciplinesFormat.inDaysLabel(1) == "em 1 dia")
-        #expect(DisciplinesFormat.inDaysLabel(12) == "em 12 dias")
+        // Relative-day copy follows the resource-bundle language, so assert
+        // against the same symbols the formatter resolves rather than fixed pt-BR.
+        #expect(DisciplinesFormat.inDaysLabel(0) == String.localized(.disciplinesToday))
+        #expect(DisciplinesFormat.inDaysLabel(1) == String.localized(.disciplinesInDays(1)))
+        #expect(DisciplinesFormat.inDaysLabel(12) == String.localized(.disciplinesInDays(12)))
         #expect(DisciplinesFormat.departmentLabel("Departamento de Ciências Exatas") == "Dep. de Ciências Exatas")
         #expect(DisciplinesFormat.departmentLabel("Ciências Exatas") == "Ciências Exatas")
-        // Needed values round up — 6,9 would let the student fall short.
-        #expect(DisciplinesFormat.neededGrade(6.91) == "7,0")
-        #expect(DisciplinesFormat.neededGrade(3.2) == "3,2")
+        // Needed values round up — 6,9 would let the student fall short. The
+        // decimal separator is locale-driven, so pin pt-BR for the assertion.
+        let ptBR = Locale(identifier: "pt_BR")
+        #expect(DisciplinesFormat.neededGrade(6.91, locale: ptBR) == "7,0")
+        #expect(DisciplinesFormat.neededGrade(3.2, locale: ptBR) == "3,2")
     }
 }

@@ -114,12 +114,15 @@ struct MessagesMappingTests {
     func relativeTimeMatchesTheInboxScale() {
         let now = date(day: 18, hour: 13, minute: 20)
 
-        #expect(MessagesFormat.relativeTime(for: date(day: 18, hour: 13, minute: 20), now: now, calendar: calendar) == "agora")
-        #expect(MessagesFormat.relativeTime(for: date(day: 18, hour: 13, minute: 8), now: now, calendar: calendar) == "12 min")
-        #expect(MessagesFormat.relativeTime(for: date(day: 18, hour: 9, minute: 14), now: now, calendar: calendar) == "4h")
-        #expect(MessagesFormat.relativeTime(for: date(day: 17, hour: 18, minute: 42), now: now, calendar: calendar) == "ontem")
-        #expect(MessagesFormat.relativeTime(for: date(day: 14), now: now, calendar: calendar) == "4 d")
-        #expect(MessagesFormat.relativeTime(for: date(day: 10), now: now, calendar: calendar) == "10 abr")
+        // The row copy follows the resource-bundle language, so assert against
+        // the same symbols the formatter resolves; the last row falls through to
+        // HomeFormat.shortDate, which is locale-driven.
+        #expect(MessagesFormat.relativeTime(for: date(day: 18, hour: 13, minute: 20), now: now, calendar: calendar) == String.localized(.messagesTimeNow))
+        #expect(MessagesFormat.relativeTime(for: date(day: 18, hour: 13, minute: 8), now: now, calendar: calendar) == String.localized(.messagesTimeMinutesAgo(12)))
+        #expect(MessagesFormat.relativeTime(for: date(day: 18, hour: 9, minute: 14), now: now, calendar: calendar) == String.localized(.messagesTimeHoursAgo(4)))
+        #expect(MessagesFormat.relativeTime(for: date(day: 17, hour: 18, minute: 42), now: now, calendar: calendar) == String.localized(.messagesTimeYesterday))
+        #expect(MessagesFormat.relativeTime(for: date(day: 14), now: now, calendar: calendar) == String.localized(.messagesTimeDaysAgo(4)))
+        #expect(MessagesFormat.relativeTime(for: date(day: 10), now: now, calendar: calendar) == HomeFormat.shortDate(for: date(day: 10)))
     }
 
     // MARK: Filters
