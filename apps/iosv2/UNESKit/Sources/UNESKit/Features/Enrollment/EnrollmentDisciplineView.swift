@@ -17,7 +17,7 @@ struct EnrollmentDisciplineView: View {
         }
         .toolbar {
             ToolbarItem(placement: .principal) {
-                Text(store.discipline?.code ?? "")
+                Text(verbatim: store.discipline?.code ?? "")
                     .font(.system(size: 16, weight: .semibold))
                     .tracking(-0.32)
                     .foregroundStyle(UNESColor.ink)

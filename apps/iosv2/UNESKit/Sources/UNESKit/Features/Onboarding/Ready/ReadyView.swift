@@ -255,7 +255,7 @@ private struct NextClassHero: View {
                     .animation(.linear(duration: 0.9), value: Int(left))
 
                 VStack(spacing: 0) {
-                    Text(minutesLeft < 100 ? "\(minutesLeft)" : "\(minutesLeft / 60)")
+                    Text(verbatim: minutesLeft < 100 ? "\(minutesLeft)" : "\(minutesLeft / 60)")
                         .font(.system(size: 21, weight: .heavy))
                         .tracking(-0.63)
                         .monospacedDigit()

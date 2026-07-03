@@ -265,7 +265,7 @@ private struct MessagesHomeWidget: View {
                             .lineLimit(1)
                     }
 
-                    Text(summary.latestPreview ?? "")
+                    Text(verbatim: summary.latestPreview ?? "")
                         .font(.system(size: 12.5))
                         .lineSpacing(2.5)
                         .foregroundStyle(.white.opacity(0.78))
