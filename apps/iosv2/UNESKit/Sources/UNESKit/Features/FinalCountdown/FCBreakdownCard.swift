@@ -104,8 +104,8 @@ struct FCBreakdownCard: View {
 
     private var rulesGrid: some View {
         HStack(spacing: 8) {
-            ruleTile(label: String.localized(.finalCountdownBreakdownFloorLabel), value: "3,0", color: UNESColor.coral)
-            ruleTile(label: String.localized(.finalCountdownBreakdownPassLabel), value: "7,0", color: UNESColor.successGreen)
+            ruleTile(label: String.localized(.finalCountdownBreakdownFloorLabel), value: FinalCountdownMath.formatGrade(3.0), color: UNESColor.coral)
+            ruleTile(label: String.localized(.finalCountdownBreakdownPassLabel), value: FinalCountdownMath.formatGrade(7.0), color: UNESColor.successGreen)
             ruleTile(label: String.localized(.finalCountdownBreakdownFormulaLabel), value: "0,6m+0,4f", color: Color(hex: 0x2AA5B8))
         }
     }

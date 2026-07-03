@@ -2886,7 +2886,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Grid"
+            "value": "Schedule"
           }
         },
         "pt-BR": {
@@ -4243,7 +4243,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "See in grid"
+            "value": "See in schedule"
           }
         },
         "pt-BR": {
@@ -4903,7 +4903,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Empty grid"
+            "value": "Empty schedule"
           }
         },
         "pt-BR": {
@@ -5060,7 +5060,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Your grid"
+            "value": "Your schedule"
           }
         },
         "pt-BR": {
@@ -9844,7 +9844,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Your UEFS timetable pulled straight from SAGRES. Cancelled classes, room swaps, and exams in real time."
+            "value": "Your UEFS schedule pulled straight from SAGRES. Cancelled classes, room swaps, and exams in real time."
           }
         },
         "pt-BR": {

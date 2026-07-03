@@ -33,10 +33,12 @@ enum EnrollmentFormat {
         return string(from: date, format: "d MMM").replacingOccurrences(of: ".", with: "")
     }
 
-    /// "22 jun · 23h59" for the window's end bound.
+    /// "22 jun · 23h59" (pt-BR) / "22 Jun · 23:59" for the window's end bound.
     static func endLabel(_ date: Date?) -> String {
         guard let date else { return "—" }
-        return "\(dayLabel(date)) · \(string(from: date, format: "H'h'mm"))"
+        // pt-BR writes the deadline time as "23h59"; other locales use "23:59".
+        let separator = locale.language.languageCode == .portuguese ? "h" : ":"
+        return "\(dayLabel(date)) · \(string(from: date, format: "H'\(separator)'mm"))"
     }
 
     private static func string(from date: Date, format: String) -> String {
