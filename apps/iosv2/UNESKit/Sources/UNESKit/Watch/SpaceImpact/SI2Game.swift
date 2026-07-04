@@ -277,7 +277,7 @@ struct SI2Game {
     }
 
     private mutating func tickIntro() {
-        draw(SI2Data.introUnes, x: 9, y: 12 - introPhase)
+        draw(SI2Data.introUnes, x: 11, y: 12 - introPhase)
         draw(SI2Data.introImpact, x: 4, y: 24 + introPhase)
         drawOutlined(SI2Data.introShips, x: 56 - introPhase * 4, y: 20)
         guard introHold > 0 else { return }
