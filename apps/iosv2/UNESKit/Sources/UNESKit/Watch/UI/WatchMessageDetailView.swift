@@ -33,9 +33,10 @@ struct WatchMessageDetailView: View {
                         .padding(EdgeInsets(top: 0, leading: 2, bottom: 10, trailing: 2))
                 }
 
-                Text(message.body)
+                Text(MessageBodyText.linkified(message.body, accent: accent))
                     .font(.system(size: 14))
                     .lineSpacing(3)
+                    .tint(accent)
                     .foregroundStyle(UNESColor.ink2)
                     .padding(.horizontal, 2)
 
@@ -90,9 +91,21 @@ struct WatchMessageDetailView: View {
         }
     }
 
-    /// Attachments are informational on the watch — there is nowhere to open
-    /// a PDF or a web link; the phone keeps the tappable version.
+    /// Attachments open in the watch's web viewer when the URL parses; the
+    /// phone keeps the richer preview/download version.
+    @ViewBuilder
     private func attachmentTile(_ attachment: MessageAttachment, accent: Color) -> some View {
+        if let url = URL(string: attachment.url) {
+            Link(destination: url) {
+                attachmentTileContent(attachment, accent: accent)
+            }
+            .buttonStyle(.plain)
+        } else {
+            attachmentTileContent(attachment, accent: accent)
+        }
+    }
+
+    private func attachmentTileContent(_ attachment: MessageAttachment, accent: Color) -> some View {
         HStack(spacing: 8) {
             RoundedRectangle(cornerRadius: 8, style: .continuous)
                 .fill(accent.opacity(0.16))
