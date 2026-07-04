@@ -45,24 +45,31 @@ struct WatchSpaceImpactView: View {
     }
 
     private var hud: some View {
-        VStack(spacing: 0) {
-            if model.game.phase == .playing {
-                topBar
-                bossBar
-                    .padding(.top, 6)
-            }
-            Spacer(minLength: 0)
-            lcd
-            Spacer(minLength: 0)
-            if model.game.phase == .playing {
-                weaponBar
-                Text(.watchSi2BonusHint)
-                    .font(.system(size: 10, weight: .medium))
-                    .foregroundStyle(Self.dim.opacity(0.75))
-                    .padding(.top, 3)
+        // The LCD fills the watch's width, like the design's ×5-scaled band.
+        GeometryReader { proxy in
+            VStack(spacing: 0) {
+                if model.game.phase == .playing {
+                    topBar
+                        .padding(.horizontal, 6)
+                }
+                Spacer(minLength: 0)
+                lcd
+                    .frame(
+                        width: proxy.size.width,
+                        height: proxy.size.width
+                            * CGFloat(SI2Game.screenHeight) / CGFloat(SI2Game.screenWidth)
+                    )
+                Spacer(minLength: 0)
+                if model.game.phase == .playing {
+                    weaponBar
+                        .padding(.horizontal, 6)
+                    Text(.watchSi2BonusHint)
+                        .font(.system(size: 10, weight: .medium))
+                        .foregroundStyle(Self.dim.opacity(0.75))
+                        .padding(.top, 3)
+                }
             }
         }
-        .padding(.horizontal, 6)
     }
 
     private var topBar: some View {
@@ -74,9 +81,15 @@ struct WatchSpaceImpactView: View {
             }
             .frame(minWidth: 34, alignment: .leading)
             Spacer(minLength: 0)
-            Text(.watchSi2Phase(model.game.level + 1))
-                .font(.system(size: 11, weight: .semibold, design: .monospaced))
-                .foregroundStyle(Self.dim)
+            // The center slot: the stage number, or the boss bar during the
+            // boss fight (the watch lacks the design's spare row for it).
+            if model.game.boss != nil {
+                bossBar
+            } else {
+                Text(.watchSi2Phase(model.game.level + 1))
+                    .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                    .foregroundStyle(Self.dim)
+            }
             Spacer(minLength: 0)
             Text(verbatim: Self.padded(model.game.player.score))
                 .font(.system(size: 14, weight: .bold, design: .monospaced))
@@ -84,8 +97,6 @@ struct WatchSpaceImpactView: View {
         }
     }
 
-    /// The boss health bar — reserved space so the layout doesn't jump when
-    /// the level boss arrives.
     private var bossBar: some View {
         VStack(spacing: 2) {
             Text(.watchSi2Boss)
@@ -99,10 +110,8 @@ struct WatchSpaceImpactView: View {
                         .frame(width: proxy.size.width * bossHealth)
                 }
             }
-            .frame(height: 5)
-            .padding(.horizontal, 24)
+            .frame(width: 64, height: 4)
         }
-        .opacity(model.game.boss == nil ? 0 : 1)
     }
 
     private var bossHealth: Double {
@@ -120,10 +129,6 @@ struct WatchSpaceImpactView: View {
                 Color.clear
             }
         }
-        .aspectRatio(
-            CGFloat(SI2Game.screenWidth) / CGFloat(SI2Game.screenHeight),
-            contentMode: .fit
-        )
         .overlay {
             // Faint LCD scanlines, like the design's overlay band.
             Canvas { context, size in
