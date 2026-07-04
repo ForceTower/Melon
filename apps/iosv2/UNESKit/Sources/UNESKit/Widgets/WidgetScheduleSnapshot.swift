@@ -30,6 +30,9 @@ struct WidgetScheduleSnapshot: Codable, Equatable, Sendable {
         var room: String?
         var teacherName: String?
         var colorIndex: Int
+        /// Links the session to its `WatchSnapshot.Discipline` for the watch
+        /// drill-down; optional so pre-existing published JSON still decodes.
+        var disciplineId: String?
     }
 
     /// Subject of a lecture posted for a near-term date.
@@ -50,6 +53,7 @@ struct ClassOccurrence: Equatable, Sendable {
     var teacherName: String?
     var topic: String?
     var colorIndex: Int
+    var disciplineId: String?
     var start: Date
     var end: Date?
     /// "HH:mm".
@@ -95,6 +99,7 @@ extension WidgetScheduleSnapshot {
                     teacherName: session.teacherName,
                     topic: topics.first { $0.classId == session.classId && $0.dayStamp == stamp }?.subject,
                     colorIndex: session.colorIndex,
+                    disciplineId: session.disciplineId,
                     start: start,
                     end: session.endMinute.flatMap { calendar.date(byAdding: .minute, value: $0, to: dayStart) },
                     startTime: Self.minutesLabel(session.startMinute),

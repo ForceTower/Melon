@@ -18,7 +18,9 @@ extension Color {
     }
 
     init(light: Color, dark: Color) {
-        #if canImport(UIKit)
+        #if os(watchOS)
+        self = dark
+        #elseif canImport(UIKit)
         self.init(uiColor: UIColor { traits in
             traits.userInterfaceStyle == .dark ? UIColor(dark) : UIColor(light)
         })

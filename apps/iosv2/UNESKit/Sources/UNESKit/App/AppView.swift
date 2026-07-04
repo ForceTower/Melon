@@ -23,7 +23,7 @@ struct AppView: View {
             Tab(String.localized(.navMessages), systemImage: "bubble.left", value: AppFeature.Tab.messages) {
                 MessagesView(store: store.scope(state: \.messages, action: \.messages))
             }
-            .badge(store.unreadMessages)
+            .badgeCompat(store.unreadMessages)
             Tab(String.localized(.navMe), systemImage: "person", value: AppFeature.Tab.me) {
                 MeView(store: store.scope(state: \.me, action: \.me))
             }

@@ -53,7 +53,7 @@ extension PushClient: DependencyKey {
     /// registration heals on the next one.
     private static func register(_ token: String) async {
         @Dependency(\.apiClient) var apiClient
-        #if canImport(UIKit)
+        #if canImport(UIKit) && !os(watchOS)
         let deviceName: String? = await UIDevice.current.name
         #else
         let deviceName: String? = nil

@@ -10,6 +10,10 @@
 		CAFECAFE0000000000000003 /* UNESKit in Frameworks */ = {isa = PBXBuildFile; productRef = CAFECAFE0000000000000002 /* UNESKit */; };
 		CAFECAFE0000000000000006 /* UNESKit in Frameworks */ = {isa = PBXBuildFile; productRef = CAFECAFE0000000000000005 /* UNESKit */; };
 		CAFECAFE0000000000000014 /* UNESWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = CAFECAFE0000000000000007 /* UNESWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		CAFEAA000000000000000002 /* UNESKit in Frameworks */ = {isa = PBXBuildFile; productRef = CAFEAA000000000000000001 /* UNESKit */; };
+		CAFEAA000000000000000012 /* UNESKit in Frameworks */ = {isa = PBXBuildFile; productRef = CAFEAA000000000000000011 /* UNESKit */; };
+		CAFEAA00000000000000001F /* UNESWatchWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = CAFEAA000000000000000013 /* UNESWatchWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		CAFEAA000000000000000023 /* UNESWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = CAFEAA000000000000000003 /* UNESWatch.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		CAFEFB0000000000000000A2 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = CAFEFB0000000000000000A1 /* FirebaseCore */; };
 		CAFEFB0000000000000000A4 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = CAFEFB0000000000000000A3 /* FirebaseCrashlytics */; };
 		CAFEFB0000000000000000A6 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = CAFEFB0000000000000000A5 /* FirebaseMessaging */; };
@@ -23,6 +27,20 @@
 			proxyType = 1;
 			remoteGlobalIDString = CAFECAFE000000000000000A;
 			remoteInfo = UNESWidgets;
+		};
+		CAFEAA00000000000000001D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6CF5E0F32FF5A43F00953BC4 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CAFEAA00000000000000001C;
+			remoteInfo = UNESWatchWidgets;
+		};
+		CAFEAA000000000000000021 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6CF5E0F32FF5A43F00953BC4 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CAFEAA00000000000000000C;
+			remoteInfo = UNESWatch;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -38,12 +56,36 @@
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CAFEAA000000000000000020 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				CAFEAA00000000000000001F /* UNESWatchWidgets.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CAFEAA000000000000000024 /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				CAFEAA000000000000000023 /* UNESWatch.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		6CF5E0FB2FF5A43F00953BC4 /* UNES.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UNES.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CAFECAFE0000000000000004 /* UNESKit */ = {isa = PBXFileReference; lastKnownFileType = folder; path = UNESKit; sourceTree = SOURCE_ROOT; };
 		CAFECAFE0000000000000007 /* UNESWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = UNESWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		CAFEAA000000000000000003 /* UNESWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UNESWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CAFEAA000000000000000013 /* UNESWatchWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = UNESWatchWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -60,6 +102,20 @@
 				Info.plist,
 			);
 			target = 6CF5E0FA2FF5A43F00953BC4 /* UNES */;
+		};
+		CAFEAA000000000000000005 /* Exceptions for "UNESWatch" folder in "UNESWatch" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = CAFEAA00000000000000000C /* UNESWatch */;
+		};
+		CAFEAA000000000000000015 /* Exceptions for "UNESWatchWidgets" folder in "UNESWatchWidgets" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = CAFEAA00000000000000001C /* UNESWatchWidgets */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -78,6 +134,22 @@
 				CAFECAFE0000000000000009 /* Exceptions for "UNESWidgets" folder in "UNESWidgets" target */,
 			);
 			path = UNESWidgets;
+			sourceTree = "<group>";
+		};
+		CAFEAA000000000000000004 /* UNESWatch */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				CAFEAA000000000000000005 /* Exceptions for "UNESWatch" folder in "UNESWatch" target */,
+			);
+			path = UNESWatch;
+			sourceTree = "<group>";
+		};
+		CAFEAA000000000000000014 /* UNESWatchWidgets */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				CAFEAA000000000000000015 /* Exceptions for "UNESWatchWidgets" folder in "UNESWatchWidgets" target */,
+			);
+			path = UNESWatchWidgets;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -103,6 +175,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CAFEAA000000000000000007 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CAFEAA000000000000000002 /* UNESKit in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CAFEAA000000000000000017 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CAFEAA000000000000000012 /* UNESKit in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -111,6 +199,8 @@
 			children = (
 				6CF5E0FD2FF5A43F00953BC4 /* UNES */,
 				CAFECAFE0000000000000008 /* UNESWidgets */,
+				CAFEAA000000000000000004 /* UNESWatch */,
+				CAFEAA000000000000000014 /* UNESWatchWidgets */,
 				CAFECAFE0000000000000004 /* UNESKit */,
 				6CF5E0FC2FF5A43F00953BC4 /* Products */,
 			);
@@ -121,6 +211,8 @@
 			children = (
 				6CF5E0FB2FF5A43F00953BC4 /* UNES.app */,
 				CAFECAFE0000000000000007 /* UNESWidgets.appex */,
+				CAFEAA000000000000000003 /* UNESWatch.app */,
+				CAFEAA000000000000000013 /* UNESWatchWidgets.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -136,12 +228,14 @@
 				6CF5E0F82FF5A43F00953BC4 /* Frameworks */,
 				6CF5E0F92FF5A43F00953BC4 /* Resources */,
 				CAFECAFE0000000000000013 /* Embed Foundation Extensions */,
+				CAFEAA000000000000000024 /* Embed Watch Content */,
 				CAFEFB0000000000000000A7 /* Upload Symbols (Firebase Crashlytics) */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				CAFECAFE0000000000000012 /* PBXTargetDependency */,
+				CAFEAA000000000000000022 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				6CF5E0FD2FF5A43F00953BC4 /* UNES */,
@@ -181,6 +275,54 @@
 			productReference = CAFECAFE0000000000000007 /* UNESWidgets.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		CAFEAA00000000000000000C /* UNESWatch */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CAFEAA000000000000000009 /* Build configuration list for PBXNativeTarget "UNESWatch" */;
+			buildPhases = (
+				CAFEAA000000000000000006 /* Sources */,
+				CAFEAA000000000000000007 /* Frameworks */,
+				CAFEAA000000000000000008 /* Resources */,
+				CAFEAA000000000000000020 /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CAFEAA00000000000000001E /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				CAFEAA000000000000000004 /* UNESWatch */,
+			);
+			name = UNESWatch;
+			packageProductDependencies = (
+				CAFEAA000000000000000001 /* UNESKit */,
+			);
+			productName = UNESWatch;
+			productReference = CAFEAA000000000000000003 /* UNESWatch.app */;
+			productType = "com.apple.product-type.application";
+		};
+		CAFEAA00000000000000001C /* UNESWatchWidgets */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CAFEAA000000000000000019 /* Build configuration list for PBXNativeTarget "UNESWatchWidgets" */;
+			buildPhases = (
+				CAFEAA000000000000000016 /* Sources */,
+				CAFEAA000000000000000017 /* Frameworks */,
+				CAFEAA000000000000000018 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				CAFEAA000000000000000014 /* UNESWatchWidgets */,
+			);
+			name = UNESWatchWidgets;
+			packageProductDependencies = (
+				CAFEAA000000000000000011 /* UNESKit */,
+			);
+			productName = UNESWatchWidgets;
+			productReference = CAFEAA000000000000000013 /* UNESWatchWidgets.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -217,6 +359,8 @@
 			targets = (
 				6CF5E0FA2FF5A43F00953BC4 /* UNES */,
 				CAFECAFE000000000000000A /* UNESWidgets */,
+				CAFEAA00000000000000000C /* UNESWatch */,
+				CAFEAA00000000000000001C /* UNESWatchWidgets */,
 			);
 		};
 /* End PBXProject section */
@@ -230,6 +374,20 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		CAFECAFE000000000000000D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CAFEAA000000000000000008 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CAFEAA000000000000000018 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -277,6 +435,20 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CAFEAA000000000000000006 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CAFEAA000000000000000016 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -284,6 +456,16 @@
 			isa = PBXTargetDependency;
 			target = CAFECAFE000000000000000A /* UNESWidgets */;
 			targetProxy = CAFECAFE0000000000000011 /* PBXContainerItemProxy */;
+		};
+		CAFEAA00000000000000001E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CAFEAA00000000000000001C /* UNESWatchWidgets */;
+			targetProxy = CAFEAA00000000000000001D /* PBXContainerItemProxy */;
+		};
+		CAFEAA000000000000000022 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CAFEAA00000000000000000C /* UNESWatch */;
+			targetProxy = CAFEAA000000000000000021 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -547,6 +729,134 @@
 			};
 			name = Release;
 		};
+		CAFEAA00000000000000000A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = UNESWatch/UNESWatch.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5GH6Q6KS69;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = UNESWatch/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = UNES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 0.10.1;
+				PRODUCT_BUNDLE_IDENTIFIER = dev.forcetower.unes.ios.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 11.0;
+			};
+			name = Debug;
+		};
+		CAFEAA00000000000000000B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = UNESWatch/UNESWatch.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5GH6Q6KS69;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = UNESWatch/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = UNES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 0.10.1;
+				PRODUCT_BUNDLE_IDENTIFIER = dev.forcetower.unes.ios.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 11.0;
+			};
+			name = Release;
+		};
+		CAFEAA00000000000000001A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = UNESWatchWidgets/UNESWatchWidgets.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5GH6Q6KS69;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = UNESWatchWidgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = UNES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 0.10.1;
+				PRODUCT_BUNDLE_IDENTIFIER = dev.forcetower.unes.ios.watchkitapp.widgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 11.0;
+			};
+			name = Debug;
+		};
+		CAFEAA00000000000000001B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = UNESWatchWidgets/UNESWatchWidgets.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5GH6Q6KS69;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = UNESWatchWidgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = UNES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 0.10.1;
+				PRODUCT_BUNDLE_IDENTIFIER = dev.forcetower.unes.ios.watchkitapp.widgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 11.0;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -577,6 +887,24 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		CAFEAA000000000000000009 /* Build configuration list for PBXNativeTarget "UNESWatch" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CAFEAA00000000000000000A /* Debug */,
+				CAFEAA00000000000000000B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CAFEAA000000000000000019 /* Build configuration list for PBXNativeTarget "UNESWatchWidgets" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CAFEAA00000000000000001A /* Debug */,
+				CAFEAA00000000000000001B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
@@ -603,6 +931,14 @@
 			productName = UNESKit;
 		};
 		CAFECAFE0000000000000005 /* UNESKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = UNESKit;
+		};
+		CAFEAA000000000000000001 /* UNESKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = UNESKit;
+		};
+		CAFEAA000000000000000011 /* UNESKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = UNESKit;
 		};

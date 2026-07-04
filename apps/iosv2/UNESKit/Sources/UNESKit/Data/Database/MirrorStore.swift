@@ -286,7 +286,7 @@ struct MirrorStore: Sendable {
     /// the rows that resolve its discipline and hours. `summary()` is nil
     /// until a first result closes, and the caller then keeps the active
     /// snapshot's partial mean.
-    private static func coefficientHistory(semesters: [SemesterRecord], db: Database) throws -> CoefficientHistory {
+    static func coefficientHistory(semesters: [SemesterRecord], db: Database) throws -> CoefficientHistory {
         try CoefficientHistory(
             semesters: semesters,
             disciplines: DisciplineRecord.fetchAll(db),

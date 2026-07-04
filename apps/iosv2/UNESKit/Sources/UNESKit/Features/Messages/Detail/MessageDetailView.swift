@@ -41,7 +41,7 @@ struct MessageDetailView: View {
                         .lineSpacing(5)
                         .tint(accent)
                         .foregroundStyle(UNESColor.ink2)
-                        .textSelection(.enabled)
+                        .textSelectionCompat()
                         .fadeUp(delay: 0.18)
                         .padding(EdgeInsets(top: 0, leading: 4, bottom: 22, trailing: 4))
 

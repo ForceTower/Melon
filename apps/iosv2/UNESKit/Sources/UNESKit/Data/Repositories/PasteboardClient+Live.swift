@@ -12,7 +12,9 @@ extension PasteboardClient: DependencyKey {
     static let liveValue = PasteboardClient(
         copy: { text in
             await MainActor.run {
-                #if canImport(UIKit)
+                #if os(watchOS)
+                _ = text
+                #elseif canImport(UIKit)
                 UIPasteboard.general.string = text
                 #else
                 NSPasteboard.general.clearContents()

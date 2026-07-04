@@ -14,7 +14,7 @@ struct EnrollmentView: View {
             content
         }
         .toolbar {
-            ToolbarItem(placement: .principal) {
+            ToolbarItem(placement: .principalCompat) {
                 Text(.enrollmentTitle)
                     .font(.system(size: 16, weight: .semibold))
                     .tracking(-0.32)

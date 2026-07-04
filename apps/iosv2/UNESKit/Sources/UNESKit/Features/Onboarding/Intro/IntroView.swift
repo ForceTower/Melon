@@ -21,7 +21,7 @@ struct IntroView: View {
             .pagedTabViewStyle()
         }
         .toolbar {
-            ToolbarItem(placement: .principal) {
+            ToolbarItem(placement: .principalCompat) {
                 pageDots
             }
             ToolbarItem(placement: .trailingCompat) {

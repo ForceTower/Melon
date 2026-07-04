@@ -4,7 +4,7 @@ import PackageDescription
 let package = Package(
     name: "UNESKit",
     defaultLocalization: "pt-BR",
-    platforms: [.iOS(.v18), .macOS(.v15)],
+    platforms: [.iOS(.v18), .macOS(.v15), .watchOS(.v11)],
     products: [
         .library(name: "UNESKit", targets: ["UNESKit"]),
     ],

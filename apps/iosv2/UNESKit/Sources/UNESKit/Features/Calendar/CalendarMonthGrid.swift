@@ -77,7 +77,7 @@ struct CalendarMonthGridSection: View {
     }
 }
 
-#if canImport(UIKit)
+#if canImport(UIKit) && !os(watchOS)
 
 /// The system month calendar, decorated with up to three category dots per
 /// day and driving single-day selection.
@@ -203,8 +203,8 @@ private struct CalendarMonthView: UIViewRepresentable {
 
 #else
 
-/// The package also builds for macOS so `swift test` runs on the host;
-/// the grid is iOS-only chrome there.
+/// The package also builds for macOS (so `swift test` runs on the host) and
+/// watchOS; the grid is iOS-only chrome there.
 private struct CalendarMonthView: View {
     let events: [CalendarEvent]
     let selectedDay: Date

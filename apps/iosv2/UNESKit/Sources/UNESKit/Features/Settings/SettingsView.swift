@@ -15,7 +15,7 @@ struct SettingsView: View {
             content
         }
         .toolbar {
-            ToolbarItem(placement: .principal) {
+            ToolbarItem(placement: .principalCompat) {
                 Text(.settingsTitle)
                     .font(.system(size: 16, weight: .semibold))
                     .tracking(-0.32)

@@ -18,7 +18,7 @@ struct FinalCountdownView: View {
             content(verdict: verdict, style: style)
         }
         .toolbar {
-            ToolbarItem(placement: .principal) {
+            ToolbarItem(placement: .principalCompat) {
                 Text(.finalCountdownTitle)
                     .font(.system(size: 16, weight: .semibold))
                     .tracking(-0.32)

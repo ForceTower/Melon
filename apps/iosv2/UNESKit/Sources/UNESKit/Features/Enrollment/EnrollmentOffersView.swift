@@ -14,7 +14,7 @@ struct EnrollmentOffersView: View {
             content
         }
         .toolbar {
-            ToolbarItem(placement: .principal) {
+            ToolbarItem(placement: .principalCompat) {
                 Text(.enrollmentOffersNavTitle)
                     .font(.system(size: 16, weight: .semibold))
                     .tracking(-0.32)
@@ -53,7 +53,7 @@ struct EnrollmentOffersView: View {
                             Text(filter.label).tag(filter)
                         }
                     }
-                    .pickerStyle(.segmented)
+                    .segmentedPickerCompat()
                     .fadeUp(delay: 0.1)
                 }
                 .padding(.horizontal, 16)

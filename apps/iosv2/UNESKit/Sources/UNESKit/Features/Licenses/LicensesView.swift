@@ -15,7 +15,7 @@ struct LicensesView: View {
             content
         }
         .toolbar {
-            ToolbarItem(placement: .principal) {
+            ToolbarItem(placement: .principalCompat) {
                 Text(.licensesTitle)
                     .font(.system(size: 16, weight: .semibold))
                     .tracking(-0.32)

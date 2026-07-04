@@ -24,7 +24,7 @@ struct DisciplineDetailView: View {
             }
         }
         .toolbar {
-            ToolbarItem(placement: .principal) {
+            ToolbarItem(placement: .principalCompat) {
                 Text(store.name)
                     .font(.system(size: 16, weight: .semibold))
                     .tracking(-0.32)

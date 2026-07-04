@@ -101,6 +101,26 @@ extension View {
         #endif
     }
 
+    /// `.segmented` picker style doesn't exist on watchOS.
+    @ViewBuilder
+    func segmentedPickerCompat() -> some View {
+        #if os(watchOS)
+        self
+        #else
+        pickerStyle(.segmented)
+        #endif
+    }
+
+    /// `textSelection` doesn't exist on watchOS.
+    @ViewBuilder
+    func textSelectionCompat() -> some View {
+        #if os(watchOS)
+        self
+        #else
+        textSelection(.enabled)
+        #endif
+    }
+
     /// Decimal-pad keyboard for grade inputs.
     @ViewBuilder
     func decimalKeyboard() -> some View {
@@ -112,12 +132,32 @@ extension View {
     }
 }
 
+extension TabContent {
+    /// `Tab.badge` doesn't exist on watchOS.
+    func badgeCompat(_ count: Int) -> some TabContent<TabValue> {
+        #if os(watchOS)
+        self
+        #else
+        badge(count)
+        #endif
+    }
+}
+
 extension ToolbarItemPlacement {
     static var trailingCompat: ToolbarItemPlacement {
         #if os(iOS)
         .topBarTrailing
         #else
         .automatic
+        #endif
+    }
+
+    /// `.principal` doesn't exist on watchOS.
+    static var principalCompat: ToolbarItemPlacement {
+        #if os(watchOS)
+        .automatic
+        #else
+        .principal
         #endif
     }
 }

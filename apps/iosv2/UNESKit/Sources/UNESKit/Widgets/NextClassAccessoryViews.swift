@@ -1,8 +1,8 @@
-#if os(iOS)
+#if os(iOS) || os(watchOS)
 import SwiftUI
 import WidgetKit
 
-// Lock-screen surfaces: monochrome, tinted by the system.
+// Lock-screen and watch complication surfaces: monochrome, system-tinted.
 
 struct RectangularAccessoryView: View {
     var entry: NextClassEntry
@@ -201,6 +201,7 @@ struct InlineAccessoryView: View {
     }
 }
 
+#if os(iOS)
 #Preview("Rectangular", as: .accessoryRectangular) {
     NextClassWidget()
 } timeline: {
@@ -224,4 +225,5 @@ struct InlineAccessoryView: View {
     NextClassEntry.previewInClass
     NextClassEntry.previewDayDone
 }
+#endif
 #endif

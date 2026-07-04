@@ -40,21 +40,27 @@ extension SemesterSnapshot {
                     title: index.discipline(forClass: session.classId)?.name ?? "",
                     room: nonEmpty(session.spaceId.flatMap { index.spacesById[$0]?.location }),
                     teacherName: index.teacherName(forClass: session.classId),
-                    colorIndex: index.colorIndex(forClass: session.classId)
+                    colorIndex: index.colorIndex(forClass: session.classId),
+                    disciplineId: index.discipline(forClass: session.classId)?.id
                 ))
             }
         }
 
         // Lecture subjects for the next two weeks — enough for any timeline
-        // the widget builds between two app sessions.
+        // the widget builds between two app sessions. A split class-day posts
+        // one lecture per slot; every surface shows a single subject per
+        // class-day (and the watch store keys on it), so keep the first.
         let today = now.dayStamp
         let horizon = calendar.date(byAdding: .day, value: 14, to: now)?.dayStamp ?? today
-        let topics = lectures.compactMap { lecture -> WidgetScheduleSnapshot.Topic? in
+        var topics: [WidgetScheduleSnapshot.Topic] = []
+        var coveredDays: Set<String> = []
+        for lecture in lectures {
             guard index.enrolledClassIds.contains(lecture.classId),
                   let date = lecture.date, date >= today, date <= horizon,
-                  let subject = nonEmpty(lecture.subject)
-            else { return nil }
-            return WidgetScheduleSnapshot.Topic(classId: lecture.classId, dayStamp: date, subject: subject)
+                  let subject = nonEmpty(lecture.subject),
+                  coveredDays.insert("\(lecture.classId)|\(date)").inserted
+            else { continue }
+            topics.append(WidgetScheduleSnapshot.Topic(classId: lecture.classId, dayStamp: date, subject: subject))
         }
 
         return WidgetScheduleSnapshot(
