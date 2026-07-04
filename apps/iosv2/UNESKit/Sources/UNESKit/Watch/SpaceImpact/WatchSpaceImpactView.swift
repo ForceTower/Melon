@@ -331,6 +331,27 @@ extension SI2Sprite {
     ])
 }
 
+extension SI2Data {
+    /// The player ship, which doubles as the easter egg's clue outside the game.
+    static let playerShip = objects[255] ?? SI2Sprite([])
+}
+
+/// The easter egg's hidden trigger: a tiny player ship that launches the
+/// game on a long-press.
+struct SI2ShipTrigger: View {
+    let color: Color
+    let action: () -> Void
+
+    var body: some View {
+        SI2SpriteView(sprite: SI2Data.playerShip, scale: 1.2, color: color)
+            .padding(4)
+            .contentShape(Rectangle())
+            .onLongPressGesture(perform: action)
+            .accessibilityLabel(Text(.watchSi2Title))
+            .accessibilityAddTraits(.isButton)
+    }
+}
+
 #Preview {
     NavigationStack {
         WatchSpaceImpactView()

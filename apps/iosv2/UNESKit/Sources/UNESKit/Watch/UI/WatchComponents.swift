@@ -144,9 +144,12 @@ extension MessageItem {
     }
 }
 
-/// The red "now" marker threaded between schedule rows.
+/// The red "now" marker threaded between schedule rows. When given a
+/// long-press action, the little ship flying at its tip launches the
+/// Space Impact easter egg.
 struct WatchNowLine: View {
     var now: Date
+    var onShipLongPress: (() -> Void)?
 
     var body: some View {
         HStack(spacing: 6) {
@@ -161,6 +164,9 @@ struct WatchNowLine: View {
                 .fill(UNESColor.alertRed)
                 .frame(height: 1.5)
                 .clipShape(Capsule())
+            if let onShipLongPress {
+                SI2ShipTrigger(color: UNESColor.alertRed, action: onShipLongPress)
+            }
         }
     }
 }

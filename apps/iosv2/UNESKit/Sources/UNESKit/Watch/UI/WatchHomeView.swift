@@ -38,13 +38,17 @@ struct WatchHomeView: View {
                 daySection(read.today, now: now)
                 messagesSection(snapshot.messages, now: now)
                 Section {
-                    Text(HomeFormat.updatedLabel(lastRefreshed: snapshot.syncedAt, now: now))
-                        .font(.system(size: 12, weight: .medium))
-                        .foregroundStyle(UNESColor.ink4)
-                        .frame(maxWidth: .infinity)
-                        .listRowBackground(Color.clear)
+                    HStack(spacing: 6) {
+                        Text(HomeFormat.updatedLabel(lastRefreshed: snapshot.syncedAt, now: now))
+                            .font(.system(size: 12, weight: .medium))
+                            .foregroundStyle(UNESColor.ink4)
+                        SI2ShipTrigger(color: UNESColor.coral) {
+                            store.send(.spaceImpactTapped)
+                        }
+                    }
+                    .frame(maxWidth: .infinity)
+                    .listRowBackground(Color.clear)
                 }
-                easterEggSection
             }
         }
         .toolbar {
@@ -137,29 +141,12 @@ struct WatchHomeView: View {
         }
     }
 
-    /// The Space Impact easter egg, tucked in after everything else.
-    private var easterEggSection: some View {
-        Section {
-            Button {
-                store.send(.spaceImpactTapped)
-            } label: {
-                HStack(spacing: 7) {
-                    if let ship = SI2Data.objects[255] {
-                        SI2SpriteView(sprite: ship, scale: 1.5, color: UNESColor.coral)
-                    }
-                    Text(.watchSi2Title)
-                        .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(UNESColor.ink3)
-                }
-                .frame(maxWidth: .infinity)
-            }
-        }
-    }
-
     private func nowLine(_ now: Date) -> some View {
-        WatchNowLine(now: now)
-            .listRowBackground(Color.clear)
-            .listRowInsets(EdgeInsets(top: 0, leading: 4, bottom: 0, trailing: 4))
+        WatchNowLine(now: now) {
+            store.send(.spaceImpactTapped)
+        }
+        .listRowBackground(Color.clear)
+        .listRowInsets(EdgeInsets(top: 0, leading: 4, bottom: 0, trailing: 4))
     }
 
     @ViewBuilder
