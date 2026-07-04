@@ -4,11 +4,35 @@ import SwiftUI
 /// Purpose-built for the snippet frame — deliberately not the widget-family
 /// views, which assume widget backgrounds and sizes.
 
+/// Shared card chrome. Snippets composite onto a clear background over the
+/// sheet's blur, so without an opaque surface the content is illegible —
+/// same treatment as the widget's day-done card.
+private struct SnippetCard<Content: View>: View {
+    @ViewBuilder var content: Content
+
+    var body: some View {
+        content
+            .padding(16)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(UNESColor.card, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+            .overlay {
+                RoundedRectangle(cornerRadius: 20, style: .continuous)
+                    .strokeBorder(UNESColor.cardLine, lineWidth: 1)
+            }
+    }
+}
+
 /// One class: code, title, time range, room, and the posted topic.
 public struct IntentClassCardView: View {
     var occurrence: ClassOccurrence
 
     public var body: some View {
+        SnippetCard {
+            classContent
+        }
+    }
+
+    private var classContent: some View {
         VStack(alignment: .leading, spacing: 7) {
             HStack {
                 Text(occurrence.code)
@@ -53,8 +77,6 @@ public struct IntentClassCardView: View {
                 }
             }
         }
-        .padding(16)
-        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
@@ -65,13 +87,13 @@ public struct IntentDayListView: View {
     var now: Date
 
     public var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            ForEach(occurrences, id: \.start) { occurrence in
-                row(for: occurrence)
+        SnippetCard {
+            VStack(alignment: .leading, spacing: 12) {
+                ForEach(occurrences, id: \.start) { occurrence in
+                    row(for: occurrence)
+                }
             }
         }
-        .padding(16)
-        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     private func row(for occurrence: ClassOccurrence) -> some View {
