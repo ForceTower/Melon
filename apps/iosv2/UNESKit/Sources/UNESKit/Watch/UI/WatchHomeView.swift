@@ -44,6 +44,7 @@ struct WatchHomeView: View {
                         .frame(maxWidth: .infinity)
                         .listRowBackground(Color.clear)
                 }
+                easterEggSection
             }
         }
         .toolbar {
@@ -132,6 +133,25 @@ struct WatchHomeView: View {
                             .background(UNESColor.coral, in: Capsule())
                     }
                 }
+            }
+        }
+    }
+
+    /// The Space Impact easter egg, tucked in after everything else.
+    private var easterEggSection: some View {
+        Section {
+            Button {
+                store.send(.spaceImpactTapped)
+            } label: {
+                HStack(spacing: 7) {
+                    if let ship = SI2Data.objects[255] {
+                        SI2SpriteView(sprite: ship, scale: 1.5, color: UNESColor.coral)
+                    }
+                    Text(.watchSi2Title)
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundStyle(UNESColor.ink3)
+                }
+                .frame(maxWidth: .infinity)
             }
         }
     }

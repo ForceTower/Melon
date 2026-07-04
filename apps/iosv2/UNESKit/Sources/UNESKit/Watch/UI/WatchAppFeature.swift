@@ -20,6 +20,7 @@ struct WatchAppFeature {
         case discipline(String)
         case messages
         case message(String)
+        case spaceImpact
     }
 
     enum Action: Equatable, BindableAction {
@@ -30,6 +31,7 @@ struct WatchAppFeature {
         case disciplineTapped(String)
         case messagesTapped
         case messageTapped(String)
+        case spaceImpactTapped
     }
 
     @Dependency(\.watchRepository) var repository
@@ -75,6 +77,10 @@ struct WatchAppFeature {
 
             case .messagesTapped:
                 state.path.append(.messages)
+                return .none
+
+            case .spaceImpactTapped:
+                state.path.append(.spaceImpact)
                 return .none
 
             case let .messageTapped(id):

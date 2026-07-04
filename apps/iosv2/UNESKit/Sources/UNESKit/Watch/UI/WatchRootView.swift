@@ -24,6 +24,8 @@ public struct WatchRootView: View {
                         WatchMessagesView(store: store)
                     case let .message(id):
                         WatchMessageDetailView(store: store, messageId: id)
+                    case .spaceImpact:
+                        WatchSpaceImpactView()
                     }
                 }
         }
