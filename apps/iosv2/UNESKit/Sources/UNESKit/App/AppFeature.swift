@@ -1,3 +1,4 @@
+import Combine
 import ComposableArchitecture
 
 @Reducer
@@ -14,7 +15,12 @@ struct AppFeature {
         /// Whether the scene truly reached .background — transient .inactive
         /// blips (control center, app-switcher peek) never set it.
         var wasBackgrounded = false
+        /// Secret icons discovered outside Configurações (Folio Runner, the
+        /// watch) being celebrated with the app-level unlock sheet.
+        var iconCelebration: [AppIcon]?
         @Shared(.appStorage("theme")) var theme: AppTheme = .system
+        @Shared(.unlockedSecretIcons) var unlockedSecretIcons
+        @Shared(.announcedSecretIcons) var announcedSecretIcons
     }
 
     enum Tab: String, CaseIterable, Hashable, Sendable {
@@ -30,6 +36,9 @@ struct AppFeature {
         case intentRoute(Tab)
         case intentOpenDiscipline(semesterId: String, disciplineId: String)
         case intentOpenMessage(id: String)
+        case secretIconsChanged
+        case iconCelebrationDismissed
+        case iconCelebrationUsed(AppIcon)
         case home(HomeFeature.Action)
         case schedule(ScheduleFeature.Action)
         case disciplines(DisciplinesFeature.Action)
@@ -43,11 +52,13 @@ struct AppFeature {
     @Dependency(\.disciplinesRepository) var disciplinesRepository
     @Dependency(\.messagesRepository) var messagesRepository
     @Dependency(\.intentRouter) var intentRouter
+    @Dependency(\.appIconClient) var appIconClient
+    @Dependency(\.settingsRepository) var settingsRepository
     @Dependency(\.continuousClock) var clock
     @Dependency(\.date) var date
     private let log = Log.scoped("AppFeature")
 
-    private enum CancelID { case ping, backfill, pushEvents, pushRefresh, intentRoutes }
+    private enum CancelID { case ping, backfill, pushEvents, pushRefresh, intentRoutes, secretIcons, secretIconSync }
 
     var body: some ReducerOf<Self> {
         Scope(state: \.home, action: \.home) { HomeFeature() }
@@ -84,7 +95,14 @@ struct AppFeature {
                             }
                         }
                     }
-                    .cancellable(id: CancelID.intentRoutes, cancelInFlight: true)
+                    .cancellable(id: CancelID.intentRoutes, cancelInFlight: true),
+                    .send(.secretIconsChanged),
+                    .run { [unlocked = state.$unlockedSecretIcons] send in
+                        for await _ in unlocked.publisher.values {
+                            await send(.secretIconsChanged)
+                        }
+                    }
+                    .cancellable(id: CancelID.secretIcons, cancelInFlight: true)
                 )
 
             case let .tabChanged(tab):
@@ -124,6 +142,38 @@ struct AppFeature {
                     }
                     await send(.intentRoute(.messages))
                     await send(.messages(.messageTapped(message)))
+                }
+
+            case .secretIconsChanged:
+                // Announced is only marked on dismissal, so a celebration the
+                // app never got to show (killed mid-game, sheet blocked by a
+                // cover) fires again on the next pass.
+                let fresh = AppIcon.allCases.filter {
+                    state.unlockedSecretIcons.contains($0) && !state.announcedSecretIcons.contains($0)
+                }
+                guard !fresh.isEmpty, state.iconCelebration == nil else { return .none }
+                log.info("celebrating secret icons \(fresh.map(\.rawValue))")
+                state.iconCelebration = fresh
+                // Record the discovery on the account; version-tap unlocks
+                // arrive pre-announced and push from SettingsFeature instead.
+                return .run { [icons = state.unlockedSecretIcons.icons] _ in
+                    _ = try await settingsRepository.update(.unlockedIcons(icons))
+                } catch: { [log] error, _ in
+                    log.warn("unlocked icons sync failed; retried on next settings load", error: error)
+                }
+                .cancellable(id: CancelID.secretIconSync, cancelInFlight: true)
+
+            case .iconCelebrationDismissed:
+                markCelebrationAnnounced(&state)
+                return .none
+
+            case let .iconCelebrationUsed(icon):
+                markCelebrationAnnounced(&state)
+                log.info("set app icon \(icon.rawValue) source=celebration")
+                return .run { _ in
+                    try await appIconClient.set(icon)
+                } catch: { [log] error, _ in
+                    log.warn("app icon change failed", error: error)
                 }
 
             case .sceneBackgrounded:
@@ -193,5 +243,11 @@ struct AppFeature {
     private func pingEffect() -> Effect<Action> {
         .run { _ in try? await syncRepository.ping() }
             .cancellable(id: CancelID.ping, cancelInFlight: true)
+    }
+
+    private func markCelebrationAnnounced(_ state: inout State) {
+        guard let icons = state.iconCelebration else { return }
+        state.$announcedSecretIcons.withLock { $0.formUnion(icons) }
+        state.iconCelebration = nil
     }
 }

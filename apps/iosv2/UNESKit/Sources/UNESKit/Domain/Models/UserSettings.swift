@@ -46,6 +46,8 @@ struct UserSettings: Equatable, Sendable {
     var classLocation = true
     var classMaterial = true
     var classSubject = false
+    /// Secret icon discoveries, account-wide — the server merges, never removes.
+    var unlockedIcons: Set<AppIcon> = []
 
     var activeNotificationCount: Int {
         NotificationToggle.allCases.count { self[keyPath: $0.keyPath] }
@@ -57,6 +59,8 @@ struct UserSettings: Equatable, Sendable {
             gradeSpoiler = spoiler
         case let .notification(toggle, isOn):
             self[keyPath: toggle.keyPath] = isOn
+        case let .unlockedIcons(icons):
+            unlockedIcons.formUnion(icons)
         }
     }
 }
@@ -66,17 +70,20 @@ struct UserSettings: Equatable, Sendable {
 enum SettingsChange: Equatable, Sendable {
     case gradeSpoiler(GradeSpoiler)
     case notification(NotificationToggle, isOn: Bool)
+    case unlockedIcons(Set<AppIcon>)
 
     /// The wire field a change touches — one in-flight PATCH per field.
     enum Field: Hashable, Sendable {
         case gradeSpoiler
         case notification(NotificationToggle)
+        case unlockedIcons
     }
 
     var field: Field {
         switch self {
         case .gradeSpoiler: .gradeSpoiler
         case let .notification(toggle, _): .notification(toggle)
+        case .unlockedIcons: .unlockedIcons
         }
     }
 }

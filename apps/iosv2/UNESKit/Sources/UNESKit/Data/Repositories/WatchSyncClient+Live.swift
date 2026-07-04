@@ -53,6 +53,13 @@ extension WatchSyncClient: DependencyKey {
                             }
                         }
                     }
+                },
+                onSecretIconUnlocks: { raws in
+                    let icons = raws.compactMap(AppIcon.init(rawValue:)).filter(\.isSecret)
+                    guard !icons.isEmpty else { return }
+                    log.info("secret icons unlocked from watch \(icons.map(\.rawValue))")
+                    @Shared(.unlockedSecretIcons) var unlockedSecretIcons
+                    $unlockedSecretIcons.withLock { $0.formUnion(icons) }
                 }
             )
             WCSession.default.delegate = bridge
@@ -78,13 +85,16 @@ extension WatchSyncClient: DependencyKey {
 private final class WatchSessionBridge: NSObject, WCSessionDelegate, Sendable {
     private let onSessionReady: @Sendable () -> Void
     private let onReadReceipts: @Sendable ([String]) -> Void
+    private let onSecretIconUnlocks: @Sendable ([String]) -> Void
 
     init(
         onSessionReady: @escaping @Sendable () -> Void,
-        onReadReceipts: @escaping @Sendable ([String]) -> Void
+        onReadReceipts: @escaping @Sendable ([String]) -> Void,
+        onSecretIconUnlocks: @escaping @Sendable ([String]) -> Void
     ) {
         self.onSessionReady = onSessionReady
         self.onReadReceipts = onReadReceipts
+        self.onSecretIconUnlocks = onSecretIconUnlocks
     }
 
     func session(
@@ -114,17 +124,21 @@ private final class WatchSessionBridge: NSObject, WCSessionDelegate, Sendable {
 
     /// Live path — the watch prefers `sendMessage` while the phone is reachable.
     func session(_ session: WCSession, didReceiveMessage message: [String: Any]) {
-        deliverReadReceipts(in: message)
+        deliver(payload: message)
     }
 
     /// Queued path — the watch falls back to `transferUserInfo` when unreachable.
     func session(_ session: WCSession, didReceiveUserInfo userInfo: [String: Any] = [:]) {
-        deliverReadReceipts(in: userInfo)
+        deliver(payload: userInfo)
     }
 
-    private func deliverReadReceipts(in payload: [String: Any]) {
-        guard let ids = payload["readMessageIds"] as? [String], !ids.isEmpty else { return }
-        onReadReceipts(ids)
+    private func deliver(payload: [String: Any]) {
+        if let ids = payload["readMessageIds"] as? [String], !ids.isEmpty {
+            onReadReceipts(ids)
+        }
+        if let raws = payload["unlockedAppIcons"] as? [String], !raws.isEmpty {
+            onSecretIconUnlocks(raws)
+        }
     }
 }
 

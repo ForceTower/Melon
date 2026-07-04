@@ -1,91 +1,83 @@
 {
-  "fill" : "automatic",
-  "groups" : [
+  "fill": "automatic",
+  "groups": [
     {
-      "hidden-specializations" : [
+      "hidden-specializations": [
         {
-          "appearance" : "dark",
-          "value" : true
+          "appearance": "dark",
+          "value": true
         }
       ],
-      "layers" : [
+      "layers": [
         {
-          "image-name" : "L2-sheen.svg",
-          "name" : "L2-sheen"
+          "image-name": "L2-sheen.svg",
+          "name": "L2-sheen"
         },
         {
-          "image-name" : "L1-glyph.svg",
-          "name" : "L1-glyph"
+          "image-name": "L1-glyph.svg",
+          "name": "L1-glyph"
         },
         {
-          "glass" : false,
-          "image-name" : "L0-gradient.svg",
-          "name" : "L0-gradient"
+          "glass": false,
+          "image-name": "L0-gradient.svg",
+          "name": "L0-gradient"
         }
       ],
-      "position" : {
-        "scale" : 1.09,
-        "translation-in-points" : [
-          0,
-          0
-        ]
+      "position": {
+        "scale": 1.09,
+        "translation-in-points": [0, 0]
       },
-      "shadow" : {
-        "kind" : "neutral",
-        "opacity" : 0.5
+      "shadow": {
+        "kind": "neutral",
+        "opacity": 0.5
       },
-      "specular" : false,
-      "translucency" : {
-        "enabled" : false,
-        "value" : 0.5
+      "specular": false,
+      "translucency": {
+        "enabled": false,
+        "value": 0.5
       }
     },
     {
-      "hidden-specializations" : [
+      "hidden-specializations": [
         {
-          "value" : true
+          "value": true
         },
         {
-          "appearance" : "dark",
-          "value" : false
+          "appearance": "dark",
+          "value": false
         }
       ],
-      "layers" : [
+      "layers": [
         {
-          "image-name" : "L2-sheen 2.svg",
-          "name" : "L2-sheen 2"
+          "image-name": "L2-sheen 2.svg",
+          "name": "L2-sheen 2"
         },
         {
-          "image-name" : "L1-glyph 2.svg",
-          "name" : "L1-glyph 2"
+          "image-name": "L1-glyph 2.svg",
+          "name": "L1-glyph 2"
         },
         {
-          "image-name" : "L0-gradient 2.svg",
-          "name" : "L0-gradient 2"
+          "image-name": "L0-gradient 2.svg",
+          "name": "L0-gradient 2"
         }
       ],
-      "position" : {
-        "scale" : 1.09,
-        "translation-in-points" : [
-          0,
-          0
-        ]
+      "position": {
+        "scale": 1.09,
+        "translation-in-points": [0, 0]
       },
-      "shadow" : {
-        "kind" : "neutral",
-        "opacity" : 0.5
+      "shadow": {
+        "kind": "neutral",
+        "opacity": 0.5
       },
-      "specular" : false,
-      "translucency" : {
-        "enabled" : false,
-        "value" : 0.5
+      "specular": false,
+      "translucency": {
+        "enabled": false,
+        "value": 0.5
       }
     }
   ],
-  "supported-platforms" : {
-    "circles" : [
-      "watchOS"
-    ],
-    "squares" : "shared"
+  "supported-platforms": {
+    "circles": ["watchOS"],
+    "squares": "shared"
   }
 }

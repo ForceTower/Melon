@@ -13,6 +13,8 @@ struct UserSettingsDTO: Decodable {
     let notifClassLocation: Bool
     let notifClassMaterial: Bool
     let notifClassSubject: Bool
+    /// Optional while older API deploys don't send it.
+    let unlockedAppIcons: [String]?
 }
 
 extension UserSettingsDTO {
@@ -27,7 +29,8 @@ extension UserSettingsDTO {
             gradeDateChanged: notifGradeDateChanged,
             classLocation: notifClassLocation,
             classMaterial: notifClassMaterial,
-            classSubject: notifClassSubject
+            classSubject: notifClassSubject,
+            unlockedIcons: Set((unlockedAppIcons ?? []).compactMap(AppIcon.init(rawValue:)))
         )
     }
 }
@@ -71,6 +74,7 @@ struct UserSettingsPatchDTO: Encodable {
     var notifClassLocation: Bool?
     var notifClassMaterial: Bool?
     var notifClassSubject: Bool?
+    var unlockedAppIcons: [String]?
 }
 
 extension UserSettingsPatchDTO {
@@ -79,6 +83,8 @@ extension UserSettingsPatchDTO {
         switch change {
         case let .gradeSpoiler(spoiler):
             gradeSpoiler = spoiler.rawValue
+        case let .unlockedIcons(icons):
+            unlockedAppIcons = icons.map(\.rawValue).sorted()
         case let .notification(toggle, isOn):
             switch toggle {
             case .messageBroadcast: notifMsgBroadcast = isOn

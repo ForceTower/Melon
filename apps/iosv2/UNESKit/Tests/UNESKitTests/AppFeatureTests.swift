@@ -225,4 +225,58 @@ struct AppFeatureTests {
         // .inactive without reaching .background — no rehydration should run.
         await store.send(.sceneActivated)
     }
+
+    @Test
+    func unannouncedDiscoveryPopsTheCelebrationAndAnnouncesOnDismiss() async {
+        let patched = LockIsolated<[SettingsChange]>([])
+        var initialState = AppFeature.State()
+        initialState.$unlockedSecretIcons.withLock { $0.insert(.paper) }
+
+        let store = TestStore(initialState: initialState) {
+            AppFeature()
+        } withDependencies: {
+            $0.settingsRepository.update = { change in
+                patched.withValue { $0.append(change) }
+                var settings = UserSettings()
+                settings.apply(change)
+                return settings
+            }
+        }
+
+        await store.send(.secretIconsChanged) {
+            $0.iconCelebration = [.paper]
+        }
+        await store.send(.iconCelebrationDismissed) {
+            $0.iconCelebration = nil
+            $0.$announcedSecretIcons.withLock { $0.insert(.paper) }
+        }
+
+        // Already celebrated — the next pass stays quiet.
+        await store.send(.secretIconsChanged)
+        await store.finish()
+
+        #expect(patched.value == [.unlockedIcons([.paper])])
+    }
+
+    @Test
+    func usingACelebratedIconAppliesItThroughTheClient() async {
+        let applied = LockIsolated<[AppIcon]>([])
+        var initialState = AppFeature.State()
+        initialState.$unlockedSecretIcons.withLock { $0.insert(.nowShip) }
+        initialState.iconCelebration = [.nowShip]
+
+        let store = TestStore(initialState: initialState) {
+            AppFeature()
+        } withDependencies: {
+            $0.appIconClient.set = { icon in applied.withValue { $0.append(icon) } }
+        }
+
+        await store.send(.iconCelebrationUsed(.nowShip)) {
+            $0.iconCelebration = nil
+            $0.$announcedSecretIcons.withLock { $0.insert(.nowShip) }
+        }
+        await store.finish()
+
+        #expect(applied.value == [.nowShip])
+    }
 }

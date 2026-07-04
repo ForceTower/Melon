@@ -9,6 +9,18 @@ struct AppView: View {
         Binding(get: { store.tab }, set: { store.send(.tabChanged($0)) })
     }
 
+    /// Only sends when state still shows the sheet: SwiftUI re-writes the
+    /// binding when the dismissal animation completes, possibly after the
+    /// reducer has already moved on.
+    private var celebrationBinding: Binding<Bool> {
+        Binding(
+            get: { store.iconCelebration != nil },
+            set: { value in
+                if !value, store.iconCelebration != nil { store.send(.iconCelebrationDismissed) }
+            }
+        )
+    }
+
     var body: some View {
         TabView(selection: tabBinding) {
             Tab(String.localized(.navToday), systemImage: "house", value: AppFeature.Tab.home) {
@@ -29,6 +41,13 @@ struct AppView: View {
             }
         }
         .preferredColorScheme(store.theme.colorScheme)
+        .sheet(isPresented: celebrationBinding) {
+            SettingsIconUnlockSheet(
+                icons: store.iconCelebration ?? [],
+                onUse: { store.send(.iconCelebrationUsed($0)) },
+                onDone: { store.send(.iconCelebrationDismissed) }
+            )
+        }
         .task { await store.send(.task).finish() }
         .onChange(of: scenePhase) { _, newPhase in
             switch newPhase {

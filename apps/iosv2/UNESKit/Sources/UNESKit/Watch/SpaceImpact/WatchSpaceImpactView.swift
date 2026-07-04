@@ -1,4 +1,5 @@
 #if os(watchOS)
+import ComposableArchitecture
 import SwiftUI
 import WatchKit
 
@@ -8,6 +9,7 @@ import WatchKit
 struct WatchSpaceImpactView: View {
     @State private var model = SI2GameModel()
     @State private var crownY = 20.0
+    @Dependency(\.watchRepository) private var watchRepository
 
     /// Watch HUD palette from the design (ink-on-dark, independent of theme).
     private static let background = Color(hex: 0x0A0710)
@@ -41,7 +43,11 @@ struct WatchSpaceImpactView: View {
         .onChange(of: model.game.shipResets) {
             crownY = Double(model.game.player.y)
         }
-        .task { await model.run() }
+        .task {
+            // Finding the game unlocks the NowShip icon on the phone.
+            watchRepository.reportSpaceImpactOpened()
+            await model.run()
+        }
     }
 
     private var hud: some View {

@@ -25,6 +25,19 @@ struct SettingsView: View {
             }
         }
         .inlineNavigationBar()
+        .overlay(alignment: .bottom) {
+            if let toast = store.toast {
+                toastPill(toast)
+            }
+        }
+        .animation(UNESMotion.ease(0.24), value: store.toast)
+        .sheet(isPresented: unlockSheetBinding) {
+            SettingsIconUnlockSheet(
+                icons: store.unlockSheetIcons ?? [],
+                onUse: { store.send(.appIconSelected($0)) },
+                onDone: { store.send(.unlockSheetDismissed) }
+            )
+        }
         .task { await store.send(.task).finish() }
     }
 
@@ -49,8 +62,16 @@ struct SettingsView: View {
 
                     VStack(spacing: 0) {
                         sectionHeader(String.localized(.settingsAppearance))
-                        SettingsAppearanceCard(theme: store.theme) {
-                            store.send(.themeSelected($0))
+                        VStack(spacing: 12) {
+                            SettingsAppearanceCard(theme: store.theme) {
+                                store.send(.themeSelected($0))
+                            }
+                            SettingsAppIconCard(
+                                selected: store.appIcon,
+                                unlocked: store.unlockedSecretIcons,
+                                onSelect: { store.send(.appIconSelected($0)) },
+                                onLockedTap: { store.send(.lockedIconTapped($0)) }
+                            )
                         }
                     }
                     .fadeUp(delay: 0.2)
@@ -133,13 +154,60 @@ struct SettingsView: View {
 
     private var footer: some View {
         VStack(spacing: 3) {
-            Text(MeFormat.versionBuildLabel)
+            // Deliberately unremarkable: seven taps here unlock the secret icons.
+            Button {
+                store.send(.versionTapped)
+            } label: {
+                Text(MeFormat.versionBuildLabel)
+                    .padding(EdgeInsets(top: 2, leading: 6, bottom: 2, trailing: 6))
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
             Text(.settingsFooterNote)
         }
         .font(.system(size: 11.5, weight: .medium))
         .foregroundStyle(UNESColor.ink4)
         .frame(maxWidth: .infinity)
         .padding(EdgeInsets(top: 10, leading: 16, bottom: 4, trailing: 16))
+    }
+
+    private func toastPill(_ toast: SettingsFeature.SettingsToast) -> some View {
+        Text(toastText(toast))
+            .font(.system(size: 13, weight: .semibold))
+            .tracking(-0.13)
+            .foregroundStyle(.white)
+            .lineLimit(1)
+            .padding(EdgeInsets(top: 10, leading: 18, bottom: 10, trailing: 18))
+            .background(Color(hex: 0x14101A, opacity: 0.92), in: Capsule())
+            .overlay {
+                Capsule().strokeBorder(.white.opacity(0.14), lineWidth: 0.5)
+            }
+            .shadow(color: .black.opacity(0.35), radius: 17, y: 12)
+            .padding(.bottom, 12)
+            .transition(.offset(y: 12).combined(with: .opacity))
+    }
+
+    private func toastText(_ toast: SettingsFeature.SettingsToast) -> String {
+        switch toast {
+        case let .secretHint(remaining):
+            String.localized(.settingsAppIconToastHint(remaining))
+        case .secretsAlreadyUnlocked:
+            String.localized(.settingsAppIconToastUnlocked)
+        case let .lockedHint(icon):
+            icon.lockedHint
+        }
+    }
+
+    /// Only sends when state still shows the sheet: SwiftUI re-writes the
+    /// binding when the dismissal animation completes, possibly after the
+    /// reducer has already moved on.
+    private var unlockSheetBinding: Binding<Bool> {
+        Binding(
+            get: { store.unlockSheetIcons != nil },
+            set: { value in
+                if !value, store.unlockSheetIcons != nil { store.send(.unlockSheetDismissed) }
+            }
+        )
     }
 
     /// Faint cool mesh washing down from behind the large title.

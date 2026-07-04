@@ -1,3 +1,4 @@
+import ComposableArchitecture
 import SwiftUI
 
 /// Easter-egg Chrome-dino style runner starring Folio. Reachable from the
@@ -6,6 +7,7 @@ import SwiftUI
 struct FolioRunnerView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var engine = FolioRunnerEngine()
+    @Shared(.unlockedSecretIcons) private var unlockedSecretIcons
 
     var body: some View {
         ZStack(alignment: .top) {
@@ -56,6 +58,10 @@ struct FolioRunnerView: View {
         )
         .preferredColorScheme(.light)
         .immersiveChromeHidden()
+        // Finding the runner unlocks the Paper icon; AppFeature celebrates it.
+        .onAppear {
+            $unlockedSecretIcons.withLock { $0.insert(.paper) }
+        }
     }
 
     // MARK: - Overlays

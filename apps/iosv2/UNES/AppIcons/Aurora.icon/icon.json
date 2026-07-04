@@ -47,7 +47,34 @@
             "scale": 1,
             "translation-in-points": [0, 0]
           }
+        }
+      ],
+      "name": "Group",
+      "position": {
+        "scale": 1.07,
+        "translation-in-points": [0, 0]
+      },
+      "shadow": {
+        "kind": "neutral",
+        "opacity": 0.5
+      },
+      "specular": true,
+      "translucency": {
+        "enabled": true,
+        "value": 0.5
+      }
+    },
+    {
+      "hidden-specializations": [
+        {
+          "value": false
         },
+        {
+          "appearance": "dark",
+          "value": true
+        }
+      ],
+      "layers": [
         {
           "glass": false,
           "image-name": "L0-base.svg",
@@ -58,6 +85,7 @@
           }
         }
       ],
+      "name": "Group",
       "position": {
         "scale": 1.07,
         "translation-in-points": [0, 0]

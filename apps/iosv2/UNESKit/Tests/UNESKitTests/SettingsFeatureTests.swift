@@ -19,11 +19,13 @@ struct SettingsFeatureTests {
             $0.sessionStore = .inMemory(initial: .preview)
             $0.settingsRepository.account = { account }
             $0.settingsRepository.credentials = { throw APIError.emptyEnvelope }
+            $0.appIconClient.current = { .aurora }
         }
 
         await store.send(.task) {
             $0.userName = "Mariana Souza"
         }
+        await store.receive(.appIconLoaded(.aurora))
         await store.receive(.accountLoaded(account)) {
             $0.profile = .preview
             $0.settings = settings
@@ -38,11 +40,13 @@ struct SettingsFeatureTests {
             $0.sessionStore = .inMemory(initial: .preview)
             $0.settingsRepository.account = { throw APIError.emptyEnvelope }
             $0.settingsRepository.credentials = { .preview }
+            $0.appIconClient.current = { .aurora }
         }
 
         await store.send(.task) {
             $0.userName = "Mariana Souza"
         }
+        await store.receive(.appIconLoaded(.aurora))
         await store.receive(.credentialsLoaded(.preview)) {
             $0.credentials = .preview
         }
@@ -231,5 +235,161 @@ struct SettingsFeatureTests {
         await store.send(.themeSelected(.dark)) {
             $0.$theme.withLock { $0 = .dark }
         }
+    }
+
+    @Test
+    func selectingAnIconAppliesItThroughTheClient() async {
+        let applied = LockIsolated<[AppIcon]>([])
+
+        let store = TestStore(initialState: SettingsFeature.State()) {
+            SettingsFeature()
+        } withDependencies: {
+            $0.appIconClient.set = { icon in applied.withValue { $0.append(icon) } }
+        }
+
+        await store.send(.appIconSelected(.ocean)) {
+            $0.appIcon = .ocean
+        }
+        await store.finish()
+        await store.send(.appIconSelected(.ocean))
+
+        #expect(applied.value == [.ocean])
+    }
+
+    @Test
+    func failedIconChangeRollsBack() async {
+        let store = TestStore(initialState: SettingsFeature.State()) {
+            SettingsFeature()
+        } withDependencies: {
+            $0.appIconClient.set = { _ in throw APIError.emptyEnvelope }
+        }
+
+        await store.send(.appIconSelected(.ocean)) {
+            $0.appIcon = .ocean
+        }
+        await store.receive(.appIconChangeFailed(revert: .aurora)) {
+            $0.appIcon = .aurora
+        }
+    }
+
+    @Test
+    func secretIconIsIgnoredWhileLocked() async {
+        let store = TestStore(initialState: SettingsFeature.State()) {
+            SettingsFeature()
+        }
+
+        await store.send(.appIconSelected(.paper))
+    }
+
+    @Test
+    func sevenVersionTapsUnlockTheBaseSansIcon() async {
+        let clock = TestClock()
+
+        let patched = LockIsolated<[SettingsChange]>([])
+
+        let store = TestStore(initialState: SettingsFeature.State()) {
+            SettingsFeature()
+        } withDependencies: {
+            $0.continuousClock = clock
+            $0.settingsRepository.update = { change in
+                patched.withValue { $0.append(change) }
+                var settings = UserSettings()
+                settings.apply(change)
+                return settings
+            }
+        }
+
+        for tap in 1...2 {
+            await store.send(.versionTapped) {
+                $0.secretIconTaps = tap
+            }
+        }
+        for tap in 3...6 {
+            await store.send(.versionTapped) {
+                $0.secretIconTaps = tap
+                $0.toast = .secretHint(remaining: 7 - tap)
+            }
+        }
+        await store.send(.versionTapped) {
+            $0.secretIconTaps = 0
+            $0.toast = nil
+            $0.unlockSheetIcons = [.baseSans]
+            $0.$unlockedSecretIcons.withLock { $0.insert(.baseSans) }
+            $0.$announcedSecretIcons.withLock { $0.insert(.baseSans) }
+        }
+
+        // Once unlocked, the footer just reminds it already happened.
+        await store.send(.versionTapped) {
+            $0.toast = .secretsAlreadyUnlocked
+        }
+        await clock.advance(by: .milliseconds(2600))
+        await store.receive(.toastExpired) {
+            $0.toast = nil
+        }
+        await store.finish()
+
+        #expect(patched.value == [.unlockedIcons([.baseSans])])
+    }
+
+    @Test
+    func accountLoadMergesServerUnlockedIcons() async {
+        var settings = UserSettings()
+        settings.unlockedIcons = [.paper]
+        let account = SettingsAccount(profile: .preview, settings: settings)
+
+        let store = TestStore(initialState: SettingsFeature.State()) {
+            SettingsFeature()
+        }
+
+        await store.send(.accountLoaded(account)) {
+            $0.profile = .preview
+            $0.settings = settings
+            $0.$unlockedSecretIcons.withLock { $0.insert(.paper) }
+            $0.$announcedSecretIcons.withLock { $0.insert(.paper) }
+        }
+    }
+
+    @Test
+    func accountLoadPushesIconsTheServerMissed() async {
+        let patched = LockIsolated<[SettingsChange]>([])
+        var initialState = SettingsFeature.State()
+        initialState.$unlockedSecretIcons.withLock { $0.insert(.baseSans) }
+
+        let store = TestStore(initialState: initialState) {
+            SettingsFeature()
+        } withDependencies: {
+            $0.settingsRepository.update = { change in
+                patched.withValue { $0.append(change) }
+                var settings = UserSettings()
+                settings.apply(change)
+                return settings
+            }
+        }
+
+        await store.send(.accountLoaded(.preview)) {
+            $0.profile = .preview
+            $0.settings = UserSettings()
+        }
+        await store.finish()
+
+        #expect(patched.value == [.unlockedIcons([.baseSans])])
+    }
+
+    @Test
+    func usingAnUnlockedIconClosesTheSheet() async {
+        var initialState = SettingsFeature.State(unlockSheetIcons: [.paper])
+        initialState.$unlockedSecretIcons.withLock { $0.insert(.paper) }
+
+        let store = TestStore(initialState: initialState) {
+            SettingsFeature()
+        } withDependencies: {
+            $0.appIconClient.set = { _ in }
+        }
+
+        await store.send(.appIconSelected(.paper)) {
+            $0.appIcon = .paper
+            $0.unlockSheetIcons = nil
+        }
+        await store.finish()
     }
 }

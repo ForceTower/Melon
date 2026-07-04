@@ -43,6 +43,9 @@ struct WatchRepository: Sendable {
     var activate: @Sendable () -> Void
     var observe: @Sendable () -> AsyncStream<WatchSnapshot?> = { .finished }
     var markMessageRead: @Sendable (_ id: String) async -> Void
+    /// Entering Space Impact is the NowShip icon's discovery path — reported
+    /// to the phone once, which unlocks it in the phone's Settings.
+    var reportSpaceImpactOpened: @Sendable () -> Void
 }
 
 extension WatchRepository: DependencyKey {
@@ -81,6 +84,9 @@ extension WatchRepository: DependencyKey {
             }
             log.info("markMessageRead ok id=\(id)")
             WatchSessionReceiver.shared.reportRead(ids: [id])
+        },
+        reportSpaceImpactOpened: {
+            WatchSessionReceiver.shared.reportSpaceImpactOpened()
         }
     )
 
@@ -89,7 +95,8 @@ extension WatchRepository: DependencyKey {
     static let previewValue = WatchRepository(
         activate: {},
         observe: { AsyncStream { $0.yield(.preview()) } },
-        markMessageRead: { _ in }
+        markMessageRead: { _ in },
+        reportSpaceImpactOpened: {}
     )
 }
 
@@ -134,6 +141,24 @@ private final class WatchSessionReceiver: NSObject, WCSessionDelegate, Sendable 
             session.transferUserInfo(payload)
         }
         log.debug("reportRead sent count=\(ids.count)")
+    }
+
+    private static let spaceImpactReportedKey = "spaceImpactDiscoveryReported"
+
+    /// One-shot: `transferUserInfo` queues across unreachability, so a single
+    /// queued report is guaranteed to land; if the session isn't up yet the
+    /// flag stays unset and the next game entry retries.
+    func reportSpaceImpactOpened() {
+        let defaults = UserDefaults.standard
+        guard !defaults.bool(forKey: Self.spaceImpactReportedKey) else { return }
+        let session = WCSession.default
+        guard session.activationState == .activated else {
+            log.warn("reportSpaceImpactOpened skipped reason=inactive")
+            return
+        }
+        session.transferUserInfo(["unlockedAppIcons": [AppIcon.nowShip.rawValue]])
+        defaults.set(true, forKey: Self.spaceImpactReportedKey)
+        log.info("space impact discovery reported")
     }
 
     func session(
