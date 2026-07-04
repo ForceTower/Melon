@@ -23,6 +23,7 @@ struct WatchMessagesView: View {
                             } label: {
                                 WatchMessageRow(message: message.item, now: now)
                             }
+                            .listRowInsets(EdgeInsets(top: 8, leading: 4, bottom: 8, trailing: 8))
                         }
                     } header: {
                         unreadLine(messages)
@@ -53,7 +54,8 @@ struct WatchMessageRow: View {
         HStack(alignment: .top, spacing: 7) {
             Capsule()
                 .fill(message.accentColor)
-                .frame(width: 4, height: 32)
+                .frame(width: 4)
+                .frame(maxHeight: .infinity)
             VStack(alignment: .leading, spacing: 4) {
                 HStack(spacing: 5) {
                     if message.unread {
