@@ -205,6 +205,21 @@ private func migrator() -> DatabaseMigrator {
             t.column("starred", .boolean).notNull().defaults(to: false)
         }
     }
+    // Spotlight v2: the index ledger moves from its pre-Phase-3 JSON file
+    // into the mirror database. Both tables deliberately survive `wipe()` —
+    // the logout wipe empties the Spotlight index through the nil-snapshot
+    // path, which needs the surviving non-empty ledger to know entries exist.
+    migrator.registerMigration("v5") { db in
+        try db.create(table: "spotlightLedger") { t in
+            t.primaryKey("identifier", .text)
+            t.column("kind", .text).notNull()
+            t.column("digest", .text).notNull()
+        }
+        try db.create(table: "spotlightLedgerState") { t in
+            t.primaryKey("key", .text)
+            t.column("value", .text).notNull()
+        }
+    }
     return migrator
 }
 

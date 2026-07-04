@@ -36,9 +36,17 @@ extension DependencyValues {
 /// `AppEntity` types live there next to the app's catalog); UNESKit owns
 /// everything up to it — observation, coalescing, diffing, the ledger.
 public protocol SpotlightIndexWriter: Sendable {
-    func index(disciplines: [SpotlightDiscipline], messages: [SpotlightMessage]) async throws
-    func delete(disciplineIds: [String], messageIds: [String]) async throws
+    func index(
+        disciplines: [SpotlightDiscipline],
+        messages: [SpotlightMessage],
+        evaluations: [SpotlightEvaluation]
+    ) async throws
+    func delete(disciplineIds: [String], messageIds: [String], evaluationIds: [String]) async throws
     func deleteAll() async throws
+    /// The discipline set changed (or the index was wiped) — the app target
+    /// re-registers its App Shortcut parameters so Siri's phrase-embedded
+    /// discipline names track the mirror.
+    func disciplinesDidChange() async
 }
 
 /// Everything the app target needs from the package for Spotlight: the
@@ -86,6 +94,21 @@ public enum SpotlightSupport {
         return (try? await MirrorStore(writer: database).spotlightRecentMessages(limit: 5)) ?? []
     }
 
+    public static func evaluations(for identifiers: [String]) async -> [SpotlightEvaluation] {
+        @Dependency(\.database) var database
+        @Dependency(\.date) var date
+        return (try? await MirrorStore(writer: database)
+            .spotlightEvaluations(ids: identifiers, now: date.now)) ?? []
+    }
+
+    /// Scheduled pending evaluations, soonest first.
+    public static func suggestedEvaluations() async -> [SpotlightEvaluation] {
+        @Dependency(\.database) var database
+        @Dependency(\.date) var date
+        return (try? await MirrorStore(writer: database)
+            .spotlightSuggestedEvaluations(now: date.now)) ?? []
+    }
+
     // MARK: Indexer loop
 
     /// One `indexAppEntities` call per chunk bounds the first full pass
@@ -94,27 +117,47 @@ public enum SpotlightSupport {
 
     static func run(writer: some SpotlightIndexWriter) async {
         log.debug("indexer subscribed")
+        @Dependency(\.database) var database
+        let mirror = MirrorStore(writer: database)
+
         var ledger: SpotlightIndexLedger
-        if let loaded = SpotlightIndexLedger.load() {
+        // A failed read counts as no usable ledger — same treatment as a
+        // version mismatch.
+        if let loaded = (try? await mirror.spotlightLedger()) ?? nil {
             ledger = loaded
         } else {
-            // The persisted ledger predates the current schema: the indexed
-            // items' identifier formats may have changed, so re-indexing
-            // over them would leave duplicates — clean slate instead.
+            // No usable ledger (another schema version, the legacy JSON
+            // file, or a DEBUG schema erase): the indexed items' identifier
+            // formats may have changed, so re-indexing over them would leave
+            // duplicates — clean slate instead. The fresh ledger and the
+            // legacy-file deletion land only after the wipe succeeds; a
+            // failed wipe keeps its signal and retries next launch.
             do {
                 try await writer.deleteAll()
                 log.info("index wiped reason=schema")
             } catch {
                 log.error("schema wipe failed", error: error)
+                return
             }
+            MirrorStore.deleteLegacySpotlightLedgerFile()
             ledger = SpotlightIndexLedger()
-            ledger.save()
+            await save(ledger, to: mirror)
         }
         for await snapshot in updates() {
             let diff = SpotlightDiff.compute(ledger: ledger, snapshot: snapshot)
             guard !diff.isEmpty else { continue }
             ledger = await apply(diff, ledger: ledger, writer: writer)
-            ledger.save()
+            await save(ledger, to: mirror)
+        }
+    }
+
+    /// A failed save only costs a retry: the next emission diffs against
+    /// the stale ledger and re-applies the same idempotent delta.
+    private static func save(_ ledger: SpotlightIndexLedger, to mirror: MirrorStore) async {
+        do {
+            try await mirror.saveSpotlightLedger(ledger)
+        } catch {
+            log.warn("ledger write failed", error: error)
         }
     }
 
@@ -127,6 +170,7 @@ public enum SpotlightSupport {
             do {
                 try await writer.deleteAll()
                 log.info("index wiped")
+                await writer.disciplinesDidChange()
                 return SpotlightIndexLedger()
             } catch {
                 log.error("index wipe failed", error: error)
@@ -139,29 +183,53 @@ public enum SpotlightSupport {
         var next = ledger
         do {
             for chunk in diff.disciplinesToIndex.chunked(into: chunkSize) {
-                try await writer.index(disciplines: chunk, messages: [])
+                try await writer.index(disciplines: chunk, messages: [], evaluations: [])
             }
             if !diff.disciplineIdsToDelete.isEmpty {
-                try await writer.delete(disciplineIds: diff.disciplineIdsToDelete, messageIds: [])
+                try await writer.delete(
+                    disciplineIds: diff.disciplineIdsToDelete, messageIds: [], evaluationIds: []
+                )
             }
             next.applyDisciplines(diff)
+            if !diff.disciplinesToIndex.isEmpty || !diff.disciplineIdsToDelete.isEmpty {
+                // Ride the existing choke point: the Prova Final shortcut
+                // embeds discipline names in its phrases, so a discipline
+                // change re-registers the shortcut parameters.
+                await writer.disciplinesDidChange()
+            }
         } catch {
             log.error("discipline index apply failed", error: error)
         }
         do {
             for chunk in diff.messagesToIndex.chunked(into: chunkSize) {
-                try await writer.index(disciplines: [], messages: chunk)
+                try await writer.index(disciplines: [], messages: chunk, evaluations: [])
             }
             if !diff.messageIdsToDelete.isEmpty {
-                try await writer.delete(disciplineIds: [], messageIds: diff.messageIdsToDelete)
+                try await writer.delete(
+                    disciplineIds: [], messageIds: diff.messageIdsToDelete, evaluationIds: []
+                )
             }
             next.applyMessages(diff)
         } catch {
             log.error("message index apply failed", error: error)
         }
+        do {
+            for chunk in diff.evaluationsToIndex.chunked(into: chunkSize) {
+                try await writer.index(disciplines: [], messages: [], evaluations: chunk)
+            }
+            if !diff.evaluationIdsToDelete.isEmpty {
+                try await writer.delete(
+                    disciplineIds: [], messageIds: [], evaluationIds: diff.evaluationIdsToDelete
+                )
+            }
+            next.applyEvaluations(diff)
+        } catch {
+            log.error("evaluation index apply failed", error: error)
+        }
         log.info(
             "indexed disciplines=+\(diff.disciplinesToIndex.count)/-\(diff.disciplineIdsToDelete.count)"
                 + " messages=+\(diff.messagesToIndex.count)/-\(diff.messageIdsToDelete.count)"
+                + " evaluations=+\(diff.evaluationsToIndex.count)/-\(diff.evaluationIdsToDelete.count)"
         )
         return next
     }

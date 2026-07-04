@@ -37,6 +37,40 @@ struct UNESAppShortcuts: AppShortcutsProvider {
             shortTitle: "shortcut.openTab.title",
             systemImageName: "arrow.up.forward.app"
         )
+        AppShortcut(
+            intent: ScoreIntent(),
+            phrases: [
+                "Qual meu score no \(.applicationName)",
+                "Meu score no \(.applicationName)",
+                "Como está meu score no \(.applicationName)",
+                "Qual é o meu score no \(.applicationName)",
+            ],
+            shortTitle: "shortcut.score.title",
+            systemImageName: "chart.line.uptrend.xyaxis"
+        )
+        AppShortcut(
+            intent: UnreadMessagesIntent(),
+            phrases: [
+                "Tenho mensagem nova no \(.applicationName)",
+                "Mensagens não lidas no \(.applicationName)",
+                "Tem mensagem nova no \(.applicationName)",
+                "Alguma mensagem nova no \(.applicationName)",
+            ],
+            shortTitle: "shortcut.unread.title",
+            systemImageName: "envelope.badge"
+        )
+        AppShortcut(
+            intent: FinalExamIntent(),
+            phrases: [
+                "Quanto preciso na final de \(\.$discipline) no \(.applicationName)",
+                "Quanto preciso na Prova Final de \(\.$discipline) no \(.applicationName)",
+                "Como estou em \(\.$discipline) no \(.applicationName)",
+                "Quanto preciso na final no \(.applicationName)",
+                "Tô de final no \(.applicationName)",
+            ],
+            shortTitle: "shortcut.finalExam.title",
+            systemImageName: "flag.checkered"
+        )
     }
 
     static let shortcutTileColor: ShortcutTileColor = .orange

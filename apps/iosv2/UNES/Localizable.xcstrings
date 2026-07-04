@@ -21,6 +21,23 @@
         }
       }
     },
+    "entity.evaluation.typeName" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Evaluation"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avaliação"
+          }
+        }
+      }
+    },
     "entity.message.typeName" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -34,6 +51,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mensagem"
+          }
+        }
+      }
+    },
+    "intent.finalExam.param.discipline" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Course"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disciplina"
+          }
+        }
+      }
+    },
+    "intent.finalExam.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finals"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prova Final"
           }
         }
       }
@@ -72,6 +123,23 @@
         }
       }
     },
+    "intent.score.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Score"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Score"
+          }
+        }
+      }
+    },
     "intent.tab.typeName" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -102,6 +170,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aulas de hoje"
+          }
+        }
+      }
+    },
+    "intent.unread.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unread messages"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mensagens não lidas"
           }
         }
       }
@@ -191,6 +276,23 @@
         }
       }
     },
+    "shortcut.finalExam.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finals"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prova Final"
+          }
+        }
+      }
+    },
     "shortcut.nextClass.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -225,6 +327,23 @@
         }
       }
     },
+    "shortcut.score.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Score"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Score"
+          }
+        }
+      }
+    },
     "shortcut.today.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -238,6 +357,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aulas de hoje"
+          }
+        }
+      }
+    },
+    "shortcut.unread.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unread messages"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mensagens não lidas"
           }
         }
       }

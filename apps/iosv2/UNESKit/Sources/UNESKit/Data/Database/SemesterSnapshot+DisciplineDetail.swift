@@ -172,7 +172,9 @@ extension SemesterSnapshot {
             }
     }
 
-    private func gradeTitle(_ grade: StudentGradeRecord) -> String {
+    /// Shared with the Spotlight evaluation projection, so the indexed name
+    /// always matches the detail screen's row.
+    func gradeTitle(_ grade: StudentGradeRecord) -> String {
         [grade.name, grade.nameShort]
             .compactMap { $0?.trimmingCharacters(in: .whitespaces) }
             .first { !$0.isEmpty } ?? String.localized(.commonAssessmentOrdinal(grade.ordinal))

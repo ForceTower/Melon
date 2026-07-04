@@ -10,6 +10,9 @@ import UNESKit
 
 struct NextClassIntent: AppIntent {
     static let title: LocalizedStringResource = "intent.nextClass.title"
+    /// Schedule answers on the lock screen — that's the feature (Action
+    /// Button between classes). Explicit since Phase 3 (spec §3.4).
+    static let authenticationPolicy: IntentAuthenticationPolicy = .alwaysAllowed
 
     init() {}
 
@@ -24,6 +27,8 @@ struct NextClassIntent: AppIntent {
 
 struct TodayScheduleIntent: AppIntent {
     static let title: LocalizedStringResource = "intent.today.title"
+    /// Schedule answers on the lock screen — see `NextClassIntent`.
+    static let authenticationPolicy: IntentAuthenticationPolicy = .alwaysAllowed
 
     init() {}
 
@@ -66,6 +71,8 @@ enum TabDestination: String, AppEnum {
 struct OpenTabIntent: AppIntent {
     static let title: LocalizedStringResource = "intent.openTab.title"
     static let openAppWhenRun = true
+    /// Foregrounding the app is already gated on unlock by the system.
+    static let authenticationPolicy: IntentAuthenticationPolicy = .alwaysAllowed
 
     @Parameter(title: "intent.tab.typeName")
     var tab: TabDestination
@@ -75,5 +82,60 @@ struct OpenTabIntent: AppIntent {
     func perform() async throws -> some IntentResult {
         IntentSupport.openTab(tab.intentTab)
         return .result()
+    }
+}
+
+struct ScoreIntent: AppIntent {
+    static let title: LocalizedStringResource = "intent.score.title"
+    /// A grade surface: never spoken or rendered at a locked phone.
+    static let authenticationPolicy: IntentAuthenticationPolicy = .requiresLocalDeviceAuthentication
+
+    init() {}
+
+    func perform() async throws -> some IntentResult & ProvidesDialog & ShowsSnippetView {
+        let answer = await IntentSupport.score()
+        if let card = answer.card {
+            return .result(dialog: answer.dialog, view: card)
+        }
+        return .result(dialog: answer.dialog, view: EmptyView())
+    }
+}
+
+struct UnreadMessagesIntent: AppIntent {
+    static let title: LocalizedStringResource = "intent.unread.title"
+    /// Same posture as notification previews — the card shows senders and
+    /// subjects, so the device must be unlocked.
+    static let authenticationPolicy: IntentAuthenticationPolicy = .requiresAuthentication
+
+    init() {}
+
+    func perform() async throws -> some IntentResult & ProvidesDialog & ShowsSnippetView {
+        let answer = await IntentSupport.unreadMessages()
+        if let card = answer.card {
+            return .result(dialog: answer.dialog, view: card)
+        }
+        return .result(dialog: answer.dialog, view: EmptyView())
+    }
+}
+
+struct FinalExamIntent: AppIntent {
+    static let title: LocalizedStringResource = "intent.finalExam.title"
+    /// A grade surface: never spoken or rendered at a locked phone.
+    static let authenticationPolicy: IntentAuthenticationPolicy = .requiresLocalDeviceAuthentication
+
+    @Parameter(title: "intent.finalExam.param.discipline")
+    var discipline: DisciplineEntity
+
+    init() {}
+
+    func perform() async throws -> some IntentResult & ProvidesDialog & ShowsSnippetView {
+        let answer = await IntentSupport.finalExam(
+            semesterId: discipline.projection.semesterId,
+            disciplineId: discipline.projection.disciplineId
+        )
+        if let card = answer.card {
+            return .result(dialog: answer.dialog, view: card)
+        }
+        return .result(dialog: answer.dialog, view: EmptyView())
     }
 }

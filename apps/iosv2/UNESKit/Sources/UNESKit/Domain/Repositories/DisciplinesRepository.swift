@@ -16,6 +16,9 @@ struct DisciplinesRepository: Sendable {
     var observe: @Sendable () -> AsyncStream<DisciplinesOverview> = { .finished }
     /// The detail feed for one mirrored discipline — a pure local read.
     var observeDetail: @Sendable (_ semesterId: String, _ disciplineId: String) -> AsyncStream<DisciplineDetail> = { _, _ in .finished }
+    /// One-shot detail read; nil while the semester's payload (or the
+    /// discipline itself) isn't mirrored.
+    var detailCached: @Sendable (_ semesterId: String, _ disciplineId: String, _ now: Date) async throws -> DisciplineDetail?
 }
 
 extension DisciplinesRepository: TestDependencyKey {
@@ -34,7 +37,8 @@ extension DisciplinesRepository: TestDependencyKey {
             AsyncStream { continuation in
                 continuation.yield(.preview(now: .now))
             }
-        }
+        },
+        detailCached: { _, _, now in .preview(now: now) }
     )
 }
 

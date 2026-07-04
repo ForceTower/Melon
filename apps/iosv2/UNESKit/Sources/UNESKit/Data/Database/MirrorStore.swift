@@ -67,6 +67,12 @@ struct MirrorStore: Sendable {
         return CachedHomeOverview(overview: overview, syncedAt: syncedAt)
     }
 
+    /// The Eu snapshot as mirrored on disk; nil until the first successful
+    /// refresh lands.
+    func cachedMeOverview(now: Date) async throws -> CachedMeOverview? {
+        try await writer.read { db in try Self.cachedMeOverview(db, now: now) }
+    }
+
     /// Emits the mirrored Eu snapshot on subscription and again after every
     /// write that feeds it.
     func meOverviewUpdates(now: @escaping @Sendable () -> Date) -> AsyncValueObservation<CachedMeOverview?> {
@@ -93,6 +99,12 @@ struct MirrorStore: Sendable {
     /// Empties the whole mirror on logout. The schema stays in place; only
     /// rows go — including the sync-state rows, so the backfill-complete
     /// flag resets and the next account backfills from scratch.
+    ///
+    /// The two `spotlightLedger*` tables are deliberately NOT wiped: the
+    /// wipe's nil-snapshot emission only issues the index delete-all while
+    /// the ledger is non-empty, so clearing it here would strand the old
+    /// account's entries in Spotlight. The ledger empties through the
+    /// indexer's wipe path instead.
     func wipe() async throws {
         do {
             try await writer.write { db in

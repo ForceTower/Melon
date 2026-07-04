@@ -11,6 +11,7 @@ import UNESKit
 nonisolated enum SpotlightDomain {
     static let discipline = "unes.discipline"
     static let message = "unes.message"
+    static let evaluation = "unes.evaluation"
 }
 
 struct DisciplineEntity: AppEntity, IndexedEntity {
@@ -89,5 +90,44 @@ struct MessageEntityQuery: EntityQuery {
 
     func suggestedEntities() async throws -> [MessageEntity] {
         await SpotlightSupport.suggestedMessages().map(MessageEntity.init)
+    }
+}
+
+/// A scheduled, still-pending evaluation — the calendar-shaped data. No
+/// body text, so the entity path suffices (unlike messages), and no grade
+/// values anywhere.
+struct EvaluationEntity: AppEntity, IndexedEntity {
+    static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "entity.evaluation.typeName")
+    static let defaultQuery = EvaluationEntityQuery()
+
+    let projection: SpotlightEvaluation
+
+    var id: String { projection.id }
+
+    var displayRepresentation: DisplayRepresentation {
+        DisplayRepresentation(title: "\(projection.title)", subtitle: "\(projection.subtitle)")
+    }
+
+    var attributeSet: CSSearchableItemAttributeSet {
+        let attributes = CSSearchableItemAttributeSet(contentType: .item)
+        attributes.displayName = projection.title
+        attributes.title = projection.title
+        attributes.contentDescription = projection.subtitle
+        attributes.keywords = projection.keywords
+        attributes.domainIdentifier = SpotlightDomain.evaluation
+        return attributes
+    }
+}
+
+/// No string query: nobody types an evaluation name into Shortcuts —
+/// Spotlight matches the display name.
+struct EvaluationEntityQuery: EntityQuery {
+    func entities(for identifiers: [String]) async throws -> [EvaluationEntity] {
+        await SpotlightSupport.evaluations(for: identifiers).map(EvaluationEntity.init)
+    }
+
+    /// Soonest first.
+    func suggestedEntities() async throws -> [EvaluationEntity] {
+        await SpotlightSupport.suggestedEvaluations().map(EvaluationEntity.init)
     }
 }

@@ -119,6 +119,11 @@ extension DisciplinesRepository: DependencyKey {
                 }
                 continuation.onTermination = { _ in task.cancel() }
             }
+        },
+        detailCached: { semesterId, disciplineId, now in
+            @Dependency(\.database) var wrappedDatabase
+            let mirror = MirrorStore(writer: wrappedDatabase)
+            return try await mirror.disciplineDetail(semesterId: semesterId, disciplineId: disciplineId, now: now)
         }
     )
 }

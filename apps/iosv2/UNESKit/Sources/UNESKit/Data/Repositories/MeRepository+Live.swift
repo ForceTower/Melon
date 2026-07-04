@@ -5,6 +5,10 @@ private let log = Log.scoped("MeRepository")
 
 extension MeRepository: DependencyKey {
     static let liveValue = MeRepository(
+        cached: { now in
+            @Dependency(\.database) var database
+            return try await MirrorStore(writer: database).cachedMeOverview(now: now)
+        },
         observe: {
             @Dependency(\.database) var wrappedDatabase
             @Dependency(\.date) var wrappedDate

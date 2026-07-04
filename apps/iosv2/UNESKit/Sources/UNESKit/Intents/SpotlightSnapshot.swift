@@ -3,13 +3,17 @@ import Foundation
 /// The Spotlight projection of the mirror: plain value types with every
 /// display string already resolved. UNESKit computes them and diffs them;
 /// the app target wraps them in `AppEntity` values at the `CSSearchableIndex`
-/// boundary. Pure data — no AppIntents import, and structurally no grades:
-/// nothing here is derived from grade, absence, or result rows.
+/// boundary. Pure data — no AppIntents import, and no grade *values*
+/// anywhere: evaluations project their name, date, and discipline linkage
+/// only, never what was scored.
 struct SpotlightSnapshot: Equatable, Codable, Sendable {
     /// One per enrolled discipline of the active semester — the Turmas cards.
     var disciplines: [SpotlightDiscipline]
     /// Every mirrored message, newest first.
     var messages: [SpotlightMessage]
+    /// Scheduled, still-pending evaluations of the active semester, soonest
+    /// first.
+    var evaluations: [SpotlightEvaluation]
 }
 
 public struct SpotlightDiscipline: Equatable, Codable, Sendable, Identifiable {
@@ -41,11 +45,30 @@ public struct SpotlightMessage: Equatable, Codable, Sendable, Identifiable {
     public var keywords: [String]
 }
 
+public struct SpotlightEvaluation: Equatable, Codable, Sendable, Identifiable {
+    /// Entity identifier — encodes the route back into the app.
+    public var id: String
+    public var semesterId: String
+    public var disciplineId: String
+    /// The deduplicated grade-row key (`platformId ?? id` — the detail
+    /// screen's grade id).
+    public var gradeId: String
+    /// "Prova 1 — Cálculo II"
+    public var title: String
+    /// Localized date line: "qui., 15 de ago."
+    public var subtitle: String
+    /// yyyy-MM-dd — sorts chronologically.
+    public var dateStamp: String
+    /// Evaluation name(s), discipline code and name.
+    public var keywords: [String]
+}
+
 /// Builds and parses the opaque identifier strings that ride Spotlight
 /// results back into the app — the single place that knows the format.
 enum SpotlightEntityID {
     private static let disciplineKind = "discipline"
     private static let messageKind = "message"
+    private static let evaluationKind = "evaluation"
 
     /// Everything but "/" and "%" passes through, so an upstream id
     /// containing the separator can't shear the format.
@@ -57,6 +80,10 @@ enum SpotlightEntityID {
 
     static func message(id: String) -> String {
         [messageKind, escape(id)].joined(separator: "/")
+    }
+
+    static func evaluation(semesterId: String, disciplineId: String, gradeId: String) -> String {
+        [evaluationKind, escape(semesterId), escape(disciplineId), escape(gradeId)].joined(separator: "/")
     }
 
     static func parse(_ identifier: String) -> IntentRoute? {
@@ -79,6 +106,14 @@ enum SpotlightEntityID {
         case (messageKind, 2):
             guard let id = parts[1].removingPercentEncoding else { return nil }
             return .message(id: id)
+        case (evaluationKind, 4):
+            // Evaluations live on the discipline detail screen — the tap
+            // resolves to the discipline route; the grade id only keeps the
+            // index identifier unique.
+            guard let semesterId = parts[1].removingPercentEncoding,
+                  let disciplineId = parts[2].removingPercentEncoding
+            else { return nil }
+            return .discipline(semesterId: semesterId, disciplineId: disciplineId)
         default:
             return nil
         }

@@ -7,6 +7,9 @@ import Foundation
 /// mirror fresh). `wipeLocalData` backs the logout flow.
 @DependencyClient
 struct MeRepository: Sendable {
+    /// The snapshot as mirrored on disk; nil until the first successful
+    /// refresh lands.
+    var cached: @Sendable (_ now: Date) async throws -> CachedMeOverview?
     var observe: @Sendable () -> AsyncStream<CachedMeOverview> = { .finished }
     var wipeLocalData: @Sendable () async throws -> Void
 }
@@ -15,6 +18,7 @@ extension MeRepository: TestDependencyKey {
     static let testValue = MeRepository()
 
     static let previewValue = MeRepository(
+        cached: { _ in CachedMeOverview(overview: .preview, syncedAt: .now) },
         observe: {
             AsyncStream { continuation in
                 continuation.yield(CachedMeOverview(overview: .preview, syncedAt: .now))

@@ -1,8 +1,6 @@
 import CryptoKit
 import Foundation
 
-private let log = Log.scoped("Spotlight")
-
 /// What one projection emission changes in the index — a pure function of
 /// (ledger, snapshot); no file or index I/O in here.
 struct SpotlightDiff: Equatable, Sendable {
@@ -10,12 +8,15 @@ struct SpotlightDiff: Equatable, Sendable {
     var disciplineIdsToDelete: [String] = []
     var messagesToIndex: [SpotlightMessage] = []
     var messageIdsToDelete: [String] = []
+    var evaluationsToIndex: [SpotlightEvaluation] = []
+    var evaluationIdsToDelete: [String] = []
     /// The mirror was wiped while the index still has entries.
     var wipeAll = false
 
     var isEmpty: Bool {
         disciplinesToIndex.isEmpty && disciplineIdsToDelete.isEmpty
-            && messagesToIndex.isEmpty && messageIdsToDelete.isEmpty && !wipeAll
+            && messagesToIndex.isEmpty && messageIdsToDelete.isEmpty
+            && evaluationsToIndex.isEmpty && evaluationIdsToDelete.isEmpty && !wipeAll
     }
 
     static func compute(ledger: SpotlightIndexLedger, snapshot: SpotlightSnapshot?) -> SpotlightDiff {
@@ -43,26 +44,40 @@ struct SpotlightDiff: Equatable, Sendable {
         }
         diff.messageIdsToDelete = ledger.messages.keys
             .filter { !currentMessageIds.contains($0) }.sorted()
+
+        var currentEvaluationIds: Set<String> = []
+        for evaluation in snapshot.evaluations {
+            currentEvaluationIds.insert(evaluation.id)
+            if ledger.evaluations[evaluation.id] != SpotlightIndexLedger.digest(of: evaluation) {
+                diff.evaluationsToIndex.append(evaluation)
+            }
+        }
+        diff.evaluationIdsToDelete = ledger.evaluations.keys
+            .filter { !currentEvaluationIds.contains($0) }.sorted()
         return diff
     }
 }
 
-/// id → stable content digest of everything ever indexed, persisted so app
-/// launches are delta-only: the launch emission diffs against what previous
-/// runs indexed instead of re-sending the whole mirror to the index.
+/// id → stable content digest of everything ever indexed, persisted (as the
+/// mirror's `spotlightLedger` table, behind `MirrorStore`) so app launches
+/// are delta-only: the launch emission diffs against what previous runs
+/// indexed instead of re-sending the whole mirror to the index.
 struct SpotlightIndexLedger: Equatable, Codable, Sendable {
     /// Bump when the app target's projection → index-item mapping changes:
     /// digests only cover projected content, so a mapping change must force
     /// a wipe + full re-index of otherwise-unchanged items.
     /// 3: messages became classic searchable items (entity-created items
     /// never full-text match on their body) with bare-id identifiers.
-    static let schemaVersion = 3
+    /// 4: evaluations joined the index, and the ledger moved from the JSON
+    /// file into the mirror database.
+    static let schemaVersion = 4
 
     var version: Int = SpotlightIndexLedger.schemaVersion
     var disciplines: [String: String] = [:]
     var messages: [String: String] = [:]
+    var evaluations: [String: String] = [:]
 
-    var isEmpty: Bool { disciplines.isEmpty && messages.isEmpty }
+    var isEmpty: Bool { disciplines.isEmpty && messages.isEmpty && evaluations.isEmpty }
 
     /// The two kinds apply separately so one failed index write only holds
     /// back its own kind's ledger update (and retry).
@@ -84,6 +99,15 @@ struct SpotlightIndexLedger: Equatable, Codable, Sendable {
         }
     }
 
+    mutating func applyEvaluations(_ diff: SpotlightDiff) {
+        for evaluation in diff.evaluationsToIndex {
+            evaluations[evaluation.id] = Self.digest(of: evaluation)
+        }
+        for id in diff.evaluationIdsToDelete {
+            evaluations[id] = nil
+        }
+    }
+
     /// SHA-256 over the sorted-keys JSON encoding — Swift's `hashValue` is
     /// process-seeded and can't be persisted.
     static func digest(of value: some Encodable) -> String {
@@ -91,43 +115,5 @@ struct SpotlightIndexLedger: Equatable, Codable, Sendable {
         encoder.outputFormatting = .sortedKeys
         guard let data = try? encoder.encode(value) else { return "" }
         return SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined()
-    }
-
-    // MARK: Persistence
-
-    private static var fileURL: URL? {
-        try? FileManager.default
-            .url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-            .appending(path: "spotlight-index-ledger.json")
-    }
-
-    /// Nil means a persisted ledger exists but is unusable (another schema
-    /// version, or corrupt) — the caller must wipe the index before
-    /// re-indexing, because the old items' identifier formats may differ.
-    /// A missing file is a fresh install: empty ledger, nothing to wipe.
-    static func load() -> SpotlightIndexLedger? {
-        guard let fileURL = Self.fileURL, let data = try? Data(contentsOf: fileURL) else {
-            return SpotlightIndexLedger()
-        }
-        return decode(data)
-    }
-
-    static func decode(_ data: Data) -> SpotlightIndexLedger? {
-        guard let ledger = try? JSONDecoder().decode(SpotlightIndexLedger.self, from: data),
-              ledger.version == schemaVersion
-        else { return nil }
-        return ledger
-    }
-
-    func save() {
-        guard let fileURL = Self.fileURL, let data = try? JSONEncoder().encode(self) else {
-            log.warn("ledger write failed reason=encode")
-            return
-        }
-        do {
-            try data.write(to: fileURL, options: .atomic)
-        } catch {
-            log.warn("ledger write failed reason=file", error: error)
-        }
     }
 }

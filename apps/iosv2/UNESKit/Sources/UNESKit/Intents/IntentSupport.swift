@@ -37,6 +37,21 @@ public enum IntentSupport {
         public let list: IntentDayListView?
     }
 
+    public struct ScoreAnswer {
+        public let dialog: IntentDialog
+        public let card: IntentScoreCardView?
+    }
+
+    public struct UnreadMessagesAnswer {
+        public let dialog: IntentDialog
+        public let card: IntentUnreadListView?
+    }
+
+    public struct FinalExamAnswer {
+        public let dialog: IntentDialog
+        public let card: IntentVerdictCardView?
+    }
+
     /// How many classes the spoken "today" summary names before "e mais N".
     private static let spokenCap = 3
 
@@ -111,6 +126,157 @@ public enum IntentSupport {
         )
     }
 
+    /// Answers "qual meu score?" from the mirrored Eu snapshot — the exact
+    /// value the Me tab shows, truncation included.
+    public static func score() async -> ScoreAnswer {
+        @ComposableArchitecture.Dependency(\.meRepository) var meRepository
+        @ComposableArchitecture.Dependency(\.date) var date
+
+        guard let cached = try? await meRepository.cached(now: date.now) else {
+            log.info("score answered state=signedOut")
+            return ScoreAnswer(dialog: IntentDialog(.intentDialogSignedOut), card: nil)
+        }
+        guard let coefficient = cached.overview.coefficient else {
+            log.info("score answered state=noCoefficient")
+            return ScoreAnswer(dialog: IntentDialog(.intentScoreDialogNone), card: nil)
+        }
+        log.info("score answered state=value")
+        return ScoreAnswer(
+            dialog: IntentDialog(.intentScoreDialogValue(formatGrade(coefficient.value))),
+            card: IntentScoreCardView(coefficient: coefficient)
+        )
+    }
+
+    /// Answers "tenho mensagem nova?" from the mirrored inbox; the unread
+    /// count already respects the local read overlay.
+    public static func unreadMessages() async -> UnreadMessagesAnswer {
+        @ComposableArchitecture.Dependency(\.messagesRepository) var messagesRepository
+        @ComposableArchitecture.Dependency(\.sessionStore) var sessionStore
+        @ComposableArchitecture.Dependency(\.intentRouter) var intentRouter
+        @ComposableArchitecture.Dependency(\.date) var date
+
+        guard let overview = try? await messagesRepository.cached(now: date.now) else {
+            log.info("unread answered state=signedOut")
+            return UnreadMessagesAnswer(dialog: IntentDialog(.intentDialogSignedOut), card: nil)
+        }
+        let unread = overview.messages.filter(\.unread)
+        guard !unread.isEmpty else {
+            log.info("unread answered count=0")
+            return UnreadMessagesAnswer(dialog: IntentDialog(.intentUnreadDialogNone), card: nil)
+        }
+        // A snippet tap can only open the app, so pre-post the Mensagens tab
+        // through the router — the tap-through (or the next open) lands on
+        // the inbox, with `openTab`'s buffering semantics.
+        if sessionStore.current() != nil {
+            intentRouter.open(.tab(.messages))
+        }
+        log.info("unread answered count=\(unread.count)")
+        return UnreadMessagesAnswer(
+            dialog: IntentDialog(.intentUnreadDialogCount(unread.count)),
+            card: IntentUnreadListView(items: Array(unread.prefix(3)))
+        )
+    }
+
+    /// Answers "quanto preciso na Prova Final de X?" — and every other
+    /// standing — from the mirrored detail feed, with the exact rules the
+    /// detail screen and FinalCountdown render.
+    public static func finalExam(semesterId: String, disciplineId: String) async -> FinalExamAnswer {
+        @ComposableArchitecture.Dependency(\.disciplinesRepository) var disciplinesRepository
+        @ComposableArchitecture.Dependency(\.date) var date
+
+        let detail = try? await disciplinesRepository.detailCached(
+            semesterId: semesterId,
+            disciplineId: disciplineId,
+            now: date.now
+        )
+        let verdict = finalExamVerdict(detail: detail)
+        log.info("final-exam answered state=\(verdict.kindLabel)")
+
+        var card: IntentVerdictCardView?
+        if let detail {
+            switch verdict {
+            case .stale, .noGrades: break
+            default: card = IntentVerdictCardView(code: detail.code, name: detail.name, verdict: verdict)
+            }
+        }
+        return FinalExamAnswer(dialog: dialog(finalExam: verdict, discipline: detail?.name ?? ""), card: card)
+    }
+
+    /// The Prova Final standing, computed from the same rules the detail
+    /// screen renders — Siri must never disagree with the app. Values stay
+    /// raw; formatting rounds at the edge (floor for averages, ceil for
+    /// needed grades).
+    static func finalExamVerdict(detail: DisciplineDetail?) -> FinalExamVerdict {
+        guard let detail else { return .stale }
+        let grades = detail.grades(forGroup: nil)
+        let average = DisciplineDetail.partialAverage(of: grades)
+
+        switch detail.status {
+        case .approved:
+            return .approved(average: detail.finalGrade ?? average)
+        case .failed:
+            return .lost(average: detail.finalGrade ?? average)
+        case .finals:
+            guard let average else { return .lost(average: nil) }
+            // FinalCountdown's exact sequence: truncate the mean first, then
+            // round the requirement up — 0,6·m + 0,4·F ≥ 5.
+            let needed = DisciplineRules.ceilToTenth(
+                DisciplineRules.neededFinal(avg: DisciplineRules.floorToTenth(average))
+            )
+            guard needed <= 10 else { return .lost(average: average) }
+            return .finals(average: average, needed: needed)
+        case .noGrades:
+            return .noGrades
+        case .lowGrade, .ongoing:
+            guard let average else { return .noGrades }
+            guard let needed = DisciplineDetail.neededOnPending(of: grades) else {
+                return .partial(average: average)
+            }
+            // The detail hero's reachability rule: the raw value against 10.
+            guard needed <= 10 else { return .finalsPath(average: average) }
+            return .directClose(average: average, needed: needed, next: nextScheduledEvaluation(in: grades))
+        }
+    }
+
+    private static func nextScheduledEvaluation(in grades: [DisciplineDetailGrade]) -> FinalExamVerdict.NextEvaluation? {
+        grades
+            .compactMap { grade -> (title: String, stamp: String)? in
+                // `daysUntil` is non-nil exactly for scheduled, pending,
+                // not-yet-passed evaluations.
+                guard grade.daysUntil != nil, let stamp = grade.date else { return nil }
+                return (grade.title, stamp)
+            }
+            .min { $0.stamp < $1.stamp }
+            .map { FinalExamVerdict.NextEvaluation(title: $0.title, dateStamp: $0.stamp) }
+    }
+
+    private static func dialog(finalExam verdict: FinalExamVerdict, discipline name: String) -> IntentDialog {
+        switch verdict {
+        case .stale:
+            IntentDialog(.intentFinalExamDialogStale)
+        case .approved:
+            IntentDialog(.intentFinalExamDialogApproved(name))
+        case let .finals(_, needed):
+            IntentDialog(.intentFinalExamDialogNeeded(DisciplinesFormat.neededGrade(needed), name))
+        case .lost:
+            IntentDialog(.intentFinalExamDialogImpossible(name))
+        case let .directClose(_, needed, next):
+            if let next, let day = IntentFormat.spokenDay(next.dateStamp) {
+                IntentDialog(.intentFinalExamDialogPendingDirectNext(
+                    DisciplinesFormat.neededGrade(needed), next.title, day
+                ))
+            } else {
+                IntentDialog(.intentFinalExamDialogPendingDirect(DisciplinesFormat.neededGrade(needed)))
+            }
+        case .finalsPath:
+            IntentDialog(.intentFinalExamDialogPendingFinalOnly)
+        case let .partial(average):
+            IntentDialog(.intentFinalExamDialogPartial(name, formatGrade(average)))
+        case .noGrades:
+            IntentDialog(.intentFinalExamDialogNoGrades(name))
+        }
+    }
+
     /// Posts the tab through `IntentRouter`; `AppFeature` consumes it once
     /// the connected shell renders.
     public static func openTab(_ tab: IntentTab) {
@@ -178,11 +344,61 @@ public enum IntentSupport {
     }
 }
 
+/// One discipline's Prova Final standing, mapped 1:1 onto the intent's
+/// dialog matrix. Averages and needed grades are raw values — the dialog
+/// and card format them (floor for averages, ceil for needed grades).
+enum FinalExamVerdict: Equatable, Sendable {
+    struct NextEvaluation: Equatable, Sendable {
+        var title: String
+        /// yyyy-MM-dd, always set — only scheduled evaluations qualify.
+        var dateStamp: String
+    }
+
+    /// The discipline isn't in the current mirror (stale Siri entity).
+    case stale
+    case approved(average: Double?)
+    /// In the Prova Final with a reachable needed grade.
+    case finals(average: Double, needed: Double)
+    /// Failed, or the mean is out of reach even with a 10.
+    case lost(average: Double?)
+    /// Can still close at 7 on the pending evaluations.
+    case directClose(average: Double, needed: Double, next: NextEvaluation?)
+    /// The pending evaluations can't reach 7 — the Prova Final is the path.
+    case finalsPath(average: Double)
+    /// Grades released but nothing pending to solve for.
+    case partial(average: Double)
+    case noGrades
+
+    /// Log-safe outcome kind — never the values.
+    var kindLabel: String {
+        switch self {
+        case .stale: "stale"
+        case .approved: "approved"
+        case .finals: "finals"
+        case .lost: "lost"
+        case .directClose: "directClose"
+        case .finalsPath: "finalsPath"
+        case .partial: "partial"
+        case .noGrades: "noGrades"
+        }
+    }
+}
+
 /// Spoken/date strings for intent dialogs — locale-aware, unlike the
 /// snapshot's fixed "HH:mm" labels that the snippets keep for widget parity.
 enum IntentFormat {
     /// "10:50" (pt-BR) / "10:50 AM" (en) — how Siri should say a time.
     static func spokenTime(_ date: Date) -> String {
         date.formatted(Date.FormatStyle(date: .omitted, time: .shortened, locale: .autoupdatingCurrent))
+    }
+
+    /// "15 de agosto" (pt-BR) / "August 15" (en) from a yyyy-MM-dd stamp —
+    /// how Siri should say an evaluation date.
+    static func spokenDay(_ stamp: String, calendar: Calendar = .current) -> String? {
+        let parts = stamp.split(separator: "-").compactMap { Int($0) }
+        guard parts.count == 3,
+              let date = calendar.date(from: DateComponents(year: parts[0], month: parts[1], day: parts[2]))
+        else { return nil }
+        return date.formatted(.dateTime.day().month(.wide).locale(.autoupdatingCurrent))
     }
 }

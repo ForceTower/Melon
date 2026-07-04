@@ -57,28 +57,51 @@ extension MirrorStore {
         }
     }
 
+    func spotlightEvaluations(ids: [String], now: Date) async throws -> [SpotlightEvaluation] {
+        let wanted = Set(ids)
+        return try await writer.read { db in
+            try Self.spotlightEvaluations(db, now: now).filter { wanted.contains($0.id) }
+        }
+    }
+
+    /// Scheduled pending evaluations, soonest first — the Shortcuts picker.
+    func spotlightSuggestedEvaluations(now: Date) async throws -> [SpotlightEvaluation] {
+        try await writer.read { db in try Self.spotlightEvaluations(db, now: now) }
+    }
+
     // MARK: Fetch
 
     private static func spotlightSnapshot(_ db: Database, now: Date) throws -> SpotlightSnapshot? {
         guard try lastSyncedAt(db) != nil else { return nil }
         let records = try MessageRecord.order(Column("timestamp").desc).fetchAll(db)
+        let scope = try activeSpotlightScope(db, now: now)
         return SpotlightSnapshot(
-            disciplines: try spotlightDisciplines(db, now: now),
-            messages: try spotlightMessages(db, records: records)
+            disciplines: scope?.spotlightDisciplines() ?? [],
+            messages: try spotlightMessages(db, records: records),
+            evaluations: scope?.spotlightEvaluations(now: now) ?? []
         )
     }
 
     private static func spotlightDisciplines(_ db: Database, now: Date) throws -> [SpotlightDiscipline] {
+        try activeSpotlightScope(db, now: now)?.spotlightDisciplines() ?? []
+    }
+
+    private static func spotlightEvaluations(_ db: Database, now: Date) throws -> [SpotlightEvaluation] {
+        try activeSpotlightScope(db, now: now)?.spotlightEvaluations(now: now) ?? []
+    }
+
+    private static func activeSpotlightScope(_ db: Database, now: Date) throws -> SemesterSnapshot? {
         let semesters = try SemesterRecord.order(Column("startDate").desc).fetchAll(db)
         guard let active = semesters.map(\.domain).active(today: now.dayStamp),
               let record = semesters.first(where: { $0.id == active.id })
-        else { return [] }
-        return try spotlightScope(for: record, db: db).spotlightDisciplines()
+        else { return nil }
+        return try spotlightScope(for: record, db: db)
     }
 
-    /// Like `snapshot(for:db:)` minus grades, lectures, and materials — the
-    /// no-grades rule is structural: grade writes aren't even part of the
-    /// observation's tracked region.
+    /// Like `snapshot(for:db:)` minus lectures and materials. Grade rows are
+    /// in scope since Phase 3 — the evaluation projection needs their names
+    /// and dates — but grade *values* still never reach a projection; the
+    /// projection tests pin that.
     private static func spotlightScope(for semester: SemesterRecord, db: Database) throws -> SemesterSnapshot {
         func scoped<R: FetchableRecord & TableRecord>(_ type: R.Type) throws -> [R] {
             try R.filter(Column("semesterId") == semester.id).orderByPrimaryKey().fetchAll(db)
@@ -92,7 +115,8 @@ extension MirrorStore {
             classTeachers: scoped(ClassTeacherRecord.self),
             spaces: scoped(SpaceRecord.self),
             allocations: scoped(AllocationRecord.self),
-            studentClasses: scoped(StudentClassRecord.self)
+            studentClasses: scoped(StudentClassRecord.self),
+            studentGrades: scoped(StudentGradeRecord.self)
         )
     }
 
@@ -205,6 +229,61 @@ extension SemesterSnapshot {
             .firstNonNil { $0.spaceId.flatMap { index.spacesById[$0]?.location } }?
             .trimmingCharacters(in: .whitespaces).spotlightNonEmpty
         return ([code] + dayLabels + [start, room].compactMap { $0 }).joined(separator: " · ")
+    }
+}
+
+// MARK: - Semester snapshot → [SpotlightEvaluation]
+
+extension SemesterSnapshot {
+    /// One entry per scheduled, still-pending evaluation, soonest first —
+    /// the calendar-shaped data. The backend replicates the discipline-level
+    /// grade set onto every group row, so rows deduplicate by the detail
+    /// screen's grade key (`platformId ?? id`). Carries the evaluation name,
+    /// date, and discipline linkage only — never a value.
+    func spotlightEvaluations(
+        now: Date,
+        calendar: Calendar = .current,
+        locale: Locale = .autoupdatingCurrent
+    ) -> [SpotlightEvaluation] {
+        let index = SnapshotIndex(snapshot: self)
+        let today = now.dayStamp
+        var seenKeys: Set<String> = []
+        return studentGrades
+            .sorted { ($0.date ?? "", $0.ordinal, $0.id) < ($1.date ?? "", $1.ordinal, $1.id) }
+            .compactMap { grade -> SpotlightEvaluation? in
+                guard grade.value == nil,
+                      let date = grade.date, date >= today,
+                      let studentClass = index.studentClassesById[grade.studentClassId],
+                      let discipline = index.discipline(forClass: studentClass.classId)
+                else { return nil }
+                let gradeId = grade.platformId ?? grade.id
+                guard seenKeys.insert("\(discipline.id)/\(gradeId)").inserted else { return nil }
+                let title = gradeTitle(grade)
+                let code = index.displayCode(for: discipline)
+                return SpotlightEvaluation(
+                    id: SpotlightEntityID.evaluation(
+                        semesterId: semester.id,
+                        disciplineId: discipline.id,
+                        gradeId: gradeId
+                    ),
+                    semesterId: semester.id,
+                    disciplineId: discipline.id,
+                    gradeId: gradeId,
+                    title: "\(title) — \(discipline.name)",
+                    subtitle: evaluationSubtitle(dateStamp: date, calendar: calendar, locale: locale),
+                    dateStamp: date,
+                    keywords: [grade.name, grade.nameShort, code, discipline.name]
+                        .compactMap { $0?.trimmingCharacters(in: .whitespaces).spotlightNonEmpty }
+                )
+            }
+    }
+
+    /// "qui., 15 de ago." — the localized date line under the evaluation.
+    private func evaluationSubtitle(dateStamp: String, calendar: Calendar, locale: Locale) -> String {
+        guard let date = parseDayStamp(dateStamp, calendar: calendar) else { return dateStamp }
+        return date.formatted(
+            .dateTime.weekday(.abbreviated).day().month(.abbreviated).locale(locale)
+        )
     }
 }
 

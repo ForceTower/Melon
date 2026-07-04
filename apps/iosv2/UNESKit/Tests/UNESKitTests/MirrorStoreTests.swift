@@ -68,6 +68,22 @@ struct MirrorStoreTests {
     }
 
     @Test
+    func cachedMeOverviewMatchesTheObservationFetch() async throws {
+        let store = MirrorStore(writer: try inMemoryDatabase())
+        #expect(try await store.cachedMeOverview(now: .now) == nil)
+
+        let snapshot = MirrorFixtures.payload().snapshot
+        let syncedAt = Date(timeIntervalSince1970: 1_776_000_000)
+        try await store.apply(semesters: [snapshot.semester], snapshot: snapshot, syncedAt: syncedAt)
+
+        let now = date(day: 16, hour: 9, minute: 41)
+        let cached = try await store.cachedMeOverview(now: now)
+
+        #expect(cached?.syncedAt == syncedAt)
+        #expect(cached?.overview.semesterCode == "20261")
+    }
+
+    @Test
     func reSyncDropsRowsDeletedUpstream() async throws {
         let database = try inMemoryDatabase()
         let store = MirrorStore(writer: database)

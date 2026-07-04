@@ -1,15 +1,13 @@
 import Foundation
 
-/// Grade-calculator math — UEFS-style rules:
-/// - média ≥ 7,0        → aprovação direta
-/// - 3,0 ≤ média < 7,0  → Prova Final; precisa de F tal que 0,6·m + 0,4·F ≥ 5
-/// - média < 3,0        → reprovação direta, sem direito à Prova Final
+/// Grade-calculator math over the manual what-if rows. The academic rules
+/// themselves (thresholds, needed-final formula, tenth truncation) live in
+/// `DisciplineRules` so the calculator, the detail screen, and the Siri
+/// intents can never disagree.
 enum FinalCountdownMath {
-    static let passThreshold: Double = 7
-    static let failThreshold: Double = 3
-    static let finalCutoff: Double = 5
-    static let finalAvgWeight: Double = 0.6
-    static let finalExamWeight: Double = 0.4
+    static let passThreshold = DisciplineRules.passThreshold
+    static let failThreshold = DisciplineRules.failThreshold
+    static let finalCutoff = DisciplineRules.finalCutoff
 
     /// Simple or weighted mean of the rows whose score is set. Nil when
     /// nothing's been filled.
@@ -38,25 +36,16 @@ enum FinalCountdownMath {
         return average(projected, weighted: weighted)
     }
 
-    /// Grade required on the Prova Final to close at `finalCutoff` (5).
-    /// Solved from 0,6·m + 0,4·F ≥ 5 → F ≥ (5 − 0,6·m) / 0,4.
     static func neededFinal(avg: Double) -> Double {
-        (finalCutoff - finalAvgWeight * avg) / finalExamWeight
+        DisciplineRules.neededFinal(avg: avg)
     }
 
-    /// Truncate to one decimal. Matches how the university records grades —
-    /// a raw 6,95 becomes 6,9, not 7,0. The epsilon absorbs float noise so a
-    /// mathematically exact 8,3 arriving as 8.2999…97 doesn't lose a tenth.
     static func floorToTenth(_ value: Double) -> Double {
-        (value * 10 + 1e-9).rounded(.down) / 10
+        DisciplineRules.floorToTenth(value)
     }
 
-    /// Round up to one decimal. Used for "grade needed" values so a raw
-    /// requirement of 6,47 surfaces as 6,5 — scoring exactly the displayed
-    /// value still clears the cutoff after truncation. The epsilon absorbs
-    /// float noise so an exact 4,7 arriving as 4.700…01 doesn't gain a tenth.
     static func ceilToTenth(_ value: Double) -> Double {
-        (value * 10 - 1e-9).rounded(.up) / 10
+        DisciplineRules.ceilToTenth(value)
     }
 
     /// If exactly one row is missing, the score it needs for the mean to hit

@@ -7,7 +7,11 @@ import UNESKit
 /// `SpotlightSupport`; this type only turns projections into entities and
 /// hands them to Apple's index.
 struct UNESSpotlightIndexer: SpotlightIndexWriter {
-    func index(disciplines: [SpotlightDiscipline], messages: [SpotlightMessage]) async throws {
+    func index(
+        disciplines: [SpotlightDiscipline],
+        messages: [SpotlightMessage],
+        evaluations: [SpotlightEvaluation]
+    ) async throws {
         if !disciplines.isEmpty {
             try await CSSearchableIndex.default().indexAppEntities(disciplines.map(DisciplineEntity.init))
         }
@@ -29,9 +33,12 @@ struct UNESSpotlightIndexer: SpotlightIndexWriter {
             }
             try await CSSearchableIndex.default().indexSearchableItems(items)
         }
+        if !evaluations.isEmpty {
+            try await CSSearchableIndex.default().indexAppEntities(evaluations.map(EvaluationEntity.init))
+        }
     }
 
-    func delete(disciplineIds: [String], messageIds: [String]) async throws {
+    func delete(disciplineIds: [String], messageIds: [String], evaluationIds: [String]) async throws {
         if !disciplineIds.isEmpty {
             try await CSSearchableIndex.default()
                 .deleteAppEntities(identifiedBy: disciplineIds, ofType: DisciplineEntity.self)
@@ -39,11 +46,23 @@ struct UNESSpotlightIndexer: SpotlightIndexWriter {
         if !messageIds.isEmpty {
             try await CSSearchableIndex.default().deleteSearchableItems(withIdentifiers: messageIds)
         }
+        if !evaluationIds.isEmpty {
+            try await CSSearchableIndex.default()
+                .deleteAppEntities(identifiedBy: evaluationIds, ofType: EvaluationEntity.self)
+        }
     }
 
     func deleteAll() async throws {
         try await CSSearchableIndex.default().deleteSearchableItems(
-            withDomainIdentifiers: [SpotlightDomain.discipline, SpotlightDomain.message]
+            withDomainIdentifiers: [
+                SpotlightDomain.discipline, SpotlightDomain.message, SpotlightDomain.evaluation,
+            ]
         )
+    }
+
+    func disciplinesDidChange() async {
+        // The Prova Final phrases embed discipline names; re-registering the
+        // shortcuts refreshes what Siri accepts in the parameter slot.
+        UNESAppShortcuts.updateAppShortcutParameters()
     }
 }

@@ -84,6 +84,12 @@ struct SpotlightProjectionTests {
                 id: "g1", studentClassId: "sc1", name: "Prova Distintiva",
                 nameShort: "PD", ordinal: 1, value: "9.87", date: "2026-04-01"
             ),
+            // Scheduled + pending: projected as an evaluation — its name is
+            // indexed, but its weight (grade data) must never be.
+            .init(
+                id: "g2", studentClassId: "sc1", name: "Prova Pendente",
+                nameShort: "PP", ordinal: 2, value: nil, date: "2026-06-10", weight: "77.7"
+            ),
         ]).snapshot
         snapshot.studentClasses[0].finalGrade = "6.9"
         snapshot.studentClasses[0].approved = false
@@ -96,9 +102,64 @@ struct SpotlightProjectionTests {
 
         let encoded = String(decoding: try JSONEncoder().encode(projected), as: UTF8.self)
         #expect(encoded.contains("Algoritmos I"))
+        #expect(encoded.contains("Prova Pendente"))
         #expect(!encoded.contains("9.87"))
         #expect(!encoded.contains("6.9"))
+        #expect(!encoded.contains("77.7"))
+        // Released rows never become evaluations, so their names stay out.
         #expect(!encoded.contains("Prova Distintiva"))
+    }
+
+    // MARK: Evaluations
+
+    @Test
+    func projectsOnlyScheduledPendingFutureEvaluationsSoonestFirst() async throws {
+        let store = MirrorStore(writer: try inMemoryDatabase())
+        let snapshot = MirrorFixtures.payload(grades: [
+            // Value posted → out, even with a future date.
+            .init(id: "g1", studentClassId: "sc1", name: "Prova 1", nameShort: "P1", ordinal: 1, value: "8.5", date: "2026-04-20"),
+            // Date passed → out.
+            .init(id: "g2", studentClassId: "sc1", name: "Prova 2", nameShort: "P2", ordinal: 2, value: nil, date: "2026-04-10"),
+            // Unscheduled → out.
+            .init(id: "g3", studentClassId: "sc1", name: "Prova 3", nameShort: "P3", ordinal: 3, value: nil, date: nil),
+            .init(id: "g4", studentClassId: "sc1", name: "Prova 4", nameShort: "P4", ordinal: 4, value: nil, date: "2026-06-10"),
+            .init(id: "g5", studentClassId: "sc1", name: "Prova 5", nameShort: "P5", ordinal: 5, value: nil, date: "2026-05-10"),
+        ]).snapshot
+        try await store.apply(semesters: [snapshot.semester], snapshot: snapshot, syncedAt: .now)
+
+        let evaluations = try await store.spotlightSuggestedEvaluations(now: now)
+
+        #expect(evaluations.map(\.gradeId) == ["g5", "g4"])
+        #expect(evaluations.map(\.id) == ["evaluation/sem1/d1/g5", "evaluation/sem1/d1/g4"])
+        #expect(evaluations.first?.title == "Prova 5 — Algoritmos I")
+        #expect(evaluations.first?.semesterId == "sem1")
+        #expect(evaluations.first?.disciplineId == "d1")
+        #expect(evaluations.first?.keywords.contains("ALGI") == true)
+    }
+
+    @Test
+    func evaluationsDedupAcrossGroupRowsByPlatformId() {
+        var snapshot = MirrorFixtures.payload(grades: []).snapshot
+        // A second enrolled group of the same class — the backend replicates
+        // the discipline-level grade set onto every group row.
+        snapshot.studentClasses.append(
+            StudentClassRecord(id: "sc2", semesterId: "sem1", classId: "c1", missedClasses: nil)
+        )
+        snapshot.studentGrades = [
+            StudentGradeRecord(
+                id: "g1", semesterId: "sem1", studentClassId: "sc1", name: "Prova 1",
+                nameShort: "P1", ordinal: 1, value: nil, date: "2026-06-10", platformId: "pl1"
+            ),
+            StudentGradeRecord(
+                id: "g2", semesterId: "sem1", studentClassId: "sc2", name: "Prova 1",
+                nameShort: "P1", ordinal: 1, value: nil, date: "2026-06-10", platformId: "pl1"
+            ),
+        ]
+
+        let evaluations = snapshot.spotlightEvaluations(now: now)
+
+        #expect(evaluations.map(\.gradeId) == ["pl1"])
+        #expect(evaluations.map(\.id) == ["evaluation/sem1/d1/pl1"])
     }
 
     // MARK: Messages
@@ -211,6 +272,22 @@ struct SpotlightProjectionTests {
     }
 
     @Test
+    func evaluationIdentifiersResolveToTheDisciplineRoute() {
+        // Evaluations live on the discipline detail screen — the grade id
+        // only keeps the index identifier unique.
+        let tricky = ["plain", "sem/1", "d%2", "id with spaces", ""]
+        for semesterId in tricky {
+            for disciplineId in tricky {
+                let id = SpotlightEntityID.evaluation(
+                    semesterId: semesterId, disciplineId: disciplineId, gradeId: "g/1"
+                )
+                #expect(SpotlightEntityID.parse(id)
+                    == .discipline(semesterId: semesterId, disciplineId: disciplineId))
+            }
+        }
+    }
+
+    @Test
     func parsesTheTypeNamePrefixedSearchableItemIdentifier() {
         // Tapped results carry the CSSearchableItem identifier, which is the
         // entity id prefixed with the entity type name (seen on device).
@@ -221,6 +298,8 @@ struct SpotlightProjectionTests {
             disciplineId: "cb3ad416-2eb0-4b87-a76c-562de99a91c7"
         ))
         #expect(SpotlightEntityID.parse("MessageEntity/message/m1") == .message(id: "m1"))
+        #expect(SpotlightEntityID.parse("EvaluationEntity/evaluation/sem1/d1/g1")
+            == .discipline(semesterId: "sem1", disciplineId: "d1"))
     }
 
     @Test
@@ -230,5 +309,7 @@ struct SpotlightProjectionTests {
         #expect(SpotlightEntityID.parse("discipline/missing-part") == nil)
         #expect(SpotlightEntityID.parse("message/extra/part") == nil)
         #expect(SpotlightEntityID.parse("grade/x") == nil)
+        #expect(SpotlightEntityID.parse("evaluation/sem1/d1") == nil)
+        #expect(SpotlightEntityID.parse("evaluation/sem1/d1/g1/extra") == nil)
     }
 }

@@ -219,3 +219,20 @@ struct SyncStateRecord: Codable, Equatable, Sendable, FetchableRecord, Persistab
     var key: String
     var value: String
 }
+
+/// One indexed Spotlight item's content digest (`SpotlightIndexLedger`).
+/// Not part of the mirrored sync data: both spotlight tables deliberately
+/// survive `wipe()` so the logout wipe can still empty the index.
+struct SpotlightLedgerRecord: Codable, Equatable, Sendable, FetchableRecord, PersistableRecord {
+    static let databaseTableName = "spotlightLedger"
+    var identifier: String
+    /// "discipline" | "message" | "evaluation".
+    var kind: String
+    var digest: String
+}
+
+struct SpotlightLedgerStateRecord: Codable, Equatable, Sendable, FetchableRecord, PersistableRecord {
+    static let databaseTableName = "spotlightLedgerState"
+    var key: String
+    var value: String
+}

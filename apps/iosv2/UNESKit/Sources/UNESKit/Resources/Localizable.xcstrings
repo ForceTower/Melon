@@ -7223,6 +7223,227 @@
         }
       }
     },
+    "intent.finalExam.card.average" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "average"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "média"
+          }
+        }
+      }
+    },
+    "intent.finalExam.card.averageLine" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "average %@"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "média %@"
+          }
+        }
+      }
+    },
+    "intent.finalExam.card.needed" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "needed on the Finals"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "precisa na Prova Final"
+          }
+        }
+      }
+    },
+    "intent.finalExam.card.neededDirect" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "needed on the rest"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "média nas restantes"
+          }
+        }
+      }
+    },
+    "intent.finalExam.dialog.approved" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You're already approved in %@."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Você já está aprovado em %@."
+          }
+        }
+      }
+    },
+    "intent.finalExam.dialog.impossible" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The passing average is out of reach in %@."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não é mais possível alcançar a média em %@."
+          }
+        }
+      }
+    },
+    "intent.finalExam.dialog.needed" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You need %1$@ on the Finals for %2$@."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Você precisa de %1$@ na Prova Final de %2$@."
+          }
+        }
+      }
+    },
+    "intent.finalExam.dialog.noGrades" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No grades have been posted in %@ yet."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ainda não há notas lançadas em %@."
+          }
+        }
+      }
+    },
+    "intent.finalExam.dialog.pendingDirect" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "To close without the Finals, you need an average of %@ on the remaining evaluations."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para fechar sem Prova Final, você precisa de média %@ nas avaliações restantes."
+          }
+        }
+      }
+    },
+    "intent.finalExam.dialog.pendingDirectNext" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "To close without the Finals, you need an average of %1$@ on the remaining evaluations. The next one is %2$@, on %3$@."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para fechar sem Prova Final, você precisa de média %1$@ nas avaliações restantes. A próxima avaliação é %2$@, em %3$@."
+          }
+        }
+      }
+    },
+    "intent.finalExam.dialog.pendingFinalOnly" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Closing directly is no longer possible — the path goes through the Finals."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não dá mais para fechar direto — o caminho passa pela Prova Final."
+          }
+        }
+      }
+    },
+    "intent.finalExam.dialog.partial" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your partial average in %1$@ is %2$@."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sua média parcial em %1$@ é %2$@."
+          }
+        }
+      }
+    },
+    "intent.finalExam.dialog.stale" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I couldn't find that course in the current semester."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não encontrei essa disciplina no semestre atual."
+          }
+        }
+      }
+    },
     "intent.nextClass.dialog.inClass" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -7342,6 +7563,40 @@
         }
       }
     },
+    "intent.score.dialog.none" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "There are no results to compute your score yet."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ainda não há resultados para calcular seu score."
+          }
+        }
+      }
+    },
+    "intent.score.dialog.value" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your score is %@."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seu score é %@."
+          }
+        }
+      }
+    },
     "intent.today.dialog.andMore" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -7437,6 +7692,64 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sem aulas hoje."
+          }
+        }
+      }
+    },
+    "intent.unread.dialog.count" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "You have %lld unread message."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "You have %lld unread messages."
+                }
+              }
+            }
+          }
+        },
+        "pt-BR" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Você tem %lld mensagem não lida."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Você tem %lld mensagens não lidas."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "intent.unread.dialog.none" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No new messages."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhuma mensagem nova."
           }
         }
       }
