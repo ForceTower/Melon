@@ -10,9 +10,13 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
     private let log = Log.scoped("AppDelegate")
 
     /// Xcode previews launch the app delegate too — configuring Firebase
-    /// there bugs Xcode out, so all of it is skipped.
+    /// there bugs Xcode out, so all of it is skipped. Xcode 26 runs previews
+    /// and playgrounds on the same engine; older versions only set the
+    /// PREVIEWS variable, so check both.
     private var isPreview: Bool {
-        ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PLAYGROUNDS"] == "1"
+        let environment = ProcessInfo.processInfo.environment
+        return environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
+            || environment["XCODE_RUNNING_FOR_PLAYGROUNDS"] == "1"
     }
 
     func application(

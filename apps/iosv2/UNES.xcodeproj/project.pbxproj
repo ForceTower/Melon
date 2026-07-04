@@ -7,13 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		CAFECAFE0000000000000003 /* UNESKit in Frameworks */ = {isa = PBXBuildFile; productRef = CAFECAFE0000000000000002 /* UNESKit */; };
-		CAFECAFE0000000000000006 /* UNESKit in Frameworks */ = {isa = PBXBuildFile; productRef = CAFECAFE0000000000000005 /* UNESKit */; };
-		CAFECAFE0000000000000014 /* UNESWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = CAFECAFE0000000000000007 /* UNESWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		CAFEAA000000000000000002 /* UNESKit in Frameworks */ = {isa = PBXBuildFile; productRef = CAFEAA000000000000000001 /* UNESKit */; };
 		CAFEAA000000000000000012 /* UNESKit in Frameworks */ = {isa = PBXBuildFile; productRef = CAFEAA000000000000000011 /* UNESKit */; };
 		CAFEAA00000000000000001F /* UNESWatchWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = CAFEAA000000000000000013 /* UNESWatchWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		CAFEAA000000000000000023 /* UNESWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = CAFEAA000000000000000003 /* UNESWatch.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		CAFEAA000000000000000027 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = CAFEAA000000000000000026 /* FirebaseCore */; };
+		CAFEAA000000000000000029 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = CAFEAA000000000000000028 /* FirebaseCrashlytics */; };
+		CAFECAFE0000000000000003 /* UNESKit in Frameworks */ = {isa = PBXBuildFile; productRef = CAFECAFE0000000000000002 /* UNESKit */; };
+		CAFECAFE0000000000000006 /* UNESKit in Frameworks */ = {isa = PBXBuildFile; productRef = CAFECAFE0000000000000005 /* UNESKit */; };
+		CAFECAFE0000000000000014 /* UNESWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = CAFECAFE0000000000000007 /* UNESWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		CAFEFB0000000000000000A2 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = CAFEFB0000000000000000A1 /* FirebaseCore */; };
 		CAFEFB0000000000000000A4 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = CAFEFB0000000000000000A3 /* FirebaseCrashlytics */; };
 		CAFEFB0000000000000000A6 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = CAFEFB0000000000000000A5 /* FirebaseMessaging */; };
@@ -21,13 +23,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		CAFECAFE0000000000000011 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 6CF5E0F32FF5A43F00953BC4 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = CAFECAFE000000000000000A;
-			remoteInfo = UNESWidgets;
-		};
 		CAFEAA00000000000000001D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 6CF5E0F32FF5A43F00953BC4 /* Project object */;
@@ -42,20 +37,16 @@
 			remoteGlobalIDString = CAFEAA00000000000000000C;
 			remoteInfo = UNESWatch;
 		};
+		CAFECAFE0000000000000011 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6CF5E0F32FF5A43F00953BC4 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CAFECAFE000000000000000A;
+			remoteInfo = UNESWidgets;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		CAFECAFE0000000000000013 /* Embed Foundation Extensions */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 13;
-			files = (
-				CAFECAFE0000000000000014 /* UNESWidgets.appex in Embed Foundation Extensions */,
-			);
-			name = "Embed Foundation Extensions";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		CAFEAA000000000000000020 /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -78,31 +69,28 @@
 			name = "Embed Watch Content";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CAFECAFE0000000000000013 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				CAFECAFE0000000000000014 /* UNESWidgets.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		6CF5E0FB2FF5A43F00953BC4 /* UNES.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UNES.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		CAFECAFE0000000000000004 /* UNESKit */ = {isa = PBXFileReference; lastKnownFileType = folder; path = UNESKit; sourceTree = SOURCE_ROOT; };
-		CAFECAFE0000000000000007 /* UNESWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = UNESWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		CAFEAA000000000000000003 /* UNESWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UNESWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CAFEAA000000000000000013 /* UNESWatchWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = UNESWatchWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		CAFECAFE0000000000000004 /* UNESKit */ = {isa = PBXFileReference; lastKnownFileType = folder; path = UNESKit; sourceTree = SOURCE_ROOT; };
+		CAFECAFE0000000000000007 /* UNESWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = UNESWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		CAFECAFE0000000000000009 /* Exceptions for "UNESWidgets" folder in "UNESWidgets" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Info.plist,
-			);
-			target = CAFECAFE000000000000000A /* UNESWidgets */;
-		};
-		CAFEFB0000000000000000A8 /* Exceptions for "UNES" folder in "UNES" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Info.plist,
-			);
-			target = 6CF5E0FA2FF5A43F00953BC4 /* UNES */;
-		};
 		CAFEAA000000000000000005 /* Exceptions for "UNESWatch" folder in "UNESWatch" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -124,6 +112,20 @@
 			);
 			target = CAFEAA00000000000000000C /* UNESWatch */;
 		};
+		CAFECAFE0000000000000009 /* Exceptions for "UNESWidgets" folder in "UNESWidgets" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = CAFECAFE000000000000000A /* UNESWidgets */;
+		};
+		CAFEFB0000000000000000A8 /* Exceptions for "UNES" folder in "UNES" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 6CF5E0FA2FF5A43F00953BC4 /* UNES */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -134,14 +136,6 @@
 				CAFEAA000000000000000025 /* Exceptions for "UNES" folder in "UNESWatch" target */,
 			);
 			path = UNES;
-			sourceTree = "<group>";
-		};
-		CAFECAFE0000000000000008 /* UNESWidgets */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				CAFECAFE0000000000000009 /* Exceptions for "UNESWidgets" folder in "UNESWidgets" target */,
-			);
-			path = UNESWidgets;
 			sourceTree = "<group>";
 		};
 		CAFEAA000000000000000004 /* UNESWatch */ = {
@@ -160,6 +154,14 @@
 			path = UNESWatchWidgets;
 			sourceTree = "<group>";
 		};
+		CAFECAFE0000000000000008 /* UNESWidgets */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				CAFECAFE0000000000000009 /* Exceptions for "UNESWidgets" folder in "UNESWidgets" target */,
+			);
+			path = UNESWidgets;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -175,18 +177,12 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		CAFECAFE000000000000000C /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				CAFECAFE0000000000000006 /* UNESKit in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		CAFEAA000000000000000007 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CAFEAA000000000000000027 /* FirebaseCore in Frameworks */,
+				CAFEAA000000000000000029 /* FirebaseCrashlytics in Frameworks */,
 				CAFEAA000000000000000002 /* UNESKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -196,6 +192,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				CAFEAA000000000000000012 /* UNESKit in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CAFECAFE000000000000000C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CAFECAFE0000000000000006 /* UNESKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -260,29 +264,6 @@
 			productReference = 6CF5E0FB2FF5A43F00953BC4 /* UNES.app */;
 			productType = "com.apple.product-type.application";
 		};
-		CAFECAFE000000000000000A /* UNESWidgets */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = CAFECAFE000000000000000E /* Build configuration list for PBXNativeTarget "UNESWidgets" */;
-			buildPhases = (
-				CAFECAFE000000000000000B /* Sources */,
-				CAFECAFE000000000000000C /* Frameworks */,
-				CAFECAFE000000000000000D /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			fileSystemSynchronizedGroups = (
-				CAFECAFE0000000000000008 /* UNESWidgets */,
-			);
-			name = UNESWidgets;
-			packageProductDependencies = (
-				CAFECAFE0000000000000005 /* UNESKit */,
-			);
-			productName = UNESWidgets;
-			productReference = CAFECAFE0000000000000007 /* UNESWidgets.appex */;
-			productType = "com.apple.product-type.app-extension";
-		};
 		CAFEAA00000000000000000C /* UNESWatch */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = CAFEAA000000000000000009 /* Build configuration list for PBXNativeTarget "UNESWatch" */;
@@ -291,6 +272,7 @@
 				CAFEAA000000000000000007 /* Frameworks */,
 				CAFEAA000000000000000008 /* Resources */,
 				CAFEAA000000000000000020 /* Embed Foundation Extensions */,
+				CAFEAA00000000000000002A /* Upload Symbols (Firebase Crashlytics) */,
 			);
 			buildRules = (
 			);
@@ -303,6 +285,8 @@
 			name = UNESWatch;
 			packageProductDependencies = (
 				CAFEAA000000000000000001 /* UNESKit */,
+				CAFEAA000000000000000026 /* FirebaseCore */,
+				CAFEAA000000000000000028 /* FirebaseCrashlytics */,
 			);
 			productName = UNESWatch;
 			productReference = CAFEAA000000000000000003 /* UNESWatch.app */;
@@ -329,6 +313,29 @@
 			);
 			productName = UNESWatchWidgets;
 			productReference = CAFEAA000000000000000013 /* UNESWatchWidgets.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		CAFECAFE000000000000000A /* UNESWidgets */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CAFECAFE000000000000000E /* Build configuration list for PBXNativeTarget "UNESWidgets" */;
+			buildPhases = (
+				CAFECAFE000000000000000B /* Sources */,
+				CAFECAFE000000000000000C /* Frameworks */,
+				CAFECAFE000000000000000D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				CAFECAFE0000000000000008 /* UNESWidgets */,
+			);
+			name = UNESWidgets;
+			packageProductDependencies = (
+				CAFECAFE0000000000000005 /* UNESKit */,
+			);
+			productName = UNESWidgets;
+			productReference = CAFECAFE0000000000000007 /* UNESWidgets.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
@@ -381,13 +388,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		CAFECAFE000000000000000D /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		CAFEAA000000000000000008 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -402,9 +402,37 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CAFECAFE000000000000000D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		CAFEAA00000000000000002A /* Upload Symbols (Firebase Crashlytics) */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",
+				"$(SRCROOT)/$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
+			);
+			name = "Upload Symbols (Firebase Crashlytics)";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${BUILD_DIR%/Build/*}/SourcePackages/checkouts/firebase-ios-sdk/Crashlytics/run\"\n";
+		};
 		CAFEFB0000000000000000A7 /* Upload Symbols (Firebase Crashlytics) */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
@@ -436,13 +464,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		CAFECAFE000000000000000B /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		CAFEAA000000000000000006 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -457,14 +478,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CAFECAFE000000000000000B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		CAFECAFE0000000000000012 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = CAFECAFE000000000000000A /* UNESWidgets */;
-			targetProxy = CAFECAFE0000000000000011 /* PBXContainerItemProxy */;
-		};
 		CAFEAA00000000000000001E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = CAFEAA00000000000000001C /* UNESWatchWidgets */;
@@ -474,6 +497,11 @@
 			isa = PBXTargetDependency;
 			target = CAFEAA00000000000000000C /* UNESWatch */;
 			targetProxy = CAFEAA000000000000000021 /* PBXContainerItemProxy */;
+		};
+		CAFECAFE0000000000000012 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CAFECAFE000000000000000A /* UNESWidgets */;
+			targetProxy = CAFECAFE0000000000000011 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -677,66 +705,6 @@
 			};
 			name = Release;
 		};
-		CAFECAFE000000000000000F /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = UNESWidgets/UNESWidgets.entitlements;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 5GH6Q6KS69;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = UNESWidgets/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = UNES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				MARKETING_VERSION = 0.11.0;
-				PRODUCT_BUNDLE_IDENTIFIER = dev.forcetower.unes.ios.widgets;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_STRICT_CONCURRENCY = complete;
-				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 6.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		CAFECAFE0000000000000010 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = UNESWidgets/UNESWidgets.entitlements;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 5GH6Q6KS69;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = UNESWidgets/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = UNES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				MARKETING_VERSION = 0.11.0;
-				PRODUCT_BUNDLE_IDENTIFIER = dev.forcetower.unes.ios.widgets;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_STRICT_CONCURRENCY = complete;
-				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 6.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
 		CAFEAA00000000000000000A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -747,6 +715,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 5GH6Q6KS69;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = UNESWatch/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = UNES;
@@ -780,6 +749,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 5GH6Q6KS69;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = UNESWatch/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = UNES;
@@ -865,6 +835,66 @@
 			};
 			name = Release;
 		};
+		CAFECAFE000000000000000F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = UNESWidgets/UNESWidgets.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5GH6Q6KS69;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = UNESWidgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = UNES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 0.11.0;
+				PRODUCT_BUNDLE_IDENTIFIER = dev.forcetower.unes.ios.widgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		CAFECAFE0000000000000010 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = UNESWidgets/UNESWidgets.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5GH6Q6KS69;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = UNESWidgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = UNES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 0.11.0;
+				PRODUCT_BUNDLE_IDENTIFIER = dev.forcetower.unes.ios.widgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -886,15 +916,6 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		CAFECAFE000000000000000E /* Build configuration list for PBXNativeTarget "UNESWidgets" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				CAFECAFE000000000000000F /* Debug */,
-				CAFECAFE0000000000000010 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		CAFEAA000000000000000009 /* Build configuration list for PBXNativeTarget "UNESWatch" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -909,6 +930,15 @@
 			buildConfigurations = (
 				CAFEAA00000000000000001A /* Debug */,
 				CAFEAA00000000000000001B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CAFECAFE000000000000000E /* Build configuration list for PBXNativeTarget "UNESWidgets" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CAFECAFE000000000000000F /* Debug */,
+				CAFECAFE0000000000000010 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -934,19 +964,29 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		CAFECAFE0000000000000002 /* UNESKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = UNESKit;
-		};
-		CAFECAFE0000000000000005 /* UNESKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = UNESKit;
-		};
 		CAFEAA000000000000000001 /* UNESKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = UNESKit;
 		};
 		CAFEAA000000000000000011 /* UNESKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = UNESKit;
+		};
+		CAFEAA000000000000000026 /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CAFEFB0000000000000000A0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
+		CAFEAA000000000000000028 /* FirebaseCrashlytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CAFEFB0000000000000000A0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCrashlytics;
+		};
+		CAFECAFE0000000000000002 /* UNESKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = UNESKit;
+		};
+		CAFECAFE0000000000000005 /* UNESKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = UNESKit;
 		};
