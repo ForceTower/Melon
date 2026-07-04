@@ -125,6 +125,12 @@ struct MessagesMappingTests {
         #expect(MessagesFormat.relativeTime(for: date(day: 10), now: now, calendar: calendar) == HomeFormat.shortDate(for: date(day: 10)))
     }
 
+    @Test
+    func fullTimestampZeroPadsSingleDigitMinutes() {
+        // The day half is locale-driven; the time half is fixed 24h "HH:mm".
+        #expect(MessagesFormat.fullTimestamp(for: date(day: 29, hour: 11, minute: 2)).hasSuffix("· 11:02"))
+    }
+
     // MARK: Filters
 
     @Test

@@ -89,7 +89,7 @@ enum MessagesFormat {
     /// "18 de abril de 2026 · 09:14" — the detail timestamp.
     static func fullTimestamp(for date: Date) -> String {
         let day = date.formatted(.dateTime.day().month(.wide).year().locale(locale))
-        let time = date.formatted(.dateTime.hour(.twoDigits(amPM: .omitted)).minute().locale(locale))
+        let time = date.formatted(.dateTime.hour(.twoDigits(amPM: .omitted)).minute(.twoDigits).locale(locale))
         return "\(day) · \(time)"
     }
 

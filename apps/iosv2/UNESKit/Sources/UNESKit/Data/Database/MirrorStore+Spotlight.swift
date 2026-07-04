@@ -138,20 +138,54 @@ extension MirrorStore {
         let receivedAt = record.timestamp.flatMap { try? Date($0, strategy: timestampFormat) }
         let date = receivedAt?.formatted(.dateTime.day().month(.abbreviated).year().locale(locale))
         let disciplineScope = scopes.first { $0.scope == "class" }
-        // Subject-less messages already show the sender as their title —
-        // repeating it in the subtitle reads as a glitch.
-        let subtitleSender = subject == nil ? nil : sender
+        let body = record.content?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+
+        // Subject-less institutional messages are titled by their origin,
+        // like the inbox's categorization — the individual sender's name is
+        // the wrong headline for a class notice or a rectorate broadcast.
+        // Personal (and app) messages keep the sender: there the name is
+        // the point.
+        let originTitle: String? = switch resolveOrigin(source: record.source, scopes: scopes) {
+        case .discipline:
+            disciplineScope.flatMap { scope in
+                (scope.disciplineName ?? scope.disciplineCode)?
+                    .trimmingCharacters(in: .whitespaces).spotlightNonEmpty
+            }
+        case .campus:
+            String.localized(.messagesFilterUniversity)
+        case .secretariat:
+            String.localized(.messagesRoleSecretariat)
+        case .direct, .app:
+            nil
+        }
+        let title = subject ?? originTitle ?? sender
+
+        // The sender rides in the subtitle whenever it isn't the title
+        // itself; subject-less rows add a body snippet so several notes
+        // under one title stay tellable-apart.
+        let subtitleParts = subject != nil
+            ? [sender, date]
+            : [title == sender ? nil : sender, date, snippet(of: body)]
         return SpotlightMessage(
             id: SpotlightEntityID.message(id: record.id),
             messageId: record.id,
-            title: subject ?? sender,
-            subtitle: [subtitleSender, date].compactMap { $0 }.joined(separator: " · "),
-            body: record.content?.trimmingCharacters(in: .whitespacesAndNewlines) ?? "",
+            title: title,
+            subtitle: subtitleParts.compactMap { $0 }.joined(separator: " · "),
+            body: body,
             keywords: [
                 disciplineScope?.disciplineCode?.trimmingCharacters(in: .whitespaces).spotlightNonEmpty,
                 disciplineScope?.disciplineName?.trimmingCharacters(in: .whitespaces).spotlightNonEmpty,
             ].compactMap { $0 }
         )
+    }
+
+    /// The body collapsed to one line and capped — enough to tell results
+    /// apart in the Spotlight list, not a second body copy.
+    private static func snippet(of body: String) -> String? {
+        let collapsed = body.split(whereSeparator: \.isWhitespace).joined(separator: " ")
+        guard !collapsed.isEmpty else { return nil }
+        guard collapsed.count > 80 else { return collapsed }
+        return collapsed.prefix(80) + "…"
     }
 }
 

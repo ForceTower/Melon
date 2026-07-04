@@ -165,7 +165,7 @@ struct SpotlightProjectionTests {
     // MARK: Messages
 
     @Test
-    func messageTitleFallsBackToSenderAndClassScopesBecomeKeywords() async throws {
+    func subjectlessTitlesFollowTheMessageOriginAndClassScopesBecomeKeywords() async throws {
         let store = MirrorStore(writer: try inMemoryDatabase())
         try await store.apply(semesters: [], snapshot: nil, syncedAt: .now)
         try await store.upsertMessages(messagesPage(
@@ -190,16 +190,57 @@ struct SpotlightProjectionTests {
         #expect(messages.map(\.messageId) == ["m2", "m1"])
         let scoped = messages[0]
         #expect(scoped.id == "message/m2")
-        #expect(scoped.title == "Adriana Matos")
-        // Sender is already the title — the subtitle is just the date.
-        #expect(!scoped.subtitle.contains("Adriana"))
-        #expect(!scoped.subtitle.isEmpty)
+        // Subject-less class notice: titled by the discipline, with the
+        // sender demoted to the subtitle beside the date + body snippet.
+        #expect(scoped.title == "Algoritmos I")
+        #expect(scoped.subtitle.hasPrefix("Adriana Matos · "))
+        #expect(scoped.subtitle.contains("Aula cancelada hoje."))
         #expect(scoped.body == "Aula cancelada hoje.")
         #expect(scoped.keywords == ["ALGI", "Algoritmos I"])
         let campus = messages[1]
         #expect(campus.title == "Prazo de matrícula")
         #expect(campus.subtitle.hasPrefix("Colegiado de Computação · "))
         #expect(campus.keywords.isEmpty)
+    }
+
+    @Test
+    func subjectlessInstitutionalOriginsGetLabelTitlesAndPersonalKeepsTheSender() async throws {
+        let store = MirrorStore(writer: try inMemoryDatabase())
+        try await store.apply(semesters: [], snapshot: nil, syncedAt: .now)
+        try await store.upsertMessages(messagesPage(
+            [
+                MessageRecord(
+                    id: "m1", subject: nil, content: "Documentos disponíveis.",
+                    senderName: "Maria da Silva", timestamp: "2026-04-10T12:00:00.000Z", read: false
+                ),
+                MessageRecord(
+                    id: "m2", subject: nil, content: "Retorno das atividades.",
+                    senderName: "Reitoria UEFS", timestamp: "2026-04-11T12:00:00.000Z", read: false
+                ),
+                MessageRecord(
+                    id: "m3", subject: nil, content: "Me procure após a aula.",
+                    senderName: "Beatriz Sampaio", timestamp: "2026-04-12T12:00:00.000Z", read: false
+                ),
+            ],
+            scopes: [
+                MessageScopeRecord(id: "s1", messageId: "m1", scope: "coordination"),
+                MessageScopeRecord(id: "s2", messageId: "m2", scope: "university"),
+                MessageScopeRecord(id: "s3", messageId: "m3", scope: "personal"),
+            ]
+        ), syncedAt: .now)
+
+        let messages = try await store.spotlightRecentMessages(limit: 5)
+
+        #expect(messages.map(\.messageId) == ["m3", "m2", "m1"])
+        // Personal note: the sender IS the headline, and stays out of the
+        // subtitle.
+        #expect(messages[0].title == "Beatriz Sampaio")
+        #expect(!messages[0].subtitle.contains("Beatriz"))
+        // Institutional messages headline their origin, not the individual.
+        #expect(messages[1].title == String.localized(.messagesFilterUniversity))
+        #expect(messages[1].subtitle.hasPrefix("Reitoria UEFS · "))
+        #expect(messages[2].title == String.localized(.messagesRoleSecretariat))
+        #expect(messages[2].subtitle.hasPrefix("Maria da Silva · "))
     }
 
     @Test
