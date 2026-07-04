@@ -22,6 +22,10 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         log.info("app launching preview=\(isPreview)")
         guard !isPreview else { return true }
 
+        // Before any scene task reads dependencies — the indexer's entity
+        // types live in this target, so the package can't install it itself.
+        SpotlightSupport.installIndexer(UNESSpotlightIndexer())
+
         FirebaseApp.configure()
         log.info("firebase configured")
         #if DEBUG

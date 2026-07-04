@@ -68,6 +68,88 @@ struct AppFeatureTests {
     }
 
     @Test
+    func disciplineEntityRouteOpensTheDetail() async {
+        let discipline = DisciplineSummary(
+            id: "d1", code: "ALGI", name: "Algoritmos I", hours: 60, missedHours: 0
+        )
+        let overview = DisciplinesOverview(
+            current: SemesterDisciplines(id: "sem1", code: "20261", disciplines: [discipline])
+        )
+        let store = TestStore(initialState: AppFeature.State()) {
+            AppFeature()
+        } withDependencies: {
+            $0.date = .constant(Self.referenceDate)
+            $0.disciplinesRepository.cached = { _ in overview }
+        }
+
+        await store.send(.intentOpenDiscipline(semesterId: "sem1", disciplineId: "d1"))
+        await store.receive(.intentRoute(.classes)) {
+            $0.tab = .classes
+        }
+        await store.receive(.disciplines(.disciplineTapped(semesterId: "sem1", discipline: discipline))) {
+            $0.disciplines.path[id: 0] =
+                .detail(DisciplineDetailFeature.State(summary: discipline, semesterId: "sem1"))
+        }
+    }
+
+    @Test
+    func staleDisciplineRouteFallsBackToTheTab() async {
+        let store = TestStore(initialState: AppFeature.State()) {
+            AppFeature()
+        } withDependencies: {
+            $0.date = .constant(Self.referenceDate)
+            $0.disciplinesRepository.cached = { _ in nil }
+        }
+
+        await store.send(.intentOpenDiscipline(semesterId: "sem1", disciplineId: "gone"))
+        await store.receive(.intentRoute(.classes)) {
+            $0.tab = .classes
+        }
+    }
+
+    @Test
+    func messageEntityRouteOpensTheDetailAndMarksItRead() async {
+        let message = MessageItem(
+            id: "m1", origin: .campus, disciplineCode: nil, disciplineName: nil,
+            disciplineColorIndex: nil, subject: "Prazo de matrícula", body: "O prazo termina sexta.",
+            senderName: "Colegiado", receivedAt: Self.referenceDate, unread: true, starred: false
+        )
+        let store = TestStore(initialState: AppFeature.State()) {
+            AppFeature()
+        } withDependencies: {
+            $0.date = .constant(Self.referenceDate)
+            $0.messagesRepository.cached = { _ in MessagesOverview(messages: [message]) }
+            $0.messagesRepository.markRead = { _, _ in }
+        }
+
+        await store.send(.intentOpenMessage(id: "m1"))
+        await store.receive(.intentRoute(.messages)) {
+            $0.tab = .messages
+        }
+        var opened = message
+        opened.unread = false
+        await store.receive(.messages(.messageTapped(message))) {
+            $0.messages.path[id: 0] = .detail(MessageDetailFeature.State(message: opened))
+        }
+        await store.receive(.messages(.delegate(.unreadChanged(0))))
+    }
+
+    @Test
+    func staleMessageRouteFallsBackToTheTab() async {
+        let store = TestStore(initialState: AppFeature.State()) {
+            AppFeature()
+        } withDependencies: {
+            $0.date = .constant(Self.referenceDate)
+            $0.messagesRepository.cached = { _ in nil }
+        }
+
+        await store.send(.intentOpenMessage(id: "gone"))
+        await store.receive(.intentRoute(.messages)) {
+            $0.tab = .messages
+        }
+    }
+
+    @Test
     func unreadCountFeedsTheMessagesBadge() async {
         let store = TestStore(initialState: AppFeature.State()) {
             AppFeature()

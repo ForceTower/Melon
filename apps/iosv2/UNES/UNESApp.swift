@@ -5,6 +5,7 @@
 //  Created by João Paulo Santos Sena on 01/07/26.
 //
 
+import CoreSpotlight
 import SwiftUI
 import UNESKit
 
@@ -15,6 +16,12 @@ struct UNESApp: App {
     var body: some Scene {
         WindowGroup {
             RootView()
+                .onContinueUserActivity(CSSearchableItemActionType) { activity in
+                    guard let identifier =
+                        activity.userInfo?[CSSearchableItemActivityIdentifier] as? String
+                    else { return }
+                    IntentSupport.openEntity(identifier: identifier)
+                }
         }
     }
 }

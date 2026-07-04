@@ -68,4 +68,19 @@ struct IntentRouterTests {
         hub.send(.tab(.home))
         #expect(await second.next() == .tab(.home))
     }
+
+    @Test
+    func entityRoutesRideTheSameBuffer() async {
+        let hub = IntentRouteHub()
+        // Newest wins across route kinds — the discipline tap overwrites the
+        // buffered tab ask.
+        hub.send(.tab(.home))
+        hub.send(.discipline(semesterId: "sem1", disciplineId: "d1"))
+
+        var routes = hub.stream().makeAsyncIterator()
+
+        #expect(await routes.next() == .discipline(semesterId: "sem1", disciplineId: "d1"))
+        hub.send(.message(id: "m1"))
+        #expect(await routes.next() == .message(id: "m1"))
+    }
 }

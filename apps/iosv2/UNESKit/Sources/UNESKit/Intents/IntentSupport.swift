@@ -130,6 +130,27 @@ public enum IntentSupport {
         log.info("open-tab route posted tab=\(tab.rawValue)")
     }
 
+    /// A Spotlight result tap: parses the entity identifier and posts the
+    /// route; `AppFeature` resolves it against the mirror at delivery time.
+    public static func openEntity(identifier: String) {
+        @ComposableArchitecture.Dependency(\.sessionStore) var sessionStore
+        @ComposableArchitecture.Dependency(\.intentRouter) var intentRouter
+
+        guard let route = SpotlightEntityID.parse(identifier) else {
+            log.warn("entity route unparseable")
+            return
+        }
+        // Signed out, nothing subscribes — a buffered route would replay
+        // after a later login, so don't post at all. The app still opens
+        // onto onboarding, which is correct.
+        guard sessionStore.current() != nil else {
+            log.info("entity route ignored signed-out")
+            return
+        }
+        intentRouter.open(route)
+        log.info("entity route posted kind=\(route.kindLabel)")
+    }
+
     private static func dialog(inClass occurrence: ClassOccurrence) -> IntentDialog {
         let end = IntentFormat.spokenTime(occurrence.endOrEstimate)
         if let room = occurrence.room {

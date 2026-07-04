@@ -28,6 +28,8 @@ struct AppFeature {
         case sceneActivated
         case pushDataReceived(PushDataEvent)
         case intentRoute(Tab)
+        case intentOpenDiscipline(semesterId: String, disciplineId: String)
+        case intentOpenMessage(id: String)
         case home(HomeFeature.Action)
         case schedule(ScheduleFeature.Action)
         case disciplines(DisciplinesFeature.Action)
@@ -38,6 +40,8 @@ struct AppFeature {
     @Dependency(\.push) var push
     @Dependency(\.syncRepository) var syncRepository
     @Dependency(\.homeRepository) var homeRepository
+    @Dependency(\.disciplinesRepository) var disciplinesRepository
+    @Dependency(\.messagesRepository) var messagesRepository
     @Dependency(\.intentRouter) var intentRouter
     @Dependency(\.continuousClock) var clock
     @Dependency(\.date) var date
@@ -71,7 +75,12 @@ struct AppFeature {
                     .run { send in
                         for await route in intentRouter.routes() {
                             switch route {
-                            case let .tab(tab): await send(.intentRoute(tab))
+                            case let .tab(tab):
+                                await send(.intentRoute(tab))
+                            case let .discipline(semesterId, disciplineId):
+                                await send(.intentOpenDiscipline(semesterId: semesterId, disciplineId: disciplineId))
+                            case let .message(id):
+                                await send(.intentOpenMessage(id: id))
                             }
                         }
                     }
@@ -86,6 +95,36 @@ struct AppFeature {
                 log.info("intent route consumed tab=\(tab.rawValue)")
                 state.tab = tab
                 return .none
+
+            case let .intentOpenDiscipline(semesterId, disciplineId):
+                // Consume-time resolution: the mirror is readable before any
+                // tab has loaded, so a buffered cold-launch route lands on
+                // fresh data; a stale index row falls back to the tab alone.
+                return .run { [log, now = date.now] send in
+                    let overview = try? await disciplinesRepository.cached(now)
+                    let groups = [overview?.current].compactMap { $0 } + (overview?.past ?? [])
+                    guard let group = groups.first(where: { $0.id == semesterId }),
+                          let discipline = group.disciplines.first(where: { $0.id == disciplineId })
+                    else {
+                        log.info("entity route fallback kind=discipline")
+                        await send(.intentRoute(.classes))
+                        return
+                    }
+                    await send(.intentRoute(.classes))
+                    await send(.disciplines(.disciplineTapped(semesterId: semesterId, discipline: discipline)))
+                }
+
+            case let .intentOpenMessage(id):
+                return .run { [log, now = date.now] send in
+                    let overview = try? await messagesRepository.cached(now)
+                    guard let message = overview?.messages.first(where: { $0.id == id }) else {
+                        log.info("entity route fallback kind=message")
+                        await send(.intentRoute(.messages))
+                        return
+                    }
+                    await send(.intentRoute(.messages))
+                    await send(.messages(.messageTapped(message)))
+                }
 
             case .sceneBackgrounded:
                 state.wasBackgrounded = true

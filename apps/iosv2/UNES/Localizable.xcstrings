@@ -1,6 +1,43 @@
 {
   "sourceLanguage" : "pt-BR",
   "strings" : {
+    "%@" : {
+
+    },
+    "entity.discipline.typeName" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Course"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disciplina"
+          }
+        }
+      }
+    },
+    "entity.message.typeName" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Message"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mensagem"
+          }
+        }
+      }
+    },
     "intent.nextClass.title" : {
       "extractionState" : "manual",
       "localizations" : {

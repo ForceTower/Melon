@@ -28,6 +28,7 @@ struct RootFeature {
     }
 
     @Dependency(\.widgetSync) var widgetSync
+    @Dependency(\.spotlightSync) var spotlightSync
     @Dependency(\.legacyMigration) var legacyMigration
     private let log = Log.scoped("RootFeature")
 
@@ -35,14 +36,15 @@ struct RootFeature {
         Reduce { state, action in
             switch action {
             case .task:
-                // App-lifetime mirror → widget republishing, alive across
-                // login/logout so a wipe also clears the widgets.
+                // App-lifetime mirror → widget/Spotlight republishing, alive
+                // across login/logout so a wipe also clears both.
                 let widgets = Effect<Action>.run { _ in await widgetSync.run() }
+                let spotlight = Effect<Action>.run { _ in await spotlightSync.run() }
                 guard case .onboarding = state else {
                     // Already signed in — sweep anything the legacy app left.
-                    return .merge(widgets, .run { _ in legacyMigration.removeArtifacts() })
+                    return .merge(widgets, spotlight, .run { _ in legacyMigration.removeArtifacts() })
                 }
-                return .merge(widgets, .run { send in
+                return .merge(widgets, spotlight, .run { send in
                     await send(.legacyMigration(legacyMigration.attempt()))
                 })
 

@@ -1,9 +1,21 @@
 import ComposableArchitecture
 import Foundation
 
-/// An in-app destination requested by a Siri/Shortcuts intent.
+/// An in-app destination requested by a Siri/Shortcuts intent or a
+/// Spotlight result tap.
 enum IntentRoute: Equatable, Sendable {
     case tab(AppFeature.Tab)
+    case discipline(semesterId: String, disciplineId: String)
+    case message(id: String)
+
+    /// Log label — never carries ids or names (remote log).
+    var kindLabel: String {
+        switch self {
+        case .tab: "tab"
+        case .discipline: "discipline"
+        case .message: "message"
+        }
+    }
 }
 
 /// Hands routes from intent `perform()` calls to whichever reducer is
