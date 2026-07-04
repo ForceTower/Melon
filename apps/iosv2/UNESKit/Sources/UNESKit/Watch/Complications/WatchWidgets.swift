@@ -46,7 +46,6 @@ public struct WatchNextClassWidget: Widget {
     public var body: some WidgetConfiguration {
         StaticConfiguration(kind: UNESWidgetKind.watchNextClass, provider: WatchNextClassProvider()) { entry in
             WatchNextClassEntryView(entry: entry)
-                .containerBackground(for: .widget) { Color.clear }
         }
         .configurationDisplayName(Text(.homeHeroNextClass))
         .description(Text(.watchWidgetDescription))
@@ -63,13 +62,32 @@ struct WatchNextClassEntryView: View {
         switch family {
         case .accessoryCircular:
             CircularAccessoryView(entry: entry)
+                .containerBackground(for: .widget) { Color.clear }
         case .accessoryInline:
             InlineAccessoryView(entry: entry)
+                .containerBackground(for: .widget) { Color.clear }
         case .accessoryCorner:
             CircularAccessoryView(entry: entry)
                 .widgetLabel { InlineAccessoryView(entry: entry) }
+                .containerBackground(for: .widget) { Color.clear }
         default:
+            // The Smart Stack renders full color — carry the schedule's cool
+            // mesh like every other next-class hero.
             RectangularAccessoryView(entry: entry)
+                .containerBackground(for: .widget) {
+                    ZStack {
+                        UNESColor.darkBg
+                        StaticMeshView(variant: .cool, intensity: 0.9)
+                        LinearGradient(
+                            colors: [
+                                Color(hex: 0x050A0E, opacity: 0.15),
+                                Color(hex: 0x050A0E, opacity: 0.55),
+                            ],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    }
+                }
         }
     }
 }
@@ -140,6 +158,7 @@ struct WatchCoefficientView: View {
                     .widgetAccentable()
             }
             .gaugeStyle(.accessoryCircular)
+            .tint(UNESColor.amber)
         case .accessoryInline:
             Text(verbatim: "\(String.localized(.widgetScore)) \(formatGrade(value))")
         default:
@@ -151,7 +170,7 @@ struct WatchCoefficientView: View {
                         .font(.system(size: 11, weight: .semibold))
                         .textCase(.uppercase)
                 }
-                .opacity(0.9)
+                .foregroundStyle(UNESColor.amber)
                 HStack(alignment: .firstTextBaseline, spacing: 5) {
                     Text(formatGrade(value))
                         .font(.system(size: 24, weight: .bold))
@@ -165,7 +184,7 @@ struct WatchCoefficientView: View {
                                 .font(.system(size: 13, weight: .bold))
                                 .monospacedDigit()
                         }
-                        .opacity(0.85)
+                        .foregroundStyle(UNESColor.liveGreen)
                     }
                 }
             }
@@ -242,7 +261,7 @@ struct WatchNextExamView: View {
                         .font(.system(size: 11, weight: .semibold))
                         .textCase(.uppercase)
                 }
-                .opacity(0.9)
+                .foregroundStyle(UNESColor.rose)
                 if let exam {
                     Text(verbatim: "\(exam.label) · \(exam.disciplineName)")
                         .font(.system(size: 15, weight: .bold))
@@ -305,6 +324,7 @@ struct WatchAttendanceView: View {
                     .widgetAccentable()
             }
             .gaugeStyle(.accessoryCircular)
+            .tint(UNESColor.teal)
         case .accessoryInline:
             Text(verbatim: "\(String.localized(.widgetAttendance)) \(percent.map { "\($0)%" } ?? "—")")
         default:
@@ -316,7 +336,7 @@ struct WatchAttendanceView: View {
                         .font(.system(size: 11, weight: .semibold))
                         .textCase(.uppercase)
                 }
-                .opacity(0.9)
+                .foregroundStyle(UNESColor.teal)
                 Text(percent.map { "\($0)%" } ?? "—")
                     .font(.system(size: 24, weight: .bold))
                     .monospacedDigit()

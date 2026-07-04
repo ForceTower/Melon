@@ -65,6 +65,8 @@ enum UNESColor {
     // MARK: Fixed accents
 
     static let teal = Color(hex: 0x3B9EAE)
+    /// Magenta lifted for legibility on always-dark surfaces (watch tints).
+    static let rose = Color(hex: 0xD06AA0)
     static let tangerine = Color(hex: 0xE8894E)
     static let violet = Color(hex: 0x7A6CE0)
     static let liveGreen = Color(hex: 0x34C759)
