@@ -112,8 +112,18 @@ private final class WatchSessionBridge: NSObject, WCSessionDelegate, Sendable {
         onSessionReady()
     }
 
+    /// Live path — the watch prefers `sendMessage` while the phone is reachable.
+    func session(_ session: WCSession, didReceiveMessage message: [String: Any]) {
+        deliverReadReceipts(in: message)
+    }
+
+    /// Queued path — the watch falls back to `transferUserInfo` when unreachable.
     func session(_ session: WCSession, didReceiveUserInfo userInfo: [String: Any] = [:]) {
-        guard let ids = userInfo["readMessageIds"] as? [String], !ids.isEmpty else { return }
+        deliverReadReceipts(in: userInfo)
+    }
+
+    private func deliverReadReceipts(in payload: [String: Any]) {
+        guard let ids = payload["readMessageIds"] as? [String], !ids.isEmpty else { return }
         onReadReceipts(ids)
     }
 }

@@ -113,17 +113,27 @@ private final class WatchSessionReceiver: NSObject, WCSessionDelegate, Sendable 
         session.activate()
     }
 
-    /// Best-effort read receipt: `transferUserInfo` queues across phone
-    /// unreachability, and the local overlay already flipped the row, so a
-    /// skipped send only leaves the phone behind until it's read there.
+    /// Best-effort read receipt: `sendMessage` delivers live while the phone
+    /// is reachable, `transferUserInfo` queues across unreachability, and the
+    /// local overlay already flipped the row, so a skipped send only leaves
+    /// the phone behind until it's read there.
     func reportRead(ids: [String]) {
         let session = WCSession.default
         guard session.activationState == .activated else {
             log.warn("reportRead skipped reason=inactive count=\(ids.count)")
             return
         }
-        session.transferUserInfo(["readMessageIds": ids])
-        log.debug("reportRead queued count=\(ids.count)")
+        let payload: [String: Any] = ["readMessageIds": ids]
+        guard session.isReachable else {
+            session.transferUserInfo(payload)
+            log.debug("reportRead queued count=\(ids.count)")
+            return
+        }
+        session.sendMessage(payload, replyHandler: nil) { error in
+            log.warn("reportRead send failed, queueing count=\(ids.count)", error: error)
+            session.transferUserInfo(payload)
+        }
+        log.debug("reportRead sent count=\(ids.count)")
     }
 
     func session(
