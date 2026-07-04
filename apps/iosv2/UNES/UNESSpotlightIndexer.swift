@@ -53,11 +53,10 @@ struct UNESSpotlightIndexer: SpotlightIndexWriter {
     }
 
     func deleteAll() async throws {
-        try await CSSearchableIndex.default().deleteSearchableItems(
-            withDomainIdentifiers: [
-                SpotlightDomain.discipline, SpotlightDomain.message, SpotlightDomain.evaluation,
-            ]
-        )
+        // Not a domain wipe: entity-created items (disciplines, evaluations,
+        // and any left behind by older identifier schemes) carry no domain
+        // identifier, so only a true delete-all reaches them.
+        try await CSSearchableIndex.default().deleteAllSearchableItems()
     }
 
     func disciplinesDidChange() async {

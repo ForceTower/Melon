@@ -70,7 +70,10 @@ struct SpotlightIndexLedger: Equatable, Codable, Sendable {
     /// never full-text match on their body) with bare-id identifiers.
     /// 4: evaluations joined the index, and the ledger moved from the JSON
     /// file into the mirror database.
-    static let schemaVersion = 4
+    /// 5: `deleteAll` became a true delete-all — the old domain-based wipe
+    /// never reached entity-created items, so pre-3 message entities
+    /// survived every schema wipe and lingered as stale duplicates.
+    static let schemaVersion = 5
 
     var version: Int = SpotlightIndexLedger.schemaVersion
     var disciplines: [String: String] = [:]
