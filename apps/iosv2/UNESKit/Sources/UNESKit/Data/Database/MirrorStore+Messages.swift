@@ -144,7 +144,7 @@ extension MirrorStore {
 
     // MARK: Mapping
 
-    private static func messagesOverview(_ db: Database, now: Date) throws -> MessagesOverview {
+    static func messagesOverview(_ db: Database, now: Date) throws -> MessagesOverview {
         let records = try MessageRecord.order(Column("timestamp").desc).fetchAll(db)
         let scopesByMessage = Dictionary(
             grouping: try MessageScopeRecord.fetchAll(db),

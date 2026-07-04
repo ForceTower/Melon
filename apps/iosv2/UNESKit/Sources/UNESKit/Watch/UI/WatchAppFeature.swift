@@ -18,6 +18,8 @@ struct WatchAppFeature {
     enum Route: Equatable, Hashable {
         case week
         case discipline(String)
+        case messages
+        case message(String)
     }
 
     enum Action: Equatable, BindableAction {
@@ -26,6 +28,8 @@ struct WatchAppFeature {
         case snapshotUpdated(WatchSnapshot?)
         case weekTapped
         case disciplineTapped(String)
+        case messagesTapped
+        case messageTapped(String)
     }
 
     @Dependency(\.watchRepository) var repository
@@ -68,6 +72,19 @@ struct WatchAppFeature {
             case let .disciplineTapped(id):
                 state.path.append(.discipline(id))
                 return .none
+
+            case .messagesTapped:
+                state.path.append(.messages)
+                return .none
+
+            case let .messageTapped(id):
+                state.path.append(.message(id))
+                guard state.snapshot?.messages.first(where: { $0.id == id })?.unread == true else {
+                    return .none
+                }
+                log.info("message opened id=\(id) markRead")
+                let repository = repository
+                return .run { _ in await repository.markMessageRead(id: id) }
             }
         }
     }

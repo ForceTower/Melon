@@ -17,7 +17,8 @@ struct WatchStore: Sendable {
     // MARK: Write path (the WatchConnectivity receiver is the only caller)
 
     /// Replaces the whole cache with the pushed payload; nil (signed out)
-    /// leaves the tables empty.
+    /// leaves the tables empty. The local read overlay survives pushes —
+    /// only rows for messages that left the payload (or a sign-out) go.
     func apply(_ snapshot: WatchSnapshot?) async throws {
         try await writer.write { db in
             try WatchStatusRecord.deleteAll(db)
@@ -25,7 +26,13 @@ struct WatchStore: Sendable {
             try WatchGradeRecord.deleteAll(db)
             try WatchSessionRecord.deleteAll(db)
             try WatchTopicRecord.deleteAll(db)
-            guard let snapshot else { return }
+            try WatchMessageRecord.deleteAll(db)
+            guard let snapshot else {
+                try WatchMessageReadRecord.deleteAll(db)
+                return
+            }
+            let messageIds = snapshot.messages.map(\.id)
+            try WatchMessageReadRecord.filter(!messageIds.contains(Column("messageId"))).deleteAll(db)
 
             try WatchStatusRecord(
                 semesterCode: snapshot.schedule.semesterCode,
@@ -84,8 +91,41 @@ struct WatchStore: Sendable {
                     subject: topic.subject
                 ).insert(db)
             }
+            for (ordinal, message) in snapshot.messages.enumerated() {
+                try WatchMessageRecord(
+                    id: message.id,
+                    ordinal: ordinal,
+                    origin: message.origin.rawValue,
+                    disciplineCode: message.disciplineCode,
+                    disciplineName: message.disciplineName,
+                    disciplineColorIndex: message.disciplineColorIndex,
+                    subject: message.subject,
+                    body: message.body,
+                    senderName: message.senderName,
+                    receivedAt: message.receivedAt,
+                    unread: message.unread
+                ).insert(db)
+                for (position, attachment) in message.attachments.enumerated() {
+                    try WatchMessageAttachmentRecord(
+                        messageId: message.id,
+                        position: position,
+                        id: attachment.id,
+                        kind: attachment.kind.rawValue,
+                        name: attachment.name,
+                        url: attachment.url
+                    ).insert(db)
+                }
+            }
         }
-        log.info("apply ok hasSnapshot=\(snapshot != nil) disciplines=\(snapshot?.disciplines.count ?? 0) sessions=\(snapshot?.schedule.sessions.count ?? 0)")
+        log.info("apply ok hasSnapshot=\(snapshot != nil) disciplines=\(snapshot?.disciplines.count ?? 0) sessions=\(snapshot?.schedule.sessions.count ?? 0) messages=\(snapshot?.messages.count ?? 0)")
+    }
+
+    /// The watch-local read overlay: opening a message flips it immediately,
+    /// even if the receipt never reaches the phone.
+    func markMessageRead(id: String, now: Date) async throws {
+        try await writer.write { db in
+            try WatchMessageReadRecord(messageId: id, readAt: now).upsert(db)
+        }
     }
 
     // MARK: Read path
@@ -153,6 +193,34 @@ struct WatchStore: Sendable {
             exam = WatchSnapshot.Exam(label: label, disciplineName: name, date: date, time: status.examTime)
         }
 
+        let attachmentsByMessage = try Dictionary(
+            grouping: WatchMessageAttachmentRecord.order(Column("position")).fetchAll(db),
+            by: \.messageId
+        )
+        let readIds = Set(try WatchMessageReadRecord.fetchAll(db).map(\.messageId))
+        let messages = try WatchMessageRecord.order(Column("ordinal")).fetchAll(db).map { record in
+            WatchSnapshot.Message(
+                id: record.id,
+                origin: MessageOrigin(rawValue: record.origin) ?? .campus,
+                disciplineCode: record.disciplineCode,
+                disciplineName: record.disciplineName,
+                disciplineColorIndex: record.disciplineColorIndex,
+                subject: record.subject,
+                body: record.body,
+                senderName: record.senderName,
+                receivedAt: record.receivedAt,
+                unread: record.unread && !readIds.contains(record.id),
+                attachments: (attachmentsByMessage[record.id] ?? []).map {
+                    WatchSnapshot.Message.Attachment(
+                        id: $0.id,
+                        kind: MessageAttachment.Kind(rawValue: $0.kind) ?? .other,
+                        name: $0.name,
+                        url: $0.url
+                    )
+                }
+            )
+        }
+
         return WatchSnapshot(
             schedule: WidgetScheduleSnapshot(
                 semesterCode: status.semesterCode,
@@ -165,6 +233,7 @@ struct WatchStore: Sendable {
             remainingAbsences: status.remainingAbsences,
             nextExam: exam,
             disciplines: disciplines,
+            messages: messages,
             syncedAt: status.syncedAt
         )
     }
@@ -259,6 +328,37 @@ extension WatchStore {
                 t.primaryKey(["classId", "dayStamp"])
             }
         }
+        migrator.registerMigration("v2-messages") { db in
+            try db.create(table: "messages") { t in
+                t.primaryKey("id", .text)
+                // Push order (newest first), the display order.
+                t.column("ordinal", .integer).notNull()
+                t.column("origin", .text).notNull()
+                t.column("disciplineCode", .text)
+                t.column("disciplineName", .text)
+                t.column("disciplineColorIndex", .integer)
+                t.column("subject", .text)
+                t.column("body", .text).notNull()
+                t.column("senderName", .text).notNull()
+                t.column("receivedAt", .datetime).notNull()
+                t.column("unread", .boolean).notNull()
+            }
+            try db.create(table: "messageAttachments") { t in
+                t.column("messageId", .text).notNull()
+                    .references("messages", onDelete: .cascade)
+                t.column("position", .integer).notNull()
+                t.column("id", .text).notNull()
+                t.column("kind", .text).notNull()
+                t.column("name", .text)
+                t.column("url", .text).notNull()
+                t.primaryKey(["messageId", "position"])
+            }
+            // Local overlay, deliberately outside the full-replace cycle.
+            try db.create(table: "messageReads") { t in
+                t.primaryKey("messageId", .text)
+                t.column("readAt", .datetime).notNull()
+            }
+        }
         return migrator
     }
 }
@@ -322,4 +422,35 @@ private struct WatchTopicRecord: Codable, FetchableRecord, PersistableRecord {
     var classId: String
     var dayStamp: String
     var subject: String
+}
+
+private struct WatchMessageRecord: Codable, FetchableRecord, PersistableRecord {
+    static let databaseTableName = "messages"
+    var id: String
+    var ordinal: Int
+    var origin: String
+    var disciplineCode: String?
+    var disciplineName: String?
+    var disciplineColorIndex: Int?
+    var subject: String?
+    var body: String
+    var senderName: String
+    var receivedAt: Date
+    var unread: Bool
+}
+
+private struct WatchMessageAttachmentRecord: Codable, FetchableRecord, PersistableRecord {
+    static let databaseTableName = "messageAttachments"
+    var messageId: String
+    var position: Int
+    var id: String
+    var kind: String
+    var name: String?
+    var url: String
+}
+
+private struct WatchMessageReadRecord: Codable, FetchableRecord, PersistableRecord {
+    static let databaseTableName = "messageReads"
+    var messageId: String
+    var readAt: Date
 }

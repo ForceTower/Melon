@@ -56,6 +56,37 @@ extension MirrorStore {
             payload.coefficient = coefficient.value
             payload.coefficientDelta = coefficient.delta
         }
+        payload.messages = try messagesOverview(db, now: now).messages
+            .prefix(watchMessageCount)
+            .map(watchMessage)
         return payload
+    }
+
+    /// The watch keeps only the newest messages, and application-context
+    /// pushes are budgeted (~64 KB), so both the list and each body are
+    /// capped here; the watch renders whatever it is handed.
+    private static let watchMessageCount = 20
+    private static let watchMessageBodyLimit = 1500
+
+    private static func watchMessage(_ item: MessageItem) -> WatchSnapshot.Message {
+        var body = item.body
+        if body.count > watchMessageBodyLimit {
+            body = body.prefix(watchMessageBodyLimit) + "…"
+        }
+        return WatchSnapshot.Message(
+            id: item.id,
+            origin: item.origin,
+            disciplineCode: item.disciplineCode,
+            disciplineName: item.disciplineName,
+            disciplineColorIndex: item.disciplineColorIndex,
+            subject: item.subject,
+            body: body,
+            senderName: item.senderName,
+            receivedAt: item.receivedAt,
+            unread: item.unread,
+            attachments: item.attachments.map {
+                WatchSnapshot.Message.Attachment(id: $0.id, kind: $0.kind, name: $0.name, url: $0.url)
+            }
+        )
     }
 }

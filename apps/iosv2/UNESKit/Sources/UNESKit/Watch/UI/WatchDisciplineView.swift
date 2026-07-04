@@ -53,7 +53,7 @@ struct WatchDisciplineView: View {
 
     private func hero(_ discipline: WatchSnapshot.Discipline) -> some View {
         WatchMeshCard(
-            variant: Self.meshVariant(discipline.colorIndex),
+            variant: .discipline(discipline.colorIndex),
             wash: UNESColor.disciplineColor(discipline.colorIndex)
         ) {
             HStack(spacing: 10) {
@@ -178,12 +178,6 @@ struct WatchDisciplineView: View {
             .tracking(0.4)
             .textCase(.uppercase)
             .foregroundStyle(UNESColor.ink3)
-    }
-
-    /// Every discipline gets a mesh family, cycled the same way its color is.
-    private static func meshVariant(_ colorIndex: Int) -> MeshView.Variant {
-        let variants: [MeshView.Variant] = [.warm, .cool, .sun, .rose, .fresh]
-        return variants[abs(colorIndex) % variants.count]
     }
 }
 

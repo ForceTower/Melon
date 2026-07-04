@@ -122,6 +122,28 @@ struct WatchClassRow: View {
     }
 }
 
+extension MeshView.Variant {
+    /// Every discipline gets a mesh family, cycled the same way its color is.
+    static func discipline(_ colorIndex: Int) -> MeshView.Variant {
+        let variants: [MeshView.Variant] = [.warm, .cool, .sun, .rose, .fresh]
+        return variants[abs(colorIndex) % variants.count]
+    }
+}
+
+extension MessageItem {
+    /// The mesh family behind a message hero, following its origin the way
+    /// the accent color does.
+    var meshVariant: MeshView.Variant {
+        switch origin {
+        case .discipline: .discipline(disciplineColorIndex ?? 0)
+        case .secretariat: .cool
+        case .campus: .sun
+        case .app: .rose
+        case .direct: .warm
+        }
+    }
+}
+
 /// The red "now" marker threaded between schedule rows.
 struct WatchNowLine: View {
     var now: Date

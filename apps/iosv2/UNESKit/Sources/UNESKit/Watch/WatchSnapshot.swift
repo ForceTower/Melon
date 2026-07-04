@@ -19,6 +19,9 @@ struct WatchSnapshot: Codable, Equatable, Sendable {
     var nextExam: Exam?
     /// Current-semester disciplines, name-sorted as everywhere else.
     var disciplines: [Discipline] = []
+    /// The newest inbox messages, newest first, capped by the phone so the
+    /// WatchConnectivity context stays within its budget.
+    var messages: [Message] = []
     var syncedAt: Date
 
     struct Exam: Codable, Equatable, Sendable {
@@ -58,6 +61,29 @@ struct WatchSnapshot: Codable, Equatable, Sendable {
         /// yyyy-MM-dd; nil when not scheduled.
         var date: String?
     }
+
+    struct Message: Codable, Equatable, Sendable, Identifiable {
+        var id: String
+        var origin: MessageOrigin
+        var disciplineCode: String?
+        var disciplineName: String?
+        var disciplineColorIndex: Int?
+        var subject: String?
+        /// Truncated by the phone (`MirrorStore.watchMessageBodyLimit`).
+        var body: String
+        var senderName: String
+        var receivedAt: Date
+        /// The phone-side read state; the watch overlays its own on top.
+        var unread: Bool
+        var attachments: [Attachment] = []
+
+        struct Attachment: Codable, Equatable, Sendable, Identifiable {
+            var id: String
+            var kind: MessageAttachment.Kind
+            var name: String?
+            var url: String
+        }
+    }
 }
 
 extension WatchSnapshot.Discipline {
@@ -68,6 +94,29 @@ extension WatchSnapshot.Discipline {
     }
 
     var releasedCount: Int { grades.count { $0.value != nil } }
+}
+
+extension WatchSnapshot.Message {
+    /// The inbox view of a pushed message, so the watch screens reuse the
+    /// phone's message presentation (accent, badge, kind, preview).
+    var item: MessageItem {
+        MessageItem(
+            id: id,
+            origin: origin,
+            disciplineCode: disciplineCode,
+            disciplineName: disciplineName,
+            disciplineColorIndex: disciplineColorIndex,
+            subject: subject,
+            body: body,
+            senderName: senderName,
+            receivedAt: receivedAt,
+            unread: unread,
+            starred: false,
+            attachments: attachments.map {
+                MessageAttachment(id: $0.id, kind: $0.kind, name: $0.name, url: $0.url)
+            }
+        )
+    }
 }
 
 // MARK: - Preview data
@@ -174,6 +223,49 @@ extension WatchSnapshot {
                         Grade(id: "g12", label: "F", name: "Prova Final", value: nil, date: stamp(daysFromNow: 20)),
                     ],
                     partialAverage: 8.1, colorIndex: 4
+                ),
+            ],
+            messages: [
+                Message(
+                    id: "wm1", origin: .campus,
+                    subject: "Retorno das aulas presenciais",
+                    body: "Prezadxs estudantes,\n\nConfirmamos o retorno das atividades presenciais na próxima quarta-feira, 22 de abril, após a semana de recesso do feriado.\n\nA secretaria segue disponível para dúvidas sobre matrícula extemporânea até sexta.\n\nAtenciosamente,\nReitoria UEFS",
+                    senderName: "Reitoria UEFS",
+                    receivedAt: now.addingTimeInterval(-27 * 60), unread: true
+                ),
+                Message(
+                    id: "wm2", origin: .discipline,
+                    disciplineCode: "ALGI", disciplineName: "Algoritmos I", disciplineColorIndex: 0,
+                    subject: "Gabarito da AV1 no moodle",
+                    body: "Pessoal,\n\nSubi o gabarito comentado da primeira avaliação no moodle. Qualquer dúvida, usem o fórum ou me procurem no início da aula de segunda.\n\nA média da turma foi 6,2 — vamos revisar ponteiros duplos com calma na terça.\n\nAbs,\nAdriana",
+                    senderName: "Adriana Lima",
+                    receivedAt: now.addingTimeInterval(-99 * 60), unread: true,
+                    attachments: [
+                        .init(id: "wa1", kind: .pdf, name: "gabarito-av1.pdf", url: "https://example.org/gabarito-av1.pdf"),
+                    ]
+                ),
+                Message(
+                    id: "wm3", origin: .direct,
+                    body: "Mariana,\n\nNotei que você não compareceu ao laboratório 03 ontem. Se foi alguma questão de saúde ou imprevisto, me avise em particular para eu ajustar a nota de participação.\n\nAtt,\nBeatriz",
+                    senderName: "Beatriz Sampaio",
+                    receivedAt: now.addingTimeInterval(-15 * 3600), unread: true
+                ),
+                Message(
+                    id: "wm4", origin: .discipline,
+                    disciplineCode: "LPOO", disciplineName: "POO", disciplineColorIndex: 2,
+                    body: "Pessoal,\n\nAdicionei dois capítulos do Bloch (Effective Java) e o slide de mixins ao repositório da disciplina. Leiam antes de quinta.",
+                    senderName: "Carlos Mendes",
+                    receivedAt: now.addingTimeInterval(-2 * 86_400), unread: false,
+                    attachments: [
+                        .init(id: "wa2", kind: .pdf, name: "effective-java-cap3.pdf", url: "https://example.org/cap3.pdf"),
+                        .init(id: "wa3", kind: .link, name: "Slides — mixins 2026", url: "https://drive.google.com/mixins-2026"),
+                    ]
+                ),
+                Message(
+                    id: "wm5", origin: .secretariat,
+                    body: "Caros estudantes,\n\nConvidamos vocês para uma roda de conversa sobre TEA, organizada pelo núcleo de acessibilidade.\n\nData: 24 de abril, 14h.\nLocal: Auditório Central.\n\nInscrições até 22/04.",
+                    senderName: "Secretaria Acadêmica",
+                    receivedAt: now.addingTimeInterval(-3 * 86_400), unread: false
                 ),
             ],
             syncedAt: now

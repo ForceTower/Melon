@@ -22,7 +22,7 @@ struct MessagesOverview: Equatable, Sendable {
 /// `.app`; otherwise the most specific scope wins (class → discipline,
 /// personal → direct, coordination → secretariat, course/university → campus,
 /// list → app) and scopeless upstream messages fall back to `.campus`.
-enum MessageOrigin: Equatable, Sendable {
+enum MessageOrigin: String, Codable, Equatable, Sendable {
     case discipline
     case secretariat
     case campus
@@ -81,7 +81,7 @@ struct MessageItem: Equatable, Sendable, Identifiable {
 }
 
 struct MessageAttachment: Equatable, Sendable, Identifiable {
-    enum Kind: String, Sendable {
+    enum Kind: String, Codable, Sendable {
         case image, link, pdf, video, other
     }
 

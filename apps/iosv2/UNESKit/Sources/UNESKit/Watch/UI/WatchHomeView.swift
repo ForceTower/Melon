@@ -36,6 +36,7 @@ struct WatchHomeView: View {
                     .listRowInsets(EdgeInsets())
                 }
                 daySection(read.today, now: now)
+                messagesSection(snapshot.messages, now: now)
                 Section {
                     Text(HomeFormat.updatedLabel(lastRefreshed: snapshot.syncedAt, now: now))
                         .font(.system(size: 12, weight: .medium))
@@ -83,6 +84,55 @@ struct WatchHomeView: View {
                 .tracking(0.4)
                 .textCase(.uppercase)
                 .foregroundStyle(UNESColor.ink3)
+        }
+    }
+
+    /// The latest message as a mesh hero plus the way into the full list;
+    /// absent entirely until the phone pushes a first message.
+    @ViewBuilder
+    private func messagesSection(_ messages: [WatchSnapshot.Message], now: Date) -> some View {
+        if let latest = messages.first {
+            let unread = messages.count(where: \.unread)
+            Section {
+                Button {
+                    store.send(.messageTapped(latest.id))
+                } label: {
+                    WatchMessageHeroCard(message: latest.item, now: now)
+                }
+                .buttonStyle(.plain)
+                .listRowBackground(Color.clear)
+                .listRowInsets(EdgeInsets())
+
+                Button {
+                    store.send(.messagesTapped)
+                } label: {
+                    HStack {
+                        Text(.watchMessagesSeeAll)
+                            .font(.system(size: 14, weight: .semibold))
+                            .foregroundStyle(UNESColor.ink2)
+                        Spacer(minLength: 0)
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 11, weight: .semibold))
+                            .foregroundStyle(UNESColor.ink4)
+                    }
+                }
+            } header: {
+                HStack(spacing: 6) {
+                    Text(.watchMessagesTitle)
+                        .font(.system(size: 12, weight: .bold))
+                        .tracking(0.4)
+                        .textCase(.uppercase)
+                        .foregroundStyle(UNESColor.ink3)
+                    if unread > 0 {
+                        Text(verbatim: "\(unread)")
+                            .font(.system(size: 10.5, weight: .bold))
+                            .monospacedDigit()
+                            .foregroundStyle(.white)
+                            .padding(EdgeInsets(top: 1, leading: 5, bottom: 1, trailing: 5))
+                            .background(UNESColor.coral, in: Capsule())
+                    }
+                }
+            }
         }
     }
 

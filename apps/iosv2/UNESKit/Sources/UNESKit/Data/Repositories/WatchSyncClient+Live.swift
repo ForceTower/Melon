@@ -17,6 +17,9 @@ extension WatchSyncClient: DependencyKey {
             }
             @Dependency(\.database) var database
             @Dependency(\.date) var date
+            @Dependency(\.messagesRepository) var wrappedMessagesRepository
+            let messagesRepository = wrappedMessagesRepository
+            let now = { @Sendable in date.now }
             let mirror = MirrorStore(writer: database)
 
             // Outer nil: nothing emitted yet. Inner nil: signed out → clear.
@@ -34,7 +37,24 @@ extension WatchSyncClient: DependencyKey {
                 }
             }
 
-            let bridge = WatchSessionBridge(onSessionReady: push)
+            // Read receipts from the watch land in the same markRead flow the
+            // inbox uses (mirror overlay + server ack); the mirror write then
+            // re-emits the watch payload, confirming the flip back to it.
+            let bridge = WatchSessionBridge(
+                onSessionReady: push,
+                onReadReceipts: { ids in
+                    log.info("read receipts received count=\(ids.count)")
+                    Task {
+                        for id in ids {
+                            do {
+                                try await messagesRepository.markRead(id, now())
+                            } catch {
+                                log.warn("read receipt markRead failed id=\(id)", error: error)
+                            }
+                        }
+                    }
+                }
+            )
             WCSession.default.delegate = bridge
             WCSession.default.activate()
             log.debug("run subscribed")
@@ -57,9 +77,14 @@ extension WatchSyncClient: DependencyKey {
 /// from `onSessionReady` whenever the session becomes usable again.
 private final class WatchSessionBridge: NSObject, WCSessionDelegate, Sendable {
     private let onSessionReady: @Sendable () -> Void
+    private let onReadReceipts: @Sendable ([String]) -> Void
 
-    init(onSessionReady: @escaping @Sendable () -> Void) {
+    init(
+        onSessionReady: @escaping @Sendable () -> Void,
+        onReadReceipts: @escaping @Sendable ([String]) -> Void
+    ) {
         self.onSessionReady = onSessionReady
+        self.onReadReceipts = onReadReceipts
     }
 
     func session(
@@ -85,6 +110,11 @@ private final class WatchSessionBridge: NSObject, WCSessionDelegate, Sendable {
     func sessionWatchStateDidChange(_ session: WCSession) {
         guard session.isPaired, session.isWatchAppInstalled else { return }
         onSessionReady()
+    }
+
+    func session(_ session: WCSession, didReceiveUserInfo userInfo: [String: Any] = [:]) {
+        guard let ids = userInfo["readMessageIds"] as? [String], !ids.isEmpty else { return }
+        onReadReceipts(ids)
     }
 }
 

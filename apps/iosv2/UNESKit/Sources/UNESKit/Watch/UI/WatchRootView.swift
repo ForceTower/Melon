@@ -20,6 +20,10 @@ public struct WatchRootView: View {
                         WatchWeekView(store: store)
                     case let .discipline(id):
                         WatchDisciplineView(store: store, disciplineId: id)
+                    case .messages:
+                        WatchMessagesView(store: store)
+                    case let .message(id):
+                        WatchMessageDetailView(store: store, messageId: id)
                     }
                 }
         }

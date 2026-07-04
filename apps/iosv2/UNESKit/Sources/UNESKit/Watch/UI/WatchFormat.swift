@@ -29,6 +29,23 @@ enum WatchFormat {
         }
     }
 
+    /// "Hoje · 09:14" — the message-detail timestamp; older messages date
+    /// themselves like everywhere else ("10 abr · 08:45").
+    static func messageTimestamp(_ date: Date, now: Date, calendar: Calendar = .current) -> String {
+        let time = date.formatted(
+            .dateTime.hour(.twoDigits(amPM: .omitted)).minute(.twoDigits).locale(.autoupdatingCurrent)
+        )
+        let day: String = if calendar.isDate(date, inSameDayAs: now) {
+            .localized(.commonToday)
+        } else if let yesterday = calendar.date(byAdding: .day, value: -1, to: now),
+                  calendar.isDate(date, inSameDayAs: yesterday) {
+            .localized(.messagesBucketYesterday)
+        } else {
+            HomeFormat.shortDate(for: date)
+        }
+        return "\(day) · \(time)"
+    }
+
     /// "SEG" from a date.
     static func weekdayShort(_ date: Date, locale: Locale = .autoupdatingCurrent) -> String {
         date.formatted(.dateTime.weekday(.abbreviated).locale(locale))
@@ -39,6 +56,15 @@ enum WatchFormat {
     /// "4 aulas" — bare-word plural, so two catalog keys.
     static func classCount(_ count: Int) -> String {
         count == 1 ? .localized(.watchClassCountOne(count)) : .localized(.watchClassCountOther(count))
+    }
+
+    /// "3 não lidos" / "Tudo em dia" — the Recados list eyebrow.
+    static func unreadCount(_ count: Int) -> String {
+        switch count {
+        case 0: .localized(.messagesDigestAllCaughtUp)
+        case 1: .localized(.watchMessagesUnreadOne(count))
+        default: .localized(.watchMessagesUnreadOther(count))
+        }
     }
 
     /// "08:00" from minutes into the day.

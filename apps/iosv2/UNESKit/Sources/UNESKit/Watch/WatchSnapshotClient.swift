@@ -36,10 +36,13 @@ import WidgetKit
 /// session up so phone pushes land in the store; `observe` replays the cached
 /// dataset and re-emits after every landed push (nil = signed out / never
 /// synced), keeping every screen reactive to the underlying data.
+/// `markMessageRead` flips the local overlay and queues a receipt so the
+/// phone inbox catches up.
 @DependencyClient
 struct WatchRepository: Sendable {
     var activate: @Sendable () -> Void
     var observe: @Sendable () -> AsyncStream<WatchSnapshot?> = { .finished }
+    var markMessageRead: @Sendable (_ id: String) async -> Void
 }
 
 extension WatchRepository: DependencyKey {
@@ -66,6 +69,18 @@ extension WatchRepository: DependencyKey {
                 }
                 continuation.onTermination = { _ in task.cancel() }
             }
+        },
+        markMessageRead: { id in
+            @Dependency(\.watchStore) var store
+            @Dependency(\.date) var date
+            do {
+                try await store.markMessageRead(id: id, now: date.now)
+            } catch {
+                log.error("markMessageRead failed id=\(id)", error: error)
+                return
+            }
+            log.info("markMessageRead ok id=\(id)")
+            WatchSessionReceiver.shared.reportRead(ids: [id])
         }
     )
 
@@ -73,7 +88,8 @@ extension WatchRepository: DependencyKey {
 
     static let previewValue = WatchRepository(
         activate: {},
-        observe: { AsyncStream { $0.yield(.preview()) } }
+        observe: { AsyncStream { $0.yield(.preview()) } },
+        markMessageRead: { _ in }
     )
 }
 
@@ -95,6 +111,19 @@ private final class WatchSessionReceiver: NSObject, WCSessionDelegate, Sendable 
         guard session.delegate !== self else { return }
         session.delegate = self
         session.activate()
+    }
+
+    /// Best-effort read receipt: `transferUserInfo` queues across phone
+    /// unreachability, and the local overlay already flipped the row, so a
+    /// skipped send only leaves the phone behind until it's read there.
+    func reportRead(ids: [String]) {
+        let session = WCSession.default
+        guard session.activationState == .activated else {
+            log.warn("reportRead skipped reason=inactive count=\(ids.count)")
+            return
+        }
+        session.transferUserInfo(["readMessageIds": ids])
+        log.debug("reportRead queued count=\(ids.count)")
     }
 
     func session(
