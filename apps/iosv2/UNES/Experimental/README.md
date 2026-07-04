@@ -23,7 +23,7 @@ Findings live in `docs/research/0001-siri-integration/research.md` §9.
 - **E1 — done (2026-07-04):** gated scheme builds with Xcode 27.0
   (27A5209h); main scheme unaffected under stable Xcode.
 - **E2 (build half) — done:** the spec's `@AssistantEntity(schema:
-  .calendar.event)` premise was superseded — iOS 27's mechanism is the new
+.calendar.event)` premise was superseded — iOS 27's mechanism is the new
   `AppSchema` system, and **`@AppEntity(schema: .calendar.event)` accepts
   entity-only conformance**: it compiles, and the metadata exports
   `{domain: calendar, name: EventEntity}` with zero write intents in the
