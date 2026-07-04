@@ -11,7 +11,7 @@ import UNESKit
 @available(iOS 27, *)
 struct ExperimentalIndexedMessageEntity: AppEntity, IndexedEntity {
     static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "entity.message.typeName")
-    static let defaultQuery = Query()
+    static let defaultQuery = IndexedMessageQuery()
 
     let projection: SpotlightMessage
 
@@ -31,7 +31,7 @@ struct ExperimentalIndexedMessageEntity: AppEntity, IndexedEntity {
         DisplayRepresentation(title: "\(projection.title)", subtitle: "\(projection.subtitle)")
     }
 
-    struct Query: EntityQuery {
+    struct IndexedMessageQuery: EntityQuery {
         func entities(for identifiers: [String]) async throws -> [ExperimentalIndexedMessageEntity] {
             await SpotlightSupport.messages(for: identifiers).map(ExperimentalIndexedMessageEntity.init)
         }
@@ -43,15 +43,30 @@ struct ExperimentalIndexedMessageEntity: AppEntity, IndexedEntity {
 }
 
 /// One-shot driver for the spike: pushes the recent messages through
-/// `indexAppEntities` under a separate domain so the shipped classic-item
-/// index stays untouched. Call from a debug hook, search a distinctive body
-/// word, record the verdict.
+/// `indexAppEntities` so the E3 question gets a clean answer. Triggered
+/// from the Shortcuts app via `ExperimentalBodyIndexIntent`; search a
+/// distinctive body word afterwards, record the verdict.
 @available(iOS 27, *)
 enum ExperimentalMessageBodyIndexing {
-    static func indexRecentMessages() async throws {
+    static func indexRecentMessages() async throws -> Int {
         let entities = await SpotlightSupport.suggestedMessages()
             .map(ExperimentalIndexedMessageEntity.init)
         try await CSSearchableIndex.default().indexAppEntities(entities)
+        return entities.count
+    }
+}
+
+/// The E3 trigger, visible in the Shortcuts app on experiment builds only.
+/// Bare literal strings on purpose: nothing here ships or localizes.
+@available(iOS 27, *)
+struct ExperimentalBodyIndexIntent: AppIntent {
+    static let title: LocalizedStringResource = "E3: index message bodies"
+
+    init() {}
+
+    func perform() async throws -> some IntentResult & ProvidesDialog {
+        let count = try await ExperimentalMessageBodyIndexing.indexRecentMessages()
+        return .result(dialog: "Indexed \(count) messages via indexAppEntities. Now search a body word.")
     }
 }
 #endif

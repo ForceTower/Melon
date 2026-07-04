@@ -5,26 +5,39 @@ the `UNES_IOS27_EXPERIMENT` compilation condition is set, which requires the
 iOS 27 SDK (Xcode-beta). The main scheme keeps building with stable Xcode
 with all of this compiled away.
 
-To run the experiment locally:
+Build the experiment from the CLI (no project changes needed):
 
-1. Open the project with Xcode-beta (iOS 27 SDK).
-2. Add `Experiment.xcconfig` as the Debug configuration file of a local
-   scheme copy (or add `UNES_IOS27_EXPERIMENT` to
-   `SWIFT_ACTIVE_COMPILATION_CONDITIONS` for the UNES target). Do not commit
-   the scheme.
-3. Build to answer E1/E2; run on the iOS 27 device for E3.
+```sh
+DEVELOPER_DIR=/Applications/Xcode-beta.app/Contents/Developer \
+  xcodebuild -project UNES.xcodeproj -scheme UNES \
+  -destination 'platform=iOS,name=<your device>' \
+  -xcconfig UNES/Experimental/Experiment.xcconfig \
+  -allowProvisioningUpdates build
+```
 
-Deliverable is a verdict, not a merge — findings go into
-`docs/research/0001-siri-integration/research.md` §9:
+(or open the project in Xcode-beta and add `UNES_IOS27_EXPERIMENT` to the
+UNES target's Debug `SWIFT_ACTIVE_COMPILATION_CONDITIONS` — don't commit.)
 
-- **E2 — calendar entity-only conformance** (`ExperimentalEvaluationEvent`):
-  does the build-time schema-group validator accept an entity with none of
-  the calendar domain's write intents? Do the required fields map from what
-  we have (title, start date — no invented data)? Does Siri AI answer
-  evaluation questions better than with the plain `IndexedEntity`?
-- **E3 — message body lexical search**
-  (`ExperimentalIndexedMessageEntity`): with
-  `@Property(indexingKey: \.textContent)` and `indexAppEntities`, does
-  system-wide search match body words on device? If yes, Phase 4 adopts
-  this as the permanent `#available(iOS 27)` path and Phase 2 criterion 3's
-  blocked half finally closes.
+Findings live in `docs/research/0001-siri-integration/research.md` §9.
+
+- **E1 — done (2026-07-04):** gated scheme builds with Xcode 27.0
+  (27A5209h); main scheme unaffected under stable Xcode.
+- **E2 (build half) — done:** the spec's `@AssistantEntity(schema:
+  .calendar.event)` premise was superseded — iOS 27's mechanism is the new
+  `AppSchema` system, and **`@AppEntity(schema: .calendar.event)` accepts
+  entity-only conformance**: it compiles, and the metadata exports
+  `{domain: calendar, name: EventEntity}` with zero write intents in the
+  target. `ExperimentalEvaluationEvent` maps evaluations without invented
+  data (title + all-day start date; empty attendees/organizers/alarms; a
+  stub "UNES" calendar entity; everything else nil). The required-field
+  table came from the metadata processor's own errors and is recorded in
+  research §9.
+- **E2 (device half) — pending:** does Siri AI answer "when is my test
+  from …" better through the schema entity than the plain `IndexedEntity`?
+  Currently data-blocked — no scheduled pending evaluation exists until
+  2026.2 posts one.
+- **E3 — no match on iOS 27.0 beta (2026-07-04, iPhone Air):** the
+  Shortcuts action **"E3: index message bodies"** indexed the 5 newest
+  messages; a distinctive body word produced no system-wide match — same
+  as the iOS 17–26 regression. Re-run on a later beta/RC before Phase 4
+  decides; messages stay on classic `CSSearchableItem`s until then.
