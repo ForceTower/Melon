@@ -108,10 +108,19 @@ struct WatchDisciplineView: View {
         let released = grade.value != nil
         return HStack(spacing: 8) {
             WatchCodeChip(text: grade.label, color: released ? color : UNESColor.ink4)
-            Text(WatchFormat.gradeDate(stamp: grade.date, now: now) ?? "—")
-                .font(.system(size: 12.5, weight: .medium))
-                .foregroundStyle(released ? UNESColor.ink3 : color)
-                .lineLimit(1)
+            VStack(alignment: .leading, spacing: 1) {
+                Text(grade.name)
+                    .font(.system(size: 14, weight: .semibold))
+                    .tracking(-0.2)
+                    .foregroundStyle(UNESColor.ink)
+                    .lineLimit(1)
+                if let date = WatchFormat.gradeDate(stamp: grade.date, now: now) {
+                    Text(date)
+                        .font(.system(size: 11.5, weight: .medium))
+                        .foregroundStyle(released ? UNESColor.ink4 : color)
+                        .lineLimit(1)
+                }
+            }
             Spacer(minLength: 4)
             Text(formatGrade(grade.value))
                 .font(.system(size: 18, weight: .bold))

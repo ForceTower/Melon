@@ -52,6 +52,8 @@ struct WatchSnapshot: Codable, Equatable, Sendable {
         var id: String
         /// Compact evaluation label, e.g. "P2".
         var label: String
+        /// Full evaluation name, e.g. "Avaliação II".
+        var name: String
         var value: Double?
         /// yyyy-MM-dd; nil when not scheduled.
         var date: String?
@@ -130,9 +132,9 @@ extension WatchSnapshot {
                     id: "d1", code: "ALGI", name: "Algoritmos I",
                     teacherName: "Camila Ribeiro", hours: 60, missedHours: 2,
                     grades: [
-                        Grade(id: "g1", label: "P1", value: 9.2, date: stamp(daysFromNow: -23)),
-                        Grade(id: "g2", label: "T1", value: 8.0, date: stamp(daysFromNow: -12)),
-                        Grade(id: "g3", label: "P2", value: nil, date: stamp(daysFromNow: 5)),
+                        Grade(id: "g1", label: "P1", name: "Prova 1", value: 9.2, date: stamp(daysFromNow: -23)),
+                        Grade(id: "g2", label: "T1", name: "Trabalho 1", value: 8.0, date: stamp(daysFromNow: -12)),
+                        Grade(id: "g3", label: "P2", name: "Prova 2", value: nil, date: stamp(daysFromNow: 5)),
                     ],
                     partialAverage: 8.8, colorIndex: 0
                 ),
@@ -140,9 +142,9 @@ extension WatchSnapshot {
                     id: "d2", code: "CALC", name: "Cálculo II",
                     teacherName: "Adriana Matos", hours: 75, missedHours: 1,
                     grades: [
-                        Grade(id: "g4", label: "P1", value: 7.0, date: stamp(daysFromNow: -17)),
-                        Grade(id: "g5", label: "L", value: 8.0, date: nil),
-                        Grade(id: "g6", label: "P2", value: nil, date: stamp(daysFromNow: 12)),
+                        Grade(id: "g4", label: "P1", name: "Prova 1", value: 7.0, date: stamp(daysFromNow: -17)),
+                        Grade(id: "g5", label: "L", name: "Listas", value: 8.0, date: nil),
+                        Grade(id: "g6", label: "P2", name: "Prova 2", value: nil, date: stamp(daysFromNow: 12)),
                     ],
                     partialAverage: 7.5, colorIndex: 1
                 ),
@@ -150,8 +152,8 @@ extension WatchSnapshot {
                     id: "d3", code: "LPOO", name: "POO",
                     teacherName: "Rafael Almeida", hours: 60, missedHours: 0,
                     grades: [
-                        Grade(id: "g7", label: "P1", value: 9.5, date: stamp(daysFromNow: -15)),
-                        Grade(id: "g8", label: "Pj", value: 9.3, date: stamp(daysFromNow: -3)),
+                        Grade(id: "g7", label: "P1", name: "Prova 1", value: 9.5, date: stamp(daysFromNow: -15)),
+                        Grade(id: "g8", label: "Pj", name: "Projeto", value: 9.3, date: stamp(daysFromNow: -3)),
                     ],
                     partialAverage: 9.4, colorIndex: 2
                 ),
@@ -159,7 +161,7 @@ extension WatchSnapshot {
                     id: "d4", code: "FIS2", name: "Física II",
                     teacherName: "João Nascimento", hours: 75, missedHours: 8,
                     grades: [
-                        Grade(id: "g9", label: "P1", value: nil, date: stamp(daysFromNow: 3)),
+                        Grade(id: "g9", label: "P1", name: "Prova 1", value: nil, date: stamp(daysFromNow: 3)),
                     ],
                     partialAverage: nil, colorIndex: 3
                 ),
@@ -167,9 +169,9 @@ extension WatchSnapshot {
                     id: "d5", code: "PROJ", name: "Projeto de Software",
                     teacherName: "Marcos Costa", hours: 60, missedHours: 1,
                     grades: [
-                        Grade(id: "g10", label: "E1", value: 8.0, date: stamp(daysFromNow: -30)),
-                        Grade(id: "g11", label: "E2", value: 8.2, date: stamp(daysFromNow: -6)),
-                        Grade(id: "g12", label: "F", value: nil, date: stamp(daysFromNow: 20)),
+                        Grade(id: "g10", label: "E1", name: "Entrega 1", value: 8.0, date: stamp(daysFromNow: -30)),
+                        Grade(id: "g11", label: "E2", name: "Entrega 2", value: 8.2, date: stamp(daysFromNow: -6)),
+                        Grade(id: "g12", label: "F", name: "Prova Final", value: nil, date: stamp(daysFromNow: 20)),
                     ],
                     partialAverage: 8.1, colorIndex: 4
                 ),

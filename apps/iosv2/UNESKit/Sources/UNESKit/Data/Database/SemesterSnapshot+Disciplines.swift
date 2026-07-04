@@ -72,6 +72,7 @@ extension SemesterSnapshot {
                     DisciplineGrade(
                         id: $0.platformId ?? $0.id,
                         label: gradeLabel($0),
+                        name: gradeTitle($0),
                         value: $0.value.flatMap(parseDecimal),
                         date: $0.date
                     )

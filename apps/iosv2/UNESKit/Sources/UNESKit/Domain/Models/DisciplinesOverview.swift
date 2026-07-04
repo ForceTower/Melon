@@ -71,6 +71,9 @@ struct DisciplineGrade: Equatable, Sendable, Identifiable {
     var id: String
     /// Compact evaluation label, e.g. "P2".
     var label: String
+    /// Full evaluation name, e.g. "Avaliação II" — same derivation as the
+    /// detail screen's rows.
+    var name: String
     var value: Double?
     /// yyyy-MM-dd; nil when not scheduled.
     var date: String?
@@ -179,9 +182,9 @@ extension DisciplinesOverview {
                         id: "d1", code: "EXA805", name: "Algoritmos e Programação II",
                         teacherName: "Camila Ribeiro", hours: 60, missedHours: 2,
                         grades: [
-                            DisciplineGrade(id: "g1", label: "AV1", value: 8.3, date: stamp(daysFromNow: -18)),
-                            DisciplineGrade(id: "g2", label: "AV2", value: nil, date: stamp(daysFromNow: 24)),
-                            DisciplineGrade(id: "g3", label: "AV3", value: nil, date: stamp(daysFromNow: 80)),
+                            DisciplineGrade(id: "g1", label: "AV1", name: "Avaliação I", value: 8.3, date: stamp(daysFromNow: -18)),
+                            DisciplineGrade(id: "g2", label: "AV2", name: "Avaliação II", value: nil, date: stamp(daysFromNow: 24)),
+                            DisciplineGrade(id: "g3", label: "AV3", name: "Avaliação III", value: nil, date: stamp(daysFromNow: 80)),
                         ],
                         partialAverage: 8.3,
                         nextEvaluation: UpcomingEvaluation(label: "AV2", daysUntil: 24),
@@ -191,9 +194,9 @@ extension DisciplinesOverview {
                         id: "d2", code: "EXA704", name: "Cálculo Diferencial II",
                         teacherName: "Adriana Matos", hours: 75, missedHours: 4,
                         grades: [
-                            DisciplineGrade(id: "g4", label: "AV1", value: 7.2, date: stamp(daysFromNow: -15)),
-                            DisciplineGrade(id: "g5", label: "AV2", value: nil, date: stamp(daysFromNow: 27)),
-                            DisciplineGrade(id: "g6", label: "AV3", value: nil, date: stamp(daysFromNow: 83)),
+                            DisciplineGrade(id: "g4", label: "AV1", name: "Avaliação I", value: 7.2, date: stamp(daysFromNow: -15)),
+                            DisciplineGrade(id: "g5", label: "AV2", name: "Avaliação II", value: nil, date: stamp(daysFromNow: 27)),
+                            DisciplineGrade(id: "g6", label: "AV3", name: "Avaliação III", value: nil, date: stamp(daysFromNow: 83)),
                         ],
                         partialAverage: 7.2,
                         nextEvaluation: UpcomingEvaluation(label: "AV2", daysUntil: 27),
@@ -204,9 +207,9 @@ extension DisciplinesOverview {
                         teacherName: "João Nascimento", hours: 75, missedHours: 4,
                         groupsLabel: "Te · Pr",
                         grades: [
-                            DisciplineGrade(id: "g7", label: "AV1", value: 6.8, date: stamp(daysFromNow: -11)),
-                            DisciplineGrade(id: "g8", label: "AV2", value: nil, date: stamp(daysFromNow: 31)),
-                            DisciplineGrade(id: "g9", label: "LAB", value: 9.0, date: nil),
+                            DisciplineGrade(id: "g7", label: "AV1", name: "Avaliação I", value: 6.8, date: stamp(daysFromNow: -11)),
+                            DisciplineGrade(id: "g8", label: "AV2", name: "Avaliação II", value: nil, date: stamp(daysFromNow: 31)),
+                            DisciplineGrade(id: "g9", label: "LAB", name: "Laboratório", value: 9.0, date: nil),
                         ],
                         partialAverage: 7.9,
                         nextEvaluation: UpcomingEvaluation(label: "AV2", daysUntil: 31),
@@ -216,8 +219,8 @@ extension DisciplinesOverview {
                         id: "d4", code: "EXA807", name: "Programação Orientada a Objetos",
                         teacherName: "Rafael Almeida", hours: 60, missedHours: 8,
                         grades: [
-                            DisciplineGrade(id: "g10", label: "AV1", value: nil, date: nil),
-                            DisciplineGrade(id: "g11", label: "AV2", value: nil, date: nil),
+                            DisciplineGrade(id: "g10", label: "AV1", name: "Avaliação I", value: nil, date: nil),
+                            DisciplineGrade(id: "g11", label: "AV2", name: "Avaliação II", value: nil, date: nil),
                         ],
                         colorIndex: 2
                     ),
@@ -225,8 +228,8 @@ extension DisciplinesOverview {
                         id: "d5", code: "EXA902", name: "Estatística",
                         teacherName: "Laís Pinheiro", hours: 60, missedHours: 1,
                         grades: [
-                            DisciplineGrade(id: "g12", label: "AV1", value: 9.1, date: stamp(daysFromNow: -17)),
-                            DisciplineGrade(id: "g13", label: "AV2", value: nil, date: stamp(daysFromNow: 25)),
+                            DisciplineGrade(id: "g12", label: "AV1", name: "Avaliação I", value: 9.1, date: stamp(daysFromNow: -17)),
+                            DisciplineGrade(id: "g13", label: "AV2", name: "Avaliação II", value: nil, date: stamp(daysFromNow: 25)),
                         ],
                         partialAverage: 9.1,
                         nextEvaluation: UpcomingEvaluation(label: "AV2", daysUntil: 25),

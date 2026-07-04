@@ -45,7 +45,7 @@ extension MirrorStore {
                     hours: summary.hours,
                     missedHours: summary.missedHours,
                     grades: summary.grades.map {
-                        WatchSnapshot.Grade(id: $0.id, label: $0.label, value: $0.value, date: $0.date)
+                        WatchSnapshot.Grade(id: $0.id, label: $0.label, name: $0.name, value: $0.value, date: $0.date)
                     },
                     partialAverage: summary.partialAverage,
                     colorIndex: summary.colorIndex

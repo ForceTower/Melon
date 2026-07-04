@@ -57,6 +57,7 @@ struct WatchStore: Sendable {
                         disciplineId: discipline.id,
                         ordinal: ordinal,
                         label: grade.label,
+                        name: grade.name,
                         value: grade.value,
                         date: grade.date
                     ).insert(db)
@@ -119,7 +120,7 @@ struct WatchStore: Sendable {
                 hours: record.hours,
                 missedHours: record.missedHours,
                 grades: (gradesByDiscipline[record.id] ?? []).map {
-                    WatchSnapshot.Grade(id: $0.id, label: $0.label, value: $0.value, date: $0.date)
+                    WatchSnapshot.Grade(id: $0.id, label: $0.label, name: $0.name, value: $0.value, date: $0.date)
                 },
                 partialAverage: record.partialAverage,
                 colorIndex: record.colorIndex
@@ -199,6 +200,11 @@ extension WatchStore {
 
     private static var migrator: DatabaseMigrator {
         var migrator = DatabaseMigrator()
+        #if DEBUG
+        // The store is a disposable cache the next push rebuilds — dev
+        // schema changes just start it over.
+        migrator.eraseDatabaseOnSchemaChange = true
+        #endif
         migrator.registerMigration("v1") { db in
             try db.create(table: "status") { t in
                 t.primaryKey("id", .integer).check { $0 == 1 }
@@ -229,6 +235,7 @@ extension WatchStore {
                     .references("disciplines", onDelete: .cascade)
                 t.column("ordinal", .integer).notNull()
                 t.column("label", .text).notNull()
+                t.column("name", .text).notNull()
                 t.column("value", .double)
                 t.column("date", .text)
             }
@@ -291,6 +298,7 @@ private struct WatchGradeRecord: Codable, FetchableRecord, PersistableRecord {
     var disciplineId: String
     var ordinal: Int
     var label: String
+    var name: String
     var value: Double?
     var date: String?
 }
