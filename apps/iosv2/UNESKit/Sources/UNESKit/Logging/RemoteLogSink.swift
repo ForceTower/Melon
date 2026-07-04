@@ -5,7 +5,9 @@ import os
 /// the OTel backend server-side under this app's service name and stamps the
 /// device's machine id from the `X-Machine-Id` header (see
 /// `apps/api/src/api/logs.ts`; the v1 pipeline is `ApiLogWriter` in
-/// `packages/shared-kmp`).
+/// `packages/shared-kmp`). The endpoint is unauthenticated by design, so the
+/// watch ships its own logs too — as `melon-watchos`, under the watch's own
+/// machine id.
 ///
 /// Records buffer in memory and flush `flushInterval` after the first record
 /// of an idle window arrives — no timers run while nothing is logged. The
@@ -42,7 +44,7 @@ final class RemoteLogSink: Sendable {
 
     init(
         baseURL: URL = MelonAPI.baseURL,
-        service: String = "melon-iosv2",
+        service: String = RemoteLogSink.defaultService,
         session: URLSession = .shared,
         flushInterval: Duration = .seconds(5),
         maxBatchSize: Int = 50,
@@ -107,6 +109,14 @@ final class RemoteLogSink: Sendable {
         request.setValue(MachineIdentity.id, forHTTPHeaderField: "X-Machine-Id")
         _ = try? await session.data(for: request)
     }
+
+    static let defaultService: String = {
+        #if os(watchOS)
+        "melon-watchos"
+        #else
+        "melon-iosv2"
+        #endif
+    }()
 
     private static let environment: String = {
         #if DEBUG
