@@ -73,7 +73,9 @@ struct SpotlightIndexLedger: Equatable, Codable, Sendable {
     /// 5: `deleteAll` became a true delete-all — the old domain-based wipe
     /// never reached entity-created items, so pre-3 message entities
     /// survived every schema wipe and lingered as stale duplicates.
-    static let schemaVersion = 5
+    /// 6: discipline items gained the code as a Spotlight alternate name —
+    /// an attribute-set-only change the digests can't see.
+    static let schemaVersion = 6
 
     var version: Int = SpotlightIndexLedger.schemaVersion
     var disciplines: [String: String] = [:]

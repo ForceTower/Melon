@@ -29,6 +29,10 @@ struct DisciplineEntity: AppEntity, IndexedEntity {
     var attributeSet: CSSearchableItemAttributeSet {
         let attributes = CSSearchableItemAttributeSet(contentType: .item)
         attributes.displayName = projection.title
+        // Post-iOS 17 Spotlight lexically matches display and alternate
+        // names only — keywords never match. The alternate name is what
+        // makes "EXA807" find the discipline.
+        attributes.alternateNames = [projection.code]
         attributes.title = projection.title
         attributes.contentDescription = projection.subtitle
         attributes.keywords = projection.keywords
