@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+<defs><clipPath id="sq"><rect x="0" y="0" width="1024" height="1024" rx="229" ry="229"></rect></clipPath></defs>
+<defs><clipPath id="sq"><rect x="0" y="0" width="1024" height="1024" rx="229" ry="229"></rect></clipPath></defs>
+<g clip-path="url(#sq)">
+<defs><radialGradient id="bg_0" cx="512" cy="307" r="881" gradientUnits="userSpaceOnUse">
+<stop offset="0" stop-color="#241338"></stop><stop offset="0.82" stop-color="#0B0714"></stop><stop offset="1" stop-color="#0B0714"></stop></radialGradient></defs>
+<rect width="1024" height="1024" fill="url(#bg_0)"></rect>
+</g>
+<defs><clipPath id="sq"><rect x="0" y="0" width="1024" height="1024" rx="229" ry="229"></rect></clipPath></defs>
+<g clip-path="url(#sq)">
+<path d="M240 286.5 H247 A40 40 0 0 1 287 326.5 V697.5 A40 40 0 0 1 247 737.5 H240 A40 40 0 0 1 200 697.5 V326.5 A40 40 0 0 1 240 286.5 Z" fill="#8A72FF" opacity="0.85"></path>
+</g>
+<defs><clipPath id="sq"><rect x="0" y="0" width="1024" height="1024" rx="229" ry="229"></rect></clipPath></defs>
+<g clip-path="url(#sq)">
+<path d="M419 174 H426 A40 40 0 0 1 466 214 V810 A40 40 0 0 1 426 850 H419 A40 40 0 0 1 379 810 V214 A40 40 0 0 1 419 174 Z" fill="#FFA92E" opacity="0.85"></path>
+</g>
+<defs><clipPath id="sq"><rect x="0" y="0" width="1024" height="1024" rx="229" ry="229"></rect></clipPath></defs>
+<g clip-path="url(#sq)">
+<path d="M598 246 H605 A40 40 0 0 1 645 286 V738 A40 40 0 0 1 605 778 H598 A40 40 0 0 1 558 738 V286 A40 40 0 0 1 598 246 Z" fill="#D33A8A" opacity="0.85"></path>
+</g>
+<defs><clipPath id="sq"><rect x="0" y="0" width="1024" height="1024" rx="229" ry="229"></rect></clipPath></defs>
+<g clip-path="url(#sq)">
+<path d="M777 133 H784 A40 40 0 0 1 824 173 V851 A40 40 0 0 1 784 891 H777 A40 40 0 0 1 737 851 V173 A40 40 0 0 1 777 133 Z" fill="#FF5A47" opacity="0.85"></path>
+</g>
+<defs><clipPath id="sq"><rect x="0" y="0" width="1024" height="1024" rx="229" ry="229"></rect></clipPath></defs>
+<g clip-path="url(#sq)">
+<path d="M305 493 H887 A19 19 0 0 1 906 512 V512 A19 19 0 0 1 887 531 H305 A19 19 0 0 1 286 512 V512 A19 19 0 0 1 305 493 Z" fill="#FF453A"></path>
+<rect x="88" y="445.5" width="19" height="19" fill="#FF453A"></rect><rect x="107" y="445.5" width="19" height="19" fill="#FF453A"></rect><rect x="107" y="464.5" width="19" height="19" fill="#FF453A"></rect><rect x="126" y="464.5" width="19" height="19" fill="#FF453A"></rect><rect x="164" y="464.5" width="19" height="19" fill="#FF453A"></rect><rect x="183" y="464.5" width="19" height="19" fill="#FF453A"></rect><rect x="202" y="464.5" width="19" height="19" fill="#FF453A"></rect><rect x="126" y="483.5" width="19" height="19" fill="#FF453A"></rect><rect x="164" y="483.5" width="19" height="19" fill="#FF453A"></rect><rect x="183" y="483.5" width="19" height="19" fill="#FF453A"></rect><rect x="221" y="483.5" width="19" height="19" fill="#FF453A"></rect><rect x="107" y="502.5" width="19" height="19" fill="#FF453A"></rect><rect x="145" y="502.5" width="19" height="19" fill="#FF453A"></rect><rect x="164" y="502.5" width="19" height="19" fill="#FF453A"></rect><rect x="183" y="502.5" width="19" height="19" fill="#FF453A"></rect><rect x="202" y="502.5" width="19" height="19" fill="#FF453A"></rect><rect x="240" y="502.5" width="19" height="19" fill="#FF453A"></rect><rect x="259" y="502.5" width="19" height="19" fill="#FF453A"></rect><rect x="126" y="521.5" width="19" height="19" fill="#FF453A"></rect><rect x="164" y="521.5" width="19" height="19" fill="#FF453A"></rect><rect x="183" y="521.5" width="19" height="19" fill="#FF453A"></rect><rect x="221" y="521.5" width="19" height="19" fill="#FF453A"></rect><rect x="107" y="540.5" width="19" height="19" fill="#FF453A"></rect><rect x="126" y="540.5" width="19" height="19" fill="#FF453A"></rect><rect x="164" y="540.5" width="19" height="19" fill="#FF453A"></rect><rect x="183" y="540.5" width="19" height="19" fill="#FF453A"></rect><rect x="202" y="540.5" width="19" height="19" fill="#FF453A"></rect><rect x="88" y="559.5" width="19" height="19" fill="#FF453A"></rect><rect x="107" y="559.5" width="19" height="19" fill="#FF453A"></rect>
+</g>
+<defs><clipPath id="sq"><rect x="0" y="0" width="1024" height="1024" rx="229" ry="229"></rect></clipPath></defs>
+<g clip-path="url(#sq)">
+<defs><radialGradient id="sh_6" cx="512" cy="-61" r="348" gradientUnits="userSpaceOnUse" gradientTransform="translate(512 -61) scale(2.207 1) translate(-512 61)">
+<stop offset="0" stop-color="#FFFFFF" stop-opacity="0.9"></stop><stop offset="0.66" stop-color="#FFFFFF" stop-opacity="0"></stop></radialGradient></defs>
+<rect width="1024" height="1024" fill="url(#sh_6)" opacity="0.2"></rect>
+</g>
+</svg>

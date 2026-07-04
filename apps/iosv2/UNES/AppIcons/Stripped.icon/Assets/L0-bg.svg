@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+<defs><clipPath id="sq"><rect x="0" y="0" width="1024" height="1024" rx="229" ry="229"></rect></clipPath></defs>
+<g clip-path="url(#sq)">
+<defs><radialGradient id="bg" cx="512" cy="307" r="881" gradientUnits="userSpaceOnUse">
+<stop offset="0" stop-color="#241338"></stop><stop offset="0.82" stop-color="#0B0714"></stop><stop offset="1" stop-color="#0B0714"></stop></radialGradient></defs>
+<rect width="1024" height="1024" fill="url(#bg)"></rect>
+</g>
+</svg>

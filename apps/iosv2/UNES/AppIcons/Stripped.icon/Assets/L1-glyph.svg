@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+<defs><clipPath id="sq"><rect x="0" y="0" width="1024" height="1024" rx="229" ry="229"></rect></clipPath></defs>
+<g clip-path="url(#sq)">
+<defs><linearGradient id="ub" x1="277" y1="0" x2="747" y2="0" gradientUnits="userSpaceOnUse">
+<stop offset="0" stop-color="#E85D4E"></stop><stop offset="0.2" stop-color="#E85D4E"></stop>
+<stop offset="0.2" stop-color="#F4A23C"></stop><stop offset="0.4" stop-color="#F4A23C"></stop>
+<stop offset="0.4" stop-color="#3B9EAE"></stop><stop offset="0.6" stop-color="#3B9EAE"></stop>
+<stop offset="0.6" stop-color="#B23A7A"></stop><stop offset="0.8" stop-color="#B23A7A"></stop>
+<stop offset="0.8" stop-color="#7A6CE0"></stop><stop offset="1" stop-color="#7A6CE0"></stop></linearGradient></defs>
+<path d="M277 252 L277 547 A235 235 0 0 0 747 547 L747 252 A10 10 0 0 0 737 242 L613 242 L613 547 A101 101 0 0 1 411 547 L411 242 L287 242 A10 10 0 0 0 277 252 Z" fill="url(#ub)"></path>
+</g>
+</svg>
