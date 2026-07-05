@@ -20,7 +20,7 @@
     ".raw_pages/**/*",
     "apps/android/**/*",
     "apps/ios/**/*",
-    "apps/iosv2/**/*"
+    "apps/iosv2/**/*",
   ],
   "overrides": [
     {
