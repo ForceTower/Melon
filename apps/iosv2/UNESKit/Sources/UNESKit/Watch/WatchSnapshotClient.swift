@@ -145,9 +145,10 @@ private final class WatchSessionReceiver: NSObject, WCSessionDelegate, Sendable 
 
     private static let spaceImpactReportedKey = "spaceImpactDiscoveryReported"
 
-    /// One-shot: `transferUserInfo` queues across unreachability, so a single
-    /// queued report is guaranteed to land; if the session isn't up yet the
-    /// flag stays unset and the next game entry retries.
+    /// One-shot, live-first like `reportRead`: `sendMessage` while the phone
+    /// is reachable (the only path simulators deliver), `transferUserInfo`
+    /// queued otherwise. If the session isn't up yet the flag stays unset and
+    /// the next game entry retries.
     func reportSpaceImpactOpened() {
         let defaults = UserDefaults.standard
         guard !defaults.bool(forKey: Self.spaceImpactReportedKey) else { return }
@@ -156,9 +157,17 @@ private final class WatchSessionReceiver: NSObject, WCSessionDelegate, Sendable 
             log.warn("reportSpaceImpactOpened skipped reason=inactive")
             return
         }
-        session.transferUserInfo(["unlockedAppIcons": [AppIcon.nowShip.rawValue]])
+        let payload: [String: Any] = ["unlockedAppIcons": [AppIcon.nowShip.rawValue]]
+        if session.isReachable {
+            session.sendMessage(payload, replyHandler: nil) { error in
+                log.warn("space impact report send failed, queueing", error: error)
+                session.transferUserInfo(payload)
+            }
+        } else {
+            session.transferUserInfo(payload)
+        }
         defaults.set(true, forKey: Self.spaceImpactReportedKey)
-        log.info("space impact discovery reported")
+        log.info("space impact discovery reported reachable=\(session.isReachable)")
     }
 
     func session(
