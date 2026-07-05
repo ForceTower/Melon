@@ -58,8 +58,10 @@ struct FolioRunnerView: View {
         )
         .preferredColorScheme(.light)
         .immersiveChromeHidden()
-        // Finding the runner unlocks the Paper icon; AppFeature celebrates it.
-        .onAppear {
+        // Finding the runner unlocks the Paper icon. Recorded on dismissal,
+        // not appearance: AppFeature reacts by presenting the celebration
+        // sheet, which would rip this full-screen cover away mid-game.
+        .onDisappear {
             $unlockedSecretIcons.withLock { $0.insert(.paper) }
         }
     }
