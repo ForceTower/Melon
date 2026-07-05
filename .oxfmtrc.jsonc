@@ -18,6 +18,8 @@
     "**/*.xcassets/**/*",
     // Raw upstream HTML captures — must stay byte-faithful, never reformatted.
     ".raw_pages/**/*",
+    // Prose (docs, specs, READMEs) is hand-wrapped; keep the formatter out.
+    "**/*.md",
     "apps/android/**/*",
     "apps/ios/**/*",
     "apps/iosv2/**/*",
