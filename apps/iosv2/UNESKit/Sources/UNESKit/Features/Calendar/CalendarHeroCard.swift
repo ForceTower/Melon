@@ -155,7 +155,7 @@ struct CalendarHeroCard: View {
             }
 
             HStack {
-                Text(.calendarHeroPercentElapsed(Int((progress * 100).rounded())))
+                Text(.calendarHeroPercentElapsed(progress.formatted(.percent.precision(.fractionLength(0)))))
                 Spacer()
                 if let end = event.end {
                     Text(.calendarHeroEndsOn(CalendarFormat.dateShort(end)))

@@ -288,9 +288,10 @@ struct DisciplinePresencaCard: View {
     }
 
     private var warningBanner: some View {
-        let percent = detail.allowedMissedHours > 0
-            ? Int((Double(detail.missedHours) / Double(detail.allowedMissedHours) * 100).rounded())
-            : 100
+        let ratio = detail.allowedMissedHours > 0
+            ? Double(detail.missedHours) / Double(detail.allowedMissedHours)
+            : 1
+        let percent = ratio.formatted(.percent.precision(.fractionLength(0)))
         return HStack(spacing: 8) {
             Image(systemName: "exclamationmark.triangle")
                 .font(.system(size: 13, weight: .medium))

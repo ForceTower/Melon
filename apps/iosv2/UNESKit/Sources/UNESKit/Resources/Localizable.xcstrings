@@ -727,13 +727,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld%% elapsed"
+            "value" : "%@ elapsed"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld%% decorrido"
+            "value" : "%@ decorrido"
           }
         }
       }
@@ -1819,13 +1819,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Heads up: %lld%% of the limit reached."
+            "value" : "Heads up: %@ of the limit reached."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Atenção: %lld%% do limite atingido."
+            "value" : "Atenção: %@ do limite atingido."
           }
         }
       }
