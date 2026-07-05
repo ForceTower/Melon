@@ -1,52 +1,28 @@
 {
-  "fill": "automatic",
-  "groups": [
+  "fill" : "automatic",
+  "groups" : [
     {
-      "blur-material": 0.5,
-      "layers": [
+      "layers" : [
         {
-          "image-name": "L2-sheen 2.svg",
-          "name": "L2-sheen 2"
-        },
-        {
-          "image-name": "L1-glyph.svg",
-          "name": "L1-glyph"
+          "glass" : false,
+          "image-name" : "Stripped-flat.png",
+          "name" : "Stripped-flat"
         }
       ],
-      "shadow": {
-        "kind": "layer-color",
-        "opacity": 0.7
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
       },
-      "specular": false,
-      "translucency": {
-        "enabled": false,
-        "value": 0.5
-      }
-    },
-    {
-      "layers": [
-        {
-          "image-name": "L0-bg.svg",
-          "name": "L0-bg"
-        }
-      ],
-      "position": {
-        "scale": 1.12,
-        "translation-in-points": [0, 0]
-      },
-      "shadow": {
-        "kind": "neutral",
-        "opacity": 0.5
-      },
-      "specular": false,
-      "translucency": {
-        "enabled": false,
-        "value": 0.5
+      "translucency" : {
+        "enabled" : false,
+        "value" : 0
       }
     }
   ],
-  "supported-platforms": {
-    "circles": ["watchOS"],
-    "squares": "shared"
+  "supported-platforms" : {
+    "circles" : [
+      "watchOS"
+    ],
+    "squares" : "shared"
   }
 }

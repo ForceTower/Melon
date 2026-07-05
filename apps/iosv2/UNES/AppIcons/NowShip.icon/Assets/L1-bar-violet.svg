@@ -1,7 +1,0 @@
-<?xml version="1.0"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
-<defs><clipPath id="sq"><rect x="0" y="0" width="1024" height="1024" rx="229" ry="229"></rect></clipPath></defs>
-<g clip-path="url(#sq)">
-<path d="M240 286.5 H247 A40 40 0 0 1 287 326.5 V697.5 A40 40 0 0 1 247 737.5 H240 A40 40 0 0 1 200 697.5 V326.5 A40 40 0 0 1 240 286.5 Z" fill="#8A72FF" opacity="0.85"></path>
-</g>
-</svg>

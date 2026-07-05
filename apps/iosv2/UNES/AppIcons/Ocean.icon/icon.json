@@ -1,83 +1,28 @@
 {
-  "fill": "automatic",
-  "groups": [
+  "fill" : "automatic",
+  "groups" : [
     {
-      "hidden-specializations": [
+      "layers" : [
         {
-          "appearance": "dark",
-          "value": true
+          "glass" : false,
+          "image-name" : "Ocean-flat.png",
+          "name" : "Ocean-flat"
         }
       ],
-      "layers": [
-        {
-          "image-name": "L2-sheen.svg",
-          "name": "L2-sheen"
-        },
-        {
-          "image-name": "L1-glyph.svg",
-          "name": "L1-glyph"
-        },
-        {
-          "glass": false,
-          "image-name": "L0-gradient.svg",
-          "name": "L0-gradient"
-        }
-      ],
-      "position": {
-        "scale": 1.09,
-        "translation-in-points": [0, 0]
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
       },
-      "shadow": {
-        "kind": "neutral",
-        "opacity": 0.5
-      },
-      "specular": false,
-      "translucency": {
-        "enabled": false,
-        "value": 0.5
-      }
-    },
-    {
-      "hidden-specializations": [
-        {
-          "value": true
-        },
-        {
-          "appearance": "dark",
-          "value": false
-        }
-      ],
-      "layers": [
-        {
-          "image-name": "L2-sheen 2.svg",
-          "name": "L2-sheen 2"
-        },
-        {
-          "image-name": "L1-glyph 2.svg",
-          "name": "L1-glyph 2"
-        },
-        {
-          "image-name": "L0-gradient 2.svg",
-          "name": "L0-gradient 2"
-        }
-      ],
-      "position": {
-        "scale": 1.09,
-        "translation-in-points": [0, 0]
-      },
-      "shadow": {
-        "kind": "neutral",
-        "opacity": 0.5
-      },
-      "specular": false,
-      "translucency": {
-        "enabled": false,
-        "value": 0.5
+      "translucency" : {
+        "enabled" : false,
+        "value" : 0
       }
     }
   ],
-  "supported-platforms": {
-    "circles": ["watchOS"],
-    "squares": "shared"
+  "supported-platforms" : {
+    "circles" : [
+      "watchOS"
+    ],
+    "squares" : "shared"
   }
 }
