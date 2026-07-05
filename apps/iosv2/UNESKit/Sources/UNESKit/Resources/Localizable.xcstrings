@@ -11863,13 +11863,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Locked — the key is in the footer of this screen 👀"
+            "value" : "Locked — the key is at the bottom of this screen 👀"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bloqueado — a chave está no rodapé desta tela 👀"
+            "value" : "Bloqueado — a chave está no fim desta tela 👀"
           }
         }
       }
@@ -11880,13 +11880,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Locked — there's a ship hiding on your wrist 👀"
+            "value" : "Locked — pretty obvious if you check the time 👀"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bloqueado — há uma nave escondida no seu pulso 👀"
+            "value" : "Bloqueado — bem óbvio se você olhar na hora 👀"
           }
         }
       }
@@ -11897,13 +11897,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Locked — a free day in your schedule hides the way 👀"
+            "value" : "Locked — relax, you'll find it 👀"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bloqueado — um dia livre no horário esconde o caminho 👀"
+            "value" : "Bloqueado — tranquilo, você vai achar 👀"
           }
         }
       }
