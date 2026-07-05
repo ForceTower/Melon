@@ -8,7 +8,7 @@ import WatchKit
 /// the ship, the cannon auto-fires, a tap spends the bonus weapon.
 struct WatchSpaceImpactView: View {
     @State private var model = SI2GameModel()
-    @State private var crownY = 20.0
+    @State private var crownY = Double(SI2Game.screenHeight - 1 - 20)
     @Dependency(\.watchRepository) private var watchRepository
 
     /// Watch HUD palette from the design (ink-on-dark, independent of theme).
@@ -38,10 +38,11 @@ struct WatchSpaceImpactView: View {
             isHapticFeedbackEnabled: false
         )
         .onChange(of: crownY) { _, y in
-            model.setShipY(Int(y.rounded()))
+            // Inverted: crown up flies the ship up (toward y = 0).
+            model.setShipY(SI2Game.screenHeight - 1 - Int(y.rounded()))
         }
         .onChange(of: model.game.shipResets) {
-            crownY = Double(model.game.player.y)
+            crownY = Double(SI2Game.screenHeight - 1 - model.game.player.y)
         }
         .task {
             // Finding the game unlocks the NowShip icon on the phone.
