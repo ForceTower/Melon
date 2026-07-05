@@ -18,6 +18,9 @@
     "**/*.xcassets/**/*",
     // Raw upstream HTML captures — must stay byte-faithful, never reformatted.
     ".raw_pages/**/*",
+    "apps/android/**/*",
+    "apps/ios/**/*",
+    "apps/iosv2/**/*"
   ],
   "overrides": [
     {
