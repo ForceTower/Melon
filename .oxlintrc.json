@@ -26,6 +26,7 @@
   "ignorePatterns": [
     ".claude/**/*",
     ".vscode/**/*",
+    ".raw_pages/**/*",
     "**/.output/**/*",
     "**/build/**/*",
     "**/dist/**/*",

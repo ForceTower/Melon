@@ -16,6 +16,8 @@
     "**/worker-configuration.d.ts",
     // Xcode owns asset-catalog JSON and rewrites it in its own style.
     "**/*.xcassets/**/*",
+    // Raw upstream HTML captures — must stay byte-faithful, never reformatted.
+    ".raw_pages/**/*",
   ],
   "overrides": [
     {
