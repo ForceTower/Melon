@@ -34,7 +34,6 @@ struct SettingsIconUnlockSheet: View {
         .presentationBackground(UNESColor.card)
         .presentationDetents([.height(height)])
         .presentationDragIndicator(.visible)
-        .presentationCornerRadiusCompat(30)
     }
 
     private var header: some View {
