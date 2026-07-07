@@ -26,7 +26,6 @@
   "ignorePatterns": [
     ".claude/**/*",
     ".vscode/**/*",
-    ".raw_pages/**/*",
     "apps/android/**/*",
     "apps/ios/**/*",
     "apps/iosv2/**/*",
@@ -36,19 +35,6 @@
     "**/node_modules/**/*"
   ],
   "overrides": [
-    {
-      "files": ["apps/api/**/*"],
-      "rules": {
-        "no-explicit-any": "error",
-        "no-unused-vars": "error"
-      }
-    },
-    {
-      "files": ["apps/api/scripts/**/*"],
-      "rules": {
-        "no-explicit-any": "off"
-      }
-    },
     {
       "files": ["**/*.config.*", "**/app/routes.ts"],
       "rules": {

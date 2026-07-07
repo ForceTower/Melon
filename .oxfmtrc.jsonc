@@ -16,20 +16,10 @@
     "**/worker-configuration.d.ts",
     // Xcode owns asset-catalog JSON and rewrites it in its own style.
     "**/*.xcassets/**/*",
-    // Raw upstream HTML captures — must stay byte-faithful, never reformatted.
-    ".raw_pages/**/*",
     // Prose (docs, specs, READMEs) is hand-wrapped; keep the formatter out.
     "**/*.md",
     "apps/android/**/*",
     "apps/ios/**/*",
     "apps/iosv2/**/*",
-  ],
-  "overrides": [
-    {
-      "files": ["apps/api/**/*"],
-      "options": {
-        "printWidth": 120,
-      },
-    },
   ],
 }
