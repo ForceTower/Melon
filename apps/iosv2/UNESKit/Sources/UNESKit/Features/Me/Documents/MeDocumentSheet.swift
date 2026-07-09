@@ -10,11 +10,9 @@ import QuickLook
 struct MeDocumentSheet: View {
     @Bindable var store: StoreOf<MeDocumentFeature>
 
-    /// Measured content height, driven through the detent *selection* so the
-    /// sheet resizes in both directions — the stages differ a lot (captcha is
-    /// more than twice the intro) and a plain `.height` detent won't shrink
-    /// once presented.
-    @State private var detent = PresentationDetent.height(340)
+    /// Measured content height so the sheet hugs it. Same pattern as
+    /// `MeAboutSheet`.
+    @State private var height: CGFloat = 420
     @State private var previewURL: URL?
 
     var body: some View {
@@ -26,15 +24,18 @@ struct MeDocumentSheet: View {
                 .padding(.top, 16)
         }
         .padding(EdgeInsets(top: 24, leading: 18, bottom: 16, trailing: 18))
+        // Inside the presentation chain on purpose: QuickLook hosts its own
+        // presentation, and with it outside it swallowed every detent update
+        // after the first read — the sheet stayed at the initial height.
+        .pdfPreview($previewURL)
         .onGeometryChange(for: CGFloat.self) { proxy in
             proxy.size.height
         } action: { measured in
-            detent = .height(measured)
+            height = measured
         }
         .presentationBackground(UNESColor.surface)
-        .presentationDetents([detent], selection: $detent)
+        .presentationDetents([.height(height)])
         .presentationDragIndicator(.visible)
-        .pdfPreview($previewURL)
     }
 
     private var document: AcademicDocument { store.document }
@@ -137,8 +138,8 @@ struct MeDocumentSheet: View {
             documentCard(.fresh)
         case let .stale(savedAt):
             documentCard(.stale(savedAt: savedAt))
-        case .failed:
-            failed
+        case let .failed(reason):
+            failed(reason)
         }
     }
 
@@ -294,7 +295,7 @@ struct MeDocumentSheet: View {
         }
     }
 
-    private var failed: some View {
+    private func failed(_ reason: MeDocumentFeature.State.FailureReason) -> some View {
         VStack(spacing: 14) {
             HStack(alignment: .top, spacing: 12) {
                 Text(verbatim: "!")
@@ -303,10 +304,10 @@ struct MeDocumentSheet: View {
                     .frame(width: 22, height: 22)
                     .background(UNESColor.alertRed, in: Circle())
                 VStack(alignment: .leading, spacing: 3) {
-                    Text(.meDocumentErrorTitle)
+                    Text(reason == .unavailable ? .meDocumentUnavailableTitle : .meDocumentErrorTitle)
                         .font(.system(size: 13.5, weight: .semibold))
                         .foregroundStyle(UNESColor.ink)
-                    Text(.meDocumentErrorBody)
+                    Text(reason == .unavailable ? .meDocumentUnavailableBody : .meDocumentErrorBody)
                         .font(.system(size: 12, weight: .medium))
                         .foregroundStyle(UNESColor.ink4)
                 }

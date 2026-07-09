@@ -48,8 +48,16 @@ struct MeDocumentFeature {
             /// badge's: the server copy's generation date when its fallback
             /// answered, or the local save date when nothing did.
             case stale(savedAt: Date)
-            /// No connection and no saved copy: nothing to show.
-            case failed
+            /// Nothing to show, and no saved copy to fall back on.
+            case failed(FailureReason)
+        }
+
+        enum FailureReason: Equatable, Sendable {
+            /// Request never landed, or the server errored.
+            case connection
+            /// The backend answered 404: the portal did not issue this
+            /// document for the student (and no stored version exists).
+            case unavailable
         }
 
         var needsCaptcha: Bool { !captchaSiteKey.isEmpty }
@@ -60,7 +68,7 @@ struct MeDocumentFeature {
         case captchaSolved(token: String)
         case captchaCanceled
         case documentReady(FetchedAcademicDocument)
-        case documentFailed
+        case documentFailed(State.FailureReason)
         case closeTapped
     }
 
@@ -105,11 +113,11 @@ struct MeDocumentFeature {
                 state.stage = fetched.isFresh ? .fresh : .stale(savedAt: fetched.generatedAt)
                 return .none
 
-            case .documentFailed:
+            case let .documentFailed(reason):
                 if let stored = state.stored {
                     state.stage = .stale(savedAt: stored.savedAt)
                 } else {
-                    state.stage = .failed
+                    state.stage = .failed(reason)
                 }
                 return .none
 
@@ -125,8 +133,13 @@ struct MeDocumentFeature {
                 let fetched = try await documentsRepository.fetch(document, token)
                 await send(.documentReady(fetched))
             } catch {
-                await send(.documentFailed)
+                await send(.documentFailed(failureReason(for: error)))
             }
         }
+    }
+
+    private func failureReason(for error: any Error) -> State.FailureReason {
+        if case APIError.server(status: 404, _) = error { return .unavailable }
+        return .connection
     }
 }

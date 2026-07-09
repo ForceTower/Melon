@@ -446,6 +446,40 @@
         }
       }
     },
+    "me.document.unavailableBody" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "the portal didn't issue this document for your enrollment."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "o portal não emitiu este documento para a sua matrícula."
+          }
+        }
+      }
+    },
+    "me.document.unavailableTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Document not available"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Documento não disponível"
+          }
+        }
+      }
+    },
     "me.shortcut.certificate" : {
       "extractionState" : "manual",
       "localizations" : {

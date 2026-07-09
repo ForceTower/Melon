@@ -104,7 +104,7 @@ struct MeDocumentFeatureTests {
         await store.send(.downloadTapped) {
             $0.stage = .generating
         }
-        await store.receive(.documentFailed) {
+        await store.receive(.documentFailed(.connection)) {
             $0.stage = .stale(savedAt: Self.stored.savedAt)
         }
     }
@@ -123,8 +123,28 @@ struct MeDocumentFeatureTests {
         await store.send(.downloadTapped) {
             $0.stage = .generating
         }
-        await store.receive(.documentFailed) {
-            $0.stage = .failed
+        await store.receive(.documentFailed(.connection)) {
+            $0.stage = .failed(.connection)
+        }
+    }
+
+    @Test
+    func notFoundReadsAsUnavailableNotConnection() async {
+        let store = TestStore(
+            initialState: MeDocumentFeature.State(document: .enrollmentCertificate)
+        ) {
+            MeDocumentFeature()
+        } withDependencies: {
+            $0.documentsRepository.fetch = { _, _ in
+                throw APIError.server(status: 404, message: "The portal did not produce this document")
+            }
+        }
+
+        await store.send(.downloadTapped) {
+            $0.stage = .generating
+        }
+        await store.receive(.documentFailed(.unavailable)) {
+            $0.stage = .failed(.unavailable)
         }
     }
 }
