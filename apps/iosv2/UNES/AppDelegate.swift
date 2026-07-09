@@ -35,6 +35,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         #if DEBUG
         Crashlytics.crashlytics().setCrashlyticsCollectionEnabled(false)
         #endif
+        Crashlytics.crashlytics().setUserID(MachineIdentity.id)
 
         UNUserNotificationCenter.current().delegate = self
         Messaging.messaging().delegate = self

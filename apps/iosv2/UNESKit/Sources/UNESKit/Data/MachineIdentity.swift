@@ -6,8 +6,8 @@ import Foundation
 /// Shown on the Me screen (`AppInfo`) and sent as the `X-Machine-Id` header
 /// so the backend can attribute records to a device without trusting client
 /// payloads.
-enum MachineIdentity {
-    static var id: String {
+public enum MachineIdentity {
+    public static var id: String {
         let defaults = UserDefaults.standard
         let installationId = defaults.string(forKey: "installationId") ?? {
             let minted = UUID().uuidString

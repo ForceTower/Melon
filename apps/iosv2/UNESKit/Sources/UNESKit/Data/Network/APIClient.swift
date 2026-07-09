@@ -124,6 +124,7 @@ extension APIClient {
             }
             var request = URLRequest(url: url)
             request.httpMethod = apiRequest.method
+            request.setValue(MachineIdentity.id, forHTTPHeaderField: "X-Machine-Id")
             if let body = apiRequest.body {
                 request.httpBody = body
                 request.setValue("application/json", forHTTPHeaderField: "Content-Type")
