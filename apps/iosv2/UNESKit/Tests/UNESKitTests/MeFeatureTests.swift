@@ -239,6 +239,8 @@ struct MeFeatureTests {
 
         let store = TestStore(initialState: initialState) {
             MeFeature()
+        } withDependencies: {
+            $0.localDocuments.load = { _ in nil }
         }
 
         await store.send(.shortcutTapped(.certificate)) {

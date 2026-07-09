@@ -6,8 +6,8 @@ import Foundation
 /// upstream and streams the signed PDF back.
 @DependencyClient
 struct DocumentsRepository: Sendable {
-    /// Fetches the PDF and returns the local file it was written to.
-    var fetch: @Sendable (_ document: AcademicDocument, _ captchaToken: String?) async throws -> URL
+    /// Fetches the PDF and returns the downloaded file plus its freshness.
+    var fetch: @Sendable (_ document: AcademicDocument, _ captchaToken: String?) async throws -> FetchedAcademicDocument
 }
 
 extension DocumentsRepository: TestDependencyKey {
@@ -16,7 +16,11 @@ extension DocumentsRepository: TestDependencyKey {
     static let previewValue = DocumentsRepository(
         fetch: { document, _ in
             try await Task.sleep(for: .seconds(1))
-            return try MockDocumentPDF.write(document)
+            return FetchedAcademicDocument(
+                fileURL: try MockDocumentPDF.write(document),
+                isFresh: true,
+                generatedAt: .now
+            )
         }
     )
 }

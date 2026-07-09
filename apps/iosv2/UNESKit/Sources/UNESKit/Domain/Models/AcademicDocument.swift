@@ -14,3 +14,20 @@ enum AcademicDocument: String, Equatable, Sendable, CaseIterable {
         }
     }
 }
+
+/// A downloaded document: the local file plus whether the backend produced
+/// it fresh or fell back to the newest stored version after the portal
+/// fetch failed.
+struct FetchedAcademicDocument: Equatable, Sendable {
+    var fileURL: URL
+    var isFresh: Bool
+    var generatedAt: Date
+}
+
+/// The offline copy kept on this device so the document opens without a
+/// connection. `version` bumps on every successful refresh.
+struct StoredAcademicDocument: Equatable, Sendable {
+    var fileURL: URL
+    var version: Int
+    var savedAt: Date
+}

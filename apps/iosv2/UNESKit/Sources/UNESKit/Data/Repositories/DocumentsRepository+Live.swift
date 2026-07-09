@@ -20,8 +20,12 @@ extension DocumentsRepository: DependencyKey {
                         body: DocumentFetchRequest(kind: document.rawValue, captchaToken: captchaToken)
                     )
                     let url = try await downloadPDF(from: fetched.download.url, filename: fetched.document.filename)
-                    log.info("document fetch ok kind=\(document.rawValue)")
-                    return url
+                    log.info("document fetch ok kind=\(document.rawValue) fresh=\(fetched.fresh)")
+                    return FetchedAcademicDocument(
+                        fileURL: url,
+                        isFresh: fetched.fresh,
+                        generatedAt: fetched.document.generatedAt
+                    )
                 } catch {
                     log.error("document fetch failed kind=\(document.rawValue)", error: error)
                     throw error
@@ -39,6 +43,13 @@ private struct DocumentFetchRequest: Encodable {
 private struct DocumentFetchResponse: Decodable {
     struct Document: Decodable {
         let filename: String
+        /// ISO8601 with fractional seconds — kept as a string on the wire,
+        /// same convention as `MessageDTO`.
+        let createdAt: String
+
+        var generatedAt: Date {
+            (try? Date(createdAt, strategy: Date.ISO8601FormatStyle(includingFractionalSeconds: true))) ?? .now
+        }
     }
 
     struct Download: Decodable {
@@ -47,6 +58,7 @@ private struct DocumentFetchResponse: Decodable {
 
     let document: Document
     let download: Download
+    let fresh: Bool
 }
 
 /// The presigned URL is its own bearer token — plain GET, no session header.

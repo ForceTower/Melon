@@ -124,18 +124,44 @@ struct MeDocumentSheet: View {
     @ViewBuilder
     private var stageArea: some View {
         switch store.stage {
-        case .summary:
-            actionButton(.meDocumentDownload, icon: "arrow.down.circle") {
-                store.send(.downloadTapped)
-            }
+        case .intro:
+            intro
+        case .saved:
+            documentCard(.saved)
         case .captcha:
             captcha
         case .generating:
             generating
-        case let .ready(url):
-            ready(url)
+        case .fresh:
+            documentCard(.fresh)
+        case let .stale(savedAt):
+            documentCard(.stale(savedAt: savedAt))
         case .failed:
             failed
+        }
+    }
+
+    /// How the offline copy is being offered — drives the card's badge, tint,
+    /// and buttons.
+    private enum CardStatus {
+        case saved
+        case fresh
+        case stale(savedAt: Date)
+
+        var isStale: Bool {
+            if case .stale = self { return true }
+            return false
+        }
+    }
+
+    private var intro: some View {
+        VStack(spacing: 9) {
+            actionButton(.meDocumentDownload, icon: "arrow.down.circle") {
+                store.send(.downloadTapped)
+            }
+            Text(.meDocumentOfflineFootnote)
+                .font(.system(size: 11, weight: .medium))
+                .foregroundStyle(UNESColor.ink4)
         }
     }
 
@@ -152,6 +178,11 @@ struct MeDocumentSheet: View {
             .frame(height: 480)
             .clipShape(RoundedRectangle(cornerRadius: 15, style: .continuous))
             #endif
+            if store.stored != nil {
+                ghostButton(.meDocumentCancel, icon: nil) {
+                    store.send(.captchaCanceled)
+                }
+            }
         }
     }
 
@@ -163,7 +194,7 @@ struct MeDocumentSheet: View {
                 color: document.tone,
                 trackColor: document.tone.opacity(0.19)
             )
-            Text(.meDocumentGenerating)
+            Text(store.stored == nil ? .meDocumentGenerating : .meDocumentRefreshing)
                 .font(.system(size: 15, weight: .semibold))
                 .tracking(-0.15)
                 .foregroundStyle(UNESColor.ink)
@@ -177,48 +208,80 @@ struct MeDocumentSheet: View {
         .padding(EdgeInsets(top: 22, leading: 0, bottom: 8, trailing: 0))
     }
 
-    private func ready(_ url: URL) -> some View {
-        VStack(spacing: 14) {
-            HStack(spacing: 13) {
-                pdfChip
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(url.lastPathComponent)
-                        .font(.system(size: 13.5, weight: .semibold))
-                        .tracking(-0.14)
-                        .foregroundStyle(UNESColor.ink)
-                        .lineLimit(1)
-                    HStack(spacing: 5) {
-                        Circle()
-                            .fill(UNESColor.successGreen)
-                            .frame(width: 6, height: 6)
-                        Text(.meDocumentReady)
-                            .font(.system(size: 11.5, weight: .medium))
-                            .foregroundStyle(UNESColor.ink4)
-                    }
+    @ViewBuilder
+    private func documentCard(_ status: CardStatus) -> some View {
+        if let stored = store.stored {
+            VStack(spacing: 14) {
+                fileCard(stored, status: status)
+                actionButton(status.isStale ? .meDocumentOpenSaved : .meDocumentOpen, icon: "arrow.up.forward.square") {
+                    previewURL = stored.fileURL
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
-            }
-            .padding(EdgeInsets(top: 14, leading: 15, bottom: 14, trailing: 15))
-            .background(UNESColor.card)
-            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-            .overlay {
-                RoundedRectangle(cornerRadius: 16, style: .continuous)
-                    .strokeBorder(UNESColor.cardLine)
-            }
-
-            actionButton(.meDocumentOpen, icon: "arrow.up.forward.square") {
-                previewURL = url
+                ghostButton(status.isStale ? .meDocumentRefreshRetry : .meDocumentRefresh) {
+                    store.send(.downloadTapped)
+                }
             }
         }
     }
 
-    private var pdfChip: some View {
+    private func fileCard(_ stored: StoredAcademicDocument, status: CardStatus) -> some View {
+        HStack(spacing: 13) {
+            pdfChip(edge: status.isStale ? UNESColor.caution : document.tone)
+            VStack(alignment: .leading, spacing: 3) {
+                HStack(spacing: 7) {
+                    Text(stored.fileURL.lastPathComponent)
+                        .font(.system(size: 13.5, weight: .semibold))
+                        .tracking(-0.14)
+                        .foregroundStyle(UNESColor.ink)
+                        .lineLimit(1)
+                    Text(verbatim: "v\(stored.version)")
+                        .font(.system(size: 9.5, weight: .bold))
+                        .tracking(0.3)
+                        .foregroundStyle(UNESColor.ink4)
+                        .padding(EdgeInsets(top: 2, leading: 5, bottom: 2, trailing: 5))
+                        .background(UNESColor.surface2, in: RoundedRectangle(cornerRadius: 5, style: .continuous))
+                }
+                HStack(spacing: 5) {
+                    Circle()
+                        .fill(status.isStale ? UNESColor.caution : UNESColor.successGreen)
+                        .frame(width: 6, height: 6)
+                    statusText(stored, status: status)
+                        .font(.system(size: 11.5, weight: .medium))
+                        .foregroundStyle(status.isStale ? UNESColor.caution : UNESColor.ink4)
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .padding(EdgeInsets(top: 14, leading: 15, bottom: 14, trailing: 15))
+        .background(status.isStale ? UNESColor.caution.opacity(0.08) : UNESColor.card)
+        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .strokeBorder(status.isStale ? UNESColor.caution.opacity(0.27) : UNESColor.cardLine)
+        }
+    }
+
+    private func statusText(_ stored: StoredAcademicDocument, status: CardStatus) -> Text {
+        switch status {
+        case .saved:
+            Text(.meDocumentSavedLine(format(stored.savedAt)))
+        case .fresh:
+            Text(.meDocumentFreshLine)
+        case let .stale(savedAt):
+            Text(.meDocumentStaleLine(format(savedAt)))
+        }
+    }
+
+    private func format(_ date: Date) -> String {
+        date.formatted(date: .abbreviated, time: .shortened)
+    }
+
+    private func pdfChip(edge: Color) -> some View {
         VStack {
             Spacer()
             Text(verbatim: "PDF")
                 .font(.system(size: 7.5, weight: .heavy))
                 .tracking(0.5)
-                .foregroundStyle(document.tone)
+                .foregroundStyle(edge)
                 .padding(.bottom, 6)
         }
         .frame(width: 42, height: 52)
@@ -226,20 +289,66 @@ struct MeDocumentSheet: View {
         .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
         .overlay {
             RoundedRectangle(cornerRadius: 8, style: .continuous)
-                .strokeBorder(document.tone, lineWidth: 1.5)
+                .strokeBorder(edge, lineWidth: 1.5)
         }
     }
 
     private var failed: some View {
-        VStack(spacing: 12) {
-            Text(.meDocumentFailed)
-                .font(.system(size: 12.5, weight: .semibold))
-                .foregroundStyle(UNESColor.alertRed)
-                .frame(maxWidth: .infinity)
+        VStack(spacing: 14) {
+            HStack(alignment: .top, spacing: 12) {
+                Text(verbatim: "!")
+                    .font(.system(size: 14, weight: .heavy))
+                    .foregroundStyle(.white)
+                    .frame(width: 22, height: 22)
+                    .background(UNESColor.alertRed, in: Circle())
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(.meDocumentErrorTitle)
+                        .font(.system(size: 13.5, weight: .semibold))
+                        .foregroundStyle(UNESColor.ink)
+                    Text(.meDocumentErrorBody)
+                        .font(.system(size: 12, weight: .medium))
+                        .foregroundStyle(UNESColor.ink4)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .padding(15)
+            .background(UNESColor.alertRed.opacity(0.08))
+            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+            .overlay {
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .strokeBorder(UNESColor.alertRed.opacity(0.27))
+            }
+
             actionButton(.meDocumentRetry, icon: "arrow.clockwise") {
-                store.send(.retryTapped)
+                store.send(.downloadTapped)
             }
         }
+    }
+
+    private func ghostButton(
+        _ title: LocalizedStringResource,
+        icon: String? = "arrow.triangle.2.circlepath",
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            HStack(spacing: 7) {
+                if let icon {
+                    Image(systemName: icon)
+                        .font(.system(size: 12, weight: .semibold))
+                }
+                Text(title)
+                    .font(.system(size: 13.5, weight: .semibold))
+                    .tracking(-0.14)
+            }
+            .foregroundStyle(UNESColor.ink3)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 12)
+            .overlay {
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .strokeBorder(UNESColor.cardLine)
+            }
+        }
+        .buttonStyle(TilePressStyle())
     }
 
     private func actionButton(

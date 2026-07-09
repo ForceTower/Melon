@@ -4,6 +4,23 @@
     "" : {
 
     },
+    "me.document.cancel" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancel"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancelar"
+          }
+        }
+      }
+    },
     "me.document.captchaPrompt" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -72,19 +89,53 @@
         }
       }
     },
-    "me.document.failed" : {
+    "me.document.errorBody" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "The document could not be generated."
+            "value" : "there's no saved copy on this device to open offline."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Não foi possível gerar o documento."
+            "value" : "não há cópia salva neste dispositivo para abrir offline."
+          }
+        }
+      }
+    },
+    "me.document.errorTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No connection to the server"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem conexão com o servidor"
+          }
+        }
+      }
+    },
+    "me.document.freshLine" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "updated version · just saved on this device"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "versão atualizada · salva agora no dispositivo"
           }
         }
       }
@@ -112,13 +163,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "digitally signing the PDF"
+            "value" : "connecting to the UEFS server"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "assinando digitalmente o PDF"
+            "value" : "conectando ao servidor da UEFS"
           }
         }
       }
@@ -157,6 +208,23 @@
         }
       }
     },
+    "me.document.offlineFootnote" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "kept on this device for offline access"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "fica salvo no dispositivo para acesso offline"
+          }
+        }
+      }
+    },
     "me.document.open" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -174,19 +242,70 @@
         }
       }
     },
-    "me.document.ready" : {
+    "me.document.openSaved" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "verified · ready to download"
+            "value" : "Open saved version"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "verificado · pronto para download"
+            "value" : "Abrir versão salva"
+          }
+        }
+      }
+    },
+    "me.document.refresh" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check for an updated version"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscar versão atualizada"
+          }
+        }
+      }
+    },
+    "me.document.refreshing" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fetching the updated version…"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscando versão atualizada…"
+          }
+        }
+      }
+    },
+    "me.document.refreshRetry" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Try updating again"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tentar atualizar de novo"
           }
         }
       }
@@ -289,6 +408,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Documento de exemplo — gerado localmente"
+          }
+        }
+      }
+    },
+    "me.document.savedLine" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "available offline · saved %@"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "disponível offline · salvo em %@"
+          }
+        }
+      }
+    },
+    "me.document.staleLine" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "server unreachable · saved version from %@"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "servidor indisponível · versão salva de %@"
           }
         }
       }

@@ -87,6 +87,7 @@ struct MeFeature {
     }
 
     @Dependency(\.meRepository) var meRepository
+    @Dependency(\.localDocuments) var localDocuments
     @Dependency(\.profileRepository) var profileRepository
     @Dependency(\.sessionStore) var sessionStore
     @Dependency(\.appInfo) var appInfo
@@ -234,7 +235,8 @@ struct MeFeature {
             document: document,
             studentName: state.displayName,
             course: state.profile?.course,
-            score: state.overview?.coefficient?.value
+            score: state.overview?.coefficient?.value,
+            stored: localDocuments.load(document)
         )
     }
 
