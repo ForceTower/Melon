@@ -11,9 +11,15 @@ struct MeDocumentSheet: View {
     @Bindable var store: StoreOf<MeDocumentFeature>
 
     /// Measured content height so the sheet hugs it. Same pattern as
-    /// `MeAboutSheet`.
-    @State private var height: CGFloat = 420
+    /// `MeAboutSheet`. The initial value tracks the opening stage so the
+    /// post-presentation re-sync is imperceptible.
+    @State private var height: CGFloat
     @State private var previewURL: URL?
+
+    init(store: StoreOf<MeDocumentFeature>) {
+        _store = Bindable(store)
+        _height = State(initialValue: store.stored == nil ? 300 : 430)
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -24,14 +30,22 @@ struct MeDocumentSheet: View {
                 .padding(.top, 16)
         }
         .padding(EdgeInsets(top: 24, leading: 18, bottom: 16, trailing: 18))
-        // Inside the presentation chain on purpose: QuickLook hosts its own
-        // presentation, and with it outside it swallowed every detent update
-        // after the first read — the sheet stayed at the initial height.
         .pdfPreview($previewURL)
         .onGeometryChange(for: CGFloat.self) { proxy in
             proxy.size.height
         } action: { measured in
             height = measured
+            // A detent update issued while the presentation is still
+            // animating gets dropped, and the state already matching the
+            // measurement means no later render would re-send it — the sheet
+            // stayed at the initial guess. Once the presentation settles,
+            // re-sync with an invisible nudge so the write isn't a no-op.
+            Task { @MainActor in
+                try? await Task.sleep(for: .milliseconds(700))
+                if height == measured {
+                    height = measured + 0.001
+                }
+            }
         }
         .presentationBackground(UNESColor.surface)
         .presentationDetents([.height(height)])
