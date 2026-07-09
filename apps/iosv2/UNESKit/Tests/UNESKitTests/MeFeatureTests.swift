@@ -220,4 +220,32 @@ struct MeFeatureTests {
         #expect(sessionStore.current() == nil)
         #expect(wiped.value == true)
     }
+
+    @Test
+    func shortcutGridFollowsTheFeatureFlags() {
+        let state = MeFeature.State()
+        #expect(state.shortcuts == [.calendar, .countdown])
+
+        state.$isEnrollmentEnabled.withLock { $0 = true }
+        state.$isCertificateEnabled.withLock { $0 = true }
+        state.$isHistoryEnabled.withLock { $0 = true }
+        #expect(state.shortcuts == MeShortcut.allCases)
+    }
+
+    @Test
+    func documentShortcutsOpenTheRequestSheet() async {
+        let initialState = MeFeature.State(userName: "Mariana Souza")
+        initialState.$isCertificateEnabled.withLock { $0 = true }
+
+        let store = TestStore(initialState: initialState) {
+            MeFeature()
+        }
+
+        await store.send(.shortcutTapped(.certificate)) {
+            $0.document = MeDocumentFeature.State(
+                document: .enrollmentCertificate,
+                studentName: "Mariana Souza"
+            )
+        }
+    }
 }

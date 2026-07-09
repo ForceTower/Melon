@@ -51,6 +51,9 @@ struct MeView: View {
                 store.send(.logoutConfirmed)
             }
         }
+        .sheet(item: $store.scope(state: \.document, action: \.document)) { documentStore in
+            MeDocumentSheet(store: documentStore)
+        }
     }
 
     private var content: some View {

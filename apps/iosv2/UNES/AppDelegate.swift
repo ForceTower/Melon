@@ -77,9 +77,12 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
 
     /// Off the main actor — the update stream calls back on a Firebase queue.
     private nonisolated static func publishFlags() {
+        let remoteConfig = RemoteConfig.remoteConfig()
         FeatureFlags.update(
-            enrollmentEnabled: RemoteConfig.remoteConfig()
-                .configValue(forKey: "enable_enrollment").boolValue
+            enrollmentEnabled: remoteConfig.configValue(forKey: "enable_enrollment").boolValue,
+            certificateEnabled: remoteConfig.configValue(forKey: "enable_enrollment_certificate").boolValue,
+            historyEnabled: remoteConfig.configValue(forKey: "enable_academic_history").boolValue,
+            documentCaptchaSiteKey: remoteConfig.configValue(forKey: "document_captcha_site_key").stringValue
         )
     }
 

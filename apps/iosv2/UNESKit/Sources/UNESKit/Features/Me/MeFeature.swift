@@ -1,9 +1,10 @@
 import ComposableArchitecture
 import Foundation
 
-/// The pinned shortcuts — each pushes its flow.
+/// The pinned shortcuts — most push their flow; the document ones
+/// (comprovante / histórico) open the request sheet instead.
 enum MeShortcut: String, Equatable, Sendable, Identifiable, CaseIterable {
-    case enrollment, calendar, countdown
+    case enrollment, calendar, countdown, certificate, history
 
     var id: String { rawValue }
 }
@@ -28,14 +29,24 @@ struct MeFeature {
         var isAboutCopied = false
         var isLogoutPromptPresented = false
         var path = StackState<Path.State>()
+        @Presents var document: MeDocumentFeature.State?
         @Shared(.appStorage("theme")) var theme: AppTheme = .system
         @Shared(.appStorage(FeatureFlags.enrollmentEnabledKey)) var isEnrollmentEnabled = false
+        @Shared(.appStorage(FeatureFlags.certificateEnabledKey)) var isCertificateEnabled = false
+        @Shared(.appStorage(FeatureFlags.historyEnabledKey)) var isHistoryEnabled = false
 
         var displayName: String? { profile?.name ?? userName }
 
-        /// The tiles the grid shows — matrícula only while its flag is on.
+        /// The tiles the grid shows — the gated ones only while their flag is on.
         var shortcuts: [MeShortcut] {
-            MeShortcut.allCases.filter { $0 != .enrollment || isEnrollmentEnabled }
+            MeShortcut.allCases.filter { shortcut in
+                switch shortcut {
+                case .enrollment: isEnrollmentEnabled
+                case .certificate: isCertificateEnabled
+                case .history: isHistoryEnabled
+                case .calendar, .countdown: true
+                }
+            }
         }
     }
 
@@ -66,6 +77,7 @@ struct MeFeature {
         case logoutTapped
         case logoutPromptDismissed
         case logoutConfirmed
+        case document(PresentationAction<MeDocumentFeature.Action>)
         case path(StackActionOf<Path>)
         case delegate(Delegate)
 
@@ -120,6 +132,10 @@ struct MeFeature {
                     state.path.append(.calendar(CalendarFeature.State()))
                 case .countdown:
                     state.path.append(.countdown(FinalCountdownFeature.State()))
+                case .certificate:
+                    state.document = documentState(.enrollmentCertificate, from: state)
+                case .history:
+                    state.document = documentState(.academicHistory, from: state)
                 }
                 return .none
 
@@ -203,11 +219,23 @@ struct MeFeature {
             case let .path(.element(id: _, action: pathAction)):
                 return routeEnrollment(pathAction, state: &state)
 
-            case .path, .delegate:
+            case .document, .path, .delegate:
                 return .none
             }
         }
+        .ifLet(\.$document, action: \.document) {
+            MeDocumentFeature()
+        }
         .forEach(\.path, action: \.path)
+    }
+
+    private func documentState(_ document: AcademicDocument, from state: State) -> MeDocumentFeature.State {
+        MeDocumentFeature.State(
+            document: document,
+            studentName: state.displayName,
+            course: state.profile?.course,
+            score: state.overview?.coefficient?.value
+        )
     }
 
     /// The matrícula steps are sibling path elements sharing one in-memory

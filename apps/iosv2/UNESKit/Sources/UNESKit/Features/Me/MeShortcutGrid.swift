@@ -1,18 +1,34 @@
 import SwiftUI
 
-/// The pinned shortcut tiles. Equal-width columns, and every tile stretches
-/// to match the tallest one so the row reads as a uniform grid.
+/// The pinned shortcut tiles. Three equal-width columns wrapping into rows,
+/// and every tile stretches to match the tallest in its row so each row
+/// reads as a uniform grid.
 struct MeShortcutGrid: View {
     var shortcuts: [MeShortcut] = MeShortcut.allCases
     var onOpen: (MeShortcut) -> Void
 
+    private static let columns = 3
+
     var body: some View {
-        HStack(alignment: .top, spacing: 10) {
-            ForEach(shortcuts) { shortcut in
-                tile(shortcut)
+        VStack(spacing: 10) {
+            ForEach(Array(rows.enumerated()), id: \.offset) { _, row in
+                HStack(alignment: .top, spacing: 10) {
+                    ForEach(row) { shortcut in
+                        tile(shortcut)
+                    }
+                    ForEach(0..<(Self.columns - row.count), id: \.self) { _ in
+                        Color.clear.frame(maxWidth: .infinity)
+                    }
+                }
+                .fixedSize(horizontal: false, vertical: true)
             }
         }
-        .fixedSize(horizontal: false, vertical: true)
+    }
+
+    private var rows: [[MeShortcut]] {
+        stride(from: 0, to: shortcuts.count, by: Self.columns).map {
+            Array(shortcuts[$0..<min($0 + Self.columns, shortcuts.count)])
+        }
     }
 
     private func tile(_ shortcut: MeShortcut) -> some View {
@@ -67,6 +83,8 @@ extension MeShortcut {
         case .enrollment: .localized(.meShortcutEnrollment)
         case .calendar: .localized(.meShortcutCalendar)
         case .countdown: .localized(.meShortcutCountdown)
+        case .certificate: .localized(.meShortcutCertificate)
+        case .history: .localized(.meShortcutHistory)
         }
     }
 
@@ -75,6 +93,8 @@ extension MeShortcut {
         case .enrollment: .localized(.meShortcutEnrollmentHint)
         case .calendar: .localized(.meShortcutCalendarHint)
         case .countdown: nil
+        case .certificate: .localized(.meShortcutCertificateHint)
+        case .history: .localized(.meShortcutHistoryHint)
         }
     }
 
@@ -83,6 +103,8 @@ extension MeShortcut {
         case .enrollment: "checklist"
         case .calendar: "calendar"
         case .countdown: "timer"
+        case .certificate: "doc.text"
+        case .history: "chart.bar.doc.horizontal"
         }
     }
 
@@ -95,6 +117,8 @@ extension MeShortcut {
         case .enrollment: UNESColor.readable(0x3B9EAE)
         case .calendar: UNESColor.readable(0xE85D4E)
         case .countdown: UNESColor.readable(0xB23A7A)
+        case .certificate: UNESColor.readable(0x0A84FF)
+        case .history: UNESColor.readable(0x7A5AD0)
         }
     }
 }
