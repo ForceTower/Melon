@@ -14,6 +14,7 @@ struct MeDocumentFeature {
         var score: Double?
         var stage: Stage = .summary
         @Shared(.appStorage(FeatureFlags.documentCaptchaSiteKeyKey)) var captchaSiteKey = ""
+        @Shared(.appStorage(FeatureFlags.documentCaptchaBaseURLKey)) var captchaBaseURL = ""
 
         enum Stage: Equatable {
             case summary

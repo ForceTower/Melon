@@ -15,18 +15,25 @@ public enum FeatureFlags {
     /// reCAPTCHA site key for document requests — the `document_captcha_site_key`
     /// key. Empty means the portal isn't demanding a captcha right now.
     public static let documentCaptchaSiteKeyKey = "flag_document_captcha_site_key"
+    /// Page origin the captcha widget renders under — the
+    /// `document_captcha_base_url` key. Must be the portal login URL: the
+    /// site key belongs to the portal and its domain allow-list is checked
+    /// against this origin.
+    public static let documentCaptchaBaseURLKey = "flag_document_captcha_base_url"
 
     public static func update(
         enrollmentEnabled: Bool,
         certificateEnabled: Bool,
         historyEnabled: Bool,
-        documentCaptchaSiteKey: String
+        documentCaptchaSiteKey: String,
+        documentCaptchaBaseURL: String
     ) {
         let defaults = UserDefaults.standard
         defaults.set(enrollmentEnabled, forKey: enrollmentEnabledKey)
         defaults.set(certificateEnabled, forKey: certificateEnabledKey)
         defaults.set(historyEnabled, forKey: historyEnabledKey)
         defaults.set(documentCaptchaSiteKey, forKey: documentCaptchaSiteKeyKey)
+        defaults.set(documentCaptchaBaseURL, forKey: documentCaptchaBaseURLKey)
         log.info("""
         feature flags updated enrollment=\(enrollmentEnabled) \
         certificate=\(certificateEnabled) history=\(historyEnabled) \

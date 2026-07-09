@@ -146,7 +146,7 @@ struct MeDocumentSheet: View {
                 .font(.system(size: 12.5, weight: .semibold))
                 .foregroundStyle(UNESColor.ink3)
             #if os(iOS)
-            RecaptchaView(siteKey: store.captchaSiteKey) { token in
+            RecaptchaView(siteKey: store.captchaSiteKey, origin: URL(string: store.captchaBaseURL)) { token in
                 store.send(.captchaSolved(token: token))
             }
             .frame(height: 480)

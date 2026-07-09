@@ -3,16 +3,16 @@ import SwiftUI
 import WebKit
 
 /// Google reCAPTCHA v2 in a WKWebView. The widget is rendered explicitly
-/// with the site key remote config delivered, on a page anchored to the API
-/// origin so the key's domain allow-list matches.
+/// with the site key remote config delivered, on a page anchored to the
+/// portal's login origin — the key belongs to the portal, so Google checks
+/// its domain allow-list against that origin.
 struct RecaptchaView: UIViewRepresentable {
     var siteKey: String
+    /// The portal login URL, also delivered by remote config.
+    var origin: URL?
     var onToken: (String) -> Void
 
     @Environment(\.colorScheme) private var colorScheme
-
-    /// The reCAPTCHA key must allow-list this host.
-    private static let origin = URL(string: "https://melon.forcetower.dev")!
 
     func makeUIView(context: Context) -> WKWebView {
         let configuration = WKWebViewConfiguration()
@@ -21,7 +21,7 @@ struct RecaptchaView: UIViewRepresentable {
         webView.isOpaque = false
         webView.backgroundColor = .clear
         webView.scrollView.isScrollEnabled = false
-        webView.loadHTMLString(html, baseURL: Self.origin)
+        webView.loadHTMLString(html, baseURL: origin)
         return webView
     }
 
@@ -85,7 +85,7 @@ struct RecaptchaView: UIViewRepresentable {
 }
 
 #Preview {
-    RecaptchaView(siteKey: "preview-site-key", onToken: { _ in })
+    RecaptchaView(siteKey: "preview-site-key", origin: nil, onToken: { _ in })
         .frame(height: 480)
 }
 #endif
