@@ -10,9 +10,11 @@ import QuickLook
 struct MeDocumentSheet: View {
     @Bindable var store: StoreOf<MeDocumentFeature>
 
-    /// Measured content height so the sheet hugs it. Same pattern as
-    /// `MeAboutSheet`.
-    @State private var height: CGFloat = 420
+    /// Measured content height, driven through the detent *selection* so the
+    /// sheet resizes in both directions — the stages differ a lot (captcha is
+    /// more than twice the intro) and a plain `.height` detent won't shrink
+    /// once presented.
+    @State private var detent = PresentationDetent.height(340)
     @State private var previewURL: URL?
 
     var body: some View {
@@ -24,14 +26,13 @@ struct MeDocumentSheet: View {
                 .padding(.top, 16)
         }
         .padding(EdgeInsets(top: 24, leading: 18, bottom: 16, trailing: 18))
-        .animation(UNESMotion.ease(0.32), value: store.stage)
         .onGeometryChange(for: CGFloat.self) { proxy in
             proxy.size.height
         } action: { measured in
-            height = measured
+            detent = .height(measured)
         }
         .presentationBackground(UNESColor.surface)
-        .presentationDetents([.height(height)])
+        .presentationDetents([detent], selection: $detent)
         .presentationDragIndicator(.visible)
         .pdfPreview($previewURL)
     }
