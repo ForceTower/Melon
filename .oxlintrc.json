@@ -27,7 +27,6 @@
     ".claude/**/*",
     ".vscode/**/*",
     "apps/android/**/*",
-    "apps/ios/**/*",
     "apps/iosv2/**/*",
     "**/.output/**/*",
     "**/build/**/*",

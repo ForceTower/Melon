@@ -1,3 +1,6 @@
+// Reference only — not compiled. Design tokens from the original iOS app
+// (formerly apps/ios, deleted); this Android design system mirrors them.
+
 import SwiftUI
 import UIKit
 

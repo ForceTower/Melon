@@ -17,13 +17,12 @@
 - `oxlint` is used for linting, `oxfmt` for formatting (we do NOT use `prettier`,
   `eslint`, or anything else). Run `bun run fix` to format + lint with fixes.
 - `gradle` is used for the JVM side (Android app + Kotlin Multiplatform shared package).
-- Native iOS is a standard Xcode project (`apps/ios`, `apps/iosv2`).
+- Native iOS is a standard Xcode project (`apps/iosv2`).
 
 ## Monorepo Structure
 
 - `apps/android` — Native Android app (Kotlin + Jetpack Compose), Gradle.
-- `apps/ios` — Native iOS app (Swift + SwiftUI), standard Xcode project.
-- `apps/iosv2` — Rewritten iOS app (Swift + SwiftUI + The Composable Architecture); local
+- `apps/iosv2` — Native iOS app (Swift + SwiftUI + The Composable Architecture); local
   SPM package `UNESKit`, no KMP.
 - `apps/landing` — Marketing site (Astro), deployed to Cloudflare.
 - `packages/shared-kmp` — Shared business logic via Kotlin Multiplatform, packaged as an
@@ -56,10 +55,9 @@
 
 ## Cross-Platform (KMP / Native) Notes
 
-- `packages/shared-kmp` is the single source of truth for business logic shared between
-  iOS and Android. If behavior genuinely belongs on both platforms, add it there instead
-  of duplicating in each native app. (`apps/iosv2` is the exception — it is fully native
-  and does not consume KMP.)
+- `packages/shared-kmp` holds the shared business logic and is consumed by the Android
+  app. The iOS app (`apps/iosv2`) is fully native and does not consume KMP; the iOS
+  XCFramework target is kept building regardless.
 
 ## Android (Kotlin)
 
@@ -78,10 +76,11 @@ design system first, then consume it via the theme. The same rule applies to typ
 (`MaterialTheme.typography.*`, never `FontFamily.Default`) and motion (`MelonMotion.*`,
 never magic spring values).
 
-The iOS source of truth is `apps/ios/UNES/DesignSystem/DesignTokens.swift` (`UNESColor`,
-`UNESFont`, `UNESMotion`). Read it before porting a screen so you know which tokens the
-iOS flow uses. If iOS uses a token, Android has the equivalent token; if it doesn't exist
-yet, add it to the design system first.
+The token source of truth is `apps/android/design-system/DesignTokens.reference.swift`
+(`UNESColor`, `UNESFont`, `UNESMotion`) — a reference-only Swift file preserved from the
+original iOS app, which this design system mirrors. Read it before porting a screen so
+you know which tokens the original flow used. If it defines a token, Android has the
+equivalent token; if it doesn't exist yet, add it to the design system first.
 
 ### Color access — three tiers, all routed through the theme
 
