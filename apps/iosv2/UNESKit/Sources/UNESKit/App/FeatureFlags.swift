@@ -12,6 +12,8 @@ public enum FeatureFlags {
     public static let certificateEnabledKey = "flag_enable_enrollment_certificate"
     /// Gates the "Histórico" hub entry — the `enable_academic_history` key.
     public static let historyEnabledKey = "flag_enable_academic_history"
+    /// Gates the "Paradoxo" hub entry — the `enable_paradoxo` key.
+    public static let paradoxoEnabledKey = "flag_enable_paradoxo"
     /// reCAPTCHA site key for document requests — the `document_captcha_site_key`
     /// key. Empty means the portal isn't demanding a captcha right now.
     public static let documentCaptchaSiteKeyKey = "flag_document_captcha_site_key"
@@ -25,6 +27,7 @@ public enum FeatureFlags {
         enrollmentEnabled: Bool,
         certificateEnabled: Bool,
         historyEnabled: Bool,
+        paradoxoEnabled: Bool,
         documentCaptchaSiteKey: String,
         documentCaptchaBaseURL: String
     ) {
@@ -32,12 +35,13 @@ public enum FeatureFlags {
         defaults.set(enrollmentEnabled, forKey: enrollmentEnabledKey)
         defaults.set(certificateEnabled, forKey: certificateEnabledKey)
         defaults.set(historyEnabled, forKey: historyEnabledKey)
+        defaults.set(paradoxoEnabled, forKey: paradoxoEnabledKey)
         defaults.set(documentCaptchaSiteKey, forKey: documentCaptchaSiteKeyKey)
         defaults.set(documentCaptchaBaseURL, forKey: documentCaptchaBaseURLKey)
         log.info("""
         feature flags updated enrollment=\(enrollmentEnabled) \
         certificate=\(certificateEnabled) history=\(historyEnabled) \
-        captcha=\(!documentCaptchaSiteKey.isEmpty)
+        paradoxo=\(paradoxoEnabled) captcha=\(!documentCaptchaSiteKey.isEmpty)
         """)
     }
 }

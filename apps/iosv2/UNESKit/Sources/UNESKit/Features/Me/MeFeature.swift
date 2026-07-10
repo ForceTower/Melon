@@ -4,7 +4,7 @@ import Foundation
 /// The pinned shortcuts — most push their flow; the document ones
 /// (comprovante / histórico) open the request sheet instead.
 enum MeShortcut: String, Equatable, Sendable, Identifiable, CaseIterable {
-    case enrollment, calendar, countdown, certificate, history
+    case enrollment, calendar, countdown, certificate, history, paradoxo
 
     var id: String { rawValue }
 }
@@ -34,6 +34,7 @@ struct MeFeature {
         @Shared(.appStorage(FeatureFlags.enrollmentEnabledKey)) var isEnrollmentEnabled = false
         @Shared(.appStorage(FeatureFlags.certificateEnabledKey)) var isCertificateEnabled = false
         @Shared(.appStorage(FeatureFlags.historyEnabledKey)) var isHistoryEnabled = false
+        @Shared(.appStorage(FeatureFlags.paradoxoEnabledKey)) var isParadoxoEnabled = false
 
         var displayName: String? { profile?.name ?? userName }
 
@@ -48,6 +49,7 @@ struct MeFeature {
                 case .enrollment: isEnrollmentEnabled
                 case .certificate: isCertificateEnabled
                 case .history: isHistoryEnabled
+                case .paradoxo: isParadoxoEnabled
                 case .calendar, .countdown: true
                 }
             }
@@ -67,6 +69,10 @@ struct MeFeature {
         case enrollmentTimetable(EnrollmentTimetableFeature)
         case enrollmentReview(EnrollmentReviewFeature)
         case enrollmentSuccess(EnrollmentSuccessFeature)
+        case paradoxo(ParadoxoFeature)
+        case paradoxoExplore(ParadoxoExploreFeature)
+        case paradoxoDiscipline(ParadoxoDisciplineFeature)
+        case paradoxoTeacher(ParadoxoTeacherFeature)
     }
 
     enum Action: Equatable {
@@ -142,6 +148,8 @@ struct MeFeature {
                     state.document = documentState(.enrollmentCertificate, from: state)
                 case .history:
                     state.document = documentState(.academicHistory, from: state)
+                case .paradoxo:
+                    state.path.append(.paradoxo(ParadoxoFeature.State()))
                 }
                 return .none
 
@@ -223,7 +231,10 @@ struct MeFeature {
                 }
 
             case let .path(.element(id: _, action: pathAction)):
-                return routeEnrollment(pathAction, state: &state)
+                return .merge(
+                    routeEnrollment(pathAction, state: &state),
+                    routeParadoxo(pathAction, state: &state)
+                )
 
             case .document, .path, .delegate:
                 return .none
@@ -280,6 +291,35 @@ struct MeFeature {
             // Guarded so a duplicate delivery can't pop the entry screen too.
             if case .enrollmentSuccess = state.path.last {
                 state.path.removeLast()
+            }
+
+        default:
+            break
+        }
+        return .none
+    }
+
+    /// Paradoxo screens push each other freely (discipline ↔ teacher), so
+    /// their open delegates all land here on the host stack.
+    private func routeParadoxo(_ action: Path.Action, state: inout State) -> Effect<Action> {
+        switch action {
+        case let .paradoxo(.delegate(.openDiscipline(id, name))),
+             let .paradoxoTeacher(.delegate(.openDiscipline(id, name))):
+            state.path.append(.paradoxoDiscipline(ParadoxoDisciplineFeature.State(disciplineId: id, name: name)))
+
+        case let .paradoxo(.delegate(.openTeacher(id, name))),
+             let .paradoxoDiscipline(.delegate(.openTeacher(id, name))):
+            state.path.append(.paradoxoTeacher(ParadoxoTeacherFeature.State(teacherId: id, name: name)))
+
+        case let .paradoxo(.delegate(.openExplore(ranking))):
+            state.path.append(.paradoxoExplore(ParadoxoExploreFeature.State(ranking: ranking)))
+
+        case let .paradoxoExplore(.delegate(.open(ref, name))):
+            switch ref.kind {
+            case .discipline:
+                state.path.append(.paradoxoDiscipline(ParadoxoDisciplineFeature.State(disciplineId: ref.id, name: name)))
+            case .teacher:
+                state.path.append(.paradoxoTeacher(ParadoxoTeacherFeature.State(teacherId: ref.id, name: name)))
             }
 
         default:

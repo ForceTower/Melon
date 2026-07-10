@@ -82,6 +82,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
             enrollmentEnabled: remoteConfig.configValue(forKey: "enable_enrollment").boolValue,
             certificateEnabled: remoteConfig.configValue(forKey: "enable_enrollment_certificate").boolValue,
             historyEnabled: remoteConfig.configValue(forKey: "enable_academic_history").boolValue,
+            paradoxoEnabled: remoteConfig.configValue(forKey: "enable_paradoxo").boolValue,
             documentCaptchaSiteKey: remoteConfig.configValue(forKey: "document_captcha_site_key").stringValue,
             documentCaptchaBaseURL: remoteConfig.configValue(forKey: "document_captcha_base_url").stringValue
         )

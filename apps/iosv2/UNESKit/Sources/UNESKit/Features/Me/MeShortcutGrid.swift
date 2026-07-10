@@ -85,6 +85,7 @@ extension MeShortcut {
         case .countdown: .localized(.meShortcutCountdown)
         case .certificate: .localized(.meShortcutCertificate)
         case .history: .localized(.meShortcutHistory)
+        case .paradoxo: .localized(.meShortcutParadoxo)
         }
     }
 
@@ -95,6 +96,7 @@ extension MeShortcut {
         case .countdown: nil
         case .certificate: .localized(.meShortcutCertificateHint)
         case .history: .localized(.meShortcutHistoryHint)
+        case .paradoxo: .localized(.meShortcutParadoxoHint)
         }
     }
 
@@ -105,6 +107,7 @@ extension MeShortcut {
         case .countdown: "timer"
         case .certificate: "doc.text"
         case .history: "chart.bar.doc.horizontal"
+        case .paradoxo: "chart.xyaxis.line"
         }
     }
 
@@ -119,6 +122,7 @@ extension MeShortcut {
         case .countdown: UNESColor.readable(0xB23A7A)
         case .certificate: UNESColor.readable(0x0A84FF)
         case .history: UNESColor.readable(0x7A5AD0)
+        case .paradoxo: UNESColor.readable(0xF4A23C)
         }
     }
 }
