@@ -1,18 +1,7 @@
 import Charts
 import SwiftUI
 
-// MARK: - Semester history (line / area)
-
-enum ParadoxoChartStyle: String, Equatable, Sendable, CaseIterable {
-    case line, area
-
-    var label: LocalizedStringResource {
-        switch self {
-        case .line: .paradoxoChartLine
-        case .area: .paradoxoChartArea
-        }
-    }
-}
+// MARK: - Semester history
 
 /// Mean per semester across the years, on a fixed 0–10 scale. Peak and
 /// trough carry value annotations; the rest of the points only render when
@@ -20,26 +9,10 @@ enum ParadoxoChartStyle: String, Equatable, Sendable, CaseIterable {
 struct ParadoxoHistoryChart: View {
     var history: [ParadoxoSemesterMean]
     var tone: Color
-    var style: ParadoxoChartStyle = .line
     var height: CGFloat = 178
 
     var body: some View {
         Chart {
-            if style == .area {
-                ForEach(history, id: \.semester) { point in
-                    AreaMark(
-                        x: .value("Semestre", point.semester),
-                        y: .value("Média", point.mean)
-                    )
-                    .foregroundStyle(
-                        LinearGradient(
-                            colors: [tone.opacity(0.22), tone.opacity(0)],
-                            startPoint: .top,
-                            endPoint: .bottom
-                        )
-                    )
-                }
-            }
             ForEach(history, id: \.semester) { point in
                 LineMark(
                     x: .value("Semestre", point.semester),
@@ -112,47 +85,79 @@ struct ParadoxoHistoryChart: View {
 // MARK: - Grade distribution (0…10 histogram)
 
 /// How the final grades spread across the integer buckets, with an optional
-/// rule marking the student's own grade.
+/// rule marking the student's own grade. Hand-rolled rather than Swift
+/// Charts: ratio-width bars collapse on a continuous axis, and the exact
+/// rule position is free this way.
 struct ParadoxoDistributionChart: View {
     var distribution: [Double]
     var tone: Color
-    var myGrade: Double?
+    var myGrade: Double? = nil
     var height: CGFloat = 140
 
+    @State private var shown = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    private let gap: CGFloat = 3
+
     var body: some View {
-        Chart {
-            ForEach(Array(distribution.enumerated()), id: \.offset) { bucket, share in
-                BarMark(
-                    x: .value("Nota", Double(bucket)),
-                    y: .value("Alunos", share),
-                    width: .ratio(0.72)
-                )
-                .foregroundStyle(isMyBucket(bucket) ? tone : tone.opacity(0.25))
-                .cornerRadius(3)
-            }
-            if let myGrade {
-                RuleMark(x: .value("Nota", myGrade))
-                    .foregroundStyle(tone)
-                    .lineStyle(StrokeStyle(lineWidth: 1.5, dash: [3, 3]))
-                    .annotation(position: .top, spacing: 2) {
+        VStack(spacing: 5) {
+            GeometryReader { proxy in
+                let barSpace = proxy.size.height - (myGrade != nil ? 26 : 4)
+                let peak = max(distribution.max() ?? 0, 0.0001)
+                let slot = (proxy.size.width - gap * CGFloat(distribution.count - 1)) / CGFloat(max(distribution.count, 1))
+
+                ZStack(alignment: .bottom) {
+                    HStack(alignment: .bottom, spacing: gap) {
+                        ForEach(Array(distribution.enumerated()), id: \.offset) { bucket, share in
+                            UnevenRoundedRectangle(topLeadingRadius: 3, topTrailingRadius: 3, style: .continuous)
+                                .fill(isMyBucket(bucket) ? tone : tone.opacity(0.25))
+                                .frame(maxWidth: .infinity)
+                                .frame(height: max(3, CGFloat(share) / CGFloat(peak) * barSpace))
+                        }
+                    }
+                    .frame(maxHeight: .infinity, alignment: .bottom)
+                    .scaleEffect(y: shown ? 1 : 0.02, anchor: .bottom)
+
+                    if let myGrade {
+                        let clamped = min(max(myGrade, 0), 10)
+                        let x = slot / 2 + CGFloat(clamped / 10) * (proxy.size.width - slot)
+                        Path { path in
+                            path.move(to: CGPoint(x: x, y: 20))
+                            path.addLine(to: CGPoint(x: x, y: proxy.size.height))
+                        }
+                        .stroke(tone, style: StrokeStyle(lineWidth: 1.5, dash: [3, 3]))
                         Text(.paradoxoDistMyGrade(formatGrade(myGrade)))
                             .font(.system(size: 10.5, weight: .bold))
                             .foregroundStyle(.white)
                             .padding(EdgeInsets(top: 3, leading: 9, bottom: 3, trailing: 9))
                             .background(tone, in: Capsule())
+                            .fixedSize()
+                            .position(x: min(max(x, 44), proxy.size.width - 44), y: 10)
                     }
+                }
             }
-        }
-        .chartXScale(domain: -0.6...10.6)
-        .chartYAxis(.hidden)
-        .chartXAxis {
-            AxisMarks(values: [0.0, 2, 4, 6, 8, 10]) { _ in
-                AxisValueLabel()
-                    .font(.system(size: 9.5, weight: .medium))
-                    .foregroundStyle(UNESColor.ink4)
+
+            HStack(spacing: gap) {
+                ForEach(0..<max(distribution.count, 1), id: \.self) { bucket in
+                    Text(bucket.isMultiple(of: 2) ? "\(bucket)" : "")
+                        .font(.system(size: 9.5, weight: .medium))
+                        .monospacedDigit()
+                        .foregroundStyle(UNESColor.ink4)
+                        .frame(maxWidth: .infinity)
+                }
             }
         }
         .frame(height: height)
+        .onAppear {
+            guard !shown else { return }
+            if reduceMotion {
+                shown = true
+            } else {
+                withAnimation(UNESMotion.ease(0.6).delay(0.1)) {
+                    shown = true
+                }
+            }
+        }
     }
 
     private func isMyBucket(_ bucket: Int) -> Bool {
@@ -213,7 +218,7 @@ struct ParadoxoDonut: View {
     let details = ParadoxoDisciplineDetails.preview()
     return ScrollView {
         VStack(spacing: 20) {
-            ParadoxoHistoryChart(history: details.history, tone: UNESColor.coral, style: .area)
+            ParadoxoHistoryChart(history: details.history, tone: UNESColor.coral)
                 .padding(16)
                 .paradoxoCard()
             ParadoxoDistributionChart(

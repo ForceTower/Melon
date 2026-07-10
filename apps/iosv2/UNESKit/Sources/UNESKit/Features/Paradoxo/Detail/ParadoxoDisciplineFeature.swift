@@ -12,7 +12,6 @@ struct ParadoxoDisciplineFeature {
         var isLoading = false
         var loadFailed = false
         var expandedTeacherId: String?
-        @Shared(.appStorage("paradoxo_chart_style")) var chartStyle: ParadoxoChartStyle = .line
     }
 
     enum Action: Equatable {
@@ -20,7 +19,6 @@ struct ParadoxoDisciplineFeature {
         case retryTapped
         case detailsLoaded(ParadoxoDisciplineDetails)
         case detailsFailed
-        case chartStyleChanged(ParadoxoChartStyle)
         case teacherExpansionToggled(String)
         case teacherPageTapped(ParadoxoDisciplineTeacher)
         case delegate(Delegate)
@@ -60,10 +58,6 @@ struct ParadoxoDisciplineFeature {
             case .detailsFailed:
                 state.isLoading = false
                 state.loadFailed = true
-                return .none
-
-            case let .chartStyleChanged(style):
-                state.$chartStyle.withLock { $0 = style }
                 return .none
 
             case let .teacherExpansionToggled(teacherId):

@@ -131,24 +131,13 @@ struct ParadoxoDisciplineView: View {
 
     private func chartCard(_ details: ParadoxoDisciplineDetails, tone: Color) -> some View {
         VStack(alignment: .leading, spacing: 10) {
-            HStack {
-                Text(.paradoxoChartTitle)
-                    .font(.system(size: 16, weight: .bold))
-                    .tracking(-0.32)
-                    .foregroundStyle(UNESColor.ink)
-                Spacer()
-                Picker("", selection: chartStyleBinding) {
-                    ForEach(ParadoxoChartStyle.allCases, id: \.self) { style in
-                        Text(style.label).tag(style)
-                    }
-                }
-                #if !os(watchOS)
-                .pickerStyle(.segmented)
-                #endif
-                .fixedSize()
-            }
+            Text(.paradoxoChartTitle)
+                .font(.system(size: 16, weight: .bold))
+                .tracking(-0.32)
+                .foregroundStyle(UNESColor.ink)
+                .frame(maxWidth: .infinity, alignment: .leading)
 
-            ParadoxoHistoryChart(history: details.history, tone: tone, style: store.chartStyle)
+            ParadoxoHistoryChart(history: details.history, tone: tone)
 
             if let peak = details.history.max(by: { $0.mean < $1.mean }),
                let trough = details.history.min(by: { $0.mean < $1.mean }) {
@@ -170,13 +159,6 @@ struct ParadoxoDisciplineView: View {
         }
         .padding(16)
         .paradoxoCard()
-    }
-
-    private var chartStyleBinding: Binding<ParadoxoChartStyle> {
-        Binding(
-            get: { store.chartStyle },
-            set: { store.send(.chartStyleChanged($0)) }
-        )
     }
 
     private func miniFact(icon: String, tone: Color, label: LocalizedStringResource, value: String) -> some View {
@@ -359,7 +341,6 @@ struct ParadoxoDisciplineView: View {
                 ParadoxoHistoryChart(
                     history: teacher.history,
                     tone: tier.tone,
-                    style: store.chartStyle,
                     height: 130
                 )
                 .padding(EdgeInsets(top: 10, leading: 12, bottom: 12, trailing: 12))

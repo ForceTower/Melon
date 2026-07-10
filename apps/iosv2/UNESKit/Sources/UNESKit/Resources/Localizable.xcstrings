@@ -11791,40 +11791,6 @@
         }
       }
     },
-    "paradoxo.chart.area" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Area"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Área"
-          }
-        }
-      }
-    },
-    "paradoxo.chart.line" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Line"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Linha"
-          }
-        }
-      }
-    },
     "paradoxo.chart.peak" : {
       "extractionState" : "manual",
       "localizations" : {
