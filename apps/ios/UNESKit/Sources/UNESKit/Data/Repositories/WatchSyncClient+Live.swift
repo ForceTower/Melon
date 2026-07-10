@@ -28,6 +28,12 @@ extension WatchSyncClient: DependencyKey {
                 guard let payload = latest.value else { return }
                 let session = WCSession.default
                 guard session.activationState == .activated else { return }
+                // Most phones have no watch; sessionWatchStateDidChange re-pushes
+                // if one is paired later.
+                guard session.isPaired, session.isWatchAppInstalled else {
+                    log.debug("push skipped: no paired watch app")
+                    return
+                }
                 do {
                     try session.updateApplicationContext(payload.map { ["snapshot": $0] } ?? [:])
                     log.debug("push ok hasSnapshot=\(payload != nil)")
