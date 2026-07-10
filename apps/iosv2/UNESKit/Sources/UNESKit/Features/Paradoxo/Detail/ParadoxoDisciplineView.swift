@@ -70,9 +70,11 @@ struct ParadoxoDisciplineView: View {
                     .padding(EdgeInsets(top: 3, leading: 9, bottom: 3, trailing: 9))
                     .background(tone.opacity(0.13), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
                 if let department = details.department {
-                    Text(.paradoxoDetailDepartment(department))
+                    // Upstream already sends the full "Departamento de …" name.
+                    Text(department)
                         .font(.system(size: 12.5, weight: .medium))
                         .foregroundStyle(UNESColor.ink3)
+                        .lineLimit(1)
                 }
             }
 

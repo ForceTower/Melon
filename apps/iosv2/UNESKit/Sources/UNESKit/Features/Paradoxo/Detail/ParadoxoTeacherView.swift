@@ -109,7 +109,9 @@ struct ParadoxoTeacherView: View {
         ).rounded())
         let consistency = ParadoxoStats.consistency(of: details.history.map(\.mean))
 
-        return HStack(spacing: 10) {
+        // Top-aligned with flexible tile heights so all three cards match
+        // the tallest (the sparkline one).
+        return HStack(alignment: .top, spacing: 10) {
             ParadoxoStatTile(
                 label: .paradoxoTeacherApproval,
                 value: ParadoxoFormat.percent(approval),
@@ -137,6 +139,7 @@ struct ParadoxoTeacherView: View {
                 )
             }
         }
+        .fixedSize(horizontal: false, vertical: true)
     }
 
     // MARK: Outcomes

@@ -266,7 +266,7 @@ struct ParadoxoStatTile<Extra: View>: View {
                 .foregroundStyle(tone)
             extra
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .padding(EdgeInsets(top: 12, leading: 13, bottom: 12, trailing: 13))
         .paradoxoCard()
     }

@@ -23,9 +23,6 @@
     "%lld%%" : {
 
     },
-    "Alunos" : {
-
-    },
     "calendar.action.viewAgenda" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -10414,9 +10411,6 @@
         }
       }
     },
-    "Nota" : {
-
-    },
     "onboarding.defaultName" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -11797,13 +11791,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Peak"
+            "value" : "Best"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Auge"
+            "value" : "Melhor"
           }
         }
       }
@@ -11831,13 +11825,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Low"
+            "value" : "Worst"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fundo"
+            "value" : "Pior"
           }
         }
       }
@@ -11855,23 +11849,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Calculado com %@ alunos avaliados"
-          }
-        }
-      }
-    },
-    "paradoxo.detail.department" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dept. of %@"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dep. de %@"
           }
         }
       }
@@ -12222,13 +12199,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Peak in %1$@ — the average rose to %2$@"
+            "value" : "Best run in %1$@ — the average reached %2$@"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Auge em %1$@ — média subiu para %2$@"
+            "value" : "Melhor momento em %1$@ — média chegou a %2$@"
           }
         }
       }
@@ -12613,13 +12590,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "lenient"
+            "value" : "generous"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "benevolente"
+            "value" : "generosa"
           }
         }
       }
