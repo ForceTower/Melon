@@ -37,8 +37,12 @@ struct MeFeature {
 
         var displayName: String? { profile?.name ?? userName }
 
-        /// The tiles the grid shows — the gated ones only while their flag is on.
+        /// The tiles the grid shows — the gated ones only while their flag is
+        /// on. Debug builds skip the gating so every flow stays reachable.
         var shortcuts: [MeShortcut] {
+            #if DEBUG
+            MeShortcut.allCases
+            #else
             MeShortcut.allCases.filter { shortcut in
                 switch shortcut {
                 case .enrollment: isEnrollmentEnabled
@@ -47,6 +51,7 @@ struct MeFeature {
                 case .calendar, .countdown: true
                 }
             }
+            #endif
         }
     }
 
