@@ -1,5 +1,5 @@
 // Reference only — not compiled. Design tokens from the original iOS app
-// (formerly apps/ios, deleted); this Android design system mirrors them.
+// (deleted; replaced by the TCA rewrite); this Android design system mirrors them.
 
 import SwiftUI
 import UIKit

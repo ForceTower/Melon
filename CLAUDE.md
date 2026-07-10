@@ -17,12 +17,12 @@
 - `oxlint` is used for linting, `oxfmt` for formatting (we do NOT use `prettier`,
   `eslint`, or anything else). Run `bun run fix` to format + lint with fixes.
 - `gradle` is used for the JVM side (Android app + Kotlin Multiplatform shared package).
-- Native iOS is a standard Xcode project (`apps/iosv2`).
+- Native iOS is a standard Xcode project (`apps/ios`).
 
 ## Monorepo Structure
 
 - `apps/android` — Native Android app (Kotlin + Jetpack Compose), Gradle.
-- `apps/iosv2` — Native iOS app (Swift + SwiftUI + The Composable Architecture); local
+- `apps/ios` — Native iOS app (Swift + SwiftUI + The Composable Architecture); local
   SPM package `UNESKit`, no KMP.
 - `apps/landing` — Marketing site (Astro), deployed to Cloudflare.
 - `packages/shared-kmp` — Shared business logic via Kotlin Multiplatform, packaged as an
@@ -56,7 +56,7 @@
 ## Cross-Platform (KMP / Native) Notes
 
 - `packages/shared-kmp` holds the shared business logic and is consumed by the Android
-  app. The iOS app (`apps/iosv2`) is fully native and does not consume KMP; the iOS
+  app. The iOS app (`apps/ios`) is fully native and does not consume KMP; the iOS
   XCFramework target is kept building regardless.
 
 ## Android (Kotlin)

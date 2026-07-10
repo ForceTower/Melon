@@ -17,7 +17,7 @@ current tree is the v2 clients.
 | Path                   | What                                                                          |
 | ---------------------- | ----------------------------------------------------------------------------- |
 | `apps/android`         | Native Android app (Kotlin + Jetpack Compose)                                 |
-| `apps/iosv2`           | Native iOS app (Swift + SwiftUI + The Composable Architecture)                |
+| `apps/ios`             | Native iOS app (Swift + SwiftUI + The Composable Architecture)                |
 | `apps/landing`         | Marketing site (Astro)                                                        |
 | `packages/shared-kmp`  | Shared business logic (Kotlin Multiplatform) — XCFramework for iOS, lib for Android |
 | `build-logic`          | Gradle convention plugins shared across the JVM projects                       |
@@ -32,7 +32,7 @@ mise install        # JDK, Gradle, Bun
 
 - **Android:** `./gradlew :apps:android:app:assembleDebug`
 - **Shared KMP XCFramework:** `./gradlew :packages:shared-kmp:umbrella:assembleUmbrellaReleaseXCFramework`
-- **iOS:** open `apps/iosv2` in Xcode
+- **iOS:** open `apps/ios` in Xcode
 - **Landing:** `cd apps/landing && bun install && bun run dev`
 
 The apps expect their own Firebase configuration and a backend endpoint. If you are

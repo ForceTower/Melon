@@ -9,7 +9,7 @@ Intents, notifications) can link plain Swift instead of a shared XCFramework.
 ## Architecture
 
 ```
-apps/iosv2/
+apps/ios/
   UNES.xcodeproj        thin app shell (Swift 6 + complete concurrency, MainActor default isolation)
   UNES/UNESApp.swift    @main App — imports UNESKit and hosts RootView()
   UNESKit/              local Swift package — all feature code lives here
