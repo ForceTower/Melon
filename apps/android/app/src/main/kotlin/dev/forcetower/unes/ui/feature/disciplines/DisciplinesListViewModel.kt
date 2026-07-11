@@ -3,6 +3,7 @@ package dev.forcetower.unes.ui.feature.disciplines
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.forcetower.melon.core.common.Outcome
+import dev.forcetower.melon.feature.disciplines.domain.usecase.CalculateOverallScoreUseCase
 import dev.forcetower.melon.feature.disciplines.domain.usecase.ObserveDisciplinesListUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.SyncSemesterUseCase
 import dev.forcetower.unes.mvi.MviViewModel
@@ -27,6 +28,9 @@ internal data class DisciplinesUiState(
     val current: Semester? = null,
     val past: List<Semester> = emptyList(),
     val pending: List<Semester> = emptyList(),
+    // Lifetime CR (hours-weighted mean of final grades) — feeds the
+    // "Desempenho acumulado" card on the Histórico tab.
+    val overallScore: Double? = null,
     val downloading: Set<String> = emptySet(),
     val downloadError: String? = null,
     // Seed handover for the detail route. Set when the list-card is tapped so
@@ -49,12 +53,16 @@ internal sealed interface DisciplinesEffect : UiEffect
 @HiltViewModel
 internal class DisciplinesListViewModel @Inject constructor(
     observeList: ObserveDisciplinesListUseCase,
+    calculateOverallScore: CalculateOverallScoreUseCase,
     private val syncSemester: SyncSemesterUseCase,
 ) : MviViewModel<DisciplinesUiState, DisciplinesIntent, DisciplinesEffect>(DisciplinesUiState()) {
 
     init {
         viewModelScope.launch {
             observeList().collect { value -> apply(value) }
+        }
+        viewModelScope.launch {
+            calculateOverallScore().collect { value -> setState { copy(overallScore = value) } }
         }
     }
 

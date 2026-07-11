@@ -1,6 +1,8 @@
 package dev.forcetower.unes.ui.feature.disciplines
 
 import androidx.compose.ui.graphics.Color
+import dev.forcetower.unes.designsystem.theme.MelonPaletteColors
+import dev.forcetower.unes.ui.feature.overview.ColorFor
 
 // UI projection types for the Disciplinas screen. Mirrors iOS
 // `DisciplineModels.swift` — same field names, same derived helpers — so the
@@ -227,6 +229,39 @@ internal val Discipline.trend: Double?
         if (scores.size < 2) return null
         return scores[scores.size - 1] - scores[scores.size - 2]
     }
+
+// ───────── Formatting helpers ─────────
+
+// "20261" → "2026.1". Upstream semester codes come digit-glued; anything that
+// doesn't match the 5-digit shape passes through unchanged.
+internal fun formatSemesterCode(code: String): String {
+    if (code.length == 5 && code.all { it.isDigit() }) {
+        return "${code.take(4)}.${code.last()}"
+    }
+    return code
+}
+
+// pt-BR one-decimal grade label ("8,7"). Truncates instead of rounding so a
+// 6,95 average shows as "6,9" — the university truncates displayed grades and
+// rounding up would overstate the student's standing.
+internal fun formatGrade(value: Double?): String {
+    if (value == null) return "–"
+    // +1e-6 guards against IEEE artifacts (8.7 * 10 == 86.999…) flooring a
+    // clean tenth down.
+    val tenths = kotlin.math.floor(value * 10 + 1e-6).toInt().coerceAtLeast(0)
+    return "${tenths / 10},${tenths % 10}"
+}
+
+// ───────── Tinting ─────────
+
+// The ViewModel emits Disciplines with `color = Unspecified` (palette colors
+// need a Composable context). Resolve them against the live palette so the
+// tint is theme-adaptive; used by the screen and by component previews.
+internal fun Semester.tinted(palette: MelonPaletteColors): Semester =
+    copy(disciplines = disciplines.map { it.tinted(palette) })
+
+internal fun Discipline.tinted(palette: MelonPaletteColors): Discipline =
+    copy(color = ColorFor.discipline(palette, code))
 
 // ───────── Date helpers ─────────
 
