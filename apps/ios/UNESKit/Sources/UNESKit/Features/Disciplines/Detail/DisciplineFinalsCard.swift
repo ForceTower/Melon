@@ -52,7 +52,6 @@ struct DisciplineFinalsCard: View {
         .padding(EdgeInsets(top: 16, leading: 18, bottom: 18, trailing: 18))
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(UNESColor.card)
-        .background(alignment: .topTrailing) { glow }
         .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
         .overlay {
             RoundedRectangle(cornerRadius: 24, style: .continuous)
