@@ -4,8 +4,8 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -26,21 +27,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.forcetower.unes.R
-import dev.forcetower.unes.designsystem.foundation.Mesh
-import dev.forcetower.unes.designsystem.foundation.MeshVariant
 import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
 import dev.forcetower.unes.designsystem.foundation.scaleInOnAppear
+import dev.forcetower.unes.designsystem.theme.melon
 import dev.forcetower.unes.ui.feature.connected.ConnectedRoute
 import dev.forcetower.unes.ui.feature.connected.LocalConnectedNavigator
 import dev.forcetower.unes.ui.feature.me.components.AboutSheet
@@ -51,16 +52,19 @@ import dev.forcetower.unes.ui.feature.me.components.LogoutSheet
 import dev.forcetower.unes.ui.feature.me.components.MeHeader
 import dev.forcetower.unes.ui.feature.me.components.MeSectionLabel
 import dev.forcetower.unes.ui.feature.me.components.MeSignOutButton
-import dev.forcetower.unes.ui.feature.me.components.SemesterStrip
+import dev.forcetower.unes.ui.feature.me.components.SemesterProgressCard
 import dev.forcetower.unes.ui.feature.me.components.SettingsCard
 import dev.forcetower.unes.ui.feature.me.components.ShortcutGrid
+import dev.forcetower.unes.ui.feature.me.components.WideShortcutCard
 import dev.forcetower.unes.ui.feature.me.components.rememberAppInfo
 import java.util.Locale
 
-// "Eu" tab — personal hub mirroring the JSX `MeScreen` and iOS `MeView`.
-// Stack from top to bottom: ambient mesh halo, header eyebrow + greeting,
-// identity hero, semester strip, pinned shortcut grid, services list, sign-out
-// pill, version footer. The screen owns three modal surfaces (about / logout
+// "Eu" tab — 2026 redesign (dc project `UNES Eu - Android`). Stack from top
+// to bottom: M3 large header, identity mesh card with the
+// Score · Frequência · Semestre stats, semester linear-progress card, tonal
+// shortcut grid (+ the wide Materiais card), the Definições list, the
+// sign-out pill, and the version footer. Shortcut visibility mirrors the iOS
+// remote-config gates. The screen owns three modal surfaces (about / logout
 // confirmation / logout flash) and a fullscreen `LoggedOutView` swap-in once
 // the logout flow lands.
 @Composable
@@ -72,12 +76,6 @@ internal fun MeScreen(
     val vm: MeViewModel = hiltViewModel()
     val state by vm.state.collectAsStateWithLifecycle()
     val identity = state.identity
-
-    // Pinned shortcut catalogue — UI affordance, not user data, so it stays
-    // local. iOS makes the same call (the tweak panel that swaps presets
-    // lives in Settings, not the hub itself).
-    val pinnedKinds = remember { MeFixtures.defaultPinned }
-    val pinned = remember(pinnedKinds) { MeFixtures.pinned(pinnedKinds) }
     val settingsRows = remember { MeFixtures.settingsRows }
 
     var aboutOpen by rememberSaveable { mutableStateOf(false) }
@@ -95,107 +93,86 @@ internal fun MeScreen(
         appInfo.machineId,
     )
 
-    val surface = MaterialTheme.colorScheme.surface
-
-    Box(modifier = modifier
-        .fillMaxSize()
-        .background(surface)) {
-        // Ambient rose mesh at the top, faded into the surface so the hero
-        // sits on a soft halo rather than a hard frame.
-        Box(modifier = Modifier
-            .fillMaxWidth()
-            .height(320.dp)) {
-            Mesh(
-                variant = MeshVariant.Rose,
-                intensity = 0.22f,
-                modifier = Modifier.fillMaxSize().padding(top = 0.dp),
-            )
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(
-                        Brush.verticalGradient(
-                            0f to Color.Transparent,
-                            1f to surface,
-                        ),
-                    ),
-            )
+    val openShortcut: (ShortcutKind) -> Unit = { kind ->
+        when (kind) {
+            ShortcutKind.Calendar -> connectedNavigator.navigate(ConnectedRoute.Calendar)
+            ShortcutKind.Countdown -> connectedNavigator.navigate(ConnectedRoute.FinalCountdown)
+            // Gated tiles without an Android screen yet (Matrícula,
+            // Comprovante, Histórico, Paradoxo, Materiais) — they only render
+            // in debug builds or once the remote flag flips, and routing
+            // lands together with each feature.
+            else -> Unit
         }
+    }
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
-                .verticalScroll(rememberScrollState())
-                .padding(bottom = bottomInset),
-        ) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
+            .verticalScroll(rememberScrollState())
+            .windowInsetsPadding(WindowInsets.statusBars)
+            .padding(bottom = bottomInset),
+    ) {
+        MeHeader(modifier = Modifier.fadeUpOnAppear(delayMs = 20, fromOffset = (-10).dp))
+
+        Column(modifier = Modifier.padding(horizontal = 20.dp)) {
             if (identity != null) {
-                MeHeader(
+                IdentityCard(
                     identity = identity,
-                    modifier = Modifier.fadeUpOnAppear(delayMs = 20),
+                    modifier = Modifier.scaleInOnAppear(delayMs = 120, fromScale = 0.97f),
                 )
+                if (identity.semesterTotalWeeks > 0) {
+                    Spacer(Modifier.height(14.dp))
+                    SemesterProgressCard(
+                        identity = identity,
+                        modifier = Modifier.fadeUpOnAppear(delayMs = 200),
+                    )
+                }
+                Spacer(Modifier.height(26.dp))
             }
 
-            Column(modifier = Modifier.padding(horizontal = 14.dp)) {
-                if (identity != null) {
-                    IdentityCard(
-                        identity = identity,
-                        modifier = Modifier.scaleInOnAppear(delayMs = 120, fromScale = 0.985f),
-                    )
-                    Spacer14()
-
-                    SemesterStrip(
-                        identity = identity,
-                        modifier = Modifier.fadeUpOnAppear(delayMs = 220),
-                    )
-                    Spacer14()
+            Column(modifier = Modifier.fadeUpOnAppear(delayMs = 280)) {
+                MeSectionLabel(label = stringResource(R.string.me_section_shortcuts))
+                ShortcutGrid(shortcuts = state.shortcuts, onOpen = openShortcut)
+                val materials = state.materialsShortcut
+                if (materials != null) {
+                    Spacer(Modifier.height(12.dp))
+                    WideShortcutCard(shortcut = materials, onOpen = openShortcut)
                 }
+            }
+            Spacer(Modifier.height(26.dp))
 
-                Column(modifier = Modifier.fadeUpOnAppear(delayMs = 300)) {
-                    MeSectionLabel(label = stringResource(R.string.me_section_shortcuts))
-                    ShortcutGrid(
-                        shortcuts = pinned,
-                        onOpen = { kind ->
-                            when (kind) {
-                                ShortcutKind.Calendar -> connectedNavigator.navigate(ConnectedRoute.Calendar)
-                                ShortcutKind.Countdown -> connectedNavigator.navigate(ConnectedRoute.FinalCountdown)
-                                else -> Unit
-                            }
-                        },
-                    )
-                }
-                Spacer14()
-
-                Column(modifier = Modifier.fadeUpOnAppear(delayMs = 380)) {
-                    MeSectionLabel(label = stringResource(R.string.me_section_settings))
-                    SettingsCard(
-                        rows = settingsRows,
-                        onSelect = { id ->
-                            when (id) {
-                                SettingsRowKind.Settings -> connectedNavigator.navigate(ConnectedRoute.Settings)
-                                SettingsRowKind.About -> aboutOpen = true
-                                SettingsRowKind.Feedback -> launchFeedbackEmail(
-                                    context = context,
-                                    recipient = feedbackRecipient,
-                                    body = feedbackBody,
-                                )
-                                SettingsRowKind.Licenses -> connectedNavigator.navigate(ConnectedRoute.Licenses)
-                            }
-                        },
-                    )
-                }
-                Spacer14()
-
-                MeSignOutButton(
-                    onClick = { vm.onIntent(MeIntent.BeginLogout) },
-                    modifier = Modifier.fadeUpOnAppear(delayMs = 460),
-                )
-
-                Footer(
-                    version = appInfo.version,
-                    modifier = Modifier.fadeUpOnAppear(delayMs = 540),
+            Column(modifier = Modifier.fadeUpOnAppear(delayMs = 380)) {
+                MeSectionLabel(label = stringResource(R.string.me_section_settings))
+                SettingsCard(
+                    rows = settingsRows,
+                    onSelect = { id ->
+                        when (id) {
+                            SettingsRowKind.Settings -> connectedNavigator.navigate(ConnectedRoute.Settings)
+                            SettingsRowKind.About -> aboutOpen = true
+                            SettingsRowKind.Feedback -> launchFeedbackEmail(
+                                context = context,
+                                recipient = feedbackRecipient,
+                                body = feedbackBody,
+                            )
+                            SettingsRowKind.Licenses -> connectedNavigator.navigate(ConnectedRoute.Licenses)
+                        }
+                    },
                 )
             }
+            Spacer(Modifier.height(16.dp))
+
+            MeSignOutButton(
+                onClick = { vm.onIntent(MeIntent.BeginLogout) },
+                modifier = Modifier.fadeUpOnAppear(delayMs = 460),
+            )
+
+            Footer(
+                version = appInfo.version,
+                build = appInfo.build,
+                modifier = Modifier.fadeUpOnAppear(delayMs = 540),
+            )
         }
     }
 
@@ -231,24 +208,28 @@ internal fun MeScreen(
 }
 
 @Composable
-private fun Spacer14() {
-    androidx.compose.foundation.layout.Spacer(modifier = Modifier.height(14.dp))
-}
-
-@Composable
-private fun Footer(version: String, modifier: Modifier = Modifier) {
+private fun Footer(version: String, build: String, modifier: Modifier = Modifier) {
+    val credit = stringResource(R.string.me_footer_credit)
+    val heart = "♥"
     Text(
-        text = stringResource(R.string.me_footer_format, version).uppercase(Locale.ROOT),
-        style = MaterialTheme.typography.labelSmall.copy(
-            fontSize = 9.sp,
-            letterSpacing = 1.26.sp,
-            fontWeight = FontWeight.Medium,
-        ),
+        text = buildAnnotatedString {
+            append(stringResource(R.string.me_footer_version_format, version, build))
+            append("\n")
+            val heartIndex = credit.indexOf(heart)
+            if (heartIndex >= 0) {
+                append(credit.substring(0, heartIndex))
+                withStyle(SpanStyle(color = MaterialTheme.melon.status.bad)) { append(heart) }
+                append(credit.substring(heartIndex + heart.length))
+            } else {
+                append(credit)
+            }
+        },
+        style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp, lineHeight = 18.sp),
         color = MaterialTheme.colorScheme.outlineVariant,
+        textAlign = TextAlign.Center,
         modifier = modifier
             .fillMaxWidth()
-            .padding(top = 4.dp, bottom = 8.dp),
-        textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+            .padding(top = 20.dp, bottom = 8.dp),
     )
 }
 

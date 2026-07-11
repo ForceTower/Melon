@@ -3,24 +3,23 @@ package dev.forcetower.unes.ui.feature.me
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.ui.graphics.Color
 import dev.forcetower.unes.designsystem.theme.melon
 
-// Resolve a `ShortcutTone` to background + foreground via theme tokens.
-// Mirrors the `TONES` lookup in `screens-me.jsx`. The brand colors are fixed
-// across light/dark; teal uses the discipline palette since it has no brand
-// slot, and the foreground for `Plum` reaches for `BrandPeach` to keep the
-// hot accent fill against a deep cool background.
+// Resolve a `ShortcutTone` to its palette hue. The tonal card derives every
+// surface from this one color (8% plate, 20% border/icon container, full-hue
+// icon), the same recipe `DisciplineCard` uses.
 @Composable
 @ReadOnlyComposable
-internal fun resolveTone(tone: ShortcutTone): ResolvedTone {
-    val brand = MaterialTheme.melon.brand
+internal fun ShortcutTone.hue(): Color {
     val palette = MaterialTheme.melon.palette
-    val onBrand = MaterialTheme.melon.fixed.surfaceLight
-    return when (tone) {
-        ShortcutTone.Plum -> ResolvedTone(brand.plum, brand.peach)
-        ShortcutTone.Magenta -> ResolvedTone(brand.magenta, onBrand)
-        ShortcutTone.Teal -> ResolvedTone(palette.teal, onBrand)
-        ShortcutTone.Coral -> ResolvedTone(brand.coral, onBrand)
-        ShortcutTone.Amber -> ResolvedTone(brand.amber, brand.plum)
+    return when (this) {
+        ShortcutTone.Teal -> palette.teal
+        ShortcutTone.Coral -> palette.coral
+        ShortcutTone.Magenta -> palette.magenta
+        ShortcutTone.Indigo -> palette.indigo
+        ShortcutTone.Violet -> palette.violet
+        ShortcutTone.Amber -> palette.amber
+        ShortcutTone.Green -> palette.green
     }
 }

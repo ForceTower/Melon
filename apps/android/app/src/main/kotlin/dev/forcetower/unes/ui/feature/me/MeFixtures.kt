@@ -1,142 +1,143 @@
 package dev.forcetower.unes.ui.feature.me
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.MenuBook
+import androidx.compose.material.icons.automirrored.filled.ReceiptLong
+import androidx.compose.material.icons.filled.BugReport
+import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.Copyright
+import androidx.compose.material.icons.filled.Description
+import androidx.compose.material.icons.filled.EditNote
+import androidx.compose.material.icons.filled.HourglassTop
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Insights
+import androidx.compose.material.icons.filled.Settings
 import dev.forcetower.unes.R
+import dev.forcetower.unes.firebase.FeatureGates
 
-// Fixtures for everything the screen renders that isn't user data: the
-// shortcut catalogue (icon + label + tone + hint per tile) and the services
-// list. Mirrors `apps/ios/UNES/Features/Me/Models/MeFixtures.swift`.
+// Catalogue of everything the screen renders that isn't user data: the
+// shortcut tiles (icon + label + tone + hint) and the settings rows. Mirrors
+// the dc `EuScreen` shortcut/settings defs and iOS `MeShortcut`/`MeSettingsRow`.
 //
 // User-facing strings live in `strings.xml` and are referenced by id here so
 // the labels stay translatable even though the catalogue itself is fixed.
 internal object MeFixtures {
-    // Hero/strip placeholder used by previews and as the initial value while
-    // the KMP profile flow hasn't emitted yet.
+    // Hero/progress placeholder used by previews only — the live screen hides
+    // those cards until the KMP profile flow emits.
     val identity = ProfileIdentity(
         name = "Mariana Nogueira",
         firstName = "Mariana",
         course = "Engenharia de Computação",
-        campus = "Universidade Estadual de Feira de Santana",
+        campusLabel = "UEFS · Módulo 5",
         enrollment = "26111463",
         username = "mariana.nogueira",
         avatarInitial = "M",
-        semester = "2026.1",
-        semesterWeek = 7,
-        semesterTotalWeeks = 18,
-        progressPct = 38,
-        cr = 8.5,
-        crDelta = "+0,3",
-        creditsDone = 142,
-        creditsRequired = 240,
-        semesterStart = "início · 24 fev",
-        semesterEnd = "fim · 17 jul",
-        finalExam = "prova final · 07 jul",
+        semesterWeek = 21,
+        semesterTotalWeeks = 21,
+        progressPct = 100,
+        cr = 6.7,
+        crDelta = 0.1,
+        attendancePercent = 94,
+        semesterOrdinal = 6,
+        semesterStart = "18 fev",
+        semesterEnd = "8 jul",
     )
 
-    val library: Map<ShortcutKind, Shortcut> = mapOf(
-        ShortcutKind.Account to Shortcut(
-            id = ShortcutKind.Account,
-            labelRes = R.string.me_shortcut_account_label,
-            hintRes = R.string.me_shortcut_account_hint,
-            tone = ShortcutTone.Plum,
-            icon = ShortcutIcon.Account,
-        ),
-        ShortcutKind.Zhonya to Shortcut(
-            id = ShortcutKind.Zhonya,
-            labelRes = R.string.me_shortcut_zhonya_label,
-            hintRes = R.string.me_shortcut_zhonya_hint,
-            tone = ShortcutTone.Magenta,
-            icon = ShortcutIcon.Hourglass,
-        ),
-        ShortcutKind.Flowchart to Shortcut(
-            id = ShortcutKind.Flowchart,
-            labelRes = R.string.me_shortcut_flowchart_label,
-            hintRes = R.string.me_shortcut_flowchart_hint,
+    // Grid tiles in dc/iOS order. Enrollment, Certificate, History, and
+    // Paradoxo are remote-config gated; Calendar and Countdown always show.
+    private val gridLibrary = listOf(
+        Shortcut(
+            id = ShortcutKind.Enrollment,
+            labelRes = R.string.me_shortcut_enrollment_label,
+            hintRes = R.string.me_shortcut_enrollment_hint,
             tone = ShortcutTone.Teal,
-            icon = ShortcutIcon.Flow,
+            icon = Icons.Filled.EditNote,
+            beta = true,
         ),
-        ShortcutKind.Bandejao to Shortcut(
-            id = ShortcutKind.Bandejao,
-            labelRes = R.string.me_shortcut_bandejao_label,
-            hintRes = R.string.me_shortcut_bandejao_hint,
-            tone = ShortcutTone.Amber,
-            icon = ShortcutIcon.Tray,
-        ),
-        ShortcutKind.Calendar to Shortcut(
+        Shortcut(
             id = ShortcutKind.Calendar,
             labelRes = R.string.me_shortcut_calendar_label,
             hintRes = R.string.me_shortcut_calendar_hint,
             tone = ShortcutTone.Coral,
-            icon = ShortcutIcon.Calendar,
+            icon = Icons.Filled.CalendarMonth,
         ),
-        ShortcutKind.Countdown to Shortcut(
+        Shortcut(
             id = ShortcutKind.Countdown,
             labelRes = R.string.me_shortcut_countdown_label,
             hintRes = R.string.me_shortcut_countdown_hint,
-            tone = ShortcutTone.Plum,
-            icon = ShortcutIcon.Timer,
-        ),
-        ShortcutKind.Request to Shortcut(
-            id = ShortcutKind.Request,
-            labelRes = R.string.me_shortcut_request_label,
-            hintRes = R.string.me_shortcut_request_hint,
-            tone = ShortcutTone.Teal,
-            icon = ShortcutIcon.Doc,
-        ),
-        ShortcutKind.Theme to Shortcut(
-            id = ShortcutKind.Theme,
-            labelRes = R.string.me_shortcut_theme_label,
-            hintRes = R.string.me_shortcut_theme_hint,
             tone = ShortcutTone.Magenta,
-            icon = ShortcutIcon.Brush,
+            icon = Icons.Filled.HourglassTop,
         ),
-        ShortcutKind.Reminders to Shortcut(
-            id = ShortcutKind.Reminders,
-            labelRes = R.string.me_shortcut_reminders_label,
-            hintRes = R.string.me_shortcut_reminders_hint,
-            tone = ShortcutTone.Coral,
-            icon = ShortcutIcon.Bell,
+        Shortcut(
+            id = ShortcutKind.Certificate,
+            labelRes = R.string.me_shortcut_certificate_label,
+            hintRes = R.string.me_shortcut_certificate_hint,
+            tone = ShortcutTone.Indigo,
+            icon = Icons.Filled.Description,
         ),
-        ShortcutKind.Adventure to Shortcut(
-            id = ShortcutKind.Adventure,
-            labelRes = R.string.me_shortcut_adventure_label,
-            hintRes = R.string.me_shortcut_adventure_hint,
+        Shortcut(
+            id = ShortcutKind.History,
+            labelRes = R.string.me_shortcut_history_label,
+            hintRes = R.string.me_shortcut_history_hint,
+            tone = ShortcutTone.Violet,
+            icon = Icons.AutoMirrored.Filled.ReceiptLong,
+        ),
+        Shortcut(
+            id = ShortcutKind.Paradoxo,
+            labelRes = R.string.me_shortcut_paradoxo_label,
+            hintRes = R.string.me_shortcut_paradoxo_hint,
             tone = ShortcutTone.Amber,
-            icon = ShortcutIcon.Compass,
+            icon = Icons.Filled.Insights,
         ),
     )
 
-    val defaultPinned: List<ShortcutKind> = listOf(
-        ShortcutKind.Calendar,
-        ShortcutKind.Countdown,
+    // Materiais renders as the wide card under the grid.
+    val materials = Shortcut(
+        id = ShortcutKind.Materials,
+        labelRes = R.string.me_shortcut_materials_label,
+        hintRes = R.string.me_shortcut_materials_hint,
+        tone = ShortcutTone.Green,
+        icon = Icons.AutoMirrored.Filled.MenuBook,
     )
 
-    fun pinned(ids: List<ShortcutKind>): List<Shortcut> =
-        ids.mapNotNull { library[it] }
+    fun gridShortcuts(gates: FeatureGates): List<Shortcut> = gridLibrary.filter {
+        when (it.id) {
+            ShortcutKind.Enrollment -> gates.enrollment
+            ShortcutKind.Certificate -> gates.enrollmentCertificate
+            ShortcutKind.History -> gates.academicHistory
+            ShortcutKind.Paradoxo -> gates.paradoxo
+            else -> true
+        }
+    }
 
     val settingsRows: List<SettingsRow> = listOf(
         SettingsRow(
             id = SettingsRowKind.Settings,
             labelRes = R.string.me_settings_row_settings_label,
             hintRes = R.string.me_settings_row_settings_hint,
-            icon = SettingsIcon.Gear,
+            icon = Icons.Filled.Settings,
+            tone = null,
         ),
         SettingsRow(
             id = SettingsRowKind.About,
             labelRes = R.string.me_settings_row_about_label,
             hintRes = R.string.me_settings_row_about_hint,
-            icon = SettingsIcon.Info,
+            icon = Icons.Filled.Info,
+            tone = ShortcutTone.Indigo,
         ),
         SettingsRow(
             id = SettingsRowKind.Feedback,
             labelRes = R.string.me_settings_row_feedback_label,
             hintRes = R.string.me_settings_row_feedback_hint,
-            icon = SettingsIcon.Bug,
+            icon = Icons.Filled.BugReport,
+            tone = ShortcutTone.Amber,
         ),
         SettingsRow(
             id = SettingsRowKind.Licenses,
             labelRes = R.string.me_settings_row_licenses_label,
             hintRes = R.string.me_settings_row_licenses_hint,
-            icon = SettingsIcon.License,
+            icon = Icons.Filled.Copyright,
+            tone = ShortcutTone.Violet,
         ),
     )
 }

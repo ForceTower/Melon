@@ -499,76 +499,76 @@
     <!-- endregion -->
 
     <!-- region Me · Header -->
-    <!-- "◦ PERFIL · {semester}" — eyebrow stamp above the greeting. -->
-    <string name="me_header_eyebrow_format">◦ PERFIL · %1$s</string>
-    <string name="me_header_greeting">Olá</string>
+    <string name="me_title">Eu</string>
+    <string name="me_subtitle">Perfil, atalhos e definições</string>
     <!-- endregion -->
 
-    <!-- region Me · Section labels -->
-    <string name="me_section_shortcuts">atalhos fixados</string>
-    <string name="me_section_settings">definições</string>
+    <!-- region Me · Section labels (uppercased at render) -->
+    <string name="me_section_shortcuts">Atalhos</string>
+    <string name="me_section_settings">Definições</string>
     <!-- endregion -->
 
     <!-- region Me · Identity card -->
-    <!-- "usuário · {username}" — eyebrow inside the dark hero card. -->
-    <string name="me_identity_card_username_format">usuário · %1$s</string>
-    <!-- Pill on the right of the eyebrow row — "carteirinha" stamp. -->
-    <string name="me_identity_card_pill">carteirinha</string>
-    <string name="me_identity_card_stat_cr">CR atual</string>
-    <string name="me_identity_card_stat_credits">créditos</string>
-    <string name="me_identity_card_stat_semester">semestre</string>
-    <!-- "/ {creditsRequired}" — denominator next to current credits. -->
-    <string name="me_identity_card_stat_total_format">/ %1$d</string>
-    <!-- "/ {totalWeeks} sem" — denominator next to current semester week. -->
-    <string name="me_identity_card_stat_weeks_format">/ %1$d sem</string>
+    <!-- Chip fallback while no campus/módulo is synced — every upstream today is UEFS. -->
+    <string name="me_identity_campus_fallback">UEFS</string>
+    <string name="me_stat_score">Score</string>
+    <!-- Caption under the Score value when there is no visible delta. -->
+    <string name="me_stat_score_caption">geral</string>
+    <string name="me_stat_attendance">Frequência</string>
+    <string name="me_stat_attendance_caption">presença</string>
+    <string name="me_stat_semester">Semestre</string>
+    <string name="me_stat_semester_caption">atual</string>
+    <!-- "6º" — enrolled-semester ordinal. -->
+    <string name="me_stat_semester_ordinal_format">%1$dº</string>
     <!-- endregion -->
 
-    <!-- region Me · Semester strip -->
-    <!-- "◦ semestre {code}" — uppercased at render. -->
-    <string name="me_semester_strip_eyebrow_format">◦ semestre %1$s</string>
-    <string name="me_semester_strip_week_prefix">"Semana "</string>
-    <!-- " de {totalWeeks}" — trailing fragment after the italic accent week number. -->
-    <string name="me_semester_strip_week_suffix_format">" de %1$d"</string>
+    <!-- region Me · Semester progress card -->
+    <string name="me_progress_week_prefix">"Semana "</string>
+    <!-- " de {totalWeeks}" — trailing fragment after the accent week number. -->
+    <string name="me_progress_week_suffix_format">" de %1$d"</string>
+    <string name="me_progress_percent_format">%1$d%%</string>
+    <!-- Flag chip shown on the semester's closing week. -->
+    <string name="me_progress_last_week">Última</string>
+    <string name="me_progress_start_prefix">"Início · "</string>
+    <string name="me_progress_end_prefix">"Fim · "</string>
     <!-- endregion -->
 
     <!-- region Me · Shortcut catalogue -->
-    <string name="me_shortcut_account_label">Conta UNES</string>
-    <string name="me_shortcut_account_hint">SSO · histórico</string>
-    <string name="me_shortcut_zhonya_label">Zhonya</string>
-    <string name="me_shortcut_zhonya_hint">pausar notificações</string>
-    <string name="me_shortcut_flowchart_label">Fluxograma</string>
-    <string name="me_shortcut_flowchart_hint">grade curricular</string>
-    <string name="me_shortcut_bandejao_label">Bandejão</string>
-    <string name="me_shortcut_bandejao_hint">cardápio de hoje</string>
+    <string name="me_shortcut_enrollment_label">Matrícula</string>
+    <string name="me_shortcut_enrollment_hint">montar proposta</string>
     <string name="me_shortcut_calendar_label">Calendário</string>
     <string name="me_shortcut_calendar_hint">datas acadêmicas</string>
     <string name="me_shortcut_countdown_label">Final Countdown</string>
-    <string name="me_shortcut_countdown_hint">dá para passar?</string>
-    <string name="me_shortcut_request_label">Requerimentos</string>
-    <string name="me_shortcut_request_hint">secretaria</string>
-    <string name="me_shortcut_theme_label">Editor de tema</string>
-    <string name="me_shortcut_theme_hint">cores e fontes</string>
-    <string name="me_shortcut_reminders_label">Lembretes</string>
-    <string name="me_shortcut_reminders_hint">3 ativos</string>
-    <string name="me_shortcut_adventure_label">Adventure</string>
-    <string name="me_shortcut_adventure_hint">easter egg</string>
+    <string name="me_shortcut_countdown_hint">contagem do fim</string>
+    <string name="me_shortcut_certificate_label">Comprovante</string>
+    <string name="me_shortcut_certificate_hint">matrícula ativa</string>
+    <string name="me_shortcut_history_label">Histórico</string>
+    <string name="me_shortcut_history_hint">notas e créditos</string>
+    <string name="me_shortcut_paradoxo_label">Paradoxo</string>
+    <string name="me_shortcut_paradoxo_hint">médias da universidade</string>
+    <string name="me_shortcut_materials_label">Materiais</string>
+    <string name="me_shortcut_materials_hint">Provas e resumos das disciplinas</string>
+    <string name="me_shortcut_beta">Beta</string>
     <!-- endregion -->
 
     <!-- region Me · Settings rows -->
     <string name="me_settings_row_settings_label">Configurações</string>
-    <string name="me_settings_row_settings_hint">conta, exibição, notificações</string>
+    <string name="me_settings_row_settings_hint">tema, notificações, dados</string>
     <string name="me_settings_row_about_label">Sobre o aplicativo</string>
-    <string name="me_settings_row_about_hint">versão e build</string>
+    <!-- "versão {version} · build {build}" -->
+    <string name="me_settings_row_about_hint">versão %1$s · build %2$s</string>
     <string name="me_settings_row_feedback_label">Erros &amp; sugestões</string>
-    <string name="me_settings_row_feedback_hint">fale com o desenvolvedor</string>
+    <string name="me_settings_row_feedback_hint">fale com os mantenedores</string>
     <string name="me_settings_row_licenses_label">Licenças open source</string>
-    <string name="me_settings_row_licenses_hint">abrir índice</string>
+    <string name="me_settings_row_licenses_hint">pacotes open source</string>
     <!-- endregion -->
 
     <!-- region Me · Sign out + footer -->
     <string name="me_sign_out_label">Sair da conta</string>
-    <!-- "◦ UNES V{version} · FEITO COM ♥ EM FEIRA DE SANTANA ◦" — uppercased at render. -->
-    <string name="me_footer_format">◦ unes v%1$s · feito com ♥ em feira de santana ◦</string>
+    <!-- "UNES v{version} · build {build}" — first footer line. -->
+    <string name="me_footer_version_format">UNES v%1$s · build %2$s</string>
+    <!-- Second footer line; the ♥ is tinted at render. -->
+    <string name="me_footer_credit">feito com ♥ em Feira de Santana</string>
     <!-- endregion -->
 
     <!-- region Me · Feedback intent (settings row "Erros & sugestões") -->

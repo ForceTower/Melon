@@ -1,70 +1,63 @@
 package dev.forcetower.unes.ui.feature.me
 
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 
 // Local UI projection of the KMP `MeProfile` payload — everything the hero
-// card, semester strip, and footer render comes from a single value of this
-// type. Mirrors iOS `ProfileIdentity` (apps/ios/UNES/Features/Me/Models/MeModels.swift).
+// card and the semester progress card render comes from a single value of
+// this type. Mirrors the dc `EuScreen` identity card + progress card fields.
 internal data class ProfileIdentity(
     val name: String,
     val firstName: String,
     val course: String,
-    val campus: String,
+    // "UEFS · Módulo 5" — modal campus/módulo of the semester's allocations.
+    // Null while no space data is synced; the card falls back to a static
+    // university label.
+    val campusLabel: String?,
     val enrollment: String,
     val username: String,
     val avatarInitial: String,
-    val semester: String,
     val semesterWeek: Int,
     val semesterTotalWeeks: Int,
     val progressPct: Int,
-    val cr: Double,
-    val crDelta: String,
-    val creditsDone: Int,
-    val creditsRequired: Int,
+    // Lifetime CR ("Score"). Null until the score flow emits — rendered "–".
+    val cr: Double?,
+    // Signed movement caused by the last closed semester; the delta row
+    // renders only when |delta| ≥ 0.1 (same rule as iOS).
+    val crDelta: Double?,
+    val attendancePercent: Int?,
+    // 1-based enrolled-semester ordinal ("6º").
+    val semesterOrdinal: Int?,
+    // Short pre-formatted dates ("18 fev") for the progress card footer.
     val semesterStart: String,
     val semesterEnd: String,
-    val finalExam: String,
 )
 
-// Tone palette applied to a shortcut tile's icon badge. Mirrors the `TONES`
-// map in `screens-me.jsx`; on Android these route through `MaterialTheme.melon`
-// where possible (brand identity colors) and through the discipline palette
-// for `teal`, which doesn't have a brand slot.
-internal enum class ShortcutTone { Plum, Magenta, Teal, Coral, Amber }
+// Hue slot applied to a shortcut/settings tonal treatment. Values route
+// through `MaterialTheme.melon.palette` in `MeTones.kt`; the mapping mirrors
+// the dc `EuScreen` hue map.
+internal enum class ShortcutTone { Teal, Coral, Magenta, Indigo, Violet, Amber, Green }
 
-// Identifier for a single tile in the constellation. Same set as iOS
-// `Shortcut.Kind`; the navigation handler only acts on `Calendar`/`Countdown`
-// today, the rest are placeholders the design surfaces but doesn't route yet.
+// Same set as iOS `MeShortcut` (MeFeature.swift). Enrollment, Certificate,
+// History, Paradoxo, and Materials are remote-config gated; Calendar and
+// Countdown always show.
 internal enum class ShortcutKind {
-    Account,
-    Zhonya,
-    Flowchart,
-    Bandejao,
+    Enrollment,
     Calendar,
     Countdown,
-    Request,
-    Theme,
-    Reminders,
-    Adventure,
+    Certificate,
+    History,
+    Paradoxo,
+    Materials,
 }
 
-// Renderable shortcut record. The icon/label/hint come from `MeShortcuts`,
-// which keeps the catalogue in one place so all shortcut sets pick from the
-// same library.
 internal data class Shortcut(
     val id: ShortcutKind,
     val labelRes: Int,
     val hintRes: Int,
     val tone: ShortcutTone,
-    val icon: ShortcutIcon,
+    val icon: ImageVector,
+    val beta: Boolean = false,
 )
-
-// Stroke-based icon set kept inside the Me feature so we can match the JSX
-// prototype pixel-for-pixel without leaning on Material's filled icon set
-// (which carries different visual weights). `MeIcon` renders these.
-internal enum class ShortcutIcon {
-    Account, Hourglass, Flow, Tray, Calendar, Timer, Doc, Brush, Bell, Compass,
-}
 
 internal enum class SettingsRowKind { Settings, About, Feedback, Licenses }
 
@@ -72,12 +65,7 @@ internal data class SettingsRow(
     val id: SettingsRowKind,
     val labelRes: Int,
     val hintRes: Int,
-    val icon: SettingsIcon,
+    val icon: ImageVector,
+    // Null renders the neutral (surface-toned) icon container.
+    val tone: ShortcutTone?,
 )
-
-internal enum class SettingsIcon { Gear, Info, Bug, License }
-
-// Background + foreground for a tone. Routed through theme colors at the
-// call site so the hex literals stay out of the feature code (per the design
-// system rules in CLAUDE.md).
-internal data class ResolvedTone(val background: Color, val foreground: Color)

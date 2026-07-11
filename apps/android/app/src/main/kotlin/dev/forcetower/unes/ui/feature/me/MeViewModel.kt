@@ -4,9 +4,11 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.forcetower.melon.core.session.domain.SessionStore
 import dev.forcetower.melon.feature.disciplines.domain.usecase.CalculateOverallScoreUseCase
-import dev.forcetower.melon.feature.me.domain.model.MeNextExam
+import dev.forcetower.melon.feature.disciplines.domain.usecase.OverallScoreSummary
 import dev.forcetower.melon.feature.me.domain.model.MeProfile
 import dev.forcetower.melon.feature.me.domain.usecase.ObserveMeProfileUseCase
+import dev.forcetower.unes.firebase.FeatureFlags
+import dev.forcetower.unes.firebase.FeatureGates
 import dev.forcetower.unes.mvi.MviViewModel
 import dev.forcetower.unes.mvi.UiEffect
 import dev.forcetower.unes.mvi.UiIntent
@@ -17,10 +19,11 @@ import java.util.Locale
 import javax.inject.Inject
 import kotlinx.coroutines.launch
 
-// "Eu" tab. Mirrors `MeViewModel` on iOS — one KMP flow drives the hero
-// payload (identity + semester + per-semester credits + next exam) and a
-// second flow carries the lifetime CR. Both feed a single mapped
-// `ProfileIdentity` consumed by the screen.
+// "Eu" tab. Mirrors `MeFeature` on iOS — one KMP flow drives the hero payload
+// (identity + campus + attendance + semester), a second carries the lifetime
+// CR with its delta, and the remote-config gates decide which shortcut tiles
+// render. All three feed a single mapped `ProfileIdentity` + shortcut list
+// consumed by the screen.
 //
 // The logout state machine lives here too: `Idle → Confirming → Flashing →
 // LoggedOut`. When `LoggedOut` is reached the screen swaps in `LoggedOutView`;
@@ -46,7 +49,8 @@ internal enum class LogoutStep { Idle, Confirming, Flashing, LoggedOut }
 
 internal data class MeUiState(
     val profileRaw: MeProfile? = null,
-    val overallScore: Double? = null,
+    val scoreRaw: OverallScoreSummary? = null,
+    val gates: FeatureGates = FeatureGates(),
     val logoutStep: LogoutStep = LogoutStep.Idle,
     // Captured at the start of the flash so the goodbye screen reads the
     // right name even after the profile flow has been wiped by `logout()`.
@@ -55,13 +59,16 @@ internal data class MeUiState(
     // Null until the profile flow emits — the screen hides the hero in that
     // window rather than substitute fake fixture content. `MeFixtures.identity`
     // is preview-only.
-    val identity: ProfileIdentity? = profileRaw?.let { mapIdentity(it, overallScore) }
+    val identity: ProfileIdentity? = profileRaw?.let { mapIdentity(it, scoreRaw) }
+    val shortcuts: List<Shortcut> = MeFixtures.gridShortcuts(gates)
+    val materialsShortcut: Shortcut? = MeFixtures.materials.takeIf { gates.materials }
 }
 
 @HiltViewModel
 internal class MeViewModel @Inject constructor(
     observeMeProfile: ObserveMeProfileUseCase,
     overallScore: CalculateOverallScoreUseCase,
+    featureFlags: FeatureFlags,
     private val sessionStore: SessionStore,
 ) : MviViewModel<MeUiState, MeIntent, MeEffect>(MeUiState()) {
 
@@ -70,9 +77,10 @@ internal class MeViewModel @Inject constructor(
             observeMeProfile().collect { value -> setState { copy(profileRaw = value) } }
         }
         viewModelScope.launch {
-            overallScore(capSemesterId = null).collect { value ->
-                setState { copy(overallScore = value) }
-            }
+            overallScore.summary().collect { value -> setState { copy(scoreRaw = value) } }
+        }
+        viewModelScope.launch {
+            featureFlags.gates.collect { value -> setState { copy(gates = value) } }
         }
     }
 
@@ -82,7 +90,7 @@ internal class MeViewModel @Inject constructor(
             MeIntent.CancelLogout -> setState { copy(logoutStep = LogoutStep.Idle) }
             is MeIntent.ConfirmLogout -> performLogout(intent.keepData)
             MeIntent.ResetLogout -> setState {
-                copy(logoutStep = LogoutStep.Idle, profileRaw = null, overallScore = null)
+                copy(logoutStep = LogoutStep.Idle, profileRaw = null, scoreRaw = null)
             }
         }
     }
@@ -108,10 +116,10 @@ internal class MeViewModel @Inject constructor(
 
 // ───────── KMP → UI mapping ─────────
 
-private val PtBr: Locale = Locale.forLanguageTag("pt-BR")
-private val ShortDateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMM", PtBr)
+private val ShortDateFormatter: DateTimeFormatter =
+    DateTimeFormatter.ofPattern("d MMM", Locale.getDefault())
 
-private fun mapIdentity(raw: MeProfile, overallScore: Double?): ProfileIdentity {
+private fun mapIdentity(raw: MeProfile, score: OverallScoreSummary?): ProfileIdentity {
     val canonical = raw.identity.userName.ifBlank { raw.identity.firstName }
     val first = raw.identity.firstName.ifBlank { canonical.substringBefore(' ') }
     val initial = first.firstOrNull()?.uppercaseChar()?.toString() ?: "?"
@@ -120,43 +128,25 @@ private fun mapIdentity(raw: MeProfile, overallScore: Double?): ProfileIdentity 
         name = canonical,
         firstName = first,
         course = raw.identity.courseName.orEmpty(),
-        // Hardcoded today: every upstream is UEFS — see iOS MeViewModel.
-        campus = "Universidade Estadual de Feira de Santana",
+        campusLabel = raw.campus,
         enrollment = raw.identity.enrollmentNumber,
         username = raw.identity.username.orEmpty(),
         avatarInitial = initial,
-        semester = semester?.code.orEmpty(),
         semesterWeek = semester?.currentWeek ?: 0,
         semesterTotalWeeks = semester?.totalWeeks ?: 0,
         progressPct = semester?.progressPercent ?: 0,
-        // NaN is the "score not yet emitted" sentinel — the IdentityCard
-        // renders "—" for it instead of a fake 0,0 / 8,5 value.
-        cr = overallScore ?: Double.NaN,
-        // Lifetime CR has no natural delta — leave blank so the up-arrow row
-        // collapses (iOS does the same).
-        crDelta = "",
-        creditsDone = raw.enrollment.completedHours,
-        creditsRequired = raw.enrollment.totalHours,
-        semesterStart = formatSemesterStart(semester?.startDate),
-        semesterEnd = formatSemesterEnd(semester?.endDate),
-        finalExam = formatFinalExam(raw.nextExam),
+        cr = score?.value,
+        crDelta = score?.delta,
+        attendancePercent = raw.attendancePercent,
+        semesterOrdinal = raw.semesterOrdinal,
+        semesterStart = formatShortDate(semester?.startDate),
+        semesterEnd = formatShortDate(semester?.endDate),
     )
 }
 
-private fun formatSemesterStart(iso: String?): String {
-    val date = parseDate(iso) ?: return ""
-    return "início · ${ShortDateFormatter.format(date).replace(".", "")}"
+// "2026-02-18" → "18 fev" (month abbreviation dot stripped, matching the dc
+// footer labels).
+private fun formatShortDate(iso: String?): String {
+    val date = iso?.let { runCatching { LocalDate.parse(it) }.getOrNull() } ?: return ""
+    return ShortDateFormatter.format(date).replace(".", "")
 }
-
-private fun formatSemesterEnd(iso: String?): String {
-    val date = parseDate(iso) ?: return ""
-    return "fim · ${ShortDateFormatter.format(date).replace(".", "")}"
-}
-
-private fun formatFinalExam(exam: MeNextExam?): String {
-    val date = parseDate(exam?.date) ?: return ""
-    return "prova final · ${ShortDateFormatter.format(date).replace(".", "")}"
-}
-
-private fun parseDate(iso: String?): LocalDate? =
-    iso?.let { runCatching { LocalDate.parse(it) }.getOrNull() }

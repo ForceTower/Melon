@@ -19,7 +19,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
@@ -177,9 +180,10 @@ private fun Header(onClose: () -> Unit) {
                 .background(brand.plum),
             contentAlignment = Alignment.Center,
         ) {
-            MeSettingsIconBox(
-                icon = dev.forcetower.unes.ui.feature.me.SettingsIcon.Info,
-                color = brand.peach,
+            Icon(
+                imageVector = Icons.Filled.Info,
+                contentDescription = null,
+                tint = brand.peach,
                 modifier = Modifier.size(20.dp),
             )
         }

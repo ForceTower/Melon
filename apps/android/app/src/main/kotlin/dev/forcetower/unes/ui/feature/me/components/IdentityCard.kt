@@ -1,19 +1,26 @@
 package dev.forcetower.unes.ui.feature.me.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDownward
+import androidx.compose.material.icons.filled.ArrowUpward
+import androidx.compose.material.icons.filled.School
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,199 +29,158 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.foundation.Mesh
 import dev.forcetower.unes.designsystem.foundation.MeshVariant
+import dev.forcetower.unes.designsystem.theme.MelonTheme
 import dev.forcetower.unes.designsystem.theme.melon
+import dev.forcetower.unes.ui.feature.disciplines.formatGrade
+import dev.forcetower.unes.ui.feature.me.MeFixtures
 import dev.forcetower.unes.ui.feature.me.ProfileIdentity
 import java.util.Locale
+import kotlin.math.abs
 
-// Hero card at the top of the Me screen. The deep `alwaysDarkBg` base anchors
-// the whole stack regardless of light/dark mode; the rose mesh sits on top
-// (intensity 0.9 to match iOS) and a subtle vertical scrim brings the bottom
-// half down so the white text reads cleanly. Rounded 28dp corners + drop
-// shadow per JSX prototype.
+// Identity mesh card — dc `EuScreen` hero. Always-dark `heroNight` plate with
+// the warm brand mesh drifting behind a legibility scrim; avatar with the
+// live dot, name/course, the "UEFS · Módulo" chip, and the
+// Score · Frequência · Semestre stat row below a hairline divider.
 @Composable
 internal fun IdentityCard(identity: ProfileIdentity, modifier: Modifier = Modifier) {
-    val brand = MaterialTheme.melon.brand
-    // Hero is always-dark — read fixed tokens (no light/dark flip) for the
-    // foreground colors so the cream + green stay consistent in both themes.
-    val onDark = MaterialTheme.melon.fixed.surfaceLight
-    val onDarkSubtle = onDark.copy(alpha = 0.55f)
-    val onDarkBody = onDark.copy(alpha = 0.80f)
+    val fixed = MaterialTheme.melon.fixed
+    val shape = RoundedCornerShape(28.dp)
 
     Box(
         modifier = modifier
             .fillMaxWidth()
-            // Default shadow tint (black). The 16dp elevation matches the JSX
-            // prototype's `0 16px 40px rgba(26,20,32,0.15)` drop-shadow.
-            .shadow(elevation = 16.dp, shape = RoundedCornerShape(28.dp))
-            .clip(RoundedCornerShape(28.dp))
-            .background(brand.alwaysDarkBg),
+            .shadow(elevation = 12.dp, shape = shape)
+            .clip(shape)
+            .background(fixed.heroNight),
     ) {
-        // The card has no explicit height — inside a vertical scroll its
-        // vertical constraints are unbounded, so `fillMaxSize` would collapse
-        // the mesh and veil to 0dp and we'd see only the flat dark base.
-        // `matchParentSize` defers measurement until the content Column
-        // reports its height (same fix NowCard uses).
-        Mesh(
-            variant = MeshVariant.Rose,
-            intensity = 0.9f,
-            modifier = Modifier.matchParentSize(),
-        )
-        // Vertical scrim — top transparent, bottom dimmer — matches the JSX
-        // `linear-gradient(180deg, rgba(26,15,40,0.15) → rgba(26,15,40,0.6))`
-        // overlay that keeps the avatar/text readable over the warm mesh.
+        // `matchParentSize` (not `fillMaxSize`) — inside a scroll column the
+        // card's height comes from the content Column; the mesh and scrim
+        // defer to it instead of collapsing to 0dp.
+        Mesh(variant = MeshVariant.Hero, modifier = Modifier.matchParentSize())
+        // Legibility scrim: dim top and bottom, breathe in the middle —
+        // matches the dc `linear-gradient(180deg, .28 / .10 45% / .34)` veil.
         Box(
             modifier = Modifier
                 .matchParentSize()
                 .background(
                     Brush.verticalGradient(
-                        0f to brand.alwaysDarkBg.copy(alpha = 0.15f),
-                        1f to brand.alwaysDarkBg.copy(alpha = 0.6f),
+                        0f to fixed.heroVeil.copy(alpha = 0.28f),
+                        0.45f to fixed.heroVeil.copy(alpha = 0.10f),
+                        1f to fixed.heroVeil.copy(alpha = 0.34f),
                     ),
                 ),
         )
 
-        Column(modifier = Modifier.padding(horizontal = 22.dp, vertical = 22.dp)) {
-            EyebrowRow(identity = identity, onDark = onDark, onDarkSubtle = onDarkSubtle)
+        Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 22.dp)) {
+            IdentityRow(identity)
             Spacer(Modifier.height(18.dp))
-            AvatarRow(
-                identity = identity,
-                onDark = onDark,
-                onDarkBody = onDarkBody,
-                onDarkSubtle = onDarkSubtle,
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .background(fixed.onHero.copy(alpha = 0.16f)),
             )
-            Spacer(Modifier.height(18.dp))
-            StatsRail(identity = identity, onDark = onDark, onDarkSubtle = onDarkSubtle)
+            Spacer(Modifier.height(16.dp))
+            StatsRow(identity)
         }
     }
 }
 
 @Composable
-private fun EyebrowRow(identity: ProfileIdentity, onDark: Color, onDarkSubtle: Color) {
-    val username = identity.username.ifBlank { "—" }
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Text(
-            text = stringResource(R.string.me_identity_card_username_format, username)
-                .uppercase(Locale.ROOT),
-            style = MaterialTheme.typography.labelSmall.copy(
-                fontSize = 10.sp,
-                letterSpacing = 1.8.sp,
-                fontWeight = FontWeight.Medium,
-            ),
-            color = onDark.copy(alpha = 0.65f),
-            modifier = Modifier.weight(1f),
-        )
-        StudentCardPill(onDark = onDark, onDarkSubtle = onDarkSubtle)
-    }
-}
-
-@Composable
-private fun StudentCardPill(onDark: Color, @Suppress("UNUSED_PARAMETER") onDarkSubtle: Color) {
-    Row(
-        modifier = Modifier
-            .clip(RoundedCornerShape(50))
-            .background(onDark.copy(alpha = 0.12f))
-            .border(1.dp, onDark.copy(alpha = 0.18f), RoundedCornerShape(50))
-            .padding(horizontal = 9.dp, vertical = 5.dp),
-        horizontalArrangement = Arrangement.spacedBy(5.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        MeQrGlyph(color = onDark, modifier = Modifier.size(11.dp))
-        Text(
-            text = stringResource(R.string.me_identity_card_pill).uppercase(Locale.ROOT),
-            style = MaterialTheme.typography.labelSmall.copy(
-                fontSize = 9.5.sp,
-                letterSpacing = 0.95.sp,
-                fontWeight = FontWeight.Medium,
-            ),
-            color = onDark,
-        )
-    }
-}
-
-@Composable
-private fun AvatarRow(
-    identity: ProfileIdentity,
-    onDark: Color,
-    onDarkBody: Color,
-    onDarkSubtle: Color,
-) {
+private fun IdentityRow(identity: ProfileIdentity) {
+    val onHero = MaterialTheme.melon.fixed.onHero
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(14.dp),
-        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         Avatar(initial = identity.avatarInitial)
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = identity.name,
-                style = MaterialTheme.typography.headlineSmall.copy(
-                    fontSize = 24.sp,
-                    lineHeight = 25.sp,
-                    letterSpacing = (-0.36).sp,
+                style = MaterialTheme.typography.titleLarge.copy(
+                    fontSize = 20.sp,
+                    lineHeight = 23.sp,
+                    letterSpacing = (-0.4).sp,
                 ),
-                color = onDark,
+                color = onHero,
                 maxLines = 1,
-            )
-            Spacer(Modifier.height(3.dp))
-            Text(
-                text = identity.course,
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Normal,
-                ),
-                color = onDarkBody,
-                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
             )
             Spacer(Modifier.height(4.dp))
             Text(
-                text = identity.campus,
-                style = MaterialTheme.typography.labelSmall.copy(
-                    fontSize = 9.sp,
-                    letterSpacing = 0.36.sp,
-                    fontWeight = FontWeight.Medium,
-                ),
-                color = onDarkSubtle,
+                text = identity.course,
+                style = MaterialTheme.typography.bodySmall.copy(fontSize = 13.sp),
+                color = onHero.copy(alpha = 0.86f),
                 maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+            Spacer(Modifier.height(9.dp))
+            CampusChip(
+                label = identity.campusLabel
+                    ?: stringResource(R.string.me_identity_campus_fallback),
             )
         }
+    }
+}
+
+@Composable
+private fun CampusChip(label: String) {
+    val onHero = MaterialTheme.melon.fixed.onHero
+    Row(
+        modifier = Modifier
+            .clip(RoundedCornerShape(50))
+            .background(onHero.copy(alpha = 0.15f))
+            .padding(horizontal = 10.dp, vertical = 4.dp),
+        horizontalArrangement = Arrangement.spacedBy(6.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(
+            imageVector = Icons.Filled.School,
+            contentDescription = null,
+            tint = onHero.copy(alpha = 0.85f),
+            modifier = Modifier.size(14.dp),
+        )
+        Text(
+            text = label.uppercase(Locale.getDefault()),
+            style = MaterialTheme.typography.labelSmall.copy(
+                fontSize = 11.sp,
+                letterSpacing = 0.88.sp,
+            ),
+            color = onHero,
+            maxLines = 1,
+        )
     }
 }
 
 @Composable
 private fun Avatar(initial: String) {
     val brand = MaterialTheme.melon.brand
-    val ok = MaterialTheme.melon.fixed.ok
-    val brandPlum = brand.alwaysDarkBg
-    // Outer wrapper isn't clipped — the avatar circle clips on its own inner
-    // Box so the active-indicator dot can sit at the bottom-right corner with
-    // its border bleeding past the circle's edge (matches iOS, where the dot
-    // is offset to (+22,+22) outside the avatar's frame).
-    Box(modifier = Modifier.size(64.dp), contentAlignment = Alignment.Center) {
+    val fixed = MaterialTheme.melon.fixed
+    Box(modifier = Modifier.size(66.dp)) {
         Box(
             modifier = Modifier
                 .matchParentSize()
                 .shadow(
-                    elevation = 12.dp,
+                    elevation = 8.dp,
                     shape = CircleShape,
-                    ambientColor = brand.coral.copy(alpha = 0.4f),
-                    spotColor = brand.coral.copy(alpha = 0.4f),
+                    ambientColor = fixed.heroVeil,
+                    spotColor = fixed.heroVeil,
                 )
                 .clip(CircleShape)
                 .background(
                     Brush.linearGradient(
                         0f to brand.amber,
-                        0.55f to brand.coral,
+                        0.52f to brand.coral,
                         1f to brand.magenta,
                     ),
                 ),
@@ -222,135 +188,178 @@ private fun Avatar(initial: String) {
         ) {
             Text(
                 text = initial,
-                style = MaterialTheme.typography.headlineLarge.copy(
-                    fontSize = 32.sp,
-                    lineHeight = 32.sp,
-                    letterSpacing = (-0.64).sp,
-                    fontWeight = FontWeight.Normal,
+                style = MaterialTheme.typography.headlineMedium.copy(
+                    fontSize = 28.sp,
+                    fontWeight = FontWeight.ExtraBold,
                 ),
-                color = MaterialTheme.melon.fixed.surfaceLight,
+                color = fixed.onHero,
             )
         }
-        // Active indicator dot — sibling of the clipped circle so the
-        // 2.5dp plum border can render on top of (and slightly outside) the
-        // avatar's gradient fill.
-        //
-        // Positioned via center + offset(22, 22) to match iOS exactly: a 14dp
-        // dot whose center sits on the avatar's bottom-right perimeter (the
-        // circle's edge at 45° is at +22.6dp from center). `BottomEnd`
-        // alignment would shove the dot into the corner of the 64dp frame
-        // and leave it floating outside the circle entirely.
+        // Live dot on the avatar's bottom-right perimeter — the outer circle
+        // paints the heroNight ring the dc border renders, the inset one the
+        // live green fill.
         Box(
             modifier = Modifier
-                .offset(x = 22.dp, y = 22.dp)
-                .size(14.dp)
+                .align(Alignment.BottomEnd)
+                .offset(x = (-2).dp, y = (-2).dp)
+                .size(15.dp)
                 .clip(CircleShape)
-                .background(ok)
-                .border(2.5.dp, brandPlum, CircleShape),
+                .background(fixed.heroNight)
+                .padding(3.dp)
+                .clip(CircleShape)
+                .background(fixed.live),
         )
     }
 }
 
 @Composable
-private fun StatsRail(identity: ProfileIdentity, onDark: Color, onDarkSubtle: Color) {
-    Column(modifier = Modifier.fillMaxWidth()) {
-        Box(
+private fun StatsRow(identity: ProfileIdentity) {
+    Row(modifier = Modifier.height(IntrinsicSize.Min)) {
+        Stat(
+            label = stringResource(R.string.me_stat_score),
+            value = formatGrade(identity.cr),
+            modifier = Modifier.weight(1f),
+        ) {
+            ScoreDelta(delta = identity.crDelta)
+        }
+        StatDivider()
+        Stat(
+            label = stringResource(R.string.me_stat_attendance),
+            value = identity.attendancePercent?.toString() ?: "–",
+            valueSuffix = identity.attendancePercent?.let { "%" },
             modifier = Modifier
-                .fillMaxWidth()
-                .height(1.dp)
-                .background(onDark.copy(alpha = 0.15f)),
-        )
-        Spacer(Modifier.height(16.dp))
-        Row(modifier = Modifier.fillMaxWidth()) {
-            IdentityStat(
-                label = stringResource(R.string.me_identity_card_stat_cr),
-                // NaN means the overallScore flow hasn't emitted yet — render
-                // an em-dash rather than the misleading 0,0 a numeric format
-                // would produce.
-                value = if (identity.cr.isNaN()) {
-                    "—"
-                } else {
-                    String.format(Locale.forLanguageTag("pt-BR"), "%.1f", identity.cr)
-                },
-                accent = identity.crDelta.takeIf { it.isNotEmpty() },
-                onDark = onDark,
-                onDarkSubtle = onDarkSubtle,
-                modifier = Modifier.weight(1f),
-            )
-            IdentityStat(
-                label = stringResource(R.string.me_identity_card_stat_credits),
-                value = identity.creditsDone.toString(),
-                sub = stringResource(R.string.me_identity_card_stat_total_format, identity.creditsRequired),
-                onDark = onDark,
-                onDarkSubtle = onDarkSubtle,
-                modifier = Modifier.weight(1f),
-            )
-            IdentityStat(
-                label = stringResource(R.string.me_identity_card_stat_semester),
-                value = identity.semesterWeek.toString(),
-                sub = stringResource(R.string.me_identity_card_stat_weeks_format, identity.semesterTotalWeeks),
-                onDark = onDark,
-                onDarkSubtle = onDarkSubtle,
-                modifier = Modifier.weight(1f),
-            )
+                .weight(1f)
+                .padding(start = 18.dp),
+        ) {
+            StatCaption(text = stringResource(R.string.me_stat_attendance_caption))
+        }
+        StatDivider()
+        Stat(
+            label = stringResource(R.string.me_stat_semester),
+            value = identity.semesterOrdinal
+                ?.let { stringResource(R.string.me_stat_semester_ordinal_format, it) }
+                ?: "–",
+            modifier = Modifier
+                .weight(1f)
+                .padding(start = 18.dp),
+        ) {
+            StatCaption(text = stringResource(R.string.me_stat_semester_caption))
         }
     }
 }
 
 @Composable
-private fun IdentityStat(
+private fun StatDivider() {
+    Box(
+        modifier = Modifier
+            .width(1.dp)
+            .fillMaxHeight()
+            .background(MaterialTheme.melon.fixed.onHero.copy(alpha = 0.14f)),
+    )
+}
+
+@Composable
+private fun Stat(
     label: String,
     value: String,
-    onDark: Color,
-    onDarkSubtle: Color,
     modifier: Modifier = Modifier,
-    sub: String? = null,
-    accent: String? = null,
+    valueSuffix: String? = null,
+    footer: @Composable () -> Unit,
 ) {
+    val onHero = MaterialTheme.melon.fixed.onHero
     Column(modifier = modifier) {
         Text(
-            text = label.uppercase(Locale.ROOT),
+            text = label.uppercase(Locale.getDefault()),
             style = MaterialTheme.typography.labelSmall.copy(
-                fontSize = 9.sp,
-                letterSpacing = 1.26.sp,
-                fontWeight = FontWeight.Medium,
+                fontSize = 10.sp,
+                letterSpacing = 1.2.sp,
             ),
-            color = onDarkSubtle,
+            color = onHero.copy(alpha = 0.6f),
         )
-        Spacer(Modifier.height(6.dp))
+        Spacer(Modifier.height(7.dp))
         Row(verticalAlignment = Alignment.Bottom) {
             Text(
                 text = value,
                 style = MaterialTheme.typography.headlineSmall.copy(
-                    fontSize = 24.sp,
-                    lineHeight = 24.sp,
-                    letterSpacing = (-0.48).sp,
+                    fontSize = 26.sp,
+                    lineHeight = 26.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    letterSpacing = (-0.52).sp,
                 ),
-                color = onDark,
+                color = onHero,
             )
-            if (sub != null) {
-                Spacer(Modifier.size(3.dp))
+            if (valueSuffix != null) {
+                Spacer(Modifier.width(3.dp))
                 Text(
-                    text = sub,
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        fontSize = 11.sp,
-                        fontWeight = FontWeight.Normal,
-                    ),
-                    color = onDarkSubtle,
-                    modifier = Modifier.padding(bottom = 2.dp),
+                    text = valueSuffix,
+                    style = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp),
+                    color = onHero.copy(alpha = 0.7f),
+                    modifier = Modifier.padding(bottom = 1.dp),
                 )
             }
         }
-        if (!accent.isNullOrEmpty()) {
-            Spacer(Modifier.height(3.dp))
-            Text(
-                text = "↑ $accent",
-                style = MaterialTheme.typography.labelSmall.copy(
-                    fontSize = 10.sp,
-                    fontWeight = FontWeight.Medium,
-                ),
-                color = MaterialTheme.melon.fixed.okOnDark,
-            )
-        }
+        Spacer(Modifier.height(5.dp))
+        footer()
+    }
+}
+
+@Composable
+private fun StatCaption(text: String) {
+    Text(
+        text = text,
+        style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
+        color = MaterialTheme.melon.fixed.onHero.copy(alpha = 0.6f),
+    )
+}
+
+// Rising/falling CR arrow — rendered only when the movement is visible after
+// truncation (|delta| ≥ 0.1), the same rule iOS applies.
+@Composable
+private fun ScoreDelta(delta: Double?) {
+    if (delta == null || abs(delta) < 0.1) {
+        StatCaption(text = stringResource(R.string.me_stat_score_caption))
+        return
+    }
+    val rising = delta >= 0
+    val color = if (rising) {
+        MaterialTheme.melon.fixed.live
+    } else {
+        MaterialTheme.melon.status.bad
+    }
+    val icon: ImageVector = if (rising) Icons.Filled.ArrowUpward else Icons.Filled.ArrowDownward
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(2.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = color,
+            modifier = Modifier.size(14.dp),
+        )
+        Text(
+            text = formatGrade(abs(delta)),
+            style = MaterialTheme.typography.labelMedium.copy(
+                fontSize = 12.sp,
+                letterSpacing = 0.sp,
+            ),
+            color = color,
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun IdentityCardPreview() {
+    MelonTheme {
+        IdentityCard(identity = MeFixtures.identity, modifier = Modifier.padding(20.dp))
+    }
+}
+
+@Preview
+@Composable
+private fun IdentityCardDarkPreview() {
+    MelonTheme(darkTheme = true) {
+        IdentityCard(identity = MeFixtures.identity, modifier = Modifier.padding(20.dp))
     }
 }
