@@ -27,6 +27,10 @@ struct DisciplinesView: View {
                 DisciplineDetailView(store: store)
             case let .countdown(store):
                 FinalCountdownView(store: store)
+            case let .materialsList(store):
+                MaterialsListView(store: store)
+            case let .materialsDetail(store):
+                MaterialsDetailView(store: store)
             }
         }
         .task { await store.send(.task).finish() }

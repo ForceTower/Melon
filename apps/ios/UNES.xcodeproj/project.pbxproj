@@ -642,6 +642,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = UNES/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
+				INFOPLIST_KEY_NSCameraUsageDescription = "A câmera digitaliza suas folhas de material de estudo para envio em PDF.";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "O Face ID confirma que é você antes de mostrar a senha guardada.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -682,6 +683,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = UNES/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
+				INFOPLIST_KEY_NSCameraUsageDescription = "A câmera digitaliza suas folhas de material de estudo para envio em PDF.";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "O Face ID confirma que é você antes de mostrar a senha guardada.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

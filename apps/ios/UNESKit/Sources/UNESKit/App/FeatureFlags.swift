@@ -14,6 +14,8 @@ public enum FeatureFlags {
     public static let historyEnabledKey = "flag_enable_academic_history"
     /// Gates the "Paradoxo" hub entry — the `enable_paradoxo` key.
     public static let paradoxoEnabledKey = "flag_enable_paradoxo"
+    /// Gates the "Materiais" hub entry — the `enable_materials` key.
+    public static let materialsEnabledKey = "flag_enable_materials"
     /// Gates the featured campus-event card on Home — the
     /// `enable_campus_event` key.
     public static let campusEventEnabledKey = "flag_enable_campus_event"
@@ -31,6 +33,7 @@ public enum FeatureFlags {
         certificateEnabled: Bool,
         historyEnabled: Bool,
         paradoxoEnabled: Bool,
+        materialsEnabled: Bool,
         campusEventEnabled: Bool,
         documentCaptchaSiteKey: String,
         documentCaptchaBaseURL: String
@@ -40,13 +43,15 @@ public enum FeatureFlags {
         defaults.set(certificateEnabled, forKey: certificateEnabledKey)
         defaults.set(historyEnabled, forKey: historyEnabledKey)
         defaults.set(paradoxoEnabled, forKey: paradoxoEnabledKey)
+        defaults.set(materialsEnabled, forKey: materialsEnabledKey)
         defaults.set(campusEventEnabled, forKey: campusEventEnabledKey)
         defaults.set(documentCaptchaSiteKey, forKey: documentCaptchaSiteKeyKey)
         defaults.set(documentCaptchaBaseURL, forKey: documentCaptchaBaseURLKey)
         log.info("""
         feature flags updated enrollment=\(enrollmentEnabled) \
         certificate=\(certificateEnabled) history=\(historyEnabled) \
-        paradoxo=\(paradoxoEnabled) campusEvent=\(campusEventEnabled) \
+        paradoxo=\(paradoxoEnabled) materials=\(materialsEnabled) \
+        campusEvent=\(campusEventEnabled) \
         captcha=\(!documentCaptchaSiteKey.isEmpty)
         """)
     }

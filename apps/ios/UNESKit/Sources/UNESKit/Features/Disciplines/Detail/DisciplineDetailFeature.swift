@@ -14,6 +14,20 @@ struct DisciplineDetailFeature {
         var detail: DisciplineDetail?
         /// Selected group code; nil renders every group ("Tudo").
         var selectedGroup: String?
+        /// The discipline's Materiais shelf entry — nil (card hidden) until
+        /// the count lands, and forever for past-semester disciplines, which
+        /// the materials overview doesn't cover.
+        var materials: MaterialsDiscipline?
+        @Shared(.appStorage(FeatureFlags.materialsEnabledKey)) var isMaterialsEnabled = false
+
+        /// Debug builds skip the flag so the flow stays reachable.
+        var showsMaterials: Bool {
+            #if DEBUG
+            true
+            #else
+            isMaterialsEnabled
+            #endif
+        }
 
         init(semesterId: String, disciplineId: String, name: String, colorIndex: Int) {
             self.semesterId = semesterId
@@ -37,18 +51,25 @@ struct DisciplineDetailFeature {
         case detailUpdated(DisciplineDetail)
         case groupSelected(String?)
         case countdownTapped
+        case materialsLoaded(MaterialsDiscipline)
+        case materialsTapped
         case delegate(Delegate)
 
         enum Delegate: Equatable {
             /// The parent stack pushes the calculator seeded from this
             /// discipline.
             case openCountdown
+            /// The parent stack pushes the discipline's materials shelf.
+            case openMaterials(MaterialsDiscipline)
         }
     }
 
     @Dependency(\.disciplinesRepository) var disciplinesRepository
+    @Dependency(\.materialsRepository) var materialsRepository
 
-    private enum CancelID { case observation }
+    private let log = Log.scoped("DisciplineDetailFeature")
+
+    private enum CancelID { case observation, materials }
 
     var body: some ReducerOf<Self> {
         Reduce { state, action in
@@ -57,7 +78,7 @@ struct DisciplineDetailFeature {
                 // The observation replays the mirror on subscription, so
                 // every appearance rehydrates and later writes (sync
                 // refreshes from any tab) land live.
-                return .run { [semesterId = state.semesterId, disciplineId = state.disciplineId] send in
+                let observation: Effect<Action> = .run { [semesterId = state.semesterId, disciplineId = state.disciplineId] send in
                     for await detail in disciplinesRepository.observeDetail(
                         semesterId: semesterId,
                         disciplineId: disciplineId
@@ -66,6 +87,8 @@ struct DisciplineDetailFeature {
                     }
                 }
                 .cancellable(id: CancelID.observation, cancelInFlight: true)
+                guard state.showsMaterials, state.materials == nil else { return observation }
+                return .merge(observation, loadMaterials(disciplineId: state.disciplineId))
 
             case let .detailUpdated(detail):
                 state.detail = detail
@@ -80,9 +103,39 @@ struct DisciplineDetailFeature {
             case .countdownTapped:
                 return .send(.delegate(.openCountdown))
 
+            case var .materialsLoaded(materials):
+                // The shelf inherits this screen's tint, not the hub's
+                // position-based one.
+                materials.colorIndex = state.colorIndex
+                state.materials = materials
+                return .none
+
+            case .materialsTapped:
+                guard let materials = state.materials else { return .none }
+                log.info("open materials id=\(materials.id)")
+                return .send(.delegate(.openMaterials(materials)))
+
             case .delegate:
                 return .none
             }
         }
+    }
+
+    /// One-shot count for the entry card. Failures (offline, past-semester
+    /// discipline missing from the overview) just keep the card hidden.
+    private func loadMaterials(disciplineId: String) -> Effect<Action> {
+        .run { [log] send in
+            do {
+                let overview = try await materialsRepository.overview()
+                guard let discipline = overview.disciplines.first(where: { $0.id == disciplineId }) else {
+                    log.debug("materials entry skipped — discipline not in overview")
+                    return
+                }
+                await send(.materialsLoaded(discipline))
+            } catch {
+                log.debug("materials entry load failed; card hidden")
+            }
+        }
+        .cancellable(id: CancelID.materials, cancelInFlight: true)
     }
 }

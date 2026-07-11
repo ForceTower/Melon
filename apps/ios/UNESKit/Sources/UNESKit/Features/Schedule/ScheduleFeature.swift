@@ -16,6 +16,8 @@ struct ScheduleFeature {
     @Reducer
     enum Path {
         case detail(DisciplineDetailFeature)
+        case materialsList(MaterialsListFeature)
+        case materialsDetail(MaterialsDetailFeature)
     }
 
     enum Action: Equatable {
@@ -94,11 +96,28 @@ struct ScheduleFeature {
                 )
                 return .none
 
+            case let .path(.element(id: _, action: pathAction)):
+                return routeMaterials(pathAction, state: &state)
+
             case .path:
                 return .none
             }
         }
         .forEach(\.path, action: \.path)
+    }
+
+    /// Discipline detail's Materiais entry pushes the shelf (and its
+    /// material screens) on this stack.
+    private func routeMaterials(_ action: Path.Action, state: inout State) -> Effect<Action> {
+        switch action {
+        case let .detail(.delegate(.openMaterials(discipline))):
+            state.path.append(.materialsList(MaterialsListFeature.State(discipline: discipline)))
+        case let .materialsList(.delegate(.openMaterial(material, _))):
+            state.path.append(.materialsDetail(MaterialsDetailFeature.State(material: material)))
+        default:
+            break
+        }
+        return .none
     }
 
     /// The reactive backbone: every mirror write (sync refresh, semester

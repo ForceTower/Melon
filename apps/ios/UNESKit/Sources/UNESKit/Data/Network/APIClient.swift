@@ -64,12 +64,14 @@ extension APIClient {
     func post<T: Decodable>(
         _ type: T.Type = T.self,
         to path: String,
+        query: [URLQueryItem] = [],
         body: some Encodable & Sendable,
         authorization: APIAuthorization = .session
     ) async throws -> T {
         let request = APIRequest(
             method: "POST",
             path: path,
+            query: query,
             body: try JSONEncoder().encode(body),
             authorization: authorization
         )
@@ -82,8 +84,13 @@ extension APIClient {
     }
 
     /// POST whose response carries no data payload (e.g. token registration).
-    func post(to path: String, body: some Encodable & Sendable) async throws {
-        _ = try await send(APIRequest(method: "POST", path: path, body: try JSONEncoder().encode(body)))
+    func post(to path: String, query: [URLQueryItem] = [], body: some Encodable & Sendable) async throws {
+        _ = try await send(APIRequest(
+            method: "POST",
+            path: path,
+            query: query,
+            body: try JSONEncoder().encode(body)
+        ))
     }
 
     func patch<T: Decodable>(

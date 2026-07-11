@@ -42,6 +42,14 @@ struct MeView: View {
                 ParadoxoDisciplineView(store: store)
             case let .paradoxoTeacher(store):
                 ParadoxoTeacherView(store: store)
+            case let .materials(store):
+                MaterialsView(store: store)
+            case let .materialsList(store):
+                MaterialsListView(store: store)
+            case let .materialsDetail(store):
+                MaterialsDetailView(store: store)
+            case let .materialsSaved(store):
+                MaterialsSavedView(store: store)
             }
         }
         .task { await store.send(.task).finish() }

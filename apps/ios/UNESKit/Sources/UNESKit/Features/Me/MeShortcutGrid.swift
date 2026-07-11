@@ -86,6 +86,7 @@ extension MeShortcut {
         case .certificate: .localized(.meShortcutCertificate)
         case .history: .localized(.meShortcutHistory)
         case .paradoxo: .localized(.meShortcutParadoxo)
+        case .materials: .localized(.meShortcutMaterials)
         }
     }
 
@@ -97,6 +98,7 @@ extension MeShortcut {
         case .certificate: .localized(.meShortcutCertificateHint)
         case .history: .localized(.meShortcutHistoryHint)
         case .paradoxo: .localized(.meShortcutParadoxoHint)
+        case .materials: .localized(.meShortcutMaterialsHint)
         }
     }
 
@@ -108,6 +110,7 @@ extension MeShortcut {
         case .certificate: "doc.text"
         case .history: "chart.bar.doc.horizontal"
         case .paradoxo: "chart.xyaxis.line"
+        case .materials: "books.vertical"
         }
     }
 
@@ -123,6 +126,7 @@ extension MeShortcut {
         case .certificate: UNESColor.readable(0x0A84FF)
         case .history: UNESColor.readable(0x7A5AD0)
         case .paradoxo: UNESColor.readable(0xF4A23C)
+        case .materials: UNESColor.readable(0x2F9E5E)
         }
     }
 }

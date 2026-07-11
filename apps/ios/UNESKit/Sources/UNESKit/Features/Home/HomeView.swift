@@ -41,6 +41,10 @@ struct HomeView: View {
                 CampusEventVenuesView(store: store)
             case let .campusEventOrganizations(store):
                 CampusEventOrganizationsView(store: store)
+            case let .materialsList(store):
+                MaterialsListView(store: store)
+            case let .materialsDetail(store):
+                MaterialsDetailView(store: store)
             }
         }
         .task { await store.send(.task).finish() }

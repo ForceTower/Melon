@@ -4,7 +4,7 @@ import Foundation
 /// The pinned shortcuts — most push their flow; the document ones
 /// (comprovante / histórico) open the request sheet instead.
 enum MeShortcut: String, Equatable, Sendable, Identifiable, CaseIterable {
-    case enrollment, calendar, countdown, certificate, history, paradoxo
+    case enrollment, calendar, countdown, certificate, history, paradoxo, materials
 
     var id: String { rawValue }
 }
@@ -35,6 +35,7 @@ struct MeFeature {
         @Shared(.appStorage(FeatureFlags.certificateEnabledKey)) var isCertificateEnabled = false
         @Shared(.appStorage(FeatureFlags.historyEnabledKey)) var isHistoryEnabled = false
         @Shared(.appStorage(FeatureFlags.paradoxoEnabledKey)) var isParadoxoEnabled = false
+        @Shared(.appStorage(FeatureFlags.materialsEnabledKey)) var isMaterialsEnabled = false
 
         var displayName: String? { profile?.name ?? userName }
 
@@ -50,6 +51,7 @@ struct MeFeature {
                 case .certificate: isCertificateEnabled
                 case .history: isHistoryEnabled
                 case .paradoxo: isParadoxoEnabled
+                case .materials: isMaterialsEnabled
                 case .calendar, .countdown: true
                 }
             }
@@ -73,6 +75,10 @@ struct MeFeature {
         case paradoxoExplore(ParadoxoExploreFeature)
         case paradoxoDiscipline(ParadoxoDisciplineFeature)
         case paradoxoTeacher(ParadoxoTeacherFeature)
+        case materials(MaterialsFeature)
+        case materialsList(MaterialsListFeature)
+        case materialsDetail(MaterialsDetailFeature)
+        case materialsSaved(MaterialsSavedFeature)
     }
 
     enum Action: Equatable {
@@ -150,6 +156,8 @@ struct MeFeature {
                     state.document = documentState(.academicHistory, from: state)
                 case .paradoxo:
                     state.path.append(.paradoxo(ParadoxoFeature.State()))
+                case .materials:
+                    state.path.append(.materials(MaterialsFeature.State()))
                 }
                 return .none
 
@@ -233,7 +241,8 @@ struct MeFeature {
             case let .path(.element(id: _, action: pathAction)):
                 return .merge(
                     routeEnrollment(pathAction, state: &state),
-                    routeParadoxo(pathAction, state: &state)
+                    routeParadoxo(pathAction, state: &state),
+                    routeMaterials(pathAction, state: &state)
                 )
 
             case .document, .path, .delegate:
@@ -321,6 +330,26 @@ struct MeFeature {
             case .teacher:
                 state.path.append(.paradoxoTeacher(ParadoxoTeacherFeature.State(teacherId: ref.id, name: name)))
             }
+
+        default:
+            break
+        }
+        return .none
+    }
+
+    /// Materiais screens all push onto the host stack: hub → discipline
+    /// shelf → material, plus the saved shelf.
+    private func routeMaterials(_ action: Path.Action, state: inout State) -> Effect<Action> {
+        switch action {
+        case let .materials(.delegate(.openDiscipline(discipline))):
+            state.path.append(.materialsList(MaterialsListFeature.State(discipline: discipline)))
+
+        case .materials(.delegate(.openSaved)):
+            state.path.append(.materialsSaved(MaterialsSavedFeature.State()))
+
+        case let .materialsList(.delegate(.openMaterial(material, _))),
+             let .materialsSaved(.delegate(.openMaterial(material))):
+            state.path.append(.materialsDetail(MaterialsDetailFeature.State(material: material)))
 
         default:
             break

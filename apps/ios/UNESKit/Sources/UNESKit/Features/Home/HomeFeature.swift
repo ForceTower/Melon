@@ -26,6 +26,8 @@ struct HomeFeature {
         case campusEventWorkshops(CampusEventWorkshopsFeature)
         case campusEventVenues(CampusEventVenuesFeature)
         case campusEventOrganizations(CampusEventOrganizationsFeature)
+        case materialsList(MaterialsListFeature)
+        case materialsDetail(MaterialsDetailFeature)
     }
 
     enum Action: Equatable {
@@ -149,7 +151,10 @@ struct HomeFeature {
                 return .send(.delegate(.openMe))
 
             case let .path(.element(id: _, action: pathAction)):
-                return routeCampusEvent(pathAction, state: &state)
+                return .merge(
+                    routeCampusEvent(pathAction, state: &state),
+                    routeMaterials(pathAction, state: &state)
+                )
 
             case .path:
                 return .none
@@ -181,6 +186,20 @@ struct HomeFeature {
             }
         case let .campusEventActivity(.delegate(.openVenues(event))):
             state.path.append(.campusEventVenues(CampusEventVenuesFeature.State(event: event)))
+        default:
+            break
+        }
+        return .none
+    }
+
+    /// Discipline detail's Materiais entry pushes the shelf (and its
+    /// material screens) on this stack.
+    private func routeMaterials(_ action: Path.Action, state: inout State) -> Effect<Action> {
+        switch action {
+        case let .detail(.delegate(.openMaterials(discipline))):
+            state.path.append(.materialsList(MaterialsListFeature.State(discipline: discipline)))
+        case let .materialsList(.delegate(.openMaterial(material, _))):
+            state.path.append(.materialsDetail(MaterialsDetailFeature.State(material: material)))
         default:
             break
         }

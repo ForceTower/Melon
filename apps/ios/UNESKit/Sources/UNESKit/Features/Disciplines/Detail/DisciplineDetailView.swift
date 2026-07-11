@@ -55,6 +55,14 @@ struct DisciplineDetailView: View {
                         .fadeUp(delay: 0.16)
                         .padding(.bottom, 22)
 
+                    if let materials = store.materials {
+                        MaterialsEntryCard(discipline: materials, color: color) {
+                            store.send(.materialsTapped)
+                        }
+                        .fadeUp(delay: 0.2)
+                        .padding(.bottom, 22)
+                    }
+
                     DisciplineGradesBlock(detail: detail, color: color, selectedGroup: store.selectedGroup)
                         .fadeUp(delay: 0.24)
                         .padding(.bottom, detail.approved == nil ? 12 : 22)

@@ -20,6 +20,8 @@ struct DisciplinesFeature {
     enum Path {
         case detail(DisciplineDetailFeature)
         case countdown(FinalCountdownFeature)
+        case materialsList(MaterialsListFeature)
+        case materialsDetail(MaterialsDetailFeature)
     }
 
     enum Action: Equatable {
@@ -124,6 +126,14 @@ struct DisciplinesFeature {
                     selectedGroup: detailState.selectedGroup,
                     semesterCode: state.overview?.semesterCode(for: detail.semesterId)
                 )))
+                return .none
+
+            case let .path(.element(id: _, action: .detail(.delegate(.openMaterials(discipline))))):
+                state.path.append(.materialsList(MaterialsListFeature.State(discipline: discipline)))
+                return .none
+
+            case let .path(.element(id: _, action: .materialsList(.delegate(.openMaterial(material, _))))):
+                state.path.append(.materialsDetail(MaterialsDetailFeature.State(material: material)))
                 return .none
 
             case .path, .alert:

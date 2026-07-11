@@ -28,6 +28,10 @@ struct ScheduleView: View {
             switch store.case {
             case let .detail(store):
                 DisciplineDetailView(store: store)
+            case let .materialsList(store):
+                MaterialsListView(store: store)
+            case let .materialsDetail(store):
+                MaterialsDetailView(store: store)
             }
         }
         .task { await store.send(.task).finish() }
