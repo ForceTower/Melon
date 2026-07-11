@@ -167,6 +167,8 @@ struct CampusEventView: View {
             .padding(.vertical, 4)
         }
         .scrollIndicators(.hidden)
+        // The selected pill's shadow reaches past the scroll bounds.
+        .scrollClipDisabled()
     }
 
     private var filterPicker: some View {
