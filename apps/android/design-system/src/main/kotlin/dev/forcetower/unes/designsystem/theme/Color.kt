@@ -108,6 +108,13 @@ internal val PaletteIndigoLight = Color(0xFF4A5FB8)
 internal val PaletteIndigoDark = Color(0xFF8A9EE8)
 internal val PaletteMustardLight = Color(0xFFA0741F)
 internal val PaletteMustardDark = Color(0xFFD4A84C)
+// Violet + green joined the palette for the Eu shortcut grid (dc `UNES Eu -
+// Android` hue map); they are not part of the 10-hue discipline rotation in
+// `ColorFor`.
+internal val PaletteVioletLight = Color(0xFF7C4DD6)
+internal val PaletteVioletDark = Color(0xFFB08CF0)
+internal val PaletteGreenLight = Color(0xFF2F9E5E)
+internal val PaletteGreenDark = Color(0xFF4AB878)
 
 // Verdict hero gradient pairs (`MelonVerdictColors`). Hand-tuned dark stops
 // for each verdict outcome family in the Final Countdown screen — passed

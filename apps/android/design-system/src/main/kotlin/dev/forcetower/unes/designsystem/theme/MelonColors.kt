@@ -108,8 +108,10 @@ data class MelonVerdictColors(
 )
 
 // Discipline tinting palette. Adaptive: same semantic slot in light/dark, but
-// dark values are lifted so chips/dots stay legible on `SurfaceDark`. Mirrors
-// iOS `ColorFor` (Overview/OverviewViewModel.swift) — keep the two in sync.
+// dark values are lifted so chips/dots stay legible on `SurfaceDark`. The
+// first ten slots mirror iOS `ColorFor` (Overview/OverviewViewModel.swift) —
+// keep the two in sync. `violet` and `green` are Android additions for the Eu
+// shortcut grid and sit outside the discipline rotation.
 @Immutable
 data class MelonPaletteColors(
     val coral: Color,
@@ -122,6 +124,8 @@ data class MelonPaletteColors(
     val emerald: Color,
     val indigo: Color,
     val mustard: Color,
+    val violet: Color,
+    val green: Color,
 )
 
 private val MelonBrandDefaults = MelonBrandColors(
@@ -178,6 +182,8 @@ internal fun melonColorsLight() = MelonColors(
         emerald = PaletteEmeraldLight,
         indigo = PaletteIndigoLight,
         mustard = PaletteMustardLight,
+        violet = PaletteVioletLight,
+        green = PaletteGreenLight,
     ),
     fixed = MelonFixedDefaults,
     verdict = MelonVerdictDefaults,
@@ -207,6 +213,8 @@ internal fun melonColorsDark() = MelonColors(
         emerald = PaletteEmeraldDark,
         indigo = PaletteIndigoDark,
         mustard = PaletteMustardDark,
+        violet = PaletteVioletDark,
+        green = PaletteGreenDark,
     ),
     fixed = MelonFixedDefaults,
     verdict = MelonVerdictDefaults,
