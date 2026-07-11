@@ -121,17 +121,15 @@ struct DisciplineDetailFeature {
         }
     }
 
-    /// One-shot count for the entry card. Failures (offline, past-semester
-    /// discipline missing from the overview) just keep the card hidden.
+    /// One-shot count for the entry card, straight from the discipline's
+    /// shelf endpoint so past-semester disciplines get the card too (access
+    /// is "ever enrolled"). Failures — offline, not enrolled — just keep the
+    /// card hidden.
     private func loadMaterials(disciplineId: String) -> Effect<Action> {
         .run { [log] send in
             do {
-                let overview = try await materialsRepository.overview()
-                guard let discipline = overview.disciplines.first(where: { $0.id == disciplineId }) else {
-                    log.debug("materials entry skipped — discipline not in overview")
-                    return
-                }
-                await send(.materialsLoaded(discipline))
+                let details = try await materialsRepository.discipline(disciplineId)
+                await send(.materialsLoaded(details.discipline))
             } catch {
                 log.debug("materials entry load failed; card hidden")
             }
