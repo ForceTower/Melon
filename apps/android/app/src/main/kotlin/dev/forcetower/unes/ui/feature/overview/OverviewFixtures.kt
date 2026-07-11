@@ -1,163 +1,159 @@
 package dev.forcetower.unes.ui.feature.overview
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.ReadOnlyComposable
-import androidx.compose.ui.graphics.Color
-import dev.forcetower.unes.designsystem.foundation.MeshVariant
-import dev.forcetower.unes.designsystem.theme.melon
-import androidx.compose.material3.MaterialTheme
+// UI projection types for the "Hoje" screen (2026 redesign — dc project
+// `UNES Home - Android`). The screen maps raw KMP payloads into these; the
+// same types feed Compose previews on the components via `OverviewFixtures`.
 
-// Static fixtures that mirror `unes/project/screens-home.jsx` and the iOS
-// `OverviewFixtures` enum. The Connected shell renders these directly until
-// the KMP-backed ViewModel ships — keeping the JSX prototype, iOS, and
-// Android visually identical while the data layer catches up.
-
-internal data class OverviewNowClass(
+// Class payload shared by the hero's upcoming/live states.
+internal data class OverviewHeroClass(
+    // Null only for fixture/pre-sync data — the CTA renders non-tappable.
+    val offerId: String?,
     val code: String,
     val title: String,
-    val prof: String,
-    val room: String,
-    val startsInMinutes: Int,
+    val prof: String?,
+    val room: String?,
     val timeRange: String,
-    val topic: String?,
-    val color: Color,
-    val meshVariant: MeshVariant,
 )
+
+// The three hero states from the design: 3a (live), 3b (day done) and the
+// default "Próxima aula" card.
+internal sealed interface OverviewHeroState {
+    data class Upcoming(
+        val klass: OverviewHeroClass,
+        val startsInMinutes: Int,
+    ) : OverviewHeroState
+
+    data class Live(
+        val klass: OverviewHeroClass,
+        val endsInMinutes: Int,
+        // 0f..1f — elapsed fraction of the class window.
+        val progress: Float,
+    ) : OverviewHeroState
+
+    data class DayDone(
+        val classCount: Int,
+        // Null when tomorrow has no classes — the "Amanhã" block is hidden.
+        val tomorrow: OverviewTomorrowUi?,
+    ) : OverviewHeroState
+}
+
+internal data class OverviewTomorrowUi(
+    val title: String,
+    // "08:00" — the time chip splits it into hour + minute lines.
+    val startTime: String,
+    val room: String?,
+    val extraCount: Int,
+)
+
+// "Reta final" card — the exam variant wins whenever an evaluation is
+// scheduled; otherwise the card counts down to the semester end.
+internal sealed interface OverviewFinalStretch {
+    data class Exam(
+        val label: String,
+        val disciplineName: String,
+        val daysUntil: Int,
+        val dateLabel: String,
+    ) : OverviewFinalStretch
+
+    data class Semester(
+        val daysLeft: Int,
+        val semesterLabel: String,
+    ) : OverviewFinalStretch
+}
 
 internal enum class OverviewClassState { Done, Now, Next, Later }
 
 internal data class OverviewTodayItem(
-    val time: String,
+    val offerId: String?,
     val code: String,
     val title: String,
-    val room: String,
-    val color: Color,
+    val startTime: String,
+    val endTime: String?,
+    val room: String?,
     val state: OverviewClassState,
-    val topic: String?,
 )
 
+internal data class OverviewMessagePreview(
+    val unreadCount: Int,
+    val sender: String,
+    val preview: String,
+    // Relative label ("2h") — null hides the chip.
+    val timeLabel: String?,
+)
+
+// Minimal seed handed back to the Connected shell when a class row/CTA is
+// tapped; the detail screen hydrates the full payload from `offerId`.
 internal data class OverviewDiscipline(
     val code: String,
     val title: String,
-    val grade: String,
-    val color: Color,
-    // DisciplineOffer id — non-null once the KMP feed lands. Fixtures and
-    // pre-sync emissions leave it null so the card renders non-tappable
-    // (mirrors iOS `DisciplinesStrip.detailSeed`).
-    val offerId: String? = null,
-)
-
-internal data class OverviewGradeTileData(
-    val value: Double,
-    val deltaLabel: String?,
-    val comparisonSemester: String?,
-)
-
-internal data class OverviewMessagesTileData(
-    val unreadCount: Int,
-    val lastSender: String?,
-    val lastPreview: String?,
-)
-
-internal data class OverviewNextTestTileData(
-    val label: String,
-    val disciplineName: String,
-    val daysUntil: Int,
-    val dateLabel: String,
-)
-
-internal data class OverviewAttendanceTileData(
-    // Null when the active semester has no tracked hours yet — the tile then
-    // falls back to its "—" empty state.
-    val percentage: Int?,
-    val days: List<Boolean>,
-    val allowedAbsences: Int,
-    val periodDays: Int,
+    val offerId: String?,
 )
 
 internal object OverviewFixtures {
-    const val SEMESTER_LABEL = "2026.1"
-    const val LAST_UPDATED_MINUTES = 2
-    const val DATE_EYEBROW = "quinta · 17 abr"
+    const val DATE_EYEBROW = "Ter, 11 mar"
+    const val TOMORROW_EYEBROW = "Qua, 12 mar"
+    const val WEEKDAY = "Terça"
+    const val COURSE_LINE = "Ciência da Computação · 6º período"
 
-    @Composable
-    @ReadOnlyComposable
-    fun nowClass(): OverviewNowClass = OverviewNowClass(
-        code = "CALC II",
-        title = "Cálculo Diferencial II",
-        prof = "Prof. Adriana Matos",
-        room = "MT-14",
-        startsInMinutes = 72,
-        timeRange = "10:20 – 12:00",
-        topic = "Integrais por partes — continuação do exercício 4.2",
-        color = MaterialTheme.melon.palette.teal,
-        meshVariant = MeshVariant.Cool,
+    val heroClass = OverviewHeroClass(
+        offerId = null,
+        code = "MT304",
+        title = "Cálculo III",
+        prof = "Dra. Helena Braga",
+        room = "Bloco PA · sala 204",
+        timeRange = "19:00 – 20:40",
     )
 
-    @Composable
-    @ReadOnlyComposable
-    fun today(): List<OverviewTodayItem> {
-        val palette = MaterialTheme.melon.palette
-        return listOf(
-            OverviewTodayItem(
-                time = "08:00", code = "ALGI", title = "Algoritmos I",
-                room = "LC-03", color = palette.coral,
-                state = OverviewClassState.Done, topic = null,
-            ),
-            OverviewTodayItem(
-                time = "10:20", code = "CALC", title = "Cálculo II",
-                room = "MT-14", color = palette.teal,
-                state = OverviewClassState.Now, topic = "Integrais por partes",
-            ),
-            OverviewTodayItem(
-                time = "14:00", code = "LPOO", title = "Prog. Orientada a Obj.",
-                room = "LC-01", color = palette.magenta,
-                state = OverviewClassState.Next, topic = "Herança vs composição",
-            ),
-            OverviewTodayItem(
-                time = "16:20", code = "FIS2", title = "Física II",
-                room = "PV-22", color = palette.plum,
-                state = OverviewClassState.Later, topic = null,
-            ),
-        )
-    }
+    val heroUpcoming = OverviewHeroState.Upcoming(klass = heroClass, startsInMinutes = 120)
 
-    @Composable
-    @ReadOnlyComposable
-    fun disciplines(): List<OverviewDiscipline> {
-        val palette = MaterialTheme.melon.palette
-        return listOf(
-            OverviewDiscipline("ALGI", "Algoritmos I", "8,8", palette.coral),
-            OverviewDiscipline("CALC", "Cálculo II", "7,5", palette.teal),
-            OverviewDiscipline("LPOO", "POO", "9,4", palette.magenta),
-            OverviewDiscipline("FIS2", "Física II", "—", palette.plum),
-            OverviewDiscipline("PROJ", "Projeto de Software", "8,1", MaterialTheme.melon.brand.amber),
-        )
-    }
+    val heroLive = OverviewHeroState.Live(klass = heroClass, endsInMinutes = 38, progress = 0.63f)
 
-    val gradeTile = OverviewGradeTileData(
-        value = 8.5,
-        deltaLabel = "+0,3",
-        comparisonSemester = "2025.2",
+    val heroDayDone = OverviewHeroState.DayDone(
+        classCount = 4,
+        tomorrow = OverviewTomorrowUi(
+            title = "Sistemas Operacionais",
+            startTime = "08:00",
+            room = "Bloco PA · sala 112",
+            extraCount = 2,
+        ),
     )
 
-    val messagesTile = OverviewMessagesTileData(
-        unreadCount = 2,
-        lastSender = "Prof. Adriana",
-        lastPreview = "Gabarito da P1",
-    )
+    val finalStretchSemester = OverviewFinalStretch.Semester(daysLeft = 23, semesterLabel = "2025.1")
 
-    val nextTestTile = OverviewNextTestTileData(
+    val finalStretchExam = OverviewFinalStretch.Exam(
         label = "P2",
-        disciplineName = "Algoritmos I",
-        daysUntil = 5,
-        dateLabel = "22 abr · 08:00",
+        disciplineName = "Cálculo III",
+        daysUntil = 10,
+        dateLabel = "Seg, 21 mar",
     )
 
-    val attendanceTile = OverviewAttendanceTileData(
-        percentage = 96,
-        days = List(14) { it < 12 },
-        allowedAbsences = 2,
-        periodDays = 14,
+    val today = listOf(
+        OverviewTodayItem(
+            offerId = null, code = "EDII", title = "Estrutura de Dados II",
+            startTime = "10:00", endTime = "11:40", room = "Lab. de Informática 3",
+            state = OverviewClassState.Done,
+        ),
+        OverviewTodayItem(
+            offerId = null, code = "BD", title = "Banco de Dados",
+            startTime = "14:00", endTime = "15:40", room = "Bloco PA · sala 108",
+            state = OverviewClassState.Done,
+        ),
+        OverviewTodayItem(
+            offerId = null, code = "MT304", title = "Cálculo III",
+            startTime = "19:00", endTime = "20:40", room = "Bloco PA · sala 204",
+            state = OverviewClassState.Next,
+        ),
+        OverviewTodayItem(
+            offerId = null, code = "ESII", title = "Engenharia de Software II",
+            startTime = "21:00", endTime = "22:40", room = "Bloco PA · sala 210",
+            state = OverviewClassState.Later,
+        ),
+    )
+
+    val messagePreview = OverviewMessagePreview(
+        unreadCount = 3,
+        sender = "Coordenação do curso",
+        preview = "Prazo de rematrícula até sexta-feira",
+        timeLabel = "2h",
     )
 }

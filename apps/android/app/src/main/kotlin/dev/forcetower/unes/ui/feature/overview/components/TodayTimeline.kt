@@ -1,11 +1,5 @@
 package dev.forcetower.unes.ui.feature.overview.components
 
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -14,356 +8,320 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ChevronRight
+import androidx.compose.material.icons.rounded.CheckCircle
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.compositeOver
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.forcetower.unes.R
+import dev.forcetower.unes.designsystem.theme.MelonTheme
 import dev.forcetower.unes.designsystem.theme.melon
 import dev.forcetower.unes.ui.feature.overview.OverviewClassState
+import dev.forcetower.unes.ui.feature.overview.OverviewFixtures
 import dev.forcetower.unes.ui.feature.overview.OverviewTodayItem
 
+private val TimeGutterWidth = 42.dp
+private val TimeGutterSpacing = 7.dp
+private val DotColumnWidth = 14.dp
+
+// "Seu dia" — the vertical timeline of today's classes: time gutter, spine
+// with state dots, and one card per class.
 @Composable
 internal fun TodayTimeline(
     items: List<OverviewTodayItem>,
+    weekdayLabel: String,
+    onOpenClass: (OverviewTodayItem) -> Unit,
+    onOpenSchedule: () -> Unit,
     modifier: Modifier = Modifier,
-    onOpenWeek: () -> Unit = {},
 ) {
-    val card = MaterialTheme.melon.surface.card
-    val cardLine = MaterialTheme.melon.surface.cardLine
-
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(24.dp))
-            .background(card)
-            .border(1.dp, cardLine, RoundedCornerShape(24.dp))
-            .padding(top = 16.dp, bottom = 6.dp),
-    ) {
+    Column(modifier = modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 4.dp),
+                .clickable(onClick = onOpenSchedule),
+            horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                text = stringResource(R.string.overview_today_title),
-                style = MaterialTheme.typography.headlineSmall.copy(
-                    fontSize = 22.sp,
-                    lineHeight = 22.sp,
-                    letterSpacing = (-0.22).sp,
-                ),
-                color = MaterialTheme.colorScheme.onBackground,
-                maxLines = 1,
-                modifier = Modifier.weight(1f),
+                text = stringResource(R.string.overview_today_title).uppercase(),
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.outline,
             )
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
+            Text(
+                text = pluralStringResource(
+                    R.plurals.overview_today_summary,
+                    items.size,
+                    weekdayLabel,
+                    items.size,
+                ),
+                style = MaterialTheme.typography.bodyMedium.copy(fontSize = 13.sp),
+                color = MaterialTheme.colorScheme.outline,
+            )
+        }
+        Spacer(Modifier.height(14.dp))
+
+        Box {
+            // Spine behind the dots, inset from the first/last card edges.
+            Box(
                 modifier = Modifier
-                    .clip(RoundedCornerShape(8.dp))
-                    .clickable(onClick = onOpenWeek)
-                    .padding(horizontal = 4.dp, vertical = 4.dp),
+                    .matchParentSize()
+                    .padding(top = 18.dp, bottom = 18.dp),
             ) {
-                Text(
-                    text = stringResource(R.string.overview_today_week_action),
-                    style = MaterialTheme.typography.labelLarge.copy(
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Medium,
-                    ),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                Box(
+                    modifier = Modifier
+                        .offset(x = TimeGutterWidth + TimeGutterSpacing + (DotColumnWidth - 2.dp) / 2)
+                        .width(2.dp)
+                        .fillMaxHeight()
+                        .background(MaterialTheme.melon.surface.line),
                 )
-                Spacer(Modifier.width(4.dp))
-                ChevronRightGlyph(color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
-        }
-        Spacer(Modifier.height(4.dp))
-        Column(modifier = Modifier.padding(vertical = 4.dp)) {
-            items.forEachIndexed { index, item ->
-                TodayRow(item = item, isLast = index == items.lastIndex)
-            }
-        }
-    }
-}
-
-@Composable
-private fun TodayRow(item: OverviewTodayItem, isLast: Boolean) {
-    val isDone = item.state == OverviewClassState.Done
-    val isNow = item.state == OverviewClassState.Now
-    val ink = MaterialTheme.colorScheme.onBackground
-    val ink3 = MaterialTheme.colorScheme.onSurfaceVariant
-    val ink4 = MaterialTheme.colorScheme.outlineVariant
-    val accent = MaterialTheme.colorScheme.primary
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp)
-            .alpha(if (isDone) 0.5f else 1f),
-    ) {
-        TimeRailColumn(
-            time = item.time,
-            color = item.color,
-            state = item.state,
-            isLast = isLast,
-            ink3 = ink3,
-            ink4 = ink4,
-        )
-
-        Column(
-            modifier = Modifier
-                .padding(start = 12.dp, top = 10.dp, bottom = 12.dp)
-                .weight(1f),
-            verticalArrangement = Arrangement.spacedBy(4.dp),
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                CodeChip(code = item.code, color = item.color)
-                if (isNow) {
-                    Spacer(Modifier.width(8.dp))
-                    NowChip(color = accent)
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                items.forEach { item ->
+                    TimelineRow(item = item, onClick = { onOpenClass(item) })
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun TimelineRow(item: OverviewTodayItem, onClick: () -> Unit) {
+    val highlighted = item.state == OverviewClassState.Next || item.state == OverviewClassState.Now
+    Row(verticalAlignment = Alignment.Top) {
+        Column(
+            modifier = Modifier
+                .width(TimeGutterWidth)
+                .padding(top = 13.dp),
+            horizontalAlignment = Alignment.End,
+        ) {
             Text(
-                text = item.title,
-                style = MaterialTheme.typography.titleSmall.copy(
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.Medium,
-                    letterSpacing = (-0.075).sp,
+                text = item.startTime.take(5),
+                style = MaterialTheme.typography.bodyMedium.copy(
+                    fontSize = 13.sp,
+                    fontWeight = if (highlighted) FontWeight.Bold else FontWeight.SemiBold,
                 ),
-                color = ink,
+                color = if (highlighted) {
+                    MaterialTheme.colorScheme.onSurface
+                } else {
+                    MaterialTheme.colorScheme.outline
+                },
+                textAlign = TextAlign.End,
             )
-            if (item.topic != null) {
+            item.endTime?.let { end ->
                 Text(
-                    text = stringResource(R.string.overview_today_topic_format, item.topic),
-                    style = MaterialTheme.typography.bodySmall.copy(
-                        fontSize = 12.sp,
-                        fontStyle = FontStyle.Italic,
-                    ),
-                    color = ink3,
-                )
-            } else {
-                Text(
-                    text = stringResource(R.string.overview_today_room_format, item.room),
-                    style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
-                    color = ink4,
+                    text = end.take(5),
+                    style = MaterialTheme.typography.bodySmall.copy(fontSize = 11.sp),
+                    color = MaterialTheme.colorScheme.outlineVariant,
+                    textAlign = TextAlign.End,
                 )
             }
         }
-    }
-}
-
-@Composable
-private fun TimeRailColumn(
-    time: String,
-    color: Color,
-    state: OverviewClassState,
-    isLast: Boolean,
-    ink3: Color,
-    ink4: Color,
-) {
-    val isNow = state == OverviewClassState.Now
-    val isDone = state == OverviewClassState.Done
-    val line = MaterialTheme.melon.surface.line
-    val surface3 = MaterialTheme.colorScheme.surfaceContainerHigh
-    val surface = MaterialTheme.colorScheme.surface
-
-    Box(
-        modifier = Modifier
-            .width(44.dp)
-            .padding(top = 12.dp),
-    ) {
-        Text(
-            text = time,
-            style = MaterialTheme.typography.labelSmall.copy(
-                fontFamily = FontFamily.Monospace,
-                fontSize = 11.sp,
-                fontWeight = if (isNow) FontWeight.SemiBold else FontWeight.Normal,
-                letterSpacing = 0.22.sp,
-            ),
-            color = ink3,
-        )
-
-        if (!isLast) {
-            Box(
-                modifier = Modifier
-                    .padding(start = 22.dp, top = 32.dp)
-                    .width(1.dp)
-                    .height(56.dp)
-                    .background(line),
-            )
+        Spacer(Modifier.width(TimeGutterSpacing))
+        Box(
+            modifier = Modifier
+                .width(DotColumnWidth)
+                .padding(top = if (highlighted) 13.dp else 15.dp),
+            contentAlignment = Alignment.TopCenter,
+        ) {
+            TimelineDot(highlighted = highlighted)
         }
-
-        TimelineDot(
-            color = color,
-            isNow = isNow,
-            isDone = isDone,
-            ink4 = ink4,
-            surface3 = surface3,
-            surface = surface,
-            modifier = Modifier.padding(start = 14.dp, top = 30.dp),
-        )
+        Spacer(Modifier.width(6.dp))
+        when (item.state) {
+            OverviewClassState.Done -> DoneCard(item, onClick)
+            OverviewClassState.Now,
+            OverviewClassState.Next,
+            -> HighlightCard(item, onClick)
+            OverviewClassState.Later -> LaterCard(item, onClick)
+        }
     }
 }
 
 @Composable
-private fun TimelineDot(
-    color: Color,
-    isNow: Boolean,
-    isDone: Boolean,
-    ink4: Color,
-    surface3: Color,
-    surface: Color,
-    modifier: Modifier = Modifier,
-) {
-    Box(
-        modifier = modifier.size(17.dp),
-        contentAlignment = Alignment.Center,
-    ) {
-        if (isNow) {
+private fun TimelineDot(highlighted: Boolean) {
+    if (highlighted) {
+        // 11dp accent dot inside a 3dp soft ring — the design's
+        // `box-shadow: 0 0 0 3px accent22` glow.
+        val accent = MaterialTheme.colorScheme.primary
+        Box(
+            modifier = Modifier
+                .size(17.dp)
+                .clip(CircleShape)
+                .background(accent.copy(alpha = 0.22f)),
+            contentAlignment = Alignment.Center,
+        ) {
             Box(
                 modifier = Modifier
-                    .size(17.dp)
+                    .size(11.dp)
                     .clip(CircleShape)
-                    .background(color.copy(alpha = 0.13f)),
+                    .background(accent),
             )
         }
-        val fill = when {
-            isNow -> color
-            isDone -> ink4
-            else -> surface3
-        }
-        val stroke = if (isNow) color else surface
+    } else {
         Box(
             modifier = Modifier
                 .size(9.dp)
                 .clip(CircleShape)
-                .background(fill)
-                .border(2.dp, stroke, CircleShape),
-            contentAlignment = Alignment.Center,
-        ) {
-            if (isDone) {
-                Canvas(modifier = Modifier.size(9.dp)) {
-                    val w = size.width
-                    val h = size.height
-                    val path = Path().apply {
-                        moveTo(w * (2f / 9f), h * 0.5f)
-                        lineTo(w * (4f / 9f), h * (6.5f / 9f))
-                        lineTo(w * (7f / 9f), h * (2.5f / 9f))
-                    }
-                    drawPath(
-                        path = path,
-                        color = Color.White,
-                        style = Stroke(width = 1.4f * density, cap = StrokeCap.Round),
-                    )
-                }
+                .background(MaterialTheme.colorScheme.background)
+                .border(2.dp, MaterialTheme.colorScheme.outlineVariant, CircleShape),
+        )
+    }
+}
+
+@Composable
+private fun RowScopeCardBase(
+    item: OverviewTodayItem,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    titleWeight: FontWeight,
+    titleColor: Color,
+    trailing: @Composable () -> Unit,
+) {
+    Row(
+        modifier = modifier
+            .padding(vertical = 0.dp)
+            .clickable(enabled = item.offerId != null, onClick = onClick)
+            .padding(horizontal = 14.dp, vertical = 11.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = item.title,
+                style = MaterialTheme.typography.titleSmall.copy(
+                    fontWeight = titleWeight,
+                    fontSize = 15.sp,
+                ),
+                color = titleColor,
+                maxLines = 1,
+            )
+            item.room?.let { room ->
+                Spacer(Modifier.height(2.dp))
+                Text(
+                    text = room,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.outline,
+                    maxLines = 1,
+                )
             }
         }
+        trailing()
     }
 }
 
 @Composable
-private fun CodeChip(code: String, color: Color) {
-    Box(
+private fun RowScope.DoneCard(item: OverviewTodayItem, onClick: () -> Unit) {
+    RowScopeCardBase(
+        item = item,
+        onClick = onClick,
         modifier = Modifier
-            .clip(RoundedCornerShape(6.dp))
-            .background(color.copy(alpha = 0.10f))
-            .padding(horizontal = 7.dp, vertical = 3.dp),
+            .weight(1f)
+            .alpha(0.68f)
+            .clip(RoundedCornerShape(16.dp))
+            .background(MaterialTheme.melon.surface.card)
+            .border(1.dp, MaterialTheme.melon.surface.line, RoundedCornerShape(16.dp)),
+        titleWeight = FontWeight.Medium,
+        titleColor = MaterialTheme.colorScheme.onSurfaceVariant,
+    ) {
+        Icon(
+            imageVector = Icons.Rounded.CheckCircle,
+            contentDescription = stringResource(R.string.overview_today_done_label),
+            tint = MaterialTheme.melon.fixed.success,
+            modifier = Modifier.size(20.dp),
+        )
+    }
+}
+
+@Composable
+private fun RowScope.HighlightCard(item: OverviewTodayItem, onClick: () -> Unit) {
+    val accent = MaterialTheme.colorScheme.primary
+    val shape = RoundedCornerShape(16.dp)
+    RowScopeCardBase(
+        item = item,
+        onClick = onClick,
+        modifier = Modifier
+            .weight(1f)
+            .clip(shape)
+            .background(accent.copy(alpha = 0.08f).compositeOver(MaterialTheme.melon.surface.card))
+            .border(1.5.dp, accent.copy(alpha = 0.45f), shape),
+        titleWeight = FontWeight.Bold,
+        titleColor = MaterialTheme.colorScheme.onSurface,
     ) {
         Text(
-            text = code,
-            style = MaterialTheme.typography.labelSmall.copy(
-                fontFamily = FontFamily.Monospace,
-                fontSize = 10.sp,
-                fontWeight = FontWeight.SemiBold,
-                letterSpacing = 1.sp,
+            text = stringResource(
+                if (item.state == OverviewClassState.Now) {
+                    R.string.overview_today_now_badge
+                } else {
+                    R.string.overview_today_next_badge
+                },
             ),
-            color = color,
+            style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 0.sp),
+            color = MaterialTheme.melon.fixed.onHero,
+            modifier = Modifier
+                .clip(RoundedCornerShape(100.dp))
+                .background(accent)
+                .padding(horizontal = 11.dp, vertical = 5.dp),
         )
     }
 }
 
 @Composable
-private fun NowChip(color: Color) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        PulsingTinyDot(color = color)
-        Spacer(Modifier.width(4.dp))
-        Text(
-            text = stringResource(R.string.overview_today_state_now),
-            style = MaterialTheme.typography.labelSmall.copy(
-                fontFamily = FontFamily.Monospace,
-                fontSize = 9.sp,
-                fontWeight = FontWeight.SemiBold,
-                letterSpacing = 1.08.sp,
-            ),
-            color = color,
-        )
-    }
-}
-
-@Composable
-private fun PulsingTinyDot(color: Color) {
-    val transition = rememberInfiniteTransition(label = "now-tiny")
-    val alpha by transition.animateFloat(
-        initialValue = 1f,
-        targetValue = 0.6f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 1600),
-            repeatMode = RepeatMode.Reverse,
-        ),
-        label = "alpha",
-    )
-    val scale by transition.animateFloat(
-        initialValue = 1f,
-        targetValue = 0.95f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 1600),
-            repeatMode = RepeatMode.Reverse,
-        ),
-        label = "scale",
-    )
-    Box(
+private fun RowScope.LaterCard(item: OverviewTodayItem, onClick: () -> Unit) {
+    RowScopeCardBase(
+        item = item,
+        onClick = onClick,
         modifier = Modifier
-            .size(4.dp)
-            .scale(scale)
-            .alpha(alpha)
-            .clip(CircleShape)
-            .background(color),
-    )
+            .weight(1f)
+            .clip(RoundedCornerShape(16.dp))
+            .background(MaterialTheme.melon.surface.card)
+            .border(1.dp, MaterialTheme.melon.surface.line, RoundedCornerShape(16.dp)),
+        titleWeight = FontWeight.Medium,
+        titleColor = MaterialTheme.colorScheme.onSurface,
+    ) {
+        Icon(
+            imageVector = Icons.Rounded.ChevronRight,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.outlineVariant,
+            modifier = Modifier.size(20.dp),
+        )
+    }
 }
 
+@Preview
 @Composable
-private fun ChevronRightGlyph(color: Color, size: Dp = 10.dp) {
-    Canvas(modifier = Modifier.size(size)) {
-        val w = this.size.width
-        val h = this.size.height
-        val stroke = Stroke(width = 1.5f * density, cap = StrokeCap.Round)
-        val path = Path().apply {
-            moveTo(w * 0.3f, h * 0.2f)
-            lineTo(w * 0.6f, h * 0.5f)
-            lineTo(w * 0.3f, h * 0.8f)
+private fun TodayTimelinePreview() {
+    MelonTheme {
+        Box(Modifier.background(MaterialTheme.colorScheme.background)) {
+            TodayTimeline(
+                items = OverviewFixtures.today,
+                weekdayLabel = OverviewFixtures.WEEKDAY,
+                onOpenClass = {},
+                onOpenSchedule = {},
+            )
         }
-        drawPath(path, color = color, style = stroke)
     }
 }

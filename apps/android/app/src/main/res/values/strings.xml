@@ -153,9 +153,9 @@
     <!-- endregion -->
 
     <!-- region Connected · Tab bar -->
-    <string name="connected_tab_overview">Hoje</string>
+    <string name="connected_tab_overview">Início</string>
     <string name="connected_tab_schedule">Horário</string>
-    <string name="connected_tab_classes">Turmas</string>
+    <string name="connected_tab_classes">Disciplinas</string>
     <string name="connected_tab_messages">Mensagens</string>
     <string name="connected_tab_me">Eu</string>
     <!-- endregion -->
@@ -164,79 +164,73 @@
     <string name="overview_greeting_morning">Bom dia</string>
     <string name="overview_greeting_afternoon">Boa tarde</string>
     <string name="overview_greeting_evening">Boa noite</string>
-    <!-- "{greeting}, {name}." — name styled italic + accent at the call site. -->
+    <!-- "Boa noite, Marina" — greeting + first name on one line. -->
     <string name="overview_greeting_format">%1$s, %2$s</string>
     <string name="overview_default_user">Mariana</string>
-    <string name="overview_date_eyebrow_prefix">◦</string>
-    <string name="overview_search_label">Buscar</string>
+    <string name="overview_notifications_label">Notificações</string>
     <string name="overview_avatar_label">Sua conta</string>
     <!-- endregion -->
 
-    <!-- region Overview · Now card -->
-    <!-- "próxima aula · em {countdown}" — eyebrow above the next class title. -->
-    <string name="overview_now_eyebrow">próxima aula · em %1$s</string>
-    <string name="overview_now_countdown_min">%1$dmin</string>
-    <string name="overview_now_countdown_hour_min">%1$dh %2$dmin</string>
-    <string name="overview_now_room_label">sala %1$s</string>
-    <string name="overview_now_prof_prefix">Prof.</string>
+    <!-- region Overview · Hero card -->
+    <string name="overview_hero_next_label">Próxima aula</string>
+    <string name="overview_hero_now_label">Agora</string>
+    <string name="overview_hero_done_label">Dia concluído</string>
+    <string name="overview_hero_in_minutes">em %1$d min</string>
+    <string name="overview_hero_in_hours">em %1$dh</string>
+    <string name="overview_hero_in_days">em %1$dd</string>
+    <string name="overview_hero_ends_minutes">termina em %1$d min</string>
+    <!-- "termina em 1h05" -->
+    <string name="overview_hero_ends_hour_min">termina em %1$dh%2$02d</string>
+    <string name="overview_hero_details_action">Ver detalhes da turma</string>
+    <string name="overview_hero_progress_label">Progresso da aula</string>
+    <string name="overview_hero_progress_value">%1$d%%</string>
+    <plurals name="overview_hero_done_title">
+        <item quantity="one">Você concluiu a aula de hoje 🎉</item>
+        <item quantity="other">Você concluiu as %1$d aulas de hoje 🎉</item>
+    </plurals>
+    <string name="overview_hero_done_rest_day">Aproveite o resto do dia, %1$s.</string>
+    <string name="overview_hero_done_rest_evening">Aproveite o resto da noite, %1$s.</string>
+    <!-- "Amanhã · Qua, 12 mar" -->
+    <string name="overview_hero_tomorrow_eyebrow">Amanhã · %1$s</string>
+    <plurals name="overview_hero_tomorrow_extra">
+        <item quantity="one">+%1$d aula</item>
+        <item quantity="other">+%1$d aulas</item>
+    </plurals>
+    <!-- endregion -->
+
+    <!-- region Overview · Reta final card -->
+    <string name="overview_final_stretch_label">Reta final</string>
+    <!-- Bold lead of "23 dias para o fim do semestre 2025.1". -->
+    <plurals name="overview_final_stretch_days">
+        <item quantity="one">%1$d dia</item>
+        <item quantity="other">%1$d dias</item>
+    </plurals>
+    <string name="overview_final_stretch_rest">para o fim do semestre %1$s</string>
+    <string name="overview_next_exam_label">Próxima prova</string>
+    <plurals name="overview_next_exam_unit">
+        <item quantity="one">dia</item>
+        <item quantity="other">dias</item>
+    </plurals>
     <!-- endregion -->
 
     <!-- region Overview · Today timeline -->
     <string name="overview_today_title">Seu dia</string>
-    <string name="overview_today_week_action">semana</string>
-    <string name="overview_today_state_now">AGORA</string>
-    <string name="overview_today_room_format">sala %1$s</string>
-    <string name="overview_today_topic_format">“%1$s”</string>
-    <!-- endregion -->
-
-    <!-- region Overview · Tiles -->
-    <string name="overview_tile_grade_eyebrow">◦ coeficiente</string>
-    <string name="overview_tile_grade_decimal_separator">,</string>
-    <!-- "+0,3 vs 2025.2" — split into delta + comparison so the styles differ. -->
-    <string name="overview_tile_grade_delta_format">%1$s</string>
-    <string name="overview_tile_grade_comparison_format">vs %1$s</string>
-    <string name="overview_tile_grade_empty_value">—</string>
-    <string name="overview_tile_grade_empty_caption">em breve</string>
-
-    <string name="overview_tile_messages_eyebrow">◦ recados</string>
-    <string name="overview_tile_messages_unread_caption">não lidos</string>
-    <string name="overview_tile_messages_empty_preview">caixa de entrada em dia</string>
-    <string name="overview_tile_messages_preview_full">%1$s · %2$s</string>
-
-    <string name="overview_tile_tests_eyebrow">◦ próxima prova</string>
-    <plurals name="overview_tile_tests_days_unit">
-        <item quantity="one">dia</item>
-        <item quantity="other">dias</item>
+    <!-- "Terça · 4 aulas" -->
+    <plurals name="overview_today_summary">
+        <item quantity="one">%1$s · %2$d aula</item>
+        <item quantity="other">%1$s · %2$d aulas</item>
     </plurals>
-    <string name="overview_tile_tests_subject_format">%1$s</string>
-    <string name="overview_tile_tests_empty_value">—</string>
-    <string name="overview_tile_tests_empty_caption">sem provas agendadas</string>
-
-    <string name="overview_tile_attendance_eyebrow">◦ frequência</string>
-    <string name="overview_tile_attendance_percent_format">%1$d</string>
-    <string name="overview_tile_attendance_percent_suffix">%</string>
-    <plurals name="overview_tile_attendance_allowed">
-        <item quantity="one">%d falta permitida</item>
-        <item quantity="other">%d faltas permitidas</item>
-    </plurals>
-    <string name="overview_tile_attendance_footer_format">%1$d dias · %2$s</string>
+    <string name="overview_today_next_badge">Próxima</string>
+    <string name="overview_today_now_badge">Agora</string>
+    <string name="overview_today_done_label">Aula concluída</string>
     <!-- endregion -->
 
-    <!-- region Overview · Disciplines strip -->
-    <string name="overview_disciplines_eyebrow">◦ semestre %1$s</string>
-    <string name="overview_disciplines_title">Suas turmas</string>
-    <string name="overview_disciplines_status_partial">PARCIAL</string>
-    <string name="overview_disciplines_grade_empty">—</string>
-    <!-- endregion -->
-
-    <!-- region Overview · Footer -->
-    <!-- Eyebrow stamp at the bottom of the scroll. Picks the longest unit
-         relative to the last sync; "syncing" shows while no sync has landed. -->
-    <string name="overview_last_updated_format">◦ atualizado há %1$d min ◦</string>
-    <string name="overview_last_updated_now">◦ atualizado agora ◦</string>
-    <string name="overview_last_updated_hours_format">◦ atualizado há %1$d h ◦</string>
-    <string name="overview_last_updated_days_format">◦ atualizado há %1$d d ◦</string>
-    <string name="overview_last_updated_syncing">◦ sincronizando ◦</string>
+    <!-- region Overview · Messages preview -->
+    <string name="overview_messages_title">Mensagens</string>
+    <string name="overview_time_now">agora</string>
+    <string name="overview_time_min_short">%1$dmin</string>
+    <string name="overview_time_hour_short">%1$dh</string>
+    <string name="overview_time_day_short">%1$dd</string>
     <!-- endregion -->
 
     <!-- region Messages -->

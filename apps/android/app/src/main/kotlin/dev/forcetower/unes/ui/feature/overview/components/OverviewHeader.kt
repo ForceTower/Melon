@@ -1,183 +1,137 @@
 package dev.forcetower.unes.ui.feature.overview.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.role
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import dev.forcetower.unes.R
-import dev.forcetower.unes.designsystem.theme.melon
-import androidx.compose.foundation.Canvas
+import dev.forcetower.unes.designsystem.theme.MelonTheme
+import dev.forcetower.unes.ui.feature.overview.OverviewFixtures
 
+// App bar of the "Hoje" screen — date eyebrow, greeting, course line on the
+// left; notification bell + monogram avatar on the right.
 @Composable
 internal fun OverviewHeader(
-    greeting: String,
-    name: String,
-    avatarInitial: String,
     dateEyebrow: String,
+    greeting: String,
+    courseLine: String?,
+    avatarInitials: String,
+    showNotificationDot: Boolean,
+    onOpenNotifications: () -> Unit,
+    onOpenProfile: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val ink = MaterialTheme.colorScheme.onBackground
-    val ink3 = MaterialTheme.colorScheme.onSurfaceVariant
-    val accent = MaterialTheme.colorScheme.primary
-    val eyebrowPrefix = stringResource(R.string.overview_date_eyebrow_prefix)
-
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .windowInsetsPadding(WindowInsets.statusBars)
-            .padding(horizontal = 24.dp)
-            .padding(top = 16.dp, bottom = 26.dp),
-        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.Top,
     ) {
-        Column(
-            modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(6.dp),
-        ) {
+        Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = "$eyebrowPrefix $dateEyebrow",
-                style = MaterialTheme.typography.labelMedium.copy(
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Medium,
-                    letterSpacing = 1.44.sp,
-                ),
-                color = ink3,
+                text = dateEyebrow.uppercase(),
+                style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.SemiBold),
+                color = MaterialTheme.colorScheme.outline,
             )
+            Spacer(Modifier.height(6.dp))
             Text(
-                text = buildGreeting(greeting = greeting, name = name, ink = ink, accent = accent),
-                style = MaterialTheme.typography.headlineMedium.copy(
-                    fontSize = 30.sp,
-                    lineHeight = 36.sp,
-                    letterSpacing = (-0.6).sp,
-                    fontWeight = FontWeight.Normal,
-                ),
+                text = greeting,
+                style = MaterialTheme.typography.headlineMedium,
+                color = MaterialTheme.colorScheme.onSurface,
             )
+            if (courseLine != null) {
+                Spacer(Modifier.height(5.dp))
+                Text(
+                    text = courseLine,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.outline,
+                    maxLines = 1,
+                )
+            }
         }
 
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            AvatarButton(
-                initial = avatarInitial,
-                contentDescription = stringResource(R.string.overview_avatar_label),
-            )
+        Spacer(Modifier.width(6.dp))
+        Box {
+            IconButton(
+                onClick = onOpenNotifications,
+                modifier = Modifier
+                    .size(42.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.surfaceContainer),
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Notifications,
+                    contentDescription = stringResource(R.string.overview_notifications_label),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(22.dp),
+                )
+            }
+            if (showNotificationDot) {
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .offset(x = (-10).dp, y = 9.dp)
+                        .size(8.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.primary),
+                )
+            }
         }
-    }
-}
 
-@Composable
-private fun buildGreeting(
-    greeting: String,
-    name: String,
-    ink: androidx.compose.ui.graphics.Color,
-    accent: androidx.compose.ui.graphics.Color,
-) = buildAnnotatedString {
-    withStyle(SpanStyle(color = ink)) { append("$greeting, ") }
-    withStyle(SpanStyle(color = accent, fontStyle = FontStyle.Italic)) { append(name) }
-}
-
-@Composable
-private fun CircleIconButton(
-    contentDescription: String,
-    content: @Composable () -> Unit,
-) {
-    Box(
-        modifier = Modifier
-            .size(40.dp)
-            .clip(CircleShape)
-            .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.72f))
-            .border(1.dp, MaterialTheme.melon.surface.cardLine, CircleShape)
-            .semantics {
-                role = Role.Button
-                this.contentDescription = contentDescription
-            },
-        contentAlignment = Alignment.Center,
-    ) {
-        content()
-    }
-}
-
-@Composable
-private fun AvatarButton(initial: String, contentDescription: String) {
-    val brand = MaterialTheme.melon.brand
-    Box(
-        modifier = Modifier
-            .size(40.dp)
-            .clip(CircleShape)
-            .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.72f))
-            .border(1.dp, MaterialTheme.melon.surface.cardLine, CircleShape)
-            .semantics {
-                role = Role.Button
-                this.contentDescription = contentDescription
-            },
-        contentAlignment = Alignment.Center,
-    ) {
+        Spacer(Modifier.width(6.dp))
         Box(
             modifier = Modifier
-                .size(32.dp)
+                .size(42.dp)
                 .clip(CircleShape)
-                .background(
-                    Brush.linearGradient(
-                        colors = listOf(brand.coral, brand.amber),
-                    ),
-                ),
+                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.20f))
+                .clickable(onClickLabel = stringResource(R.string.overview_avatar_label)) {
+                    onOpenProfile()
+                },
             contentAlignment = Alignment.Center,
         ) {
             Text(
-                text = initial,
-                style = MaterialTheme.typography.headlineSmall.copy(
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.Normal,
-                ),
-                color = androidx.compose.ui.graphics.Color(0xFFFBF7F2),
+                text = avatarInitials,
+                style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
+                color = MaterialTheme.colorScheme.primary,
             )
         }
     }
 }
 
+@Preview
 @Composable
-private fun SearchGlyph() {
-    val ink = MaterialTheme.colorScheme.onBackground
-    Canvas(modifier = Modifier.size(18.dp)) {
-        val w = size.width
-        val h = size.height
-        val cx = w * (8f / 18f)
-        val cy = h * (8f / 18f)
-        val r = w * (5f / 18f)
-        val stroke = Stroke(width = 1.5f * density, cap = StrokeCap.Round)
-        drawCircle(color = ink, radius = r, center = androidx.compose.ui.geometry.Offset(cx, cy), style = stroke)
-        val handle = Path().apply {
-            moveTo(w * (15f / 18f), h * (15f / 18f))
-            lineTo(w * (12f / 18f), h * (12f / 18f))
+private fun OverviewHeaderPreview() {
+    MelonTheme {
+        Box(Modifier.background(MaterialTheme.colorScheme.background)) {
+            OverviewHeader(
+                dateEyebrow = OverviewFixtures.DATE_EYEBROW,
+                greeting = "Boa noite, Marina",
+                courseLine = OverviewFixtures.COURSE_LINE,
+                avatarInitials = "MA",
+                showNotificationDot = true,
+                onOpenNotifications = {},
+                onOpenProfile = {},
+            )
         }
-        drawPath(handle, color = ink, style = stroke)
     }
 }

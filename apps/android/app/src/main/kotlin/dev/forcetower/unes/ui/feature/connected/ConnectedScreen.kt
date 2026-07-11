@@ -1,34 +1,15 @@
 package dev.forcetower.unes.ui.feature.connected
 
-import android.os.Build
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.navigationBars
-import androidx.compose.foundation.layout.only
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.union
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawWithContent
-import androidx.compose.ui.graphics.BlurEffect
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.TileMode
-import androidx.compose.ui.graphics.layer.GraphicsLayer
-import androidx.compose.ui.graphics.rememberGraphicsLayer
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -41,6 +22,7 @@ import androidx.navigation3.runtime.rememberDecoratedNavEntries
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import dev.forcetower.unes.designsystem.theme.MelonTheme
+import dev.forcetower.unes.designsystem.theme.melon
 import dev.forcetower.unes.ui.feature.disciplinedetail.DisciplineDetailRoute
 import dev.forcetower.unes.ui.feature.disciplines.Discipline
 import dev.forcetower.unes.ui.feature.disciplines.DisciplinesIntent
@@ -51,6 +33,7 @@ import dev.forcetower.unes.ui.feature.messages.MessageDetailRoute
 import dev.forcetower.unes.ui.feature.messages.MessagesIntent
 import dev.forcetower.unes.ui.feature.messages.MessagesScreen
 import dev.forcetower.unes.ui.feature.messages.MessagesViewModel
+import dev.forcetower.unes.ui.feature.overview.ColorFor
 import dev.forcetower.unes.ui.feature.overview.OverviewScreen
 import dev.forcetower.unes.ui.feature.schedule.ScheduleScreen
 import dev.forcetower.unes.ui.feature.calendar.CalendarScreen
@@ -58,14 +41,13 @@ import dev.forcetower.unes.ui.feature.finalcountdown.FinalCountdownScreen
 import dev.forcetower.unes.ui.feature.licenses.LicensesScreen
 import dev.forcetower.unes.ui.feature.settings.SettingsScreen
 
-// The authenticated shell — hosts the liquid tab bar and routes to each
-// feature's first screen. Mirrors iOS `ConnectedView` in shape: enum-driven
-// tabs, single shared chrome, content swapped underneath.
+// The authenticated shell — hosts the Material 3 bottom navigation bar and
+// routes to each feature's first screen.
 //
 // Navigation is per-tab: each tab keeps its own `NavBackStack` (see
 // `ConnectedNavigator`), so deep navigation inside a tab (e.g. opening a
 // message detail) is popped by the system back gesture without leaving the
-// tab. The floating tab bar stays composed across all routes.
+// tab. The bar stays composed across all routes.
 @Composable
 fun ConnectedScreen(
     onLoggedOut: () -> Unit,
@@ -90,21 +72,16 @@ fun ConnectedScreen(
     // payload (which Nav3 would have to serialize).
     val disciplinesVm: DisciplinesListViewModel = hiltViewModel()
     val unreadBadges = mapOf(
-        ConnectedTab.Messages to 0 /* messagesState.rawItems.count { it.isUnread } */,
+        ConnectedTab.Messages to messagesState.rawItems.count { it.isUnread },
     ).filterValues { it > 0 }
-    val navBarBottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
-    val bottomInset = TabBarBlockHeight + navBarBottom
 
-    // Backdrop captured into an offscreen layer with `BlurEffect` set so the
-    // tab bar can replay it pre-blurred — Compose's native equivalent of CSS
-    // `backdrop-filter: blur(...)`. Mesh.kt uses the same blur primitive (via
-    // `Modifier.blur` — content blur). Both rely on API 31+; on older devices
-    // the layer draws unblurred, leaving just the translucent chrome.
-    val backdrop: GraphicsLayer? = if (BackdropBlurSupported) {
-        rememberGraphicsLayer().also { layer ->
-            layer.renderEffect = BlurEffect(BackdropBlurRadius, BackdropBlurRadius, TileMode.Decal)
-        }
-    } else null
+    // Captured in composition so tap callbacks (which run outside it) can
+    // resolve the stable per-discipline tint for detail seeds.
+    val palette = MaterialTheme.melon.palette
+
+    // Content sits above the opaque bar, so screens no longer need to reserve
+    // scroll space for floating chrome.
+    val bottomInset = 0.dp
 
     // Lifted above the per-tab decorated entries below so saveable state
     // (lazy scroll positions, expanded/collapsed flags) survives tab
@@ -127,7 +104,7 @@ fun ConnectedScreen(
                                         code = d.code,
                                         title = d.title,
                                         prof = "",
-                                        color = d.color,
+                                        color = ColorFor.discipline(palette, d.code),
                                         offerId = offerId,
                                     ),
                                 ),
@@ -136,6 +113,7 @@ fun ConnectedScreen(
                         },
                         onOpenMessages = { navigator.selectTab(ConnectedTab.Messages) },
                         onOpenSchedule = { navigator.selectTab(ConnectedTab.Schedule) },
+                        onOpenProfile = { navigator.selectTab(ConnectedTab.Me) },
                     )
                 }
                 entry<ConnectedRoute.Schedule>(metadata = TabRootMetadata) {
@@ -226,26 +204,12 @@ fun ConnectedScreen(
     }
 
     CompositionLocalProvider(LocalConnectedNavigator provides navigator) {
-        Box(
+        Column(
             modifier = modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.surface),
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .then(
-                        if (backdrop != null) {
-                            Modifier.drawWithContent {
-                                // Record the (sharp) screen content into the layer
-                                // — the layer applies its blur on playback when
-                                // the tab bar later calls `drawLayer(backdrop)`.
-                                backdrop.record { this@drawWithContent.drawContent() }
-                                drawContent()
-                            }
-                        } else Modifier,
-                    ),
-            ) {
+            Box(modifier = Modifier.weight(1f)) {
                 NavDisplay(
                     entries = entriesByTab.getValue(navigator.activeTab),
                     onBack = { navigator.goBack() },
@@ -254,24 +218,10 @@ fun ConnectedScreen(
                     predictivePopTransitionSpec = connectedPredictivePopTransition,
                 )
             }
-
-            LiquidTabBar(
-                items = ConnectedTab.entries,
+            ConnectedNavigationBar(
                 active = navigator.activeTab,
                 onChange = { navigator.selectTab(it) },
                 badges = unreadBadges,
-                backdrop = backdrop,
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    // Nav bars handle the gesture/3-button bar (any rotation);
-                    // horizontal display cutout keeps the bar off the notch when
-                    // the device is rotated to landscape. IME is intentionally
-                    // excluded so the bar stays under the keyboard.
-                    .windowInsetsPadding(
-                        WindowInsets.navigationBars
-                            .union(WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal)),
-                    )
-                    .padding(horizontal = 14.dp, vertical = 22.dp),
             )
         }
     }
@@ -280,8 +230,7 @@ fun ConnectedScreen(
 // Minimal seed handed to `DisciplinesListViewModel` when an Overview/Schedule
 // tap pushes `DisciplineDetail`. The detail VM hydrates the full payload from
 // KMP via `offerId`; the seed only powers the first frame so the screen has
-// something to render before the flow emits. Mirrors iOS `detailSeed` in
-// `DisciplinesStrip` / `DayColumn`.
+// something to render before the flow emits.
 private fun seedDiscipline(
     code: String,
     title: String,
@@ -301,34 +250,6 @@ private fun seedDiscipline(
     sections = emptyList(),
     offerId = offerId,
 )
-
-// Visual height of the floating tab bar block (bar + 22dp top/bottom design
-// margin). Content scroll views add this plus the live navigation-bar inset
-// to keep the last item from sliding under the bar on devices with a
-// 3-button nav bar.
-private val TabBarBlockHeight = 110.dp
-
-// 40px Gaussian σ — same order of magnitude as the JSX prototype's
-// `backdrop-filter: blur(20px) saturate(180%)` (Compose's BlurEffect uses
-// pixel radii and reads heavier than CSS blur for an equivalent perceived
-// blur, hence 40 vs 20).
-private const val BackdropBlurRadius = 40f
-private val BackdropBlurSupported = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
-
-@Composable
-private fun ComingSoonPanel(tab: ConnectedTab) {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Text(
-            text = stringResource(tab.labelRes),
-            style = MaterialTheme.typography.headlineMedium,
-            color = MaterialTheme.colorScheme.onBackground,
-        )
-    }
-}
 
 @Preview
 @Composable

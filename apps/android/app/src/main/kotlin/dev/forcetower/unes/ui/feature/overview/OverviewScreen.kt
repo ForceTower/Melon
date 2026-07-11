@@ -1,64 +1,52 @@
 package dev.forcetower.unes.ui.feature.overview
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.forcetower.unes.R
-import dev.forcetower.unes.designsystem.foundation.Mesh
-import dev.forcetower.unes.designsystem.foundation.MeshVariant
+import dev.forcetower.unes.designsystem.foundation.fadeInOnAppear
 import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
 import dev.forcetower.unes.designsystem.foundation.scaleInOnAppear
-import dev.forcetower.unes.designsystem.theme.MelonPaletteColors
-import dev.forcetower.unes.designsystem.theme.melon
-import dev.forcetower.unes.ui.feature.overview.components.DisciplinesStrip
-import dev.forcetower.unes.ui.feature.overview.components.NowCard
+import dev.forcetower.unes.ui.feature.overview.components.FinalStretchCard
+import dev.forcetower.unes.ui.feature.overview.components.HeroCard
+import dev.forcetower.unes.ui.feature.overview.components.MessagesPreview
 import dev.forcetower.unes.ui.feature.overview.components.OverviewHeader
-import dev.forcetower.unes.ui.feature.overview.components.OverviewTileGrid
 import dev.forcetower.unes.ui.feature.overview.components.TodayTimeline
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
-import dev.forcetower.melon.feature.overview.domain.model.OverviewAttendanceTile as KmpOverviewAttendanceTile
+import kotlin.time.Instant
 import dev.forcetower.melon.feature.overview.domain.model.OverviewClassState as KmpOverviewClassState
-import dev.forcetower.melon.feature.overview.domain.model.OverviewDiscipline as KmpOverviewDiscipline
-import dev.forcetower.melon.feature.overview.domain.model.OverviewGradeTile as KmpOverviewGradeTile
 import dev.forcetower.melon.feature.overview.domain.model.OverviewMessagesTile as KmpOverviewMessagesTile
-import dev.forcetower.melon.feature.overview.domain.model.OverviewNextTestTile as KmpOverviewNextTestTile
 import dev.forcetower.melon.feature.overview.domain.model.OverviewNowClass as KmpOverviewNowClass
 import dev.forcetower.melon.feature.overview.domain.model.OverviewTodayItem as KmpOverviewTodayItem
 
-// "Hoje" tab — the at-a-glance dashboard rendered as the first tab inside
-// `ConnectedScreen`. Driven by `OverviewViewModel`, which fans out nine KMP
-// flows + a 30s clock ticker; the screen maps the raw KMP payloads into the
-// local UI projection types declared in `OverviewFixtures.kt` (those types are
-// also reused by Compose previews on the components).
+// "Hoje" tab — 2026 redesign (dc project `UNES Home - Android`): app bar,
+// mesh hero card (next / live / day-done), "Reta final" countdown, the
+// "Seu dia" timeline and the latest-message preview. Driven by
+// `OverviewViewModel`; this file maps raw KMP payloads into the UI projection
+// types declared in `OverviewFixtures.kt`.
 @Composable
 internal fun OverviewScreen(
     modifier: Modifier = Modifier,
@@ -66,225 +54,228 @@ internal fun OverviewScreen(
     onOpenDiscipline: (OverviewDiscipline) -> Unit = {},
     onOpenMessages: () -> Unit = {},
     onOpenSchedule: () -> Unit = {},
+    onOpenProfile: () -> Unit = {},
 ) {
     val vm: OverviewViewModel = hiltViewModel()
     val state by vm.state.collectAsStateWithLifecycle()
-    val surface = MaterialTheme.colorScheme.surface
-    val palette = MaterialTheme.melon.palette
 
-    val now = state.nowRaw?.let { mapNow(it, palette) }
-    val today = mapToday(state.todayRaw, palette)
-    val disciplines = mapDisciplines(state.disciplinesRaw, palette)
-    val gradeTile = state.gradeTileRaw?.let(::mapGradeTile)
-    val messagesTile = state.messagesTileRaw?.let(::mapMessagesTile)
-    val nextTestTile = state.nextTestTileRaw?.let(::mapNextTestTile)
-    val attendanceTile = state.attendanceTileRaw?.let(::mapAttendanceTile)
+    val hero = deriveHeroState(state)
+    val finalStretch = deriveFinalStretch(state)
+    val today = state.todayRaw.map(::mapTodayItem)
+    val messages = state.messagesTileRaw?.let { mapMessages(it, state.clock) }
 
-    val greeting = stringResource(
-        when (state.greetingKind) {
-            GreetingKind.Morning -> R.string.overview_greeting_morning
-            GreetingKind.Afternoon -> R.string.overview_greeting_afternoon
-            GreetingKind.Evening -> R.string.overview_greeting_evening
-        },
-    )
     val name = state.firstName ?: stringResource(R.string.overview_default_user)
-    val avatarInitial = state.avatarInitial ?: "?"
-    val lastUpdatedLabel = lastUpdatedLabel(state.lastUpdatedKind)
+    val greeting = stringResource(
+        R.string.overview_greeting_format,
+        stringResource(
+            when (state.greetingKind) {
+                GreetingKind.Morning -> R.string.overview_greeting_morning
+                GreetingKind.Afternoon -> R.string.overview_greeting_afternoon
+                GreetingKind.Evening -> R.string.overview_greeting_evening
+            },
+        ),
+        name,
+    )
 
-    Box(modifier = modifier
-        .fillMaxSize()
-        .background(surface)) {
-        Box(modifier = Modifier.align(Alignment.TopCenter)) {
-            AmbientMeshTop(surface = surface)
-        }
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
-                .verticalScroll(rememberScrollState())
-                .padding(bottom = bottomInset),
-            verticalArrangement = Arrangement.spacedBy(14.dp),
-        ) {
-            OverviewHeader(
-                greeting = greeting,
-                name = name,
-                avatarInitial = avatarInitial,
-                dateEyebrow = state.dateEyebrow,
-                modifier = Modifier.fadeUpOnAppear(delayMs = 20),
-            )
-
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 14.dp),
-                verticalArrangement = Arrangement.spacedBy(14.dp),
-            ) {
-                if (now != null) {
-                    NowCard(
-                        now = now,
-                        modifier = Modifier.scaleInOnAppear(delayMs = 120, fromScale = 0.985f),
-                    )
-                }
-                if (today.isNotEmpty()) {
-                    TodayTimeline(
-                        items = today,
-                        onOpenWeek = onOpenSchedule,
-                        modifier = Modifier.fadeUpOnAppear(delayMs = 240),
-                    )
-                }
-                OverviewTileGrid(
-                    grade = gradeTile,
-                    messages = messagesTile,
-                    nextTest = nextTestTile,
-                    attendance = attendanceTile,
-                    onOpenMessages = onOpenMessages,
-                    modifier = Modifier.fadeUpOnAppear(delayMs = 340),
-                )
-            }
-
-            DisciplinesStrip(
-                items = disciplines,
-                semesterLabel = state.semesterLabel,
-                onOpen = onOpenDiscipline,
-                modifier = Modifier.fadeUpOnAppear(delayMs = 440),
-            )
-
-            Text(
-                text = lastUpdatedLabel,
-                style = MaterialTheme.typography.labelSmall.copy(
-                    fontFamily = FontFamily.Monospace,
-                    fontSize = 9.sp,
-                    letterSpacing = 1.26.sp,
-                ),
-                color = MaterialTheme.colorScheme.outlineVariant,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fadeUpOnAppear(delayMs = 520)
-                    .padding(top = 8.dp, bottom = 24.dp),
-                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-            )
-        }
-    }
-}
-
-@Composable
-private fun AmbientMeshTop(surface: Color) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(260.dp),
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
+            .verticalScroll(rememberScrollState())
+            .windowInsetsPadding(WindowInsets.statusBars)
+            .padding(horizontal = 20.dp),
     ) {
-        Mesh(
-            variant = MeshVariant.Warm,
-            intensity = 0.2f,
-            modifier = Modifier.fillMaxSize(),
+        Spacer(Modifier.height(8.dp))
+        OverviewHeader(
+            dateEyebrow = state.dateEyebrow,
+            greeting = greeting,
+            courseLine = state.courseName,
+            avatarInitials = state.avatarInitials ?: "?",
+            showNotificationDot = (state.messagesTileRaw?.unreadCount ?: 0) > 0,
+            onOpenNotifications = onOpenMessages,
+            onOpenProfile = onOpenProfile,
+            modifier = Modifier.fadeInOnAppear(delayMs = 50),
         )
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    Brush.verticalGradient(
-                        0f to Color.Transparent,
-                        1f to surface,
-                    ),
-                ),
-        )
-    }
-}
+        Spacer(Modifier.height(18.dp))
 
-@Composable
-private fun lastUpdatedLabel(kind: LastUpdatedKind): String = when (kind) {
-    LastUpdatedKind.Syncing -> stringResource(R.string.overview_last_updated_syncing)
-    LastUpdatedKind.JustNow -> stringResource(R.string.overview_last_updated_now)
-    is LastUpdatedKind.Minutes -> stringResource(R.string.overview_last_updated_format, kind.n)
-    is LastUpdatedKind.Hours -> stringResource(R.string.overview_last_updated_hours_format, kind.n)
-    is LastUpdatedKind.Days -> stringResource(R.string.overview_last_updated_days_format, kind.n)
+        if (hero != null) {
+            HeroCard(
+                state = hero,
+                firstName = name,
+                tomorrowEyebrow = state.tomorrowEyebrow,
+                isEvening = state.greetingKind == GreetingKind.Evening,
+                onOpenClassDetails = { klass ->
+                    onOpenDiscipline(
+                        OverviewDiscipline(
+                            code = klass.code,
+                            title = klass.title,
+                            offerId = klass.offerId,
+                        ),
+                    )
+                },
+                modifier = Modifier.scaleInOnAppear(delayMs = 140, fromScale = 0.97f),
+            )
+            Spacer(Modifier.height(26.dp))
+        }
+
+        if (finalStretch != null) {
+            FinalStretchCard(
+                data = finalStretch,
+                modifier = Modifier.fadeUpOnAppear(delayMs = 550),
+            )
+            Spacer(Modifier.height(24.dp))
+        }
+
+        if (today.isNotEmpty()) {
+            TodayTimeline(
+                items = today,
+                weekdayLabel = state.weekdayLabel,
+                onOpenClass = { item ->
+                    onOpenDiscipline(
+                        OverviewDiscipline(
+                            code = item.code,
+                            title = item.title,
+                            offerId = item.offerId,
+                        ),
+                    )
+                },
+                onOpenSchedule = onOpenSchedule,
+                modifier = Modifier.fadeUpOnAppear(delayMs = 640),
+            )
+            Spacer(Modifier.height(22.dp))
+        }
+
+        if (messages != null) {
+            MessagesPreview(
+                data = messages,
+                onOpenMessages = onOpenMessages,
+                modifier = Modifier.fadeUpOnAppear(delayMs = 920),
+            )
+        }
+
+        Spacer(Modifier.height(28.dp + bottomInset))
+    }
 }
 
 // ───────── KMP → UI projection mappers ─────────
 
-private fun mapNow(raw: KmpOverviewNowClass, palette: MelonPaletteColors): OverviewNowClass =
-    OverviewNowClass(
-        code = raw.code,
-        title = raw.title,
-        prof = raw.teacherName.orEmpty(),
-        room = raw.roomLocation.orEmpty(),
-        // Eyebrow copy is "próxima aula · em N min"; clamp negatives (class
-        // already running) to 0 so the format string stays sensible until we
-        // introduce a dedicated "happening now" eyebrow variant.
-        startsInMinutes = raw.startsInMinutes.coerceAtLeast(0),
-        timeRange = formatTimeRange(raw.startTime, raw.endTime),
-        topic = raw.topic,
-        color = ColorFor.discipline(palette, raw.code),
-        meshVariant = ColorFor.meshVariant(raw.code),
-    )
-
-private fun mapToday(
-    raw: List<KmpOverviewTodayItem>,
-    palette: MelonPaletteColors,
-): List<OverviewTodayItem> = raw.map { item ->
-    OverviewTodayItem(
-        time = item.startTime.take(5),
-        code = item.code,
-        title = item.title,
-        room = item.roomLocation.orEmpty(),
-        color = ColorFor.discipline(palette, item.code),
-        state = mapClassState(item.state),
-        topic = item.topic,
-    )
+// Hero precedence: a class running right now wins; a fully concluded day wins
+// over the (tomorrow's) next class; otherwise the next class card; nothing
+// renders while there's no schedule at all.
+private fun deriveHeroState(state: OverviewUiState): OverviewHeroState? {
+    val now = state.nowRaw
+    if (now != null && now.isHappeningNow) {
+        val start = parseHhMm(now.startTime)
+        val end = now.endTime?.let(::parseHhMm)
+        val elapsed = (-now.startsInMinutes).coerceAtLeast(0)
+        val duration = if (start != null && end != null && end > start) end - start else null
+        return OverviewHeroState.Live(
+            klass = mapHeroClass(now),
+            endsInMinutes = duration?.let { (it - elapsed).coerceAtLeast(0) } ?: 0,
+            progress = duration?.let { elapsed.toFloat() / it } ?: 0f,
+        )
+    }
+    val today = state.todayRaw
+    if (today.isNotEmpty() && today.all { it.state == KmpOverviewClassState.DONE }) {
+        return OverviewHeroState.DayDone(
+            classCount = today.size,
+            tomorrow = state.tomorrowRaw?.let { raw ->
+                OverviewTomorrowUi(
+                    title = raw.title,
+                    startTime = raw.startTime.take(5),
+                    room = raw.roomLocation,
+                    extraCount = raw.extraCount,
+                )
+            },
+        )
+    }
+    if (now != null) {
+        return OverviewHeroState.Upcoming(
+            klass = mapHeroClass(now),
+            startsInMinutes = now.startsInMinutes,
+        )
+    }
+    return null
 }
 
-private fun mapDisciplines(
-    raw: List<KmpOverviewDiscipline>,
-    palette: MelonPaletteColors,
-): List<OverviewDiscipline> = raw.map { item ->
-    OverviewDiscipline(
-        code = item.code,
-        title = item.title,
-        grade = item.gradeLabel,
-        color = ColorFor.discipline(palette, item.code),
-        offerId = item.offerId,
-    )
-}
-
-private fun mapGradeTile(raw: KmpOverviewGradeTile): OverviewGradeTileData = OverviewGradeTileData(
-    value = raw.cr,
-    deltaLabel = raw.crDelta?.let { formatDelta(it) },
-    comparisonSemester = raw.comparisonSemesterCode,
+private fun mapHeroClass(raw: KmpOverviewNowClass): OverviewHeroClass = OverviewHeroClass(
+    offerId = raw.offerId,
+    code = raw.code,
+    title = raw.title,
+    prof = raw.teacherName?.takeIf { it.isNotBlank() },
+    room = raw.roomLocation?.takeIf { it.isNotBlank() },
+    timeRange = formatTimeRange(raw.startTime, raw.endTime),
 )
 
-private fun mapMessagesTile(raw: KmpOverviewMessagesTile): OverviewMessagesTileData =
-    OverviewMessagesTileData(
+// The exam variant wins whenever an evaluation is on the horizon; otherwise
+// fall back to the semester-end countdown.
+private fun deriveFinalStretch(state: OverviewUiState): OverviewFinalStretch? {
+    val exam = state.nextTestTileRaw
+    if (exam != null) {
+        return OverviewFinalStretch.Exam(
+            label = exam.label,
+            disciplineName = exam.disciplineName,
+            daysUntil = exam.daysUntil,
+            dateLabel = formatExamDate(exam.date),
+        )
+    }
+    val daysLeft = state.semesterDaysLeft ?: return null
+    val semesterLabel = state.semesterCode ?: return null
+    return OverviewFinalStretch.Semester(daysLeft = daysLeft, semesterLabel = semesterLabel)
+}
+
+private fun mapTodayItem(raw: KmpOverviewTodayItem): OverviewTodayItem = OverviewTodayItem(
+    offerId = raw.offerId,
+    code = raw.code,
+    title = raw.title,
+    startTime = raw.startTime,
+    endTime = raw.endTime,
+    room = raw.roomLocation?.takeIf { it.isNotBlank() },
+    state = when (raw.state) {
+        KmpOverviewClassState.DONE -> OverviewClassState.Done
+        KmpOverviewClassState.NOW -> OverviewClassState.Now
+        KmpOverviewClassState.NEXT -> OverviewClassState.Next
+        KmpOverviewClassState.LATER -> OverviewClassState.Later
+    },
+)
+
+@Composable
+private fun mapMessages(
+    raw: KmpOverviewMessagesTile,
+    clock: Instant,
+): OverviewMessagePreview? {
+    val sender = raw.lastSender ?: return null
+    return OverviewMessagePreview(
         unreadCount = raw.unreadCount,
-        lastSender = raw.lastSender,
-        lastPreview = raw.lastPreview,
+        sender = sender,
+        preview = raw.lastPreview.orEmpty(),
+        timeLabel = raw.lastTimestamp?.let { relativeTimeLabel(it, clock) },
     )
+}
 
-private fun mapNextTestTile(raw: KmpOverviewNextTestTile): OverviewNextTestTileData =
-    OverviewNextTestTileData(
-        label = raw.label,
-        disciplineName = raw.disciplineName,
-        daysUntil = raw.daysUntil,
-        dateLabel = formatShortDate(raw.date),
-    )
-
-private fun mapAttendanceTile(raw: KmpOverviewAttendanceTile): OverviewAttendanceTileData =
-    OverviewAttendanceTileData(
-        percentage = raw.percentage,
-        days = raw.lastDays,
-        allowedAbsences = raw.allowedAbsences,
-        periodDays = raw.periodDays,
-    )
-
-private fun mapClassState(state: KmpOverviewClassState): OverviewClassState = when (state) {
-    KmpOverviewClassState.DONE -> OverviewClassState.Done
-    KmpOverviewClassState.NOW -> OverviewClassState.Now
-    KmpOverviewClassState.NEXT -> OverviewClassState.Next
-    KmpOverviewClassState.LATER -> OverviewClassState.Later
+@Composable
+private fun relativeTimeLabel(iso: String, clock: Instant): String? {
+    val parsed = runCatching { Instant.parse(iso) }.getOrNull() ?: return null
+    val minutes = ((clock.epochSeconds - parsed.epochSeconds) / 60).coerceAtLeast(0)
+    return when {
+        minutes < 1 -> stringResource(R.string.overview_time_now)
+        minutes < 60 -> stringResource(R.string.overview_time_min_short, minutes.toInt())
+        minutes < 24 * 60 -> stringResource(R.string.overview_time_hour_short, (minutes / 60).toInt())
+        else -> stringResource(R.string.overview_time_day_short, (minutes / (24 * 60)).toInt())
+    }
 }
 
 // ───────── formatting helpers ─────────
+
+private fun parseHhMm(value: String?): Int? {
+    if (value == null) return null
+    val parts = value.take(5).split(':')
+    if (parts.size != 2) return null
+    val h = parts[0].toIntOrNull() ?: return null
+    val m = parts[1].toIntOrNull() ?: return null
+    return h * 60 + m
+}
 
 private fun formatTimeRange(start: String, end: String?): String {
     val s = start.take(5)
@@ -292,19 +283,11 @@ private fun formatTimeRange(start: String, end: String?): String {
     return "$s – $e"
 }
 
-private val PtBr: Locale = Locale.forLanguageTag("pt-BR")
-
-private val ShortDateFormatter: DateTimeFormatter =
-    DateTimeFormatter.ofPattern("d MMM", PtBr)
-
-private fun formatShortDate(iso: String): String = runCatching {
-    ShortDateFormatter.format(LocalDate.parse(iso))
+// "Seg, 21 mar" — device-locale formatted, abbreviation dots stripped,
+// leading capital to match the design.
+private fun formatExamDate(iso: String): String = runCatching {
+    DateTimeFormatter.ofPattern("EEE, d MMM", Locale.getDefault())
+        .format(LocalDate.parse(iso.take(10)))
         .replace(".", "")
-        .lowercase(PtBr)
+        .replaceFirstChar { it.titlecase(Locale.getDefault()) }
 }.getOrDefault(iso)
-
-private fun formatDelta(delta: Double): String {
-    // pt-BR locale → comma decimal separator. iOS prints e.g. "+0,3" / "-0,2".
-    val formatted = String.format(PtBr, "%.1f", delta)
-    return if (delta >= 0) "+$formatted" else formatted
-}
