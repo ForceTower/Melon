@@ -82,6 +82,7 @@ internal fun buildTodayTimeline(
         val topic = lectures.firstOrNull { it.classId == row.classId }?.subject
         OverviewTodayItem(
             classId = row.classId,
+            offerId = row.offerId,
             code = row.disciplineCode,
             title = row.disciplineName,
             startTime = row.startTime.orEmpty(),

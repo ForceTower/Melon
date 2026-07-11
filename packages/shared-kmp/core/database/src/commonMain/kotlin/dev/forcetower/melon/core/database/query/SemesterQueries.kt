@@ -103,6 +103,7 @@ data class UnreadMessageHeadRow(
     val senderName: String,
     val subject: String?,
     val content: String,
+    val timestamp: String,
 )
 
 // One row per StudentClass (the student's enrollment in a class/group). The

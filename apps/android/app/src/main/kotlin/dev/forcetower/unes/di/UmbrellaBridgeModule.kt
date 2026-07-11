@@ -33,6 +33,7 @@ import dev.forcetower.melon.feature.overview.domain.usecase.ObserveNextTestTileU
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveNowClassUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveOverviewHeaderUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveTodayTimelineUseCase
+import dev.forcetower.melon.feature.overview.domain.usecase.ObserveTomorrowPreviewUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveUnreadMessagesTileUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.BackfillMirrorUseCase
 import dev.forcetower.melon.feature.schedule.domain.usecase.ObserveNextClassDayUseCase
@@ -95,6 +96,8 @@ object UmbrellaBridgeModule {
         graph.observeNowClassUseCase
     @Provides fun provideObserveTodayTimelineUseCase(graph: UmbrellaGraph): ObserveTodayTimelineUseCase =
         graph.observeTodayTimelineUseCase
+    @Provides fun provideObserveTomorrowPreviewUseCase(graph: UmbrellaGraph): ObserveTomorrowPreviewUseCase =
+        graph.observeTomorrowPreviewUseCase
     @Provides fun provideObserveDisciplinesUseCase(graph: UmbrellaGraph): ObserveDisciplinesUseCase =
         graph.observeDisciplinesUseCase
     @Provides fun provideObserveUnreadMessagesTileUseCase(graph: UmbrellaGraph): ObserveUnreadMessagesTileUseCase =

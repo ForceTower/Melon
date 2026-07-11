@@ -70,7 +70,8 @@ abstract class MessageDao {
         """
         SELECT m.senderName AS senderName,
                m.subject AS subject,
-               m.content AS content
+               m.content AS content,
+               m.timestamp AS timestamp
           FROM Message m
           LEFT JOIN MessageState ms ON ms.messageId = m.id
          WHERE ms.readAt IS NULL

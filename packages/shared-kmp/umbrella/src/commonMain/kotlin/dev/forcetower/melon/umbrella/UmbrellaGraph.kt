@@ -35,6 +35,7 @@ import dev.forcetower.melon.feature.overview.domain.usecase.ObserveNextTestTileU
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveNowClassUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveOverviewHeaderUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveTodayTimelineUseCase
+import dev.forcetower.melon.feature.overview.domain.usecase.ObserveTomorrowPreviewUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveUnreadMessagesTileUseCase
 import dev.forcetower.melon.feature.schedule.domain.usecase.ObserveNextClassDayUseCase
 import dev.forcetower.melon.feature.schedule.domain.usecase.ObserveScheduleWeekUseCase
@@ -85,6 +86,7 @@ interface UmbrellaGraph {
     val observeOverviewHeaderUseCase: ObserveOverviewHeaderUseCase
     val observeNowClassUseCase: ObserveNowClassUseCase
     val observeTodayTimelineUseCase: ObserveTodayTimelineUseCase
+    val observeTomorrowPreviewUseCase: ObserveTomorrowPreviewUseCase
     val observeDisciplinesUseCase: ObserveDisciplinesUseCase
     val observeUnreadMessagesTileUseCase: ObserveUnreadMessagesTileUseCase
     val observeNextTestTileUseCase: ObserveNextTestTileUseCase

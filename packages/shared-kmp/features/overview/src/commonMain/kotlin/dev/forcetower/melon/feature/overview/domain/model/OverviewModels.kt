@@ -11,6 +11,7 @@ data class OverviewHeader(
 // the next one up. `startsInMinutes` is signed: negative means the class is
 // already running; zero/positive is time until it starts. Client formats.
 data class OverviewNowClass(
+    val offerId: String,
     val code: String,
     val title: String,
     val teacherName: String?,
@@ -26,6 +27,7 @@ enum class OverviewClassState { DONE, NOW, NEXT, LATER }
 
 data class OverviewTodayItem(
     val classId: String,
+    val offerId: String,
     val code: String,
     val title: String,
     val startTime: String,
@@ -33,6 +35,17 @@ data class OverviewTodayItem(
     val roomLocation: String?,
     val topic: String?,
     val state: OverviewClassState,
+)
+
+// First class of tomorrow plus how many more follow it — powers the hero's
+// "day concluded" state ("Amanhã · Qua, 12 mar" row). Null flow emission when
+// tomorrow has no classes.
+data class OverviewTomorrowPreview(
+    val code: String,
+    val title: String,
+    val startTime: String,
+    val roomLocation: String?,
+    val extraCount: Int,
 )
 
 data class OverviewDiscipline(
@@ -59,6 +72,9 @@ data class OverviewMessagesTile(
     val unreadCount: Int,
     val lastSender: String?,
     val lastPreview: String?,
+    // ISO timestamp of the latest unread message — the UI renders the relative
+    // "2h" chip from it. Null when the inbox has no unread messages.
+    val lastTimestamp: String?,
 )
 
 data class OverviewNextTestTile(

@@ -22,6 +22,7 @@ class ObserveUnreadMessagesTileUseCase internal constructor(
                 unreadCount = count,
                 lastSender = head?.senderName,
                 lastPreview = preview,
+                lastTimestamp = head?.timestamp,
             )
         }
 }

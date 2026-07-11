@@ -95,6 +95,7 @@ internal fun pickNowClass(
     val topic = lectures.firstOrNull { it.classId == chosen.classId }?.subject
 
     return OverviewNowClass(
+        offerId = chosen.offerId,
         code = chosen.disciplineCode,
         title = chosen.disciplineName,
         teacherName = chosen.teacherName,
