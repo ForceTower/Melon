@@ -8,8 +8,10 @@ import dev.forcetower.melon.core.database.dao.UserDao
 import dev.forcetower.melon.core.database.entity.SemesterEntity
 import dev.forcetower.melon.core.database.entity.StudentEntity
 import dev.forcetower.melon.core.database.entity.UserEntity
+import dev.forcetower.melon.core.database.query.AttendanceSummaryRow
 import dev.forcetower.melon.core.database.query.EnrolledDisciplineRow
 import dev.forcetower.melon.core.database.query.PartialGradeRow
+import dev.forcetower.melon.core.database.query.SemesterAllocationRow
 import dev.forcetower.melon.core.database.query.SemesterHoursProgressRow
 import dev.forcetower.melon.core.database.query.UpcomingEvaluationRow
 import dev.forcetower.melon.feature.me.domain.model.MeEnrollmentSummary
@@ -62,14 +64,34 @@ class ObserveMeProfileUseCase internal constructor(
             val active = pickActiveSemester(slice.semesters, today)
             if (active == null) {
                 flow {
-                    emit(buildProfile(slice, active = null, hours = null, nextExam = null, today = today))
+                    emit(
+                        buildProfile(
+                            slice,
+                            active = null,
+                            hours = null,
+                            nextExam = null,
+                            attendance = null,
+                            allocations = emptyList(),
+                            today = today,
+                        ),
+                    )
                 }
             } else {
                 combine(
                     academicDao.observeSemesterHoursProgress(active.id, today),
                     academicDao.observeClosestUpcomingEvaluation(active.id, today),
-                ) { hours, next ->
-                    buildProfile(slice, active = active, hours = hours, nextExam = next, today = today)
+                    academicDao.observeAttendanceSummary(active.id),
+                    academicDao.observeSemesterAllocations(active.id),
+                ) { hours, next, attendance, allocations ->
+                    buildProfile(
+                        slice,
+                        active = active,
+                        hours = hours,
+                        nextExam = next,
+                        attendance = attendance,
+                        allocations = allocations,
+                        today = today,
+                    )
                 }
             }
         }
@@ -87,6 +109,8 @@ class ObserveMeProfileUseCase internal constructor(
         active: SemesterEntity?,
         hours: SemesterHoursProgressRow?,
         nextExam: UpcomingEvaluationRow?,
+        attendance: AttendanceSummaryRow?,
+        allocations: List<SemesterAllocationRow>,
         today: String,
     ): MeProfile {
         val courseName = slice.student?.courseId?.let { studentDao.getCourse(it)?.name }
@@ -102,7 +126,47 @@ class ObserveMeProfileUseCase internal constructor(
                     disciplineName = it.disciplineName,
                 )
             },
+            campus = campusLabel(allocations),
+            attendancePercent = attendancePercent(attendance, hours),
+            semesterOrdinal = active?.let { semesterOrdinal(slice, it) },
         )
+    }
+
+    // "Campus · Módulo" where the student's classes most often meet — modal
+    // value per part, ties broken by name so the label is stable across
+    // emissions. Mirrors iOS `campusLabel` (SemesterSnapshot+Me.swift).
+    private fun campusLabel(allocations: List<SemesterAllocationRow>): String? {
+        val campus = modeOf(allocations.mapNotNull { it.spaceCampus?.trim()?.ifEmpty { null } })
+        val modulo = modeOf(allocations.mapNotNull { it.spaceModulo?.trim()?.ifEmpty { null } })
+        val parts = listOfNotNull(campus, modulo)
+        return if (parts.isEmpty()) null else parts.joinToString(" · ")
+    }
+
+    private fun modeOf(values: List<String>): String? = values
+        .groupingBy { it }
+        .eachCount()
+        .minWithOrNull(compareByDescending<Map.Entry<String, Int>> { it.value }.thenBy { it.key })
+        ?.key
+
+    // 100 − missed/hours, gated on at least one lecture having happened
+    // (`completedHours > 0`) so a fresh semester doesn't open at a
+    // meaningless 100%. Mirrors iOS `attendanceSummary`.
+    private fun attendancePercent(
+        attendance: AttendanceSummaryRow?,
+        hours: SemesterHoursProgressRow?,
+    ): Int? {
+        if (attendance == null || attendance.totalHours <= 0) return null
+        if ((hours?.completedHours ?: 0.0) <= 0.0) return null
+        val missedShare = attendance.totalMissed.toDouble() / attendance.totalHours.toDouble()
+        return ((1 - missedShare) * 100).roundToInt().coerceIn(0, 100)
+    }
+
+    // 1-based position of the active semester among enrolled semesters. When
+    // the active semester has no enrollments yet (enrollment window), it
+    // still counts as the next one after the enrolled history.
+    private fun semesterOrdinal(slice: ProfileSlice, active: SemesterEntity): Int {
+        val enrolledIds = slice.enrollments.mapTo(mutableSetOf()) { it.semesterId }
+        return slice.semesters.count { it.id in enrolledIds && it.startDate < active.startDate } + 1
     }
 
     private fun buildIdentity(

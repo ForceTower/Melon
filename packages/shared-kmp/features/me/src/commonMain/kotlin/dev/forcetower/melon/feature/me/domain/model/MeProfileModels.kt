@@ -9,6 +9,18 @@ data class MeProfile(
     val semester: MeSemesterProgress?,
     val enrollment: MeEnrollmentSummary,
     val nextExam: MeNextExam?,
+    // "Campus · Módulo" where the student's classes most often meet — the
+    // modal (most frequent) campus/módulo across the active semester's
+    // allocations, mirroring iOS `campusLabel`. Null when no space is known.
+    val campus: String? = null,
+    // Attendance across the active semester: 100 − missed/hours. Null until
+    // at least one lecture has happened (a fresh semester would otherwise
+    // open at a meaningless 100%).
+    val attendancePercent: Int? = null,
+    // 1-based position of the active semester among the semesters the
+    // student has enrollments in ("6º semestre"). Null without an active
+    // semester.
+    val semesterOrdinal: Int? = null,
 )
 
 // Student-facing profile fields. `campus` is intentionally absent: every
