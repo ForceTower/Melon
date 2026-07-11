@@ -124,6 +124,7 @@ struct MirrorStore: Sendable {
                 try MessageScopeRecord.deleteAll(db)
                 try MessageAttachmentRecord.deleteAll(db)
                 try MessageStateRecord.deleteAll(db)
+                try CampusEventRecord.deleteAll(db)
                 try SyncStateRecord.deleteAll(db)
             }
             log.info("mirror wiped")

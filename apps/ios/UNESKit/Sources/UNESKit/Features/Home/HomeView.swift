@@ -29,6 +29,18 @@ struct HomeView: View {
             switch store.case {
             case let .detail(store):
                 DisciplineDetailView(store: store)
+            case let .campusEvent(store):
+                CampusEventView(store: store)
+            case let .campusEventActivity(store):
+                CampusEventActivityView(store: store)
+            case let .campusEventSpeakers(store):
+                CampusEventSpeakersView(store: store)
+            case let .campusEventWorkshops(store):
+                CampusEventWorkshopsView(store: store)
+            case let .campusEventVenues(store):
+                CampusEventVenuesView(store: store)
+            case let .campusEventOrganizations(store):
+                CampusEventOrganizationsView(store: store)
             }
         }
         .task { await store.send(.task).finish() }
@@ -43,6 +55,14 @@ struct HomeView: View {
                     .fadeUp(delay: 0.02)
 
                 VStack(spacing: 0) {
+                    if let event = store.campusEvent {
+                        CampusEventHomeCard(event: event) {
+                            store.send(.campusEventCardTapped)
+                        }
+                        .scaleIn(delay: 0.06, duration: 0.62)
+                        .padding(.bottom, 22)
+                    }
+
                     if let hero = overview.hero {
                         HomeHeroCard(hero: hero) {
                             guard let id = hero.disciplineId else { return }

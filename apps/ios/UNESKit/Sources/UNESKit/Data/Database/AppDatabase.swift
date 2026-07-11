@@ -220,6 +220,16 @@ private func migrator() -> DatabaseMigrator {
             t.column("value", .text).notNull()
         }
     }
+    // Campus events: the featured event as one JSON snapshot row, so the hub
+    // works offline and observers wake on publish-driven changes only.
+    migrator.registerMigration("v6") { db in
+        try db.create(table: "campusEvent") { t in
+            t.primaryKey("id", .text)
+            t.column("revision", .integer).notNull()
+            t.column("payload", .text).notNull()
+            t.column("syncedAt", .text).notNull()
+        }
+    }
     return migrator
 }
 

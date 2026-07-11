@@ -10,12 +10,22 @@ struct HomeFeature {
         var isLoading = false
         var errorMessage: String?
         var lastRefreshed: Date?
+        var campusEvent: CampusEvent?
         var path = StackState<Path.State>()
+
+        @ObservationStateIgnored
+        @Shared(.appStorage(FeatureFlags.campusEventEnabledKey)) var isCampusEventEnabled = false
     }
 
     @Reducer
     enum Path {
         case detail(DisciplineDetailFeature)
+        case campusEvent(CampusEventFeature)
+        case campusEventActivity(CampusEventActivityFeature)
+        case campusEventSpeakers(CampusEventSpeakersFeature)
+        case campusEventWorkshops(CampusEventWorkshopsFeature)
+        case campusEventVenues(CampusEventVenuesFeature)
+        case campusEventOrganizations(CampusEventOrganizationsFeature)
     }
 
     enum Action: Equatable {
@@ -24,6 +34,8 @@ struct HomeFeature {
         case mirrorUpdated(CachedHomeOverview)
         case refreshFailed(String)
         case profileLoaded(Profile)
+        case campusEventLoaded(CampusEvent?)
+        case campusEventCardTapped
         case disciplineTapped(id: String, name: String)
         case seeScheduleTapped
         case seeAllClassesTapped
@@ -43,12 +55,13 @@ struct HomeFeature {
 
     @Dependency(\.homeRepository) var homeRepository
     @Dependency(\.profileRepository) var profileRepository
+    @Dependency(\.campusEventRepository) var campusEventRepository
     @Dependency(\.date.now) var now
     @Dependency(\.continuousClock) var clock
 
     private let log = Log.scoped("HomeFeature")
 
-    private enum CancelID { case observation, refresh, heroRollover }
+    private enum CancelID { case observation, refresh, heroRollover, campusEventObservation, campusEventRefresh }
 
     var body: some ReducerOf<Self> {
         Reduce { state, action in
@@ -58,10 +71,15 @@ struct HomeFeature {
                 // every appearance rehydrates; the refresh keeps retrying on
                 // each appearance until the mirror has data, so a first load
                 // cancelled mid-flight (tab switch) can't wedge the spinner.
-                guard state.overview == nil else { return observeMirror() }
+                guard state.overview == nil else {
+                    return .merge(observeMirror(), observeCampusEvent(state), refreshCampusEvent(state))
+                }
                 state.isLoading = true
                 state.errorMessage = nil
-                return .merge(observeMirror(), refresh(), loadProfile())
+                return .merge(
+                    observeMirror(), refresh(), loadProfile(),
+                    observeCampusEvent(state), refreshCampusEvent(state)
+                )
 
             case .refreshPulled:
                 guard !state.isLoading else { return .none }
@@ -69,7 +87,7 @@ struct HomeFeature {
                     state.isLoading = true
                     state.errorMessage = nil
                 }
-                return refresh()
+                return .merge(refresh(), refreshCampusEvent(state))
 
             case let .mirrorUpdated(cached):
                 state.isLoading = false
@@ -97,6 +115,16 @@ struct HomeFeature {
                 state.userName = profile.name
                 return .none
 
+            case let .campusEventLoaded(event):
+                state.campusEvent = event
+                return .none
+
+            case .campusEventCardTapped:
+                guard let event = state.campusEvent else { return .none }
+                log.info("open campus event id=\(event.id)")
+                state.path.append(.campusEvent(CampusEventFeature.State(event: event)))
+                return .none
+
             case let .disciplineTapped(id, name):
                 guard let overview = state.overview, let semesterId = overview.semesterId else { return .none }
                 let colorIndex = overview.disciplines.first { $0.id == id }?.colorIndex ?? 0
@@ -120,6 +148,9 @@ struct HomeFeature {
             case .avatarTapped:
                 return .send(.delegate(.openMe))
 
+            case let .path(.element(id: _, action: pathAction)):
+                return routeCampusEvent(pathAction, state: &state)
+
             case .path:
                 return .none
 
@@ -128,6 +159,32 @@ struct HomeFeature {
             }
         }
         .forEach(\.path, action: \.path)
+    }
+
+    /// Campus-event screens fan out from the hub (and the activity detail
+    /// links back to the venues), so their pushes route here on the host
+    /// stack.
+    private func routeCampusEvent(_ action: Path.Action, state: inout State) -> Effect<Action> {
+        switch action {
+        case let .campusEvent(.delegate(delegate)):
+            switch delegate {
+            case let .openActivity(activity, event):
+                state.path.append(.campusEventActivity(CampusEventActivityFeature.State(activity: activity, event: event)))
+            case let .openSpeakers(event):
+                state.path.append(.campusEventSpeakers(CampusEventSpeakersFeature.State(speakers: event.speakers)))
+            case let .openWorkshops(event):
+                state.path.append(.campusEventWorkshops(CampusEventWorkshopsFeature.State(workshops: event.workshops)))
+            case let .openVenues(event):
+                state.path.append(.campusEventVenues(CampusEventVenuesFeature.State(event: event)))
+            case let .openOrganizations(event):
+                state.path.append(.campusEventOrganizations(CampusEventOrganizationsFeature.State(organizations: event.organizations)))
+            }
+        case let .campusEventActivity(.delegate(.openVenues(event))):
+            state.path.append(.campusEventVenues(CampusEventVenuesFeature.State(event: event)))
+        default:
+            break
+        }
+        return .none
     }
 
     /// The reactive backbone: every mirror write (sync refresh, message
@@ -181,6 +238,31 @@ struct HomeFeature {
             guard let profile = try? await profileRepository.current() else { return }
             await send(.profileLoaded(profile))
         }
+    }
+
+    /// Streams the mirrored featured event behind the remote flag, so the
+    /// card reacts to refreshes from any screen and to logout wipes.
+    private func observeCampusEvent(_ state: State) -> Effect<Action> {
+        guard state.isCampusEventEnabled else {
+            return state.campusEvent == nil ? .none : .send(.campusEventLoaded(nil))
+        }
+        return .run { send in
+            for await event in campusEventRepository.observe() {
+                await send(.campusEventLoaded(event))
+            }
+        }
+        .cancellable(id: CancelID.campusEventObservation, cancelInFlight: true)
+    }
+
+    /// Rewrites the event mirror from upstream; the result (including
+    /// un-featuring) lands through the observation. Failures keep the stale
+    /// payload for offline access and never surface.
+    private func refreshCampusEvent(_ state: State) -> Effect<Action> {
+        guard state.isCampusEventEnabled else { return .none }
+        return .run { _ in
+            try? await campusEventRepository.refresh()
+        }
+        .cancellable(id: CancelID.campusEventRefresh, cancelInFlight: true)
     }
 }
 
