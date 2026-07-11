@@ -29,6 +29,11 @@ struct DisciplineDetail: Equatable, Sendable {
     var lectures: [DisciplineLecture] = []
     /// Newest first.
     var attachments: [DisciplineAttachment] = []
+    /// The Prova Final row (upstream "Notas Complementares"), kept out of
+    /// `sections` so it never averages in or counts as a pending evaluation.
+    /// Non-nil means the student went to the Prova Final; `value` stays nil
+    /// until the exam grade is published.
+    var finalExam: DisciplineDetailGrade?
     var finalGrade: Double?
     var approved: Bool?
     var wentToFinals: Bool = false
@@ -96,6 +101,20 @@ struct DisciplineAttachment: Equatable, Sendable, Identifiable {
 
 extension DisciplineDetail {
     var hasMultipleGroups: Bool { groups.count > 1 }
+
+    /// In the Prova Final window: the exam row exists but neither its grade
+    /// nor the upstream verdict landed yet — the state the finals card shows.
+    var isAwaitingFinalExam: Bool {
+        finalExam != nil && finalExam?.value == nil && approved == nil
+    }
+
+    /// Upstream closed the discipline after the Prova Final — the hero leads
+    /// with the posted closing mean and verdict instead of the partial math.
+    /// Never inferred locally: upstream owns the final state (its posted
+    /// `finalGrade` is a live mean even *while* the finals are pending).
+    var finalsResolved: Bool {
+        wentToFinals && approved != nil && finalGrade != nil
+    }
 
     var allowedMissedHours: Int { DisciplineRules.allowedMissedHours(ofTotal: hours) }
 
@@ -251,6 +270,62 @@ extension DisciplineDetail {
                 ),
             ],
             colorIndex: 0,
+            syncedAt: now.addingTimeInterval(-120)
+        )
+    }
+
+    /// A discipline in the Prova Final — the GRAFOS shape from the design.
+    /// `resolved` fills in the exam grade, the state where the finals card
+    /// gives way to the Prova Final grades section.
+    static func previewFinals(now: Date = .now, resolved: Bool = false) -> DisciplineDetail {
+        func stamp(daysFromNow: Int) -> String {
+            Calendar.current.date(byAdding: .day, value: daysFromNow, to: now)!.dayStamp
+        }
+        return DisciplineDetail(
+            id: "d2",
+            semesterId: "sem-2026-1",
+            code: "EXA810",
+            name: "Teoria dos Grafos",
+            department: "Departamento de Ciências Exatas",
+            ementa: """
+            Conceitos fundamentais de grafos. Representações e percursos. Busca em largura e \
+            profundidade. Caminhos mínimos. Árvores geradoras mínimas. Fluxo em redes.
+            """,
+            teacherName: "Vinícius Torres",
+            hours: 60,
+            missedHours: 6,
+            groups: [
+                DisciplineDetailGroup(id: "c2", code: "T01", kind: "Teórica", teacherName: "Vinícius Torres"),
+            ],
+            sections: [
+                DisciplineGradeSection(id: "merged", grades: [
+                    DisciplineDetailGrade(
+                        id: "g4", label: "AV1", title: "I Avaliação", value: 4.8, weight: 1,
+                        date: stamp(daysFromNow: -53)
+                    ),
+                    DisciplineDetailGrade(
+                        id: "g5", label: "AV2", title: "II Avaliação", value: 5.4, weight: 1,
+                        date: stamp(daysFromNow: -25)
+                    ),
+                    DisciplineDetailGrade(
+                        id: "g6", label: "AV3", title: "III Avaliação", value: 6.3, weight: 1,
+                        date: stamp(daysFromNow: -9)
+                    ),
+                ]),
+            ],
+            finalExam: DisciplineDetailGrade(
+                id: "gf",
+                label: String.localized(.disciplinesDetailFinalExamLabel),
+                title: "Prova Final",
+                value: resolved ? 10 : nil,
+                weight: 4,
+                date: stamp(daysFromNow: resolved ? -2 : 9),
+                daysUntil: resolved ? nil : 9
+            ),
+            finalGrade: resolved ? 7.3 : nil,
+            approved: resolved ? true : nil,
+            wentToFinals: true,
+            colorIndex: 4,
             syncedAt: now.addingTimeInterval(-120)
         )
     }

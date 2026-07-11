@@ -83,6 +83,12 @@ struct DisciplineGradesBlock: View {
     let color: Color
     var selectedGroup: String?
 
+    /// The Prova Final grade gets its own section once published; while
+    /// pending, the finals card above the grades carries the state instead.
+    private var releasedFinalExam: DisciplineDetailGrade? {
+        detail.finalExam.flatMap { $0.value != nil ? $0 : nil }
+    }
+
     var body: some View {
         let sections = detail.sections(forGroup: selectedGroup)
         VStack(spacing: 0) {
@@ -93,7 +99,7 @@ struct DisciplineGradesBlock: View {
                     : String.localized(.disciplinesDetailWeightedAverage)
             )
 
-            if sections.isEmpty {
+            if sections.isEmpty, releasedFinalExam == nil {
                 DetailEmptyCard(message: .disciplinesDetailNoGrades)
             } else {
                 VStack(spacing: 14) {
@@ -105,9 +111,23 @@ struct DisciplineGradesBlock: View {
                             gradesCard(section.grades)
                         }
                     }
+                    if let finalExam = releasedFinalExam {
+                        VStack(alignment: .leading, spacing: 8) {
+                            finalsLabel
+                            gradesCard([finalExam])
+                        }
+                    }
                 }
             }
         }
+    }
+
+    private var finalsLabel: some View {
+        Text(.disciplinesFinalsSection)
+            .font(.system(size: 11.5, weight: .bold))
+            .tracking(0.3)
+            .foregroundStyle(UNESColor.caution)
+            .padding(.leading, 4)
     }
 
     private func sectionLabel(_ section: DisciplineGradeSection) -> some View {
@@ -389,6 +409,7 @@ struct DetailEmptyCard: View {
     ScrollView {
         VStack(spacing: 22) {
             DisciplineGradesBlock(detail: .preview(), color: UNESColor.coral)
+            DisciplineGradesBlock(detail: .previewFinals(resolved: true), color: UNESColor.violet)
             DisciplineGradesBlock(detail: .previewMultiGroup(), color: UNESColor.violet)
             DisciplinePresencaCard(detail: .preview())
             DisciplineEmentaCard(detail: .preview(), color: UNESColor.coral)

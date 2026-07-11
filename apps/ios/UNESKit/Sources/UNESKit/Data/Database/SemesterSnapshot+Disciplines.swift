@@ -34,10 +34,14 @@ extension SemesterSnapshot {
 
             // The backend replicates the discipline's grade set onto every
             // group row — dedup by upstream id or the chips double up and the
-            // average over-weights nothing in particular.
+            // average over-weights nothing in particular. The Prova Final row
+            // is not a regular evaluation: `wentToFinals` already carries the
+            // state, so it stays out of the chips, the average, and the
+            // next-evaluation pick.
             var seenGradeKeys: Set<String> = []
             let grades = enrollments
                 .flatMap { gradesByStudentClass[$0.studentClass.id] ?? [] }
+                .filter { !isFinalExamRow($0) }
                 .sorted { ($0.ordinal, $0.date ?? "", $0.id) < ($1.ordinal, $1.date ?? "", $1.id) }
                 .filter { seenGradeKeys.insert($0.platformId ?? $0.id).inserted }
 
@@ -93,6 +97,17 @@ extension SemesterSnapshot {
                 grade.value.flatMap(parseDecimal).map { ($0, grade.weight.flatMap(parseDecimal)) }
             }
         )
+    }
+
+    /// The SAGRES Prova Final row: name "Prova Final" with the "Adicional"
+    /// short label, under the "Notas Complementares" evaluation upstream.
+    /// Both fields must match — teachers name regular evaluations "prova
+    /// final" too, but those carry AV-style short labels.
+    func isFinalExamRow(_ grade: StudentGradeRecord) -> Bool {
+        func normalized(_ value: String?) -> String? {
+            value?.trimmingCharacters(in: .whitespaces).lowercased()
+        }
+        return normalized(grade.name) == "prova final" && normalized(grade.nameShort) == "adicional"
     }
 
     // Shared with the discipline-detail mapping.

@@ -55,6 +55,12 @@ struct DisciplineDetailView: View {
                         .fadeUp(delay: 0.16)
                         .padding(.bottom, 22)
 
+                    if detail.isAwaitingFinalExam {
+                        DisciplineFinalsCard(detail: detail)
+                            .fadeUp(delay: 0.18)
+                            .padding(.bottom, 22)
+                    }
+
                     if let materials = store.materials {
                         MaterialsEntryCard(discipline: materials, color: color) {
                             store.send(.materialsTapped)
@@ -392,6 +398,29 @@ struct DisciplineGroupSegmented: View {
                 )
             ) {
                 DisciplineDetailFeature()
+            }
+        )
+    }
+}
+
+#Preview("Prova final") {
+    NavigationStack {
+        DisciplineDetailView(
+            store: Store(
+                initialState: DisciplineDetailFeature.State(
+                    semesterId: "sem-2026-1",
+                    disciplineId: "d2",
+                    name: "Teoria dos Grafos",
+                    colorIndex: 4
+                )
+            ) {
+                DisciplineDetailFeature()
+            } withDependencies: {
+                $0.disciplinesRepository.observeDetail = { _, _ in
+                    AsyncStream { continuation in
+                        continuation.yield(.previewFinals(now: .now))
+                    }
+                }
             }
         )
     }

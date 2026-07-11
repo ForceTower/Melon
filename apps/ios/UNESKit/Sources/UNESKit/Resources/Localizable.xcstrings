@@ -3690,6 +3690,23 @@
         }
       }
     },
+    "disciplines.detail.finalExamLabel" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Final"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Final"
+          }
+        }
+      }
+    },
     "disciplines.detail.grades" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4135,6 +4152,244 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Avaliações"
+          }
+        }
+      }
+    },
+    "disciplines.finalAverage" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Final average"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Média final"
+          }
+        }
+      }
+    },
+    "disciplines.finals.badge" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Final exam"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prova final"
+          }
+        }
+      }
+    },
+    "disciplines.finals.explainMiddle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " on the final exam to close at "
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " na prova final para fechar em "
+          }
+        }
+      }
+    },
+    "disciplines.finals.explainPrefix" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Score at least "
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tire pelo menos "
+          }
+        }
+      }
+    },
+    "disciplines.finals.explainSuffix" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " and pass."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " e ser aprovado."
+          }
+        }
+      }
+    },
+    "disciplines.finals.formulaExam" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "final exam"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "prova final"
+          }
+        }
+      }
+    },
+    "disciplines.finals.formulaFootnote" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The final average is 0.6 × term average + 0.4 × final exam."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A média final é 0,6 × média do semestre + 0,4 × prova final."
+          }
+        }
+      }
+    },
+    "disciplines.finals.formulaResult" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "final average"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "média final"
+          }
+        }
+      }
+    },
+    "disciplines.finals.formulaSemester" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "term avg."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "média sem."
+          }
+        }
+      }
+    },
+    "disciplines.finals.leadPrefix" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your partial average came to "
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sua média parcial ficou em "
+          }
+        }
+      }
+    },
+    "disciplines.finals.leadSuffix" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ", below the %@ needed for direct approval."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ", abaixo de %@ para aprovação direta."
+          }
+        }
+      }
+    },
+    "disciplines.finals.minimumCaption" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "is the minimum"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "é o mínimo"
+          }
+        }
+      }
+    },
+    "disciplines.finals.section" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Final Exam"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prova Final"
+          }
+        }
+      }
+    },
+    "disciplines.finals.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You’re headed to the final exam"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Você foi para a prova final"
           }
         }
       }

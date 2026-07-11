@@ -11,6 +11,8 @@ struct DisciplineDetailHero: View {
     private var grades: [DisciplineDetailGrade] { detail.grades(forGroup: selectedGroup) }
     private var average: Double? { DisciplineDetail.partialAverage(of: grades) }
     private var releasedCount: Int { grades.count { $0.value != nil } }
+    /// Upstream posted the post-finals verdict — lead with its closing mean.
+    private var finalsResolved: Bool { detail.finalsResolved }
 
     var body: some View {
         ZStack {
@@ -73,20 +75,23 @@ struct DisciplineDetailHero: View {
     private var averageRow: some View {
         HStack(alignment: .bottom, spacing: 16) {
             VStack(alignment: .leading, spacing: 3) {
-                (Text(.disciplinesPartialAverage) + Text(verbatim: selectedGroup.map { " · \($0)" } ?? ""))
-                    .textCase(.uppercase)
-                    .font(.system(size: 12, weight: .semibold))
-                    .tracking(0.5)
-                    .foregroundStyle(.white.opacity(0.7))
+                (
+                    Text(finalsResolved ? .disciplinesFinalAverage : .disciplinesPartialAverage)
+                        + Text(verbatim: selectedGroup.map { " · \($0)" } ?? "")
+                )
+                .textCase(.uppercase)
+                .font(.system(size: 12, weight: .semibold))
+                .tracking(0.5)
+                .foregroundStyle(.white.opacity(0.7))
 
                 HStack(alignment: .lastTextBaseline, spacing: 9) {
-                    Text(formatGrade(average))
+                    Text(formatGrade(finalsResolved ? detail.finalGrade : average))
                         .font(.system(size: 52, weight: .bold))
                         .tracking(-2.34)
                         .monospacedDigit()
                         .foregroundStyle(.white)
 
-                    Text(.disciplinesDetailReleasedTally(releasedCount, grades.count))
+                    Text(sideCaption)
                         .font(.system(size: 14, weight: .semibold))
                         .monospacedDigit()
                         .foregroundStyle(.white.opacity(0.6))
@@ -94,15 +99,28 @@ struct DisciplineDetailHero: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
 
-            GradeRing(
-                score: average,
-                color: .white,
-                size: 72,
-                stroke: 6,
-                trackColor: .white.opacity(0.22),
-                textColor: .white
-            )
+            // The ring reads as progress toward 7 — meaningless once the
+            // Prova Final decides the discipline at 5.
+            if detail.finalExam == nil {
+                GradeRing(
+                    score: average,
+                    color: .white,
+                    size: 72,
+                    stroke: 6,
+                    trackColor: .white.opacity(0.22),
+                    textColor: .white
+                )
+            }
         }
+    }
+
+    /// "3/3 lançadas" while grades trickle in; upstream's verdict once it
+    /// closes the discipline after the Prova Final.
+    private var sideCaption: String {
+        guard finalsResolved, let approved = detail.approved else {
+            return .localized(.disciplinesDetailReleasedTally(releasedCount, grades.count))
+        }
+        return .localized(approved ? .disciplinesStatusApproved : .disciplinesStatusFailed)
     }
 
     private var chips: some View {
@@ -183,6 +201,8 @@ private struct HeroEvalChip: View {
     ScrollView {
         VStack(spacing: 16) {
             DisciplineDetailHero(detail: .preview(), color: UNESColor.coral)
+            DisciplineDetailHero(detail: .previewFinals(), color: UNESColor.violet)
+            DisciplineDetailHero(detail: .previewFinals(resolved: true), color: UNESColor.violet)
             DisciplineDetailHero(detail: .previewMultiGroup(), color: UNESColor.violet)
             DisciplineDetailHero(detail: .previewMultiGroup(), color: UNESColor.violet, selectedGroup: "T01P01")
         }

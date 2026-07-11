@@ -8,7 +8,13 @@ import Testing
 /// replicated grades, a lecture timeline with placeholder rows, and lecture
 /// materials. `distinctPracticeGrades` flips the practice group to its own
 /// grade set (distinct platform ids) — the rarer upstream shape.
-private func detailPayload(distinctPracticeGrades: Bool = false) -> SemesterPayloadDTO {
+/// `withFinalExam` appends the replicated Prova Final row ("Notas
+/// Complementares" upstream), graded with `finalExamValue`.
+private func detailPayload(
+    distinctPracticeGrades: Bool = false,
+    withFinalExam: Bool = false,
+    finalExamValue: String? = nil
+) -> SemesterPayloadDTO {
     SemesterPayloadDTO(
         semester: .init(
             id: "sem1", code: "20261", description: "Semestre 2026.1",
@@ -59,7 +65,18 @@ private func detailPayload(distinctPracticeGrades: Bool = false) -> SemesterPayl
                 ordinal: distinctPracticeGrades ? 1 : 3, value: "9.0", date: nil,
                 platformId: distinctPracticeGrades ? "pg-lab" : "pg-1", weight: "5"
             ),
-        ],
+        ] + (withFinalExam ? [
+            // Replicated across group rows like every other grade; ordinal 0
+            // — the upstream shape that must not sort ahead of the AVs.
+            .init(
+                id: "gf-t", studentClassId: "sc-t", name: "Prova Final", nameShort: "Adicional",
+                ordinal: 0, value: finalExamValue, date: "2026-04-27", platformId: "pg-final", weight: "4"
+            ),
+            .init(
+                id: "gf-p", studentClassId: "sc-p", name: "Prova Final", nameShort: "Adicional",
+                ordinal: 0, value: finalExamValue, date: "2026-04-27", platformId: "pg-final", weight: "4"
+            ),
+        ] : []),
         lectures: [
             .init(id: "l-2", classId: "c-t", ordinal: 2, date: "2026-04-14", subject: "Oscilações"),
             .init(id: "l-1", classId: "c-t", ordinal: 1, date: "2026-04-07", subject: "Termodinâmica"),
@@ -115,6 +132,51 @@ struct DisciplineDetailMappingTests {
         #expect(detail.sections.map(\.name) == ["Teórica", "Prática"])
         #expect(detail.grades(forGroup: "T01P01").map(\.label) == ["LAB"])
         #expect(detail.grades(forGroup: nil).count == 3)
+    }
+
+    @Test
+    func finalExamRowLeavesTheSectionsAndBecomesTheFinalsState() {
+        let detail = detailPayload(withFinalExam: true).snapshot
+            .disciplineDetail(disciplineId: "d-fis", now: now, calendar: calendar)!
+
+        // Extracted: the sections keep only the regular evaluations, so the
+        // exam never averages in or counts as a pending row…
+        #expect(detail.sections.flatMap(\.grades).map(\.label) == ["AV1", "AV2"])
+        // …and surfaces on its own, with localized label and countdown.
+        #expect(detail.finalExam?.title == "Prova Final")
+        #expect(detail.finalExam?.label == String.localized(.disciplinesDetailFinalExamLabel))
+        #expect(detail.finalExam?.value == nil)
+        #expect(detail.finalExam?.daysUntil == 9)
+        #expect(detail.isAwaitingFinalExam)
+        #expect(detail.finalsMean == nil)
+    }
+
+    @Test
+    func publishedFinalExamGradeHidesTheCardButClaimsNoVerdict() {
+        var detail = detailPayload(withFinalExam: true, finalExamValue: "6.0").snapshot
+            .disciplineDetail(disciplineId: "d-fis", now: now, calendar: calendar)!
+
+        #expect(detail.finalExam?.value == 6.0)
+        #expect(!detail.isAwaitingFinalExam)
+        // The final state is upstream's to declare, never inferred locally.
+        #expect(!detail.finalsResolved)
+
+        detail.wentToFinals = true
+        detail.finalGrade = 7.3
+        detail.approved = true
+        #expect(detail.finalsResolved)
+        #expect(detail.status == .approved)
+    }
+
+    @Test
+    func summariesKeepTheFinalExamOutOfChipsAndAverages() {
+        let summary = detailPayload(withFinalExam: true).snapshot
+            .disciplineSummaries(now: now, calendar: calendar)[0]
+
+        #expect(summary.grades.map(\.label) == ["AV1", "AV2"])
+        // Ordinal 0 with an upcoming date would otherwise win the pick.
+        #expect(summary.nextEvaluation?.label == "AV2")
+        #expect(summary.partialAverage == 6.8)
     }
 
     @Test

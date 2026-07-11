@@ -67,6 +67,7 @@ extension SemesterSnapshot {
             sections: gradeSections(for: enrollments, gradesByStudentClass: gradesByStudentClass, today: today, calendar: calendar),
             lectures: detailLectures(enrolledClassIds: enrolledClassIds, groupCodeByClass: groupCodeByClass, today: today),
             attachments: detailAttachments(enrolledClassIds: enrolledClassIds, groupCodeByClass: groupCodeByClass),
+            finalExam: finalExamGrade(for: enrollments, gradesByStudentClass: gradesByStudentClass, today: today, calendar: calendar),
             finalGrade: enrollments.firstNonNil(\.studentClass.finalGrade).flatMap(parseDecimal),
             approved: enrollments.firstNonNil(\.studentClass.approved),
             wentToFinals: enrollments.contains { $0.studentClass.wentToFinals == true },
@@ -88,6 +89,7 @@ extension SemesterSnapshot {
         var seenGradeKeys: Set<String> = []
         var sections = enrollments.compactMap { enrollment -> DisciplineGradeSection? in
             let grades = (gradesByStudentClass[enrollment.studentClass.id] ?? [])
+                .filter { !isFinalExamRow($0) }
                 .sorted { ($0.ordinal, $0.date ?? "", $0.id) < ($1.ordinal, $1.date ?? "", $1.id) }
                 .filter { seenGradeKeys.insert($0.platformId ?? $0.id).inserted }
             guard !grades.isEmpty else { return nil }
@@ -113,6 +115,34 @@ extension SemesterSnapshot {
             sections[0].groupCode = nil
         }
         return sections
+    }
+
+    /// The extracted Prova Final row — replicated across group rows like
+    /// every other grade, so the first (theory-sorted) enrollment wins. The
+    /// SAGRES "Adicional" short label gives way to localized copy.
+    private func finalExamGrade(
+        for enrollments: [(studentClass: StudentClassRecord, group: ClassRecord)],
+        gradesByStudentClass: [String: [StudentGradeRecord]],
+        today: String,
+        calendar: Calendar
+    ) -> DisciplineDetailGrade? {
+        enrollments
+            .firstNonNil { enrollment in
+                (gradesByStudentClass[enrollment.studentClass.id] ?? [])
+                    .sorted { ($0.platformId ?? $0.id) < ($1.platformId ?? $1.id) }
+                    .first(where: isFinalExamRow)
+            }
+            .map { grade in
+                DisciplineDetailGrade(
+                    id: grade.platformId ?? grade.id,
+                    label: String.localized(.disciplinesDetailFinalExamLabel),
+                    title: gradeTitle(grade),
+                    value: grade.value.flatMap(parseDecimal),
+                    weight: grade.weight.flatMap(parseDecimal),
+                    date: grade.date,
+                    daysUntil: daysUntil(grade: grade, today: today, calendar: calendar)
+                )
+            }
     }
 
     private func detailLectures(
