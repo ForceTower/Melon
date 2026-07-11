@@ -66,6 +66,17 @@ internal val LiveTextFixed = Color(0xFFA8F0C4)
 // check circles, frequência stat). Same hex as the "Verde" accent base.
 internal val SuccessFixed = Color(0xFF2F9E5E)
 
+// Adaptive semantic status trio (`MelonStatusColors`) — approval/warning/fail
+// signals on grades, absences, and attention banners (Disciplinas redesign).
+// Dark values are lifted so the same semantic reads on `SurfaceDark`; warn
+// dark intentionally lands on the amber accent, matching the dc spec.
+internal val StatusOkLight = Color(0xFF2F9E5E)
+internal val StatusOkDark = Color(0xFF4AB878)
+internal val StatusWarnLight = Color(0xFFC77F16)
+internal val StatusWarnDark = BrandAmber
+internal val StatusBadLight = Color(0xFFD64A3C)
+internal val StatusBadDark = Color(0xFFF26D5B)
+
 // Accent — adaptive: coral in light, amber in dark (matches iOS `UNESColor.accent`).
 internal val AccentLight = BrandCoral
 internal val AccentPressLight = Color(0xFFC94538)

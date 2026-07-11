@@ -25,6 +25,17 @@ data class MelonColors(
     val palette: MelonPaletteColors,
     val fixed: MelonFixedColors,
     val verdict: MelonVerdictColors,
+    val status: MelonStatusColors,
+)
+
+// Adaptive semantic status trio — pass/attention/fail signals on grades,
+// absence bars, and warning banners. Unlike `fixed.success`/`fixed.destructive`
+// these flip with the theme so they stay legible on dark surfaces.
+@Immutable
+data class MelonStatusColors(
+    val ok: Color,
+    val warn: Color,
+    val bad: Color,
 )
 
 // Tokens that don't flip with light/dark and aren't part of the brand identity
@@ -170,6 +181,11 @@ internal fun melonColorsLight() = MelonColors(
     ),
     fixed = MelonFixedDefaults,
     verdict = MelonVerdictDefaults,
+    status = MelonStatusColors(
+        ok = StatusOkLight,
+        warn = StatusWarnLight,
+        bad = StatusBadLight,
+    ),
 )
 
 internal fun melonColorsDark() = MelonColors(
@@ -194,6 +210,11 @@ internal fun melonColorsDark() = MelonColors(
     ),
     fixed = MelonFixedDefaults,
     verdict = MelonVerdictDefaults,
+    status = MelonStatusColors(
+        ok = StatusOkDark,
+        warn = StatusWarnDark,
+        bad = StatusBadDark,
+    ),
 )
 
 internal val LocalMelonColors = compositionLocalOf<MelonColors> {
