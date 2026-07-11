@@ -5,7 +5,19 @@ private let log = Log.scoped("APIClient")
 
 /// Production origin of the Melon API (`apps/api`).
 enum MelonAPI {
-    static let baseURL = URL(string: "https://melon.forcetower.dev")!
+    /// Debug builds honor a `debug_api_base_url` UserDefaults override so a
+    /// simulator can point at a local api/proxy:
+    /// `xcrun simctl spawn booted defaults write dev.forcetower.unes.ios debug_api_base_url http://localhost:3333`
+    /// (delete the key to go back to production).
+    static var baseURL: URL {
+        #if DEBUG
+        if let override = UserDefaults.standard.string(forKey: "debug_api_base_url"),
+           let url = URL(string: override) {
+            return url
+        }
+        #endif
+        return URL(string: "https://melon.forcetower.dev")!
+    }
 }
 
 struct APIRequest: Sendable {
