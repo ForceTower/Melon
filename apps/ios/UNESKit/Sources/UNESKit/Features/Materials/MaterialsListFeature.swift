@@ -122,7 +122,7 @@ struct MaterialsListFeature {
                 )
                 return .none
 
-            case let .upload(.presented(.delegate(.finished(_, _)))):
+            case .upload(.presented(.delegate(.finished(_, _)))):
                 state.upload = nil
                 // The new upload lands in "Meus envios" — refetch to show it.
                 return load(state.discipline.id)
