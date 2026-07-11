@@ -3,10 +3,15 @@ package dev.forcetower.unes
 import android.app.Application
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.hilt.android.HiltAndroidApp
+import dev.forcetower.unes.firebase.FeatureFlags
+import javax.inject.Inject
 import timber.log.Timber
 
 @HiltAndroidApp
 class MelonApp : Application() {
+
+    @Inject
+    internal lateinit var featureFlags: FeatureFlags
 
     override fun onCreate() {
         super.onCreate()
@@ -18,5 +23,6 @@ class MelonApp : Application() {
         // Firebase itself auto-initializes via FirebaseInitProvider, so we
         // don't need to call FirebaseApp.initializeApp() here.
         FirebaseCrashlytics.getInstance().isCrashlyticsCollectionEnabled = !BuildConfig.DEBUG
+        featureFlags.start()
     }
 }

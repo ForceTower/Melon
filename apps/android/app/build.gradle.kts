@@ -145,9 +145,11 @@ dependencies {
     implementation(libs.androidx.work.runtime.ktx)
 
     // Firebase BoM pins all SDK versions in lockstep — Analytics for usage
-    // tracking, Crashlytics for crash reporting, Messaging for FCM push.
+    // tracking, Crashlytics for crash reporting, Messaging for FCM push,
+    // Remote Config for feature gates (same parameter keys as iOS).
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
+    implementation(libs.firebase.config)
     implementation(libs.firebase.crashlytics)
     implementation(libs.firebase.messaging)
     // `await()` extension for FirebaseMessaging.getToken() / Tasks.
