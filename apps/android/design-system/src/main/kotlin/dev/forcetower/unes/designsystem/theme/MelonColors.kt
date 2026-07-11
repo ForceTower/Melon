@@ -46,6 +46,17 @@ data class MelonFixedColors(
     // (`successFg`) reads cleanly against `alwaysDarkBg`.
     val ok: Color,
     val okOnDark: Color,
+    // Hero mesh card plate + scrim + foreground (Hoje redesign). The hero is
+    // always dark regardless of theme; `onHero` is pure white by spec.
+    val heroNight: Color,
+    val heroVeil: Color,
+    val onHero: Color,
+    // Live-session indicators on the hero ("Agora" dot + label).
+    val live: Color,
+    val liveText: Color,
+    // Success green for done-state affordances (timeline checks). Matches the
+    // "Verde" accent base so success reads consistently in both themes.
+    val success: Color,
 )
 
 @Immutable
@@ -116,6 +127,12 @@ private val MelonFixedDefaults = MelonFixedColors(
     destructive = DestructiveFixed,
     ok = OkFixed,
     okOnDark = OkOnDarkFixed,
+    heroNight = HeroNightFixed,
+    heroVeil = HeroVeilFixed,
+    onHero = OnHeroFixed,
+    live = LiveFixed,
+    liveText = LiveTextFixed,
+    success = SuccessFixed,
 )
 
 private val MelonVerdictDefaults = MelonVerdictColors(

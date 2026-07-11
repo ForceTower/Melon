@@ -12,7 +12,7 @@ internal val Surface2Light = Color(0xFFF3EDE4)
 internal val Surface3Light = Color(0xFFE9E0D2)
 internal val CardLight = Color(0xFFFFFFFF)
 internal val PageBgLight = Color(0xFFEDE7DD)
-internal val LineLight = Color(0x14000000)
+internal val LineLight = Color(0x171A1420)
 internal val CardLineLight = Color(0x0D000000)
 
 // Neutrals — dark. Mirrors iOS dark values.
@@ -25,7 +25,7 @@ internal val Surface2Dark = Color(0xFF1E1824)
 internal val Surface3Dark = Color(0xFF2A2232)
 internal val CardDark = Color(0xFF1C1624)
 internal val PageBgDark = Color(0xFF0C0810)
-internal val LineDark = Color(0x17F5EFE6)
+internal val LineDark = Color(0x1AF5EFE6)
 internal val CardLineDark = Color(0x0FF5EFE6)
 
 // Brand — identity-carrying, fixed across light/dark. Mirrors iOS brand colors.
@@ -47,6 +47,24 @@ internal val AlwaysDarkBg = Color(0xFF1A0F28)
 internal val DestructiveFixed = Color(0xFFC94538)
 internal val OkFixed = Color(0xFF4AA679)
 internal val OkOnDarkFixed = Color(0xFF7FD4A2)
+
+// Hero mesh card (Hoje redesign). The card is its own always-dark world:
+// `heroNight` is the base plate under the mesh blobs, `heroVeil` is the color
+// of the top/bottom legibility scrim (applied at varying alphas), `onHero` is
+// the pure-white foreground the design specifies (deliberately not the cream
+// `surfaceLight`). Same values in light and dark themes.
+internal val HeroNightFixed = Color(0xFF201133)
+internal val HeroVeilFixed = Color(0xFF180C28)
+internal val OnHeroFixed = Color(0xFFFFFFFF)
+
+// Live-session indicators on the hero card ("Agora" pulse dot + label,
+// "Dia concluído" label). Tuned for the always-dark hero, fixed across themes.
+internal val LiveFixed = Color(0xFF6BE29A)
+internal val LiveTextFixed = Color(0xFFA8F0C4)
+
+// Success green for completed-state affordances on light/dark cards (timeline
+// check circles, frequência stat). Same hex as the "Verde" accent base.
+internal val SuccessFixed = Color(0xFF2F9E5E)
 
 // Accent — adaptive: coral in light, amber in dark (matches iOS `UNESColor.accent`).
 internal val AccentLight = BrandCoral

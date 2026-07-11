@@ -5,108 +5,113 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
-// Mirrors iOS `UNESFont`: serif moments (display + headline) use Fraunces,
-// body/UI uses Inter. Both are loaded via Google Fonts — see `Fonts.kt`.
+// Single-face scale (Manrope) — hierarchy comes from weight and negative
+// optical tracking, mirroring the 2026 redesign spec: display/headline roles
+// are bold with tight tracking (-0.02…-0.04em), body stays regular, labels
+// are bold micro-eyebrows with wide tracking (0.10…0.14em) meant to be
+// rendered uppercase.
 val MelonTypography = Typography(
-    // Display + headline — serif moments (Fraunces fallback).
+    // Display — stat/countdown numerals ("10 dias", "23").
     displayLarge = TextStyle(
-        fontFamily = MelonSerif,
-        fontWeight = FontWeight.Normal,
-        fontSize = 57.sp,
-        lineHeight = 64.sp,
-        letterSpacing = (-0.25).sp,
+        fontFamily = MelonSans,
+        fontWeight = FontWeight.ExtraBold,
+        fontSize = 46.sp,
+        lineHeight = 44.sp,
+        letterSpacing = (-1.84).sp,
     ),
     displayMedium = TextStyle(
-        fontFamily = MelonSerif,
-        fontWeight = FontWeight.Normal,
-        fontSize = 45.sp,
-        lineHeight = 52.sp,
+        fontFamily = MelonSans,
+        fontWeight = FontWeight.Bold,
+        fontSize = 38.sp,
+        lineHeight = 38.sp,
+        letterSpacing = (-1.14).sp,
     ),
     displaySmall = TextStyle(
-        fontFamily = MelonSerif,
-        fontWeight = FontWeight.Normal,
-        fontSize = 36.sp,
-        lineHeight = 44.sp,
-    ),
-    headlineLarge = TextStyle(
-        fontFamily = MelonSerif,
-        fontWeight = FontWeight.Normal,
+        fontFamily = MelonSans,
+        fontWeight = FontWeight.Bold,
         fontSize = 32.sp,
-        lineHeight = 40.sp,
+        lineHeight = 36.sp,
+        letterSpacing = (-0.96).sp,
+    ),
+    // Headline — screen greetings and hero titles.
+    headlineLarge = TextStyle(
+        fontFamily = MelonSans,
+        fontWeight = FontWeight.Bold,
+        fontSize = 28.sp,
+        lineHeight = 30.sp,
+        letterSpacing = (-0.7).sp,
     ),
     headlineMedium = TextStyle(
-        fontFamily = MelonSerif,
-        fontWeight = FontWeight.Normal,
-        fontSize = 28.sp,
-        lineHeight = 36.sp,
+        fontFamily = MelonSans,
+        fontWeight = FontWeight.Bold,
+        fontSize = 27.sp,
+        lineHeight = 30.sp,
+        letterSpacing = (-0.54).sp,
     ),
     headlineSmall = TextStyle(
-        fontFamily = MelonSerif,
-        fontWeight = FontWeight.Normal,
-        fontSize = 24.sp,
-        lineHeight = 32.sp,
+        fontFamily = MelonSans,
+        fontWeight = FontWeight.Bold,
+        fontSize = 22.sp,
+        lineHeight = 27.sp,
+        letterSpacing = (-0.44).sp,
     ),
-    // Title / body / label — Inter fallback (system sans).
+    // Title — card titles and list-row headlines.
     titleLarge = TextStyle(
         fontFamily = MelonSans,
-        fontWeight = FontWeight.SemiBold,
+        fontWeight = FontWeight.Bold,
         fontSize = 22.sp,
         lineHeight = 28.sp,
+        letterSpacing = (-0.44).sp,
     ),
     titleMedium = TextStyle(
         fontFamily = MelonSans,
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.15.sp,
+        fontWeight = FontWeight.Bold,
+        fontSize = 17.sp,
+        lineHeight = 22.sp,
     ),
     titleSmall = TextStyle(
         fontFamily = MelonSans,
-        fontWeight = FontWeight.Medium,
-        fontSize = 14.sp,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 15.sp,
         lineHeight = 20.sp,
-        letterSpacing = 0.1.sp,
     ),
     bodyLarge = TextStyle(
         fontFamily = MelonSans,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
         lineHeight = 24.sp,
-        letterSpacing = 0.5.sp,
     ),
     bodyMedium = TextStyle(
         fontFamily = MelonSans,
         fontWeight = FontWeight.Normal,
         fontSize = 14.sp,
-        lineHeight = 20.sp,
-        letterSpacing = 0.25.sp,
+        lineHeight = 19.sp,
     ),
     bodySmall = TextStyle(
         fontFamily = MelonSans,
         fontWeight = FontWeight.Normal,
         fontSize = 12.sp,
         lineHeight = 16.sp,
-        letterSpacing = 0.4.sp,
     ),
+    // Label — buttons and uppercase eyebrows.
     labelLarge = TextStyle(
         fontFamily = MelonSans,
-        fontWeight = FontWeight.Medium,
+        fontWeight = FontWeight.SemiBold,
         fontSize = 14.sp,
         lineHeight = 20.sp,
-        letterSpacing = 0.1.sp,
     ),
     labelMedium = TextStyle(
         fontFamily = MelonSans,
-        fontWeight = FontWeight.Medium,
+        fontWeight = FontWeight.Bold,
         fontSize = 12.sp,
         lineHeight = 16.sp,
-        letterSpacing = 0.5.sp,
+        letterSpacing = 1.68.sp,
     ),
     labelSmall = TextStyle(
         fontFamily = MelonSans,
-        fontWeight = FontWeight.Medium,
+        fontWeight = FontWeight.Bold,
         fontSize = 11.sp,
-        lineHeight = 16.sp,
-        letterSpacing = 0.5.sp,
+        lineHeight = 15.sp,
+        letterSpacing = 1.1.sp,
     ),
 )
