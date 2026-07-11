@@ -215,6 +215,9 @@ struct CampusEventVenuesView: View {
                         }
                     }
                     .padding(EdgeInsets(top: 12, leading: 14, bottom: 12, trailing: 14))
+                    // Plain buttons only hit-test opaque pixels; the row has
+                    // no background of its own.
+                    .contentShape(Rectangle())
                     .overlay(alignment: .bottom) {
                         if index < store.venues.count - 1 {
                             Rectangle()

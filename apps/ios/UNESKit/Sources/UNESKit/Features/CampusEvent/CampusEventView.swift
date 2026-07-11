@@ -527,6 +527,9 @@ struct CampusEventActivityRow: View {
             .padding(EdgeInsets(top: 13, leading: 14, bottom: 13, trailing: 12))
             .background(state == .live ? activity.category.tone.opacity(0.07) : .clear)
             .opacity(state == .past ? 0.55 : 1)
+            // Plain buttons only hit-test opaque pixels; most rows have a
+            // clear background.
+            .contentShape(Rectangle())
             .overlay(alignment: .bottom) {
                 if !isLast {
                     Rectangle()
