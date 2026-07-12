@@ -1,0 +1,1665 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">UNES</string>
+
+    <!-- region Onboarding · Splash -->
+    <string name="onboarding_splash_wordmark">unes</string>
+    <string name="onboarding_splash_caption">Universidade · Notas · Semestre</string>
+    <string name="onboarding_splash_credit_prefix">for</string>
+    <string name="onboarding_splash_credit_university">UEFS</string>
+    <string name="onboarding_splash_credit_location">· Feira de Santana</string>
+    <!-- endregion -->
+
+    <!-- region Onboarding · Welcome -->
+    <string name="onboarding_welcome_eyebrow">Welcome to UNES</string>
+    <string name="onboarding_welcome_headline_top">Your semester,</string>
+    <string name="onboarding_welcome_headline_accent">in one</string>
+    <string name="onboarding_welcome_headline_bottom">place.</string>
+    <string name="onboarding_welcome_body">Schedules, grades, notices from the coordination office, and UEFS classes. All connected to your enrollment.</string>
+    <string name="onboarding_welcome_primary_cta">Explore the app</string>
+    <string name="onboarding_welcome_secondary_cta">I already have an account</string>
+    <!-- endregion -->
+
+    <!-- region Onboarding · Intro carousel -->
+    <string name="onboarding_intro_back">Back</string>
+    <string name="onboarding_intro_skip">Skip</string>
+    <string name="onboarding_intro_skip_label">Skip introduction</string>
+    <string name="onboarding_intro_page_position">Page %1$d of %2$d</string>
+    <string name="onboarding_intro_continue">Continue</string>
+    <string name="onboarding_intro_finish">Sign in</string>
+
+    <string name="onboarding_intro_schedule_eyebrow">Schedule</string>
+    <string name="onboarding_intro_schedule_body">Your UEFS schedule pulled straight from SAGRES. Canceled classes, room changes, and exams in real time.</string>
+    <string name="onboarding_intro_schedule_headline_top">Your week,</string>
+    <string name="onboarding_intro_schedule_headline_accent">organized.</string>
+
+    <string name="onboarding_intro_grades_eyebrow">Grades</string>
+    <string name="onboarding_intro_grades_body">Partial grades, your score, and transcript. No need to log into SAGRES from a browser every week.</string>
+    <string name="onboarding_intro_grades_headline_top">Track your</string>
+    <string name="onboarding_intro_grades_headline_accent">performance.</string>
+
+    <string name="onboarding_intro_messages_eyebrow">Notices</string>
+    <string name="onboarding_intro_messages_body">Notices from professors, the coordination office, and DCE. Never miss a deadline or an important meeting.</string>
+    <string name="onboarding_intro_messages_headline_top">Everything you</string>
+    <string name="onboarding_intro_messages_headline_accent">need to know.</string>
+
+    <string name="onboarding_intro_notifications_eyebrow">Notifications</string>
+    <string name="onboarding_intro_notifications_body">New grade, a notice from a professor, new material posted, room changed. A tap in your pocket before you even open the app.</string>
+    <string name="onboarding_intro_notifications_headline_top">We tell you the instant it</string>
+    <string name="onboarding_intro_notifications_headline_accent">happens.</string>
+
+    <!-- Intro illustration props — mock timetable/inbox/lockscreen content. -->
+    <string name="onboarding_illu_sched_day_1">MON</string>
+    <string name="onboarding_illu_sched_day_2">TUE</string>
+    <string name="onboarding_illu_sched_day_3">WED</string>
+    <string name="onboarding_illu_sched_room_214">room 214</string>
+    <string name="onboarding_illu_sched_room_312">room 312</string>
+    <string name="onboarding_illu_grades_caption">score · 2026.1</string>
+    <string name="onboarding_illu_msg_1_name">Prof. Adriana</string>
+    <string name="onboarding_illu_msg_1_time">now</string>
+    <string name="onboarding_illu_msg_1_preview">P1 answer key released</string>
+    <string name="onboarding_illu_msg_2_name">CS Coordination</string>
+    <string name="onboarding_illu_msg_2_preview">Elective enrollment is open</string>
+    <string name="onboarding_illu_msg_3_name">DCE UEFS</string>
+    <string name="onboarding_illu_msg_3_time">yst.</string>
+    <string name="onboarding_illu_msg_3_preview">General assembly Thursday</string>
+    <string name="onboarding_illu_notif_date">Thu · Apr 23</string>
+    <string name="onboarding_illu_notif_1_category">Grade posted</string>
+    <string name="onboarding_illu_notif_1_title">Calculus II · P2</string>
+    <string name="onboarding_illu_notif_1_body">8.7 posted by Prof. Ribamar</string>
+    <string name="onboarding_illu_notif_2_category">New notice</string>
+    <string name="onboarding_illu_notif_2_title">Prof. Adriana Souza</string>
+    <string name="onboarding_illu_notif_2_body">P1 answer key posted on the board</string>
+    <string name="onboarding_illu_notif_3_category">Schedule change</string>
+    <string name="onboarding_illu_notif_3_title">ALGI II · Thursday</string>
+    <string name="onboarding_illu_notif_3_body">Reassigned: room 204 → 312</string>
+    <!-- endregion -->
+
+    <!-- region Onboarding · Login -->
+    <string name="onboarding_login_eyebrow">UEFS · SAGRES</string>
+    <string name="onboarding_login_headline_top">Sign in with your\n</string>
+    <string name="onboarding_login_headline_accent">username.</string>
+    <string name="onboarding_login_body">The same credentials you use for SAGRES.</string>
+    <string name="onboarding_login_id_label">Username</string>
+    <string name="onboarding_login_id_placeholder">your.username</string>
+    <string name="onboarding_login_password_label">Password</string>
+    <string name="onboarding_login_password_placeholder">••••••••</string>
+    <string name="onboarding_login_show_password">Show password</string>
+    <string name="onboarding_login_hide_password">Hide password</string>
+    <string name="onboarding_login_forgot_password">Forgot my password</string>
+    <string name="onboarding_login_forgot_password_label">Recover password</string>
+    <string name="onboarding_login_submit">Sign in</string>
+    <string name="onboarding_login_or_separator">or</string>
+    <string name="onboarding_login_passkey">Sign in with passkey</string>
+    <string name="onboarding_login_back">Back</string>
+    <string name="onboarding_login_terms_prefix">"By continuing, you agree to our "</string>
+    <string name="onboarding_login_terms_link_terms">Terms</string>
+    <string name="onboarding_login_terms_separator">" and "</string>
+    <string name="onboarding_login_terms_link_privacy">Privacy</string>
+    <string name="onboarding_login_terms_suffix">.</string>
+
+    <!-- Login error messages -->
+    <string name="onboarding_login_error_no_connection">No connection. Check your internet.</string>
+    <string name="onboarding_login_error_invalid_credentials">Incorrect username or password.</string>
+    <string name="onboarding_login_error_unexpected">Something went wrong. Try again.</string>
+    <string name="onboarding_login_error_server">%1$s</string>
+    <string name="onboarding_login_error_email_warning">Use your username — email usually doesn\'t work here</string>
+    <string name="onboarding_login_error_tls_intercepted_named">%1$s appears to be intercepting traffic and blocking the secure connection. Are you on a corporate network or using antivirus software that inspects HTTPS?</string>
+    <string name="onboarding_login_error_tls_intercepted_unnamed">Something on your network is intercepting traffic and blocking the secure connection. Check whether you\'re on a corporate network or using antivirus software that inspects HTTPS.</string>
+    <string name="onboarding_login_error_tls_clock_skew">Your device\'s date and time appear to be incorrect. Check them and try again.</string>
+    <string name="onboarding_login_error_tls_generic">Couldn\'t establish a secure connection. Try again on a different network.</string>
+    <string name="onboarding_login_passkey_not_supported">Passkeys aren\'t supported on this device.</string>
+    <string name="onboarding_login_passkey_invalid_challenge">Invalid challenge received from the server.</string>
+    <string name="onboarding_login_passkey_no_credential">No credential was returned.</string>
+
+    <!-- Forgot password sheet -->
+    <string name="onboarding_forgot_password_title">Forgot my password</string>
+    <string name="onboarding_forgot_password_label">RECOVERY · UEFS PORTAL</string>
+    <string name="onboarding_forgot_password_description">UNES doesn\'t manage your password. Recovery happens directly on the UEFS academic portal — after resetting it there, come back and sign in as usual.</string>
+    <string name="onboarding_forgot_password_step_1">Open the Academic Portal</string>
+    <string name="onboarding_forgot_password_step_2">Use the \"Forgot my password\" link</string>
+    <string name="onboarding_forgot_password_step_3">Set your new password and come back to UNES</string>
+    <string name="onboarding_forgot_password_open_portal">Open the UEFS portal</string>
+    <string name="onboarding_forgot_password_back">Back</string>
+    <!-- endregion -->
+
+    <!-- region Onboarding · Sync -->
+    <string name="onboarding_sync_eyebrow">Preparing your semester</string>
+    <string name="onboarding_sync_headline_top">Almost there,</string>
+    <string name="onboarding_sync_default_user">student</string>
+    <string name="onboarding_sync_step_auth">Verifying enrollment</string>
+    <string name="onboarding_sync_step_profile">Loading your profile</string>
+    <string name="onboarding_sync_step_classes">Connecting to your classes</string>
+    <string name="onboarding_sync_step_schedule">Building your schedule</string>
+    <string name="onboarding_sync_step_grades">Downloading this semester\'s grades</string>
+    <string name="onboarding_sync_step_messages">Syncing notices</string>
+    <string name="onboarding_sync_auth_failed">Your session expired. Sign in again.</string>
+    <!-- endregion -->
+
+    <!-- region Onboarding · Ready -->
+    <string name="onboarding_ready_eyebrow">Connected</string>
+    <string name="onboarding_ready_headline_top">All set,</string>
+    <string name="onboarding_ready_default_user">student</string>
+
+    <!-- Semester summary: "{classes} · {credits} · semestre {code}".
+         Built by combining two plurals + the semester code. When the
+         code is missing, the third clause is dropped via
+         onboarding_ready_semester_summary_no_code. -->
+    <string name="onboarding_ready_semester_summary_format">%1$s · %2$s · semester %3$s</string>
+    <string name="onboarding_ready_semester_summary_no_code">%1$s · %2$s</string>
+    <plurals name="onboarding_ready_classes">
+        <item quantity="one">%d class</item>
+        <item quantity="other">%d classes</item>
+    </plurals>
+    <plurals name="onboarding_ready_credits">
+        <item quantity="one">%d credit</item>
+        <item quantity="other">%d credits</item>
+    </plurals>
+
+    <string name="onboarding_ready_next_class_label">Next class</string>
+
+    <!-- Next-class meta: "Sala {room} · {teacher}"; variants drop the missing part. -->
+    <string name="onboarding_ready_next_class_meta_full">Room %1$s · %2$s</string>
+    <string name="onboarding_ready_next_class_meta_no_teacher">Room %1$s</string>
+    <string name="onboarding_ready_next_class_meta_empty">Room TBD</string>
+
+    <!-- Countdown ring units (abbreviated). -->
+    <string name="onboarding_ready_ring_unit_minutes">min</string>
+    <string name="onboarding_ready_ring_unit_hours">h</string>
+    <string name="onboarding_ready_ring_unit_days">d</string>
+
+    <string name="onboarding_ready_stat_score">Score</string>
+    <string name="onboarding_ready_stat_attendance">Attendance</string>
+
+    <string name="onboarding_ready_cta">View my semester</string>
+    <!-- endregion -->
+
+    <!-- region Connected · Tab bar -->
+    <string name="connected_tab_overview">Today</string>
+    <string name="connected_tab_schedule">Schedule</string>
+    <string name="connected_tab_classes">Classes</string>
+    <string name="connected_tab_messages">Messages</string>
+    <string name="connected_tab_me">Me</string>
+    <!-- endregion -->
+
+    <!-- region Overview · Header -->
+    <string name="overview_greeting_morning">Good morning</string>
+    <string name="overview_greeting_afternoon">Good afternoon</string>
+    <string name="overview_greeting_evening">Good evening</string>
+    <!-- "Boa noite, Marina" — greeting + first name on one line. -->
+    <string name="overview_greeting_format">%1$s, %2$s</string>
+    <string name="overview_default_user">Mariana</string>
+    <string name="overview_avatar_label">Your account</string>
+    <!-- endregion -->
+
+    <!-- region Overview · Hero card -->
+    <string name="overview_hero_next_label">Next class</string>
+    <string name="overview_hero_now_label">Now</string>
+    <string name="overview_hero_done_label">Day complete</string>
+    <string name="overview_hero_in_minutes">in %1$d min</string>
+    <string name="overview_hero_in_hours">in %1$dh</string>
+    <string name="overview_hero_in_days">in %1$dd</string>
+    <string name="overview_hero_ends_minutes">ends in %1$d min</string>
+    <!-- "termina em 1h05" -->
+    <string name="overview_hero_ends_hour_min">ends in %1$dh%2$02d</string>
+    <string name="overview_hero_details_action">View class details</string>
+    <string name="overview_hero_progress_label">Class progress</string>
+    <string name="overview_hero_progress_value">%1$d%%</string>
+    <plurals name="overview_hero_done_title">
+        <item quantity="one">You finished today\'s class 🎉</item>
+        <item quantity="other">You finished today\'s %1$d classes 🎉</item>
+    </plurals>
+    <string name="overview_hero_done_rest_day">Enjoy the rest of your day, %1$s.</string>
+    <string name="overview_hero_done_rest_evening">Enjoy the rest of your evening, %1$s.</string>
+    <!-- "Amanhã · Qua, 12 mar" -->
+    <string name="overview_hero_tomorrow_eyebrow">Tomorrow · %1$s</string>
+    <plurals name="overview_hero_tomorrow_extra">
+        <item quantity="one">+%1$d class</item>
+        <item quantity="other">+%1$d classes</item>
+    </plurals>
+    <!-- endregion -->
+
+    <!-- region Overview · Reta final card -->
+    <string name="overview_final_stretch_label">Final stretch</string>
+    <!-- Bold lead of "23 dias para o fim do semestre 2025.1". -->
+    <plurals name="overview_final_stretch_days">
+        <item quantity="one">%1$d day</item>
+        <item quantity="other">%1$d days</item>
+    </plurals>
+    <string name="overview_final_stretch_rest">until the end of semester %1$s</string>
+    <string name="overview_next_exam_label">Next exam</string>
+    <plurals name="overview_next_exam_unit">
+        <item quantity="one">day</item>
+        <item quantity="other">days</item>
+    </plurals>
+    <!-- endregion -->
+
+    <!-- region Overview · Today timeline -->
+    <string name="overview_today_title">Your day</string>
+    <!-- "Terça · 4 aulas" -->
+    <plurals name="overview_today_summary">
+        <item quantity="one">%1$s · %2$d class</item>
+        <item quantity="other">%1$s · %2$d classes</item>
+    </plurals>
+    <string name="overview_today_next_badge">Next</string>
+    <string name="overview_today_now_badge">Now</string>
+    <string name="overview_today_done_label">Class complete</string>
+    <!-- endregion -->
+
+    <!-- region Overview · Messages preview -->
+    <string name="overview_messages_title">Messages</string>
+    <string name="overview_time_now">now</string>
+    <string name="overview_time_min_short">%1$dmin</string>
+    <string name="overview_time_hour_short">%1$dh</string>
+    <string name="overview_time_day_short">%1$dd</string>
+    <!-- endregion -->
+
+    <!-- region Messages -->
+    <string name="messages_title">Messages</string>
+    <string name="messages_unread_count_format">%1$d unread</string>
+    <string name="messages_total_count_format">%1$d total</string>
+    <string name="messages_empty_title">Nothing here</string>
+    <string name="messages_empty_body">No messages match this filter.</string>
+    <string name="messages_back_label">Back</string>
+    <string name="messages_mark_all_read">Mark all as read</string>
+    <string name="messages_mark_all_read_a11y">Mark all messages as read</string>
+
+    <!-- Unread hero card -->
+    <string name="messages_hero_unread_label">Unread</string>
+    <string name="messages_hero_new_suffix">new\nmessages</string>
+    <string name="messages_hero_total_label">total</string>
+
+    <!-- Category labels (hero legend + tonal avatars) -->
+    <string name="messages_category_disciplines">Courses</string>
+    <string name="messages_category_university">University</string>
+    <string name="messages_category_app">App &amp; modules</string>
+
+    <!-- Filter chips -->
+    <string name="messages_filter_all">All</string>
+    <string name="messages_filter_unread">Unread</string>
+    <string name="messages_filter_starred">Starred</string>
+    <string name="messages_filter_disciplines">Courses</string>
+    <string name="messages_filter_university">University</string>
+    <string name="messages_filter_app">App</string>
+
+    <!-- Bucket headers -->
+    <string name="messages_bucket_today">Today</string>
+    <string name="messages_bucket_yesterday">Yesterday</string>
+    <string name="messages_bucket_this_week">This week</string>
+    <string name="messages_bucket_this_month">This month</string>
+    <string name="messages_bucket_older">Older</string>
+
+    <!-- Origin kind labels (sender card eyebrow) -->
+    <string name="messages_origin_kind_discipline">Course</string>
+    <string name="messages_origin_kind_secretariat">Secretariat</string>
+    <string name="messages_origin_kind_campus">University</string>
+    <string name="messages_origin_kind_app">App</string>
+    <string name="messages_origin_kind_module">Module</string>
+    <string name="messages_origin_kind_direct">Personal</string>
+
+    <!-- Relative time strings on the row -->
+    <string name="messages_rel_time_now">now</string>
+    <string name="messages_rel_time_minutes">%1$d min</string>
+    <string name="messages_rel_time_hours">%1$dh</string>
+    <string name="messages_rel_time_yesterday">yesterday</string>
+    <string name="messages_rel_time_days">%1$d d</string>
+
+    <!-- Sender role fallbacks — used when the KMP feed doesn't carry a
+         specific discipline name on a row. Mirror the iOS `roleFor()` map. -->
+    <string name="messages_role_discipline_default">Course</string>
+    <string name="messages_role_secretariat">Academic Secretariat</string>
+    <string name="messages_role_campus">Official notice</string>
+    <string name="messages_role_app">UNES Team</string>
+    <string name="messages_role_module">Module</string>
+    <string name="messages_role_direct">Personal message</string>
+
+    <!-- Detail screen -->
+    <string name="messages_attachments_section_format">ATTACHMENTS · %1$d</string>
+    <string name="messages_saved_note">Saved to your messages</string>
+    <string name="messages_save_a11y">Save message</string>
+    <string name="messages_unsave_a11y">Remove from saved messages</string>
+    <!-- endregion -->
+
+    <!-- region Disciplinas · Header + tabs -->
+    <string name="disciplines_title">Courses</string>
+    <!-- "2025.2 · EM ANDAMENTO" — eyebrow under the title, uppercased at render. -->
+    <string name="disciplines_semester_ongoing">Ongoing</string>
+    <string name="disciplines_semester_closed">Closed</string>
+    <string name="disciplines_tab_current">Current</string>
+    <string name="disciplines_tab_history">History</string>
+    <string name="disciplines_current_empty">No courses this semester.</string>
+    <string name="disciplines_history_empty">No previous semesters here.</string>
+    <!-- endregion -->
+
+    <!-- region Disciplinas · Summary strip + attention banner -->
+    <plurals name="disciplines_count">
+        <item quantity="one">%d course</item>
+        <item quantity="other">%d courses</item>
+    </plurals>
+    <string name="disciplines_partial_average_label">partial average</string>
+    <plurals name="disciplines_attention_title">
+        <item quantity="one">%d course needs attention</item>
+        <item quantity="other">%d courses need attention</item>
+    </plurals>
+    <!-- "Cálculo I em prova final" / "Programação com média baixa" — banner breakdown. -->
+    <string name="disciplines_attention_final_format">%1$s in finals</string>
+    <string name="disciplines_attention_low_format">%1$s with a low average</string>
+    <!-- endregion -->
+
+    <!-- region Disciplinas · Course card -->
+    <string name="disciplines_card_grade_label">average</string>
+    <!-- "60h" — discipline workload in hours. -->
+    <string name="disciplines_card_hours_format">%1$dh</string>
+    <string name="disciplines_card_footer_absences">Absences</string>
+    <string name="disciplines_card_evaluations_label">Evaluations</string>
+    <!-- Tail of "9 faltas livres" — the number is rendered separately so it can be tinted. -->
+    <plurals name="disciplines_card_free_absences_label">
+        <item quantity="one">free absence</item>
+        <item quantity="other">free absences</item>
+    </plurals>
+    <!-- "{remaining} restantes" — used by the absence bar tail label. -->
+    <plurals name="disciplines_absences_remaining">
+        <item quantity="one">%d remaining</item>
+        <item quantity="other">%d remaining</item>
+    </plurals>
+    <!-- endregion -->
+
+    <!-- region Disciplinas · Status labels -->
+    <string name="disciplines_status_approved">Approved</string>
+    <string name="disciplines_status_failed">Failed</string>
+    <string name="disciplines_status_final">Finals</string>
+    <string name="disciplines_status_low">Low grade</string>
+    <string name="disciplines_status_ongoing">Ongoing</string>
+    <string name="disciplines_status_pending">No grades</string>
+    <!-- endregion -->
+
+    <!-- region Disciplinas · Histórico -->
+    <string name="disciplines_history_performance">Cumulative performance</string>
+    <string name="disciplines_history_overall_mean">overall average</string>
+    <string name="disciplines_history_courses_taken">taken</string>
+    <string name="disciplines_history_approval_rate">approval</string>
+    <!-- "4 disc." — compact discipline count next to the semester code. -->
+    <plurals name="disciplines_history_disc_count">
+        <item quantity="one">%d course</item>
+        <item quantity="other">%d courses</item>
+    </plurals>
+    <string name="disciplines_past_mean_label">average</string>
+    <!-- "5/6 aprovadas" — past semester pass count over total. -->
+    <string name="disciplines_past_approved_format">%1$d/%2$d passed</string>
+    <!-- endregion -->
+
+    <!-- region Disciplinas · Undownloaded placeholder -->
+    <string name="disciplines_undownloaded_idle_subtitle">Tap to download this semester\'s history.</string>
+    <string name="disciplines_undownloaded_loading_subtitle">Fetching this semester\'s grades and absences…</string>
+    <string name="disciplines_undownloaded_cta">Download</string>
+    <string name="disciplines_undownloaded_count_loading">downloading…</string>
+    <string name="disciplines_undownloaded_count_unknown">not downloaded</string>
+    <plurals name="disciplines_undownloaded_count_estimated">
+        <item quantity="one">~%d course</item>
+        <item quantity="other">~%d courses</item>
+    </plurals>
+    <!-- endregion -->
+
+    <!-- region Discipline Detail · Top bar / header -->
+    <string name="discipline_detail_back">Back</string>
+    <string name="discipline_detail_topbar_title">Class details</string>
+    <!-- "Departamento de Ciências Exatas" — eyebrow line next to the code chip. -->
+    <string name="discipline_detail_department_format">Department of %1$s</string>
+    <string name="discipline_detail_teacher_role">Professor</string>
+    <string name="discipline_detail_group_all">All</string>
+    <!-- endregion -->
+
+    <!-- region Discipline Detail · Média hero -->
+    <string name="discipline_detail_media_partial">Partial average</string>
+    <string name="discipline_detail_media_final">Final average</string>
+    <!-- "3 de 3 notas lançadas" — quantity keyed on the total. -->
+    <plurals name="discipline_detail_media_released">
+        <item quantity="one">%1$d of %2$d grade posted</item>
+        <item quantity="other">%1$d of %2$d grades posted</item>
+    </plurals>
+    <string name="discipline_detail_media_after_final">after finals</string>
+    <string name="discipline_detail_media_no_grades">no grades posted</string>
+    <string name="discipline_detail_status_approved">Approved</string>
+    <string name="discipline_detail_status_approved_final">Approved in finals</string>
+    <string name="discipline_detail_status_failed">Failed</string>
+    <string name="discipline_detail_status_finals">Finals</string>
+    <string name="discipline_detail_status_ongoing">Ongoing</string>
+    <string name="discipline_detail_status_low">Low grade</string>
+    <string name="discipline_detail_status_pending">No grades</string>
+    <!-- endregion -->
+
+    <!-- region Discipline Detail · Notas -->
+    <string name="discipline_detail_grades_title">Grades</string>
+    <string name="discipline_detail_weight_equal">equal weight</string>
+    <string name="discipline_detail_weight_weighted">weighted average</string>
+    <string name="discipline_detail_grades_empty">The professor hasn\'t added any evaluations yet.</string>
+    <string name="discipline_detail_final_section">Final Exam</string>
+    <!-- Tag chip on the Prova Final row — replaces upstream's "Adicional". -->
+    <string name="discipline_detail_final_tag">Finals</string>
+    <string name="discipline_detail_grade_no_label">—</string>
+    <string name="discipline_detail_grade_no_title">Evaluation</string>
+    <string name="discipline_detail_grade_no_date">date not announced</string>
+    <string name="discipline_detail_grade_empty_score">—</string>
+    <!-- endregion -->
+
+    <!-- region Discipline Detail · Carga / Prova Final callout -->
+    <string name="discipline_detail_stat_hours">Course hours</string>
+    <string name="discipline_detail_stat_hours_sub">total for the semester</string>
+    <string name="discipline_detail_callout_title">You went to finals</string>
+    <!-- "Sua média parcial ficou em 3,5, abaixo de 7,0 para aprovação direta." —
+         assembled in code so the mean carries its own bold SpanStyle. Quoted so
+         the spaces around the spliced number survive the resource trim. -->
+    <string name="discipline_detail_callout_lead">"Your partial average was "</string>
+    <string name="discipline_detail_callout_tail">", below %1$s for direct approval."</string>
+    <string name="discipline_detail_callout_min_caption">is the minimum for finals</string>
+    <!-- endregion -->
+
+    <!-- region Discipline Detail · Frequência -->
+    <string name="discipline_detail_freq_title">Attendance</string>
+    <!-- " de 15" — small "of N" tail after the absences count. Quoted so the
+         leading space survives the resource loader's trim. -->
+    <string name="discipline_detail_freq_of_format">" of %1$d"</string>
+    <string name="discipline_detail_freq_registered">absences recorded</string>
+    <string name="discipline_detail_freq_remaining">remaining</string>
+    <plurals name="discipline_detail_freq_ok">
+        <item quantity="one">Attendance is on track — you still have room for %d absence.</item>
+        <item quantity="other">Attendance is on track — you still have room for %d absences.</item>
+    </plurals>
+    <string name="discipline_detail_freq_warn_mid">Keep a close eye on your absences.</string>
+    <string name="discipline_detail_freq_warn_high">Warning: you\'re close to the absence limit.</string>
+    <!-- endregion -->
+
+    <!-- region Discipline Detail · Ementa -->
+    <string name="discipline_detail_ementa_overline">Syllabus</string>
+    <string name="discipline_detail_ementa_show_more">read more</string>
+    <string name="discipline_detail_ementa_show_less">show less</string>
+    <!-- endregion -->
+
+    <!-- region Discipline Detail · Colaborativo -->
+    <string name="discipline_detail_collab_overline">Collaborative</string>
+    <plurals name="discipline_detail_collab_count">
+        <item quantity="one">%d class material</item>
+        <item quantity="other">%d class materials</item>
+    </plurals>
+    <string name="discipline_detail_collab_empty_title">Be the first to contribute</string>
+    <string name="discipline_detail_collab_empty_sub">Share an old exam or a solved problem set and help the next class.</string>
+    <!-- endregion -->
+
+    <!-- region Discipline Detail · Tabs -->
+    <string name="discipline_detail_tab_materials">Materials</string>
+    <string name="discipline_detail_tab_classes">Classes</string>
+    <!-- endregion -->
+
+    <!-- region Discipline Detail · Materiais tab -->
+    <string name="discipline_detail_attachments_header">Posted by the professor</string>
+    <plurals name="discipline_detail_attachments_count">
+        <item quantity="one">%d file</item>
+        <item quantity="other">%d files</item>
+    </plurals>
+    <string name="discipline_detail_attachments_empty">No attachments for this class.</string>
+    <string name="discipline_detail_attachment_open">Open attachment</string>
+    <!-- "PDF · 24/03" — kind plus lecture date; kind-only when there's no date. -->
+    <string name="discipline_detail_attachment_meta_with_date_format">%1$s · %2$s</string>
+    <string name="discipline_detail_attachment_meta_kind_only_format">%1$s</string>
+    <!-- endregion -->
+
+    <!-- region Discipline Detail · Aulas tab -->
+    <string name="discipline_detail_classes_header">Lesson plan</string>
+    <!-- "12 aulas" — count caption next to the tab header. -->
+    <plurals name="discipline_detail_classes_count">
+        <item quantity="one">%d class</item>
+        <item quantity="other">%d classes</item>
+    </plurals>
+    <string name="discipline_detail_classes_empty">The professor hasn\'t logged any classes yet.</string>
+    <string name="discipline_detail_class_number_format">Class %1$d</string>
+    <string name="discipline_detail_class_next_pill">next</string>
+    <string name="discipline_detail_classes_show_all_format">See all %1$d classes</string>
+    <string name="discipline_detail_classes_show_less">Show less</string>
+    <string name="discipline_detail_classes_no_date">—</string>
+    <string name="discipline_detail_classes_no_title">—</string>
+    <!-- endregion -->
+
+    <!-- region Schedule · Header -->
+    <string name="schedule_title">Schedule</string>
+    <string name="schedule_week_label_format">Week %1$d</string>
+    <string name="schedule_week_range_same_month_format">%1$d–%2$d %3$s</string>
+    <string name="schedule_week_range_spanning_format">%1$d %2$s – %3$d %4$s</string>
+    <!-- endregion -->
+
+    <!-- region Schedule · Day header -->
+    <string name="schedule_day_date_format">%2$s %1$d</string>
+    <plurals name="schedule_day_meta_classes">
+        <item quantity="one">%d class</item>
+        <item quantity="other">%d classes</item>
+    </plurals>
+    <string name="schedule_day_meta_format">%1$s · %2$s–%3$s</string>
+    <string name="schedule_day_meta_empty">—</string>
+    <!-- endregion -->
+
+    <!-- region Schedule · Timeline -->
+    <string name="schedule_gap_free_format">%1$s free</string>
+    <string name="schedule_location_unknown">Location not provided</string>
+    <string name="schedule_action_class">Class</string>
+    <string name="schedule_action_materials">Materials</string>
+    <!-- endregion -->
+
+    <!-- region Schedule · Empty day -->
+    <string name="schedule_empty_title">No classes</string>
+    <string name="schedule_empty_subtitle">Make the most of your free day to review or rest.</string>
+    <!-- endregion -->
+
+    <!-- region Folio runner · Easter egg game -->
+    <string name="folio_runner_title">Folio</string>
+    <string name="folio_runner_hint">tap to jump · swipe down to duck</string>
+    <string name="folio_runner_game_over">game over</string>
+    <string name="folio_runner_retry_hint">tap to try again</string>
+    <string name="folio_runner_close">Close</string>
+    <!-- endregion -->
+
+    <!-- region Me · Header -->
+    <string name="me_title">Me</string>
+    <string name="me_subtitle">Profile, shortcuts, and settings</string>
+    <!-- endregion -->
+
+    <!-- region Me · Section labels (uppercased at render) -->
+    <string name="me_section_shortcuts">Shortcuts</string>
+    <string name="me_section_settings">Settings</string>
+    <!-- endregion -->
+
+    <!-- region Me · Identity card -->
+    <string name="me_identity_campus_fallback">UEFS</string>
+    <string name="me_stat_score">Score</string>
+    <string name="me_stat_score_caption">overall</string>
+    <string name="me_stat_attendance">Attendance</string>
+    <string name="me_stat_attendance_caption">present</string>
+    <string name="me_stat_semester">Semester</string>
+    <string name="me_stat_semester_caption">current</string>
+    <string name="me_stat_semester_ordinal_format">%1$d</string>
+    <!-- endregion -->
+
+    <!-- region Me · Semester progress card -->
+    <string name="me_progress_week_prefix">"Week "</string>
+    <string name="me_progress_week_suffix_format">" of %1$d"</string>
+    <string name="me_progress_percent_format">%1$d%%</string>
+    <string name="me_progress_last_week">Last</string>
+    <string name="me_progress_start_prefix">"Start · "</string>
+    <string name="me_progress_end_prefix">"End · "</string>
+    <!-- endregion -->
+
+    <!-- region Me · Shortcut catalogue -->
+    <string name="me_shortcut_enrollment_label">Enrollment</string>
+    <string name="me_shortcut_enrollment_hint">build your proposal</string>
+    <string name="me_shortcut_calendar_label">Calendar</string>
+    <string name="me_shortcut_calendar_hint">academic dates</string>
+    <string name="me_shortcut_countdown_label">Final Countdown</string>
+    <string name="me_shortcut_countdown_hint">countdown to the end</string>
+    <string name="me_shortcut_certificate_label">Certificate</string>
+    <string name="me_shortcut_certificate_hint">active enrollment</string>
+    <string name="me_shortcut_history_label">Transcript</string>
+    <string name="me_shortcut_history_hint">grades and credits</string>
+    <string name="me_shortcut_paradoxo_label">Paradoxo</string>
+    <string name="me_shortcut_paradoxo_hint">university averages</string>
+    <string name="me_shortcut_materials_label">Materials</string>
+    <string name="me_shortcut_materials_hint">Exams and summaries for your courses</string>
+    <string name="me_shortcut_beta">Beta</string>
+    <!-- endregion -->
+
+    <!-- region Me · Settings rows -->
+    <string name="me_settings_row_settings_label">Settings</string>
+    <string name="me_settings_row_settings_hint">theme, notifications, data</string>
+    <string name="me_settings_row_about_label">About the app</string>
+    <string name="me_settings_row_about_hint">version %1$s · build %2$s</string>
+    <string name="me_settings_row_feedback_label">Bugs &amp; suggestions</string>
+    <string name="me_settings_row_feedback_hint">talk to the maintainers</string>
+    <string name="me_settings_row_licenses_label">Open source licenses</string>
+    <string name="me_settings_row_licenses_hint">open source packages</string>
+    <!-- endregion -->
+
+    <!-- region Me · Document sheet (Comprovante / Histórico) -->
+    <string name="me_document_certificate_title">Enrollment certificate</string>
+    <string name="me_document_certificate_subtitle">active enrollment</string>
+    <string name="me_document_history_title">Academic transcript</string>
+    <string name="me_document_history_subtitle">grades and credits</string>
+    <string name="me_document_close">Close</string>
+    <string name="me_document_row_student">Student</string>
+    <string name="me_document_row_course">Course</string>
+    <string name="me_document_row_status">Status</string>
+    <string name="me_document_row_status_active">Regular standing</string>
+    <string name="me_document_download">Download PDF</string>
+    <string name="me_document_offline_footnote">saved on your device for offline access</string>
+    <string name="me_document_open">Open PDF</string>
+    <string name="me_document_refresh">Fetch updated version</string>
+    <string name="me_document_retry">Try again</string>
+    <string name="me_document_cancel">Cancel</string>
+    <string name="me_document_captcha_prompt">Confirm you\'re not a robot</string>
+    <string name="me_document_generating">Generating document…</string>
+    <string name="me_document_generating_certificate">Downloading certificate…</string>
+    <string name="me_document_generating_sub">generating document on the UEFS portal</string>
+    <string name="me_document_refreshing">Fetching updated version…</string>
+    <string name="me_document_refreshing_sub">connecting to the UEFS server</string>
+    <string name="me_document_status_saved_format">available offline · saved on %1$s</string>
+    <string name="me_document_status_fresh">updated version · just saved to your device</string>
+    <string name="me_document_status_stale">showing the version saved on your device</string>
+    <string name="me_document_stale_title">Couldn\'t update</string>
+    <string name="me_document_stale_body">showing the copy saved on your device</string>
+    <string name="me_document_unavailable_title">Document unavailable</string>
+    <string name="me_document_unavailable_body">the portal hasn\'t issued this document for your enrollment</string>
+    <string name="me_document_error_title">No connection to the server</string>
+    <string name="me_document_error_body">there\'s no copy saved on this device to open offline</string>
+    <!-- endregion -->
+
+    <!-- region Me · Sign out + footer -->
+    <string name="me_sign_out_label">Sign out</string>
+    <string name="me_footer_version_format">UNES v%1$s · build %2$s</string>
+    <string name="me_footer_credit">made with ♥ in Feira de Santana</string>
+    <!-- endregion -->
+
+    <!-- region Me · Feedback intent (settings row "Erros & sugestões") -->
+    <string name="me_feedback_body_format">UNES %1$s(%2$s) - %3$s %4$s\nid: %5$s\nThe data above helps me find the bug, please don\'t delete it if you can help it :)</string>
+    <!-- endregion -->
+
+    <!-- region Me · Logout confirmation sheet -->
+    <string name="me_logout_sheet_title">Sign out?</string>
+    <string name="me_logout_sheet_eyebrow_format">id · %1$s</string>
+    <string name="me_logout_sheet_account_username_format">username · %1$s</string>
+    <string name="me_logout_sheet_description">You\'ll need to sign in with your username again to see schedules, grades, and messages from the coordination office.</string>
+    <string name="me_logout_sheet_keep_data_label">Keep data on this device</string>
+    <string name="me_logout_sheet_keep_data_hint">reminders, themes, and shortcuts stay saved</string>
+    <string name="me_logout_sheet_cancel">Cancel</string>
+    <string name="me_logout_sheet_confirm">Sign out now</string>
+    <!-- endregion -->
+
+    <!-- region Me · Logout flash + goodbye -->
+    <string name="me_logout_flash_caption">signing out…</string>
+    <string name="me_logged_out_eyebrow">session ended</string>
+    <string name="me_logged_out_greeting_prefix">See you soon,</string>
+    <string name="me_logged_out_body">Your reminders and preferences are saved right here on this device. Whenever you\'re ready to come back, your enrollment will be waiting.</string>
+    <string name="me_logged_out_local_data_title">Local data preserved</string>
+    <string name="me_logged_out_local_data_hint">reminders, themes, and shortcuts stay saved</string>
+    <string name="me_logged_out_cta">Sign in again</string>
+    <string name="me_logged_out_footer">◦ unes ◦</string>
+    <!-- endregion -->
+
+    <!-- region Settings · Header / chrome -->
+    <string name="settings_back">Back</string>
+    <string name="settings_title">Settings</string>
+    <string name="settings_subtitle">Your credentials, privacy, and what interrupts your day.</string>
+    <!-- endregion -->
+
+    <!-- region Settings · Credential vault -->
+    <string name="settings_vault_pill">Credentials</string>
+    <string name="settings_vault_badge">encrypted · biometrics</string>
+    <!-- "Conta acadêmica UEFS" — the argument is the campus label from the profile. -->
+    <string name="settings_vault_account_format">%1$s academic account</string>
+    <string name="settings_vault_account_fallback">UEFS</string>
+    <string name="settings_vault_action_show">Show</string>
+    <string name="settings_vault_action_hide">Hide</string>
+    <string name="settings_vault_field_username">Username</string>
+    <string name="settings_vault_field_password">Password</string>
+    <string name="settings_vault_copy">Copy</string>
+    <string name="settings_vault_copied">Copied</string>
+    <string name="settings_credentials_biometric_prompt_title">Authenticate to view the password</string>
+    <string name="settings_credentials_biometric_prompt_subtitle">UNES · Portal credentials</string>
+    <!-- endregion -->
+
+    <!-- region Settings · Aparência -->
+    <string name="settings_section_appearance">Appearance</string>
+    <string name="settings_theme_title">Theme</string>
+    <string name="settings_theme_subtitle">How UNES adapts to the system</string>
+    <string name="settings_theme_light">Light</string>
+    <string name="settings_theme_system">System</string>
+    <string name="settings_theme_dark">Dark</string>
+    <!-- endregion -->
+
+    <!-- region Settings · Notas / privacidade -->
+    <string name="settings_section_grades">Grades</string>
+    <string name="settings_section_grades_meta">privacy</string>
+    <string name="settings_privacy_title">Grade privacy</string>
+    <string name="settings_privacy_subtitle">What shows up in notifications</string>
+    <string name="settings_privacy_value">Value</string>
+    <string name="settings_privacy_summary">Summary</string>
+    <string name="settings_privacy_discreet">Discreet</string>
+    <!-- Lock-screen mock above the privacy control; title/body pairs per mode. -->
+    <string name="settings_preview_context">Lock screen · now</string>
+    <string name="settings_preview_app_name">UNES</string>
+    <string name="settings_preview_app_initial">U</string>
+    <string name="settings_preview_now">now</string>
+    <string name="settings_preview_value_title">Differential Calc B2</string>
+    <string name="settings_preview_value_body">New grade posted — you got an 8.5</string>
+    <string name="settings_preview_summary_title">New grade published</string>
+    <string name="settings_preview_summary_body">in Differential Calc B2</string>
+    <string name="settings_preview_discreet_title">UNES</string>
+    <string name="settings_preview_discreet_body">You have a new notification</string>
+    <!-- endregion -->
+
+    <!-- region Settings · Notification groups -->
+    <string name="settings_section_notifications">Notifications</string>
+    <!-- "5/9 ativas" — total active toggles, top-right of the section label. -->
+    <string name="settings_notif_total_format">%1$d/9 active</string>
+    <!-- "2/3 ativas" — per-group counter chip. -->
+    <string name="settings_notif_group_count_format">%1$d/%2$d active</string>
+
+    <string name="settings_notif_group_messages_title">Messages</string>
+    <string name="settings_notif_msg_broadcast_label">Broadcasts</string>
+    <string name="settings_notif_msg_broadcast_hint">Notices from the university</string>
+    <string name="settings_notif_msg_class_label">From class</string>
+    <string name="settings_notif_msg_class_hint">Messages sent to the class</string>
+    <string name="settings_notif_msg_direct_label">Direct</string>
+    <string name="settings_notif_msg_direct_hint">Professor or registrar</string>
+
+    <string name="settings_notif_group_grades_title">Grades</string>
+    <string name="settings_notif_grade_posted_label">Posted</string>
+    <string name="settings_notif_grade_posted_hint">A new grade appeared</string>
+    <string name="settings_notif_grade_changed_label">Changed</string>
+    <string name="settings_notif_grade_changed_hint">The value was corrected</string>
+    <string name="settings_notif_grade_date_changed_label">Date changed</string>
+    <string name="settings_notif_grade_date_changed_hint">Evaluation deadline moved</string>
+
+    <string name="settings_notif_group_classes_title">Classes</string>
+    <string name="settings_notif_class_location_label">Room changed</string>
+    <string name="settings_notif_class_location_hint">Location change</string>
+    <string name="settings_notif_class_material_label">Material published</string>
+    <string name="settings_notif_class_material_hint">Slides, prompts, lists</string>
+    <string name="settings_notif_class_subject_label">Class subject</string>
+    <string name="settings_notif_class_subject_hint">The planned topic changed</string>
+    <!-- endregion -->
+
+    <!-- region Settings · Footer -->
+    <string name="settings_footer_version_format">UNES v%1$s · build %2$s</string>
+    <string name="settings_footer_note">sync and cadence on the server · the client only listens</string>
+    <!-- endregion -->
+
+    <!-- region Final Countdown · Chrome + discipline row -->
+    <string name="final_countdown_back">Back</string>
+    <string name="final_countdown_title">Final Countdown</string>
+    <string name="final_countdown_headline_body">Fill in what\'s already happened and see, in cold math, how much you still need to pass.</string>
+    <string name="final_countdown_change">Change</string>
+    <string name="final_countdown_free_name">Free calculation</string>
+    <string name="final_countdown_free_sub">Standalone calculation · not linked</string>
+    <!-- "Adriana Matos · 2026.1" -->
+    <string name="final_countdown_disc_sub_format">%1$s · %2$s</string>
+    <string name="final_countdown_selector_title">Change course</string>
+    <string name="final_countdown_selector_close">Close</string>
+    <!-- endregion -->
+
+    <!-- region Final Countdown · Verdict hero chrome -->
+    <string name="final_countdown_hero_mode_simple">simple average</string>
+    <string name="final_countdown_hero_mode_weighted">weighted</string>
+    <string name="final_countdown_hero_avg_caption">average</string>
+    <string name="final_countdown_scale_low">easy · 0</string>
+    <string name="final_countdown_scale_mid">harsh · 5</string>
+    <string name="final_countdown_scale_high">brutal · 10</string>
+    <!-- endregion -->
+
+    <!-- region Final Countdown · Verdict copy (matches FCVerdict.style on iOS) -->
+    <string name="final_countdown_stat_needed_next">needed next</string>
+
+    <string name="final_countdown_verdict_passed_eyebrow">direct pass</string>
+    <string name="final_countdown_verdict_passed_title">Sealed.</string>
+    <string name="final_countdown_verdict_passed_lead">Average above 7.0. No Finals.</string>
+    <string name="final_countdown_verdict_passed_stat_label">final average</string>
+    <string name="final_countdown_verdict_passed_detail_format">With an average of %1$s you\'ve already got a direct pass. You can relax.</string>
+
+    <string name="final_countdown_verdict_ontrack_eyebrow">on track</string>
+    <string name="final_countdown_verdict_ontrack_title">Solid so far.</string>
+    <string name="final_countdown_verdict_ontrack_lead_need">Just don\'t turn in a zero.</string>
+    <string name="final_countdown_verdict_ontrack_lead_no_need">Finish the evaluations.</string>
+    <string name="final_countdown_verdict_ontrack_stat_label_projection">projection</string>
+    <string name="final_countdown_verdict_ontrack_stat_value_ok">OK</string>
+    <string name="final_countdown_verdict_ontrack_stat_value_format">≥ %1$s</string>
+    <string name="final_countdown_verdict_ontrack_detail_need_format">Anything above %1$s on the last evaluation gets you a direct pass.</string>
+    <string name="final_countdown_verdict_ontrack_detail_no_need">Your likely average leads to a direct pass. Keep it up.</string>
+
+    <string name="final_countdown_verdict_borderline_eyebrow">you can still pass</string>
+    <string name="final_countdown_verdict_borderline_title">You can still pass.</string>
+    <string name="final_countdown_verdict_borderline_lead">Tight, but possible.</string>
+    <string name="final_countdown_verdict_borderline_detail_format">You need %1$s or higher on the last evaluation to skip the Finals.</string>
+
+    <string name="final_countdown_verdict_borderline_final_eyebrow">headed to Finals</string>
+    <string name="final_countdown_verdict_borderline_final_title">There will be Finals.</string>
+    <string name="final_countdown_verdict_borderline_final_lead">No tragedy. Still passable.</string>
+    <string name="final_countdown_verdict_borderline_final_stat_label">not even with a 10</string>
+    <string name="final_countdown_verdict_borderline_final_stat_value">&gt; 10</string>
+    <string name="final_countdown_verdict_borderline_final_detail">Even with a 10 on the last evaluation the average won\'t reach 7.0. Finals will happen.</string>
+
+    <string name="final_countdown_verdict_final_eyebrow">headed to Finals</string>
+    <string name="final_countdown_verdict_final_title">Easy now.</string>
+    <string name="final_countdown_verdict_final_lead">You\'ll pass on Finals.</string>
+    <string name="final_countdown_verdict_final_stat_label">needed on Finals</string>
+    <string name="final_countdown_verdict_final_detail_format">With an average of %1$s, you need %2$s on Finals. Formula: 0.6·average + 0.4·final ≥ 5.</string>
+
+    <string name="final_countdown_verdict_impossible_eyebrow">hopeless math</string>
+    <string name="final_countdown_verdict_impossible_title">Not happening.</string>
+    <string name="final_countdown_verdict_impossible_lead">Not even with a 10 on Finals.</string>
+    <string name="final_countdown_verdict_impossible_stat_label">needed on Finals</string>
+    <string name="final_countdown_verdict_impossible_detail_format">With an average of %1$s, you\'d need %2$s on Finals. The max is 10, so passing through Finals isn\'t possible.</string>
+
+    <string name="final_countdown_verdict_failed_eyebrow">failed</string>
+    <string name="final_countdown_verdict_failed_title">Cycle closed.</string>
+    <string name="final_countdown_verdict_failed_lead_semester_format">Back in %1$s.</string>
+    <string name="final_countdown_verdict_failed_lead_fallback">Next time.</string>
+    <string name="final_countdown_verdict_failed_stat_label">average · no Finals</string>
+    <string name="final_countdown_verdict_failed_detail">Average below the 3.0 floor, no right to Finals. It\'s not the end of the world. Next time.</string>
+
+    <string name="final_countdown_verdict_failing_track_eyebrow">rough path</string>
+    <string name="final_countdown_verdict_failing_track_title">Complicated.</string>
+    <string name="final_countdown_verdict_failing_track_lead">Nail the next one.</string>
+    <string name="final_countdown_verdict_failing_track_stat_label">best case</string>
+    <string name="final_countdown_verdict_failing_track_detail_format">Even scoring a 10 on the remaining evaluation, the average lands at %1$s. Finals are still reachable, but it\'ll take effort.</string>
+
+    <string name="final_countdown_verdict_empty_eyebrow">start filling in</string>
+    <string name="final_countdown_verdict_empty_title">Fill in the grades.</string>
+    <string name="final_countdown_verdict_empty_lead">To see the verdict.</string>
+    <string name="final_countdown_verdict_empty_stat_label">current average</string>
+    <string name="final_countdown_verdict_empty_detail">Tap the fields below and fill in the evaluations that already happened. Leave blank the one still coming.</string>
+    <!-- endregion -->
+
+    <!-- region Final Countdown · Composição card + rule chips -->
+    <string name="final_countdown_composition_title">Breakdown</string>
+    <string name="final_countdown_composition_header_simple">grade</string>
+    <string name="final_countdown_composition_header_weighted">grade · weight</string>
+    <string name="final_countdown_weight_format">×%1$d</string>
+    <string name="final_countdown_rule_floor_label">final floor</string>
+    <string name="final_countdown_rule_floor_value">3.0</string>
+    <string name="final_countdown_rule_pass_label">pass</string>
+    <string name="final_countdown_rule_pass_value">7.0</string>
+    <string name="final_countdown_rule_formula_label">final</string>
+    <string name="final_countdown_rule_formula_value">0.6m+0.4f</string>
+    <!-- endregion -->
+
+    <!-- region Final Countdown · Editable rows + actions -->
+    <string name="final_countdown_evaluations_title">Your evaluations</string>
+    <string name="final_countdown_filled_format">%1$d/%2$d filled in</string>
+    <string name="final_countdown_weighted_title">Weighted mode</string>
+    <string name="final_countdown_weighted_hint_on">weights active · adjust ×</string>
+    <string name="final_countdown_weighted_hint_off">simple average · everything counts equally</string>
+    <string name="final_countdown_row_score_placeholder">—</string>
+    <string name="final_countdown_row_remove">Remove evaluation</string>
+    <string name="final_countdown_weight_increment">Increase weight</string>
+    <string name="final_countdown_weight_decrement">Decrease weight</string>
+    <string name="final_countdown_add_row">Add evaluation</string>
+    <string name="final_countdown_clear">Clear all</string>
+    <!-- endregion -->
+
+    <!-- region Final Countdown · Info card + footer -->
+    <!-- Segments with edge spaces are quoted — AAPT trims them otherwise. -->
+    <string name="final_countdown_info_intro">"Unofficial calculation. UEFS approves directly with an average "</string>
+    <string name="final_countdown_info_pass_band">≥ 7.0</string>
+    <string name="final_countdown_info_final_intro">", Finals for "</string>
+    <string name="final_countdown_info_final_band">3.0 ≤ m &lt; 7.0</string>
+    <string name="final_countdown_info_fail_intro">" and a direct fail for "</string>
+    <string name="final_countdown_info_fail_band">m &lt; 3.0</string>
+    <string name="final_countdown_info_outro">. Leave an evaluation blank to see how much you need on it.</string>
+    <string name="final_countdown_footer">do the math before finals do the math on you</string>
+    <!-- endregion -->
+
+    <!-- region Calendar · Header -->
+    <string name="calendar_title">Calendar</string>
+    <string name="calendar_header_subtitle">Deadlines, exams, and holidays at UEFS</string>
+    <string name="calendar_back_label">Back</string>
+    <string name="calendar_view_agenda_label">View agenda</string>
+    <string name="calendar_view_grid_label">View monthly grid</string>
+    <!-- endregion -->
+
+    <!-- region Calendar · Filters (category segmented + scope chips) -->
+    <string name="calendar_filter_category_all">All</string>
+    <string name="calendar_filter_category_deadlines">Deadlines</string>
+    <string name="calendar_filter_category_exams">Exams</string>
+    <string name="calendar_filter_category_holidays">Holidays</string>
+    <string name="calendar_filter_scope_all">All</string>
+    <!-- endregion -->
+
+    <!-- region Calendar · Categories + scopes -->
+    <string name="calendar_category_holiday">Holiday</string>
+    <string name="calendar_category_exam">Exam</string>
+    <string name="calendar_category_deadline">Deadline</string>
+    <string name="calendar_scope_general">General</string>
+    <string name="calendar_scope_faculty">University</string>
+    <string name="calendar_scope_course">Course</string>
+    <string name="calendar_scope_class">Class</string>
+    <string name="calendar_scope_campus">Campus</string>
+    <!-- endregion -->
+
+    <!-- region Calendar · Hero card (next actionable event) -->
+    <string name="calendar_hero_eyebrow_now">Happening now</string>
+    <string name="calendar_hero_eyebrow_next">Next action</string>
+    <string name="calendar_countdown_today">today</string>
+    <string name="calendar_countdown_tomorrow">tomorrow</string>
+    <string name="calendar_countdown_tail_days">days</string>
+    <string name="calendar_countdown_tail_days_to_close">remaining</string>
+    <string name="calendar_countdown_tail_one_day_to_close">remaining</string>
+    <string name="calendar_countdown_tail_days_ago">ago</string>
+    <string name="calendar_hero_progress_elapsed_format">%1$d%% elapsed</string>
+    <string name="calendar_hero_progress_closes_format">ends %1$s</string>
+    <!-- endregion -->
+
+    <!-- region Calendar · Agenda rows + month sections -->
+    <plurals name="calendar_month_summary">
+        <item quantity="one">%1$d · %2$d event</item>
+        <item quantity="other">%1$d · %2$d events</item>
+    </plurals>
+    <plurals name="calendar_row_countdown_in">
+        <item quantity="one">in %1$d day</item>
+        <item quantity="other">in %1$d days</item>
+    </plurals>
+    <string name="calendar_row_countdown_ends_today">ends today</string>
+    <plurals name="calendar_row_countdown_ends_in">
+        <item quantity="one">ends in %1$d day</item>
+        <item quantity="other">ends in %1$d days</item>
+    </plurals>
+    <plurals name="calendar_row_countdown_ago">
+        <item quantity="one">%1$d day ago</item>
+        <item quantity="other">%1$d days ago</item>
+    </plurals>
+    <string name="calendar_sync_footer">Synced with SAGRES</string>
+    <string name="calendar_empty_state">Nothing here with these filters.</string>
+    <!-- endregion -->
+
+    <!-- region Calendar · Month grid -->
+    <string name="calendar_grid_prev_month">Previous month</string>
+    <string name="calendar_grid_next_month">Next month</string>
+    <string name="calendar_grid_selected_today">Today</string>
+    <string name="calendar_grid_selected_day_format">%2$s %1$d</string>
+    <string name="calendar_grid_empty">No events on this day.</string>
+    <!-- endregion -->
+
+    <!-- region Calendar · Event sheet -->
+    <string name="calendar_sheet_close">Close</string>
+    <string name="calendar_sheet_when">When</string>
+    <string name="calendar_sheet_duration">Duration</string>
+    <string name="calendar_sheet_scope">Scope</string>
+    <string name="calendar_sheet_status">Status</string>
+    <string name="calendar_sheet_single_day">Single day</string>
+    <plurals name="calendar_sheet_span_days">
+        <item quantity="one">%1$d day</item>
+        <item quantity="other">%1$d days</item>
+    </plurals>
+    <string name="calendar_sheet_status_active">In progress</string>
+    <string name="calendar_sheet_status_past">Ended</string>
+    <string name="calendar_sheet_fixed_badge">Fixed date · repeats every year</string>
+    <string name="calendar_sheet_add_cta">Add to calendar</string>
+    <!-- endregion -->
+
+    <!-- region Me · About sheet -->
+    <string name="me_about_title">About the app</string>
+    <string name="me_about_subtitle">version, build, and debugging</string>
+    <string name="me_about_hero_tagline">your UEFS semester, in your pocket</string>
+    <string name="me_about_tile_build">Build</string>
+    <!-- "origem · Debug / Play Store" -->
+    <string name="me_about_tile_build_sub_format">source · %1$s</string>
+    <string name="me_about_tile_channel">Channel</string>
+    <string name="me_about_tile_channel_sub_format">version %1$s</string>
+    <string name="me_about_tile_device">Device</string>
+    <string name="me_about_tile_device_sub_format">Android %1$s</string>
+    <string name="me_about_tile_machine_id">Machine ID</string>
+    <string name="me_about_tile_machine_id_sub">for debugging</string>
+    <string name="me_about_copy_label">Copy debug information</string>
+    <string name="me_about_copy_done">Copied!</string>
+    <!-- endregion -->
+
+    <!-- region Licenças · Chrome (M3 top app bar + large headline) -->
+    <string name="licenses_topbar_title">About the app</string>
+    <string name="licenses_back">Back</string>
+    <string name="licenses_title">Licenses</string>
+    <string name="licenses_subtitle">UNES is built on the work of people who share their code openly. Here\'s who.</string>
+    <!-- endregion -->
+
+    <!-- region Licenças · Hero "Código aberto" -->
+    <string name="licenses_hero_eyebrow">Open source</string>
+    <!-- Unit after the big package count; the number is rendered separately. -->
+    <plurals name="licenses_hero_packages">
+        <item quantity="one">package</item>
+        <item quantity="other">packages</item>
+    </plurals>
+    <string name="licenses_hero_caption">None of this would exist without people who publish their code for free.</string>
+    <!-- endregion -->
+
+    <!-- region Licenças · Dependências (search + filter) -->
+    <string name="licenses_section_dependencies">Dependencies</string>
+    <string name="licenses_search_placeholder">Search package or license</string>
+    <string name="licenses_search_clear">Clear search</string>
+    <string name="licenses_filter_all">All</string>
+    <!-- "13 de 13" — matched packages of the family total, on each group header. -->
+    <string name="licenses_group_count_format">%1$d of %2$d</string>
+    <!-- endregion -->
+
+    <!-- region Licenças · Group rows -->
+    <string name="licenses_row_unknown_group">unknown group</string>
+    <!-- Copyright notice inside an expanded row. %1$s = the maven group (the
+         closest thing we ship to an author), %2$s = the license display name. -->
+    <string name="licenses_notice_format">© %1$s. Distributed under the %2$s license. Provided \"as is\", without warranty of any kind.</string>
+    <string name="licenses_action_text_format">Text · %1$s</string>
+    <string name="licenses_action_text_fallback">license</string>
+    <string name="licenses_action_copied">Copied</string>
+    <!-- endregion -->
+
+    <!-- region Licenças · Empty states -->
+    <string name="licenses_empty_artifact_title">No bundled licenses</string>
+    <string name="licenses_empty_artifact_subtitle">Run the build once to generate artifacts.json in the app\'s assets directory.</string>
+    <string name="licenses_empty_title">No packages found</string>
+    <string name="licenses_empty_subtitle">Adjust the search or license filter.</string>
+    <!-- endregion -->
+
+    <!-- region Licenças · Manifesto export + footer -->
+    <string name="licenses_sbom_title">Download license manifest</string>
+    <!-- "Licensee · JSON · 7 KB" — %1$d is the manifest size in whole KB. -->
+    <string name="licenses_sbom_meta_format">Licensee · JSON · %1$d KB</string>
+    <!-- Suggested filename in the system "Salvar em…" picker. -->
+    <string name="licenses_sbom_filename">unes-licenses-manifest.json</string>
+    <string name="licenses_footer_version_format">UNES v%1$s · build %2$s</string>
+    <string name="licenses_footer_compliance">In compliance with the terms of each license reproduced above.</string>
+    <!-- endregion -->
+
+    <!-- region Paradoxo · Home -->
+    <string name="paradoxo_title">Paradoxo</string>
+    <string name="paradoxo_back">Back</string>
+    <string name="paradoxo_eyebrow">University pulse</string>
+    <string name="paradoxo_subtitle">The real averages of every course and teacher, semester by semester.</string>
+    <string name="paradoxo_search_prompt">Search course or teacher</string>
+    <string name="paradoxo_search_cancel">Cancel</string>
+    <string name="paradoxo_section_explore">Explore</string>
+    <string name="paradoxo_section_mine">Your courses</string>
+    <string name="paradoxo_section_mine_note">Historical averages for what you\'re taking</string>
+    <string name="paradoxo_samples_format">%1$s averages</string>
+    <string name="paradoxo_students_format">%1$s students</string>
+    <string name="paradoxo_top_percent_format">top %1$s</string>
+    <string name="paradoxo_footer_format">%1$s students · %2$s averages combined</string>
+    <string name="paradoxo_error_title">Couldn\'t load</string>
+    <string name="paradoxo_error_retry">Try again</string>
+    <!-- endregion -->
+
+    <!-- region Paradoxo · Pulse hero -->
+    <string name="paradoxo_pulse_brutal">Most brutal right now</string>
+    <string name="paradoxo_pulse_kind">Most forgiving right now</string>
+    <string name="paradoxo_pulse_trend">In free fall</string>
+    <string name="paradoxo_pulse_gap">Biggest gap</string>
+    <string name="paradoxo_pulse_rising">On the rise</string>
+    <string name="paradoxo_pulse_surprise">Surprise index</string>
+    <string name="paradoxo_pulse_signature">Rare signature</string>
+    <string name="paradoxo_pulse_explore">Explore</string>
+    <!-- endregion -->
+
+    <!-- region Paradoxo · Explore rankings -->
+    <string name="paradoxo_explore_brutal_title">Most brutal</string>
+    <string name="paradoxo_explore_brutal_sub">lowest averages</string>
+    <string name="paradoxo_explore_kind_title">Most forgiving</string>
+    <string name="paradoxo_explore_kind_sub">highest averages</string>
+    <string name="paradoxo_explore_rising_title">On the rise</string>
+    <string name="paradoxo_explore_rising_sub">climbing for years</string>
+    <string name="paradoxo_explore_gap_title">Contrast</string>
+    <string name="paradoxo_explore_gap_sub">biggest gap</string>
+    <!-- endregion -->
+
+    <!-- region Paradoxo · Search -->
+    <string name="paradoxo_search_suggestions">Suggestions</string>
+    <string name="paradoxo_search_disciplines">Courses</string>
+    <string name="paradoxo_search_teachers">Teachers</string>
+    <string name="paradoxo_search_section_count_format">%1$s · %2$d</string>
+    <string name="paradoxo_search_empty_format">No results for “%1$s”</string>
+    <!-- endregion -->
+
+    <!-- region Paradoxo · Tiers, shapes & outcomes -->
+    <string name="paradoxo_tier_angel">angel</string>
+    <string name="paradoxo_tier_fair">fair</string>
+    <string name="paradoxo_tier_balanced">balanced</string>
+    <string name="paradoxo_tier_demanding">demanding</string>
+    <string name="paradoxo_tier_relentless">relentless</string>
+    <string name="paradoxo_shape_bimodal">bimodal</string>
+    <string name="paradoxo_shape_strict">strict</string>
+    <string name="paradoxo_shape_lenient">lenient</string>
+    <string name="paradoxo_shape_balanced">balanced</string>
+    <string name="paradoxo_shape_regular">regular</string>
+    <string name="paradoxo_outcome_approved">passed</string>
+    <string name="paradoxo_outcome_failed">failed</string>
+    <string name="paradoxo_outcome_quit">withdrawals</string>
+    <!-- endregion -->
+
+    <!-- region Paradoxo · Discipline detail -->
+    <string name="paradoxo_department_format">Dept. of %1$s</string>
+    <string name="paradoxo_grade_out_of_ten">/10</string>
+    <string name="paradoxo_detail_calculated_format">Calculated from %1$s students evaluated</string>
+    <string name="paradoxo_chart_title">Average per semester</string>
+    <string name="paradoxo_chart_peak">Best</string>
+    <string name="paradoxo_chart_trough">Worst</string>
+    <string name="paradoxo_chart_point_format">%1$s · %2$s</string>
+    <string name="paradoxo_chart_axis_mean">Average</string>
+    <string name="paradoxo_chart_axis_semester">Semester</string>
+    <string name="paradoxo_dist_title">Grade distribution</string>
+    <string name="paradoxo_dist_top_percent_format">You\'re in the top %1$s of the class</string>
+    <string name="paradoxo_insights_title">Fun facts</string>
+    <string name="paradoxo_insight_peak_format">Best moment in %1$s — average reached %2$s</string>
+    <string name="paradoxo_insight_trough_format">Worst semester was %1$s, with an average of %2$s</string>
+    <string name="paradoxo_insight_gap_format">Gap of %1$s points between the toughest and most forgiving teacher</string>
+    <string name="paradoxo_teachers_title">Teachers</string>
+    <string name="paradoxo_teachers_note">Each one\'s average in this course</string>
+    <string name="paradoxo_teacher_meta_format">%1$s averages · %2$s</string>
+    <string name="paradoxo_open_teacher">Open teacher</string>
+    <string name="paradoxo_expand_history">View teacher\'s history</string>
+    <!-- endregion -->
+
+    <!-- region Paradoxo · Teacher detail -->
+    <string name="paradoxo_teacher_approval">Pass rate</string>
+    <string name="paradoxo_teacher_consistency">Consistency</string>
+    <string name="paradoxo_teacher_last_semester">Last sem.</string>
+    <string name="paradoxo_teacher_outcomes">Student outcomes</string>
+    <string name="paradoxo_teacher_signature">Grade signature</string>
+    <string name="paradoxo_teacher_signature_caption_format">How grades spread across %1$s students</string>
+    <string name="paradoxo_teacher_disciplines">Courses</string>
+    <string name="paradoxo_teacher_disciplines_note">Average across the courses they teach</string>
+    <!-- endregion -->
+
+    <!-- region Campus event · Home card -->
+    <string name="campus_event_card_upcoming">Coming up</string>
+    <string name="campus_event_card_starts_in">Starts in</string>
+    <string name="campus_event_card_day">Day</string>
+    <string name="campus_event_card_day_of_count">/%1$d</string>
+    <string name="campus_event_card_ended">Ended</string>
+    <string name="campus_event_card_open">Open</string>
+    <string name="campus_event_card_follow">Follow</string>
+    <string name="campus_event_card_relive">Relive</string>
+    <string name="campus_event_card_countdown_format">%1$dd %2$sh</string>
+    <!-- endregion -->
+
+    <!-- region Campus event · Phases -->
+    <string name="campus_event_phase_upcoming">Countdown</string>
+    <string name="campus_event_phase_live">Happening now</string>
+    <string name="campus_event_phase_ended">Event ended</string>
+    <plurals name="campus_event_phase_live_count">
+        <item quantity="one">%1$d activity happening now</item>
+        <item quantity="other">%1$d activities happening now</item>
+    </plurals>
+    <!-- endregion -->
+
+    <!-- region Campus event · Countdown -->
+    <string name="campus_event_countdown_days">days</string>
+    <string name="campus_event_countdown_hours">hours</string>
+    <string name="campus_event_countdown_minutes">min</string>
+    <string name="campus_event_countdown_seconds">sec</string>
+    <!-- endregion -->
+
+    <!-- region Campus event · Categories -->
+    <string name="campus_event_category_quest">Quest</string>
+    <string name="campus_event_category_workshop">Workshop</string>
+    <string name="campus_event_category_lecture">Lecture</string>
+    <string name="campus_event_category_presentation">Presentation</string>
+    <string name="campus_event_category_dynamic">Group activity</string>
+    <string name="campus_event_category_other">Activity</string>
+    <!-- endregion -->
+
+    <!-- region Campus event · Audience filter -->
+    <string name="campus_event_filter_everyone">Everyone</string>
+    <string name="campus_event_filter_freshmen">Freshmen</string>
+    <string name="campus_event_filter_veterans">Veterans</string>
+    <!-- endregion -->
+
+    <!-- region Campus event · Hub -->
+    <string name="campus_event_back_label">Back</string>
+    <string name="campus_event_hub_schedule">Schedule</string>
+    <string name="campus_event_hub_schedule_note">Tap a day to see the activities</string>
+    <string name="campus_event_hub_today">today</string>
+    <string name="campus_event_hub_now">Now</string>
+    <string name="campus_event_hub_next">Up next</string>
+    <string name="campus_event_hub_opening">Opening</string>
+    <string name="campus_event_hub_empty_day">No activities for this filter.</string>
+    <plurals name="campus_event_hub_activity_count">
+        <item quantity="one">%1$d activity</item>
+        <item quantity="other">%1$d activities</item>
+    </plurals>
+    <string name="campus_event_hub_ended_title">That was amazing!</string>
+    <string name="campus_event_hub_ended_body">Thanks for building this event with us.</string>
+    <string name="campus_event_hub_stat_activities">activities</string>
+    <string name="campus_event_hub_stat_speakers">guests</string>
+    <string name="campus_event_hub_stat_days">days</string>
+    <string name="campus_event_hub_quick_speakers">Guests</string>
+    <plurals name="campus_event_hub_quick_speakers_count">
+        <item quantity="one">%1$d guest</item>
+        <item quantity="other">%1$d guests</item>
+    </plurals>
+    <string name="campus_event_hub_quick_workshops">Workshops</string>
+    <plurals name="campus_event_hub_quick_workshops_count">
+        <item quantity="one">%1$d workshop</item>
+        <item quantity="other">%1$d workshops</item>
+    </plurals>
+    <string name="campus_event_hub_quick_venues">Venues</string>
+    <plurals name="campus_event_hub_quick_venues_count">
+        <item quantity="one">%1$d venue</item>
+        <item quantity="other">%1$d venues</item>
+    </plurals>
+    <string name="campus_event_hub_quick_organizations">Organizations</string>
+    <plurals name="campus_event_hub_quick_organizations_count">
+        <item quantity="one">%1$d group</item>
+        <item quantity="other">%1$d groups</item>
+    </plurals>
+    <string name="campus_event_day_of">Day %1$d of %2$d</string>
+    <string name="campus_event_row_done">Done</string>
+    <!-- endregion -->
+
+    <!-- region Campus event · Activity detail -->
+    <string name="campus_event_detail_time">Time</string>
+    <string name="campus_event_detail_venue">Venue</string>
+    <string name="campus_event_detail_where">Where it happens</string>
+    <string name="campus_event_detail_where_hint">See the event venues</string>
+    <string name="campus_event_detail_signup">Requires advance sign-up — limited spots.</string>
+    <string name="campus_event_detail_speakers_one">Host</string>
+    <string name="campus_event_detail_speakers_many">Hosts</string>
+    <string name="campus_event_detail_speaker_fallback">Guest · organization</string>
+    <!-- endregion -->
+
+    <!-- region Campus event · Detail screens -->
+    <string name="campus_event_speakers_title">Guests</string>
+    <string name="campus_event_speakers_subtitle">Faculty, alumni, and professionals sharing the event with you.</string>
+    <string name="campus_event_workshops_title">Workshops</string>
+    <string name="campus_event_workshops_subtitle">Hands-on — theory and practice throughout the event.</string>
+    <string name="campus_event_workshops_everyone">For everyone</string>
+    <string name="campus_event_workshops_freshmen">For freshmen</string>
+    <string name="campus_event_workshops_veterans">For veterans</string>
+    <string name="campus_event_workshops_signup">Sign-up</string>
+    <plurals name="campus_event_workshops_signup_slots">
+        <item quantity="one">Sign-up · %1$d spot</item>
+        <item quantity="other">Sign-up · %1$d spots</item>
+    </plurals>
+    <string name="campus_event_workshops_all_in">Everyone\'s signed up</string>
+    <string name="campus_event_venues_title">Venues</string>
+    <string name="campus_event_venues_subtitle">Where it all happens on campus.</string>
+    <string name="campus_event_venues_spaces">Spaces</string>
+    <string name="campus_event_organizations_title">Organizations</string>
+    <string name="campus_event_organizations_subtitle">The groups that build campus life — and are waiting for you with open arms.</string>
+    <!-- endregion -->
+
+    <!-- region Campus event · Welcome reveal -->
+    <string name="campus_event_welcome_greeting">Great to see you,</string>
+    <string name="campus_event_welcome_skip">Skip</string>
+    <string name="campus_event_welcome_starts_in">Starts in</string>
+    <string name="campus_event_welcome_happening">It\'s happening</string>
+    <string name="campus_event_welcome_thanks">Thanks for taking part!</string>
+    <string name="campus_event_welcome_enter_upcoming">Explore the event</string>
+    <string name="campus_event_welcome_enter_live">Enter</string>
+    <string name="campus_event_welcome_enter_ended">See what happened</string>
+    <!-- endregion -->
+
+    <!-- region Widget · "Próxima aula" -->
+    <string name="widget_next_class_title">Next class</string>
+    <string name="widget_next_class_description">Today\'s next class, with time, room, and top priorities.</string>
+    <!-- endregion -->
+
+    <!-- region Materiais · Hub -->
+    <string name="materials_back">Back</string>
+    <string name="materials_title">Materials</string>
+    <string name="materials_hub_subtitle">%1$d materials across your %2$d courses for %3$s</string>
+    <string name="materials_hero_badge">Made by students</string>
+    <string name="materials_hero_title">Old exams, solved problem sets, and summaries, shared by your class.</string>
+    <string name="materials_hero_subtitle">Contribute a file and unlock your classes\' collection.</string>
+    <string name="materials_hero_contribute">Contribute</string>
+    <string name="materials_hero_saved_hint">Saved materials</string>
+    <string name="materials_section_disciplines">Your courses</string>
+    <string name="materials_disc_empty_hint">No materials yet · be the first</string>
+    <string name="materials_disc_empty_tag">empty</string>
+    <string name="materials_hub_footer">Materials are submitted by students and go through moderation before appearing here.</string>
+    <string name="materials_error_title">Couldn\'t load</string>
+    <string name="materials_error_subtitle">Check your connection and try again.</string>
+    <string name="materials_error_retry">Try again</string>
+    <!-- endregion -->
+
+    <!-- region Materiais · Tipos -->
+    <string name="materials_type_exam">Exam</string>
+    <string name="materials_type_exam_plural">Exams</string>
+    <string name="materials_type_list">Problem set</string>
+    <string name="materials_type_list_plural">Problem sets</string>
+    <string name="materials_type_summary">Summary</string>
+    <string name="materials_type_summary_plural">Summaries</string>
+    <string name="materials_type_formula">Formula sheet</string>
+    <string name="materials_type_formula_plural">Formula sheets</string>
+    <plurals name="materials_tally_exam">
+        <item quantity="one">%d exam</item>
+        <item quantity="other">%d exams</item>
+    </plurals>
+    <plurals name="materials_tally_list">
+        <item quantity="one">%d problem set</item>
+        <item quantity="other">%d problem sets</item>
+    </plurals>
+    <plurals name="materials_tally_summary">
+        <item quantity="one">%d summary</item>
+        <item quantity="other">%d summaries</item>
+    </plurals>
+    <plurals name="materials_tally_formula">
+        <item quantity="one">%d formula sheet</item>
+        <item quantity="other">%d formula sheets</item>
+    </plurals>
+    <!-- endregion -->
+
+    <!-- region Materiais · Lista da disciplina -->
+    <string name="materials_list_eyebrow">Class materials</string>
+    <plurals name="materials_available_count">
+        <item quantity="one">%d material available</item>
+        <item quantity="other">%d materials available</item>
+    </plurals>
+    <string name="materials_search_placeholder">Search by title or professor</string>
+    <string name="materials_filter_all">All</string>
+    <string name="materials_section_mine">My submissions</string>
+    <string name="materials_section_shelf">Collection</string>
+    <plurals name="materials_item_count">
+        <item quantity="one">%d item</item>
+        <item quantity="other">%d items</item>
+    </plurals>
+    <string name="materials_no_results_title">Nothing found</string>
+    <string name="materials_no_results_subtitle">Adjust the filters or submit that material yourself.</string>
+    <string name="materials_contribute_cta">Contribute material</string>
+    <string name="materials_list_empty_title">Be the first to contribute</string>
+    <string name="materials_list_empty_body">There aren\'t any materials for %1$s yet. Your old exam or solved problem set could save the next class the night before a test.</string>
+    <string name="materials_list_empty_cta">Submit the first material</string>
+    <string name="materials_status_pending">Under review</string>
+    <string name="materials_status_rejected">Not approved</string>
+    <string name="materials_saved_marker">Saved</string>
+    <!-- endregion -->
+
+    <!-- region Materiais · Detalhe -->
+    <string name="materials_action_useful">Useful</string>
+    <string name="materials_action_save">Save</string>
+    <string name="materials_action_saved">Saved</string>
+    <string name="materials_detail_about">About this material</string>
+    <string name="materials_detail_details">Details</string>
+    <string name="materials_detail_row_discipline">Course</string>
+    <string name="materials_detail_row_semester">Semester</string>
+    <string name="materials_detail_row_teacher">Professor</string>
+    <string name="materials_detail_row_file">File</string>
+    <string name="materials_detail_teacher_unknown">Not provided</string>
+    <string name="materials_file_kind_pdf">PDF</string>
+    <string name="materials_file_kind_photo">Photo</string>
+    <plurals name="materials_pages">
+        <item quantity="one">%d page</item>
+        <item quantity="other">%d pages</item>
+    </plurals>
+    <plurals name="materials_pages_short">
+        <item quantity="one">%d pg</item>
+        <item quantity="other">%d pgs</item>
+    </plurals>
+    <string name="materials_uploader_name">Classmate from %1$s</string>
+    <string name="materials_uploader_sub">Joined in %1$d · identity preserved</string>
+    <string name="materials_detail_disclaimer">Respect copyright and any professor restrictions when using this material.</string>
+    <string name="materials_open_pdf">Open PDF</string>
+    <string name="materials_open_photo">Open photo</string>
+    <string name="materials_toast_saved">Saved to your list</string>
+    <string name="materials_toast_unsaved">Removed from saved</string>
+    <string name="materials_toast_reported">Report sent — thank you</string>
+    <string name="materials_toast_sync_failed">Couldn\'t sync. Try again.</string>
+    <string name="materials_toast_open_failed">Couldn\'t open the file.</string>
+    <!-- endregion -->
+
+    <!-- region Materiais · Moderação (status dos meus envios) -->
+    <string name="materials_moderation_pending_title">Your material is under review</string>
+    <string name="materials_moderation_pending_body">Moderation usually reviews new submissions within 48 hours. You\'ll get a notification as soon as it\'s published.</string>
+    <string name="materials_moderation_rejected_title">This material wasn\'t approved</string>
+    <string name="materials_moderation_rejected_body">It didn\'t make it into the public collection. See the reason below and resubmit an adjusted version if that makes sense.</string>
+    <string name="materials_moderation_reason_title">Moderation reason</string>
+    <string name="materials_moderation_resubmit">Resubmit adjusted</string>
+    <string name="materials_moderation_step_sent">Submitted</string>
+    <string name="materials_moderation_step_sent_sub">received by the platform</string>
+    <string name="materials_moderation_step_review">Under moderation review</string>
+    <string name="materials_moderation_step_review_sub">within 48h</string>
+    <string name="materials_moderation_step_published">Published in the collection</string>
+    <string name="materials_moderation_step_published_sub">visible to the class</string>
+    <!-- endregion -->
+
+    <!-- region Materiais · Denúncia -->
+    <string name="materials_report">Report material</string>
+    <string name="materials_report_subtitle">Your report is anonymous and helps moderation keep the collection reliable.</string>
+    <string name="materials_report_reason_illegible">Low-quality or illegible file</string>
+    <string name="materials_report_reason_ongoing">Exam from the current, ongoing semester</string>
+    <string name="materials_report_reason_restricted">Content restricted by the professor</string>
+    <string name="materials_report_reason_wrong">Doesn\'t match the course</string>
+    <string name="materials_report_reason_other">Other reason</string>
+    <string name="materials_report_confirm">Send report</string>
+    <string name="materials_close">Close</string>
+    <!-- endregion -->
+
+    <!-- region Materiais · Salvos -->
+    <string name="materials_saved_title">Saved</string>
+    <string name="materials_saved_empty_title">Nothing saved yet</string>
+    <string name="materials_saved_empty_body">Tap Save on a material to keep it here.</string>
+    <!-- endregion -->
+
+    <!-- region Materiais · Assistente de envio -->
+    <string name="materials_upload_title_disc">New contribution</string>
+    <string name="materials_upload_title_source">New material</string>
+    <string name="materials_upload_title_details">Material details</string>
+    <string name="materials_upload_title_guidelines">Community guidelines</string>
+    <string name="materials_upload_disc_prompt">Which course is this material for?</string>
+    <plurals name="materials_count">
+        <item quantity="one">%d material</item>
+        <item quantity="other">%d materials</item>
+    </plurals>
+    <string name="materials_upload_source_prompt">Upload a ready-made PDF or scan your pages with the camera.</string>
+    <string name="materials_upload_source_file_title">Choose file</string>
+    <string name="materials_upload_source_file_sub">PDF from your device or the cloud</string>
+    <string name="materials_upload_source_scan_title">Scan with the camera</string>
+    <string name="materials_upload_source_scan_sub">Photograph the pages — becomes a PDF</string>
+    <string name="materials_upload_source_note">Only submit material you have permission to share. No exams from the current, ongoing semester.</string>
+    <string name="materials_upload_file_read_failed">Couldn\'t read the file. Try another one.</string>
+    <string name="materials_upload_field_type">Material type</string>
+    <string name="materials_upload_field_title">Title</string>
+    <string name="materials_upload_title_placeholder">E.g.: Exam 1 — lists and stacks</string>
+    <string name="materials_upload_field_semester">Semester</string>
+    <string name="materials_upload_field_teacher">Professor</string>
+    <string name="materials_upload_optional">optional</string>
+    <string name="materials_upload_teacher_placeholder">Professor\'s name</string>
+    <string name="materials_upload_continue">Continue</string>
+    <string name="materials_upload_guidelines_prompt">Before publishing, confirm your submission follows the community guidelines.</string>
+    <string name="materials_upload_rule_current_title">Nothing from the current semester</string>
+    <string name="materials_upload_rule_current_body">Don\'t share exams for assessments that are still ongoing this term.</string>
+    <string name="materials_upload_rule_teacher_title">Respect the professor</string>
+    <string name="materials_upload_rule_teacher_body">Some professors restrict the circulation of their own material. When in doubt, don\'t publish.</string>
+    <string name="materials_upload_rule_quality_title">Quality helps everyone</string>
+    <string name="materials_upload_rule_quality_body">Prefer legible, complete files. Worked-out solutions are gold the night before a test.</string>
+    <string name="materials_upload_ack">I\'ve read and agree to the guidelines. This material may be shared.</string>
+    <string name="materials_upload_publish">Submit for review</string>
+    <string name="materials_upload_submit_failed">Couldn\'t submit. Check your connection and try again.</string>
+    <string name="materials_upload_success_title">Submitted! Now it\'s up to moderation</string>
+    <string name="materials_upload_success_body">Your material is under review and will appear in the collection once approved — usually within 48h.</string>
+    <string name="materials_upload_done">Done</string>
+    <!-- endregion -->
+
+    <!-- region Matrícula · Chrome + status hub -->
+    <string name="enrollment_title">Enrollment</string>
+    <string name="enrollment_back">Back</string>
+    <string name="enrollment_identity_period_format">Period %1$d</string>
+    <string name="enrollment_hero_state_open">Enrollment open</string>
+    <string name="enrollment_hero_state_upcoming">Enrollment coming soon</string>
+    <string name="enrollment_hero_state_closed">Enrollment closed</string>
+    <string name="enrollment_hero_open_title_format">Open until %1$s</string>
+    <string name="enrollment_hero_upcoming_title_format">Opens in %1$s</string>
+    <string name="enrollment_hero_closed_title">Proposal recorded</string>
+    <string name="enrollment_hero_body_open">Save and adjust as many times as you want before submitting.</string>
+    <string name="enrollment_hero_body_upcoming">Get your schedule ready — the window hasn\'t opened yet.</string>
+    <string name="enrollment_hero_body_closed">Your proposal has been recorded. Check the certificate.</string>
+    <string name="enrollment_hero_days_caption">days</string>
+    <string name="enrollment_hero_start_label">Opening</string>
+    <string name="enrollment_hero_end_label">Closing</string>
+    <string name="enrollment_hero_end_value_format">%1$s · %2$s</string>
+    <string name="enrollment_date_unknown">TBD</string>
+    <string name="enrollment_stat_disciplines">courses</string>
+    <string name="enrollment_stat_disciplines_hint">classes</string>
+    <string name="enrollment_stat_conflicts">conflicts</string>
+    <string name="enrollment_stat_conflicts_ok">all set</string>
+    <string name="enrollment_stat_conflicts_fix">resolve</string>
+    <string name="enrollment_stat_waitlist">in queue</string>
+    <string name="enrollment_stat_waitlist_hint">waitlist</string>
+    <string name="enrollment_proposal_title">Your proposal</string>
+    <string name="enrollment_proposal_edit">Edit</string>
+    <string name="enrollment_hours_format">%1$dh</string>
+    <string name="enrollment_cta_start">Build enrollment</string>
+    <string name="enrollment_cta_continue">Continue building</string>
+    <string name="enrollment_cta_receipt">View certificate</string>
+    <string name="enrollment_cta_reopen">Reopen</string>
+    <string name="enrollment_dock_resubmit">Submit again</string>
+    <string name="enrollment_empty_title">No open enrollment</string>
+    <string name="enrollment_empty_body">When the university opens the enrollment window, it\'ll show up here.</string>
+    <string name="enrollment_error_title">Couldn\'t load</string>
+    <string name="enrollment_retry">Try again</string>
+    <string name="enrollment_offers_failed">Couldn\'t load the course offerings.</string>
+    <!-- endregion -->
+
+    <!-- region Matrícula · Workload meter -->
+    <string name="enrollment_workload_label">Workload</string>
+    <string name="enrollment_workload_hours_suffix">h selected</string>
+    <string name="enrollment_workload_status_empty">start building</string>
+    <string name="enrollment_workload_status_over">over the limit</string>
+    <string name="enrollment_workload_status_under_format">%1$dh left</string>
+    <string name="enrollment_workload_status_ok">within the limit</string>
+    <string name="enrollment_workload_min_format">min %1$dh</string>
+    <string name="enrollment_workload_max_format">max %1$dh</string>
+    <!-- endregion -->
+
+    <!-- region Matrícula · Ofertadas -->
+    <string name="enrollment_offers_appbar">Course offerings</string>
+    <string name="enrollment_offers_title">Offerings</string>
+    <string name="enrollment_offers_sub_format">%1$d courses available</string>
+    <string name="enrollment_search_placeholder">Search by code or name</string>
+    <string name="enrollment_search_clear">Clear search</string>
+    <string name="enrollment_filter_all">All</string>
+    <string name="enrollment_filter_mandatory">Mandatory</string>
+    <string name="enrollment_filter_optional">Electives</string>
+    <string name="enrollment_no_results">No courses found.</string>
+    <string name="enrollment_period_format">Period %1$d</string>
+    <string name="enrollment_period_optional">Electives</string>
+    <string name="enrollment_suggested">Suggested</string>
+    <string name="enrollment_suggested_by_course">Suggested by course</string>
+    <string name="enrollment_kind_mandatory">Mandatory</string>
+    <string name="enrollment_kind_optional">Elective</string>
+    <string name="enrollment_prereq_tag">Prerequisite</string>
+    <plurals name="enrollment_sections_count">
+        <item quantity="one">%1$d class</item>
+        <item quantity="other">%1$d classes</item>
+    </plurals>
+    <!-- endregion -->
+
+    <!-- region Matrícula · Turmas -->
+    <string name="enrollment_discipline_eyebrow_format">%1$s · %2$s</string>
+    <string name="enrollment_choose_section">Choose a class</string>
+    <string name="enrollment_shift_morning">Morning</string>
+    <string name="enrollment_shift_afternoon">Afternoon</string>
+    <string name="enrollment_shift_night">Evening</string>
+    <string name="enrollment_shift_undefined">TBD</string>
+    <string name="enrollment_schedule_tbd">Schedule TBD</string>
+    <string name="enrollment_room_tbd">Room TBD</string>
+    <string name="enrollment_prof_tbd">Prof. TBD</string>
+    <string name="enrollment_seats_full">full</string>
+    <string name="enrollment_seats_tight">almost full</string>
+    <string name="enrollment_seats_open">seats</string>
+    <string name="enrollment_seats_count_format">/ %1$d</string>
+    <string name="enrollment_conflict_title">Schedule conflict</string>
+    <string name="enrollment_conflict_text_format">Clashes with %1$s %2$s on %3$s. Swap one of the classes.</string>
+    <string name="enrollment_full_title">Class full</string>
+    <string name="enrollment_full_queue">Join the waitlist.</string>
+    <string name="enrollment_full_queue_ahead_format">Join the waitlist — %1$d ahead of you.</string>
+    <string name="enrollment_full_no_queue">No seats available.</string>
+    <string name="enrollment_section_select">Select this class</string>
+    <string name="enrollment_section_selected">Selected · tap to remove</string>
+    <string name="enrollment_section_blocked">Unavailable — conflict</string>
+    <string name="enrollment_section_queue">Join the waitlist</string>
+    <string name="enrollment_section_full">No seats</string>
+    <string name="enrollment_prereq_met_title">Prerequisites met</string>
+    <string name="enrollment_prereq_unmet_title">Prerequisite not met</string>
+    <string name="enrollment_prereq_pending_suffix">" — pending"</string>
+    <string name="enrollment_prereq_unmet_note">You can select it, but it\'s subject to committee review.</string>
+    <string name="enrollment_allows_title">Accept another class</string>
+    <string name="enrollment_allows_text_format">No seat in %1$s? Enroll me in another class of %2$s with an open seat.</string>
+    <!-- endregion -->
+
+    <!-- region Matrícula · Grade -->
+    <string name="enrollment_timetable_title">Your schedule</string>
+    <string name="enrollment_timetable_sub_empty">No classes selected</string>
+    <plurals name="enrollment_timetable_sub_count">
+        <item quantity="one">%1$d scheduled class</item>
+        <item quantity="other">%1$d scheduled classes</item>
+    </plurals>
+    <plurals name="enrollment_tt_conflicts_title">
+        <item quantity="one">%1$d schedule conflict</item>
+        <item quantity="other">%1$d schedule conflicts</item>
+    </plurals>
+    <string name="enrollment_tt_conflict_item_format">%1$s %2$s × %3$s %4$s · %5$s</string>
+    <string name="enrollment_tt_empty_title">Empty schedule</string>
+    <string name="enrollment_tt_empty_text">Select classes in the catalog to see them here. Conflicts show up in red.</string>
+    <string name="enrollment_tt_ok_title">No conflicts</string>
+    <plurals name="enrollment_tt_ok_text">
+        <item quantity="one">Your class fits with no overlap.</item>
+        <item quantity="other">Your %1$d classes fit with no overlap.</item>
+    </plurals>
+    <plurals name="enrollment_tt_tbd">
+        <item quantity="one">%1$d class with schedule TBD — not shown in the schedule.</item>
+        <item quantity="other">%1$d classes with schedule TBD — not shown in the schedule.</item>
+    </plurals>
+    <!-- endregion -->
+
+    <!-- region Matrícula · Revisar + enviar -->
+    <string name="enrollment_review_appbar">Review proposal</string>
+    <string name="enrollment_review_title">Review</string>
+    <string name="enrollment_review_sub_empty">Empty proposal</string>
+    <plurals name="enrollment_review_sub">
+        <item quantity="one">%1$d course · %2$dh</item>
+        <item quantity="other">%1$d courses · %2$dh</item>
+    </plurals>
+    <string name="enrollment_review_empty">No courses in the proposal yet.</string>
+    <string name="enrollment_selected_count_format">Selected · %1$d</string>
+    <string name="enrollment_review_conflicts_title">Schedule conflicts</string>
+    <string name="enrollment_review_under_title">Workload too low</string>
+    <string name="enrollment_review_under_text_format">%1$dh short of the %2$dh minimum.</string>
+    <string name="enrollment_review_over_title">Workload exceeded</string>
+    <string name="enrollment_review_over_text_format">You\'re %1$dh over the maximum.</string>
+    <string name="enrollment_review_prereq_title">Prerequisites pending</string>
+    <plurals name="enrollment_review_prereq_text">
+        <item quantity="one">%1$s is subject to committee review.</item>
+        <item quantity="other">%1$s are subject to committee review.</item>
+    </plurals>
+    <string name="enrollment_prereq_pending_tag">Prereq. pending</string>
+    <string name="enrollment_waitlist_position_format">Waitlist · #%1$d</string>
+    <string name="enrollment_waitlist_waiting">Waitlist · waiting</string>
+    <string name="enrollment_allows_review_format">No seat in %1$s? Place me in another class of %2$s.</string>
+    <string name="enrollment_remove">Remove</string>
+    <string name="enrollment_readonly_title">Proposal submitted</string>
+    <string name="enrollment_readonly_text">Your enrollment has been recorded. Seat confirmation arrives by message.</string>
+    <string name="enrollment_submit_error_title">Couldn\'t submit</string>
+    <string name="enrollment_error_session">Your session expired. Sign in again.</string>
+    <string name="enrollment_error_network">No connection. Check your internet and try again.</string>
+    <string name="enrollment_error_generic">Something went wrong. Try again in a moment.</string>
+    <string name="enrollment_ok">OK</string>
+    <!-- endregion -->
+
+    <!-- region Matrícula · Dock -->
+    <string name="enrollment_dock_max_format">/ %1$d</string>
+    <plurals name="enrollment_dock_disciplines">
+        <item quantity="one">%1$d course</item>
+        <item quantity="other">%1$d courses</item>
+    </plurals>
+    <plurals name="enrollment_dock_conflicts">
+        <item quantity="one">%1$d conflict</item>
+        <item quantity="other">%1$d conflicts</item>
+    </plurals>
+    <string name="enrollment_dock_grade">Schedule</string>
+    <string name="enrollment_dock_review">Review</string>
+    <string name="enrollment_dock_done">Done</string>
+    <string name="enrollment_dock_submit">Submit proposal</string>
+    <string name="enrollment_dock_submitting">Submitting…</string>
+    <string name="enrollment_dock_save">Save draft</string>
+    <plurals name="enrollment_blocker_conflicts">
+        <item quantity="one">%1$d conflict</item>
+        <item quantity="other">%1$d conflicts</item>
+    </plurals>
+    <string name="enrollment_blocker_under_format">%1$dh below the minimum</string>
+    <string name="enrollment_blocker_over_format">%1$dh above the maximum</string>
+    <string name="enrollment_blocker_empty">no courses</string>
+    <!-- endregion -->
+
+    <!-- region Matrícula · Enviado -->
+    <string name="enrollment_success_eyebrow_format">Enrollment · %1$s</string>
+    <string name="enrollment_success_title">Proposal submitted</string>
+    <string name="enrollment_success_body_intro">"Your enrollment for "</string>
+    <string name="enrollment_success_body_middle">" in "</string>
+    <string name="enrollment_success_body_count_format">%1$d courses</string>
+    <string name="enrollment_success_body_outro">" has been recorded. Seat confirmation arrives by message."</string>
+    <string name="enrollment_success_disciplines">courses</string>
+    <string name="enrollment_success_queue">in queue</string>
+    <string name="enrollment_success_allows">accept swaps</string>
+    <string name="enrollment_success_done">Done</string>
+    <!-- endregion -->
+
+</resources>
