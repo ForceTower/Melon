@@ -3,6 +3,7 @@ package dev.forcetower.unes.ui.feature.settings
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.forcetower.melon.core.common.Outcome
+import dev.forcetower.melon.feature.auth.domain.usecase.ListPasskeysUseCase
 import dev.forcetower.melon.feature.me.domain.usecase.ObserveCurrentCredentialsUseCase
 import dev.forcetower.melon.feature.me.domain.usecase.ObserveMeProfileUseCase
 import dev.forcetower.melon.feature.settings.domain.usecase.ObserveSettingsUseCase
@@ -40,6 +41,7 @@ internal class SettingsViewModel @Inject constructor(
     observeMeProfile: ObserveMeProfileUseCase,
     observeSettings: ObserveSettingsUseCase,
     private val updateSettings: UpdateSettingsUseCase,
+    private val listPasskeys: ListPasskeysUseCase,
     private val themePreferences: ThemePreferenceStore,
 ) : MviViewModel<SettingsUiState, SettingsIntent, SettingsEffect>(SettingsUiState()) {
 
@@ -70,6 +72,7 @@ internal class SettingsViewModel @Inject constructor(
                 if (snapshot != null) setState { applySnapshot(snapshot) }
             }
         }
+        refreshPasskeys()
         // Drives the lock-screen preview clock stamp.
         viewModelScope.launch {
             while (isActive) {
@@ -84,6 +87,16 @@ internal class SettingsViewModel @Inject constructor(
             is SettingsIntent.SetTheme -> setTheme(intent.value)
             is SettingsIntent.SetSpoiler -> setSpoiler(intent.value)
             is SettingsIntent.SetToggle -> setToggle(intent.toggle, intent.value)
+        }
+    }
+
+    // Refetched on entry and on every foreground return so the "Chaves de
+    // acesso" row's count stays honest after the manager screen adds or
+    // revokes a key. A failed fetch keeps the last known count.
+    fun refreshPasskeys() {
+        viewModelScope.launch {
+            val outcome = listPasskeys()
+            if (outcome is Outcome.Ok) setState { copy(passkeyCount = outcome.value.size) }
         }
     }
 

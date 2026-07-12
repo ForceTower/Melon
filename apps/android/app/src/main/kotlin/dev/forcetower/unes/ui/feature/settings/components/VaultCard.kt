@@ -26,9 +26,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.Fingerprint
+import androidx.compose.material.icons.filled.Key
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Icon
@@ -46,6 +48,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
@@ -76,6 +79,8 @@ internal fun VaultCard(
     password: String,
     revealed: Boolean,
     onToggleReveal: () -> Unit,
+    passkeyCount: Int?,
+    onOpenPasskeys: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val vault = MaterialTheme.melon.vault
@@ -132,7 +137,79 @@ internal fun VaultCard(
             )
             Spacer(Modifier.height(18.dp))
             FieldsBox(username = username, password = password, revealed = revealed)
+            Spacer(Modifier.height(14.dp))
+            PasskeysRow(count = passkeyCount, onClick = onOpenPasskeys)
         }
+    }
+}
+
+// Entry row to the passkeys manager, sitting under the credential fields on the
+// always-dark vault card. The "N ativa(s)" pill only shows once the count has
+// resolved to a non-zero value.
+@Composable
+private fun PasskeysRow(count: Int?, onClick: () -> Unit) {
+    val onHero = MaterialTheme.melon.fixed.onHero
+    val live = MaterialTheme.melon.fixed.live
+    val shape = RoundedCornerShape(16.dp)
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(shape)
+            .background(onHero.copy(alpha = 0.07f))
+            .border(1.dp, onHero.copy(alpha = 0.12f), shape)
+            .clickable(role = Role.Button, onClick = onClick)
+            .padding(horizontal = 14.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        Box(
+            modifier = Modifier
+                .size(38.dp)
+                .clip(RoundedCornerShape(11.dp))
+                .background(onHero.copy(alpha = 0.12f)),
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Key,
+                contentDescription = null,
+                tint = onHero,
+                modifier = Modifier.size(20.dp),
+            )
+        }
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = stringResource(R.string.settings_passkeys_row_title),
+                style = MaterialTheme.typography.titleSmall.copy(fontSize = 15.sp, fontWeight = FontWeight.Bold),
+                color = onHero,
+            )
+            Spacer(Modifier.height(2.dp))
+            Text(
+                text = stringResource(R.string.settings_passkeys_row_subtitle),
+                style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
+                color = onHero.copy(alpha = 0.7f),
+            )
+        }
+        if (count != null && count > 0) {
+            Box(
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .background(live.copy(alpha = 0.18f))
+                    .padding(horizontal = 10.dp, vertical = 5.dp),
+            ) {
+                Text(
+                    text = pluralStringResource(R.plurals.settings_passkeys_active_count, count, count),
+                    style = MaterialTheme.typography.labelMedium.copy(fontSize = 12.sp, fontWeight = FontWeight.Bold),
+                    color = live,
+                )
+            }
+        }
+        Icon(
+            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+            contentDescription = null,
+            tint = onHero.copy(alpha = 0.6f),
+            modifier = Modifier.size(20.dp),
+        )
     }
 }
 

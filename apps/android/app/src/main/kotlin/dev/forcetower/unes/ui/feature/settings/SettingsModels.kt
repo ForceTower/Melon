@@ -29,6 +29,9 @@ internal data class SettingsUiState(
     val username: String? = null,
     val password: String? = null,
     val nowEpochSeconds: Long = 0L,
+    // Count of registered passkeys, shown on the "Chaves de acesso" row. Null
+    // until the first fetch resolves (or if it fails) so the row can stay quiet.
+    val passkeyCount: Int? = null,
     val themeMode: ThemeMode = ThemeMode.System,
     val spoiler: SpoilerMode = SpoilerMode.Comment,
     val notifMsgBroadcast: Boolean = true,

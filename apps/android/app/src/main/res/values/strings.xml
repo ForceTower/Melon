@@ -813,6 +813,65 @@
     <string name="settings_footer_note">sinc. e cadência no servidor · o cliente só escuta</string>
     <!-- endregion -->
 
+    <!-- region Settings · Chaves de acesso -->
+    <!-- Row inside the credential vault card that opens the passkeys screen. -->
+    <string name="settings_passkeys_row_title">Chaves de acesso</string>
+    <string name="settings_passkeys_row_subtitle">Entre sem senha, com biometria</string>
+    <plurals name="settings_passkeys_active_count">
+        <item quantity="one">%1$d ativa</item>
+        <item quantity="other">%1$d ativas</item>
+    </plurals>
+
+    <!-- Passkeys screen (dc PasskeysScreen). -->
+    <string name="passkeys_back">Voltar</string>
+    <string name="passkeys_title">Chaves de acesso</string>
+    <string name="passkeys_subtitle">Entre no UNES sem digitar senha — a biometria deste aparelho confirma que é você.</string>
+    <string name="passkeys_empty_title">Nenhuma chave de acesso</string>
+    <string name="passkeys_empty_body">Crie uma chave para entrar no UNES com a biometria, sem digitar a senha.</string>
+    <string name="passkeys_add">Adicionar chave de acesso</string>
+    <string name="passkeys_footnote">Chaves de acesso são à prova de phishing e nunca saem dos seus aparelhos. As sincronizadas ficam protegidas na sua Conta Google.</string>
+    <string name="passkeys_load_error">Não foi possível carregar suas chaves.</string>
+    <string name="passkeys_retry">Tentar de novo</string>
+    <string name="passkeys_name_fallback">Chave de acesso</string>
+    <string name="passkeys_sync_synced">Senhas do Google</string>
+    <string name="passkeys_sync_local">Só neste aparelho</string>
+
+    <!-- Add sheet -->
+    <string name="passkeys_add_title">Criar chave de acesso</string>
+    <string name="passkeys_add_subtitle">Escolha onde salvar. Depois é só usar a chave para entrar sem senha.</string>
+    <string name="passkeys_target_device_title">Este dispositivo</string>
+    <string name="passkeys_target_device_sub">Biometria · Senhas do Google</string>
+    <string name="passkeys_target_key_title">Chave de segurança física</string>
+    <string name="passkeys_target_key_sub">USB ou NFC · só neste aparelho</string>
+    <string name="passkeys_add_continue">Continuar</string>
+    <string name="passkeys_add_cancel">Cancelar</string>
+    <string name="passkeys_auth_title">Confirme no seu aparelho</string>
+    <string name="passkeys_auth_subtitle">Siga as instruções do sistema</string>
+    <string name="passkeys_success_title">Chave de acesso criada</string>
+    <string name="passkeys_success_subtitle">Já pode entrar sem senha</string>
+
+    <!-- Detail sheet -->
+    <string name="passkeys_detail_created">Criada em</string>
+    <string name="passkeys_detail_sync">Sincronização</string>
+    <string name="passkeys_rename">Renomear</string>
+    <string name="passkeys_delete">Excluir</string>
+    <string name="passkeys_rename_save">Salvar</string>
+    <string name="passkeys_rename_hint">Nome da chave</string>
+
+    <!-- Delete dialog. The argument is the passkey's name. -->
+    <string name="passkeys_delete_title">Excluir “%1$s”?</string>
+    <string name="passkeys_delete_body_synced">Você não poderá mais usar esta chave para entrar. Ela será removida dos aparelhos conectados à sua Conta Google.</string>
+    <string name="passkeys_delete_body_local">Você não poderá mais usar esta chave para entrar. Confira se você tem outra forma de acesso.</string>
+    <string name="passkeys_delete_confirm">Excluir</string>
+    <string name="passkeys_delete_cancel">Cancelar</string>
+
+    <!-- Toasts -->
+    <string name="passkeys_toast_created">Chave de acesso criada</string>
+    <string name="passkeys_toast_renamed">Chave renomeada</string>
+    <string name="passkeys_toast_deleted">Chave de acesso excluída</string>
+    <string name="passkeys_toast_error">Algo deu errado. Tente de novo.</string>
+    <!-- endregion -->
+
     <!-- region Final Countdown · Chrome + discipline row -->
     <string name="final_countdown_back">Voltar</string>
     <string name="final_countdown_title">Final Countdown</string>

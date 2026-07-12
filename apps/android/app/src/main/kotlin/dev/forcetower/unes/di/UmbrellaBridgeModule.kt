@@ -12,7 +12,12 @@ import dev.forcetower.melon.core.common.ForegroundSignal
 import dev.forcetower.melon.core.session.domain.SessionStore
 import dev.forcetower.melon.feature.auth.domain.usecase.BeginPasskeyLoginUseCase
 import dev.forcetower.melon.feature.auth.domain.usecase.CompletePasskeyLoginUseCase
+import dev.forcetower.melon.feature.auth.domain.usecase.DeletePasskeyUseCase
+import dev.forcetower.melon.feature.auth.domain.usecase.GetPasskeyRegistrationOptionsUseCase
+import dev.forcetower.melon.feature.auth.domain.usecase.ListPasskeysUseCase
 import dev.forcetower.melon.feature.auth.domain.usecase.LoginUseCase
+import dev.forcetower.melon.feature.auth.domain.usecase.RegisterPasskeyUseCase
+import dev.forcetower.melon.feature.auth.domain.usecase.RenamePasskeyUseCase
 import dev.forcetower.melon.feature.calendar.domain.usecase.ObserveActiveSemesterCodeUseCase
 import dev.forcetower.melon.feature.calendar.domain.usecase.ObserveCalendarEventsUseCase
 import dev.forcetower.melon.feature.campusevent.domain.usecase.ClearCampusEventUseCase
@@ -113,6 +118,18 @@ object UmbrellaBridgeModule {
         graph.beginPasskeyLoginUseCase
     @Provides fun provideCompletePasskeyLoginUseCase(graph: UmbrellaGraph): CompletePasskeyLoginUseCase =
         graph.completePasskeyLoginUseCase
+
+    // Passkey management — Configurações → Chaves de acesso.
+    @Provides fun provideGetPasskeyRegistrationOptionsUseCase(graph: UmbrellaGraph): GetPasskeyRegistrationOptionsUseCase =
+        graph.getPasskeyRegistrationOptionsUseCase
+    @Provides fun provideRegisterPasskeyUseCase(graph: UmbrellaGraph): RegisterPasskeyUseCase =
+        graph.registerPasskeyUseCase
+    @Provides fun provideListPasskeysUseCase(graph: UmbrellaGraph): ListPasskeysUseCase =
+        graph.listPasskeysUseCase
+    @Provides fun provideRenamePasskeyUseCase(graph: UmbrellaGraph): RenamePasskeyUseCase =
+        graph.renamePasskeyUseCase
+    @Provides fun provideDeletePasskeyUseCase(graph: UmbrellaGraph): DeletePasskeyUseCase =
+        graph.deletePasskeyUseCase
 
     // Overview — nine flows that drive the "Hoje" tab.
     @Provides fun provideObserveOverviewHeaderUseCase(graph: UmbrellaGraph): ObserveOverviewHeaderUseCase =

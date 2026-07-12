@@ -767,6 +767,59 @@
     <string name="settings_footer_note">sync and cadence on the server · the client only listens</string>
     <!-- endregion -->
 
+    <!-- region Settings · Passkeys -->
+    <string name="settings_passkeys_row_title">Passkeys</string>
+    <string name="settings_passkeys_row_subtitle">Sign in without a password, with biometrics</string>
+    <plurals name="settings_passkeys_active_count">
+        <item quantity="one">%1$d active</item>
+        <item quantity="other">%1$d active</item>
+    </plurals>
+
+    <string name="passkeys_back">Back</string>
+    <string name="passkeys_title">Passkeys</string>
+    <string name="passkeys_subtitle">Sign in to UNES without typing a password — this device\'s biometrics confirm it\'s you.</string>
+    <string name="passkeys_empty_title">No passkeys yet</string>
+    <string name="passkeys_empty_body">Create a passkey to sign in to UNES with biometrics, without typing your password.</string>
+    <string name="passkeys_add">Add a passkey</string>
+    <string name="passkeys_footnote">Passkeys are phishing-resistant and never leave your devices. Synced ones are protected in your Google Account.</string>
+    <string name="passkeys_load_error">Couldn\'t load your passkeys.</string>
+    <string name="passkeys_retry">Try again</string>
+    <string name="passkeys_name_fallback">Passkey</string>
+    <string name="passkeys_sync_synced">Google Password Manager</string>
+    <string name="passkeys_sync_local">This device only</string>
+
+    <string name="passkeys_add_title">Create a passkey</string>
+    <string name="passkeys_add_subtitle">Choose where to save it. Then just use the passkey to sign in without a password.</string>
+    <string name="passkeys_target_device_title">This device</string>
+    <string name="passkeys_target_device_sub">Biometrics · Google Password Manager</string>
+    <string name="passkeys_target_key_title">Physical security key</string>
+    <string name="passkeys_target_key_sub">USB or NFC · this device only</string>
+    <string name="passkeys_add_continue">Continue</string>
+    <string name="passkeys_add_cancel">Cancel</string>
+    <string name="passkeys_auth_title">Confirm on your device</string>
+    <string name="passkeys_auth_subtitle">Follow your system\'s prompts</string>
+    <string name="passkeys_success_title">Passkey created</string>
+    <string name="passkeys_success_subtitle">You can now sign in without a password</string>
+
+    <string name="passkeys_detail_created">Created</string>
+    <string name="passkeys_detail_sync">Sync</string>
+    <string name="passkeys_rename">Rename</string>
+    <string name="passkeys_delete">Delete</string>
+    <string name="passkeys_rename_save">Save</string>
+    <string name="passkeys_rename_hint">Passkey name</string>
+
+    <string name="passkeys_delete_title">Delete “%1$s”?</string>
+    <string name="passkeys_delete_body_synced">You won\'t be able to use this passkey to sign in. It will be removed from the devices connected to your Google Account.</string>
+    <string name="passkeys_delete_body_local">You won\'t be able to use this passkey to sign in. Make sure you have another way to get in.</string>
+    <string name="passkeys_delete_confirm">Delete</string>
+    <string name="passkeys_delete_cancel">Cancel</string>
+
+    <string name="passkeys_toast_created">Passkey created</string>
+    <string name="passkeys_toast_renamed">Passkey renamed</string>
+    <string name="passkeys_toast_deleted">Passkey deleted</string>
+    <string name="passkeys_toast_error">Something went wrong. Try again.</string>
+    <!-- endregion -->
+
     <!-- region Final Countdown · Chrome + discipline row -->
     <string name="final_countdown_back">Back</string>
     <string name="final_countdown_title">Final Countdown</string>

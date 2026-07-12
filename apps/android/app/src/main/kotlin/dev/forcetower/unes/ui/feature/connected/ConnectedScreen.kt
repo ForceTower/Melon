@@ -69,6 +69,7 @@ import dev.forcetower.unes.ui.feature.paradoxo.ParadoxoExploreScreen
 import dev.forcetower.unes.ui.feature.paradoxo.ParadoxoScreen
 import dev.forcetower.unes.ui.feature.paradoxo.ParadoxoTeacherScreen
 import dev.forcetower.unes.ui.feature.settings.SettingsScreen
+import dev.forcetower.unes.ui.feature.settings.passkeys.PasskeysScreen
 
 // The authenticated shell — hosts the Material 3 bottom navigation bar and
 // routes to each feature's first screen.
@@ -231,6 +232,13 @@ fun ConnectedScreen(
                 }
                 entry<ConnectedRoute.Settings> {
                     SettingsScreen(
+                        onBack = { navigator.goBack() },
+                        onOpenPasskeys = { navigator.navigate(ConnectedRoute.Passkeys) },
+                        bottomInset = bottomInset,
+                    )
+                }
+                entry<ConnectedRoute.Passkeys> {
+                    PasskeysScreen(
                         onBack = { navigator.goBack() },
                         bottomInset = bottomInset,
                     )

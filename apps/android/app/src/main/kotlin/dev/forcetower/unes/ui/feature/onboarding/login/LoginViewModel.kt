@@ -140,6 +140,7 @@ private fun PasskeyClient.PasskeyException.toMessageRes(): Int = when (this) {
     is PasskeyClient.PasskeyException.NotSupported -> R.string.onboarding_login_passkey_not_supported
     is PasskeyClient.PasskeyException.InvalidChallenge -> R.string.onboarding_login_passkey_invalid_challenge
     is PasskeyClient.PasskeyException.NoCredential -> R.string.onboarding_login_passkey_no_credential
+    is PasskeyClient.PasskeyException.Cancelled -> R.string.onboarding_login_passkey_no_credential
     is PasskeyClient.PasskeyException.Unknown -> R.string.onboarding_login_error_unexpected
 }
 

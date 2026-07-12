@@ -24,6 +24,10 @@ internal sealed interface ConnectedRoute : NavKey {
     // editorial settings hub (credential vault + spoiler picker + per-row
     // notification toggles). Mirrors iOS `SettingsView`.
     @Serializable data object Settings : ConnectedRoute
+    // Pushed onto the Me stack from the Configurações credential vault — the
+    // passkeys manager (list + create through CredentialManager + rename/
+    // revoke). Mirrors iOS `PasskeysView`.
+    @Serializable data object Passkeys : ConnectedRoute
     // Pushed onto the active tab when the "Calendário" shortcut is tapped on
     // the Me hub. No payload — the screen drives off the KMP events flow.
     @Serializable data object Calendar : ConnectedRoute

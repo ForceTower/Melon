@@ -46,10 +46,14 @@ captures/
 bin/
 gen/
 
-# Keystores / signing — never commit real ones
+# Keystores / signing — never commit real (release) ones.
 *.jks
 *.keystore
 !**/debug.keystore.template
+# The shared debug keystore IS committed on purpose: it gives every machine/CI
+# the same debug signing cert, so the SHA-256 in the server's assetlinks.json
+# stays valid and Android passkey enrollment works on debug builds.
+!apps/android/app/debug.keystore
 
 # ---------- iOS / Xcode / Swift ----------
 xcuserdata/

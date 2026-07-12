@@ -49,6 +49,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.foundation.PinnedHeaderHairline
@@ -75,6 +77,7 @@ import java.util.Date
 @Composable
 internal fun SettingsScreen(
     onBack: () -> Unit,
+    onOpenPasskeys: () -> Unit,
     modifier: Modifier = Modifier,
     bottomInset: Dp = 0.dp,
 ) {
@@ -82,6 +85,10 @@ internal fun SettingsScreen(
     val state by vm.state.collectAsStateWithLifecycle()
     val appInfo = rememberAppInfo()
     val context = LocalContext.current
+
+    // The passkey count lives behind a live GET, so refresh it whenever the
+    // screen (re)appears — e.g. after the manager screen adds or revokes a key.
+    LifecycleEventEffect(Lifecycle.Event.ON_START) { vm.refreshPasskeys() }
 
     // Respects the system 12/24-hour setting, like a real lock screen would.
     val clockLabel = remember(state.nowEpochSeconds) {
@@ -130,6 +137,8 @@ internal fun SettingsScreen(
                     password = state.password.orEmpty(),
                     revealed = revealed,
                     onToggleReveal = { revealed = !revealed },
+                    passkeyCount = state.passkeyCount,
+                    onOpenPasskeys = onOpenPasskeys,
                     modifier = Modifier.fadeUpOnAppear(delayMs = 120),
                 )
 
