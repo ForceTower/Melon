@@ -5,6 +5,7 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.foundation.isSystemInDarkTheme
 
 private val MelonLightColors = lightColorScheme(
@@ -73,6 +74,12 @@ private val MelonDarkColors = darkColorScheme(
     outlineVariant = Ink4Dark,
 )
 
+// Resolved darkness of the active MelonTheme. The Configurações screen lets
+// the user pin Claro/Escuro regardless of the OS setting, so anything that
+// needs "is the app dark right now" (system-bar chrome, lock-screen mocks)
+// must read this instead of `isSystemInDarkTheme()`.
+val LocalMelonDarkTheme = staticCompositionLocalOf { false }
+
 @Composable
 fun MelonTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -81,7 +88,10 @@ fun MelonTheme(
     val colorScheme = if (darkTheme) MelonDarkColors else MelonLightColors
     val melonColors = if (darkTheme) melonColorsDark() else melonColorsLight()
 
-    CompositionLocalProvider(LocalMelonColors provides melonColors) {
+    CompositionLocalProvider(
+        LocalMelonColors provides melonColors,
+        LocalMelonDarkTheme provides darkTheme,
+    ) {
         MaterialTheme(
             colorScheme = colorScheme,
             typography = MelonTypography,

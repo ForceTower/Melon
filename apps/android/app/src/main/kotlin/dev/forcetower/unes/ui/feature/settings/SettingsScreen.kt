@@ -2,7 +2,6 @@ package dev.forcetower.unes.ui.feature.settings
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -10,14 +9,32 @@ import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.MenuBook
+import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.Campaign
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Event
+import androidx.compose.material.icons.filled.Groups
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Mail
+import androidx.compose.material.icons.filled.Palette
+import androidx.compose.material.icons.filled.Sell
+import androidx.compose.material.icons.filled.Shield
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -25,34 +42,34 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.forcetower.unes.R
-import dev.forcetower.unes.designsystem.foundation.Mesh
-import dev.forcetower.unes.designsystem.foundation.MeshVariant
 import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
-import dev.forcetower.unes.ui.feature.settings.components.CredentialCard
+import dev.forcetower.unes.designsystem.theme.melon
+import dev.forcetower.unes.theme.ThemeMode
+import dev.forcetower.unes.ui.feature.me.components.rememberAppInfo
 import dev.forcetower.unes.ui.feature.settings.components.NotificationGroupCard
 import dev.forcetower.unes.ui.feature.settings.components.NotificationPreview
 import dev.forcetower.unes.ui.feature.settings.components.NotificationToggleRow
 import dev.forcetower.unes.ui.feature.settings.components.SettingsFooter
-import dev.forcetower.unes.ui.feature.settings.components.SettingsGlyph
-import dev.forcetower.unes.ui.feature.settings.components.SettingsHeader
-import dev.forcetower.unes.ui.feature.settings.components.SettingsSectionHeader
-import dev.forcetower.unes.ui.feature.settings.components.SpoilerPickerRow
-import dev.forcetower.unes.ui.feature.me.components.rememberAppInfo
+import dev.forcetower.unes.ui.feature.settings.components.SettingsOptionCard
+import dev.forcetower.unes.ui.feature.settings.components.SettingsSectionLabel
+import dev.forcetower.unes.ui.feature.settings.components.SettingsSegmentedRow
+import dev.forcetower.unes.ui.feature.settings.components.VaultCard
+import java.util.Date
 
-// "Configurações" — editorial settings hub. Three stacked sections: account
-// (credential vault), display (grade spoiler + lock-screen preview), and
-// notifications (three grouped cards with per-row toggles). Sync cadence,
-// wifi gates, and frequency are server-side decisions in this rewrite, so the
-// screen only exposes what the client still controls. Mirrors `SettingsView`
-// on iOS and `screens-settings.jsx` in the prototype.
+// "Configurações" — dc `UNES Configurações - Android`. M3 large-app-bar
+// header, the always-dark credentials vault, Tema + Privacidade segmented
+// cards (the notification preview reacts to the privacy choice), and the
+// three notification groups with native switches. Sync cadence, wifi gates,
+// and frequency stay server-side decisions, so the screen only exposes what
+// the client still controls.
 @Composable
 internal fun SettingsScreen(
     onBack: () -> Unit,
@@ -62,260 +79,275 @@ internal fun SettingsScreen(
     val vm: SettingsViewModel = hiltViewModel()
     val state by vm.state.collectAsStateWithLifecycle()
     val appInfo = rememberAppInfo()
-    val surface = MaterialTheme.colorScheme.surface
+    val context = LocalContext.current
 
-    val syncStrings = rememberSyncStrings()
-    val lastSyncLabel = remember(state.lastSyncIso, state.nowEpochSeconds, syncStrings) {
-        formatLastSync(state.lastSyncIso, state.nowEpochSeconds, syncStrings)
+    // Respects the system 12/24-hour setting, like a real lock screen would.
+    val clockLabel = remember(state.nowEpochSeconds) {
+        if (state.nowEpochSeconds == 0L) ""
+        else android.text.format.DateFormat.getTimeFormat(context)
+            .format(Date(state.nowEpochSeconds * 1000L))
     }
 
     // Reveal stays UI-only — every revisit re-mints the masked password so a
     // backgrounded app never surfaces the credentials without an explicit tap.
     var revealed by rememberSaveable { mutableStateOf(false) }
 
-    Box(
+    Column(
         modifier = modifier
             .fillMaxSize()
-            .background(surface),
+            .background(MaterialTheme.colorScheme.background)
+            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
+            .verticalScroll(rememberScrollState())
+            .padding(bottom = bottomInset + 16.dp),
     ) {
-        // Warm mesh wash pinned behind the header, fading into the surface.
-        // Same treatment as `MeScreen`/`FinalCountdownView` so the editorial
-        // type reads cleanly below.
-        Box(modifier = Modifier.fillMaxWidth().height(300.dp)) {
-            Mesh(variant = MeshVariant.Warm, intensity = 0.5f, modifier = Modifier.fillMaxSize())
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(
-                        Brush.verticalGradient(
-                            0f to Color.Transparent,
-                            1f to surface,
-                        ),
-                    ),
-            )
-        }
+        Spacer(modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars))
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
-                .verticalScroll(rememberScrollState())
-                .padding(bottom = bottomInset),
-        ) {
-            Spacer(modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars))
+        SettingsTopBar(onBack = onBack, modifier = Modifier.fadeUpOnAppear(delayMs = 20))
 
-            SettingsHeader(
-                onBack = onBack,
-                lastSyncLabel = lastSyncLabel,
-                appVersion = appInfo.version,
-                modifier = Modifier.fadeUpOnAppear(delayMs = 20),
+        Column(modifier = Modifier.padding(horizontal = 20.dp)) {
+            VaultCard(
+                displayName = state.displayName,
+                accountLabel = stringResource(
+                    R.string.settings_vault_account_format,
+                    state.campusLabel ?: stringResource(R.string.settings_vault_account_fallback),
+                ),
+                avatarInitial = state.avatarInitial,
+                username = state.username.orEmpty(),
+                password = state.password.orEmpty(),
+                revealed = revealed,
+                onToggleReveal = { revealed = !revealed },
+                modifier = Modifier.fadeUpOnAppear(delayMs = 120),
             )
 
-            Column(
-                modifier = Modifier
-                    .padding(horizontal = 16.dp)
-                    .padding(bottom = 32.dp),
-                verticalArrangement = Arrangement.spacedBy(22.dp),
-            ) {
-                // capítulo 1 · Conta
-                Column(modifier = Modifier.fadeUpOnAppear(delayMs = 120)) {
-                    SettingsSectionHeader(
-                        eyebrow = stringResource(R.string.settings_section_account_eyebrow),
-                        title = stringResource(R.string.settings_section_account_title),
-                        meta = stringResource(R.string.settings_section_account_meta),
-                    )
-                    CredentialCard(
-                        username = state.username.orEmpty(),
-                        password = state.password.orEmpty(),
-                        revealed = revealed,
-                        onToggleReveal = { revealed = !revealed },
+            // ── Aparência ──
+            Column(modifier = Modifier.fadeUpOnAppear(delayMs = 200)) {
+                Spacer(Modifier.height(28.dp))
+                SettingsSectionLabel(label = stringResource(R.string.settings_section_appearance))
+                Spacer(Modifier.height(12.dp))
+                SettingsOptionCard(
+                    icon = Icons.Filled.Palette,
+                    iconTint = MaterialTheme.melon.status.warn,
+                    title = stringResource(R.string.settings_theme_title),
+                    subtitle = stringResource(R.string.settings_theme_subtitle),
+                ) {
+                    SettingsSegmentedRow(
+                        options = ThemeModeOptions,
+                        selected = state.themeMode,
+                        optionLabel = { stringResource(it.labelRes()) },
+                        onSelect = { vm.onIntent(SettingsIntent.SetTheme(it)) },
                     )
                 }
-
-                // capítulo 2 · Exibição
-                Column(modifier = Modifier.fadeUpOnAppear(delayMs = 220)) {
-                    SettingsSectionHeader(
-                        eyebrow = stringResource(R.string.settings_section_display_eyebrow),
-                        title = stringResource(R.string.settings_section_display_title),
-                        meta = stringResource(R.string.settings_section_display_meta),
-                    )
-                    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                        NotificationPreview(spoiler = state.spoiler)
-                        SpoilerPickerRow(
-                            value = state.spoiler,
-                            onChange = { vm.onIntent(SettingsIntent.SetSpoiler(it)) },
-                        )
-                    }
-                }
-
-                // capítulo 3 · Notificações
-                Column(modifier = Modifier.fadeUpOnAppear(delayMs = 320)) {
-                    SettingsSectionHeader(
-                        eyebrow = stringResource(R.string.settings_section_notifications_eyebrow),
-                        title = stringResource(R.string.settings_section_notifications_title),
-                        meta = stringResource(
-                            R.string.settings_section_notifications_meta_format,
-                            state.totalActive,
-                        ),
-                    )
-                    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                        MessagesGroup(state = state, onToggle = vm::onIntent)
-                        GradesGroup(state = state, onToggle = vm::onIntent)
-                        ClassesGroup(state = state, onToggle = vm::onIntent)
-                    }
-                }
-
-                SettingsFooter(
-                    appVersion = appInfo.version,
-                    appBuild = appInfo.build,
-                    modifier = Modifier.fadeUpOnAppear(delayMs = 440),
-                )
             }
+
+            // ── Notas · privacidade ──
+            Column(modifier = Modifier.fadeUpOnAppear(delayMs = 260)) {
+                Spacer(Modifier.height(28.dp))
+                SettingsSectionLabel(
+                    label = stringResource(R.string.settings_section_grades),
+                    meta = stringResource(R.string.settings_section_grades_meta),
+                )
+                Spacer(Modifier.height(12.dp))
+                NotificationPreview(spoiler = state.spoiler, clockLabel = clockLabel)
+                Spacer(Modifier.height(12.dp))
+                SettingsOptionCard(
+                    icon = Icons.Filled.Shield,
+                    iconTint = MaterialTheme.melon.palette.coral,
+                    title = stringResource(R.string.settings_privacy_title),
+                    subtitle = stringResource(R.string.settings_privacy_subtitle),
+                ) {
+                    SettingsSegmentedRow(
+                        options = SpoilerMode.entries,
+                        selected = state.spoiler,
+                        optionLabel = { stringResource(it.labelRes()) },
+                        onSelect = { vm.onIntent(SettingsIntent.SetSpoiler(it)) },
+                    )
+                }
+            }
+
+            // ── Notificações ──
+            Column(modifier = Modifier.fadeUpOnAppear(delayMs = 320)) {
+                Spacer(Modifier.height(28.dp))
+                SettingsSectionLabel(
+                    label = stringResource(R.string.settings_section_notifications),
+                    meta = stringResource(R.string.settings_notif_total_format, state.totalActive),
+                )
+                Spacer(Modifier.height(12.dp))
+                Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
+                    MessagesGroup(state = state, onToggle = vm::onIntent)
+                    GradesGroup(state = state, onToggle = vm::onIntent)
+                    ClassesGroup(state = state, onToggle = vm::onIntent)
+                }
+            }
+
+            SettingsFooter(
+                appVersion = appInfo.version,
+                appBuild = appInfo.build,
+                modifier = Modifier.fadeUpOnAppear(delayMs = 400),
+            )
         }
+    }
+}
+
+// M3 large-app-bar block that scrolls with the content: back affordance,
+// display title, and the one-line mission statement.
+@Composable
+private fun SettingsTopBar(onBack: () -> Unit, modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp)
+            .padding(top = 4.dp, bottom = 20.dp),
+    ) {
+        IconButton(
+            onClick = onBack,
+            modifier = Modifier
+                .offset(x = (-10).dp)
+                .size(44.dp),
+        ) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = stringResource(R.string.settings_back),
+                tint = MaterialTheme.colorScheme.onBackground,
+            )
+        }
+        Spacer(Modifier.height(6.dp))
+        Text(
+            text = stringResource(R.string.settings_title),
+            style = MaterialTheme.typography.displaySmall.copy(
+                fontSize = 32.sp,
+                lineHeight = 34.sp,
+                letterSpacing = (-0.64).sp,
+            ),
+            color = MaterialTheme.colorScheme.onBackground,
+        )
+        Spacer(Modifier.height(10.dp))
+        Text(
+            text = stringResource(R.string.settings_subtitle),
+            style = MaterialTheme.typography.bodyMedium.copy(
+                fontSize = 14.sp,
+                lineHeight = 20.sp,
+            ),
+            color = MaterialTheme.colorScheme.outline,
+        )
     }
 }
 
 @Composable
 private fun MessagesGroup(state: SettingsUiState, onToggle: (SettingsIntent) -> Unit) {
     NotificationGroupCard(
-        kicker = stringResource(R.string.settings_notif_group_messages_kicker),
         title = stringResource(R.string.settings_notif_group_messages_title),
         activeCount = state.messageActiveCount,
-        rows = {
-            NotificationToggleRow(
-                glyph = SettingsGlyph.Megaphone,
-                tone = SettingsTone.Amber,
-                label = stringResource(R.string.settings_notif_msg_broadcast_label),
-                hint = stringResource(R.string.settings_notif_msg_broadcast_hint),
-                on = state.notifMsgBroadcast,
-                onToggle = { onToggle(SettingsIntent.SetToggle(NotifToggle.MsgBroadcast, it)) },
-            )
-            NotificationToggleRow(
-                glyph = SettingsGlyph.Users,
-                tone = SettingsTone.Teal,
-                label = stringResource(R.string.settings_notif_msg_class_label),
-                hint = stringResource(R.string.settings_notif_msg_class_hint),
-                on = state.notifMsgClass,
-                onToggle = { onToggle(SettingsIntent.SetToggle(NotifToggle.MsgClass, it)) },
-            )
-            NotificationToggleRow(
-                glyph = SettingsGlyph.Envelope,
-                tone = SettingsTone.Plum,
-                label = stringResource(R.string.settings_notif_msg_direct_label),
-                hint = stringResource(R.string.settings_notif_msg_direct_hint),
-                on = state.notifMsgDirect,
-                onToggle = { onToggle(SettingsIntent.SetToggle(NotifToggle.MsgDirect, it)) },
-                showSeparator = false,
-            )
-        },
-    )
+        totalCount = 3,
+    ) {
+        NotificationToggleRow(
+            icon = Icons.Filled.Campaign,
+            iconTint = MaterialTheme.melon.palette.coral,
+            label = stringResource(R.string.settings_notif_msg_broadcast_label),
+            hint = stringResource(R.string.settings_notif_msg_broadcast_hint),
+            on = state.notifMsgBroadcast,
+            onToggle = { onToggle(SettingsIntent.SetToggle(NotifToggle.MsgBroadcast, it)) },
+            showDivider = false,
+        )
+        NotificationToggleRow(
+            icon = Icons.Filled.Groups,
+            iconTint = MaterialTheme.melon.palette.jade,
+            label = stringResource(R.string.settings_notif_msg_class_label),
+            hint = stringResource(R.string.settings_notif_msg_class_hint),
+            on = state.notifMsgClass,
+            onToggle = { onToggle(SettingsIntent.SetToggle(NotifToggle.MsgClass, it)) },
+        )
+        NotificationToggleRow(
+            icon = Icons.Filled.Mail,
+            iconTint = MaterialTheme.melon.palette.violet,
+            label = stringResource(R.string.settings_notif_msg_direct_label),
+            hint = stringResource(R.string.settings_notif_msg_direct_hint),
+            on = state.notifMsgDirect,
+            onToggle = { onToggle(SettingsIntent.SetToggle(NotifToggle.MsgDirect, it)) },
+        )
+    }
 }
 
 @Composable
 private fun GradesGroup(state: SettingsUiState, onToggle: (SettingsIntent) -> Unit) {
     NotificationGroupCard(
-        kicker = stringResource(R.string.settings_notif_group_grades_kicker),
         title = stringResource(R.string.settings_notif_group_grades_title),
         activeCount = state.gradeActiveCount,
-        rows = {
-            NotificationToggleRow(
-                glyph = SettingsGlyph.Sparkle,
-                tone = SettingsTone.Coral,
-                label = stringResource(R.string.settings_notif_grade_posted_label),
-                hint = stringResource(R.string.settings_notif_grade_posted_hint),
-                on = state.notifGradePosted,
-                onToggle = { onToggle(SettingsIntent.SetToggle(NotifToggle.GradePosted, it)) },
-            )
-            NotificationToggleRow(
-                glyph = SettingsGlyph.Pencil,
-                tone = SettingsTone.Magenta,
-                label = stringResource(R.string.settings_notif_grade_changed_label),
-                hint = stringResource(R.string.settings_notif_grade_changed_hint),
-                on = state.notifGradeChanged,
-                onToggle = { onToggle(SettingsIntent.SetToggle(NotifToggle.GradeChanged, it)) },
-            )
-            NotificationToggleRow(
-                glyph = SettingsGlyph.Calendar,
-                tone = SettingsTone.Plum,
-                label = stringResource(R.string.settings_notif_grade_date_changed_label),
-                hint = stringResource(R.string.settings_notif_grade_date_changed_hint),
-                on = state.notifGradeDateChanged,
-                onToggle = { onToggle(SettingsIntent.SetToggle(NotifToggle.GradeDateChanged, it)) },
-                showSeparator = false,
-            )
-        },
-    )
+        totalCount = 3,
+    ) {
+        NotificationToggleRow(
+            icon = Icons.Filled.AutoAwesome,
+            iconTint = MaterialTheme.melon.palette.coral,
+            label = stringResource(R.string.settings_notif_grade_posted_label),
+            hint = stringResource(R.string.settings_notif_grade_posted_hint),
+            on = state.notifGradePosted,
+            onToggle = { onToggle(SettingsIntent.SetToggle(NotifToggle.GradePosted, it)) },
+            showDivider = false,
+        )
+        NotificationToggleRow(
+            icon = Icons.Filled.Edit,
+            iconTint = MaterialTheme.melon.palette.magenta,
+            label = stringResource(R.string.settings_notif_grade_changed_label),
+            hint = stringResource(R.string.settings_notif_grade_changed_hint),
+            on = state.notifGradeChanged,
+            onToggle = { onToggle(SettingsIntent.SetToggle(NotifToggle.GradeChanged, it)) },
+        )
+        NotificationToggleRow(
+            icon = Icons.Filled.Event,
+            iconTint = MaterialTheme.melon.palette.violet,
+            label = stringResource(R.string.settings_notif_grade_date_changed_label),
+            hint = stringResource(R.string.settings_notif_grade_date_changed_hint),
+            on = state.notifGradeDateChanged,
+            onToggle = { onToggle(SettingsIntent.SetToggle(NotifToggle.GradeDateChanged, it)) },
+        )
+    }
 }
 
 @Composable
 private fun ClassesGroup(state: SettingsUiState, onToggle: (SettingsIntent) -> Unit) {
     NotificationGroupCard(
-        kicker = stringResource(R.string.settings_notif_group_classes_kicker),
         title = stringResource(R.string.settings_notif_group_classes_title),
         activeCount = state.classActiveCount,
-        rows = {
-            NotificationToggleRow(
-                glyph = SettingsGlyph.Pin,
-                tone = SettingsTone.Teal,
-                label = stringResource(R.string.settings_notif_class_location_label),
-                hint = stringResource(R.string.settings_notif_class_location_hint),
-                on = state.notifClassLocation,
-                onToggle = { onToggle(SettingsIntent.SetToggle(NotifToggle.ClassLocation, it)) },
-            )
-            NotificationToggleRow(
-                glyph = SettingsGlyph.Book,
-                tone = SettingsTone.Amber,
-                label = stringResource(R.string.settings_notif_class_material_label),
-                hint = stringResource(R.string.settings_notif_class_material_hint),
-                on = state.notifClassMaterial,
-                onToggle = { onToggle(SettingsIntent.SetToggle(NotifToggle.ClassMaterial, it)) },
-            )
-            NotificationToggleRow(
-                glyph = SettingsGlyph.Tag,
-                tone = SettingsTone.Coral,
-                label = stringResource(R.string.settings_notif_class_subject_label),
-                hint = stringResource(R.string.settings_notif_class_subject_hint),
-                on = state.notifClassSubject,
-                onToggle = { onToggle(SettingsIntent.SetToggle(NotifToggle.ClassSubject, it)) },
-                showSeparator = false,
-            )
-        },
-    )
-}
-
-// String bag for the relative sync formatter — pulled once via
-// `stringResource` so the format function below stays non-composable.
-private data class SyncStrings(
-    val unknown: String,
-    val now: String,
-    val minutesFormat: String,
-    val hoursFormat: String,
-    val daysFormat: String,
-)
-
-@Composable
-private fun rememberSyncStrings(): SyncStrings {
-    val unknown = stringResource(R.string.settings_last_sync_unknown)
-    val now = stringResource(R.string.settings_last_sync_now)
-    val minutes = stringResource(R.string.settings_last_sync_minutes_format)
-    val hours = stringResource(R.string.settings_last_sync_hours_format)
-    val days = stringResource(R.string.settings_last_sync_days_format)
-    return remember(unknown, now, minutes, hours, days) {
-        SyncStrings(unknown, now, minutes, hours, days)
+        totalCount = 3,
+    ) {
+        NotificationToggleRow(
+            icon = Icons.Filled.LocationOn,
+            iconTint = MaterialTheme.melon.palette.jade,
+            label = stringResource(R.string.settings_notif_class_location_label),
+            hint = stringResource(R.string.settings_notif_class_location_hint),
+            on = state.notifClassLocation,
+            onToggle = { onToggle(SettingsIntent.SetToggle(NotifToggle.ClassLocation, it)) },
+            showDivider = false,
+        )
+        NotificationToggleRow(
+            icon = Icons.AutoMirrored.Filled.MenuBook,
+            iconTint = MaterialTheme.melon.status.warn,
+            label = stringResource(R.string.settings_notif_class_material_label),
+            hint = stringResource(R.string.settings_notif_class_material_hint),
+            on = state.notifClassMaterial,
+            onToggle = { onToggle(SettingsIntent.SetToggle(NotifToggle.ClassMaterial, it)) },
+        )
+        NotificationToggleRow(
+            icon = Icons.Filled.Sell,
+            iconTint = MaterialTheme.melon.palette.coral,
+            label = stringResource(R.string.settings_notif_class_subject_label),
+            hint = stringResource(R.string.settings_notif_class_subject_hint),
+            on = state.notifClassSubject,
+            onToggle = { onToggle(SettingsIntent.SetToggle(NotifToggle.ClassSubject, it)) },
+        )
     }
 }
 
-// "há N min" / "há N h" / "há N d" — same buckets as iOS
-// `SettingsViewModel.formatRelative`.
-private fun formatLastSync(iso: String?, nowEpochSeconds: Long, strings: SyncStrings): String {
-    if (iso.isNullOrBlank()) return strings.unknown
-    val parsed = runCatching { java.time.Instant.parse(iso).epochSecond }.getOrNull()
-        ?: return strings.unknown
-    val seconds = (nowEpochSeconds - parsed).coerceAtLeast(0L)
-    val minutes = (seconds / 60L).toInt()
-    if (minutes < 1) return strings.now
-    if (minutes < 60) return strings.minutesFormat.format(minutes)
-    val hours = minutes / 60
-    if (hours < 24) return strings.hoursFormat.format(hours)
-    return strings.daysFormat.format(hours / 24)
+// Claro / Sistema / Escuro, in dc order.
+private val ThemeModeOptions = listOf(ThemeMode.Light, ThemeMode.System, ThemeMode.Dark)
+
+private fun ThemeMode.labelRes(): Int = when (this) {
+    ThemeMode.Light -> R.string.settings_theme_light
+    ThemeMode.System -> R.string.settings_theme_system
+    ThemeMode.Dark -> R.string.settings_theme_dark
+}
+
+private fun SpoilerMode.labelRes(): Int = when (this) {
+    SpoilerMode.Value -> R.string.settings_privacy_value
+    SpoilerMode.Comment -> R.string.settings_privacy_summary
+    SpoilerMode.Posted -> R.string.settings_privacy_discreet
 }

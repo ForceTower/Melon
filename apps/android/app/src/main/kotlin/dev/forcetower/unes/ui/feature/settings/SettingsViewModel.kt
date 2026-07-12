@@ -4,26 +4,30 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.forcetower.melon.core.common.Outcome
 import dev.forcetower.melon.feature.me.domain.usecase.ObserveCurrentCredentialsUseCase
-import dev.forcetower.melon.feature.overview.domain.usecase.ObserveLastSyncUseCase
+import dev.forcetower.melon.feature.me.domain.usecase.ObserveMeProfileUseCase
 import dev.forcetower.melon.feature.settings.domain.usecase.ObserveSettingsUseCase
 import dev.forcetower.melon.feature.settings.domain.usecase.UpdateSettingsUseCase
 import dev.forcetower.unes.mvi.MviViewModel
 import dev.forcetower.unes.mvi.UiEffect
 import dev.forcetower.unes.mvi.UiIntent
+import dev.forcetower.unes.theme.ThemeMode
+import dev.forcetower.unes.theme.ThemePreferenceStore
 import javax.inject.Inject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlin.time.Clock
 
-// Drives `SettingsScreen`. Mirrors iOS `SettingsViewModel`: subscribe to the
-// credentials, last-sync, and settings flows; tick a 30s clock so the relative
-// "há N min" stamp refreshes without forcing KMP flows to re-emit. Each
-// mutation writes to local state optimistically, then forwards the patch to
+// Drives `SettingsScreen` (dc `UNES Configurações - Android`). Subscribes to
+// the profile identity (vault name/avatar), the credentials flow, the theme
+// preference, and the user-settings flow; ticks a minute clock so the
+// lock-screen preview stamp stays honest. Each server-backed mutation writes
+// to local state optimistically, then forwards the patch to
 // `UpdateSettingsUseCase`; the resulting flow emission overwrites the local
-// value with the canonical server value (no-op for booleans, defensive for
-// the spoiler integer).
+// value with the canonical server value. The theme mode is device-local and
+// goes to DataStore instead.
 internal sealed interface SettingsIntent : UiIntent {
+    data class SetTheme(val value: ThemeMode) : SettingsIntent
     data class SetSpoiler(val value: SpoilerMode) : SettingsIntent
     data class SetToggle(val toggle: NotifToggle, val value: Boolean) : SettingsIntent
 }
@@ -33,9 +37,10 @@ internal sealed interface SettingsEffect : UiEffect
 @HiltViewModel
 internal class SettingsViewModel @Inject constructor(
     observeCredentials: ObserveCurrentCredentialsUseCase,
-    observeLastSync: ObserveLastSyncUseCase,
+    observeMeProfile: ObserveMeProfileUseCase,
     observeSettings: ObserveSettingsUseCase,
     private val updateSettings: UpdateSettingsUseCase,
+    private val themePreferences: ThemePreferenceStore,
 ) : MviViewModel<SettingsUiState, SettingsIntent, SettingsEffect>(SettingsUiState()) {
 
     init {
@@ -45,15 +50,27 @@ internal class SettingsViewModel @Inject constructor(
             }
         }
         viewModelScope.launch {
-            observeLastSync().collect { iso -> setState { copy(lastSyncIso = iso) } }
+            observeMeProfile().collect { profile ->
+                val name = profile.identity.userName
+                val first = profile.identity.firstName.ifBlank { name }
+                setState {
+                    copy(
+                        displayName = name,
+                        avatarInitial = first.firstOrNull()?.uppercaseChar()?.toString() ?: "?",
+                        campusLabel = profile.campus,
+                    )
+                }
+            }
+        }
+        viewModelScope.launch {
+            themePreferences.mode.collect { mode -> setState { copy(themeMode = mode) } }
         }
         viewModelScope.launch {
             observeSettings().collect { snapshot ->
                 if (snapshot != null) setState { applySnapshot(snapshot) }
             }
         }
-        // Drives the relative "há N min" stamp. Same 30s cadence as
-        // `OverviewViewModel` and iOS `runClockTicker`.
+        // Drives the lock-screen preview clock stamp.
         viewModelScope.launch {
             while (isActive) {
                 setState { copy(nowEpochSeconds = Clock.System.now().epochSeconds) }
@@ -64,9 +81,15 @@ internal class SettingsViewModel @Inject constructor(
 
     override fun onIntent(intent: SettingsIntent) {
         when (intent) {
+            is SettingsIntent.SetTheme -> setTheme(intent.value)
             is SettingsIntent.SetSpoiler -> setSpoiler(intent.value)
             is SettingsIntent.SetToggle -> setToggle(intent.toggle, intent.value)
         }
+    }
+
+    private fun setTheme(value: ThemeMode) {
+        setState { copy(themeMode = value) }
+        viewModelScope.launch { themePreferences.set(value) }
     }
 
     private fun setSpoiler(value: SpoilerMode) {

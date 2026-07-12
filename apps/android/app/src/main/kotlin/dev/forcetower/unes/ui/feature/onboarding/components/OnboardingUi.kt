@@ -11,7 +11,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -42,6 +41,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
+import dev.forcetower.unes.designsystem.theme.LocalMelonDarkTheme
 import dev.forcetower.unes.designsystem.theme.MelonMotion
 
 // Shared visual vocabulary for the redesigned onboarding flow
@@ -58,7 +58,9 @@ import dev.forcetower.unes.designsystem.theme.MelonMotion
 @Composable
 internal fun SystemBarIconsEffect(darkChrome: Boolean) {
     val view = LocalView.current
-    val darkTheme = isSystemInDarkTheme()
+    // Resolved theme darkness — respects the Configurações "Tema" override,
+    // which `isSystemInDarkTheme()` would ignore.
+    val darkTheme = LocalMelonDarkTheme.current
     if (view.isInEditMode) return
     LaunchedEffect(darkChrome, darkTheme) {
         val window = (view.context as? Activity)?.window ?: return@LaunchedEffect

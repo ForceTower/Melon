@@ -167,3 +167,22 @@ internal val VerdictLostBlobA = Color(0xFFB23A7A)
 internal val VerdictLostBlobB = Color(0xFF9B5AD0)
 internal val VerdictLostBlobC = Color(0xFFE85D4E)
 internal val VerdictLostHue = Color(0xFFC97BD6)
+
+// Credential vault mesh (`MelonVaultColors`, dc `SettingsScreen` credenciais
+// card). Like the verdict hero, the vault is an always-dark world: a deep
+// green plate under three green/teal blob stops, with `veil` as the
+// legibility scrim color. Fixed across themes.
+internal val VaultNight = Color(0xFF14231E)
+internal val VaultVeil = Color(0xFF081410)
+internal val VaultBlobA = Color(0xFF1F7A5E)
+internal val VaultBlobB = Color(0xFF2F9E6E)
+internal val VaultBlobC = Color(0xFF1B5C6E)
+
+// Lock-screen notification preview (dc `SettingsScreen` "Notas" section).
+// The plate mocks a phone lock screen so it stays near-dark in both themes,
+// but recedes further in dark mode; the inner card is a translucent
+// notification bubble over it (white wash on light, lifted plum on dark).
+internal val PreviewPlateLight = Color(0xFF2A2233)
+internal val PreviewPlateDark = Color(0xFF181020)
+internal val PreviewCardLight = Color(0x24FFFFFF)
+internal val PreviewCardDark = Color(0xD93C3448)

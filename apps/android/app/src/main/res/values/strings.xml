@@ -692,104 +692,91 @@
 
     <!-- region Settings · Header / chrome -->
     <string name="settings_back">Voltar</string>
-    <!-- "◦ SINC. há 2 min" — top-right monospace stamp. Variants mirror the iOS
-         relative formatter in `SettingsViewModel.formatRelative`. -->
-    <string name="settings_last_sync_format">◦ SINC. %1$s</string>
-    <string name="settings_last_sync_unknown">—</string>
-    <string name="settings_last_sync_now">agora mesmo</string>
-    <string name="settings_last_sync_minutes_format">há %1$d min</string>
-    <string name="settings_last_sync_hours_format">há %1$d h</string>
-    <string name="settings_last_sync_days_format">há %1$d d</string>
-    <!-- "◦ PREFERÊNCIAS · V4.2.1" — eyebrow above the editorial title. -->
-    <string name="settings_eyebrow_format">◦ PREFERÊNCIAS · V%1$s</string>
-    <string name="settings_title_lead">Config</string>
-    <string name="settings_title_accent">urações</string>
-    <string name="settings_subtitle">Suas credenciais, o que aparece na notificação de nota e o que te interrompe durante o dia.</string>
-    <!-- endregion -->
-
-    <!-- region Settings · Section labels -->
-    <string name="settings_section_account_eyebrow">capítulo 1</string>
-    <string name="settings_section_account_title">Conta</string>
-    <string name="settings_section_account_meta">UEFS</string>
-    <string name="settings_section_display_eyebrow">capítulo 2</string>
-    <string name="settings_section_display_title">Exibição</string>
-    <string name="settings_section_display_meta">spoiler</string>
-    <string name="settings_section_notifications_eyebrow">capítulo 3</string>
-    <string name="settings_section_notifications_title">Notificações</string>
-    <!-- "5/9" — total active out of total notification toggles. -->
-    <string name="settings_section_notifications_meta_format">%1$d/9</string>
+    <string name="settings_title">Configurações</string>
+    <string name="settings_subtitle">Suas credenciais, privacidade e o que te interrompe durante o dia.</string>
     <!-- endregion -->
 
     <!-- region Settings · Credential vault -->
-    <string name="settings_credentials_title">Credenciais Portal</string>
-    <string name="settings_credentials_status_visible">◦ VISÍVEL · OCULTAR EM 30S</string>
-    <string name="settings_credentials_status_hidden">◦ CRIPTOGRAFADO · BIOMETRIA</string>
-    <string name="settings_credentials_action_show">Visualizar</string>
-    <string name="settings_credentials_action_hide">Ocultar</string>
-    <string name="settings_credentials_field_username">USUÁRIO</string>
-    <string name="settings_credentials_field_password">SENHA</string>
-    <string name="settings_credentials_copy_label">Copiar</string>
-    <string name="settings_credentials_copy_done">COPIADO</string>
+    <string name="settings_vault_pill">Credenciais</string>
+    <string name="settings_vault_badge">criptografada · biometria</string>
+    <!-- "Conta acadêmica UEFS" — the argument is the campus label from the profile. -->
+    <string name="settings_vault_account_format">Conta acadêmica %1$s</string>
+    <string name="settings_vault_account_fallback">UEFS</string>
+    <string name="settings_vault_action_show">Ver</string>
+    <string name="settings_vault_action_hide">Ocultar</string>
+    <string name="settings_vault_field_username">Usuário</string>
+    <string name="settings_vault_field_password">Senha</string>
+    <string name="settings_vault_copy">Copiar</string>
+    <string name="settings_vault_copied">Copiado</string>
     <string name="settings_credentials_biometric_prompt_title">Autentique para visualizar a senha</string>
     <string name="settings_credentials_biometric_prompt_subtitle">UNES · credenciais Portal</string>
-    <string name="settings_credentials_biometric_cancel">Cancelar</string>
     <!-- endregion -->
 
-    <!-- region Settings · Spoiler picker -->
-    <string name="settings_spoiler_label">Spoiler das notas</string>
-    <string name="settings_spoiler_hint">O QUE APARECE NA NOTIFICAÇÃO</string>
-    <string name="settings_spoiler_option_value_label">Valor</string>
-    <string name="settings_spoiler_option_value_hint">Cálc. II · 8,5</string>
-    <string name="settings_spoiler_option_comment_label">Comentário</string>
-    <string name="settings_spoiler_option_comment_hint">"\"Uma boa nota em Calc. II\""</string>
-    <string name="settings_spoiler_option_posted_label">Apenas aviso</string>
-    <string name="settings_spoiler_option_posted_hint">"\"Nova nota em Cálc. II\""</string>
-    <!-- Lock-screen preview body shown above the picker. -->
-    <string name="settings_preview_eyebrow">◦ PRÉ-VISUALIZAÇÃO · TELA DE BLOQUEIO</string>
+    <!-- region Settings · Aparência -->
+    <string name="settings_section_appearance">Aparência</string>
+    <string name="settings_theme_title">Tema</string>
+    <string name="settings_theme_subtitle">Como o UNES se adapta ao sistema</string>
+    <string name="settings_theme_light">Claro</string>
+    <string name="settings_theme_system">Sistema</string>
+    <string name="settings_theme_dark">Escuro</string>
+    <!-- endregion -->
+
+    <!-- region Settings · Notas / privacidade -->
+    <string name="settings_section_grades">Notas</string>
+    <string name="settings_section_grades_meta">privacidade</string>
+    <string name="settings_privacy_title">Privacidade das notas</string>
+    <string name="settings_privacy_subtitle">O que aparece nas notificações</string>
+    <string name="settings_privacy_value">Valor</string>
+    <string name="settings_privacy_summary">Resumo</string>
+    <string name="settings_privacy_discreet">Discreto</string>
+    <!-- Lock-screen mock above the privacy control; title/body pairs per mode. -->
+    <string name="settings_preview_context">Tela de bloqueio · agora</string>
     <string name="settings_preview_app_name">UNES</string>
     <string name="settings_preview_app_initial">U</string>
-    <string name="settings_preview_now">AGORA</string>
-    <string name="settings_preview_text_value">Você tirou 8,5 em Cálc. II</string>
-    <string name="settings_preview_text_comment">Nova nota em Cálc. II. Muito bom!</string>
-    <string name="settings_preview_text_posted">Nova nota em Cálc. II</string>
+    <string name="settings_preview_now">agora</string>
+    <string name="settings_preview_value_title">Cálc. Diferencial B2</string>
+    <string name="settings_preview_value_body">Nova nota lançada — você tirou 8,5</string>
+    <string name="settings_preview_summary_title">Nova nota publicada</string>
+    <string name="settings_preview_summary_body">em Cálc. Diferencial B2</string>
+    <string name="settings_preview_discreet_title">UNES</string>
+    <string name="settings_preview_discreet_body">Você tem uma nova notificação</string>
     <!-- endregion -->
 
     <!-- region Settings · Notification groups -->
-    <!-- "N/3 ATIVAS" — per-group active counter. -->
-    <string name="settings_notif_group_count_format">%1$d/3 ATIVAS</string>
+    <string name="settings_section_notifications">Notificações</string>
+    <!-- "5/9 ativas" — total active toggles, top-right of the section label. -->
+    <string name="settings_notif_total_format">%1$d/9 ativas</string>
+    <!-- "2/3 ativas" — per-group counter chip. -->
+    <string name="settings_notif_group_count_format">%1$d/%2$d ativas</string>
 
-    <string name="settings_notif_group_messages_kicker">§ 1</string>
     <string name="settings_notif_group_messages_title">Mensagens</string>
     <string name="settings_notif_msg_broadcast_label">Broadcasts</string>
     <string name="settings_notif_msg_broadcast_hint">Avisos da universidade</string>
     <string name="settings_notif_msg_class_label">Da turma</string>
     <string name="settings_notif_msg_class_hint">Mensagens enviadas à classe</string>
     <string name="settings_notif_msg_direct_label">Diretas</string>
-    <string name="settings_notif_msg_direct_hint">Professor ou secretaria · você</string>
+    <string name="settings_notif_msg_direct_hint">Professor ou secretaria</string>
 
-    <string name="settings_notif_group_grades_kicker">§ 2</string>
     <string name="settings_notif_group_grades_title">Notas</string>
     <string name="settings_notif_grade_posted_label">Publicada</string>
     <string name="settings_notif_grade_posted_hint">Uma nota nova apareceu</string>
     <string name="settings_notif_grade_changed_label">Alterada</string>
     <string name="settings_notif_grade_changed_hint">O valor foi corrigido</string>
     <string name="settings_notif_grade_date_changed_label">Data alterada</string>
-    <string name="settings_notif_grade_date_changed_hint">Prazo ou marco da avaliação</string>
+    <string name="settings_notif_grade_date_changed_hint">Prazo da avaliação mudou</string>
 
-    <string name="settings_notif_group_classes_kicker">§ 3</string>
     <string name="settings_notif_group_classes_title">Aulas</string>
     <string name="settings_notif_class_location_label">Sala alterada</string>
     <string name="settings_notif_class_location_hint">Mudança de localização</string>
     <string name="settings_notif_class_material_label">Material publicado</string>
-    <string name="settings_notif_class_material_hint">Slides, enunciados, lista</string>
+    <string name="settings_notif_class_material_hint">Slides, enunciados, listas</string>
     <string name="settings_notif_class_subject_label">Assunto da aula</string>
     <string name="settings_notif_class_subject_hint">O tópico previsto mudou</string>
     <!-- endregion -->
 
     <!-- region Settings · Footer -->
-    <string name="settings_footer_wordmark">unes</string>
-    <!-- "V4.2.1 · BUILD 1842 · FEITO EM FEIRA DE SANTANA" — uppercased at render. -->
-    <string name="settings_footer_meta_format">v%1$s · build %2$s · feito em feira de santana</string>
+    <string name="settings_footer_version_format">UNES v%1$s · build %2$s</string>
+    <string name="settings_footer_note">sinc. e cadência no servidor · o cliente só escuta</string>
     <!-- endregion -->
 
     <!-- region Final Countdown · Chrome + discipline row -->

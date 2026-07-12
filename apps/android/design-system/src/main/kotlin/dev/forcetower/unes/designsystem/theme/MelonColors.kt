@@ -25,6 +25,7 @@ data class MelonColors(
     val palette: MelonPaletteColors,
     val fixed: MelonFixedColors,
     val verdict: MelonVerdictColors,
+    val vault: MelonVaultColors,
     val status: MelonStatusColors,
 )
 
@@ -94,6 +95,11 @@ data class MelonSurfaceColors(
     val cardLine: Color,
     val line: Color,
     val pressedAccent: Color,
+    // Lock-screen notification preview (dc `SettingsScreen`): `previewPlate`
+    // is the mock lock-screen backdrop, `previewCard` the translucent
+    // notification bubble on top. Adaptive, but dark-leaning in both themes.
+    val previewPlate: Color,
+    val previewCard: Color,
 )
 
 // Mesh palettes for the Final Countdown verdict hero (dc `FinalCountdownScreen`
@@ -126,6 +132,20 @@ data class MelonVerdictColors(
     // Matemática perdida / reprovada (berry).
     val lost: MelonVerdictPalette,
 )
+
+// Credential vault mesh (dc `SettingsScreen` credenciais card). Always-dark
+// like the verdict hero: `night` is the card plate, `veil` the legibility
+// scrim color, and the three blob stops feed `Mesh(colors = …)`.
+@Immutable
+data class MelonVaultColors(
+    val night: Color,
+    val veil: Color,
+    val blobA: Color,
+    val blobB: Color,
+    val blobC: Color,
+) {
+    val blobs: List<Color> get() = listOf(blobA, blobB, blobC)
+}
 
 // Discipline tinting palette. Adaptive: same semantic slot in light/dark, but
 // dark values are lifted so chips/dots stay legible on `SurfaceDark`. The
@@ -176,6 +196,14 @@ private val MelonFixedDefaults = MelonFixedColors(
     success = SuccessFixed,
 )
 
+private val MelonVaultDefaults = MelonVaultColors(
+    night = VaultNight,
+    veil = VaultVeil,
+    blobA = VaultBlobA,
+    blobB = VaultBlobB,
+    blobC = VaultBlobC,
+)
+
 private val MelonVerdictDefaults = MelonVerdictColors(
     night = VerdictNight,
     veil = VerdictVeil,
@@ -218,6 +246,8 @@ internal fun melonColorsLight() = MelonColors(
         cardLine = CardLineLight,
         line = LineLight,
         pressedAccent = AccentPressLight,
+        previewPlate = PreviewPlateLight,
+        previewCard = PreviewCardLight,
     ),
     palette = MelonPaletteColors(
         coral = PaletteCoralLight,
@@ -237,6 +267,7 @@ internal fun melonColorsLight() = MelonColors(
     ),
     fixed = MelonFixedDefaults,
     verdict = MelonVerdictDefaults,
+    vault = MelonVaultDefaults,
     status = MelonStatusColors(
         ok = StatusOkLight,
         warn = StatusWarnLight,
@@ -251,6 +282,8 @@ internal fun melonColorsDark() = MelonColors(
         cardLine = CardLineDark,
         line = LineDark,
         pressedAccent = AccentPressDark,
+        previewPlate = PreviewPlateDark,
+        previewCard = PreviewCardDark,
     ),
     palette = MelonPaletteColors(
         coral = PaletteCoralDark,
@@ -270,6 +303,7 @@ internal fun melonColorsDark() = MelonColors(
     ),
     fixed = MelonFixedDefaults,
     verdict = MelonVerdictDefaults,
+    vault = MelonVaultDefaults,
     status = MelonStatusColors(
         ok = StatusOkDark,
         warn = StatusWarnDark,

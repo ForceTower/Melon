@@ -5,12 +5,18 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
@@ -19,160 +25,170 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.theme.melon
-import dev.forcetower.unes.ui.feature.settings.SettingsTone
 
-// Header + per-row toggles for one notification group (Mensagens, Notas, or
-// Aulas). Mirrors `NotificationGroupCard` on iOS and the JSX combo of
-// `NotifGroupHeader` + `NotifRow`.
+// One notification group (Mensagens, Notas, or Aulas) as an M3 item-group
+// card (dc `SettingsScreen` notificações): tinted header strip with the
+// "n/3 ativas" counter chip — accent-tonal when every toggle is on — and one
+// switch row per notification kind.
 @Composable
 internal fun NotificationGroupCard(
-    kicker: String,
     title: String,
     activeCount: Int,
-    rows: @Composable () -> Unit,
+    totalCount: Int,
     modifier: Modifier = Modifier,
+    rows: @Composable ColumnScope.() -> Unit,
 ) {
-    val card = MaterialTheme.melon.surface.card
-    val cardLine = MaterialTheme.melon.surface.cardLine
-    val line = MaterialTheme.melon.surface.line
-
+    val shape = RoundedCornerShape(24.dp)
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(22.dp))
-            .background(card)
-            .border(1.dp, cardLine, RoundedCornerShape(22.dp)),
+            .clip(shape)
+            .background(MaterialTheme.melon.surface.card)
+            .border(1.dp, MaterialTheme.melon.surface.line, shape),
     ) {
-        Header(kicker = kicker, title = title, activeCount = activeCount)
-        Box(modifier = Modifier.fillMaxWidth().height(1.dp).background(line))
+        GroupHeader(title = title, activeCount = activeCount, totalCount = totalCount)
         rows()
     }
 }
 
 @Composable
-private fun Header(kicker: String, title: String, activeCount: Int) {
-    val ink = MaterialTheme.colorScheme.onBackground
-    val ink3 = MaterialTheme.colorScheme.onSurfaceVariant
-    val ink4 = MaterialTheme.colorScheme.outlineVariant
+private fun GroupHeader(title: String, activeCount: Int, totalCount: Int) {
+    val accent = MaterialTheme.colorScheme.primary
+    val allActive = activeCount == totalCount
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp)
-            .padding(top = 14.dp, bottom = 8.dp),
-        verticalAlignment = Alignment.Top,
+            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .padding(start = 18.dp, end = 18.dp, top = 14.dp, bottom = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        Column {
-            Text(
-                text = "◦ $kicker",
-                style = MaterialTheme.typography.labelSmall.copy(
-                    fontFamily = FontFamily.Monospace,
-                    fontSize = 8.5.sp,
-                    fontWeight = FontWeight.Medium,
-                    letterSpacing = 1.19.sp,
-                ),
-                color = ink4,
-            )
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleMedium.copy(
-                    fontSize = 17.sp,
-                    fontStyle = FontStyle.Italic,
-                    letterSpacing = (-0.17).sp,
-                ),
-                color = ink,
-            )
-        }
         Text(
-            text = stringResource(R.string.settings_notif_group_count_format, activeCount),
-            style = MaterialTheme.typography.labelSmall.copy(
-                fontFamily = FontFamily.Monospace,
-                fontSize = 9.sp,
-                letterSpacing = 0.9.sp,
+            text = title,
+            style = MaterialTheme.typography.titleSmall.copy(
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Bold,
             ),
-            color = ink3,
-            modifier = Modifier.padding(top = 2.dp),
+            color = MaterialTheme.colorScheme.onBackground,
+        )
+        Text(
+            text = stringResource(R.string.settings_notif_group_count_format, activeCount, totalCount),
+            style = MaterialTheme.typography.labelMedium.copy(
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold,
+                letterSpacing = 0.sp,
+            ),
+            color = if (allActive) accent else MaterialTheme.colorScheme.outline,
+            modifier = Modifier
+                .clip(CircleShape)
+                .background(
+                    if (allActive) accent.copy(alpha = 0.15f)
+                    else MaterialTheme.colorScheme.surfaceContainerHigh,
+                )
+                .padding(horizontal = 10.dp, vertical = 3.dp),
         )
     }
 }
 
 @Composable
 internal fun NotificationToggleRow(
-    glyph: SettingsGlyph,
-    tone: SettingsTone,
+    icon: ImageVector,
+    iconTint: Color,
     label: String,
     hint: String,
     on: Boolean,
     onToggle: (Boolean) -> Unit,
-    showSeparator: Boolean = true,
     modifier: Modifier = Modifier,
+    showDivider: Boolean = true,
 ) {
-    val ink = MaterialTheme.colorScheme.onBackground
-    val ink4 = MaterialTheme.colorScheme.outlineVariant
-    val line = MaterialTheme.melon.surface.line
-    val resolved = resolveTone(tone)
-
     Column(modifier = modifier.fillMaxWidth()) {
+        if (showDivider) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .background(MaterialTheme.melon.surface.line),
+            )
+        }
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 10.dp),
+                .padding(horizontal = 16.dp, vertical = 14.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalArrangement = Arrangement.spacedBy(14.dp),
         ) {
             Box(
                 modifier = Modifier
-                    .size(30.dp)
-                    .clip(RoundedCornerShape(9.dp))
-                    .background(resolved.background),
+                    .size(40.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(iconTint.copy(alpha = 0.16f)),
                 contentAlignment = Alignment.Center,
             ) {
-                SettingsIcon(glyph = glyph, color = resolved.foreground, modifier = Modifier.size(14.dp))
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = iconTint,
+                    modifier = Modifier.size(21.dp),
+                )
             }
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = label,
                     style = MaterialTheme.typography.bodyMedium.copy(
-                        fontSize = 13.5.sp,
-                        fontWeight = FontWeight.Medium,
-                        letterSpacing = (-0.07).sp,
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.SemiBold,
                     ),
-                    color = ink,
+                    color = MaterialTheme.colorScheme.onBackground,
                 )
+                Spacer(Modifier.height(2.dp))
                 Text(
-                    text = hint.uppercase(),
-                    style = MaterialTheme.typography.labelSmall.copy(
-                        fontFamily = FontFamily.Monospace,
-                        fontSize = 9.sp,
-                        letterSpacing = 0.72.sp,
-                    ),
-                    color = ink4,
+                    text = hint,
+                    style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
+                    color = MaterialTheme.colorScheme.outline,
                 )
             }
-            Switch(
-                checked = on,
-                onCheckedChange = onToggle,
-                colors = SwitchDefaults.colors(
-                    checkedThumbColor = MaterialTheme.colorScheme.surface,
-                    checkedTrackColor = MaterialTheme.colorScheme.primary,
-                    checkedBorderColor = MaterialTheme.colorScheme.primary,
-                    uncheckedThumbColor = MaterialTheme.colorScheme.surface,
-                    uncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant,
-                    uncheckedBorderColor = line,
-                ),
-            )
-        }
-        if (showSeparator) {
-            Box(modifier = Modifier.fillMaxWidth().height(1.dp).background(line))
+            NotificationSwitch(on = on, onToggle = onToggle)
         }
     }
+}
+
+// Native M3 switch with the spec's check-in-thumb affordance when on. The
+// thumb stays white in both themes (`fixed.onHero`) so the accent check
+// reads against it.
+@Composable
+private fun NotificationSwitch(on: Boolean, onToggle: (Boolean) -> Unit) {
+    val accent = MaterialTheme.colorScheme.primary
+    Switch(
+        checked = on,
+        onCheckedChange = onToggle,
+        thumbContent = if (on) {
+            {
+                Icon(
+                    imageVector = Icons.Filled.Check,
+                    contentDescription = null,
+                    modifier = Modifier.size(SwitchDefaults.IconSize),
+                )
+            }
+        } else {
+            null
+        },
+        colors = SwitchDefaults.colors(
+            checkedThumbColor = MaterialTheme.melon.fixed.onHero,
+            checkedTrackColor = accent,
+            checkedBorderColor = accent,
+            checkedIconColor = accent,
+            uncheckedThumbColor = MaterialTheme.colorScheme.outlineVariant,
+            uncheckedTrackColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+            uncheckedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+        ),
+    )
 }

@@ -1,10 +1,12 @@
 package dev.forcetower.unes.ui.feature.settings
 
 import dev.forcetower.unes.mvi.UiState
+import dev.forcetower.unes.theme.ThemeMode
 
 // What the grade notification reveals on the lock screen. Wire encoding
 // matches `user_settings.grade_spoiler` on the API and Room mirror; the
-// integers are the contract iOS `SpoilerMode.serverInt` writes.
+// integers are the contract iOS `SpoilerMode.serverInt` writes. The dc
+// redesign labels them Valor / Resumo / Discreto.
 internal enum class SpoilerMode(val serverInt: Int) {
     Value(0),
     Comment(1),
@@ -15,20 +17,19 @@ internal enum class SpoilerMode(val serverInt: Int) {
     }
 }
 
-// Per-icon accent palette used by the settings rows. Mirrors iOS
-// `SettingsTone` in `SettingsModels.swift` and the JSX `CFG_TONES`. The
-// background/foreground pair is resolved against the theme at the call site
-// so feature code stays out of raw color literals.
-internal enum class SettingsTone { Plum, Magenta, Teal, Coral, Amber }
-
-// Full UI state bag. Hydrated from the KMP `ObserveSettingsUseCase` flow;
-// each toggle write goes through `UpdateSettingsUseCase` so the local DAO
-// flips first and the network PATCH reconciles afterwards.
+// Full UI state bag. Identity comes from the KMP profile flow, credentials
+// from the vault flow, and the toggles from `ObserveSettingsUseCase`; each
+// toggle write goes through `UpdateSettingsUseCase` so the local DAO flips
+// first and the network PATCH reconciles afterwards. The theme mode is
+// device-local (DataStore) and never syncs.
 internal data class SettingsUiState(
+    val displayName: String = "",
+    val avatarInitial: String = "?",
+    val campusLabel: String? = null,
     val username: String? = null,
     val password: String? = null,
-    val lastSyncIso: String? = null,
     val nowEpochSeconds: Long = 0L,
+    val themeMode: ThemeMode = ThemeMode.System,
     val spoiler: SpoilerMode = SpoilerMode.Comment,
     val notifMsgBroadcast: Boolean = true,
     val notifMsgClass: Boolean = true,
