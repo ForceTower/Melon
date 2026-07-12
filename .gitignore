@@ -78,6 +78,7 @@ tmp/
 
 claude_scripts/
 claude_design_ref/
-.claude/
+.claude/worktrees/
+.claude/settings.local.json
 
 .raw_pages/
