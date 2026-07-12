@@ -97,6 +97,7 @@ internal fun MeScreen(
 
     val openShortcut: (ShortcutKind) -> Unit = { kind ->
         when (kind) {
+            ShortcutKind.Enrollment -> connectedNavigator.navigate(ConnectedRoute.Enrollment)
             ShortcutKind.Calendar -> connectedNavigator.navigate(ConnectedRoute.Calendar)
             ShortcutKind.Countdown -> connectedNavigator.navigate(ConnectedRoute.FinalCountdown())
             ShortcutKind.Materials -> connectedNavigator.navigate(ConnectedRoute.Materials)
@@ -105,10 +106,6 @@ internal fun MeScreen(
             ShortcutKind.History ->
                 vm.onIntent(MeIntent.OpenDocument(AcademicDocument.AcademicHistory))
             ShortcutKind.Paradoxo -> connectedNavigator.navigate(ConnectedRoute.Paradoxo)
-            // Gated tiles without an Android screen yet (Matrícula) — they
-            // only render in debug builds or once the remote flag flips, and
-            // routing lands together with each feature.
-            else -> Unit
         }
     }
 

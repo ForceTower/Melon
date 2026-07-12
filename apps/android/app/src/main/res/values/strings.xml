@@ -1356,4 +1356,208 @@
     <string name="materials_upload_success_body">Seu material está em análise e aparece no acervo assim que for aprovado — normalmente em até 48h.</string>
     <string name="materials_upload_done">Concluir</string>
     <!-- endregion -->
+
+    <!-- region Matrícula · Chrome + status hub -->
+    <string name="enrollment_title">Matrícula</string>
+    <string name="enrollment_back">Voltar</string>
+    <string name="enrollment_identity_period_format">%1$dº período</string>
+    <string name="enrollment_hero_state_open">Matrícula aberta</string>
+    <string name="enrollment_hero_state_upcoming">Matrícula em breve</string>
+    <string name="enrollment_hero_state_closed">Matrícula encerrada</string>
+    <string name="enrollment_hero_open_title_format">Aberta até %1$s</string>
+    <string name="enrollment_hero_upcoming_title_format">Abre em %1$s</string>
+    <string name="enrollment_hero_closed_title">Proposta registrada</string>
+    <string name="enrollment_hero_body_open">Salve e ajuste quantas vezes quiser antes de enviar.</string>
+    <string name="enrollment_hero_body_upcoming">Prepare sua grade — a janela ainda não abriu.</string>
+    <string name="enrollment_hero_body_closed">Sua proposta foi registrada. Confira o comprovante.</string>
+    <string name="enrollment_hero_days_caption">dias</string>
+    <string name="enrollment_hero_start_label">Abertura</string>
+    <string name="enrollment_hero_end_label">Encerramento</string>
+    <string name="enrollment_hero_end_value_format">%1$s · %2$s</string>
+    <string name="enrollment_date_unknown">A definir</string>
+    <string name="enrollment_stat_disciplines">disciplinas</string>
+    <string name="enrollment_stat_disciplines_hint">turmas</string>
+    <string name="enrollment_stat_conflicts">conflitos</string>
+    <string name="enrollment_stat_conflicts_ok">tudo certo</string>
+    <string name="enrollment_stat_conflicts_fix">resolver</string>
+    <string name="enrollment_stat_waitlist">em fila</string>
+    <string name="enrollment_stat_waitlist_hint">espera</string>
+    <string name="enrollment_proposal_title">Sua proposta</string>
+    <string name="enrollment_proposal_edit">Editar</string>
+    <string name="enrollment_hours_format">%1$dh</string>
+    <string name="enrollment_cta_start">Montar matrícula</string>
+    <string name="enrollment_cta_continue">Continuar montagem</string>
+    <string name="enrollment_cta_receipt">Ver comprovante</string>
+    <string name="enrollment_cta_reopen">Reabrir</string>
+    <string name="enrollment_dock_resubmit">Enviar novamente</string>
+    <string name="enrollment_empty_title">Nenhuma matrícula aberta</string>
+    <string name="enrollment_empty_body">Quando a universidade abrir a janela de matrícula, ela aparece aqui.</string>
+    <string name="enrollment_error_title">Não deu para carregar</string>
+    <string name="enrollment_retry">Tentar novamente</string>
+    <string name="enrollment_offers_failed">Não deu para carregar as disciplinas ofertadas.</string>
+    <!-- endregion -->
+
+    <!-- region Matrícula · Workload meter -->
+    <string name="enrollment_workload_label">Carga horária</string>
+    <string name="enrollment_workload_hours_suffix">h selecionadas</string>
+    <string name="enrollment_workload_status_empty">comece a montar</string>
+    <string name="enrollment_workload_status_over">acima do limite</string>
+    <string name="enrollment_workload_status_under_format">faltam %1$dh</string>
+    <string name="enrollment_workload_status_ok">dentro do limite</string>
+    <string name="enrollment_workload_min_format">mín %1$dh</string>
+    <string name="enrollment_workload_max_format">máx %1$dh</string>
+    <!-- endregion -->
+
+    <!-- region Matrícula · Ofertadas -->
+    <string name="enrollment_offers_appbar">Disciplinas ofertadas</string>
+    <string name="enrollment_offers_title">Ofertadas</string>
+    <string name="enrollment_offers_sub_format">%1$d matérias disponíveis</string>
+    <string name="enrollment_search_placeholder">Buscar por código ou nome</string>
+    <string name="enrollment_search_clear">Limpar busca</string>
+    <string name="enrollment_filter_all">Todas</string>
+    <string name="enrollment_filter_mandatory">Obrigatórias</string>
+    <string name="enrollment_filter_optional">Optativas</string>
+    <string name="enrollment_no_results">Nenhuma disciplina encontrada.</string>
+    <string name="enrollment_period_format">%1$dº período</string>
+    <string name="enrollment_period_optional">Optativas</string>
+    <string name="enrollment_suggested">Sugerida</string>
+    <string name="enrollment_suggested_by_course">Sugerida pelo curso</string>
+    <string name="enrollment_kind_mandatory">Obrigatória</string>
+    <string name="enrollment_kind_optional">Optativa</string>
+    <string name="enrollment_prereq_tag">Pré-requisito</string>
+    <plurals name="enrollment_sections_count">
+        <item quantity="one">%1$d turma</item>
+        <item quantity="other">%1$d turmas</item>
+    </plurals>
+    <!-- endregion -->
+
+    <!-- region Matrícula · Turmas -->
+    <string name="enrollment_discipline_eyebrow_format">%1$s · %2$s</string>
+    <string name="enrollment_choose_section">Escolha uma turma</string>
+    <string name="enrollment_shift_morning">Matutino</string>
+    <string name="enrollment_shift_afternoon">Vespertino</string>
+    <string name="enrollment_shift_night">Noturno</string>
+    <string name="enrollment_shift_undefined">A definir</string>
+    <string name="enrollment_schedule_tbd">Horário a definir</string>
+    <string name="enrollment_room_tbd">Sala a definir</string>
+    <string name="enrollment_prof_tbd">Prof. a definir</string>
+    <string name="enrollment_seats_full">lotada</string>
+    <string name="enrollment_seats_tight">quase cheia</string>
+    <string name="enrollment_seats_open">vagas</string>
+    <string name="enrollment_seats_count_format">/ %1$d</string>
+    <string name="enrollment_conflict_title">Conflito de horário</string>
+    <string name="enrollment_conflict_text_format">Choca com %1$s %2$s na %3$s. Troque uma das turmas.</string>
+    <string name="enrollment_full_title">Turma lotada</string>
+    <string name="enrollment_full_queue">Entre na fila de espera.</string>
+    <string name="enrollment_full_queue_ahead_format">Entre na fila de espera — %1$d na frente.</string>
+    <string name="enrollment_full_no_queue">Sem vagas disponíveis.</string>
+    <string name="enrollment_section_select">Selecionar esta turma</string>
+    <string name="enrollment_section_selected">Selecionada · tocar para remover</string>
+    <string name="enrollment_section_blocked">Indisponível — conflito</string>
+    <string name="enrollment_section_queue">Entrar na fila de espera</string>
+    <string name="enrollment_section_full">Sem vagas</string>
+    <string name="enrollment_prereq_met_title">Pré-requisitos cumpridos</string>
+    <string name="enrollment_prereq_unmet_title">Pré-requisito não cumprido</string>
+    <string name="enrollment_prereq_pending_suffix">" — pendente"</string>
+    <string name="enrollment_prereq_unmet_note">Você pode selecionar, mas depende de análise do colegiado.</string>
+    <string name="enrollment_allows_title">Aceitar outra turma</string>
+    <string name="enrollment_allows_text_format">Sem vaga na %1$s? Me matricule em outra turma de %2$s com vaga.</string>
+    <!-- endregion -->
+
+    <!-- region Matrícula · Grade -->
+    <string name="enrollment_timetable_title">Sua grade</string>
+    <string name="enrollment_timetable_sub_empty">Nenhuma turma selecionada</string>
+    <plurals name="enrollment_timetable_sub_count">
+        <item quantity="one">%1$d turma com horário</item>
+        <item quantity="other">%1$d turmas com horário</item>
+    </plurals>
+    <plurals name="enrollment_tt_conflicts_title">
+        <item quantity="one">%1$d conflito de horário</item>
+        <item quantity="other">%1$d conflitos de horário</item>
+    </plurals>
+    <string name="enrollment_tt_conflict_item_format">%1$s %2$s × %3$s %4$s · %5$s</string>
+    <string name="enrollment_tt_empty_title">Grade vazia</string>
+    <string name="enrollment_tt_empty_text">Selecione turmas no catálogo para vê-las aqui. Conflitos aparecem em vermelho.</string>
+    <string name="enrollment_tt_ok_title">Sem conflitos</string>
+    <plurals name="enrollment_tt_ok_text">
+        <item quantity="one">Sua turma encaixa sem sobreposição.</item>
+        <item quantity="other">Suas %1$d turmas encaixam sem sobreposição.</item>
+    </plurals>
+    <plurals name="enrollment_tt_tbd">
+        <item quantity="one">%1$d turma com horário a definir — não exibida na grade.</item>
+        <item quantity="other">%1$d turmas com horário a definir — não exibidas na grade.</item>
+    </plurals>
+    <!-- endregion -->
+
+    <!-- region Matrícula · Revisar + enviar -->
+    <string name="enrollment_review_appbar">Revisar proposta</string>
+    <string name="enrollment_review_title">Revisar</string>
+    <string name="enrollment_review_sub_empty">Proposta vazia</string>
+    <plurals name="enrollment_review_sub">
+        <item quantity="one">%1$d disciplina · %2$dh</item>
+        <item quantity="other">%1$d disciplinas · %2$dh</item>
+    </plurals>
+    <string name="enrollment_review_empty">Nenhuma disciplina na proposta ainda.</string>
+    <string name="enrollment_selected_count_format">Selecionadas · %1$d</string>
+    <string name="enrollment_review_conflicts_title">Conflitos de horário</string>
+    <string name="enrollment_review_under_title">Carga horária insuficiente</string>
+    <string name="enrollment_review_under_text_format">Faltam %1$dh para o mínimo de %2$dh.</string>
+    <string name="enrollment_review_over_title">Carga horária excedida</string>
+    <string name="enrollment_review_over_text_format">Você está %1$dh acima do máximo.</string>
+    <string name="enrollment_review_prereq_title">Pré-requisitos pendentes</string>
+    <plurals name="enrollment_review_prereq_text">
+        <item quantity="one">%1$s depende de análise do colegiado.</item>
+        <item quantity="other">%1$s dependem de análise do colegiado.</item>
+    </plurals>
+    <string name="enrollment_prereq_pending_tag">Pré-req. pendente</string>
+    <string name="enrollment_waitlist_position_format">Fila · %1$dº</string>
+    <string name="enrollment_waitlist_waiting">Fila · na espera</string>
+    <string name="enrollment_allows_review_format">Sem vaga na %1$s? Me aloque em outra turma de %2$s.</string>
+    <string name="enrollment_remove">Remover</string>
+    <string name="enrollment_readonly_title">Proposta enviada</string>
+    <string name="enrollment_readonly_text">Sua matrícula foi registrada. A confirmação das vagas chega por mensagem.</string>
+    <string name="enrollment_submit_error_title">Não deu para enviar</string>
+    <string name="enrollment_error_session">Sua sessão expirou. Entre novamente.</string>
+    <string name="enrollment_error_network">Sem conexão. Verifique sua internet e tente de novo.</string>
+    <string name="enrollment_error_generic">Algo deu errado. Tente novamente em instantes.</string>
+    <string name="enrollment_ok">OK</string>
+    <!-- endregion -->
+
+    <!-- region Matrícula · Dock -->
+    <string name="enrollment_dock_max_format">/ %1$d</string>
+    <plurals name="enrollment_dock_disciplines">
+        <item quantity="one">%1$d disciplina</item>
+        <item quantity="other">%1$d disciplinas</item>
+    </plurals>
+    <plurals name="enrollment_dock_conflicts">
+        <item quantity="one">%1$d conflito</item>
+        <item quantity="other">%1$d conflitos</item>
+    </plurals>
+    <string name="enrollment_dock_grade">Grade</string>
+    <string name="enrollment_dock_review">Revisar</string>
+    <string name="enrollment_dock_done">Concluir</string>
+    <string name="enrollment_dock_submit">Enviar proposta</string>
+    <string name="enrollment_dock_submitting">Enviando…</string>
+    <string name="enrollment_dock_save">Salvar rascunho</string>
+    <plurals name="enrollment_blocker_conflicts">
+        <item quantity="one">%1$d conflito</item>
+        <item quantity="other">%1$d conflitos</item>
+    </plurals>
+    <string name="enrollment_blocker_under_format">%1$dh abaixo do mínimo</string>
+    <string name="enrollment_blocker_over_format">%1$dh acima do máximo</string>
+    <string name="enrollment_blocker_empty">nenhuma disciplina</string>
+    <!-- endregion -->
+
+    <!-- region Matrícula · Enviado -->
+    <string name="enrollment_success_eyebrow_format">Matrícula · %1$s</string>
+    <string name="enrollment_success_title">Proposta enviada</string>
+    <string name="enrollment_success_body_intro">"Sua matrícula de "</string>
+    <string name="enrollment_success_body_middle">" em "</string>
+    <string name="enrollment_success_body_count_format">%1$d disciplinas</string>
+    <string name="enrollment_success_body_outro">" foi registrada. A confirmação das vagas chega por mensagem."</string>
+    <string name="enrollment_success_disciplines">disciplinas</string>
+    <string name="enrollment_success_queue">em fila</string>
+    <string name="enrollment_success_allows">aceitam troca</string>
+    <string name="enrollment_success_done">Concluir</string>
+    <!-- endregion -->
 </resources>

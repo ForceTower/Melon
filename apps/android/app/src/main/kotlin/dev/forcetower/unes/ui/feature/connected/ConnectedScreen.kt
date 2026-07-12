@@ -38,6 +38,12 @@ import dev.forcetower.unes.ui.feature.overview.OverviewScreen
 import dev.forcetower.unes.ui.feature.schedule.ScheduleScreen
 import dev.forcetower.unes.ui.feature.calendar.CalendarScreen
 import dev.forcetower.melon.feature.paradoxo.domain.model.ParadoxoExploreKind
+import dev.forcetower.unes.ui.feature.enrollment.EnrollmentDisciplineScreen
+import dev.forcetower.unes.ui.feature.enrollment.EnrollmentOffersScreen
+import dev.forcetower.unes.ui.feature.enrollment.EnrollmentReviewScreen
+import dev.forcetower.unes.ui.feature.enrollment.EnrollmentScreen
+import dev.forcetower.unes.ui.feature.enrollment.EnrollmentSuccessScreen
+import dev.forcetower.unes.ui.feature.enrollment.EnrollmentTimetableScreen
 import dev.forcetower.unes.ui.feature.finalcountdown.FinalCountdownScreen
 import dev.forcetower.unes.ui.feature.licenses.LicensesScreen
 import dev.forcetower.unes.ui.feature.materials.MaterialsDetailIntent
@@ -254,6 +260,64 @@ fun ConnectedScreen(
                         },
                         bottomInset = bottomInset,
                     )
+                }
+                entry<ConnectedRoute.Enrollment> {
+                    EnrollmentScreen(
+                        onBack = { navigator.goBack() },
+                        onOpenOffers = { navigator.navigate(ConnectedRoute.EnrollmentOffers) },
+                        onOpenDiscipline = { id ->
+                            navigator.navigate(ConnectedRoute.EnrollmentDiscipline(id))
+                        },
+                        onOpenReview = { navigator.navigate(ConnectedRoute.EnrollmentReview) },
+                        bottomInset = bottomInset,
+                    )
+                }
+                entry<ConnectedRoute.EnrollmentOffers> {
+                    EnrollmentOffersScreen(
+                        onBack = { navigator.goBack() },
+                        onOpenDiscipline = { id ->
+                            navigator.navigate(ConnectedRoute.EnrollmentDiscipline(id))
+                        },
+                        onOpenTimetable = { navigator.navigate(ConnectedRoute.EnrollmentTimetable) },
+                        onOpenReview = { navigator.navigate(ConnectedRoute.EnrollmentReview) },
+                        bottomInset = bottomInset,
+                    )
+                }
+                entry<ConnectedRoute.EnrollmentDiscipline> { route ->
+                    EnrollmentDisciplineScreen(
+                        disciplineId = route.id,
+                        onBack = { navigator.goBack() },
+                        onOpenTimetable = { navigator.navigate(ConnectedRoute.EnrollmentTimetable) },
+                        bottomInset = bottomInset,
+                    )
+                }
+                entry<ConnectedRoute.EnrollmentTimetable> {
+                    EnrollmentTimetableScreen(
+                        onBack = { navigator.goBack() },
+                        onOpenReview = { navigator.navigate(ConnectedRoute.EnrollmentReview) },
+                        bottomInset = bottomInset,
+                    )
+                }
+                entry<ConnectedRoute.EnrollmentReview> {
+                    EnrollmentReviewScreen(
+                        onBack = { navigator.goBack() },
+                        // Mirrors iOS `MeFeature.routeEnrollment`: strip the
+                        // intermediate steps so Success sits directly above
+                        // the (now read-only) status hub, then push it.
+                        onSubmitted = {
+                            navigator.activeStack.removeAll { key ->
+                                key is ConnectedRoute.EnrollmentOffers ||
+                                    key is ConnectedRoute.EnrollmentDiscipline ||
+                                    key is ConnectedRoute.EnrollmentTimetable ||
+                                    key is ConnectedRoute.EnrollmentReview
+                            }
+                            navigator.navigate(ConnectedRoute.EnrollmentSuccess)
+                        },
+                        bottomInset = bottomInset,
+                    )
+                }
+                entry<ConnectedRoute.EnrollmentSuccess> {
+                    EnrollmentSuccessScreen(onDone = { navigator.goBack() })
                 }
                 entry<ConnectedRoute.ParadoxoExplore> { route ->
                     ParadoxoExploreScreen(

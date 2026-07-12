@@ -40,6 +40,13 @@ android {
         applicationId = "com.forcetower.uefs"
         versionCode = 2130000 + gitVersionCode
         versionName = gitVersionName
+
+        // API origin the UmbrellaGraph is built with. Override for a local
+        // mock/proxy via `-Pmelon.apiBaseUrl=http://127.0.0.1:8787` (pair
+        // with `adb reverse tcp:8787 tcp:8787` on a device/emulator).
+        val apiBaseUrl = providers.gradleProperty("melon.apiBaseUrl")
+            .getOrElse("https://melon.forcetower.dev")
+        buildConfigField("String", "API_BASE_URL", "\"$apiBaseUrl\"")
     }
 
     buildTypes {

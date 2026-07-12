@@ -67,6 +67,18 @@ internal sealed interface ConnectedRoute : NavKey {
     ) : ConnectedRoute
     // "Salvos" — the server-side bookmark shelf, from the hub hero counter.
     @Serializable data object MaterialsSaved : ConnectedRoute
+    // Matrícula — the enrollment flow, pushed from the Me shortcut grid.
+    // `Enrollment` is the status hub; the intermediate steps (offers →
+    // discipline → timetable → review) are sibling pushes sharing the
+    // activity-scoped `EnrollmentViewModel` session, and `EnrollmentSuccess`
+    // replaces the intermediate steps once the proposal is accepted so back
+    // lands on the refreshed status hub.
+    @Serializable data object Enrollment : ConnectedRoute
+    @Serializable data object EnrollmentOffers : ConnectedRoute
+    @Serializable data class EnrollmentDiscipline(val id: Long) : ConnectedRoute
+    @Serializable data object EnrollmentTimetable : ConnectedRoute
+    @Serializable data object EnrollmentReview : ConnectedRoute
+    @Serializable data object EnrollmentSuccess : ConnectedRoute
 }
 
 internal fun ConnectedTab.rootRoute(): ConnectedRoute = when (this) {

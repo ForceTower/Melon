@@ -19,6 +19,9 @@ import dev.forcetower.melon.feature.dashboard.domain.usecase.GetReadyOverviewUse
 import dev.forcetower.melon.feature.disciplines.domain.usecase.CalculateOverallScoreUseCase
 import dev.forcetower.melon.feature.disciplines.domain.usecase.ObserveDisciplineDetailUseCase
 import dev.forcetower.melon.feature.disciplines.domain.usecase.ObserveDisciplinesListUseCase
+import dev.forcetower.melon.feature.enrollment.domain.usecase.GetEnrollmentOffersUseCase
+import dev.forcetower.melon.feature.enrollment.domain.usecase.GetEnrollmentWindowUseCase
+import dev.forcetower.melon.feature.enrollment.domain.usecase.SubmitEnrollmentUseCase
 import dev.forcetower.melon.feature.materials.domain.usecase.GetMaterialsDisciplineUseCase
 import dev.forcetower.melon.feature.materials.domain.usecase.GetMaterialsOverviewUseCase
 import dev.forcetower.melon.feature.materials.domain.usecase.GetSavedMaterialsUseCase
@@ -64,6 +67,7 @@ import dev.forcetower.melon.feature.sync.domain.usecase.SyncSemesterListUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.SyncSemesterUseCase
 import dev.forcetower.melon.umbrella.UmbrellaConfig
 import dev.forcetower.melon.umbrella.UmbrellaGraph
+import dev.forcetower.unes.BuildConfig
 import dev.forcetower.unes.firebase.FirebaseCrashReporter
 import javax.inject.Singleton
 
@@ -84,8 +88,9 @@ object UmbrellaBridgeModule {
     fun provideUmbrellaGraph(@HiltApplicationContext context: Context): UmbrellaGraph =
         UmbrellaGraph(
             UmbrellaConfig(
-                // TODO: source from BuildConfig so debug builds can hit a local API.
-                baseUrl = "https://melon.forcetower.dev",
+                // Prod origin by default; debug builds can point at a local
+                // API with `-Pmelon.apiBaseUrl=…` (see app/build.gradle.kts).
+                baseUrl = BuildConfig.API_BASE_URL,
                 appContext = ApplicationContext(context),
                 // Routes KMP logger non-fatals + breadcrumbs into Crashlytics.
                 // iOS wires its equivalent in AppDelegate.swift.
@@ -246,6 +251,14 @@ object UmbrellaBridgeModule {
         graph.openMaterialUseCase
     @Provides fun provideSubmitMaterialUseCase(graph: UmbrellaGraph): SubmitMaterialUseCase =
         graph.submitMaterialUseCase
+    // Matrícula — live window/offers reads plus the wholesale-proposal submit.
+    // Nothing is cached (vacancy counts shift by the second during a window).
+    @Provides fun provideGetEnrollmentWindowUseCase(graph: UmbrellaGraph): GetEnrollmentWindowUseCase =
+        graph.getEnrollmentWindowUseCase
+    @Provides fun provideGetEnrollmentOffersUseCase(graph: UmbrellaGraph): GetEnrollmentOffersUseCase =
+        graph.getEnrollmentOffersUseCase
+    @Provides fun provideSubmitEnrollmentUseCase(graph: UmbrellaGraph): SubmitEnrollmentUseCase =
+        graph.submitEnrollmentUseCase
 
     // Calendário — academic-calendar events feed for the agenda + the
     // active-semester code that powers the header eyebrow. Mirrors iOS
