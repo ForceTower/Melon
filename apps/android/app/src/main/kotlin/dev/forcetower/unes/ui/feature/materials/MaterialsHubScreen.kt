@@ -37,7 +37,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -53,6 +55,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.forcetower.melon.feature.materials.domain.model.MaterialsDiscipline
 import dev.forcetower.melon.feature.materials.domain.model.MaterialsOverview
 import dev.forcetower.unes.R
+import dev.forcetower.unes.designsystem.foundation.PinnedHeaderHairline
 import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
 import dev.forcetower.unes.designsystem.foundation.scaleInOnAppear
 import dev.forcetower.unes.designsystem.theme.melon
@@ -91,67 +94,78 @@ internal fun MaterialsHubScreen(
 
     val overview = state.overview
 
+    val scrollState = rememberScrollState()
+    val scrolled by remember { derivedStateOf { scrollState.value > 0 } }
+
+    // The app bar stays pinned; the headline and the shelf scroll beneath it.
     Column(
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.surface)
-            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
-            .verticalScroll(rememberScrollState())
-            .windowInsetsPadding(WindowInsets.statusBars)
-            .padding(bottom = bottomInset + 24.dp),
+            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)),
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
+                .windowInsetsPadding(WindowInsets.statusBars)
                 .padding(horizontal = 8.dp)
                 .height(48.dp),
         ) {
             MaterialsBackButton(onBack = onBack)
         }
-        Column(modifier = Modifier.padding(horizontal = 20.dp)) {
-            Text(
-                text = stringResource(R.string.materials_title),
-                style = MaterialTheme.typography.headlineLarge.copy(
-                    fontSize = 32.sp,
-                    letterSpacing = (-0.64).sp,
-                ),
-                color = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.fadeUpOnAppear(delayMs = 20),
-            )
-            if (overview != null) {
-                Text(
-                    text = stringResource(
-                        R.string.materials_hub_subtitle,
-                        overview.totalCount,
-                        overview.disciplines.size,
-                        overview.semester,
-                    ),
-                    style = MaterialTheme.typography.bodyMedium.copy(fontSize = 13.sp),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier
-                        .padding(top = 7.dp)
-                        .fadeUpOnAppear(delayMs = 60),
-                )
-            }
-        }
+        PinnedHeaderHairline(scrolled = scrolled)
 
-        when {
-            overview != null -> HubContent(
-                overview = overview,
-                onOpenDiscipline = onOpenDiscipline,
-                onOpenSaved = onOpenSaved,
-                onContribute = {
-                    uploadVm.onIntent(MaterialsUploadIntent.StartFromHub(overview.disciplines))
-                },
-            )
-            state.loadFailed -> HubError(onRetry = { vm.onIntent(MaterialsHubIntent.Retry) })
-            else -> Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 120.dp),
-                contentAlignment = Alignment.Center,
-            ) {
-                CircularProgressIndicator()
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+                .padding(bottom = bottomInset + 24.dp),
+        ) {
+            Column(modifier = Modifier.padding(horizontal = 20.dp)) {
+                Text(
+                    text = stringResource(R.string.materials_title),
+                    style = MaterialTheme.typography.headlineLarge.copy(
+                        fontSize = 32.sp,
+                        letterSpacing = (-0.64).sp,
+                    ),
+                    color = MaterialTheme.colorScheme.onBackground,
+                    modifier = Modifier.fadeUpOnAppear(delayMs = 20),
+                )
+                if (overview != null) {
+                    Text(
+                        text = stringResource(
+                            R.string.materials_hub_subtitle,
+                            overview.totalCount,
+                            overview.disciplines.size,
+                            overview.semester,
+                        ),
+                        style = MaterialTheme.typography.bodyMedium.copy(fontSize = 13.sp),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier
+                            .padding(top = 7.dp)
+                            .fadeUpOnAppear(delayMs = 60),
+                    )
+                }
+            }
+
+            when {
+                overview != null -> HubContent(
+                    overview = overview,
+                    onOpenDiscipline = onOpenDiscipline,
+                    onOpenSaved = onOpenSaved,
+                    onContribute = {
+                        uploadVm.onIntent(MaterialsUploadIntent.StartFromHub(overview.disciplines))
+                    },
+                )
+                state.loadFailed -> HubError(onRetry = { vm.onIntent(MaterialsHubIntent.Retry) })
+                else -> Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 120.dp),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    CircularProgressIndicator()
+                }
             }
         }
     }

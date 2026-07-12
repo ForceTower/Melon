@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -33,6 +34,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -50,6 +52,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.forcetower.unes.R
+import dev.forcetower.unes.designsystem.foundation.PinnedHeaderHairline
 import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
 import dev.forcetower.unes.designsystem.theme.MelonTheme
 import dev.forcetower.unes.designsystem.theme.melon
@@ -108,67 +111,80 @@ private fun MessagesInbox(
     val now = remember(messages) { LocalDateTime.now() }
     val buckets = remember(filtered, now) { groupByBucket(filtered, now) }
 
-    LazyColumn(
+    val listState = rememberLazyListState()
+    val scrolled by remember {
+        derivedStateOf {
+            listState.firstVisibleItemIndex > 0 || listState.firstVisibleItemScrollOffset > 0
+        }
+    }
+
+    // The title header stays pinned (matching iOS); the hero, chips, and the
+    // bucketed list scroll beneath it.
+    Column(
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)),
-        contentPadding = PaddingValues(bottom = bottomInset + 32.dp),
     ) {
-        item("messages-header") {
-            Header(
-                unreadCount = unreadCount,
-                total = messages.size,
-                modifier = Modifier.fadeUpOnAppear(delayMs = 60, fromOffset = (-10).dp),
-            )
-        }
-        item("messages-hero") {
-            UnreadHeroCard(
-                unreadCount = unreadCount,
-                total = messages.size,
-                categoryCounts = categoryCounts,
-                onMarkAllRead = { onIntent(MessagesIntent.MarkAllRead) },
-                modifier = Modifier
-                    .padding(horizontal = 16.dp)
-                    .fadeUpOnAppear(delayMs = 120),
-            )
-        }
-        item("messages-filter") {
-            FilterChipRow(
-                active = state.filter,
-                counts = counts,
-                onChange = { onIntent(MessagesIntent.SetFilter(it)) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 18.dp, bottom = 8.dp)
-                    .fadeUpOnAppear(delayMs = 160, fromOffset = (-8).dp),
-            )
-        }
+        Header(
+            unreadCount = unreadCount,
+            total = messages.size,
+            modifier = Modifier.fadeUpOnAppear(delayMs = 60, fromOffset = (-10).dp),
+        )
+        PinnedHeaderHairline(scrolled = scrolled)
+        LazyColumn(
+            state = listState,
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(bottom = bottomInset + 32.dp),
+        ) {
+            item("messages-hero") {
+                UnreadHeroCard(
+                    unreadCount = unreadCount,
+                    total = messages.size,
+                    categoryCounts = categoryCounts,
+                    onMarkAllRead = { onIntent(MessagesIntent.MarkAllRead) },
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                        .fadeUpOnAppear(delayMs = 120),
+                )
+            }
+            item("messages-filter") {
+                FilterChipRow(
+                    active = state.filter,
+                    counts = counts,
+                    onChange = { onIntent(MessagesIntent.SetFilter(it)) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 18.dp, bottom = 8.dp)
+                        .fadeUpOnAppear(delayMs = 160, fromOffset = (-8).dp),
+                )
+            }
 
-        if (buckets.isEmpty()) {
-            item("messages-empty") { EmptyState() }
-        } else {
-            buckets.forEachIndexed { index, bucket ->
-                item(key = "bucket-${bucket.bucket.name}-header") {
-                    BucketHeader(
-                        label = stringResource(bucket.bucket.labelRes),
-                        count = bucket.items.size,
-                        modifier = Modifier.fadeUpOnAppear(delayMs = 200 + index * 60),
-                    )
-                }
-                itemsIndexed(
-                    items = bucket.items,
-                    key = { _, m -> m.id },
-                ) { _, message ->
-                    MessageRow(
-                        message = message,
-                        onOpen = { msg ->
-                            seedById[msg.id]?.let { seed -> onOpen(msg.id, seed) }
-                        },
-                        modifier = Modifier
-                            .padding(horizontal = 12.dp, vertical = 3.dp)
-                            .fadeUpOnAppear(delayMs = 240 + index * 60),
-                    )
+            if (buckets.isEmpty()) {
+                item("messages-empty") { EmptyState() }
+            } else {
+                buckets.forEachIndexed { index, bucket ->
+                    item(key = "bucket-${bucket.bucket.name}-header") {
+                        BucketHeader(
+                            label = stringResource(bucket.bucket.labelRes),
+                            count = bucket.items.size,
+                            modifier = Modifier.fadeUpOnAppear(delayMs = 200 + index * 60),
+                        )
+                    }
+                    itemsIndexed(
+                        items = bucket.items,
+                        key = { _, m -> m.id },
+                    ) { _, message ->
+                        MessageRow(
+                            message = message,
+                            onOpen = { msg ->
+                                seedById[msg.id]?.let { seed -> onOpen(msg.id, seed) }
+                            },
+                            modifier = Modifier
+                                .padding(horizontal = 12.dp, vertical = 3.dp)
+                                .fadeUpOnAppear(delayMs = 240 + index * 60),
+                        )
+                    }
                 }
             }
         }

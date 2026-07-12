@@ -40,6 +40,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -77,6 +78,7 @@ import dev.forcetower.melon.feature.paradoxo.domain.model.ParadoxoPulseKind
 import dev.forcetower.melon.feature.paradoxo.domain.model.ParadoxoRef
 import dev.forcetower.melon.feature.paradoxo.domain.model.ParadoxoTier
 import dev.forcetower.unes.R
+import dev.forcetower.unes.designsystem.foundation.PinnedHeaderHairline
 import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
 import dev.forcetower.unes.designsystem.foundation.scaleInOnAppear
 import dev.forcetower.unes.designsystem.theme.MelonTheme
@@ -158,176 +160,185 @@ private fun ParadoxoHomeContent(
     onOpenExplore: (ParadoxoExploreKind) -> Unit,
     bottomInset: Dp,
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .windowInsetsPadding(WindowInsets.statusBars)
-            .padding(bottom = bottomInset),
-    ) {
+    val scrollState = rememberScrollState()
+    val scrolled by remember { derivedStateOf { scrollState.value > 0 } }
+
+    // The app bar stays pinned; the headline and the explorer scroll
+    // beneath it.
+    Column(modifier = Modifier.fillMaxSize()) {
         ParadoxoHomeBar(
             onBack = onBack,
             avatarInitial = state.avatarInitial,
-            modifier = Modifier.fadeUpOnAppear(delayMs = 20),
+            modifier = Modifier
+                .windowInsetsPadding(WindowInsets.statusBars)
+                .fadeUpOnAppear(delayMs = 20),
         )
+        PinnedHeaderHairline(scrolled = scrolled)
 
         Column(
             modifier = Modifier
-                .padding(horizontal = 20.dp)
-                .fadeUpOnAppear(delayMs = 40),
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+                .padding(bottom = bottomInset),
         ) {
-            Text(
-                text = stringResource(R.string.paradoxo_eyebrow).uppercase(),
-                style = MaterialTheme.typography.labelMedium.copy(
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Bold,
-                    letterSpacing = 1.2.sp,
-                ),
-                color = MaterialTheme.colorScheme.primary,
-            )
-            Text(
-                text = stringResource(R.string.paradoxo_title),
-                style = MaterialTheme.typography.headlineLarge.copy(
-                    fontSize = 32.sp,
-                    lineHeight = 34.sp,
-                    fontWeight = FontWeight.Bold,
-                    letterSpacing = (-0.64).sp,
-                ),
-                color = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.padding(top = 4.dp),
-            )
-            Text(
-                text = stringResource(R.string.paradoxo_subtitle),
-                style = MaterialTheme.typography.bodySmall.copy(
-                    fontSize = 13.sp,
-                    lineHeight = 18.sp,
-                ),
-                color = MaterialTheme.colorScheme.outline,
+            Column(
                 modifier = Modifier
-                    .padding(top = 7.dp)
-                    .widthIn(max = 280.dp),
-            )
-        }
-
-        Column(modifier = Modifier.padding(horizontal = 20.dp)) {
-            // Search pill — tapping swaps the screen into search mode.
-            Row(
-                modifier = Modifier
-                    .padding(top = 14.dp)
-                    .fillMaxWidth()
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.surfaceContainer)
-                    .clickable(role = Role.Button, onClick = onOpenSearch)
-                    .padding(horizontal = 16.dp, vertical = 12.dp)
-                    .fadeUpOnAppear(delayMs = 80),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    .padding(horizontal = 20.dp)
+                    .fadeUpOnAppear(delayMs = 40),
             ) {
-                Icon(
-                    imageVector = Icons.Filled.Search,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.outlineVariant,
-                    modifier = Modifier.size(20.dp),
+                Text(
+                    text = stringResource(R.string.paradoxo_eyebrow).uppercase(),
+                    style = MaterialTheme.typography.labelMedium.copy(
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold,
+                        letterSpacing = 1.2.sp,
+                    ),
+                    color = MaterialTheme.colorScheme.primary,
                 )
                 Text(
-                    text = stringResource(R.string.paradoxo_search_prompt),
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        fontSize = 14.5.sp,
-                        fontWeight = FontWeight.Medium,
+                    text = stringResource(R.string.paradoxo_title),
+                    style = MaterialTheme.typography.headlineLarge.copy(
+                        fontSize = 32.sp,
+                        lineHeight = 34.sp,
+                        fontWeight = FontWeight.Bold,
+                        letterSpacing = (-0.64).sp,
                     ),
-                    color = MaterialTheme.colorScheme.outlineVariant,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    modifier = Modifier.padding(top = 4.dp),
                 )
-            }
-
-            val overview = state.overview
-            when {
-                overview != null -> ParadoxoPulseHero(
-                    facts = overview.pulse,
-                    onOpen = { ref -> onOpen(ref, "") },
+                Text(
+                    text = stringResource(R.string.paradoxo_subtitle),
+                    style = MaterialTheme.typography.bodySmall.copy(
+                        fontSize = 13.sp,
+                        lineHeight = 18.sp,
+                    ),
+                    color = MaterialTheme.colorScheme.outline,
                     modifier = Modifier
-                        .padding(top = 18.dp)
-                        .scaleInOnAppear(delayMs = 120, fromScale = 0.97f),
+                        .padding(top = 7.dp)
+                        .widthIn(max = 280.dp),
                 )
-                state.failed -> ParadoxoFailure(onRetry = onRetry)
-                else -> ParadoxoLoading()
             }
 
-            ParadoxoExploreGrid(
-                onOpenExplore = onOpenExplore,
-                modifier = Modifier
-                    .padding(top = 24.dp)
-                    .fadeUpOnAppear(delayMs = 200),
-            )
-
-            if (overview != null && overview.myDisciplines.isNotEmpty()) {
-                Column(modifier = Modifier.fadeUpOnAppear(delayMs = 260)) {
-                    Text(
-                        text = stringResource(R.string.paradoxo_section_mine).uppercase(),
-                        style = MaterialTheme.typography.labelMedium.copy(
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Bold,
-                            letterSpacing = 1.44.sp,
-                        ),
-                        color = MaterialTheme.colorScheme.outline,
-                        modifier = Modifier.padding(top = 26.dp),
+            Column(modifier = Modifier.padding(horizontal = 20.dp)) {
+                // Search pill — tapping swaps the screen into search mode.
+                Row(
+                    modifier = Modifier
+                        .padding(top = 14.dp)
+                        .fillMaxWidth()
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.surfaceContainer)
+                        .clickable(role = Role.Button, onClick = onOpenSearch)
+                        .padding(horizontal = 16.dp, vertical = 12.dp)
+                        .fadeUpOnAppear(delayMs = 80),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Search,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.outlineVariant,
+                        modifier = Modifier.size(20.dp),
                     )
                     Text(
-                        text = stringResource(R.string.paradoxo_section_mine_note),
+                        text = stringResource(R.string.paradoxo_search_prompt),
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            fontSize = 14.5.sp,
+                            fontWeight = FontWeight.Medium,
+                        ),
+                        color = MaterialTheme.colorScheme.outlineVariant,
+                    )
+                }
+
+                val overview = state.overview
+                when {
+                    overview != null -> ParadoxoPulseHero(
+                        facts = overview.pulse,
+                        onOpen = { ref -> onOpen(ref, "") },
+                        modifier = Modifier
+                            .padding(top = 18.dp)
+                            .scaleInOnAppear(delayMs = 120, fromScale = 0.97f),
+                    )
+                    state.failed -> ParadoxoFailure(onRetry = onRetry)
+                    else -> ParadoxoLoading()
+                }
+
+                ParadoxoExploreGrid(
+                    onOpenExplore = onOpenExplore,
+                    modifier = Modifier
+                        .padding(top = 24.dp)
+                        .fadeUpOnAppear(delayMs = 200),
+                )
+
+                if (overview != null && overview.myDisciplines.isNotEmpty()) {
+                    Column(modifier = Modifier.fadeUpOnAppear(delayMs = 260)) {
+                        Text(
+                            text = stringResource(R.string.paradoxo_section_mine).uppercase(),
+                            style = MaterialTheme.typography.labelMedium.copy(
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Bold,
+                                letterSpacing = 1.44.sp,
+                            ),
+                            color = MaterialTheme.colorScheme.outline,
+                            modifier = Modifier.padding(top = 26.dp),
+                        )
+                        Text(
+                            text = stringResource(R.string.paradoxo_section_mine_note),
+                            style = MaterialTheme.typography.bodySmall.copy(
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Medium,
+                            ),
+                            color = MaterialTheme.colorScheme.outlineVariant,
+                            modifier = Modifier.padding(top = 3.dp, bottom = 14.dp),
+                        )
+                        ParadoxoCard {
+                            overview.myDisciplines.forEachIndexed { index, mine ->
+                                ParadoxoListRow(
+                                    mean = mine.mean,
+                                    title = mine.name,
+                                    subtitle = mineSubtitle(mine.sampleCount, mine.myPercentile),
+                                    onClick = {
+                                        onOpen(ParadoxoRef.Discipline(mine.id), mine.name)
+                                    },
+                                    tileSize = 46.dp,
+                                    showDivider = index > 0,
+                                    trailing = if (mine.spark.size >= 2) {
+                                        {
+                                            ParadoxoSparkline(
+                                                values = mine.spark.takeLast(8),
+                                                color = MaterialTheme.colorScheme.outlineVariant,
+                                                modifier = Modifier.size(width = 42.dp, height = 18.dp),
+                                            )
+                                        }
+                                    } else {
+                                        null
+                                    },
+                                )
+                            }
+                        }
+                    }
+                }
+
+                if (overview != null && overview.studentCount > 0) {
+                    Text(
+                        text = stringResource(
+                            R.string.paradoxo_footer_format,
+                            ParadoxoFormat.count(overview.studentCount),
+                            ParadoxoFormat.count(overview.meanCount),
+                        ),
                         style = MaterialTheme.typography.bodySmall.copy(
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Medium,
                         ),
                         color = MaterialTheme.colorScheme.outlineVariant,
-                        modifier = Modifier.padding(top = 3.dp, bottom = 14.dp),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 20.dp),
                     )
-                    ParadoxoCard {
-                        overview.myDisciplines.forEachIndexed { index, mine ->
-                            ParadoxoListRow(
-                                mean = mine.mean,
-                                title = mine.name,
-                                subtitle = mineSubtitle(mine.sampleCount, mine.myPercentile),
-                                onClick = {
-                                    onOpen(ParadoxoRef.Discipline(mine.id), mine.name)
-                                },
-                                tileSize = 46.dp,
-                                showDivider = index > 0,
-                                trailing = if (mine.spark.size >= 2) {
-                                    {
-                                        ParadoxoSparkline(
-                                            values = mine.spark.takeLast(8),
-                                            color = MaterialTheme.colorScheme.outlineVariant,
-                                            modifier = Modifier.size(width = 42.dp, height = 18.dp),
-                                        )
-                                    }
-                                } else {
-                                    null
-                                },
-                            )
-                        }
-                    }
                 }
-            }
 
-            if (overview != null && overview.studentCount > 0) {
-                Text(
-                    text = stringResource(
-                        R.string.paradoxo_footer_format,
-                        ParadoxoFormat.count(overview.studentCount),
-                        ParadoxoFormat.count(overview.meanCount),
-                    ),
-                    style = MaterialTheme.typography.bodySmall.copy(
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Medium,
-                    ),
-                    color = MaterialTheme.colorScheme.outlineVariant,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 20.dp),
-                )
+                Spacer(Modifier.height(24.dp))
             }
-
-            Spacer(Modifier.height(24.dp))
         }
     }
 }

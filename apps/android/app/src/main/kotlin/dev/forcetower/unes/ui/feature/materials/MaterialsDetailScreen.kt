@@ -53,7 +53,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -77,6 +79,7 @@ import dev.forcetower.melon.feature.materials.domain.model.MaterialReportReason
 import dev.forcetower.melon.feature.materials.domain.model.MaterialStatus
 import dev.forcetower.melon.feature.materials.domain.model.MaterialsDiscipline
 import dev.forcetower.unes.R
+import dev.forcetower.unes.designsystem.foundation.PinnedHeaderHairline
 import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
 import dev.forcetower.unes.designsystem.theme.melon
 import dev.forcetower.unes.mvi.collectAsEffect
@@ -187,6 +190,9 @@ private fun DetailContent(
     val tint = material.type.hue()
     val ok = MaterialTheme.melon.status.ok
 
+    val scrollState = rememberScrollState()
+    val scrolled by remember { derivedStateOf { scrollState.value > 0 } }
+
     Box(modifier = Modifier.fillMaxSize()) {
         // Type-tinted wash behind the header (dc `det.wash`).
         Box(
@@ -201,18 +207,18 @@ private fun DetailContent(
                 ),
         )
 
+        // The app bar stays pinned; the header and the cards scroll
+        // beneath it.
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
-                .verticalScroll(rememberScrollState())
-                .windowInsetsPadding(WindowInsets.statusBars)
-                .padding(bottom = bottomInset + 110.dp),
+                .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)),
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
+                    .windowInsetsPadding(WindowInsets.statusBars)
                     .padding(horizontal = 8.dp)
                     .height(48.dp),
             ) {
@@ -226,214 +232,222 @@ private fun DetailContent(
                     )
                 }
             }
+            PinnedHeaderHairline(scrolled = scrolled)
 
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(18.dp),
+            Column(
                 modifier = Modifier
-                    .padding(horizontal = 20.dp, vertical = 6.dp)
-                    .fadeUpOnAppear(delayMs = 20),
+                    .fillMaxSize()
+                    .verticalScroll(scrollState)
+                    .padding(bottom = bottomInset + 110.dp),
             ) {
-                PreviewCard(material = material)
-                Column(modifier = Modifier.weight(1f).padding(top = 4.dp)) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(5.dp),
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(8.dp))
-                            .background(tint.copy(alpha = 0.20f))
-                            .padding(horizontal = 9.dp, vertical = 3.dp),
-                    ) {
-                        Icon(
-                            imageVector = material.type.icon(),
-                            contentDescription = null,
-                            tint = tint,
-                            modifier = Modifier.size(12.dp),
-                        )
-                        Text(
-                            text = stringResource(material.type.labelRes()).uppercase(),
-                            style = MaterialTheme.typography.labelSmall.copy(
-                                fontSize = 11.sp,
-                                fontWeight = FontWeight.Bold,
-                            ),
-                            color = tint,
-                        )
-                    }
-                    Text(
-                        text = material.title,
-                        style = MaterialTheme.typography.titleLarge.copy(
-                            fontSize = 22.sp,
-                            fontWeight = FontWeight.Bold,
-                            letterSpacing = (-0.44).sp,
-                            lineHeight = 26.sp,
-                        ),
-                        color = MaterialTheme.colorScheme.onBackground,
-                        modifier = Modifier.padding(top = 10.dp),
-                    )
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        modifier = Modifier.padding(top = 12.dp),
-                    ) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(18.dp),
+                    modifier = Modifier
+                        .padding(horizontal = 20.dp, vertical = 6.dp)
+                        .fadeUpOnAppear(delayMs = 20),
+                ) {
+                    PreviewCard(material = material)
+                    Column(modifier = Modifier.weight(1f).padding(top = 4.dp)) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(4.dp),
+                            horizontalArrangement = Arrangement.spacedBy(5.dp),
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(tint.copy(alpha = 0.20f))
+                                .padding(horizontal = 9.dp, vertical = 3.dp),
                         ) {
                             Icon(
-                                imageVector = Icons.Filled.ThumbUp,
-                                contentDescription = stringResource(R.string.materials_action_useful),
-                                tint = if (material.isUseful) ok else MaterialTheme.colorScheme.outline,
-                                modifier = Modifier.size(15.dp),
+                                imageVector = material.type.icon(),
+                                contentDescription = null,
+                                tint = tint,
+                                modifier = Modifier.size(12.dp),
                             )
                             Text(
-                                text = material.usefulCount.toString(),
-                                style = MaterialTheme.typography.labelMedium.copy(fontSize = 13.sp),
-                                color = if (material.isUseful) ok else MaterialTheme.colorScheme.outline,
+                                text = stringResource(material.type.labelRes()).uppercase(),
+                                style = MaterialTheme.typography.labelSmall.copy(
+                                    fontSize = 11.sp,
+                                    fontWeight = FontWeight.Bold,
+                                ),
+                                color = tint,
                             )
                         }
                         Text(
-                            text = "·",
-                            color = MaterialTheme.colorScheme.outline,
+                            text = material.title,
+                            style = MaterialTheme.typography.titleLarge.copy(
+                                fontSize = 22.sp,
+                                fontWeight = FontWeight.Bold,
+                                letterSpacing = (-0.44).sp,
+                                lineHeight = 26.sp,
+                            ),
+                            color = MaterialTheme.colorScheme.onBackground,
+                            modifier = Modifier.padding(top = 10.dp),
                         )
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(4.dp),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            modifier = Modifier.padding(top = 12.dp),
                         ) {
-                            Icon(
-                                imageVector = Icons.Filled.Download,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.outline,
-                                modifier = Modifier.size(14.dp),
-                            )
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.ThumbUp,
+                                    contentDescription = stringResource(R.string.materials_action_useful),
+                                    tint = if (material.isUseful) ok else MaterialTheme.colorScheme.outline,
+                                    modifier = Modifier.size(15.dp),
+                                )
+                                Text(
+                                    text = material.usefulCount.toString(),
+                                    style = MaterialTheme.typography.labelMedium.copy(fontSize = 13.sp),
+                                    color = if (material.isUseful) ok else MaterialTheme.colorScheme.outline,
+                                )
+                            }
                             Text(
-                                text = formatDownloads(material.downloadCount),
-                                style = MaterialTheme.typography.labelMedium.copy(fontSize = 13.sp),
+                                text = "·",
                                 color = MaterialTheme.colorScheme.outline,
                             )
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.Download,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.outline,
+                                    modifier = Modifier.size(14.dp),
+                                )
+                                Text(
+                                    text = formatDownloads(material.downloadCount),
+                                    style = MaterialTheme.typography.labelMedium.copy(fontSize = 13.sp),
+                                    color = MaterialTheme.colorScheme.outline,
+                                )
+                            }
                         }
                     }
                 }
-            }
 
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier
-                    .padding(horizontal = 20.dp)
-                    .padding(top = 18.dp)
-                    .fadeUpOnAppear(delayMs = 80),
-            ) {
-                ToggleActionButton(
-                    label = stringResource(R.string.materials_action_useful),
-                    icon = Icons.Filled.ThumbUp,
-                    active = material.isUseful,
-                    onTap = { onIntent(MaterialsDetailIntent.ToggleUseful) },
-                    modifier = Modifier.weight(1f),
-                )
-                ToggleActionButton(
-                    label = stringResource(
-                        if (material.isSaved) R.string.materials_action_saved
-                        else R.string.materials_action_save,
-                    ),
-                    icon = Icons.Filled.Bookmark,
-                    active = material.isSaved,
-                    onTap = { onIntent(MaterialsDetailIntent.ToggleSave) },
-                    modifier = Modifier.weight(1f),
-                )
-            }
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier
+                        .padding(horizontal = 20.dp)
+                        .padding(top = 18.dp)
+                        .fadeUpOnAppear(delayMs = 80),
+                ) {
+                    ToggleActionButton(
+                        label = stringResource(R.string.materials_action_useful),
+                        icon = Icons.Filled.ThumbUp,
+                        active = material.isUseful,
+                        onTap = { onIntent(MaterialsDetailIntent.ToggleUseful) },
+                        modifier = Modifier.weight(1f),
+                    )
+                    ToggleActionButton(
+                        label = stringResource(
+                            if (material.isSaved) R.string.materials_action_saved
+                            else R.string.materials_action_save,
+                        ),
+                        icon = Icons.Filled.Bookmark,
+                        active = material.isSaved,
+                        onTap = { onIntent(MaterialsDetailIntent.ToggleSave) },
+                        modifier = Modifier.weight(1f),
+                    )
+                }
 
-            val note = material.note
-            if (note != null) {
+                val note = material.note
+                if (note != null) {
+                    Column(
+                        modifier = Modifier
+                            .padding(horizontal = 20.dp)
+                            .padding(top = 22.dp)
+                            .fadeUpOnAppear(delayMs = 140),
+                    ) {
+                        MaterialsSectionLabel(text = stringResource(R.string.materials_detail_about))
+                        Spacer(Modifier.height(12.dp))
+                        MaterialsCard(cornerRadius = 18, modifier = Modifier.fillMaxWidth()) {
+                            Row(modifier = Modifier.padding(horizontal = 17.dp, vertical = 15.dp)) {
+                                Box(
+                                    modifier = Modifier
+                                        .width(4.dp)
+                                        .height(40.dp)
+                                        .clip(RoundedCornerShape(3.dp))
+                                        .background(tint),
+                                )
+                                Text(
+                                    text = note,
+                                    style = MaterialTheme.typography.bodyMedium.copy(
+                                        fontSize = 14.5.sp,
+                                        lineHeight = 22.sp,
+                                    ),
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    modifier = Modifier.padding(start = 12.dp),
+                                )
+                            }
+                        }
+                    }
+                }
+
                 Column(
                     modifier = Modifier
                         .padding(horizontal = 20.dp)
                         .padding(top = 22.dp)
-                        .fadeUpOnAppear(delayMs = 140),
+                        .fadeUpOnAppear(delayMs = 200),
                 ) {
-                    MaterialsSectionLabel(text = stringResource(R.string.materials_detail_about))
+                    MaterialsSectionLabel(text = stringResource(R.string.materials_detail_details))
                     Spacer(Modifier.height(12.dp))
                     MaterialsCard(cornerRadius = 18, modifier = Modifier.fillMaxWidth()) {
-                        Row(modifier = Modifier.padding(horizontal = 17.dp, vertical = 15.dp)) {
-                            Box(
-                                modifier = Modifier
-                                    .width(4.dp)
-                                    .height(40.dp)
-                                    .clip(RoundedCornerShape(3.dp))
-                                    .background(tint),
+                        Column {
+                            DetailMetaRow(
+                                icon = Icons.Filled.GridView,
+                                label = stringResource(R.string.materials_detail_row_discipline),
+                                value = material.discipline.code,
+                                showDivider = true,
                             )
-                            Text(
-                                text = note,
-                                style = MaterialTheme.typography.bodyMedium.copy(
-                                    fontSize = 14.5.sp,
-                                    lineHeight = 22.sp,
-                                ),
-                                color = MaterialTheme.colorScheme.onSurface,
-                                modifier = Modifier.padding(start = 12.dp),
+                            DetailMetaRow(
+                                icon = Icons.Filled.Schedule,
+                                label = stringResource(R.string.materials_detail_row_semester),
+                                value = material.semester,
+                                showDivider = true,
+                            )
+                            DetailMetaRow(
+                                icon = Icons.Filled.Person,
+                                label = stringResource(R.string.materials_detail_row_teacher),
+                                value = material.teacherName
+                                    ?: stringResource(R.string.materials_detail_teacher_unknown),
+                                showDivider = true,
+                            )
+                            DetailMetaRow(
+                                icon = material.fileKind.icon(),
+                                label = stringResource(R.string.materials_detail_row_file),
+                                value = "${material.fileKind.label()} · " +
+                                    pluralStringResource(
+                                        R.plurals.materials_pages,
+                                        material.pages,
+                                        material.pages,
+                                    ),
+                                showDivider = false,
                             )
                         }
                     }
                 }
+
+                UploaderCard(
+                    material = material,
+                    modifier = Modifier
+                        .padding(horizontal = 20.dp)
+                        .padding(top = 22.dp)
+                        .fadeUpOnAppear(delayMs = 260),
+                )
+
+                Text(
+                    text = stringResource(R.string.materials_detail_disclaimer),
+                    style = MaterialTheme.typography.bodySmall.copy(fontSize = 11.5.sp, lineHeight = 17.sp),
+                    color = MaterialTheme.colorScheme.outline,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 18.dp, start = 30.dp, end = 30.dp),
+                )
             }
-
-            Column(
-                modifier = Modifier
-                    .padding(horizontal = 20.dp)
-                    .padding(top = 22.dp)
-                    .fadeUpOnAppear(delayMs = 200),
-            ) {
-                MaterialsSectionLabel(text = stringResource(R.string.materials_detail_details))
-                Spacer(Modifier.height(12.dp))
-                MaterialsCard(cornerRadius = 18, modifier = Modifier.fillMaxWidth()) {
-                    Column {
-                        DetailMetaRow(
-                            icon = Icons.Filled.GridView,
-                            label = stringResource(R.string.materials_detail_row_discipline),
-                            value = material.discipline.code,
-                            showDivider = true,
-                        )
-                        DetailMetaRow(
-                            icon = Icons.Filled.Schedule,
-                            label = stringResource(R.string.materials_detail_row_semester),
-                            value = material.semester,
-                            showDivider = true,
-                        )
-                        DetailMetaRow(
-                            icon = Icons.Filled.Person,
-                            label = stringResource(R.string.materials_detail_row_teacher),
-                            value = material.teacherName
-                                ?: stringResource(R.string.materials_detail_teacher_unknown),
-                            showDivider = true,
-                        )
-                        DetailMetaRow(
-                            icon = material.fileKind.icon(),
-                            label = stringResource(R.string.materials_detail_row_file),
-                            value = "${material.fileKind.label()} · " +
-                                pluralStringResource(
-                                    R.plurals.materials_pages,
-                                    material.pages,
-                                    material.pages,
-                                ),
-                            showDivider = false,
-                        )
-                    }
-                }
-            }
-
-            UploaderCard(
-                material = material,
-                modifier = Modifier
-                    .padding(horizontal = 20.dp)
-                    .padding(top = 22.dp)
-                    .fadeUpOnAppear(delayMs = 260),
-            )
-
-            Text(
-                text = stringResource(R.string.materials_detail_disclaimer),
-                style = MaterialTheme.typography.bodySmall.copy(fontSize = 11.5.sp, lineHeight = 17.sp),
-                color = MaterialTheme.colorScheme.outline,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 18.dp, start = 30.dp, end = 30.dp),
-            )
         }
 
         // Pinned "Abrir PDF/foto" CTA (dc bottom CTA).
@@ -711,18 +725,20 @@ private fun ModerationStatusContent(
     val pending = material.status == MaterialStatus.Pending
     val tone = if (pending) MaterialTheme.melon.status.warn else MaterialTheme.melon.status.bad
 
+    val scrollState = rememberScrollState()
+    val scrolled by remember { derivedStateOf { scrollState.value > 0 } }
+
+    // The app bar stays pinned; the status content scrolls beneath it.
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
-            .verticalScroll(rememberScrollState())
-            .windowInsetsPadding(WindowInsets.statusBars)
-            .padding(bottom = bottomInset + 40.dp),
+            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)),
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
+                .windowInsetsPadding(WindowInsets.statusBars)
                 .padding(horizontal = 8.dp)
                 .height(48.dp),
         ) {
@@ -742,166 +758,174 @@ private fun ModerationStatusContent(
             )
             Spacer(Modifier.width(48.dp))
         }
+        PinnedHeaderHairline(scrolled = scrolled)
 
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp)
-                .padding(top = 20.dp)
-                .fadeUpOnAppear(delayMs = 20),
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+                .padding(bottom = bottomInset + 40.dp),
         ) {
-            Box(
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
-                    .size(78.dp)
-                    .clip(RoundedCornerShape(26.dp))
-                    .background(tone.copy(alpha = 0.18f)),
-                contentAlignment = Alignment.Center,
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp)
+                    .padding(top = 20.dp)
+                    .fadeUpOnAppear(delayMs = 20),
             ) {
-                Icon(
-                    imageVector = if (pending) Icons.Filled.Schedule else Icons.Filled.Warning,
-                    contentDescription = null,
-                    tint = tone,
-                    modifier = Modifier.size(38.dp),
+                Box(
+                    modifier = Modifier
+                        .size(78.dp)
+                        .clip(RoundedCornerShape(26.dp))
+                        .background(tone.copy(alpha = 0.18f)),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Icon(
+                        imageVector = if (pending) Icons.Filled.Schedule else Icons.Filled.Warning,
+                        contentDescription = null,
+                        tint = tone,
+                        modifier = Modifier.size(38.dp),
+                    )
+                }
+                Text(
+                    text = stringResource(
+                        if (pending) R.string.materials_moderation_pending_title
+                        else R.string.materials_moderation_rejected_title,
+                    ),
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        fontSize = 25.sp,
+                        fontWeight = FontWeight.Bold,
+                        letterSpacing = (-0.5).sp,
+                        lineHeight = 29.sp,
+                    ),
+                    color = MaterialTheme.colorScheme.onBackground,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(top = 20.dp),
+                )
+                Text(
+                    text = stringResource(
+                        if (pending) R.string.materials_moderation_pending_body
+                        else R.string.materials_moderation_rejected_body,
+                    ),
+                    style = MaterialTheme.typography.bodyMedium.copy(fontSize = 15.sp, lineHeight = 22.sp),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(top = 10.dp, start = 18.dp, end = 18.dp),
                 )
             }
-            Text(
-                text = stringResource(
-                    if (pending) R.string.materials_moderation_pending_title
-                    else R.string.materials_moderation_rejected_title,
-                ),
-                style = MaterialTheme.typography.titleLarge.copy(
-                    fontSize = 25.sp,
-                    fontWeight = FontWeight.Bold,
-                    letterSpacing = (-0.5).sp,
-                    lineHeight = 29.sp,
-                ),
-                color = MaterialTheme.colorScheme.onBackground,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(top = 20.dp),
-            )
-            Text(
-                text = stringResource(
-                    if (pending) R.string.materials_moderation_pending_body
-                    else R.string.materials_moderation_rejected_body,
-                ),
-                style = MaterialTheme.typography.bodyMedium.copy(fontSize = 15.sp, lineHeight = 22.sp),
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(top = 10.dp, start = 18.dp, end = 18.dp),
-            )
-        }
 
-        Column(
-            modifier = Modifier
-                .padding(horizontal = 20.dp)
-                .padding(top = 24.dp)
-                .fadeUpOnAppear(delayMs = 100),
-        ) {
-            MaterialsCard(cornerRadius = 18, modifier = Modifier.fillMaxWidth()) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(14.dp),
-                    modifier = Modifier.padding(16.dp),
-                ) {
-                    MaterialTypeBadge(material)
-                    Column {
-                        Text(
-                            text = material.title,
-                            style = MaterialTheme.typography.titleSmall.copy(
-                                fontSize = 15.sp,
-                                fontWeight = FontWeight.SemiBold,
-                                letterSpacing = (-0.3).sp,
-                            ),
-                            color = MaterialTheme.colorScheme.onBackground,
-                        )
-                        Text(
-                            text = "${stringResource(material.type.labelRes())} · ${material.semester} · " +
-                                pluralStringResource(
-                                    R.plurals.materials_pages_short,
-                                    material.pages,
-                                    material.pages,
-                                ),
-                            style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.5.sp),
-                            color = MaterialTheme.colorScheme.outline,
-                            modifier = Modifier.padding(top = 3.dp),
-                        )
-                    }
-                }
-            }
-
-            Spacer(Modifier.height(16.dp))
-
-            if (pending) {
-                ModerationTimeline()
-            } else {
-                val reason = material.rejectionReason
-                if (reason != null) {
+            Column(
+                modifier = Modifier
+                    .padding(horizontal = 20.dp)
+                    .padding(top = 24.dp)
+                    .fadeUpOnAppear(delayMs = 100),
+            ) {
+                MaterialsCard(cornerRadius = 18, modifier = Modifier.fillMaxWidth()) {
                     Row(
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(18.dp))
-                            .background(tone.copy(alpha = 0.12f))
-                            .border(1.dp, tone.copy(alpha = 0.30f), RoundedCornerShape(18.dp))
-                            .padding(horizontal = 16.dp, vertical = 14.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(14.dp),
+                        modifier = Modifier.padding(16.dp),
                     ) {
-                        Box(
-                            modifier = Modifier
-                                .size(24.dp)
-                                .clip(CircleShape)
-                                .background(tone),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            Icon(
-                                imageVector = Icons.Filled.Warning,
-                                contentDescription = null,
-                                tint = MaterialTheme.melon.fixed.onHero,
-                                modifier = Modifier.size(14.dp),
-                            )
-                        }
+                        MaterialTypeBadge(material)
                         Column {
                             Text(
-                                text = stringResource(R.string.materials_moderation_reason_title),
+                                text = material.title,
                                 style = MaterialTheme.typography.titleSmall.copy(
-                                    fontSize = 13.5.sp,
-                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 15.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                    letterSpacing = (-0.3).sp,
                                 ),
                                 color = MaterialTheme.colorScheme.onBackground,
                             )
                             Text(
-                                text = reason,
-                                style = MaterialTheme.typography.bodySmall.copy(
-                                    fontSize = 13.sp,
-                                    lineHeight = 19.sp,
-                                ),
-                                color = MaterialTheme.colorScheme.onSurface,
+                                text = "${stringResource(material.type.labelRes())} · ${material.semester} · " +
+                                    pluralStringResource(
+                                        R.plurals.materials_pages_short,
+                                        material.pages,
+                                        material.pages,
+                                    ),
+                                style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.5.sp),
+                                color = MaterialTheme.colorScheme.outline,
                                 modifier = Modifier.padding(top = 3.dp),
                             )
                         }
                     }
-                    Spacer(Modifier.height(16.dp))
                 }
-                Button(
-                    onClick = onResubmit,
-                    shape = CircleShape,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(52.dp),
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Add,
-                        contentDescription = null,
-                        modifier = Modifier.size(19.dp),
-                    )
-                    Spacer(Modifier.width(9.dp))
-                    Text(
-                        text = stringResource(R.string.materials_moderation_resubmit),
-                        style = MaterialTheme.typography.labelLarge.copy(
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.Bold,
-                        ),
-                    )
+
+                Spacer(Modifier.height(16.dp))
+
+                if (pending) {
+                    ModerationTimeline()
+                } else {
+                    val reason = material.rejectionReason
+                    if (reason != null) {
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(18.dp))
+                                .background(tone.copy(alpha = 0.12f))
+                                .border(1.dp, tone.copy(alpha = 0.30f), RoundedCornerShape(18.dp))
+                                .padding(horizontal = 16.dp, vertical = 14.dp),
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .size(24.dp)
+                                    .clip(CircleShape)
+                                    .background(tone),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.Warning,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.melon.fixed.onHero,
+                                    modifier = Modifier.size(14.dp),
+                                )
+                            }
+                            Column {
+                                Text(
+                                    text = stringResource(R.string.materials_moderation_reason_title),
+                                    style = MaterialTheme.typography.titleSmall.copy(
+                                        fontSize = 13.5.sp,
+                                        fontWeight = FontWeight.Bold,
+                                    ),
+                                    color = MaterialTheme.colorScheme.onBackground,
+                                )
+                                Text(
+                                    text = reason,
+                                    style = MaterialTheme.typography.bodySmall.copy(
+                                        fontSize = 13.sp,
+                                        lineHeight = 19.sp,
+                                    ),
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    modifier = Modifier.padding(top = 3.dp),
+                                )
+                            }
+                        }
+                        Spacer(Modifier.height(16.dp))
+                    }
+                    Button(
+                        onClick = onResubmit,
+                        shape = CircleShape,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(52.dp),
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Add,
+                            contentDescription = null,
+                            modifier = Modifier.size(19.dp),
+                        )
+                        Spacer(Modifier.width(9.dp))
+                        Text(
+                            text = stringResource(R.string.materials_moderation_resubmit),
+                            style = MaterialTheme.typography.labelLarge.copy(
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight.Bold,
+                            ),
+                        )
+                    }
                 }
             }
         }

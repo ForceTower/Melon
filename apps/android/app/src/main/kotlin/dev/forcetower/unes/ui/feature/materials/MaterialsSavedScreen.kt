@@ -24,7 +24,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -37,6 +39,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.forcetower.melon.feature.materials.domain.model.Material
 import dev.forcetower.unes.R
+import dev.forcetower.unes.designsystem.foundation.PinnedHeaderHairline
 import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
 import dev.forcetower.unes.ui.feature.materials.components.MaterialRow
 import dev.forcetower.unes.ui.feature.materials.components.MaterialsBackButton
@@ -57,76 +60,87 @@ internal fun MaterialsSavedScreen(
 
     LaunchedEffect(Unit) { vm.onIntent(MaterialsSavedIntent.Load) }
 
+    val scrollState = rememberScrollState()
+    val scrolled by remember { derivedStateOf { scrollState.value > 0 } }
+
+    // The app bar stays pinned; the headline and the shelf scroll beneath it.
     Column(
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.surface)
-            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
-            .verticalScroll(rememberScrollState())
-            .windowInsetsPadding(WindowInsets.statusBars)
-            .padding(bottom = bottomInset + 24.dp),
+            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)),
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
+                .windowInsetsPadding(WindowInsets.statusBars)
                 .padding(horizontal = 8.dp)
                 .height(48.dp),
         ) {
             MaterialsBackButton(onBack = onBack)
         }
-        Text(
-            text = stringResource(R.string.materials_saved_title),
-            style = MaterialTheme.typography.headlineLarge.copy(
-                fontSize = 32.sp,
-                letterSpacing = (-0.64).sp,
-            ),
-            color = MaterialTheme.colorScheme.onBackground,
-            modifier = Modifier
-                .padding(horizontal = 20.dp)
-                .fadeUpOnAppear(delayMs = 20),
-        )
+        PinnedHeaderHairline(scrolled = scrolled)
 
-        val materials = state.materials
-        when {
-            materials == null && state.loadFailed -> SavedMessage(
-                title = stringResource(R.string.materials_error_title),
-                body = stringResource(R.string.materials_error_subtitle),
-            ) {
-                TextButton(onClick = { vm.onIntent(MaterialsSavedIntent.Load) }) {
-                    Text(text = stringResource(R.string.materials_error_retry))
-                }
-            }
-            materials == null -> Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 100.dp),
-                contentAlignment = Alignment.Center,
-            ) {
-                CircularProgressIndicator()
-            }
-            materials.isEmpty() -> SavedMessage(
-                title = stringResource(R.string.materials_saved_empty_title),
-                body = stringResource(R.string.materials_saved_empty_body),
-            )
-            else -> Column(
-                verticalArrangement = Arrangement.spacedBy(22.dp),
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+                .padding(bottom = bottomInset + 24.dp),
+        ) {
+            Text(
+                text = stringResource(R.string.materials_saved_title),
+                style = MaterialTheme.typography.headlineLarge.copy(
+                    fontSize = 32.sp,
+                    letterSpacing = (-0.64).sp,
+                ),
+                color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier
                     .padding(horizontal = 20.dp)
-                    .padding(top = 20.dp)
-                    .fadeUpOnAppear(delayMs = 80),
-            ) {
-                state.groups.forEach { (disciplineName, items) ->
-                    Column {
-                        MaterialsSectionLabel(text = disciplineName)
-                        Spacer(Modifier.height(12.dp))
-                        MaterialsCard(modifier = Modifier.fillMaxWidth()) {
-                            Column {
-                                items.forEachIndexed { index, material ->
-                                    MaterialRow(
-                                        material = material,
-                                        onTap = { onOpenMaterial(material) },
-                                        showDivider = index < items.lastIndex,
-                                    )
+                    .fadeUpOnAppear(delayMs = 20),
+            )
+
+            val materials = state.materials
+            when {
+                materials == null && state.loadFailed -> SavedMessage(
+                    title = stringResource(R.string.materials_error_title),
+                    body = stringResource(R.string.materials_error_subtitle),
+                ) {
+                    TextButton(onClick = { vm.onIntent(MaterialsSavedIntent.Load) }) {
+                        Text(text = stringResource(R.string.materials_error_retry))
+                    }
+                }
+                materials == null -> Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 100.dp),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    CircularProgressIndicator()
+                }
+                materials.isEmpty() -> SavedMessage(
+                    title = stringResource(R.string.materials_saved_empty_title),
+                    body = stringResource(R.string.materials_saved_empty_body),
+                )
+                else -> Column(
+                    verticalArrangement = Arrangement.spacedBy(22.dp),
+                    modifier = Modifier
+                        .padding(horizontal = 20.dp)
+                        .padding(top = 20.dp)
+                        .fadeUpOnAppear(delayMs = 80),
+                ) {
+                    state.groups.forEach { (disciplineName, items) ->
+                        Column {
+                            MaterialsSectionLabel(text = disciplineName)
+                            Spacer(Modifier.height(12.dp))
+                            MaterialsCard(modifier = Modifier.fillMaxWidth()) {
+                                Column {
+                                    items.forEachIndexed { index, material ->
+                                        MaterialRow(
+                                            material = material,
+                                            onTap = { onOpenMaterial(material) },
+                                            showDivider = index < items.lastIndex,
+                                        )
+                                    }
                                 }
                             }
                         }

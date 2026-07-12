@@ -17,8 +17,8 @@ import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.theme.MelonTheme
 
 // M3 large-app-bar-style header — dc `EuScreen` top chrome: "Eu" title with
-// the one-line subtitle. Lives inside the scroll region (same treatment as
-// the Disciplinas header) so it rides away with the content.
+// the one-line subtitle. Pinned above the scroll region (same treatment as
+// the Disciplinas header).
 @Composable
 internal fun MeHeader(modifier: Modifier = Modifier) {
     Column(

@@ -32,6 +32,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableLongStateOf
@@ -53,6 +54,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.forcetower.unes.R
+import dev.forcetower.unes.designsystem.foundation.PinnedHeaderHairline
 import dev.forcetower.unes.designsystem.foundation.fadeInOnAppear
 import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
 import dev.forcetower.unes.designsystem.theme.MelonTheme
@@ -123,13 +125,16 @@ private fun CalendarContent(
     // Resolved against the unfiltered list so the sheet survives filter swaps.
     val openEvent = remember(events, openEventId) { events.find { it.id == openEventId } }
 
+    val scrollState = rememberScrollState()
+    val scrolled by remember { derivedStateOf { scrollState.value > 0 } }
+
+    // The app bar (back + view toggle) stays pinned; the headline and the
+    // agenda/grid scroll beneath it.
     Column(
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
-            .verticalScroll(rememberScrollState())
-            .padding(bottom = bottomInset + 32.dp),
+            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)),
     ) {
         AppBar(
             viewMode = viewMode,
@@ -137,47 +142,58 @@ private fun CalendarContent(
             onViewModeChange = { viewMode = it },
             modifier = Modifier.fadeInOnAppear(delayMs = 20),
         )
-        Headline(modifier = Modifier.fadeInOnAppear(delayMs = 40))
+        PinnedHeaderHairline(scrolled = scrolled)
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+                .padding(bottom = bottomInset + 32.dp),
+        ) {
+            Headline(modifier = Modifier.fadeInOnAppear(delayMs = 40))
 
-        if (hero != null) {
-            CalHeroCard(
-                event = hero,
-                onClick = { openEventId = hero.id },
+            if (hero != null) {
+                CalHeroCard(
+                    event = hero,
+                    onClick = { openEventId = hero.id },
+                    modifier = Modifier
+                        .padding(start = 20.dp, end = 20.dp, top = 14.dp)
+                        .fadeUpOnAppear(delayMs = 100, fromOffset = 20.dp),
+                )
+            }
+
+            CalCategorySegmented(
+                active = category,
+                onChange = { category = it },
                 modifier = Modifier
-                    .padding(start = 20.dp, end = 20.dp, top = 14.dp)
-                    .fadeUpOnAppear(delayMs = 100, fromOffset = 20.dp),
+                    .padding(start = 20.dp, end = 20.dp, top = 18.dp)
+                    .fadeUpOnAppear(delayMs = 200),
             )
-        }
-
-        CalCategorySegmented(
-            active = category,
-            onChange = { category = it },
-            modifier = Modifier
-                .padding(start = 20.dp, end = 20.dp, top = 18.dp)
-                .fadeUpOnAppear(delayMs = 200),
-        )
-        CalScopeChips(
-            active = scope,
-            onChange = { scope = it },
-            modifier = Modifier
-                .padding(top = 12.dp)
-                .fadeUpOnAppear(delayMs = 260),
-        )
-
-        when (viewMode) {
-            CalendarViewMode.Agenda -> AgendaBody(monthGroups = monthGroups, onOpen = { openEventId = it })
-            CalendarViewMode.Grid -> GridBody(
-                month = gridMonth,
-                events = filtered,
-                selected = selected,
-                today = today,
-                onSelect = { selectedEpochDay = it.toEpochDay() },
-                onMonthShift = { gridMonthIndex += it },
-                onOpen = { openEventId = it },
+            CalScopeChips(
+                active = scope,
+                onChange = { scope = it },
+                modifier = Modifier
+                    .padding(top = 12.dp)
+                    .fadeUpOnAppear(delayMs = 260),
             )
-        }
 
-        SyncFooter(modifier = Modifier.fadeUpOnAppear(delayMs = 440))
+            when (viewMode) {
+                CalendarViewMode.Agenda -> AgendaBody(
+                    monthGroups = monthGroups,
+                    onOpen = { openEventId = it },
+                )
+                CalendarViewMode.Grid -> GridBody(
+                    month = gridMonth,
+                    events = filtered,
+                    selected = selected,
+                    today = today,
+                    onSelect = { selectedEpochDay = it.toEpochDay() },
+                    onMonthShift = { gridMonthIndex += it },
+                    onOpen = { openEventId = it },
+                )
+            }
+
+            SyncFooter(modifier = Modifier.fadeUpOnAppear(delayMs = 440))
+        }
     }
 
     if (openEvent != null) {

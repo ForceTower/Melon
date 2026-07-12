@@ -40,7 +40,9 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -59,6 +61,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.forcetower.melon.feature.materials.domain.model.Material
 import dev.forcetower.melon.feature.materials.domain.model.MaterialType
 import dev.forcetower.unes.R
+import dev.forcetower.unes.designsystem.foundation.PinnedHeaderHairline
 import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
 import dev.forcetower.unes.designsystem.theme.melon
 import dev.forcetower.unes.mvi.collectAsEffect
@@ -108,6 +111,9 @@ internal fun MaterialsListScreen(
         }
     }
 
+    val scrollState = rememberScrollState()
+    val scrolled by remember { derivedStateOf { scrollState.value > 0 } }
+
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -126,97 +132,105 @@ internal fun MaterialsListScreen(
                 ),
         )
 
+        // The app bar stays pinned; the headline and the shelf scroll
+        // beneath it.
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
-                .verticalScroll(rememberScrollState())
-                .windowInsetsPadding(WindowInsets.statusBars)
-                .padding(bottom = bottomInset + 110.dp),
+                .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)),
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
+                    .windowInsetsPadding(WindowInsets.statusBars)
                     .padding(horizontal = 8.dp)
                     .height(48.dp),
             ) {
                 MaterialsBackButton(onBack = onBack)
             }
+            PinnedHeaderHairline(scrolled = scrolled)
 
-            Column(modifier = Modifier.padding(horizontal = 20.dp)) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.fadeUpOnAppear(delayMs = 20),
-                ) {
-                    if (state.code.isNotBlank()) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(scrollState)
+                    .padding(bottom = bottomInset + 110.dp),
+            ) {
+                Column(modifier = Modifier.padding(horizontal = 20.dp)) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier.fadeUpOnAppear(delayMs = 20),
+                    ) {
+                        if (state.code.isNotBlank()) {
+                            Text(
+                                text = state.code,
+                                style = MaterialTheme.typography.labelSmall.copy(
+                                    fontSize = 11.sp,
+                                    fontWeight = FontWeight.Bold,
+                                ),
+                                color = tint,
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(7.dp))
+                                    .background(tint.copy(alpha = 0.16f))
+                                    .padding(horizontal = 8.dp, vertical = 3.dp),
+                            )
+                        }
                         Text(
-                            text = state.code,
-                            style = MaterialTheme.typography.labelSmall.copy(
-                                fontSize = 11.sp,
-                                fontWeight = FontWeight.Bold,
-                            ),
-                            color = tint,
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(7.dp))
-                                .background(tint.copy(alpha = 0.16f))
-                                .padding(horizontal = 8.dp, vertical = 3.dp),
+                            text = stringResource(R.string.materials_list_eyebrow),
+                            style = MaterialTheme.typography.bodyMedium.copy(fontSize = 13.sp),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
                     Text(
-                        text = stringResource(R.string.materials_list_eyebrow),
-                        style = MaterialTheme.typography.bodyMedium.copy(fontSize = 13.sp),
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
-                Text(
-                    text = state.name,
-                    style = MaterialTheme.typography.headlineMedium.copy(
-                        fontSize = 28.sp,
-                        letterSpacing = (-0.56).sp,
-                        lineHeight = 31.sp,
-                    ),
-                    color = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier
-                        .padding(top = 9.dp)
-                        .fadeUpOnAppear(delayMs = 60),
-                )
-                if (details != null && !state.isEmpty) {
-                    Text(
-                        text = pluralStringResource(
-                            R.plurals.materials_available_count,
-                            state.published.size,
-                            state.published.size,
+                        text = state.name,
+                        style = MaterialTheme.typography.headlineMedium.copy(
+                            fontSize = 28.sp,
+                            letterSpacing = (-0.56).sp,
+                            lineHeight = 31.sp,
                         ),
-                        style = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp),
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(top = 7.dp),
-                    )
-                }
-
-                Spacer(Modifier.height(16.dp))
-
-                when {
-                    details == null && state.loadFailed ->
-                        ListError(onRetry = { vm.onIntent(MaterialsListIntent.Reload) })
-                    details == null -> Box(
+                        color = MaterialTheme.colorScheme.onBackground,
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 80.dp),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        CircularProgressIndicator()
+                            .padding(top = 9.dp)
+                            .fadeUpOnAppear(delayMs = 60),
+                    )
+                    if (details != null && !state.isEmpty) {
+                        Text(
+                            text = pluralStringResource(
+                                R.plurals.materials_available_count,
+                                state.published.size,
+                                state.published.size,
+                            ),
+                            style = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.padding(top = 7.dp),
+                        )
                     }
-                    state.isEmpty -> ListEmptyHero(
-                        disciplineName = state.name,
-                        onContribute = contribute,
-                    )
-                    else -> ListContent(
-                        state = state,
-                        onQuery = { vm.onIntent(MaterialsListIntent.QueryChanged(it)) },
-                        onFilter = { vm.onIntent(MaterialsListIntent.FilterChanged(it)) },
-                        onOpenMaterial = onOpenMaterial,
-                    )
+
+                    Spacer(Modifier.height(16.dp))
+
+                    when {
+                        details == null && state.loadFailed ->
+                            ListError(onRetry = { vm.onIntent(MaterialsListIntent.Reload) })
+                        details == null -> Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 80.dp),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            CircularProgressIndicator()
+                        }
+                        state.isEmpty -> ListEmptyHero(
+                            disciplineName = state.name,
+                            onContribute = contribute,
+                        )
+                        else -> ListContent(
+                            state = state,
+                            onQuery = { vm.onIntent(MaterialsListIntent.QueryChanged(it)) },
+                            onFilter = { vm.onIntent(MaterialsListIntent.FilterChanged(it)) },
+                            onOpenMaterial = onOpenMaterial,
+                        )
+                    }
                 }
             }
         }

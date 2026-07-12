@@ -36,6 +36,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -58,6 +59,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.forcetower.unes.R
+import dev.forcetower.unes.designsystem.foundation.PinnedHeaderHairline
 import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
 import dev.forcetower.unes.designsystem.theme.MelonTheme
 import dev.forcetower.unes.designsystem.theme.melon
@@ -107,13 +109,16 @@ private fun FinalCountdownContent(
     }
     val style = fcVerdictStyle(verdict, state.nextSemesterLabel)
 
+    val scrollState = rememberScrollState()
+    val scrolled by remember { derivedStateOf { scrollState.value > 0 } }
+
+    // The app bar stays pinned; the headline and the calculator scroll
+    // beneath it.
     Column(
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
-            .verticalScroll(rememberScrollState())
-            .padding(bottom = bottomInset),
+            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)),
     ) {
         FCAppBar(
             onBack = onBack,
@@ -121,83 +126,91 @@ private fun FinalCountdownContent(
                 .windowInsetsPadding(WindowInsets.statusBars)
                 .fadeUpOnAppear(delayMs = 20),
         )
+        PinnedHeaderHairline(scrolled = scrolled)
 
-        FCHeadline(modifier = Modifier.fadeUpOnAppear(delayMs = 40))
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+                .padding(bottom = bottomInset),
+        ) {
+            FCHeadline(modifier = Modifier.fadeUpOnAppear(delayMs = 40))
 
-        Column(modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 12.dp)) {
-            FCDisciplineRow(
-                discipline = state.discipline,
-                onChange = { selectorOpen = true },
-                modifier = Modifier.fadeUpOnAppear(delayMs = 80),
-            )
+            Column(modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 12.dp)) {
+                FCDisciplineRow(
+                    discipline = state.discipline,
+                    onChange = { selectorOpen = true },
+                    modifier = Modifier.fadeUpOnAppear(delayMs = 80),
+                )
 
-            FCVerdictHero(
-                verdict = verdict,
-                style = style,
-                weighted = state.weighted,
-                modifier = Modifier
-                    .padding(top = 14.dp)
-                    .fadeUpOnAppear(delayMs = 140),
-            )
+                FCVerdictHero(
+                    verdict = verdict,
+                    style = style,
+                    weighted = state.weighted,
+                    modifier = Modifier
+                        .padding(top = 14.dp)
+                        .fadeUpOnAppear(delayMs = 140),
+                )
 
-            FCComposition(
-                rows = state.rows,
-                weighted = state.weighted,
-                modifier = Modifier
-                    .padding(top = 14.dp)
-                    .fadeUpOnAppear(delayMs = 240),
-            )
+                FCComposition(
+                    rows = state.rows,
+                    weighted = state.weighted,
+                    modifier = Modifier
+                        .padding(top = 14.dp)
+                        .fadeUpOnAppear(delayMs = 240),
+                )
 
-            EvaluationsHeader(
-                filled = state.rows.count { it.score != null },
-                total = state.rows.size,
-                modifier = Modifier
-                    .padding(start = 4.dp, end = 4.dp, top = 20.dp, bottom = 12.dp)
-                    .fadeUpOnAppear(delayMs = 300),
-            )
+                EvaluationsHeader(
+                    filled = state.rows.count { it.score != null },
+                    total = state.rows.size,
+                    modifier = Modifier
+                        .padding(start = 4.dp, end = 4.dp, top = 20.dp, bottom = 12.dp)
+                        .fadeUpOnAppear(delayMs = 300),
+                )
 
-            WeightedToggleCard(
-                weighted = state.weighted,
-                onToggle = { onIntent(FinalCountdownIntent.ToggleWeighted) },
-                modifier = Modifier.fadeUpOnAppear(delayMs = 340),
-            )
+                WeightedToggleCard(
+                    weighted = state.weighted,
+                    onToggle = { onIntent(FinalCountdownIntent.ToggleWeighted) },
+                    modifier = Modifier.fadeUpOnAppear(delayMs = 340),
+                )
 
-            FCGradeList(
-                rows = state.rows,
-                weighted = state.weighted,
-                onIntent = onIntent,
-                modifier = Modifier
-                    .padding(top = 12.dp)
-                    .fadeUpOnAppear(delayMs = 380),
-            )
+                FCGradeList(
+                    rows = state.rows,
+                    weighted = state.weighted,
+                    onIntent = onIntent,
+                    modifier = Modifier
+                        .padding(top = 12.dp)
+                        .fadeUpOnAppear(delayMs = 380),
+                )
 
-            ResetButton(
-                onClick = { onIntent(FinalCountdownIntent.Reset) },
-                modifier = Modifier
-                    .padding(top = 12.dp)
-                    .fadeUpOnAppear(delayMs = 420),
-            )
+                ResetButton(
+                    onClick = { onIntent(FinalCountdownIntent.Reset) },
+                    modifier = Modifier
+                        .padding(top = 12.dp)
+                        .fadeUpOnAppear(delayMs = 420),
+                )
 
-            InfoCard(
-                modifier = Modifier
-                    .padding(top = 14.dp)
-                    .fadeUpOnAppear(delayMs = 460),
-            )
+                InfoCard(
+                    modifier = Modifier
+                        .padding(top = 14.dp)
+                        .fadeUpOnAppear(delayMs = 460),
+                )
 
-            Text(
-                text = stringResource(R.string.final_countdown_footer),
-                style = MaterialTheme.typography.bodySmall.copy(
-                    fontSize = 11.5.sp,
-                    fontWeight = FontWeight.Medium,
-                ),
-                color = MaterialTheme.colorScheme.outlineVariant,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 18.dp, bottom = 4.dp),
-            )
+                Text(
+                    text = stringResource(R.string.final_countdown_footer),
+                    style = MaterialTheme.typography.bodySmall.copy(
+                        fontSize = 11.5.sp,
+                        fontWeight = FontWeight.Medium,
+                    ),
+                    color = MaterialTheme.colorScheme.outlineVariant,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 18.dp, bottom = 4.dp),
+                )
 
-            Spacer(modifier = Modifier.height(28.dp))
+                Spacer(modifier = Modifier.height(28.dp))
+            }
         }
     }
 

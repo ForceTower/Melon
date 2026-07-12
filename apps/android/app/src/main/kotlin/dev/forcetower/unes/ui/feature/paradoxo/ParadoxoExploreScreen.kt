@@ -33,7 +33,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -51,6 +53,7 @@ import dev.forcetower.melon.feature.paradoxo.domain.model.ParadoxoExploreKind
 import dev.forcetower.melon.feature.paradoxo.domain.model.ParadoxoRankingEntry
 import dev.forcetower.melon.feature.paradoxo.domain.model.ParadoxoRef
 import dev.forcetower.unes.R
+import dev.forcetower.unes.designsystem.foundation.PinnedHeaderHairline
 import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
 import dev.forcetower.unes.designsystem.theme.melon
 import dev.forcetower.unes.ui.feature.paradoxo.components.ParadoxoCard
@@ -99,91 +102,105 @@ internal fun ParadoxoExploreScreen(
         )
     }
 
+    val scrollState = rememberScrollState()
+    val scrolled by remember { derivedStateOf { scrollState.value > 0 } }
+
+    // The app bar stays pinned; the category header and the ranking scroll
+    // beneath it.
     Column(
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
-            .verticalScroll(rememberScrollState())
-            .windowInsetsPadding(WindowInsets.statusBars)
-            .padding(bottom = bottomInset),
+            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)),
     ) {
-        ParadoxoDetailBar(title = stringResource(titleRes), onBack = onBack)
+        ParadoxoDetailBar(
+            title = stringResource(titleRes),
+            onBack = onBack,
+            modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars),
+        )
+        PinnedHeaderHairline(scrolled = scrolled)
 
-        Row(
+        Column(
             modifier = Modifier
-                .padding(horizontal = 20.dp, vertical = 8.dp)
-                .fadeUpOnAppear(delayMs = 40),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+                .padding(bottom = bottomInset),
         ) {
-            Box(
+            Row(
                 modifier = Modifier
-                    .size(40.dp)
-                    .clip(RoundedCornerShape(13.dp))
-                    .background(tone.copy(alpha = 0.18f)),
-                contentAlignment = Alignment.Center,
+                    .padding(horizontal = 20.dp, vertical = 8.dp)
+                    .fadeUpOnAppear(delayMs = 40),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                Icon(
-                    imageVector = icon,
-                    contentDescription = null,
-                    tint = tone,
-                    modifier = Modifier.size(22.dp),
-                )
-            }
-            Column {
-                Text(
-                    text = stringResource(titleRes),
-                    style = MaterialTheme.typography.headlineSmall.copy(
-                        fontSize = 22.sp,
-                        fontWeight = FontWeight.Bold,
-                        letterSpacing = (-0.44).sp,
-                    ),
-                    color = MaterialTheme.colorScheme.onBackground,
-                )
-                Text(
-                    text = stringResource(subRes),
-                    style = MaterialTheme.typography.bodySmall.copy(
-                        fontSize = 13.sp,
-                        fontWeight = FontWeight.Medium,
-                    ),
-                    color = MaterialTheme.colorScheme.outline,
-                )
-            }
-        }
-
-        val overview = state.overview
-        val ranking = overview?.ranking(kind)
-        when {
-            ranking != null && ranking.entries.isNotEmpty() -> {
-                ParadoxoCard(
+                Box(
                     modifier = Modifier
-                        .padding(horizontal = 16.dp, vertical = 10.dp)
-                        .fadeUpOnAppear(delayMs = 120),
+                        .size(40.dp)
+                        .clip(RoundedCornerShape(13.dp))
+                        .background(tone.copy(alpha = 0.18f)),
+                    contentAlignment = Alignment.Center,
                 ) {
-                    ranking.entries.forEachIndexed { index, entry ->
-                        RankedRow(
-                            position = index + 1,
-                            entry = entry,
-                            showDivider = index > 0,
-                            onClick = {
-                                when (val ref = entry.ref) {
-                                    is ParadoxoRef.Discipline ->
-                                        onOpenDiscipline(ref.id, entry.name)
-                                    is ParadoxoRef.Teacher ->
-                                        onOpenTeacher(ref.id, entry.name)
-                                }
-                            },
-                        )
-                    }
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = null,
+                        tint = tone,
+                        modifier = Modifier.size(22.dp),
+                    )
+                }
+                Column {
+                    Text(
+                        text = stringResource(titleRes),
+                        style = MaterialTheme.typography.headlineSmall.copy(
+                            fontSize = 22.sp,
+                            fontWeight = FontWeight.Bold,
+                            letterSpacing = (-0.44).sp,
+                        ),
+                        color = MaterialTheme.colorScheme.onBackground,
+                    )
+                    Text(
+                        text = stringResource(subRes),
+                        style = MaterialTheme.typography.bodySmall.copy(
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.Medium,
+                        ),
+                        color = MaterialTheme.colorScheme.outline,
+                    )
                 }
             }
-            state.failed || (overview != null && ranking == null) ->
-                ParadoxoFailure(onRetry = { vm.onIntent(ParadoxoIntent.Retry) })
-            else -> ParadoxoLoading()
-        }
 
-        Spacer(Modifier.height(28.dp))
+            val overview = state.overview
+            val ranking = overview?.ranking(kind)
+            when {
+                ranking != null && ranking.entries.isNotEmpty() -> {
+                    ParadoxoCard(
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp, vertical = 10.dp)
+                            .fadeUpOnAppear(delayMs = 120),
+                    ) {
+                        ranking.entries.forEachIndexed { index, entry ->
+                            RankedRow(
+                                position = index + 1,
+                                entry = entry,
+                                showDivider = index > 0,
+                                onClick = {
+                                    when (val ref = entry.ref) {
+                                        is ParadoxoRef.Discipline ->
+                                            onOpenDiscipline(ref.id, entry.name)
+                                        is ParadoxoRef.Teacher ->
+                                            onOpenTeacher(ref.id, entry.name)
+                                    }
+                                },
+                            )
+                        }
+                    }
+                }
+                state.failed || (overview != null && ranking == null) ->
+                    ParadoxoFailure(onRetry = { vm.onIntent(ParadoxoIntent.Retry) })
+                else -> ParadoxoLoading()
+            }
+
+            Spacer(Modifier.height(28.dp))
+        }
     }
 }
 

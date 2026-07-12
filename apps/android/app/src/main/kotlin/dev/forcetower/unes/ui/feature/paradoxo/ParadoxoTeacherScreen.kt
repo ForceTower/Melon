@@ -27,7 +27,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,6 +48,7 @@ import dev.forcetower.melon.feature.paradoxo.domain.model.ParadoxoStats
 import dev.forcetower.melon.feature.paradoxo.domain.model.ParadoxoTaughtDiscipline
 import dev.forcetower.melon.feature.paradoxo.domain.model.ParadoxoTeacherDetail
 import dev.forcetower.unes.R
+import dev.forcetower.unes.designsystem.foundation.PinnedHeaderHairline
 import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
 import dev.forcetower.unes.designsystem.foundation.scaleInOnAppear
 import dev.forcetower.unes.designsystem.theme.MelonTheme
@@ -82,6 +85,9 @@ internal fun ParadoxoTeacherScreen(
     val detail = state.teachers[id]
     val loaded = (detail as? ParadoxoDetail.Loaded)?.data
 
+    val scrollState = rememberScrollState()
+    val scrolled by remember { derivedStateOf { scrollState.value > 0 } }
+
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -90,29 +96,37 @@ internal fun ParadoxoTeacherScreen(
         if (loaded != null) {
             ParadoxoWash(tone = paradoxoTone(loaded.mean))
         }
+        // The app bar stays pinned; the hero and the stats scroll beneath it.
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
-                .verticalScroll(rememberScrollState())
-                .windowInsetsPadding(WindowInsets.statusBars)
-                .padding(bottom = bottomInset),
+                .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)),
         ) {
             ParadoxoDetailBar(
                 title = loaded?.name ?: seedName.orEmpty(),
                 onBack = onBack,
+                modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars),
             )
-            when (detail) {
-                is ParadoxoDetail.Loaded -> ParadoxoTeacherContent(
-                    detail = detail.data,
-                    onOpenDiscipline = onOpenDiscipline,
-                )
-                ParadoxoDetail.Failed -> ParadoxoFailure(
-                    onRetry = { vm.onIntent(ParadoxoIntent.RetryTeacher(id)) },
-                )
-                else -> ParadoxoLoading()
+            PinnedHeaderHairline(scrolled = scrolled)
+
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(scrollState)
+                    .padding(bottom = bottomInset),
+            ) {
+                when (detail) {
+                    is ParadoxoDetail.Loaded -> ParadoxoTeacherContent(
+                        detail = detail.data,
+                        onOpenDiscipline = onOpenDiscipline,
+                    )
+                    ParadoxoDetail.Failed -> ParadoxoFailure(
+                        onRetry = { vm.onIntent(ParadoxoIntent.RetryTeacher(id)) },
+                    )
+                    else -> ParadoxoLoading()
+                }
+                Spacer(Modifier.height(40.dp))
             }
-            Spacer(Modifier.height(40.dp))
         }
     }
 }

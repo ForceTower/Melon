@@ -14,6 +14,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
@@ -30,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.forcetower.unes.R
+import dev.forcetower.unes.designsystem.foundation.PinnedHeaderHairline
 import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
 import dev.forcetower.unes.designsystem.theme.MelonPaletteColors
 import dev.forcetower.unes.designsystem.theme.MelonTheme
@@ -102,13 +104,16 @@ private fun ScheduleContent(
     val classes = week.getOrNull(resolvedActive).orEmpty()
     val activeIso = state.dateIsos.getOrNull(resolvedActive)
 
+    val scrollState = rememberScrollState()
+    val scrolled by remember { derivedStateOf { scrollState.value > 0 } }
+
+    // Header + week rail stay pinned (matching iOS); only the day header and
+    // the timeline scroll beneath them.
     Column(
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
-            .verticalScroll(rememberScrollState())
-            .padding(bottom = bottomInset + 32.dp),
+            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)),
     ) {
         ScheduleHeader(
             weekNumber = state.weekNumber,
@@ -133,24 +138,32 @@ private fun ScheduleContent(
                 .padding(top = 14.dp)
                 .fadeUpOnAppear(delayMs = 140, durationMs = 550, fromOffset = (-8).dp),
         )
-        ScheduleDayHeader(
-            dayName = remember(activeIso) { formatDayName(activeIso) },
-            dayDate = formatDayDate(activeIso),
-            meta = dayMeta(classes),
-        )
-        // Keying on the active day remounts the timeline so the row enter
-        // animation re-runs on each rail tap — same trick the dc
-        // prototype uses by re-rendering the `sc-for`.
-        key(resolvedActive) {
-            if (classes.isEmpty()) {
-                ScheduleEmptyDay(onLongPress = onOpenFolioRunner)
-            } else {
-                ScheduleTimeline(
-                    classes = classes,
-                    expandedId = expandedId.ifEmpty { null },
-                    onToggle = { id -> expandedId = if (expandedId == id) "" else id },
-                    onOpenDiscipline = onOpenDiscipline,
-                )
+        PinnedHeaderHairline(scrolled = scrolled)
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+                .padding(bottom = bottomInset + 32.dp),
+        ) {
+            ScheduleDayHeader(
+                dayName = remember(activeIso) { formatDayName(activeIso) },
+                dayDate = formatDayDate(activeIso),
+                meta = dayMeta(classes),
+            )
+            // Keying on the active day remounts the timeline so the row enter
+            // animation re-runs on each rail tap — same trick the dc
+            // prototype uses by re-rendering the `sc-for`.
+            key(resolvedActive) {
+                if (classes.isEmpty()) {
+                    ScheduleEmptyDay(onLongPress = onOpenFolioRunner)
+                } else {
+                    ScheduleTimeline(
+                        classes = classes,
+                        expandedId = expandedId.ifEmpty { null },
+                        onToggle = { id -> expandedId = if (expandedId == id) "" else id },
+                        onOpenDiscipline = onOpenDiscipline,
+                    )
+                }
             }
         }
     }

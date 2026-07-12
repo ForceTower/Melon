@@ -17,7 +17,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
@@ -25,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.forcetower.unes.R
+import dev.forcetower.unes.designsystem.foundation.PinnedHeaderHairline
 import dev.forcetower.unes.designsystem.foundation.fadeInOnAppear
 import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
 import dev.forcetower.unes.designsystem.foundation.scaleInOnAppear
@@ -79,14 +82,17 @@ internal fun OverviewScreen(
         name,
     )
 
+    val scrollState = rememberScrollState()
+    val scrolled by remember { derivedStateOf { scrollState.value > 0 } }
+
+    // The greeting header stays pinned; the hero and the cards below scroll
+    // beneath it.
     Column(
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
-            .verticalScroll(rememberScrollState())
-            .windowInsetsPadding(WindowInsets.statusBars)
-            .padding(horizontal = 20.dp),
+            .windowInsetsPadding(WindowInsets.statusBars),
     ) {
         Spacer(Modifier.height(8.dp))
         OverviewHeader(
@@ -95,78 +101,92 @@ internal fun OverviewScreen(
             courseLine = state.courseName,
             avatarInitials = state.avatarInitials ?: "?",
             onOpenProfile = onOpenProfile,
-            modifier = Modifier.fadeInOnAppear(delayMs = 50),
+            modifier = Modifier
+                .padding(horizontal = 20.dp)
+                .fadeInOnAppear(delayMs = 50),
         )
-        Spacer(Modifier.height(18.dp))
+        PinnedHeaderHairline(
+            scrolled = scrolled,
+            modifier = Modifier.padding(top = 10.dp),
+        )
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+                .padding(horizontal = 20.dp),
+        ) {
+            Spacer(Modifier.height(8.dp))
 
-        // Featured campus event — sits above the class hero while the server
-        // features one and the `enable_campus_event` flag is on, like iOS.
-        val campusEvent = state.campusEvent
-        if (campusEvent != null) {
-            CampusEventHomeCard(
-                event = campusEvent,
-                onOpen = onOpenCampusEvent,
-                modifier = Modifier.scaleInOnAppear(delayMs = 60, fromScale = 0.97f),
-            )
-            Spacer(Modifier.height(22.dp))
+            // Featured campus event — sits above the class hero while the
+            // server features one and the `enable_campus_event` flag is on,
+            // like iOS.
+            val campusEvent = state.campusEvent
+            if (campusEvent != null) {
+                CampusEventHomeCard(
+                    event = campusEvent,
+                    onOpen = onOpenCampusEvent,
+                    modifier = Modifier.scaleInOnAppear(delayMs = 60, fromScale = 0.97f),
+                )
+                Spacer(Modifier.height(22.dp))
+            }
+
+            if (hero != null) {
+                HeroCard(
+                    state = hero,
+                    firstName = name,
+                    tomorrowEyebrow = state.tomorrowEyebrow,
+                    isEvening = state.greetingKind == GreetingKind.Evening,
+                    onOpenClassDetails = { klass ->
+                        onOpenDiscipline(
+                            OverviewDiscipline(
+                                code = klass.code,
+                                title = klass.title,
+                                offerId = klass.offerId,
+                            ),
+                        )
+                    },
+                    modifier = Modifier.scaleInOnAppear(delayMs = 140, fromScale = 0.97f),
+                )
+                Spacer(Modifier.height(26.dp))
+            }
+
+            if (finalStretch != null) {
+                FinalStretchCard(
+                    data = finalStretch,
+                    modifier = Modifier.fadeUpOnAppear(delayMs = 550),
+                )
+                Spacer(Modifier.height(24.dp))
+            }
+
+            if (today.isNotEmpty()) {
+                TodayTimeline(
+                    items = today,
+                    weekdayLabel = state.weekdayLabel,
+                    onOpenClass = { item ->
+                        onOpenDiscipline(
+                            OverviewDiscipline(
+                                code = item.code,
+                                title = item.title,
+                                offerId = item.offerId,
+                            ),
+                        )
+                    },
+                    onOpenSchedule = onOpenSchedule,
+                    modifier = Modifier.fadeUpOnAppear(delayMs = 640),
+                )
+                Spacer(Modifier.height(22.dp))
+            }
+
+            if (messages != null) {
+                MessagesPreview(
+                    data = messages,
+                    onOpenMessages = onOpenMessages,
+                    modifier = Modifier.fadeUpOnAppear(delayMs = 920),
+                )
+            }
+
+            Spacer(Modifier.height(28.dp + bottomInset))
         }
-
-        if (hero != null) {
-            HeroCard(
-                state = hero,
-                firstName = name,
-                tomorrowEyebrow = state.tomorrowEyebrow,
-                isEvening = state.greetingKind == GreetingKind.Evening,
-                onOpenClassDetails = { klass ->
-                    onOpenDiscipline(
-                        OverviewDiscipline(
-                            code = klass.code,
-                            title = klass.title,
-                            offerId = klass.offerId,
-                        ),
-                    )
-                },
-                modifier = Modifier.scaleInOnAppear(delayMs = 140, fromScale = 0.97f),
-            )
-            Spacer(Modifier.height(26.dp))
-        }
-
-        if (finalStretch != null) {
-            FinalStretchCard(
-                data = finalStretch,
-                modifier = Modifier.fadeUpOnAppear(delayMs = 550),
-            )
-            Spacer(Modifier.height(24.dp))
-        }
-
-        if (today.isNotEmpty()) {
-            TodayTimeline(
-                items = today,
-                weekdayLabel = state.weekdayLabel,
-                onOpenClass = { item ->
-                    onOpenDiscipline(
-                        OverviewDiscipline(
-                            code = item.code,
-                            title = item.title,
-                            offerId = item.offerId,
-                        ),
-                    )
-                },
-                onOpenSchedule = onOpenSchedule,
-                modifier = Modifier.fadeUpOnAppear(delayMs = 640),
-            )
-            Spacer(Modifier.height(22.dp))
-        }
-
-        if (messages != null) {
-            MessagesPreview(
-                data = messages,
-                onOpenMessages = onOpenMessages,
-                modifier = Modifier.fadeUpOnAppear(delayMs = 920),
-            )
-        }
-
-        Spacer(Modifier.height(28.dp + bottomInset))
     }
 }
 

@@ -36,6 +36,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -50,6 +51,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.forcetower.unes.R
+import dev.forcetower.unes.designsystem.foundation.PinnedHeaderHairline
 import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
 import dev.forcetower.unes.designsystem.theme.melon
 import dev.forcetower.unes.theme.ThemeMode
@@ -92,111 +94,129 @@ internal fun SettingsScreen(
     // backgrounded app never surfaces the credentials without an explicit tap.
     var revealed by rememberSaveable { mutableStateOf(false) }
 
+    val scrollState = rememberScrollState()
+    val scrolled by remember { derivedStateOf { scrollState.value > 0 } }
+
+    // The back-button bar stays pinned; the headline and the settings cards
+    // scroll beneath it.
     Column(
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
-            .verticalScroll(rememberScrollState())
-            .padding(bottom = bottomInset + 16.dp),
+            .windowInsetsPadding(WindowInsets.statusBars),
     ) {
-        Spacer(modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars))
-
         SettingsTopBar(onBack = onBack, modifier = Modifier.fadeUpOnAppear(delayMs = 20))
+        PinnedHeaderHairline(scrolled = scrolled)
 
-        Column(modifier = Modifier.padding(horizontal = 20.dp)) {
-            VaultCard(
-                displayName = state.displayName,
-                accountLabel = stringResource(
-                    R.string.settings_vault_account_format,
-                    state.campusLabel ?: stringResource(R.string.settings_vault_account_fallback),
-                ),
-                avatarInitial = state.avatarInitial,
-                username = state.username.orEmpty(),
-                password = state.password.orEmpty(),
-                revealed = revealed,
-                onToggleReveal = { revealed = !revealed },
-                modifier = Modifier.fadeUpOnAppear(delayMs = 120),
-            )
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+                .padding(bottom = bottomInset + 16.dp),
+        ) {
+            SettingsHeadline(modifier = Modifier.fadeUpOnAppear(delayMs = 40))
 
-            // ── Aparência ──
-            Column(modifier = Modifier.fadeUpOnAppear(delayMs = 200)) {
-                Spacer(Modifier.height(28.dp))
-                SettingsSectionLabel(label = stringResource(R.string.settings_section_appearance))
-                Spacer(Modifier.height(12.dp))
-                SettingsOptionCard(
-                    icon = Icons.Filled.Palette,
-                    iconTint = MaterialTheme.melon.status.warn,
-                    title = stringResource(R.string.settings_theme_title),
-                    subtitle = stringResource(R.string.settings_theme_subtitle),
-                ) {
-                    SettingsSegmentedRow(
-                        options = ThemeModeOptions,
-                        selected = state.themeMode,
-                        optionLabel = { stringResource(it.labelRes()) },
-                        onSelect = { vm.onIntent(SettingsIntent.SetTheme(it)) },
-                    )
-                }
-            }
-
-            // ── Notas · privacidade ──
-            Column(modifier = Modifier.fadeUpOnAppear(delayMs = 260)) {
-                Spacer(Modifier.height(28.dp))
-                SettingsSectionLabel(
-                    label = stringResource(R.string.settings_section_grades),
-                    meta = stringResource(R.string.settings_section_grades_meta),
+            Column(modifier = Modifier.padding(horizontal = 20.dp)) {
+                VaultCard(
+                    displayName = state.displayName,
+                    accountLabel = stringResource(
+                        R.string.settings_vault_account_format,
+                        state.campusLabel
+                            ?: stringResource(R.string.settings_vault_account_fallback),
+                    ),
+                    avatarInitial = state.avatarInitial,
+                    username = state.username.orEmpty(),
+                    password = state.password.orEmpty(),
+                    revealed = revealed,
+                    onToggleReveal = { revealed = !revealed },
+                    modifier = Modifier.fadeUpOnAppear(delayMs = 120),
                 )
-                Spacer(Modifier.height(12.dp))
-                NotificationPreview(spoiler = state.spoiler, clockLabel = clockLabel)
-                Spacer(Modifier.height(12.dp))
-                SettingsOptionCard(
-                    icon = Icons.Filled.Shield,
-                    iconTint = MaterialTheme.melon.palette.coral,
-                    title = stringResource(R.string.settings_privacy_title),
-                    subtitle = stringResource(R.string.settings_privacy_subtitle),
-                ) {
-                    SettingsSegmentedRow(
-                        options = SpoilerMode.entries,
-                        selected = state.spoiler,
-                        optionLabel = { stringResource(it.labelRes()) },
-                        onSelect = { vm.onIntent(SettingsIntent.SetSpoiler(it)) },
+
+                // ── Aparência ──
+                Column(modifier = Modifier.fadeUpOnAppear(delayMs = 200)) {
+                    Spacer(Modifier.height(28.dp))
+                    SettingsSectionLabel(
+                        label = stringResource(R.string.settings_section_appearance),
                     )
+                    Spacer(Modifier.height(12.dp))
+                    SettingsOptionCard(
+                        icon = Icons.Filled.Palette,
+                        iconTint = MaterialTheme.melon.status.warn,
+                        title = stringResource(R.string.settings_theme_title),
+                        subtitle = stringResource(R.string.settings_theme_subtitle),
+                    ) {
+                        SettingsSegmentedRow(
+                            options = ThemeModeOptions,
+                            selected = state.themeMode,
+                            optionLabel = { stringResource(it.labelRes()) },
+                            onSelect = { vm.onIntent(SettingsIntent.SetTheme(it)) },
+                        )
+                    }
                 }
-            }
 
-            // ── Notificações ──
-            Column(modifier = Modifier.fadeUpOnAppear(delayMs = 320)) {
-                Spacer(Modifier.height(28.dp))
-                SettingsSectionLabel(
-                    label = stringResource(R.string.settings_section_notifications),
-                    meta = stringResource(R.string.settings_notif_total_format, state.totalActive),
+                // ── Notas · privacidade ──
+                Column(modifier = Modifier.fadeUpOnAppear(delayMs = 260)) {
+                    Spacer(Modifier.height(28.dp))
+                    SettingsSectionLabel(
+                        label = stringResource(R.string.settings_section_grades),
+                        meta = stringResource(R.string.settings_section_grades_meta),
+                    )
+                    Spacer(Modifier.height(12.dp))
+                    NotificationPreview(spoiler = state.spoiler, clockLabel = clockLabel)
+                    Spacer(Modifier.height(12.dp))
+                    SettingsOptionCard(
+                        icon = Icons.Filled.Shield,
+                        iconTint = MaterialTheme.melon.palette.coral,
+                        title = stringResource(R.string.settings_privacy_title),
+                        subtitle = stringResource(R.string.settings_privacy_subtitle),
+                    ) {
+                        SettingsSegmentedRow(
+                            options = SpoilerMode.entries,
+                            selected = state.spoiler,
+                            optionLabel = { stringResource(it.labelRes()) },
+                            onSelect = { vm.onIntent(SettingsIntent.SetSpoiler(it)) },
+                        )
+                    }
+                }
+
+                // ── Notificações ──
+                Column(modifier = Modifier.fadeUpOnAppear(delayMs = 320)) {
+                    Spacer(Modifier.height(28.dp))
+                    SettingsSectionLabel(
+                        label = stringResource(R.string.settings_section_notifications),
+                        meta = stringResource(
+                            R.string.settings_notif_total_format,
+                            state.totalActive,
+                        ),
+                    )
+                    Spacer(Modifier.height(12.dp))
+                    Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
+                        MessagesGroup(state = state, onToggle = vm::onIntent)
+                        GradesGroup(state = state, onToggle = vm::onIntent)
+                        ClassesGroup(state = state, onToggle = vm::onIntent)
+                    }
+                }
+
+                SettingsFooter(
+                    appVersion = appInfo.version,
+                    appBuild = appInfo.build,
+                    modifier = Modifier.fadeUpOnAppear(delayMs = 400),
                 )
-                Spacer(Modifier.height(12.dp))
-                Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
-                    MessagesGroup(state = state, onToggle = vm::onIntent)
-                    GradesGroup(state = state, onToggle = vm::onIntent)
-                    ClassesGroup(state = state, onToggle = vm::onIntent)
-                }
             }
-
-            SettingsFooter(
-                appVersion = appInfo.version,
-                appBuild = appInfo.build,
-                modifier = Modifier.fadeUpOnAppear(delayMs = 400),
-            )
         }
     }
 }
 
-// M3 large-app-bar block that scrolls with the content: back affordance,
-// display title, and the one-line mission statement.
+// Pinned back-affordance bar; the display title + mission statement live in
+// `SettingsHeadline`, which scrolls with the content.
 @Composable
 private fun SettingsTopBar(onBack: () -> Unit, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 20.dp)
-            .padding(top = 4.dp, bottom = 20.dp),
+            .padding(top = 4.dp),
     ) {
         IconButton(
             onClick = onBack,
@@ -210,7 +230,17 @@ private fun SettingsTopBar(onBack: () -> Unit, modifier: Modifier = Modifier) {
                 tint = MaterialTheme.colorScheme.onBackground,
             )
         }
-        Spacer(Modifier.height(6.dp))
+    }
+}
+
+@Composable
+private fun SettingsHeadline(modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp)
+            .padding(top = 6.dp, bottom = 20.dp),
+    ) {
         Text(
             text = stringResource(R.string.settings_title),
             style = MaterialTheme.typography.displaySmall.copy(
