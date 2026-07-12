@@ -27,7 +27,18 @@ class MelonFirebaseMessagingService : FirebaseMessagingService() {
     @Inject lateinit var sessionStore: SessionStore
     @Inject @ApplicationScope lateinit var applicationScope: CoroutineScope
 
+    @Deprecated("Deprecated in Java")
     override fun onNewToken(token: String) {
+        super.onNewToken(token)
+        onTokenReceived(token)
+    }
+
+    override fun onRegistered(installationId: String) {
+        super.onRegistered(installationId)
+        onTokenReceived(installationId)
+    }
+
+    private fun onTokenReceived(token: String) {
         Timber.tag(TAG).i("FCM token received length=%d", token.length)
         applicationScope.launch {
             if (sessionStore.getAccessToken() == null) {
