@@ -31,7 +31,7 @@ val gitVersionName =
         "refs/tags/",
     ) ?: "0.1.0"
 
-val gitVersionCode = gitOutput("rev-list", "--count", "next")?.toIntOrNull() ?: 1
+val gitVersionCode = gitOutput("rev-list", "--count", "main")?.toIntOrNull() ?: 1
 
 android {
     namespace = "dev.forcetower.unes"
