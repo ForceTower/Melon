@@ -39,7 +39,7 @@ android {
     defaultConfig {
         applicationId = "com.forcetower.uefs"
         versionCode = 2130000 + gitVersionCode
-        versionName = gitVersionName
+        versionName = gitVersionName.replaceFirst("android-", "")
 
         // API origin the UmbrellaGraph is built with. Override for a local
         // mock/proxy via `-Pmelon.apiBaseUrl=http://127.0.0.1:8787` (pair
