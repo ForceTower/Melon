@@ -401,6 +401,7 @@ private fun MarkAllReadButton(onClick: () -> Unit, modifier: Modifier = Modifier
             .height(44.dp)
             .clip(CircleShape)
             .background(tonal)
+            .border(1.dp, accent.copy(alpha = 0.32f), CircleShape)
             .clickable(onClickLabel = a11y, role = Role.Button, onClick = onClick),
         horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
         verticalAlignment = Alignment.CenterVertically,
