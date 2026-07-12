@@ -35,6 +35,15 @@ internal sealed interface ConnectedRoute : NavKey {
     // Pushed onto the Me stack when the "Licenças open source" row is tapped.
     // Reads the bundled `artifacts.json` Licensee emits at build time.
     @Serializable data object Licenses : ConnectedRoute
+    // Paradoxo — the grade-statistics explorer, pushed from the Me shortcut
+    // grid. Detail routes carry the aggregate id plus an optional seed name
+    // so the top bar has a title while the fetch is in flight; `Explore`
+    // carries a `ParadoxoExploreKind` name (rankings ride on the overview
+    // held by the shared ViewModel).
+    @Serializable data object Paradoxo : ConnectedRoute
+    @Serializable data class ParadoxoDiscipline(val id: String, val name: String? = null) : ConnectedRoute
+    @Serializable data class ParadoxoTeacher(val id: String, val name: String? = null) : ConnectedRoute
+    @Serializable data class ParadoxoExplore(val kind: String) : ConnectedRoute
 }
 
 internal fun ConnectedTab.rootRoute(): ConnectedRoute = when (this) {

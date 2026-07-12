@@ -39,6 +39,10 @@ import dev.forcetower.melon.feature.overview.domain.usecase.ObserveOverviewHeade
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveTodayTimelineUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveTomorrowPreviewUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveUnreadMessagesTileUseCase
+import dev.forcetower.melon.feature.paradoxo.domain.usecase.GetParadoxoDisciplineUseCase
+import dev.forcetower.melon.feature.paradoxo.domain.usecase.GetParadoxoIndexUseCase
+import dev.forcetower.melon.feature.paradoxo.domain.usecase.GetParadoxoOverviewUseCase
+import dev.forcetower.melon.feature.paradoxo.domain.usecase.GetParadoxoTeacherUseCase
 import dev.forcetower.melon.feature.schedule.domain.usecase.ObserveNextClassDayUseCase
 import dev.forcetower.melon.feature.schedule.domain.usecase.ObserveScheduleWeekUseCase
 import dev.forcetower.melon.feature.settings.domain.usecase.ObserveSettingsUseCase
@@ -142,6 +146,14 @@ interface UmbrellaGraph {
     // Eu (Me) document requests — Comprovante/Histórico PDFs pulled through
     // the backend, optionally carrying a solved reCAPTCHA token.
     val fetchAcademicDocumentUseCase: FetchAcademicDocumentUseCase
+
+    // Paradoxo — grade-statistics explorer, all live/uncached (the aggregates
+    // change once a semester). Overview + index power the home/search screen;
+    // discipline/teacher back the detail pushes.
+    val getParadoxoOverviewUseCase: GetParadoxoOverviewUseCase
+    val getParadoxoIndexUseCase: GetParadoxoIndexUseCase
+    val getParadoxoDisciplineUseCase: GetParadoxoDisciplineUseCase
+    val getParadoxoTeacherUseCase: GetParadoxoTeacherUseCase
 
     // Matrícula (enrollment) — all live/uncached. `window` is the cheap hub-gate
     // + entry-screen check, `offers` is the full disciplines tree, and `submit`

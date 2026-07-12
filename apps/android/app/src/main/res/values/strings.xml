@@ -1078,6 +1078,104 @@
     <string name="licenses_footer_compliance">EM CONFORMIDADE COM OS TERMOS\nDE CADA LICENÇA REPRODUZIDA ACIMA</string>
     <!-- endregion -->
 
+    <!-- region Paradoxo · Home -->
+    <string name="paradoxo_title">Paradoxo</string>
+    <string name="paradoxo_back">Voltar</string>
+    <string name="paradoxo_eyebrow">Pulso da universidade</string>
+    <string name="paradoxo_subtitle">As médias reais de cada matéria e professor, semestre a semestre.</string>
+    <string name="paradoxo_search_prompt">Buscar matéria ou professor</string>
+    <string name="paradoxo_search_cancel">Cancelar</string>
+    <string name="paradoxo_section_explore">Explorar</string>
+    <string name="paradoxo_section_mine">Suas disciplinas</string>
+    <string name="paradoxo_section_mine_note">Médias históricas do que você cursa</string>
+    <string name="paradoxo_samples_format">%1$s médias</string>
+    <string name="paradoxo_students_format">%1$s alunos</string>
+    <string name="paradoxo_top_percent_format">top %1$s</string>
+    <string name="paradoxo_footer_format">%1$s alunos · %2$s médias somadas</string>
+    <string name="paradoxo_error_title">Não deu para carregar</string>
+    <string name="paradoxo_error_retry">Tentar novamente</string>
+    <!-- endregion -->
+
+    <!-- region Paradoxo · Pulse hero -->
+    <string name="paradoxo_pulse_brutal">Mais brutal agora</string>
+    <string name="paradoxo_pulse_kind">Mais gentil agora</string>
+    <string name="paradoxo_pulse_trend">Em queda livre</string>
+    <string name="paradoxo_pulse_gap">Maior disparidade</string>
+    <string name="paradoxo_pulse_rising">Em ascensão</string>
+    <string name="paradoxo_pulse_surprise">Índice de surpresa</string>
+    <string name="paradoxo_pulse_signature">Assinatura rara</string>
+    <string name="paradoxo_pulse_explore">Explorar</string>
+    <!-- endregion -->
+
+    <!-- region Paradoxo · Explore rankings -->
+    <string name="paradoxo_explore_brutal_title">Mais brutais</string>
+    <string name="paradoxo_explore_brutal_sub">menores médias</string>
+    <string name="paradoxo_explore_kind_title">Mais gentis</string>
+    <string name="paradoxo_explore_kind_sub">maiores médias</string>
+    <string name="paradoxo_explore_rising_title">Em ascensão</string>
+    <string name="paradoxo_explore_rising_sub">subindo há anos</string>
+    <string name="paradoxo_explore_gap_title">Contraste</string>
+    <string name="paradoxo_explore_gap_sub">maior disparidade</string>
+    <!-- endregion -->
+
+    <!-- region Paradoxo · Search -->
+    <string name="paradoxo_search_suggestions">Sugestões</string>
+    <string name="paradoxo_search_disciplines">Disciplinas</string>
+    <string name="paradoxo_search_teachers">Professores</string>
+    <string name="paradoxo_search_section_count_format">%1$s · %2$d</string>
+    <string name="paradoxo_search_empty_format">Nenhum resultado para “%1$s”</string>
+    <!-- endregion -->
+
+    <!-- region Paradoxo · Tiers, shapes & outcomes -->
+    <string name="paradoxo_tier_angel">anjo</string>
+    <string name="paradoxo_tier_fair">justo</string>
+    <string name="paradoxo_tier_balanced">equilibrado</string>
+    <string name="paradoxo_tier_demanding">exigente</string>
+    <string name="paradoxo_tier_relentless">implacável</string>
+    <string name="paradoxo_shape_bimodal">bimodal</string>
+    <string name="paradoxo_shape_strict">rigorosa</string>
+    <string name="paradoxo_shape_lenient">generosa</string>
+    <string name="paradoxo_shape_balanced">equilibrada</string>
+    <string name="paradoxo_shape_regular">regular</string>
+    <string name="paradoxo_outcome_approved">aprovados</string>
+    <string name="paradoxo_outcome_failed">reprovados</string>
+    <string name="paradoxo_outcome_quit">abandonos</string>
+    <!-- endregion -->
+
+    <!-- region Paradoxo · Discipline detail -->
+    <string name="paradoxo_department_format">Dep. de %1$s</string>
+    <string name="paradoxo_grade_out_of_ten">/10</string>
+    <string name="paradoxo_detail_calculated_format">Calculado com %1$s alunos avaliados</string>
+    <string name="paradoxo_chart_title">Média por semestre</string>
+    <string name="paradoxo_chart_peak">Melhor</string>
+    <string name="paradoxo_chart_trough">Pior</string>
+    <string name="paradoxo_chart_point_format">%1$s · %2$s</string>
+    <string name="paradoxo_chart_axis_mean">Média</string>
+    <string name="paradoxo_chart_axis_semester">Semestre</string>
+    <string name="paradoxo_dist_title">Distribuição das notas</string>
+    <string name="paradoxo_dist_top_percent_format">Você está no top %1$s da turma</string>
+    <string name="paradoxo_insights_title">Curiosidades</string>
+    <string name="paradoxo_insight_peak_format">Melhor momento em %1$s — média chegou a %2$s</string>
+    <string name="paradoxo_insight_trough_format">Pior semestre foi %1$s, com média %2$s</string>
+    <string name="paradoxo_insight_gap_format">Disparidade de %1$s pontos entre o professor mais duro e o mais gentil</string>
+    <string name="paradoxo_teachers_title">Professores</string>
+    <string name="paradoxo_teachers_note">Média de cada um nesta disciplina</string>
+    <string name="paradoxo_teacher_meta_format">%1$s médias · %2$s</string>
+    <string name="paradoxo_open_teacher">Abrir professor</string>
+    <string name="paradoxo_expand_history">Ver histórico do professor</string>
+    <!-- endregion -->
+
+    <!-- region Paradoxo · Teacher detail -->
+    <string name="paradoxo_teacher_approval">Aprovação</string>
+    <string name="paradoxo_teacher_consistency">Consistência</string>
+    <string name="paradoxo_teacher_last_semester">Último sem.</string>
+    <string name="paradoxo_teacher_outcomes">Resultados dos alunos</string>
+    <string name="paradoxo_teacher_signature">Assinatura de notas</string>
+    <string name="paradoxo_teacher_signature_caption_format">Como as notas se espalham entre %1$s alunos</string>
+    <string name="paradoxo_teacher_disciplines">Disciplinas</string>
+    <string name="paradoxo_teacher_disciplines_note">Média nas matérias que leciona</string>
+    <!-- endregion -->
+
     <!-- region Widget · "Próxima aula" -->
     <string name="widget_next_class_title">Próxima aula</string>
     <string name="widget_next_class_description">A próxima aula do dia, com horário, sala e topo de prioridades.</string>

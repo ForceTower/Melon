@@ -37,8 +37,13 @@ import dev.forcetower.unes.ui.feature.overview.ColorFor
 import dev.forcetower.unes.ui.feature.overview.OverviewScreen
 import dev.forcetower.unes.ui.feature.schedule.ScheduleScreen
 import dev.forcetower.unes.ui.feature.calendar.CalendarScreen
+import dev.forcetower.melon.feature.paradoxo.domain.model.ParadoxoExploreKind
 import dev.forcetower.unes.ui.feature.finalcountdown.FinalCountdownScreen
 import dev.forcetower.unes.ui.feature.licenses.LicensesScreen
+import dev.forcetower.unes.ui.feature.paradoxo.ParadoxoDisciplineScreen
+import dev.forcetower.unes.ui.feature.paradoxo.ParadoxoExploreScreen
+import dev.forcetower.unes.ui.feature.paradoxo.ParadoxoScreen
+import dev.forcetower.unes.ui.feature.paradoxo.ParadoxoTeacherScreen
 import dev.forcetower.unes.ui.feature.settings.SettingsScreen
 
 // The authenticated shell — hosts the Material 3 bottom navigation bar and
@@ -197,6 +202,61 @@ fun ConnectedScreen(
                 entry<ConnectedRoute.Licenses> {
                     LicensesScreen(
                         onBack = { navigator.goBack() },
+                        bottomInset = bottomInset,
+                    )
+                }
+                entry<ConnectedRoute.Paradoxo> {
+                    ParadoxoScreen(
+                        onBack = { navigator.goBack() },
+                        onOpenDiscipline = { id, name ->
+                            navigator.navigate(
+                                ConnectedRoute.ParadoxoDiscipline(id, name.ifBlank { null }),
+                            )
+                        },
+                        onOpenTeacher = { id, name ->
+                            navigator.navigate(
+                                ConnectedRoute.ParadoxoTeacher(id, name.ifBlank { null }),
+                            )
+                        },
+                        onOpenExplore = { kind ->
+                            navigator.navigate(ConnectedRoute.ParadoxoExplore(kind.name))
+                        },
+                        bottomInset = bottomInset,
+                    )
+                }
+                entry<ConnectedRoute.ParadoxoDiscipline> { route ->
+                    ParadoxoDisciplineScreen(
+                        id = route.id,
+                        seedName = route.name,
+                        onBack = { navigator.goBack() },
+                        onOpenTeacher = { id, name ->
+                            navigator.navigate(ConnectedRoute.ParadoxoTeacher(id, name))
+                        },
+                        bottomInset = bottomInset,
+                    )
+                }
+                entry<ConnectedRoute.ParadoxoTeacher> { route ->
+                    ParadoxoTeacherScreen(
+                        id = route.id,
+                        seedName = route.name,
+                        onBack = { navigator.goBack() },
+                        onOpenDiscipline = { id, name ->
+                            navigator.navigate(ConnectedRoute.ParadoxoDiscipline(id, name))
+                        },
+                        bottomInset = bottomInset,
+                    )
+                }
+                entry<ConnectedRoute.ParadoxoExplore> { route ->
+                    ParadoxoExploreScreen(
+                        kind = runCatching { ParadoxoExploreKind.valueOf(route.kind) }
+                            .getOrDefault(ParadoxoExploreKind.Brutal),
+                        onBack = { navigator.goBack() },
+                        onOpenDiscipline = { id, name ->
+                            navigator.navigate(ConnectedRoute.ParadoxoDiscipline(id, name))
+                        },
+                        onOpenTeacher = { id, name ->
+                            navigator.navigate(ConnectedRoute.ParadoxoTeacher(id, name))
+                        },
                         bottomInset = bottomInset,
                     )
                 }

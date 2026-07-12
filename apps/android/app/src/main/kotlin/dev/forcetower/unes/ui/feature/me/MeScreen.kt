@@ -103,7 +103,8 @@ internal fun MeScreen(
                 vm.onIntent(MeIntent.OpenDocument(AcademicDocument.EnrollmentCertificate))
             ShortcutKind.History ->
                 vm.onIntent(MeIntent.OpenDocument(AcademicDocument.AcademicHistory))
-            // Gated tiles without an Android screen yet (Matrícula, Paradoxo,
+            ShortcutKind.Paradoxo -> connectedNavigator.navigate(ConnectedRoute.Paradoxo)
+            // Gated tiles without an Android screen yet (Matrícula,
             // Materiais) — they only render in debug builds or once the
             // remote flag flips, and routing lands together with each feature.
             else -> Unit

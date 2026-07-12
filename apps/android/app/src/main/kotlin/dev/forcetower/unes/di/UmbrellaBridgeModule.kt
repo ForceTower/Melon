@@ -38,6 +38,10 @@ import dev.forcetower.melon.feature.overview.domain.usecase.ObserveOverviewHeade
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveTodayTimelineUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveTomorrowPreviewUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveUnreadMessagesTileUseCase
+import dev.forcetower.melon.feature.paradoxo.domain.usecase.GetParadoxoDisciplineUseCase
+import dev.forcetower.melon.feature.paradoxo.domain.usecase.GetParadoxoIndexUseCase
+import dev.forcetower.melon.feature.paradoxo.domain.usecase.GetParadoxoOverviewUseCase
+import dev.forcetower.melon.feature.paradoxo.domain.usecase.GetParadoxoTeacherUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.BackfillMirrorUseCase
 import dev.forcetower.melon.feature.schedule.domain.usecase.ObserveNextClassDayUseCase
 import dev.forcetower.melon.feature.schedule.domain.usecase.ObserveScheduleWeekUseCase
@@ -202,6 +206,18 @@ object UmbrellaBridgeModule {
         graph.observeSettingsUseCase
     @Provides fun provideUpdateSettingsUseCase(graph: UmbrellaGraph): UpdateSettingsUseCase =
         graph.updateSettingsUseCase
+
+    // Paradoxo — grade-statistics explorer. Overview + index feed the home/
+    // search screen (shared activity-scoped VM); discipline/teacher back the
+    // detail pushes.
+    @Provides fun provideGetParadoxoOverviewUseCase(graph: UmbrellaGraph): GetParadoxoOverviewUseCase =
+        graph.getParadoxoOverviewUseCase
+    @Provides fun provideGetParadoxoIndexUseCase(graph: UmbrellaGraph): GetParadoxoIndexUseCase =
+        graph.getParadoxoIndexUseCase
+    @Provides fun provideGetParadoxoDisciplineUseCase(graph: UmbrellaGraph): GetParadoxoDisciplineUseCase =
+        graph.getParadoxoDisciplineUseCase
+    @Provides fun provideGetParadoxoTeacherUseCase(graph: UmbrellaGraph): GetParadoxoTeacherUseCase =
+        graph.getParadoxoTeacherUseCase
 
     // Calendário — academic-calendar events feed for the agenda + the
     // active-semester code that powers the header eyebrow. Mirrors iOS
