@@ -1,23 +1,31 @@
 package dev.forcetower.unes.ui.feature.messages
 
 import androidx.annotation.StringRes
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.MenuBook
+import androidx.compose.material.icons.filled.AccountBalance
+import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.Campaign
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Widgets
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.theme.melon
-import dev.forcetower.unes.ui.feature.overview.ColorFor
 import java.time.LocalDateTime
 import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
+import java.util.Locale
 import kotlin.math.floor
 
 // Local UI models for the messages inbox. Mirrors `MessageModels.swift` on
-// iOS (`apps/ios/UNES/Features/Messages/Models/MessageModels.swift`) and
-// `screens-messages-data.jsx` from the design bundle.
-//
-// Each kind gets distinct visual treatment on the list row swatch and an
-// accent color that tints the detail screen's ambient glow.
+// iOS (`apps/ios/UNES/Features/Messages/Models/MessageModels.swift`); visuals
+// follow the dc `UNES Mensagens - Android` redesign, which tints every row by
+// one of three top-level categories (Disciplinas · Universidade · App).
 internal enum class MessageOrigin {
     Discipline,   // from a specific enrolled discipline (sender is the prof)
     Secretariat,  // from Secretaria Acadêmica
@@ -61,71 +69,50 @@ internal data class Message(
     val attachments: List<MessageAttachment> = emptyList(),
 )
 
-// Visual metadata attached to a message based on its origin. The accent
-// `color` tints the swatch, the meta line on rows, and the detail glow.
-internal data class MessageOriginMeta(
-    val label: String,
-    val color: Color,
-    @StringRes val kindRes: Int,
-)
+// Top-level category the dc redesign groups origins into — drives the tonal
+// avatar hue, the hero segmented bar, and the legend.
+internal enum class MessageCategory(@StringRes val labelRes: Int) {
+    Disciplines(R.string.messages_category_disciplines),
+    University(R.string.messages_category_university),
+    App(R.string.messages_category_app),
+}
 
+internal val Message.category: MessageCategory
+    get() = when (origin) {
+        MessageOrigin.Discipline, MessageOrigin.Direct -> MessageCategory.Disciplines
+        MessageOrigin.Secretariat, MessageOrigin.Campus -> MessageCategory.University
+        MessageOrigin.App, MessageOrigin.Module -> MessageCategory.App
+    }
+
+// Category hue map from the dc prototype: Disciplinas = jade,
+// Universidade = amber (status.warn), App = violet.
 @Composable
 @ReadOnlyComposable
-internal fun originMeta(message: Message): MessageOriginMeta {
-    val palette = MaterialTheme.melon.palette
-    val outline = MaterialTheme.colorScheme.outline
-    val accent = MaterialTheme.colorScheme.primary
-    val tealApp = palette.teal
-    return when (message.origin) {
-        MessageOrigin.Discipline -> MessageOriginMeta(
-            label = message.disciplineCode.orEmpty(),
-            color = message.disciplineCode?.let { ColorFor.discipline(palette, it) } ?: outline,
-            kindRes = R.string.messages_origin_kind_discipline,
-        )
-        MessageOrigin.Secretariat -> MessageOriginMeta(
-            label = "SEC",
-            color = MessagesPalette.Secretariat,
-            kindRes = R.string.messages_origin_kind_secretariat,
-        )
-        MessageOrigin.Campus -> MessageOriginMeta(
-            label = "UEFS",
-            color = MessagesPalette.Campus,
-            kindRes = R.string.messages_origin_kind_campus,
-        )
-        MessageOrigin.App -> MessageOriginMeta(
-            label = "UNES",
-            color = tealApp,
-            kindRes = R.string.messages_origin_kind_app,
-        )
-        MessageOrigin.Module -> {
-            val (label, color) = moduleMeta(message.moduleId)
-            MessageOriginMeta(label = label, color = color, kindRes = R.string.messages_origin_kind_module)
-        }
-        MessageOrigin.Direct -> MessageOriginMeta(
-            label = "·",
-            color = accent,
-            kindRes = R.string.messages_origin_kind_direct,
-        )
-    }
+internal fun categoryColor(category: MessageCategory): Color = when (category) {
+    MessageCategory.Disciplines -> MaterialTheme.melon.palette.jade
+    MessageCategory.University -> MaterialTheme.melon.status.warn
+    MessageCategory.App -> MaterialTheme.melon.palette.violet
 }
 
-private fun moduleMeta(moduleId: String?): Pair<String, Color> = when (moduleId) {
-    "intercambio" -> "INTER" to MessagesPalette.ModuleIntercambio
-    "biblioteca" -> "BIB" to MessagesPalette.ModuleBiblioteca
-    "ru" -> "RU" to MessagesPalette.ModuleRu
-    else -> "MOD" to MessagesPalette.ModuleDefault
+// Leading avatar glyph — per origin, so a secretaria row still reads
+// differently from a comunicado even though both tint amber.
+internal fun originIcon(origin: MessageOrigin): ImageVector = when (origin) {
+    MessageOrigin.Discipline -> Icons.AutoMirrored.Filled.MenuBook
+    MessageOrigin.Secretariat -> Icons.Filled.AccountBalance
+    MessageOrigin.Campus -> Icons.Filled.Campaign
+    MessageOrigin.App -> Icons.Filled.AutoAwesome
+    MessageOrigin.Module -> Icons.Filled.Widgets
+    MessageOrigin.Direct -> Icons.Filled.Person
 }
 
-// Colors that don't sit cleanly on `MaterialTheme.melon` — secretariat grey,
-// campus amber-ish, and the module hues. Mirrors the literals from
-// `originMeta()` in `screens-messages-data.jsx`.
-private object MessagesPalette {
-    val Secretariat = Color(0xFF6B5E70)
-    val Campus = Color(0xFFD9852E)
-    val ModuleIntercambio = Color(0xFF6B4B9C)
-    val ModuleBiblioteca = Color(0xFF5C8C3E)
-    val ModuleRu = Color(0xFFC37A4A)
-    val ModuleDefault = Color(0xFF6B5E70)
+@StringRes
+internal fun originKindRes(origin: MessageOrigin): Int = when (origin) {
+    MessageOrigin.Discipline -> R.string.messages_origin_kind_discipline
+    MessageOrigin.Secretariat -> R.string.messages_origin_kind_secretariat
+    MessageOrigin.Campus -> R.string.messages_origin_kind_campus
+    MessageOrigin.App -> R.string.messages_origin_kind_app
+    MessageOrigin.Module -> R.string.messages_origin_kind_module
+    MessageOrigin.Direct -> R.string.messages_origin_kind_direct
 }
 
 // Filter chips across the top of the inbox.
@@ -141,9 +128,9 @@ internal enum class MessageFilter(@StringRes val labelRes: Int) {
         All -> true
         Unread -> m.unread
         Starred -> m.starred
-        Disc -> m.origin == MessageOrigin.Discipline || m.origin == MessageOrigin.Direct
-        Univ -> m.origin == MessageOrigin.Secretariat || m.origin == MessageOrigin.Campus
-        App -> m.origin == MessageOrigin.App || m.origin == MessageOrigin.Module
+        Disc -> m.category == MessageCategory.Disciplines
+        Univ -> m.category == MessageCategory.University
+        App -> m.category == MessageCategory.App
     }
 }
 
@@ -169,12 +156,14 @@ internal fun bucketOf(received: LocalDateTime, now: LocalDateTime = LocalDateTim
 
 // Short relative timestamp shown on each row. Mirrors `relTime()` in
 // `screens-messages-data.jsx` and `MessageDate.relativeTime` on iOS. The
-// `Literal` variant carries a pre-built short date ("10 abr") because
-// Portuguese month abbreviations don't round-trip through CLDR patterns.
+// `Literal` variant carries a pre-built short date ("10 abr").
 internal sealed class RelativeTime {
     data class Resource(@StringRes val res: Int, val arg: Int? = null) : RelativeTime()
     data class Literal(val text: String) : RelativeTime()
 }
+
+private val ShortDateFormatter: DateTimeFormatter =
+    DateTimeFormatter.ofPattern("d MMM", Locale.getDefault())
 
 internal fun relativeTime(received: LocalDateTime, now: LocalDateTime = LocalDateTime.now()): RelativeTime {
     val mins = floor(secondsBetween(received, now) / 60.0).toInt()
@@ -185,19 +174,17 @@ internal fun relativeTime(received: LocalDateTime, now: LocalDateTime = LocalDat
     val days = hrs / 24
     if (days == 1) return RelativeTime.Resource(R.string.messages_rel_time_yesterday)
     if (days <= 6) return RelativeTime.Resource(R.string.messages_rel_time_days, arg = days)
-    val months = listOf("jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez")
-    return RelativeTime.Literal("${received.dayOfMonth} ${months[received.monthValue - 1]}")
+    return RelativeTime.Literal(ShortDateFormatter.format(received))
 }
+
+private val LongDateFormatter: DateTimeFormatter =
+    DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG).withLocale(Locale.getDefault())
 
 // Long form used on the detail screen — "18 de abril de 2026 · 09:14".
 internal fun fullTime(received: LocalDateTime): String {
-    val months = listOf(
-        "janeiro", "fevereiro", "março", "abril", "maio", "junho",
-        "julho", "agosto", "setembro", "outubro", "novembro", "dezembro",
-    )
     val hh = received.hour.toString().padStart(2, '0')
     val mm = received.minute.toString().padStart(2, '0')
-    return "${received.dayOfMonth} de ${months[received.monthValue - 1]} de ${received.year} · $hh:$mm"
+    return "${LongDateFormatter.format(received)} · $hh:$mm"
 }
 
 private fun secondsBetween(start: LocalDateTime, end: LocalDateTime): Double {

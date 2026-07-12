@@ -1,6 +1,5 @@
 package dev.forcetower.unes.ui.feature.messages
 
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -24,6 +23,14 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.filled.Schedule
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.StarBorder
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,23 +40,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.StrokeJoin
-import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.role
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLinkStyles
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withLink
@@ -63,7 +61,6 @@ import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
 import dev.forcetower.unes.designsystem.theme.MelonTheme
 import dev.forcetower.unes.designsystem.theme.melon
 import dev.forcetower.unes.ui.feature.messages.components.AttachmentTile
-import dev.forcetower.unes.ui.feature.messages.components.OriginSwatch
 
 // Route adapter sitting between the Messages tab's `MessageDetail` NavKey
 // and the pure detail screen below. Owns the open/close lifecycle of the
@@ -115,27 +112,27 @@ internal fun MessageDetailRoute(
         MessageDetailScreen(
             message = rendered,
             onBack = onBack,
+            onToggleStar = { vm.onIntent(MessagesIntent.ToggleStar(id)) },
             onAppear = { vm.onIntent(MessagesIntent.MarkRead(id)) },
             bottomInset = bottomInset,
         )
     }
 }
 
-// Full message detail — sender card, optional serif subject, formatted body
-// with linkified URLs, image gallery, and the attachments list.
-//
-// Mirrors `MessageDetailScreen` in `screens-message-detail.jsx` and
-// `MessageDetailView` on iOS.
+// Full message detail — 2026 redesign (dc `UNES Mensagens - Android`): small
+// top app bar with back + star (save) toggle, the category-tinted sender
+// header card, the timestamp row, the body paragraphs with linkified URLs,
+// the attachment tiles, and the "salva" note pill when starred.
 @Composable
 internal fun MessageDetailScreen(
     message: Message,
     onBack: () -> Unit,
+    onToggleStar: () -> Unit = {},
     bottomInset: Dp = 0.dp,
     onAppear: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
 ) {
-    val meta = originMeta(message)
-    val surface = MaterialTheme.colorScheme.surface
+    val hue = categoryColor(message.category)
     val images = message.attachments.filter { it.kind == MessageAttachmentKind.Image }
     val nonImages = message.attachments.filter { it.kind != MessageAttachmentKind.Image }
 
@@ -143,73 +140,119 @@ internal fun MessageDetailScreen(
         onAppear?.invoke()
     }
 
-    Box(
+    Column(
         modifier = modifier
             .fillMaxSize()
-            .background(surface),
+            .background(MaterialTheme.colorScheme.background)
+            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
+            .verticalScroll(rememberScrollState())
+            .padding(bottom = bottomInset),
     ) {
-        // Origin-tinted ambient glow at the top.
-        AmbientGlow(accent = meta.color, surface = surface)
-
-        Column(
+        Row(
             modifier = Modifier
-                .fillMaxSize()
-                .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
-                .verticalScroll(rememberScrollState())
-                .padding(bottom = bottomInset),
+                .fillMaxWidth()
+                .windowInsetsPadding(WindowInsets.statusBars)
+                .padding(horizontal = 8.dp)
+                .padding(top = 6.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            BackButton(
-                onBack = onBack,
-                modifier = Modifier
-                    .windowInsetsPadding(WindowInsets.statusBars)
-                    .padding(start = 16.dp, top = 10.dp, bottom = 10.dp),
+            IconButton(onClick = onBack) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = stringResource(R.string.messages_back_label),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            StarToggle(starred = message.starred, onToggle = onToggleStar)
+        }
+
+        Column(modifier = Modifier.padding(horizontal = 16.dp).padding(top = 12.dp, bottom = 32.dp)) {
+            SenderHeaderCard(
+                message = message,
+                hue = hue,
+                modifier = Modifier.fadeUpOnAppear(delayMs = 60),
             )
 
-            SenderCard(
-                message = message,
+            Row(
                 modifier = Modifier
-                    .padding(horizontal = 16.dp)
-                    .padding(top = 8.dp, bottom = 18.dp)
-                    .fadeUpOnAppear(delayMs = 40),
+                    .padding(horizontal = 4.dp)
+                    .padding(top = 20.dp, bottom = 4.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Schedule,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.outlineVariant,
+                    modifier = Modifier.size(17.dp),
+                )
+                Text(
+                    text = fullTime(message.receivedAt),
+                    style = MaterialTheme.typography.bodySmall.copy(
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.SemiBold,
+                    ),
+                    color = MaterialTheme.colorScheme.outline,
+                )
+            }
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 14.dp, bottom = 18.dp)
+                    .height(1.dp)
+                    .background(MaterialTheme.melon.surface.line),
             )
 
-            SubjectAndTimestamp(
-                message = message,
-                modifier = Modifier
-                    .padding(horizontal = 20.dp)
-                    .padding(bottom = 14.dp)
-                    .fadeUpOnAppear(delayMs = 120),
-            )
-
-            BodyText(
-                message = message,
-                accent = meta.color,
-                modifier = Modifier
-                    .padding(horizontal = 20.dp)
-                    .padding(bottom = 20.dp)
-                    .fadeUpOnAppear(delayMs = 200),
-            )
+            Column(
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier.fadeUpOnAppear(delayMs = 140),
+            ) {
+                if (!message.subject.isNullOrBlank()) {
+                    Text(
+                        text = message.subject,
+                        style = MaterialTheme.typography.headlineSmall.copy(
+                            fontSize = 21.sp,
+                            lineHeight = 26.sp,
+                        ),
+                        color = MaterialTheme.colorScheme.onBackground,
+                    )
+                }
+                message.body.split(ParagraphBreak).forEach { paragraph ->
+                    val trimmed = paragraph.trim()
+                    if (trimmed.isNotEmpty()) {
+                        Text(
+                            text = linkify(trimmed, accent = hue),
+                            style = MaterialTheme.typography.bodyLarge.copy(lineHeight = 26.sp),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+            }
 
             if (images.isNotEmpty()) {
                 ImageGallery(
                     attachments = images,
-                    accent = meta.color,
+                    accent = hue,
                     modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .padding(bottom = 16.dp)
-                        .fadeUpOnAppear(delayMs = 280),
+                        .padding(top = 20.dp)
+                        .fadeUpOnAppear(delayMs = 220),
                 )
             }
 
             if (nonImages.isNotEmpty()) {
                 AttachmentsList(
                     attachments = nonImages,
-                    accent = meta.color,
+                    accent = hue,
                     modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .padding(bottom = 20.dp)
-                        .fadeUpOnAppear(delayMs = 340),
+                        .padding(top = 20.dp)
+                        .fadeUpOnAppear(delayMs = 280),
                 )
+            }
+
+            if (message.starred) {
+                SavedNote(modifier = Modifier.padding(top = 24.dp))
             }
 
             Spacer(Modifier.height(32.dp))
@@ -218,226 +261,119 @@ internal fun MessageDetailScreen(
 }
 
 @Composable
-private fun AmbientGlow(accent: Color, surface: Color) {
+private fun StarToggle(starred: Boolean, onToggle: () -> Unit) {
+    val accent = MaterialTheme.colorScheme.primary
+    val tonal = accent.copy(alpha = 0.16f).compositeOver(MaterialTheme.melon.surface.card)
+    val label = stringResource(
+        if (starred) R.string.messages_unsave_a11y else R.string.messages_save_a11y,
+    )
     Box(
         modifier = Modifier
-            .fillMaxWidth()
-            .height(260.dp),
-    ) {
-        // Radial-ish glow centered at the top, faded to transparent.
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    Brush.radialGradient(
-                        colors = listOf(accent.copy(alpha = 0.165f), Color.Transparent),
-                        radius = 720f,
-                    ),
-                ),
-        )
-        // Linear fade to the surface color so the bottom edge ends cleanly.
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    Brush.verticalGradient(
-                        0f to Color.Transparent,
-                        1f to surface,
-                    ),
-                ),
-        )
-    }
-}
-
-@Composable
-private fun BackButton(onBack: () -> Unit, modifier: Modifier = Modifier) {
-    val card = MaterialTheme.melon.surface.card
-    val cardLine = MaterialTheme.melon.surface.cardLine
-    val ink = MaterialTheme.colorScheme.onBackground
-    val description = stringResource(R.string.messages_back_label)
-    Box(
-        modifier = modifier
-            .size(38.dp)
+            .size(44.dp)
             .clip(CircleShape)
-            .background(card)
-            .border(1.dp, cardLine, CircleShape)
-            .clickable(onClick = onBack)
-            .semantics {
-                role = Role.Button
-                contentDescription = description
-            },
+            .background(if (starred) tonal else Color.Transparent)
+            .clickable(onClickLabel = label, onClick = onToggle),
         contentAlignment = Alignment.Center,
     ) {
-        Canvas(modifier = Modifier.size(14.dp)) {
-            val w = size.width
-            val h = size.height
-            val sx = w / 14f
-            val sy = h / 14f
-            val stroke = Stroke(width = 1.5f * density, cap = StrokeCap.Round, join = StrokeJoin.Round)
-            val path = Path().apply {
-                moveTo(8.5f * sx, 3f * sy)
-                lineTo(4.5f * sx, 7f * sy)
-                lineTo(8.5f * sx, 11f * sy)
-            }
-            drawPath(path, color = ink, style = stroke)
-        }
+        Icon(
+            imageVector = if (starred) Icons.Filled.Star else Icons.Filled.StarBorder,
+            contentDescription = label,
+            tint = if (starred) accent else MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.size(24.dp),
+        )
     }
 }
 
 @Composable
-private fun SenderCard(message: Message, modifier: Modifier = Modifier) {
-    val meta = originMeta(message)
-    val card = MaterialTheme.melon.surface.card
-    val cardLine = MaterialTheme.melon.surface.cardLine
-    val ink = MaterialTheme.colorScheme.onBackground
-    val ink3 = MaterialTheme.colorScheme.onSurfaceVariant
-
+private fun SenderHeaderCard(message: Message, hue: Color, modifier: Modifier = Modifier) {
+    val shape = RoundedCornerShape(24.dp)
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(18.dp))
-            .background(card)
-            .border(1.dp, cardLine, RoundedCornerShape(18.dp))
-            .padding(14.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
+            .clip(shape)
+            .background(hue.copy(alpha = 0.12f).compositeOver(MaterialTheme.melon.surface.card))
+            .border(1.dp, hue.copy(alpha = 0.24f), shape)
+            .padding(18.dp),
+        horizontalArrangement = Arrangement.spacedBy(14.dp),
         verticalAlignment = Alignment.Top,
     ) {
-        OriginSwatch(message = message, size = 44.dp)
-
-        Column(
-            modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(2.dp),
+        Box(
+            modifier = Modifier
+                .size(52.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .background(hue.copy(alpha = 0.22f)),
+            contentAlignment = Alignment.Center,
         ) {
+            Icon(
+                imageVector = originIcon(message.origin),
+                contentDescription = null,
+                tint = hue,
+                modifier = Modifier.size(26.dp),
+            )
+        }
+        Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = senderKindLabel(message = message, meta = meta),
+                text = message.sender.role.uppercase(),
                 style = MaterialTheme.typography.labelSmall.copy(
-                    fontFamily = FontFamily.Monospace,
-                    fontSize = 9.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    letterSpacing = 1.1.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    letterSpacing = 0.88.sp,
                 ),
-                color = meta.color,
-                modifier = Modifier.padding(bottom = 2.dp),
+                color = hue,
             )
             Text(
                 text = message.sender.name,
-                style = MaterialTheme.typography.titleSmall.copy(
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    letterSpacing = (-0.15).sp,
+                style = MaterialTheme.typography.titleLarge.copy(
+                    fontSize = 21.sp,
+                    lineHeight = 24.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    letterSpacing = (-0.42).sp,
                 ),
-                color = ink,
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.padding(top = 4.dp),
             )
             Text(
-                text = message.sender.role,
-                style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
-                color = ink3,
+                text = stringResource(originKindRes(message.origin)),
+                style = MaterialTheme.typography.bodySmall.copy(fontSize = 13.sp),
+                color = MaterialTheme.colorScheme.outline,
+                modifier = Modifier.padding(top = 4.dp),
             )
         }
-
-        StarToggle(starred = message.starred)
     }
 }
 
 @Composable
-private fun senderKindLabel(message: Message, meta: MessageOriginMeta): String {
-    val kind = stringResource(meta.kindRes)
-    return if (message.origin == MessageOrigin.Direct) {
-        stringResource(R.string.messages_origin_kind_direct_for_you, kind)
-    } else {
-        kind.uppercase()
-    }
-}
-
-@Composable
-private fun StarToggle(starred: Boolean) {
-    val cardLine = MaterialTheme.melon.surface.cardLine
-    val ink3 = MaterialTheme.colorScheme.onSurfaceVariant
-    val starOn = StarColor
-    Box(
-        modifier = Modifier
-            .size(32.dp)
-            .clip(RoundedCornerShape(8.dp))
-            .border(1.dp, cardLine, RoundedCornerShape(8.dp)),
-        contentAlignment = Alignment.Center,
+private fun SavedNote(modifier: Modifier = Modifier) {
+    val accent = MaterialTheme.colorScheme.primary
+    val tonal = accent.copy(alpha = 0.16f).compositeOver(MaterialTheme.melon.surface.card)
+    Row(
+        modifier = modifier
+            .clip(CircleShape)
+            .background(tonal)
+            .padding(horizontal = 15.dp, vertical = 9.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        Canvas(modifier = Modifier.size(13.dp)) {
-            val w = size.width
-            val h = size.height
-            val sx = w / 13f
-            val sy = h / 13f
-            val color = if (starred) starOn else ink3
-            val path = Path().apply {
-                moveTo(6.5f * sx, 1.3f * sy)
-                lineTo(8.05f * sx, 4.5f * sy)
-                lineTo(11.55f * sx, 4.85f * sy)
-                lineTo(8.95f * sx, 7.25f * sy)
-                lineTo(9.65f * sx, 10.6f * sy)
-                lineTo(6.5f * sx, 9f * sy)
-                lineTo(3.35f * sx, 10.6f * sy)
-                lineTo(4.05f * sx, 7.25f * sy)
-                lineTo(1.45f * sx, 4.85f * sy)
-                lineTo(4.95f * sx, 4.5f * sy)
-                close()
-            }
-            if (starred) {
-                drawPath(path, color = color)
-            } else {
-                drawPath(path, color = color, style = Stroke(width = 1.2f * density, join = StrokeJoin.Round))
-            }
-        }
-    }
-}
-
-@Composable
-private fun SubjectAndTimestamp(message: Message, modifier: Modifier = Modifier) {
-    val ink = MaterialTheme.colorScheme.onBackground
-    val ink4 = MaterialTheme.colorScheme.outlineVariant
-    Column(
-        modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(10.dp),
-    ) {
-        if (!message.subject.isNullOrBlank()) {
-            Text(
-                text = message.subject,
-                style = MaterialTheme.typography.headlineSmall.copy(
-                    fontSize = 26.sp,
-                    lineHeight = 31.sp,
-                    letterSpacing = (-0.52).sp,
-                ),
-                color = ink,
-            )
-        }
+        Icon(
+            imageVector = Icons.Filled.Bookmark,
+            contentDescription = null,
+            tint = accent,
+            modifier = Modifier.size(18.dp),
+        )
         Text(
-            text = fullTime(message.receivedAt),
-            style = MaterialTheme.typography.labelSmall.copy(
-                fontFamily = FontFamily.Monospace,
-                fontSize = 10.sp,
-                letterSpacing = 0.4.sp,
+            text = stringResource(R.string.messages_saved_note),
+            style = MaterialTheme.typography.bodySmall.copy(
+                fontSize = 13.sp,
+                fontWeight = FontWeight.Bold,
             ),
-            color = ink4,
+            color = accent,
         )
     }
 }
 
-@Composable
-private fun BodyText(message: Message, accent: Color, modifier: Modifier = Modifier) {
-    val hasSubject = message.subject != null
-    val ink = MaterialTheme.colorScheme.onBackground
-    val ink2 = MaterialTheme.colorScheme.onSurface
-    Text(
-        text = linkify(message.body, accent = accent),
-        style = MaterialTheme.typography.bodyLarge.copy(
-            fontSize = if (hasSubject) 14.sp else 15.sp,
-            lineHeight = if (hasSubject) 22.sp else 24.sp,
-            fontWeight = FontWeight.Normal,
-        ),
-        color = if (hasSubject) ink2 else ink,
-        modifier = modifier.fillMaxWidth(),
-    )
-}
+// Paragraphs are separated by blank lines in the upstream body text.
+private val ParagraphBreak = Regex("\\n\\s*\\n")
 
-// Build an annotated body where URL-like tokens are tinted in the origin
+// Build an annotated body where URL-like tokens are tinted in the category
 // accent color, underlined, and clickable. `Text` routes `LinkAnnotation.Url`
 // clicks through the ambient `UriHandler`, which hands off to the system
 // browser.
@@ -510,21 +446,13 @@ private fun AttachmentsList(
     ) {
         Text(
             text = stringResource(R.string.messages_attachments_section_format, attachments.size),
-            style = MaterialTheme.typography.labelSmall.copy(
-                fontFamily = FontFamily.Monospace,
-                fontSize = 10.sp,
-                fontWeight = FontWeight.SemiBold,
-                letterSpacing = 1.4.sp,
-            ),
+            style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp),
             color = MaterialTheme.colorScheme.outlineVariant,
             modifier = Modifier.padding(start = 4.dp),
         )
         attachments.forEach { AttachmentTile(attachment = it, accent = accent) }
     }
 }
-
-// Keep the iOS/JSX star-on color as-is — see `MessageRow.StarColor`.
-private val StarColor = Color(0xFFD9852E)
 
 @Preview
 @Composable

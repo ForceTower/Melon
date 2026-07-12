@@ -1,12 +1,13 @@
 package dev.forcetower.unes.ui.feature.messages
 
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
@@ -19,11 +20,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DoneAll
+import androidx.compose.material.icons.filled.MarkEmailRead
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,22 +38,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.StrokeJoin
-import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -55,8 +50,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.forcetower.unes.R
-import dev.forcetower.unes.designsystem.foundation.Mesh
-import dev.forcetower.unes.designsystem.foundation.MeshVariant
 import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
 import dev.forcetower.unes.designsystem.theme.MelonTheme
 import dev.forcetower.unes.designsystem.theme.melon
@@ -65,15 +58,16 @@ import dev.forcetower.unes.ui.feature.messages.components.MessageRow
 import java.time.LocalDateTime
 import dev.forcetower.melon.feature.messages.domain.model.MessageFeedItem as KmpMessageFeedItem
 
-// Messages ("Mensagens") inbox — grouped by date bucket with filter chips at
-// the top. Tapping a row pushes `MessageDetail` onto the Messages tab's back
-// stack (see `ConnectedNavigator`), which keeps the floating tab bar visible
-// and lets system back / predictive back pop it like a native nav stack.
+// Messages ("Mensagens") inbox — 2026 redesign (dc project `UNES Mensagens -
+// Android`): M3 large-style app bar with the unread/total sub-line, the
+// tonal unread hero (big count, per-category segmented bar + legend, and the
+// mark-all-read tonal button), M3 filter chips, and the date-bucketed list of
+// tonal-avatar rows. Tapping a row pushes `MessageDetail` onto the Messages
+// tab's back stack (see `ConnectedNavigator`).
 //
-// Mirrors `MessagesScreen` in `screens-messages.jsx` and `MessagesListView`
-// on iOS. Driven by `MessagesViewModel`, which subscribes to the KMP inbox
-// flow; the per-message detail flow is started by `MessageDetailRoute` on
-// composition and torn down on dispose.
+// Driven by `MessagesViewModel`, which subscribes to the KMP inbox flow; the
+// per-message detail flow is started by `MessageDetailRoute` on composition
+// and torn down on dispose.
 @Composable
 internal fun MessagesScreen(
     onOpen: (id: String, seed: KmpMessageFeedItem) -> Unit,
@@ -100,181 +94,265 @@ private fun MessagesInbox(
     modifier: Modifier = Modifier,
 ) {
     val roles = rememberMessageRoleStrings()
-    Box(modifier = modifier.fillMaxSize()) {
-        InboxList(
-            rawItems = state.rawItems,
-            filter = state.filter,
-            roles = roles,
-            onFilterChange = { onIntent(MessagesIntent.SetFilter(it)) },
-            onMarkAllRead = { onIntent(MessagesIntent.MarkAllRead) },
-            onOpen = onOpen,
-            bottomInset = bottomInset,
-        )
-    }
-}
-
-@Composable
-private fun InboxList(
-    rawItems: List<KmpMessageFeedItem>,
-    filter: MessageFilter,
-    roles: MessageRoleStrings,
-    onFilterChange: (MessageFilter) -> Unit,
-    onMarkAllRead: () -> Unit,
-    onOpen: (String, KmpMessageFeedItem) -> Unit,
-    bottomInset: Dp,
-) {
-    val surface = MaterialTheme.colorScheme.surface
-    val seedById = remember(rawItems) { rawItems.associateBy { it.id } }
-    val messages = remember(rawItems, roles) { rawItems.map { it.toUi(roles) } }
+    val seedById = remember(state.rawItems) { state.rawItems.associateBy { it.id } }
+    val messages = remember(state.rawItems, roles) { state.rawItems.map { it.toUi(roles) } }
 
     val counts = remember(messages) {
         MessageFilter.entries.associateWith { f -> messages.count(f::matches) }
     }
     val unreadCount = remember(messages) { messages.count { it.unread } }
-    val filtered = remember(messages, filter) { messages.filter(filter::matches) }
+    val categoryCounts = remember(messages) {
+        MessageCategory.entries.associateWith { c -> messages.count { it.category == c } }
+    }
+    val filtered = remember(messages, state.filter) { messages.filter(state.filter::matches) }
     val now = remember(messages) { LocalDateTime.now() }
     val buckets = remember(filtered, now) { groupByBucket(filtered, now) }
 
-    Box(
-        modifier = Modifier
+    LazyColumn(
+        modifier = modifier
             .fillMaxSize()
-            .background(surface),
+            .background(MaterialTheme.colorScheme.background)
+            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)),
+        contentPadding = PaddingValues(bottom = bottomInset + 32.dp),
     ) {
-        Box(modifier = Modifier.align(Alignment.TopCenter)) {
-            AmbientMeshTop(surface = surface)
+        item("messages-header") {
+            Header(
+                unreadCount = unreadCount,
+                total = messages.size,
+                modifier = Modifier.fadeUpOnAppear(delayMs = 60, fromOffset = (-10).dp),
+            )
+        }
+        item("messages-hero") {
+            UnreadHeroCard(
+                unreadCount = unreadCount,
+                total = messages.size,
+                categoryCounts = categoryCounts,
+                onMarkAllRead = { onIntent(MessagesIntent.MarkAllRead) },
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+                    .fadeUpOnAppear(delayMs = 120),
+            )
+        }
+        item("messages-filter") {
+            FilterChipRow(
+                active = state.filter,
+                counts = counts,
+                onChange = { onIntent(MessagesIntent.SetFilter(it)) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 18.dp, bottom = 8.dp)
+                    .fadeUpOnAppear(delayMs = 160, fromOffset = (-8).dp),
+            )
         }
 
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)),
-            contentPadding = PaddingValues(bottom = bottomInset + 32.dp),
-        ) {
-            item("messages-header") {
-                MessagesHeader(
-                    unreadCount = unreadCount,
-                    onMarkAllRead = onMarkAllRead,
-                    modifier = Modifier.fadeUpOnAppear(delayMs = 20),
-                )
-            }
-            item("messages-filter") {
-                FilterChipRow(
-                    active = filter,
-                    counts = counts,
-                    onChange = onFilterChange,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 4.dp, bottom = 6.dp)
-                        .fadeUpOnAppear(delayMs = 100),
-                )
-            }
-
-            if (buckets.isEmpty()) {
-                item("messages-empty") { EmptyState() }
-            } else {
-                buckets.forEachIndexed { index, bucket ->
-                    item(key = "bucket-${bucket.bucket.name}-header") {
-                        BucketHeader(
-                            label = stringResource(bucket.bucket.labelRes),
-                            count = bucket.items.size,
-                            modifier = Modifier.fadeUpOnAppear(delayMs = 180 + index * 60),
-                        )
-                    }
-                    val rows = bucket.items
-                    val lastIndex = rows.lastIndex
-                    itemsIndexed(
-                        items = rows,
-                        key = { _, m -> m.id },
-                    ) { i, m ->
-                        BucketRow(
-                            message = m,
-                            isFirst = i == 0,
-                            isLast = i == lastIndex,
-                            onOpen = { msg ->
-                                seedById[msg.id]?.let { seed -> onOpen(msg.id, seed) }
-                            },
-                        )
-                    }
+        if (buckets.isEmpty()) {
+            item("messages-empty") { EmptyState() }
+        } else {
+            buckets.forEachIndexed { index, bucket ->
+                item(key = "bucket-${bucket.bucket.name}-header") {
+                    BucketHeader(
+                        label = stringResource(bucket.bucket.labelRes),
+                        count = bucket.items.size,
+                        modifier = Modifier.fadeUpOnAppear(delayMs = 200 + index * 60),
+                    )
+                }
+                itemsIndexed(
+                    items = bucket.items,
+                    key = { _, m -> m.id },
+                ) { _, message ->
+                    MessageRow(
+                        message = message,
+                        onOpen = { msg ->
+                            seedById[msg.id]?.let { seed -> onOpen(msg.id, seed) }
+                        },
+                        modifier = Modifier
+                            .padding(horizontal = 12.dp, vertical = 3.dp)
+                            .fadeUpOnAppear(delayMs = 240 + index * 60),
+                    )
                 }
             }
         }
     }
 }
 
-@Composable
-private fun AmbientMeshTop(surface: Color) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(280.dp),
-    ) {
-        Mesh(
-            variant = MeshVariant.Warm,
-            intensity = 0.45f,
-            modifier = Modifier.fillMaxSize(),
-        )
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    Brush.verticalGradient(
-                        0f to Color.Transparent,
-                        0.95f to surface,
-                    ),
-                ),
-        )
-    }
-}
+// ══════════ Large app bar ══════════
 
 @Composable
-private fun MessagesHeader(
-    unreadCount: Int,
-    onMarkAllRead: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
+private fun Header(unreadCount: Int, total: Int, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .fillMaxWidth()
             .windowInsetsPadding(WindowInsets.statusBars)
             .padding(horizontal = 20.dp)
-            .padding(top = 16.dp, bottom = 14.dp),
-        verticalArrangement = Arrangement.spacedBy(4.dp),
+            .padding(top = 20.dp, bottom = 14.dp),
     ) {
+        Text(
+            text = stringResource(R.string.messages_title),
+            style = MaterialTheme.typography.displaySmall.copy(
+                fontSize = 34.sp,
+                lineHeight = 35.sp,
+                letterSpacing = (-0.85).sp,
+            ),
+            color = MaterialTheme.colorScheme.onBackground,
+        )
         Row(
+            modifier = Modifier.padding(top = 8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
         ) {
             Text(
-                text = stringResource(R.string.messages_eyebrow_inbox),
-                style = MaterialTheme.typography.labelSmall.copy(
-                    fontFamily = FontFamily.Monospace,
-                    fontSize = 10.sp,
-                    fontWeight = FontWeight.Medium,
-                    letterSpacing = 1.2.sp,
+                text = stringResource(R.string.messages_unread_count_format, unreadCount),
+                style = MaterialTheme.typography.bodySmall.copy(
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.ExtraBold,
                 ),
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                color = MaterialTheme.colorScheme.primary,
             )
-            if (unreadCount > 0) UnreadBadge(unreadCount)
+            Dot()
+            Text(
+                text = stringResource(R.string.messages_total_count_format, total),
+                style = MaterialTheme.typography.bodySmall.copy(
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.SemiBold,
+                ),
+                color = MaterialTheme.colorScheme.outline,
+            )
         }
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.Bottom,
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
+    }
+}
+
+@Composable
+private fun Dot() {
+    Box(
+        modifier = Modifier
+            .size(3.dp)
+            .clip(CircleShape)
+            .background(MaterialTheme.colorScheme.outlineVariant),
+    )
+}
+
+// ══════════ Unread tonal hero ══════════
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun UnreadHeroCard(
+    unreadCount: Int,
+    total: Int,
+    categoryCounts: Map<MessageCategory, Int>,
+    onMarkAllRead: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val shape = RoundedCornerShape(26.dp)
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(shape)
+            .background(MaterialTheme.colorScheme.surfaceContainer)
+            .border(1.dp, MaterialTheme.melon.surface.line, shape)
+            .padding(20.dp),
+    ) {
+        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.Top) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = stringResource(R.string.messages_hero_unread_label).uppercase(),
+                    style = MaterialTheme.typography.labelSmall.copy(
+                        fontWeight = FontWeight.ExtraBold,
+                        letterSpacing = 1.54.sp,
+                    ),
+                    color = MaterialTheme.colorScheme.outlineVariant,
+                )
+                Row(
+                    modifier = Modifier.padding(top = 6.dp),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    verticalAlignment = Alignment.Bottom,
+                ) {
+                    Text(
+                        text = unreadCount.toString(),
+                        style = MaterialTheme.typography.displayLarge.copy(
+                            fontSize = 52.sp,
+                            lineHeight = 48.sp,
+                            letterSpacing = (-2.08).sp,
+                        ),
+                        color = MaterialTheme.colorScheme.onBackground,
+                    )
+                    Text(
+                        text = stringResource(R.string.messages_hero_new_suffix),
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            fontSize = 15.sp,
+                            lineHeight = 18.sp,
+                            fontWeight = FontWeight.SemiBold,
+                        ),
+                        color = MaterialTheme.colorScheme.outline,
+                    )
+                }
+            }
+            Column(horizontalAlignment = Alignment.End) {
+                Text(
+                    text = total.toString(),
+                    style = MaterialTheme.typography.displaySmall.copy(
+                        fontSize = 30.sp,
+                        lineHeight = 30.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        letterSpacing = (-0.9).sp,
+                    ),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Text(
+                    text = stringResource(R.string.messages_hero_total_label),
+                    style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.SemiBold),
+                    color = MaterialTheme.colorScheme.outlineVariant,
+                    modifier = Modifier.padding(top = 3.dp),
+                )
+            }
+        }
+
+        CategorySegmentedBar(
+            categoryCounts = categoryCounts,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 18.dp, bottom = 14.dp),
+        )
+
+        FlowRow(
+            horizontalArrangement = Arrangement.spacedBy(18.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            Text(
-                text = stringResource(R.string.messages_title),
-                style = MaterialTheme.typography.headlineLarge.copy(
-                    fontSize = 32.sp,
-                    lineHeight = 32.sp,
-                    letterSpacing = (-0.64).sp,
-                ),
-                color = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.weight(1f),
-            )
-            if (unreadCount > 0) {
-                MarkAllReadButton(
-                    onClick = onMarkAllRead,
-                    modifier = Modifier.padding(bottom = 2.dp),
+            MessageCategory.entries.forEach { category ->
+                LegendEntry(category = category, count = categoryCounts[category] ?: 0)
+            }
+        }
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 16.dp)
+                .height(1.dp)
+                .background(MaterialTheme.melon.surface.line),
+        )
+
+        MarkAllReadButton(onClick = onMarkAllRead)
+    }
+}
+
+@Composable
+private fun CategorySegmentedBar(
+    categoryCounts: Map<MessageCategory, Int>,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier.height(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(3.dp),
+    ) {
+        MessageCategory.entries.forEach { category ->
+            val count = categoryCounts[category] ?: 0
+            if (count > 0) {
+                Box(
+                    modifier = Modifier
+                        .weight(count.toFloat())
+                        .widthIn(min = 6.dp)
+                        .fillMaxSize()
+                        .clip(RoundedCornerShape(4.dp))
+                        .background(categoryColor(category)),
                 )
             }
         }
@@ -282,275 +360,129 @@ private fun MessagesHeader(
 }
 
 @Composable
-private fun UnreadBadge(count: Int) {
-    val coral = MaterialTheme.colorScheme.primary
+private fun LegendEntry(category: MessageCategory, count: Int) {
     Row(
-        modifier = Modifier
-            .clip(RoundedCornerShape(9.dp))
-            .background(coral.copy(alpha = 0.095f))
-            .padding(horizontal = 8.dp, vertical = 2.dp),
-        horizontalArrangement = Arrangement.spacedBy(6.dp),
+        horizontalArrangement = Arrangement.spacedBy(7.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(
             modifier = Modifier
-                .size(4.dp)
+                .size(9.dp)
                 .clip(CircleShape)
-                .background(coral),
+                .background(categoryColor(category)),
         )
         Text(
-            text = stringResource(R.string.messages_unread_badge_format, count),
-            style = MaterialTheme.typography.labelSmall.copy(
-                fontFamily = FontFamily.Monospace,
-                fontSize = 10.sp,
+            text = stringResource(category.labelRes),
+            style = MaterialTheme.typography.bodySmall.copy(
+                fontSize = 13.sp,
                 fontWeight = FontWeight.SemiBold,
-                letterSpacing = 0.8.sp,
             ),
-            color = coral,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Text(
+            text = count.toString(),
+            style = MaterialTheme.typography.bodySmall.copy(
+                fontSize = 13.sp,
+                fontWeight = FontWeight.ExtraBold,
+            ),
+            color = MaterialTheme.colorScheme.outlineVariant,
         )
     }
 }
 
-// Trailing chip in the "Mensagens" header. Mirrors the `mark-all-btn` in
-// `screens-messages.jsx`: a hairline-bordered pill with a double-tick glyph
-// and the "Marcar como lidas" label. Only rendered when there's at least one
-// unread message — the parent gates that.
 @Composable
-private fun MarkAllReadButton(
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    val cardLine = MaterialTheme.melon.surface.cardLine
+private fun MarkAllReadButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
+    val accent = MaterialTheme.colorScheme.primary
+    val tonal = accent.copy(alpha = 0.16f).compositeOver(MaterialTheme.melon.surface.card)
     val a11y = stringResource(R.string.messages_mark_all_read_a11y)
     Row(
         modifier = modifier
-            .clip(RoundedCornerShape(14.dp))
-            .border(1.dp, cardLine, RoundedCornerShape(14.dp))
-            .clickable(onClickLabel = a11y, onClick = onClick)
-            .padding(horizontal = 11.dp, vertical = 7.dp),
+            .fillMaxWidth()
+            .height(44.dp)
+            .clip(CircleShape)
+            .background(tonal)
+            .clickable(onClickLabel = a11y, role = Role.Button, onClick = onClick),
+        horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(6.dp),
     ) {
-        DoubleCheckIcon(tint = MaterialTheme.colorScheme.onSurface)
+        Icon(
+            imageVector = Icons.Filled.DoneAll,
+            contentDescription = null,
+            tint = accent,
+            modifier = Modifier.size(20.dp),
+        )
         Text(
             text = stringResource(R.string.messages_mark_all_read),
-            style = MaterialTheme.typography.labelMedium.copy(
-                fontSize = 11.sp,
-                fontWeight = FontWeight.Medium,
-                letterSpacing = (-0.05).sp,
-            ),
-            color = MaterialTheme.colorScheme.onSurface,
+            style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
+            color = accent,
         )
     }
 }
 
-// 11dp double-tick, mirroring the SVG in `screens-messages.jsx` — the trailing
-// tick is at half opacity so it reads as a "read receipt" glyph rather than a
-// plain check.
-@Composable
-private fun DoubleCheckIcon(tint: Color) {
-    Canvas(modifier = Modifier.size(11.dp)) {
-        val unit = size.width / 11f
-        val stroke = Stroke(
-            width = 1.5f * unit,
-            cap = StrokeCap.Round,
-            join = StrokeJoin.Round,
-        )
-        val front = Path().apply {
-            moveTo(1f * unit, 5.5f * unit)
-            lineTo(3f * unit, 7.5f * unit)
-            lineTo(7f * unit, 3.5f * unit)
-        }
-        drawPath(front, color = tint, style = stroke)
-        val back = Path().apply {
-            moveTo(4f * unit, 5.5f * unit)
-            lineTo(6f * unit, 7.5f * unit)
-            lineTo(10f * unit, 3.5f * unit)
-        }
-        drawPath(back, color = tint.copy(alpha = 0.5f), style = stroke)
-    }
-}
-
-// One LazyColumn item per message. The bucket "card" frame (rounded
-// corners, side borders, top/bottom edges, inter-row dividers) is drawn
-// per row via `drawBucketEdges` so adjacent rows visually compose into a
-// single bordered card without needing a shared parent layout.
-@Composable
-private fun BucketRow(
-    message: Message,
-    isFirst: Boolean,
-    isLast: Boolean,
-    onOpen: (Message) -> Unit,
-) {
-    val card = MaterialTheme.melon.surface.card
-    val cardLine = MaterialTheme.melon.surface.cardLine
-    val line = MaterialTheme.melon.surface.line
-    val shape = remember(isFirst, isLast) { bucketRowShape(isFirst, isLast) }
-
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 12.dp)
-            .clip(shape)
-            .background(card)
-            .drawBehind {
-                drawBucketEdges(
-                    isFirst = isFirst,
-                    isLast = isLast,
-                    cardLine = cardLine,
-                    line = line,
-                )
-            },
-    ) {
-        MessageRow(message = message, onOpen = onOpen)
-    }
-}
-
-private val BucketRowCornerRadius = 18.dp
-
-private fun bucketRowShape(isFirst: Boolean, isLast: Boolean): Shape {
-    val r = BucketRowCornerRadius
-    return when {
-        isFirst && isLast -> RoundedCornerShape(r)
-        isFirst -> RoundedCornerShape(topStart = r, topEnd = r, bottomStart = 0.dp, bottomEnd = 0.dp)
-        isLast -> RoundedCornerShape(topStart = 0.dp, topEnd = 0.dp, bottomStart = r, bottomEnd = r)
-        else -> RectangleShape
-    }
-}
-
-private fun DrawScope.drawBucketEdges(
-    isFirst: Boolean,
-    isLast: Boolean,
-    cardLine: Color,
-    line: Color,
-) {
-    val strokePx = 1.dp.toPx()
-    val radiusPx = BucketRowCornerRadius.toPx()
-    val w = size.width
-    val h = size.height
-    val inset = strokePx / 2f
-    val stroke = Stroke(width = strokePx)
-
-    drawLine(
-        color = cardLine,
-        start = Offset(inset, if (isFirst) radiusPx else 0f),
-        end = Offset(inset, if (isLast) h - radiusPx else h),
-        strokeWidth = strokePx,
-    )
-    drawLine(
-        color = cardLine,
-        start = Offset(w - inset, if (isFirst) radiusPx else 0f),
-        end = Offset(w - inset, if (isLast) h - radiusPx else h),
-        strokeWidth = strokePx,
-    )
-
-    val arcSize = Size(2f * radiusPx - strokePx, 2f * radiusPx - strokePx)
-
-    if (isFirst) {
-        val topPath = Path().apply {
-            moveTo(inset, radiusPx)
-            arcTo(
-                rect = Rect(offset = Offset(inset, inset), size = arcSize),
-                startAngleDegrees = 180f,
-                sweepAngleDegrees = 90f,
-                forceMoveTo = false,
-            )
-            lineTo(w - radiusPx, inset)
-            arcTo(
-                rect = Rect(offset = Offset(w - 2f * radiusPx + inset, inset), size = arcSize),
-                startAngleDegrees = 270f,
-                sweepAngleDegrees = 90f,
-                forceMoveTo = false,
-            )
-        }
-        drawPath(topPath, color = cardLine, style = stroke)
-    }
-
-    if (isLast) {
-        val bottomPath = Path().apply {
-            moveTo(w - inset, h - radiusPx)
-            arcTo(
-                rect = Rect(
-                    offset = Offset(w - 2f * radiusPx + inset, h - 2f * radiusPx + inset),
-                    size = arcSize,
-                ),
-                startAngleDegrees = 0f,
-                sweepAngleDegrees = 90f,
-                forceMoveTo = false,
-            )
-            lineTo(radiusPx, h - inset)
-            arcTo(
-                rect = Rect(offset = Offset(inset, h - 2f * radiusPx + inset), size = arcSize),
-                startAngleDegrees = 90f,
-                sweepAngleDegrees = 90f,
-                forceMoveTo = false,
-            )
-        }
-        drawPath(bottomPath, color = cardLine, style = stroke)
-    }
-
-    if (!isLast) {
-        drawLine(
-            color = line,
-            start = Offset(0f, h - inset),
-            end = Offset(w, h - inset),
-            strokeWidth = strokePx,
-        )
-    }
-}
+// ══════════ Date buckets ══════════
 
 @Composable
 private fun BucketHeader(label: String, count: Int, modifier: Modifier = Modifier) {
-    val ink4 = MaterialTheme.colorScheme.outlineVariant
-    val line = MaterialTheme.melon.surface.line
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 20.dp)
-            .padding(top = 18.dp, bottom = 6.dp),
+            .padding(horizontal = 24.dp)
+            .padding(top = 16.dp, bottom = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Text(
             text = label.uppercase(),
-            style = MaterialTheme.typography.labelSmall.copy(
-                fontFamily = FontFamily.Monospace,
-                fontSize = 10.sp,
-                fontWeight = FontWeight.SemiBold,
-                letterSpacing = 1.4.sp,
-            ),
-            color = ink4,
+            style = MaterialTheme.typography.labelMedium.copy(letterSpacing = 1.2.sp),
+            color = MaterialTheme.colorScheme.outline,
         )
         Text(
             text = count.toString(),
-            style = MaterialTheme.typography.labelSmall.copy(
-                fontFamily = FontFamily.Monospace,
-                fontSize = 10.sp,
-            ),
-            color = ink4.copy(alpha = 0.55f),
+            style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
+            color = MaterialTheme.colorScheme.outlineVariant,
+            modifier = Modifier
+                .clip(CircleShape)
+                .background(MaterialTheme.colorScheme.surfaceContainer)
+                .padding(horizontal = 8.dp, vertical = 2.dp),
         )
         Box(
             modifier = Modifier
-                .padding(start = 4.dp)
                 .weight(1f)
                 .height(1.dp)
-                .background(line.copy(alpha = 0.6f)),
+                .background(MaterialTheme.melon.surface.line),
         )
     }
 }
 
 @Composable
 private fun EmptyState() {
-    Box(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 40.dp, vertical = 80.dp),
-        contentAlignment = Alignment.Center,
+            .padding(horizontal = 24.dp, vertical = 56.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
+        Icon(
+            imageVector = Icons.Filled.MarkEmailRead,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.outlineVariant,
+            modifier = Modifier.size(44.dp),
+        )
         Text(
-            text = stringResource(R.string.messages_empty),
-            style = MaterialTheme.typography.bodyMedium,
+            text = stringResource(R.string.messages_empty_title),
+            style = MaterialTheme.typography.titleMedium.copy(fontSize = 16.sp),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Text(
+            text = stringResource(R.string.messages_empty_body),
+            style = MaterialTheme.typography.bodySmall.copy(
+                fontSize = 13.sp,
+                lineHeight = 18.sp,
+            ),
+            color = MaterialTheme.colorScheme.outline,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.widthIn(max = 240.dp),
         )
     }
 }

@@ -6,6 +6,7 @@ import dev.forcetower.melon.feature.messages.domain.usecase.MarkAllMessagesAsRea
 import dev.forcetower.melon.feature.messages.domain.usecase.MarkMessageAsReadUseCase
 import dev.forcetower.melon.feature.messages.domain.usecase.ObserveMessageDetailUseCase
 import dev.forcetower.melon.feature.messages.domain.usecase.ObserveMessagesInboxUseCase
+import dev.forcetower.melon.feature.messages.domain.usecase.ToggleMessageStarUseCase
 import dev.forcetower.unes.mvi.MviViewModel
 import dev.forcetower.unes.mvi.UiEffect
 import dev.forcetower.unes.mvi.UiIntent
@@ -31,6 +32,7 @@ internal sealed interface MessagesIntent : UiIntent {
     data class SetFilter(val filter: MessageFilter) : MessagesIntent
     data class MarkRead(val id: String) : MessagesIntent
     data object MarkAllRead : MessagesIntent
+    data class ToggleStar(val id: String) : MessagesIntent
 }
 
 internal sealed interface MessagesEffect : UiEffect
@@ -50,6 +52,7 @@ internal class MessagesViewModel @Inject constructor(
     private val observeDetail: ObserveMessageDetailUseCase,
     private val markReadUseCase: MarkMessageAsReadUseCase,
     private val markAllReadUseCase: MarkAllMessagesAsReadUseCase,
+    private val toggleStarUseCase: ToggleMessageStarUseCase,
 ) : MviViewModel<MessagesUiState, MessagesIntent, MessagesEffect>(MessagesUiState()) {
 
     private var detailJob: Job? = null
@@ -69,6 +72,7 @@ internal class MessagesViewModel @Inject constructor(
             is MessagesIntent.SetFilter -> setState { copy(filter = intent.filter) }
             is MessagesIntent.MarkRead -> markRead(intent.id)
             MessagesIntent.MarkAllRead -> markAllRead()
+            is MessagesIntent.ToggleStar -> toggleStar(intent.id)
         }
     }
 
@@ -99,5 +103,9 @@ internal class MessagesViewModel @Inject constructor(
 
     private fun markAllRead() {
         viewModelScope.launch { runCatching { markAllReadUseCase.invoke() } }
+    }
+
+    private fun toggleStar(id: String) {
+        viewModelScope.launch { runCatching { toggleStarUseCase.invoke(id) } }
     }
 }

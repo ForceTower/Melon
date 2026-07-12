@@ -235,12 +235,23 @@
 
     <!-- region Messages -->
     <string name="messages_title">Mensagens</string>
-    <string name="messages_eyebrow_inbox">◦ CAIXA DE ENTRADA</string>
-    <string name="messages_unread_badge_format">%1$d NOVAS</string>
-    <string name="messages_empty">Nenhuma mensagem neste filtro.</string>
+    <string name="messages_unread_count_format">%1$d não lidas</string>
+    <string name="messages_total_count_format">%1$d no total</string>
+    <string name="messages_empty_title">Nada por aqui</string>
+    <string name="messages_empty_body">Nenhuma mensagem corresponde a este filtro.</string>
     <string name="messages_back_label">Voltar</string>
-    <string name="messages_mark_all_read">Marcar como lidas</string>
+    <string name="messages_mark_all_read">Marcar todas como lidas</string>
     <string name="messages_mark_all_read_a11y">Marcar todas as mensagens como lidas</string>
+
+    <!-- Unread hero card -->
+    <string name="messages_hero_unread_label">Não lidas</string>
+    <string name="messages_hero_new_suffix">mensagens\nnovas</string>
+    <string name="messages_hero_total_label">no total</string>
+
+    <!-- Category labels (hero legend + tonal avatars) -->
+    <string name="messages_category_disciplines">Disciplinas</string>
+    <string name="messages_category_university">Universidade</string>
+    <string name="messages_category_app">App &amp; módulos</string>
 
     <!-- Filter chips -->
     <string name="messages_filter_all">Todas</string>
@@ -248,7 +259,7 @@
     <string name="messages_filter_starred">Salvas</string>
     <string name="messages_filter_disciplines">Disciplinas</string>
     <string name="messages_filter_university">Universidade</string>
-    <string name="messages_filter_app">App &amp; módulos</string>
+    <string name="messages_filter_app">App</string>
 
     <!-- Bucket headers -->
     <string name="messages_bucket_today">Hoje</string>
@@ -264,7 +275,6 @@
     <string name="messages_origin_kind_app">App</string>
     <string name="messages_origin_kind_module">Módulo</string>
     <string name="messages_origin_kind_direct">Pessoal</string>
-    <string name="messages_origin_kind_direct_for_you">%1$s · PARA VOCÊ</string>
 
     <!-- Relative time strings on the row -->
     <string name="messages_rel_time_now">agora</string>
@@ -284,7 +294,9 @@
 
     <!-- Detail screen -->
     <string name="messages_attachments_section_format">ANEXOS · %1$d</string>
-    <string name="messages_attach_separator">·</string>
+    <string name="messages_saved_note">Salva nas suas mensagens</string>
+    <string name="messages_save_a11y">Salvar mensagem</string>
+    <string name="messages_unsave_a11y">Remover das mensagens salvas</string>
     <!-- endregion -->
 
     <!-- region Disciplinas · Header + tabs -->
