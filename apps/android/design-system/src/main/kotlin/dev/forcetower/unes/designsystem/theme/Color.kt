@@ -133,19 +133,37 @@ internal val PaletteJadeDark = Color(0xFF3FC3B5)
 internal val PaletteOrangeLight = Color(0xFFE8894E)
 internal val PaletteOrangeDark = Color(0xFFF2A26B)
 
-// Verdict hero gradient pairs (`MelonVerdictColors`). Hand-tuned dark stops
-// for each verdict outcome family in the Final Countdown screen — passed
-// reads as a deep emerald wash, failed/impossible as plum, final as a brick
-// red, borderline as warm amber-brown, and ontrack/empty as a teal slate.
-// Mirrors iOS `backgroundGradient` (FCVerdictHero.swift). These are dark in
-// every theme because the hero card is its own world.
-internal val VerdictPassedTop = Color(0xFF1A3A28)
-internal val VerdictPassedBottom = Color(0xFF0F2418)
-internal val VerdictFailedTop = Color(0xFF2A1624)
-internal val VerdictFailedBottom = Color(0xFF180D1A)
-internal val VerdictFinalTop = Color(0xFF3A1E1A)
-internal val VerdictFinalBottom = Color(0xFF201110)
-internal val VerdictBorderlineTop = Color(0xFF3A2A12)
-internal val VerdictBorderlineBottom = Color(0xFF201608)
-internal val VerdictNeutralTop = Color(0xFF1A2A2F)
-internal val VerdictNeutralBottom = Color(0xFF0E1618)
+// Verdict hero mesh palettes (`MelonVerdictColors`). The Final Countdown
+// verdict card is an always-dark world: `night` is the base plate, `veil` the
+// legibility scrim over the blobs, and each outcome family gets three mesh
+// blob stops plus a `hue` used for the average ring, the stat value, and the
+// eyebrow chip. Values come straight from the dc `FinalCountdownScreen`
+// verdict map (`V[kind].mesh` / `V[kind].hue`); the plate/scrim pair shares
+// the onboarding night tones.
+internal val VerdictNight = NightFixed
+internal val VerdictVeil = NightVeilFixed
+
+internal val VerdictPassedBlobA = Color(0xFF2F9E5E)
+internal val VerdictPassedBlobB = Color(0xFF4FD69C)
+internal val VerdictPassedBlobC = Color(0xFF3B9EAE)
+internal val VerdictPassedHue = Color(0xFF4FD69C)
+
+internal val VerdictTrackBlobA = Color(0xFF2AA5B8)
+internal val VerdictTrackBlobB = Color(0xFF3B9EAE)
+internal val VerdictTrackBlobC = Color(0xFF5AD1E0)
+internal val VerdictTrackHue = Color(0xFF5AD1E0)
+
+internal val VerdictWarnBlobA = Color(0xFFF4A23C)
+internal val VerdictWarnBlobB = Color(0xFFE8894E)
+internal val VerdictWarnBlobC = Color(0xFFF6B03C)
+internal val VerdictWarnHue = Color(0xFFF4B54C)
+
+internal val VerdictEmberBlobA = Color(0xFFE85D4E)
+internal val VerdictEmberBlobB = Color(0xFFF4A23C)
+internal val VerdictEmberBlobC = Color(0xFFB23A7A)
+internal val VerdictEmberHue = Color(0xFFF0805E)
+
+internal val VerdictLostBlobA = Color(0xFFB23A7A)
+internal val VerdictLostBlobB = Color(0xFF9B5AD0)
+internal val VerdictLostBlobC = Color(0xFFE85D4E)
+internal val VerdictLostHue = Color(0xFFC97BD6)

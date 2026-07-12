@@ -74,6 +74,41 @@ fun Mesh(
 ) {
     val brand = MaterialTheme.melon.brand
     val blobs = remember(variant, brand) { blobsFor(variant, brand) }
+    MeshField(blobs = blobs, modifier = modifier, intensity = intensity)
+}
+
+// Custom-palette mesh — same living field, caller-supplied blob colors. Blob
+// geometry mirrors the dc Final Countdown verdict hero (three blobs hugging
+// the top-left / center-right / bottom-left of a card-sized container). Colors
+// are cycled over the geometry, so any count ≥ 1 works.
+@Composable
+fun Mesh(
+    colors: List<Color>,
+    modifier: Modifier = Modifier,
+    intensity: Float = 1f,
+) {
+    val blobs = remember(colors) {
+        CustomMeshGeometry.mapIndexed { index, geometry ->
+            geometry.copy(color = colors[index % colors.size])
+        }
+    }
+    MeshField(blobs = blobs, modifier = modifier, intensity = intensity)
+}
+
+// dc `hero.blobA/B/C`: top -28%/left -12% · 230px, top 12%/left 46% · 210px,
+// top 46%/left -14% · 200px, drifting on 14s/12s/17s float loops.
+private val CustomMeshGeometry = listOf(
+    MeshBlob(Color.Unspecified, -0.12f, -0.28f, 230f, 40f, 30f, 14f, 0f, 1.1f),
+    MeshBlob(Color.Unspecified, 0.46f, 0.12f, 210f, 45f, 25f, 12f, 1.3f, 0.9f),
+    MeshBlob(Color.Unspecified, -0.14f, 0.46f, 200f, 35f, 40f, 17f, 2.6f, 1.2f),
+)
+
+@Composable
+private fun MeshField(
+    blobs: List<MeshBlob>,
+    modifier: Modifier = Modifier,
+    intensity: Float = 1f,
+) {
 
     // Monotonic wall-clock seconds, mirroring iOS's `TimelineView(.animation)`
     // + `Date().timeIntervalSince1970`. A finite tween won't work here because

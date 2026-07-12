@@ -98,7 +98,7 @@ internal fun MeScreen(
     val openShortcut: (ShortcutKind) -> Unit = { kind ->
         when (kind) {
             ShortcutKind.Calendar -> connectedNavigator.navigate(ConnectedRoute.Calendar)
-            ShortcutKind.Countdown -> connectedNavigator.navigate(ConnectedRoute.FinalCountdown)
+            ShortcutKind.Countdown -> connectedNavigator.navigate(ConnectedRoute.FinalCountdown())
             ShortcutKind.Certificate ->
                 vm.onIntent(MeIntent.OpenDocument(AcademicDocument.EnrollmentCertificate))
             ShortcutKind.History ->

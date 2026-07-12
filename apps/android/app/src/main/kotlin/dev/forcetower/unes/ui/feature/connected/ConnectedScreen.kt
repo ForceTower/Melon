@@ -187,9 +187,10 @@ fun ConnectedScreen(
                         bottomInset = bottomInset,
                     )
                 }
-                entry<ConnectedRoute.FinalCountdown> {
+                entry<ConnectedRoute.FinalCountdown> { route ->
                     FinalCountdownScreen(
                         onBack = { navigator.goBack() },
+                        offerId = route.offerId,
                         bottomInset = bottomInset,
                     )
                 }

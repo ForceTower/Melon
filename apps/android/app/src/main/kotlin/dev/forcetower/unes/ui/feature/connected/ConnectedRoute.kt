@@ -28,8 +28,10 @@ internal sealed interface ConnectedRoute : NavKey {
     // the Me hub. No payload — the screen drives off the KMP events flow.
     @Serializable data object Calendar : ConnectedRoute
     // Pushed onto the active tab when the "Final Countdown" shortcut is tapped
-    // on the Me hub. Fixture-driven calculator — no payload, no KMP wiring.
-    @Serializable data object FinalCountdown : ConnectedRoute
+    // on the Me hub (modo livre) or from a discipline context. A non-null
+    // `offerId` pre-selects that discipline and seeds the rows from its
+    // released grades.
+    @Serializable data class FinalCountdown(val offerId: String? = null) : ConnectedRoute
     // Pushed onto the Me stack when the "Licenças open source" row is tapped.
     // Reads the bundled `artifacts.json` Licensee emits at build time.
     @Serializable data object Licenses : ConnectedRoute

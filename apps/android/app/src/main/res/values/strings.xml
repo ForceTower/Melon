@@ -792,127 +792,128 @@
     <string name="settings_footer_meta_format">v%1$s · build %2$s · feito em feira de santana</string>
     <!-- endregion -->
 
-    <!-- region Final Countdown · Header + chrome -->
+    <!-- region Final Countdown · Chrome + discipline row -->
     <string name="final_countdown_back">Voltar</string>
-    <string name="final_countdown_header_status">calculadora · offline</string>
-    <string name="final_countdown_header_eyebrow">◦ final countdown</string>
-    <string name="final_countdown_header_title_accent">Dá pra</string>
-    <string name="final_countdown_header_title_rest">passar?</string>
-    <string name="final_countdown_header_body">Preencha as avaliações que já rolaram e veja, na matemática fria, quanto você precisa pra passar.</string>
+    <string name="final_countdown_title">Final Countdown</string>
+    <string name="final_countdown_headline_body">Preencha o que já rolou e veja, na matemática fria, quanto falta pra passar.</string>
+    <string name="final_countdown_change">Trocar</string>
+    <string name="final_countdown_free_name">Cálculo livre</string>
+    <string name="final_countdown_free_sub">Cálculo avulso · sem vínculo</string>
+    <!-- "Adriana Matos · 2026.1" -->
+    <string name="final_countdown_disc_sub_format">%1$s · %2$s</string>
+    <string name="final_countdown_selector_title">Trocar disciplina</string>
+    <string name="final_countdown_selector_close">Fechar</string>
     <!-- endregion -->
 
     <!-- region Final Countdown · Verdict hero chrome -->
     <string name="final_countdown_hero_mode_simple">média simples</string>
     <string name="final_countdown_hero_mode_weighted">ponderado</string>
-    <string name="final_countdown_difficulty_low">difícil · 0</string>
-    <string name="final_countdown_difficulty_mid">cruel · 5</string>
-    <string name="final_countdown_difficulty_high">brutal · 10</string>
+    <string name="final_countdown_hero_avg_caption">média</string>
+    <string name="final_countdown_scale_low">fácil · 0</string>
+    <string name="final_countdown_scale_mid">cruel · 5</string>
+    <string name="final_countdown_scale_high">brutal · 10</string>
     <!-- endregion -->
 
-    <!-- region Final Countdown · Verdict copy (matches FCVerdictCopy on iOS) -->
-    <string name="final_countdown_verdict_passed_eyebrow">aprovada</string>
-    <string name="final_countdown_verdict_passed_title_1">Parabéns!</string>
-    <string name="final_countdown_verdict_passed_title_2">Você passou.</string>
-    <string name="final_countdown_verdict_passed_title_3">Sem drama.</string>
-    <string name="final_countdown_verdict_passed_sub">média final · acima de 7,0</string>
-    <string name="final_countdown_verdict_passed_message_format">Pode respirar. A média de %1$s já garante aprovação direta sem ir para a Final.</string>
+    <!-- region Final Countdown · Verdict copy (matches FCVerdict.style on iOS) -->
+    <string name="final_countdown_stat_needed_next">precisa na próxima</string>
+
+    <string name="final_countdown_verdict_passed_eyebrow">aprovação direta</string>
+    <string name="final_countdown_verdict_passed_title">Fechou.</string>
+    <string name="final_countdown_verdict_passed_lead">Média acima de 7,0. Sem Prova Final.</string>
+    <string name="final_countdown_verdict_passed_stat_label">média final</string>
+    <string name="final_countdown_verdict_passed_detail_format">A média de %1$s já garante aprovação direta. Pode respirar.</string>
 
     <string name="final_countdown_verdict_ontrack_eyebrow">no caminho</string>
-    <string name="final_countdown_verdict_ontrack_title_1">Tá firme.</string>
-    <string name="final_countdown_verdict_ontrack_title_2">Só não entregue zerada.</string>
-    <string name="final_countdown_verdict_ontrack_headline">OK</string>
-    <string name="final_countdown_verdict_ontrack_sub_with_need_format">mande ≥ %1$s e passa em 7,0</string>
-    <string name="final_countdown_verdict_ontrack_sub_no_need">termine as avaliações</string>
-    <string name="final_countdown_verdict_ontrack_message_with_need_format">Com a média atual, qualquer coisa acima de %1$s na última avaliação te dá aprovação direta.</string>
-    <string name="final_countdown_verdict_ontrack_message_no_need">A média provável vai te levar pra aprovação direta. Continue assim.</string>
+    <string name="final_countdown_verdict_ontrack_title">Tá firme.</string>
+    <string name="final_countdown_verdict_ontrack_lead_need">Só não entregue zerada.</string>
+    <string name="final_countdown_verdict_ontrack_lead_no_need">Termine as avaliações.</string>
+    <string name="final_countdown_verdict_ontrack_stat_label_projection">projeção</string>
+    <string name="final_countdown_verdict_ontrack_stat_value_ok">OK</string>
+    <string name="final_countdown_verdict_ontrack_stat_value_format">≥ %1$s</string>
+    <string name="final_countdown_verdict_ontrack_detail_need_format">Qualquer coisa acima de %1$s na última avaliação te dá aprovação direta.</string>
+    <string name="final_countdown_verdict_ontrack_detail_no_need">A média provável leva à aprovação direta. Continue assim.</string>
 
     <string name="final_countdown_verdict_borderline_eyebrow">dá pra passar</string>
-    <string name="final_countdown_verdict_borderline_title_1">Dá pra passar!</string>
-    <string name="final_countdown_verdict_borderline_title_2">Precisa focar no trabalho.</string>
-    <string name="final_countdown_verdict_borderline_sub">necessário no curinga pra evitar a Final</string>
-    <string name="final_countdown_verdict_borderline_message_format">Tá apertado mas é possível. Você precisa de %1$s ou mais na última avaliação pra não ir pra final.</string>
+    <string name="final_countdown_verdict_borderline_title">Dá pra passar.</string>
+    <string name="final_countdown_verdict_borderline_lead">Apertado, mas possível.</string>
+    <string name="final_countdown_verdict_borderline_detail_format">Você precisa de %1$s ou mais na última avaliação pra evitar a Prova Final.</string>
 
     <string name="final_countdown_verdict_borderline_final_eyebrow">rumo à final</string>
-    <string name="final_countdown_verdict_borderline_final_title_1">Vai ter Final.</string>
-    <string name="final_countdown_verdict_borderline_final_title_2">Sem tragédia.</string>
-    <string name="final_countdown_verdict_borderline_final_headline">&gt; 10</string>
-    <string name="final_countdown_verdict_borderline_final_sub">curinga não resolve sozinho</string>
-    <string name="final_countdown_verdict_borderline_final_message">Mesmo com 10 na última avaliação a média não chega em 7,0. A Final vai acontecer — mas ainda é passável.</string>
+    <string name="final_countdown_verdict_borderline_final_title">Vai ter Prova Final.</string>
+    <string name="final_countdown_verdict_borderline_final_lead">Sem tragédia. Ainda é passável.</string>
+    <string name="final_countdown_verdict_borderline_final_stat_label">nem com 10</string>
+    <string name="final_countdown_verdict_borderline_final_stat_value">&gt; 10</string>
+    <string name="final_countdown_verdict_borderline_final_detail">Mesmo com 10 na última avaliação a média não chega a 7,0. A Prova Final vai acontecer.</string>
 
     <string name="final_countdown_verdict_final_eyebrow">indo pra final</string>
-    <string name="final_countdown_verdict_final_title_1">Calma.</string>
-    <string name="final_countdown_verdict_final_title_2">Dá pra passar na Final.</string>
-    <string name="final_countdown_verdict_final_sub">necessário na final pra passar</string>
-    <string name="final_countdown_verdict_final_message_format">Com média %1$s, você precisa de %2$s na Final. A fórmula é 0,6·média + 0,4·final ≥ 5.</string>
+    <string name="final_countdown_verdict_final_title">Calma.</string>
+    <string name="final_countdown_verdict_final_lead">Passa na Prova Final.</string>
+    <string name="final_countdown_verdict_final_stat_label">precisa na final</string>
+    <string name="final_countdown_verdict_final_detail_format">Com média %1$s, você precisa de %2$s na Prova Final. Fórmula: 0,6·média + 0,4·final ≥ 5.</string>
 
     <string name="final_countdown_verdict_impossible_eyebrow">matemática perdida</string>
-    <string name="final_countdown_verdict_impossible_title_1">Não rola.</string>
-    <string name="final_countdown_verdict_impossible_title_2">Nem com 10 na final.</string>
-    <string name="final_countdown_verdict_impossible_headline">10</string>
-    <string name="final_countdown_verdict_impossible_sub">insuficiente — reprovação mesmo com nota máxima</string>
-    <string name="final_countdown_verdict_impossible_message_format">Com média %1$s, seria necessário %2$s na Final. Como o máximo é 10, não é mais possível passar pela Final.</string>
+    <string name="final_countdown_verdict_impossible_title">Não rola.</string>
+    <string name="final_countdown_verdict_impossible_lead">Nem com 10 na final.</string>
+    <string name="final_countdown_verdict_impossible_stat_label">necessário na final</string>
+    <string name="final_countdown_verdict_impossible_detail_format">Com média %1$s, seria preciso %2$s na Prova Final. O máximo é 10, então não passa pela final.</string>
 
     <string name="final_countdown_verdict_failed_eyebrow">reprovada</string>
-    <string name="final_countdown_verdict_failed_title_1">Ciclo encerrado.</string>
-    <string name="final_countdown_verdict_failed_title_2">Volta em 2026.2.</string>
-    <string name="final_countdown_verdict_failed_sub">abaixo de 3,0 · sem Final</string>
-    <string name="final_countdown_verdict_failed_message">Média abaixo do piso de 3,0 — não há direito à Final. Disciplina reprovada, mas não é o fim do mundo. Na próxima.</string>
+    <string name="final_countdown_verdict_failed_title">Ciclo encerrado.</string>
+    <string name="final_countdown_verdict_failed_lead_semester_format">Volta em %1$s.</string>
+    <string name="final_countdown_verdict_failed_lead_fallback">Fica pra próxima.</string>
+    <string name="final_countdown_verdict_failed_stat_label">média · sem final</string>
+    <string name="final_countdown_verdict_failed_detail">Média abaixo do piso de 3,0, sem direito à Prova Final. Não é o fim do mundo. Na próxima.</string>
 
     <string name="final_countdown_verdict_failing_track_eyebrow">caminho difícil</string>
-    <string name="final_countdown_verdict_failing_track_title_1">Complicado.</string>
-    <string name="final_countdown_verdict_failing_track_title_2">Acerte o curinga.</string>
-    <string name="final_countdown_verdict_failing_track_sub">melhor cenário possível</string>
-    <string name="final_countdown_verdict_failing_track_message_format">Mesmo tirando 10 no curinga, a média ficaria em %1$s. Dá pra ir pra Final, mas é preciso caprichar.</string>
+    <string name="final_countdown_verdict_failing_track_title">Complicado.</string>
+    <string name="final_countdown_verdict_failing_track_lead">Acerte a próxima.</string>
+    <string name="final_countdown_verdict_failing_track_stat_label">melhor cenário</string>
+    <string name="final_countdown_verdict_failing_track_detail_format">Mesmo tirando 10 na avaliação restante, a média fica em %1$s. Dá pra ir pra final, mas caprichando.</string>
 
     <string name="final_countdown_verdict_empty_eyebrow">comece a preencher</string>
-    <string name="final_countdown_verdict_empty_title_1">Preencha as notas</string>
-    <string name="final_countdown_verdict_empty_title_2">pra ver o veredicto.</string>
-    <string name="final_countdown_verdict_empty_headline">—</string>
-    <string name="final_countdown_verdict_empty_sub">insira pelo menos uma avaliação</string>
-    <string name="final_countdown_verdict_empty_message">Toque nos campos abaixo e preencha as avaliações que já aconteceram. O curinga (★) é a avaliação que você pode influenciar.</string>
+    <string name="final_countdown_verdict_empty_title">Preencha as notas.</string>
+    <string name="final_countdown_verdict_empty_lead">Pra ver o veredicto.</string>
+    <string name="final_countdown_verdict_empty_stat_label">média atual</string>
+    <string name="final_countdown_verdict_empty_detail">Toque nos campos abaixo e preencha as avaliações que já aconteceram. Deixe em branco a que ainda vem.</string>
     <!-- endregion -->
 
-    <!-- region Final Countdown · Breakdown card + rule pills -->
-    <string name="final_countdown_breakdown_title">◦ composição</string>
-    <string name="final_countdown_breakdown_caption">nota / peso</string>
-    <string name="final_countdown_rule_piso_label">piso final</string>
-    <string name="final_countdown_rule_piso_value">3,0</string>
+    <!-- region Final Countdown · Composição card + rule chips -->
+    <string name="final_countdown_composition_title">Composição</string>
+    <string name="final_countdown_composition_header_simple">nota</string>
+    <string name="final_countdown_composition_header_weighted">nota · peso</string>
+    <string name="final_countdown_weight_format">×%1$d</string>
+    <string name="final_countdown_rule_floor_label">piso final</string>
+    <string name="final_countdown_rule_floor_value">3,0</string>
     <string name="final_countdown_rule_pass_label">aprovação</string>
     <string name="final_countdown_rule_pass_value">7,0</string>
-    <string name="final_countdown_rule_formula_label">fórmula final</string>
-    <string name="final_countdown_rule_formula_value">0,6m + 0,4f</string>
+    <string name="final_countdown_rule_formula_label">final</string>
+    <string name="final_countdown_rule_formula_value">0,6m+0,4f</string>
     <!-- endregion -->
 
     <!-- region Final Countdown · Editable rows + actions -->
+    <string name="final_countdown_evaluations_title">Suas avaliações</string>
+    <string name="final_countdown_filled_format">%1$d/%2$d preenchidas</string>
     <string name="final_countdown_weighted_title">Modo ponderado</string>
-    <string name="final_countdown_weighted_hint_on">pesos ativos · arraste ×</string>
+    <string name="final_countdown_weighted_hint_on">pesos ativos · ajuste ×</string>
     <string name="final_countdown_weighted_hint_off">média simples · todas valem igual</string>
-    <string name="final_countdown_evaluations_eyebrow">◦ suas avaliações</string>
-    <string name="final_countdown_evaluations_title_prefix">Preencha o que</string>
-    <string name="final_countdown_evaluations_title_accent">já tirou</string>
-    <string name="final_countdown_wildcard_label">curinga</string>
-    <string name="final_countdown_row_label_caption">aval.</string>
-    <string name="final_countdown_row_score_placeholder">—,—</string>
-    <string name="final_countdown_row_remove">Remover linha</string>
+    <string name="final_countdown_row_score_placeholder">—</string>
+    <string name="final_countdown_row_remove">Remover avaliação</string>
     <string name="final_countdown_weight_increment">Aumentar peso</string>
     <string name="final_countdown_weight_decrement">Diminuir peso</string>
     <string name="final_countdown_add_row">Adicionar avaliação</string>
-    <string name="final_countdown_clear">Limpar</string>
+    <string name="final_countdown_clear">Limpar tudo</string>
     <!-- endregion -->
 
-    <!-- region Final Countdown · Legend + signature -->
-    <string name="final_countdown_legend_intro">Cálculo não oficial. A regra varia por departamento — a UEFS considera aprovação direta com média</string>
-    <string name="final_countdown_legend_pass_value">≥ 7,0</string>
-    <string name="final_countdown_legend_middle">, final para</string>
-    <string name="final_countdown_legend_final_band">3,0 ≤ m &lt; 7,0</string>
-    <string name="final_countdown_legend_after_final">e reprovação direta para</string>
-    <string name="final_countdown_legend_fail_band">m &lt; 3,0</string>
-    <string name="final_countdown_legend_low_intro">, contudo, sua experiência pode variar, eu já ouvi histórias que mesmo tendo média</string>
-    <string name="final_countdown_legend_low_band">m &gt;= 2.4</string>
-    <string name="final_countdown_legend_low_outro">você ainda consegue fazer a final, mas vai precisar de um literal 10 para passar</string>
-    <string name="final_countdown_legend_outro">. Deixe uma avaliação em branco para ver quanto precisa tirar nela.</string>
-    <string name="final_countdown_signature_title">final countdown</string>
-    <string name="final_countdown_signature_caption">faça as contas antes que a final faça você</string>
+    <!-- region Final Countdown · Info card + footer -->
+    <!-- Segments with edge spaces are quoted — AAPT trims them otherwise. -->
+    <string name="final_countdown_info_intro">"Cálculo não oficial. A UEFS aprova direto com média "</string>
+    <string name="final_countdown_info_pass_band">≥ 7,0</string>
+    <string name="final_countdown_info_final_intro">", Prova Final para "</string>
+    <string name="final_countdown_info_final_band">3,0 ≤ m &lt; 7,0</string>
+    <string name="final_countdown_info_fail_intro">" e reprova direto para "</string>
+    <string name="final_countdown_info_fail_band">m &lt; 3,0</string>
+    <string name="final_countdown_info_outro">. Deixe uma avaliação em branco para ver quanto precisa nela.</string>
+    <string name="final_countdown_footer">faça as contas antes que a final faça você</string>
     <!-- endregion -->
 
     <!-- region Calendar · Header -->

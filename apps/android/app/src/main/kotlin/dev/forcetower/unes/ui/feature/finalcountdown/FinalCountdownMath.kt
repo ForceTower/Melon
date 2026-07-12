@@ -19,24 +19,22 @@ internal object FinalCountdownMath {
 
     // Simple or weighted mean of the rows whose score is set. Returns null
     // when nothing's been filled.
-    fun average(rows: List<FCRow>, weighted: Boolean): Double? {
-        val known = rows.filter { it.score != null }
-        if (known.isEmpty()) return null
-        if (!weighted) {
-            return known.sumOf { it.score ?: 0.0 } / known.size
-        }
-        val wsum = known.sumOf { it.weight }
-        if (wsum <= 0) return null
-        return known.sumOf { (it.score ?: 0.0) * it.weight } / wsum
-    }
+    fun average(rows: List<FCRow>, weighted: Boolean): Double? =
+        mean(rows.mapNotNull { row -> row.score?.let { it to row.weight } }, weighted)
 
     // What would the average be if every missing score came back as
     // `wildcardValue`? Used for best- and worst-case projections.
-    fun projectAverage(rows: List<FCRow>, weighted: Boolean, wildcardValue: Double): Double? {
-        val projected = rows.map { row ->
-            if (row.score == null) row.copy(score = wildcardValue) else row
+    fun projectAverage(rows: List<FCRow>, weighted: Boolean, wildcardValue: Double): Double? =
+        mean(rows.map { (it.score ?: wildcardValue) to it.weight }, weighted)
+
+    private fun mean(entries: List<Pair<Double, Int>>, weighted: Boolean): Double? {
+        if (entries.isEmpty()) return null
+        if (!weighted) {
+            return entries.sumOf { it.first } / entries.size
         }
-        return average(projected, weighted)
+        val wsum = entries.sumOf { it.second }
+        if (wsum <= 0) return null
+        return entries.sumOf { it.first * it.second } / wsum
     }
 
     // Grade required on the Final to close at `FinalCutoff` (5). Solved from
@@ -44,13 +42,15 @@ internal object FinalCountdownMath {
     fun neededFinal(avg: Double): Double = (FinalCutoff - FinalAvgWeight * avg) / FinalExamWeight
 
     // Truncate to one decimal. Matches how the university records grades — a
-    // raw 6,95 becomes 6,9, not 7,0.
-    fun floorToTenth(value: Double): Double = floor(value * 10) / 10
+    // raw 6,95 becomes 6,9, not 7,0. The epsilon absorbs IEEE noise so a
+    // clean tenth (6.6 * 10 == 65.999…) doesn't floor down (iOS parity).
+    fun floorToTenth(value: Double): Double = floor(value * 10 + 1e-9) / 10
 
     // Round up to one decimal. Used for "grade needed" values so that a raw
     // requirement of 6,47 surfaces as 6,5 — the student scoring exactly the
-    // displayed value still clears the cutoff after truncation.
-    fun ceilToTenth(value: Double): Double = ceil(value * 10) / 10
+    // displayed value still clears the cutoff after truncation. The epsilon
+    // keeps an exact tenth (2.6 * 10 == 26.000…004) from ceiling up to 2,7.
+    fun ceilToTenth(value: Double): Double = ceil(value * 10 - 1e-9) / 10
 
     // If exactly one row is missing, the score it would need to hit `target`
     // overall. Returns null when the count doesn't match the single-empty

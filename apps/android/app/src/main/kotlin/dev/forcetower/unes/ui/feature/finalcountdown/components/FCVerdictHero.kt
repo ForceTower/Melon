@@ -1,130 +1,224 @@
 package dev.forcetower.unes.ui.feature.finalcountdown.components
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.forcetower.unes.R
+import dev.forcetower.unes.designsystem.foundation.Mesh
+import dev.forcetower.unes.designsystem.theme.MelonMotion
 import dev.forcetower.unes.designsystem.theme.melon
-import dev.forcetower.unes.ui.feature.finalcountdown.FCTone
 import dev.forcetower.unes.ui.feature.finalcountdown.FCVerdict
-import dev.forcetower.unes.ui.feature.finalcountdown.FCVerdictKind
+import dev.forcetower.unes.ui.feature.finalcountdown.FCVerdictFamily
+import dev.forcetower.unes.ui.feature.finalcountdown.FCVerdictStyle
 import dev.forcetower.unes.ui.feature.finalcountdown.FinalCountdownMath
-import dev.forcetower.unes.ui.feature.finalcountdown.fcCopyFor
-import dev.forcetower.unes.ui.feature.finalcountdown.fcToneBackground
-import dev.forcetower.unes.ui.feature.finalcountdown.fcToneForeground
 
-// The dramatic gradient card at the top of the calculator. Status pill, the
-// radial dial, the title lines, the big headline row (needed grade + sub +
-// message). When the verdict is `Final`, also paints the horizontal
-// difficulty meter at the bottom.
+// Verdict hero — an always-dark mesh card tinted by the outcome family, with
+// the drawn average ring on the right and the stat/detail strip at the bottom.
+// Mirrors the dc `FinalCountdownScreen` hero block.
 @Composable
 internal fun FCVerdictHero(
     verdict: FCVerdict,
+    style: FCVerdictStyle,
     weighted: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    val copy = fcCopyFor(verdict)
-    val toneBg = fcToneBackground(copy.tone)
-    val toneFg = fcToneForeground(copy.tone)
-    val heroInk = MaterialTheme.melon.fixed.surfaceLight
-    val heroInkSoft = heroInk.copy(alpha = 0.55f)
-    val heroInkBody = heroInk.copy(alpha = 0.85f)
-    val backgroundBrush = backgroundGradient(verdict.kind)
-    val italicLineColor = if (copy.tone == FCTone.Amber) MaterialTheme.melon.brand.peach else toneFg
-    val headlineColor = headlineColor(tone = copy.tone, surfaceLight = heroInk, peach = MaterialTheme.melon.brand.peach)
+    val tokens = MaterialTheme.melon.verdict
+    val palette = when (style.family) {
+        FCVerdictFamily.Passed -> tokens.passed
+        FCVerdictFamily.Track -> tokens.track
+        FCVerdictFamily.Warn -> tokens.warn
+        FCVerdictFamily.Ember -> tokens.ember
+        FCVerdictFamily.Lost -> tokens.lost
+    }
+    val onHero = MaterialTheme.melon.fixed.onHero
+    val shape = RoundedCornerShape(28.dp)
 
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .shadow(elevation = 16.dp, shape = RoundedCornerShape(24.dp))
-            .clip(RoundedCornerShape(24.dp))
-            .background(backgroundBrush)
-            .drawBehind {
-                // Decorative corner glow — same recipe as iOS: a 160dp disc
-                // bleeding past the top-right corner, clipped by the card's
-                // rounded-rect mask.
-                val glowRadiusPx = 80.dp.toPx()
-                val center = Offset(x = size.width - 50.dp.toPx(), y = 50.dp.toPx())
-                drawCircle(
-                    brush = Brush.radialGradient(
-                        colors = listOf(toneBg.copy(alpha = 0.33f), Color.Transparent),
-                        center = center,
-                        radius = glowRadiusPx,
+            .shadow(14.dp, shape, spotColor = tokens.night, ambientColor = tokens.night)
+            .clip(shape)
+            .background(tokens.night),
+    ) {
+        Mesh(colors = palette.blobs, modifier = Modifier.matchParentSize())
+        // Diagonal legibility scrim over the blobs (dc: 155°, 12% → 64%).
+        Box(
+            modifier = Modifier
+                .matchParentSize()
+                .background(
+                    Brush.linearGradient(
+                        colors = listOf(
+                            tokens.veil.copy(alpha = 0.12f),
+                            tokens.veil.copy(alpha = 0.64f),
+                        ),
+                        start = Offset.Zero,
+                        end = Offset.Infinite,
                     ),
-                    radius = glowRadiusPx,
-                    center = center,
+                ),
+        )
+
+        Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 18.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(24.dp)
+                            .clip(RoundedCornerShape(7.dp))
+                            .background(palette.hue),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Icon(
+                            imageVector = style.icon,
+                            contentDescription = null,
+                            tint = tokens.night,
+                            modifier = Modifier.size(14.dp),
+                        )
+                    }
+                    Text(
+                        text = style.eyebrow.uppercase(),
+                        style = MaterialTheme.typography.labelMedium.copy(
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Bold,
+                            letterSpacing = 0.48.sp,
+                        ),
+                        color = onHero,
+                    )
+                }
+                Text(
+                    text = stringResource(
+                        if (weighted) R.string.final_countdown_hero_mode_weighted
+                        else R.string.final_countdown_hero_mode_simple,
+                    ),
+                    style = MaterialTheme.typography.labelMedium.copy(
+                        fontSize = 11.5.sp,
+                        fontWeight = FontWeight.SemiBold,
+                    ),
+                    color = onHero.copy(alpha = 0.55f),
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .background(onHero.copy(alpha = 0.10f))
+                        .padding(horizontal = 10.dp, vertical = 4.dp),
                 )
             }
-            .padding(18.dp),
-    ) {
-        Column(modifier = Modifier.fillMaxWidth()) {
-            HeaderRow(
-                eyebrow = copy.eyebrow,
-                icon = copy.icon,
-                weighted = weighted,
-                toneBg = toneBg,
-                toneFg = toneFg,
-                heroInk = heroInk,
-                heroInkSoft = heroInkSoft,
-            )
-            Spacer(modifier = Modifier.height(14.dp))
 
-            FCMeter(
-                avg = verdict.avg,
-                tone = copy.tone,
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = style.title,
+                        style = MaterialTheme.typography.headlineMedium.copy(
+                            fontSize = 29.sp,
+                            lineHeight = 30.sp,
+                            fontWeight = FontWeight.Bold,
+                            letterSpacing = (-1).sp,
+                        ),
+                        color = onHero,
+                    )
+                    Text(
+                        text = style.lead,
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Medium,
+                            letterSpacing = (-0.14).sp,
+                        ),
+                        color = onHero.copy(alpha = 0.72f),
+                        modifier = Modifier.padding(top = 6.dp),
+                    )
+                }
+                AverageRing(avg = verdict.avg, hue = palette.hue, onHero = onHero)
+            }
 
-            TitleBlock(
-                titleLines = copy.titleLines,
-                heroInk = heroInk,
-                italicColor = italicLineColor,
-                modifier = Modifier.padding(top = 4.dp),
-            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp)
+                    .topHairline(onHero.copy(alpha = 0.14f))
+                    .padding(top = 14.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(14.dp),
+            ) {
+                Column {
+                    Text(
+                        text = style.statLabel.uppercase(),
+                        style = MaterialTheme.typography.labelSmall.copy(
+                            fontSize = 10.5.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            letterSpacing = 0.42.sp,
+                        ),
+                        color = onHero.copy(alpha = 0.52f),
+                    )
+                    Text(
+                        text = style.statValue,
+                        style = MaterialTheme.typography.headlineSmall.copy(
+                            fontSize = 26.sp,
+                            lineHeight = 26.sp,
+                            fontWeight = FontWeight.Bold,
+                            letterSpacing = (-0.78).sp,
+                        ),
+                        color = palette.hue,
+                        modifier = Modifier.padding(top = 3.dp),
+                    )
+                }
+                Text(
+                    text = style.detail,
+                    style = MaterialTheme.typography.bodySmall.copy(
+                        fontSize = 12.5.sp,
+                        lineHeight = 17.5.sp,
+                        fontWeight = FontWeight.Medium,
+                    ),
+                    color = onHero.copy(alpha = 0.8f),
+                    modifier = Modifier.weight(1f),
+                )
+            }
 
-            HeadlineBlock(
-                headline = copy.headline,
-                sub = copy.sub,
-                message = copy.message,
-                headlineColor = headlineColor,
-                heroInkSoft = heroInkSoft,
-                heroInkBody = heroInkBody,
-                modifier = Modifier.padding(top = 16.dp),
-            )
-
-            if (verdict.kind == FCVerdictKind.Final && verdict.need != null) {
-                DifficultyMeter(
-                    need = verdict.need,
-                    heroInkFaint = heroInk.copy(alpha = 0.5f),
-                    heroInk = heroInk,
+            if (style.showScale) {
+                FinalScale(
+                    need = verdict.need ?: 0.0,
+                    onHero = onHero,
                     modifier = Modifier.padding(top = 14.dp),
                 )
             }
@@ -132,277 +226,146 @@ internal fun FCVerdictHero(
     }
 }
 
+// dc hero ring: a 74% arc opening at the bottom, track at 14% white, fill
+// proportional to média/10, the truncated average + "média" in the middle.
 @Composable
-private fun HeaderRow(
-    eyebrow: String,
-    icon: dev.forcetower.unes.ui.feature.finalcountdown.FCVerdictIcon,
-    weighted: Boolean,
-    toneBg: Color,
-    toneFg: Color,
-    heroInk: Color,
-    heroInkSoft: Color,
-) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+private fun AverageRing(avg: Double?, hue: Color, onHero: Color) {
+    val fraction by animateFloatAsState(
+        targetValue = avg?.let { (it / 10.0).toFloat().coerceIn(0f, 1f) } ?: 0f,
+        animationSpec = MelonMotion.easeSlow(),
+        label = "fcRingFill",
+    )
+    Box(modifier = Modifier.size(98.dp), contentAlignment = Alignment.Center) {
+        Canvas(modifier = Modifier.fillMaxSize()) {
+            val stroke = Stroke(width = 8.dp.toPx(), cap = StrokeCap.Round)
+            val inset = 4.dp.toPx()
+            val arcSize = Size(size.width - inset * 2, size.height - inset * 2)
+            val topLeft = Offset(inset, inset)
+            // Arc covers 74% of the circle; the 26% gap is centered at the
+            // bottom (dc: rotate 90° plus half the gap).
+            val gapSweep = 0.26f * 360f
+            val start = 90f + gapSweep / 2f
+            val fullSweep = 360f - gapSweep
+            drawArc(
+                color = onHero.copy(alpha = 0.14f),
+                startAngle = start,
+                sweepAngle = fullSweep,
+                useCenter = false,
+                topLeft = topLeft,
+                size = arcSize,
+                style = stroke,
+            )
+            if (fraction > 0f) {
+                drawArc(
+                    color = hue,
+                    startAngle = start,
+                    sweepAngle = fullSweep * fraction,
+                    useCenter = false,
+                    topLeft = topLeft,
+                    size = arcSize,
+                    style = stroke,
+                )
+            }
+        }
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(
+                text = FinalCountdownMath.formatGrade(avg),
+                style = MaterialTheme.typography.displaySmall.copy(
+                    fontSize = 30.sp,
+                    lineHeight = 30.sp,
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = (-1.2).sp,
+                ),
+                color = onHero,
+            )
+            Text(
+                text = stringResource(R.string.final_countdown_hero_avg_caption).uppercase(),
+                style = MaterialTheme.typography.labelSmall.copy(
+                    fontSize = 9.5.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    letterSpacing = 0.38.sp,
+                ),
+                color = onHero.copy(alpha = 0.62f),
+                modifier = Modifier.padding(top = 3.dp),
+            )
+        }
+    }
+}
+
+// Prova Final difficulty scale (Final verdict only): a green→amber→ember
+// gradient rail with a white marker at the needed grade, captioned
+// fácil/cruel/brutal.
+@Composable
+private fun FinalScale(need: Double, onHero: Color, modifier: Modifier = Modifier) {
+    val tokens = MaterialTheme.melon.verdict
+    val markerBias by animateFloatAsState(
+        // Fraction 0..1 mapped onto BiasAlignment's -1..1 range.
+        targetValue = (need / 10.0).toFloat().coerceIn(0f, 1f) * 2f - 1f,
+        animationSpec = MelonMotion.spring(),
+        label = "fcScaleMarker",
+    )
+    Column(modifier = modifier.fillMaxWidth()) {
+        Box(
             modifier = Modifier
-                .clip(CircleShape)
-                .background(Color.White.copy(alpha = 0.08f))
-                .border(1.dp, Color.White.copy(alpha = 0.12f), CircleShape)
-                .padding(start = 8.dp, end = 10.dp, top = 5.dp, bottom = 5.dp),
+                .fillMaxWidth()
+                .height(14.dp),
+            contentAlignment = Alignment.Center,
         ) {
             Box(
                 modifier = Modifier
-                    .size(22.dp)
-                    .clip(RoundedCornerShape(6.dp))
-                    .background(toneBg),
-                contentAlignment = Alignment.Center,
-            ) {
-                FCVerdictGlyph(
-                    icon = icon,
-                    color = toneFg,
-                    modifier = Modifier.size(13.dp),
-                    strokeWidth = 1.6f,
-                )
-            }
-            Text(
-                text = eyebrow.uppercase(),
-                style = MaterialTheme.typography.labelSmall.copy(
-                    fontSize = 9.sp,
-                    letterSpacing = 1.44.sp,
-                    fontWeight = FontWeight.Medium,
-                ),
-                color = heroInk,
+                    .fillMaxWidth()
+                    .height(6.dp)
+                    .clip(RoundedCornerShape(3.dp))
+                    .background(
+                        Brush.horizontalGradient(
+                            colors = listOf(
+                                tokens.passed.hue.copy(alpha = 0.55f),
+                                tokens.warn.hue.copy(alpha = 0.75f),
+                                tokens.ember.hue.copy(alpha = 0.9f),
+                            ),
+                        ),
+                    ),
+            )
+            Box(
+                modifier = Modifier
+                    .align(BiasAlignment(horizontalBias = markerBias, verticalBias = 0f))
+                    .size(width = 3.dp, height = 14.dp)
+                    .clip(RoundedCornerShape(2.dp))
+                    .background(onHero),
             )
         }
-        Spacer(modifier = Modifier.width(0.dp))
-        Box(modifier = Modifier.weight(1f))
-        Text(
-            text = stringResource(
-                if (weighted) R.string.final_countdown_hero_mode_weighted
-                else R.string.final_countdown_hero_mode_simple,
-            ).uppercase(),
-            style = MaterialTheme.typography.labelSmall.copy(
-                fontSize = 9.sp,
-                letterSpacing = 0.9.sp,
-                fontWeight = FontWeight.Medium,
-            ),
-            color = heroInkSoft,
-        )
-    }
-}
-
-@Composable
-private fun TitleBlock(
-    titleLines: List<String>,
-    heroInk: Color,
-    italicColor: Color,
-    modifier: Modifier = Modifier,
-) {
-    Column(
-        modifier = modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(2.dp),
-    ) {
-        titleLines.forEachIndexed { index, line ->
-            if (line.isEmpty()) return@forEachIndexed
-            val italic = index == 1
-            Text(
-                text = line,
-                style = MaterialTheme.typography.headlineMedium.copy(
-                    fontSize = 34.sp,
-                    lineHeight = 36.sp,
-                    letterSpacing = (-0.68).sp,
-                    fontStyle = if (italic) FontStyle.Italic else FontStyle.Normal,
-                ),
-                color = if (italic) italicColor.copy(alpha = 0.9f) else heroInk,
-                textAlign = TextAlign.Center,
-            )
-        }
-    }
-}
-
-@Composable
-private fun HeadlineBlock(
-    headline: String,
-    sub: String,
-    message: String,
-    headlineColor: Color,
-    heroInkSoft: Color,
-    heroInkBody: Color,
-    modifier: Modifier = Modifier,
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
-            .background(Color.White.copy(alpha = 0.06f))
-            .border(1.dp, Color.White.copy(alpha = 0.10f), RoundedCornerShape(16.dp))
-            .padding(14.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(14.dp),
-    ) {
-        Text(
-            text = headline,
-            style = MaterialTheme.typography.displayMedium.copy(
-                fontSize = 56.sp,
-                lineHeight = 56.sp,
-                letterSpacing = (-1.68).sp,
-            ),
-            color = headlineColor,
-            maxLines = 1,
-        )
-        Column(
-            modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(3.dp),
-        ) {
-            Text(
-                text = sub.uppercase(),
-                style = MaterialTheme.typography.labelSmall.copy(
-                    fontSize = 9.5.sp,
-                    letterSpacing = 0.95.sp,
-                    fontWeight = FontWeight.Medium,
-                ),
-                color = heroInkSoft,
-            )
-            Text(
-                text = message,
-                style = MaterialTheme.typography.bodySmall.copy(
-                    fontSize = 12.sp,
-                    lineHeight = 16.sp,
-                ),
-                color = heroInkBody,
-            )
-        }
-    }
-}
-
-@Composable
-private fun DifficultyMeter(
-    need: Double,
-    heroInkFaint: Color,
-    heroInk: Color,
-    modifier: Modifier = Modifier,
-) {
-    val coral = fcToneBackground(FCTone.Coral)
-    val amber = fcToneBackground(FCTone.Amber)
-    val green = fcToneBackground(FCTone.Green)
-    Column(
-        modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(6.dp),
-    ) {
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 6.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            DifficultyTickLabel(
-                text = stringResource(R.string.final_countdown_difficulty_low),
-                color = heroInkFaint,
-            )
-            DifficultyTickLabel(
-                text = stringResource(R.string.final_countdown_difficulty_mid),
-                color = heroInkFaint,
-            )
-            DifficultyTickLabel(
-                text = stringResource(R.string.final_countdown_difficulty_high),
-                color = heroInkFaint,
-            )
-        }
-        DifficultyBar(
-            need = need,
-            green = green.copy(alpha = 0.5f),
-            amber = amber.copy(alpha = 0.7f),
-            coral = coral.copy(alpha = 0.85f),
-            indicator = heroInk,
-        )
-    }
-}
-
-@Composable
-private fun DifficultyTickLabel(text: String, color: Color) {
-    Text(
-        text = text.uppercase(),
-        style = MaterialTheme.typography.labelSmall.copy(
-            fontSize = 8.5.sp,
-            letterSpacing = 1.19.sp,
-            fontWeight = FontWeight.Medium,
-        ),
-        color = color,
-    )
-}
-
-@Composable
-private fun DifficultyBar(
-    need: Double,
-    green: Color,
-    amber: Color,
-    coral: Color,
-    indicator: Color,
-) {
-    val clamped = (need.coerceIn(0.0, 10.0) / 10.0).toFloat()
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(14.dp),
-    ) {
-        Box(
-            modifier = Modifier
-                .align(Alignment.Center)
-                .fillMaxWidth()
-                .height(6.dp)
-                .clip(RoundedCornerShape(3.dp))
-                .background(
-                    Brush.horizontalGradient(
-                        colors = listOf(green, amber, coral),
+            listOf(
+                R.string.final_countdown_scale_low,
+                R.string.final_countdown_scale_mid,
+                R.string.final_countdown_scale_high,
+            ).forEach { res ->
+                Text(
+                    text = stringResource(res).uppercase(),
+                    style = MaterialTheme.typography.labelSmall.copy(
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        letterSpacing = 0.3.sp,
                     ),
-                ),
-        )
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(14.dp)
-                .drawBehind {
-                    val centerX = size.width * clamped
-                    val widthPx = 3.dp.toPx()
-                    val left = centerX - widthPx / 2f
-                    val top = 0f
-                    val bottom = size.height
-                    drawRoundRect(
-                        color = indicator,
-                        topLeft = Offset(left, top),
-                        size = androidx.compose.ui.geometry.Size(widthPx, bottom - top),
-                        cornerRadius = androidx.compose.ui.geometry.CornerRadius(2.dp.toPx()),
-                    )
-                },
-        )
+                    color = onHero.copy(alpha = 0.5f),
+                )
+            }
+        }
     }
 }
 
-@Composable
-private fun backgroundGradient(kind: FCVerdictKind): Brush {
-    val v = MaterialTheme.melon.verdict
-    val (top, bottom) = when (kind) {
-        FCVerdictKind.Passed -> v.passedTop to v.passedBottom
-        FCVerdictKind.Failed, FCVerdictKind.Impossible -> v.failedTop to v.failedBottom
-        FCVerdictKind.Final, FCVerdictKind.BorderlineFinal, FCVerdictKind.FailingTrack ->
-            v.finalTop to v.finalBottom
-        FCVerdictKind.Borderline -> v.borderlineTop to v.borderlineBottom
-        FCVerdictKind.OnTrack, FCVerdictKind.Empty -> v.neutralTop to v.neutralBottom
-    }
-    return Brush.linearGradient(
-        colors = listOf(top, bottom),
-        start = Offset(0f, 0f),
-        end = Offset(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY),
+// Hairline above the stat strip — drawn so it hugs the row's width inside the
+// padded column without a divider composable claiming layout space.
+private fun Modifier.topHairline(color: Color): Modifier = drawBehind {
+    drawLine(
+        color = color,
+        start = Offset.Zero,
+        end = Offset(size.width, 0f),
+        strokeWidth = 1.dp.toPx(),
     )
-}
-
-private fun headlineColor(tone: FCTone, surfaceLight: Color, peach: Color): Color {
-    // Amber hero (borderline) reads better with peach on the panel; tones
-    // whose `fg` is the cream surface invert to the tone's bg for contrast.
-    if (tone == FCTone.Amber) return peach
-    return surfaceLight
 }

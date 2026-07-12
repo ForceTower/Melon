@@ -96,22 +96,35 @@ data class MelonSurfaceColors(
     val pressedAccent: Color,
 )
 
-// Hand-tuned dark gradient pairs used by the Final Countdown verdict hero.
-// Always painted dark regardless of system theme — the hero card is its own
-// world. One pair per verdict outcome family. Mirrors iOS `backgroundGradient`
-// in `FCVerdictHero.swift`.
+// Mesh palettes for the Final Countdown verdict hero (dc `FinalCountdownScreen`
+// verdict map). Always painted dark regardless of system theme — the hero card
+// is its own world. `night` is the card plate, `veil` the legibility scrim;
+// each outcome family carries three mesh blob stops plus the `hue` used for
+// the average ring / stat value / eyebrow chip.
+@Immutable
+data class MelonVerdictPalette(
+    val blobA: Color,
+    val blobB: Color,
+    val blobC: Color,
+    val hue: Color,
+) {
+    val blobs: List<Color> get() = listOf(blobA, blobB, blobC)
+}
+
 @Immutable
 data class MelonVerdictColors(
-    val passedTop: Color,
-    val passedBottom: Color,
-    val failedTop: Color,
-    val failedBottom: Color,
-    val finalTop: Color,
-    val finalBottom: Color,
-    val borderlineTop: Color,
-    val borderlineBottom: Color,
-    val neutralTop: Color,
-    val neutralBottom: Color,
+    val night: Color,
+    val veil: Color,
+    // Aprovação direta (green).
+    val passed: MelonVerdictPalette,
+    // No caminho / comece a preencher (teal).
+    val track: MelonVerdictPalette,
+    // Dá pra passar (amber).
+    val warn: MelonVerdictPalette,
+    // Rumo à Prova Final / caminho difícil (coral-ember).
+    val ember: MelonVerdictPalette,
+    // Matemática perdida / reprovada (berry).
+    val lost: MelonVerdictPalette,
 )
 
 // Discipline tinting palette. Adaptive: same semantic slot in light/dark, but
@@ -164,16 +177,38 @@ private val MelonFixedDefaults = MelonFixedColors(
 )
 
 private val MelonVerdictDefaults = MelonVerdictColors(
-    passedTop = VerdictPassedTop,
-    passedBottom = VerdictPassedBottom,
-    failedTop = VerdictFailedTop,
-    failedBottom = VerdictFailedBottom,
-    finalTop = VerdictFinalTop,
-    finalBottom = VerdictFinalBottom,
-    borderlineTop = VerdictBorderlineTop,
-    borderlineBottom = VerdictBorderlineBottom,
-    neutralTop = VerdictNeutralTop,
-    neutralBottom = VerdictNeutralBottom,
+    night = VerdictNight,
+    veil = VerdictVeil,
+    passed = MelonVerdictPalette(
+        blobA = VerdictPassedBlobA,
+        blobB = VerdictPassedBlobB,
+        blobC = VerdictPassedBlobC,
+        hue = VerdictPassedHue,
+    ),
+    track = MelonVerdictPalette(
+        blobA = VerdictTrackBlobA,
+        blobB = VerdictTrackBlobB,
+        blobC = VerdictTrackBlobC,
+        hue = VerdictTrackHue,
+    ),
+    warn = MelonVerdictPalette(
+        blobA = VerdictWarnBlobA,
+        blobB = VerdictWarnBlobB,
+        blobC = VerdictWarnBlobC,
+        hue = VerdictWarnHue,
+    ),
+    ember = MelonVerdictPalette(
+        blobA = VerdictEmberBlobA,
+        blobB = VerdictEmberBlobB,
+        blobC = VerdictEmberBlobC,
+        hue = VerdictEmberHue,
+    ),
+    lost = MelonVerdictPalette(
+        blobA = VerdictLostBlobA,
+        blobB = VerdictLostBlobB,
+        blobC = VerdictLostBlobC,
+        hue = VerdictLostHue,
+    ),
 )
 
 internal fun melonColorsLight() = MelonColors(
