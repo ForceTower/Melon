@@ -10,10 +10,12 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -40,9 +42,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SegmentedButton
-import androidx.compose.material3.SegmentedButtonDefaults
-import androidx.compose.material3.SingleChoiceSegmentedButtonRow
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
@@ -855,45 +855,65 @@ private fun DayTab(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+// Tonal track with a raised card thumb, each option carrying its audience
+// dot — the same segmented recipe as `CalCategorySegmented` on Calendário,
+// mirroring the dc filter row.
 @Composable
 private fun AudienceFilter(
     filter: CampusEventAudience,
     onFilterChanged: (CampusEventAudience) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val options = listOf(
-        CampusEventAudience.Everyone,
-        CampusEventAudience.Freshmen,
-        CampusEventAudience.Veterans,
-    )
-    SingleChoiceSegmentedButtonRow(modifier = modifier.fillMaxWidth()) {
-        options.forEachIndexed { index, audience ->
-            SegmentedButton(
-                selected = filter == audience,
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(14.dp))
+            .background(MaterialTheme.colorScheme.surfaceContainer)
+            .padding(3.dp),
+        horizontalArrangement = Arrangement.spacedBy(3.dp),
+    ) {
+        listOf(
+            CampusEventAudience.Everyone,
+            CampusEventAudience.Freshmen,
+            CampusEventAudience.Veterans,
+        ).forEach { audience ->
+            val isActive = filter == audience
+            Surface(
                 onClick = { onFilterChanged(audience) },
-                shape = SegmentedButtonDefaults.itemShape(index = index, count = options.size),
-                icon = {},
-                label = {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(6.dp),
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .size(8.dp)
-                                .clip(androidx.compose.foundation.shape.CircleShape)
-                                .background(
-                                    audience.tone().copy(alpha = if (filter == audience) 1f else 0.5f),
-                                ),
-                        )
-                        Text(
-                            text = stringResource(audience.label),
-                            style = MaterialTheme.typography.labelLarge.copy(fontSize = 13.sp),
-                        )
-                    }
-                },
-            )
+                modifier = Modifier.weight(1f),
+                shape = RoundedCornerShape(11.dp),
+                color = if (isActive) MaterialTheme.melon.surface.card else Color.Transparent,
+                shadowElevation = if (isActive) 1.dp else 0.dp,
+            ) {
+                Row(
+                    modifier = Modifier.padding(vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .padding(end = 5.dp)
+                            .size(8.dp)
+                            .clip(CircleShape)
+                            .background(
+                                audience.tone().copy(alpha = if (isActive) 1f else 0.5f),
+                            ),
+                    )
+                    Text(
+                        text = stringResource(audience.label),
+                        style = MaterialTheme.typography.labelMedium.copy(
+                            fontSize = 12.5.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            letterSpacing = (-0.12).sp,
+                        ),
+                        color = if (isActive) {
+                            MaterialTheme.colorScheme.onBackground
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        },
+                    )
+                }
+            }
         }
     }
 }
@@ -917,6 +937,7 @@ private fun ActivityRow(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .height(IntrinsicSize.Min)
                 .clickable(onClick = onTap)
                 .background(if (isNow) tone.copy(alpha = 0.07f) else Color.Transparent)
                 .alpha(if (isPast) 0.55f else 1f)
@@ -944,10 +965,12 @@ private fun ActivityRow(
                 }
             }
 
+            // Category rail — stretches the full row like the dc design's
+            // `align-items: stretch` bar.
             Box(
                 modifier = Modifier
                     .width(if (isNow) 4.dp else 3.dp)
-                    .height(46.dp)
+                    .fillMaxHeight()
                     .clip(RoundedCornerShape(2.dp))
                     .background(tone),
             )
