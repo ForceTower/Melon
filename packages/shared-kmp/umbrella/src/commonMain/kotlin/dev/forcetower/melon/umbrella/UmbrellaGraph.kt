@@ -27,6 +27,7 @@ import dev.forcetower.melon.feature.messages.domain.usecase.MarkAllMessagesAsRea
 import dev.forcetower.melon.feature.messages.domain.usecase.MarkMessageAsReadUseCase
 import dev.forcetower.melon.feature.messages.domain.usecase.ObserveMessageDetailUseCase
 import dev.forcetower.melon.feature.messages.domain.usecase.ObserveMessagesInboxUseCase
+import dev.forcetower.melon.feature.messages.domain.usecase.ToggleMessageStarUseCase
 import dev.forcetower.melon.feature.notifications.domain.usecase.RegisterNotificationTokenUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveAttendanceTileUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveDisciplinesUseCase
@@ -121,12 +122,13 @@ interface UmbrellaGraph {
     val calculateOverallScoreUseCase: CalculateOverallScoreUseCase
 
     // Mensagens (Recados) reactive surfaces — one flow for the grouped
-    // inbox, one per-message detail flow for the reader, and a suspend
-    // mutation that persists readAt to MessageState on first view.
+    // inbox, one per-message detail flow for the reader, and suspend
+    // mutations that persist readAt/starred to MessageState.
     val observeMessagesInboxUseCase: ObserveMessagesInboxUseCase
     val observeMessageDetailUseCase: ObserveMessageDetailUseCase
     val markMessageAsReadUseCase: MarkMessageAsReadUseCase
     val markAllMessagesAsReadUseCase: MarkAllMessagesAsReadUseCase
+    val toggleMessageStarUseCase: ToggleMessageStarUseCase
 
     // Calendário (academic-calendar) reactive surfaces — events feed for the
     // agenda, plus the active-semester code that powers the eyebrow label.

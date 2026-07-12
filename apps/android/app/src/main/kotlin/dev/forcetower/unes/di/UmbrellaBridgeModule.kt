@@ -25,6 +25,7 @@ import dev.forcetower.melon.feature.messages.domain.usecase.MarkAllMessagesAsRea
 import dev.forcetower.melon.feature.messages.domain.usecase.MarkMessageAsReadUseCase
 import dev.forcetower.melon.feature.messages.domain.usecase.ObserveMessageDetailUseCase
 import dev.forcetower.melon.feature.messages.domain.usecase.ObserveMessagesInboxUseCase
+import dev.forcetower.melon.feature.messages.domain.usecase.ToggleMessageStarUseCase
 import dev.forcetower.melon.feature.notifications.domain.usecase.RegisterNotificationTokenUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveAttendanceTileUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveDisciplinesUseCase
@@ -186,6 +187,8 @@ object UmbrellaBridgeModule {
         graph.markMessageAsReadUseCase
     @Provides fun provideMarkAllMessagesAsReadUseCase(graph: UmbrellaGraph): MarkAllMessagesAsReadUseCase =
         graph.markAllMessagesAsReadUseCase
+    @Provides fun provideToggleMessageStarUseCase(graph: UmbrellaGraph): ToggleMessageStarUseCase =
+        graph.toggleMessageStarUseCase
 
     // Configurações — credential vault read flow lives in `feature/me`, the
     // user settings flow + patch live in `feature/settings`. `observeLastSync`

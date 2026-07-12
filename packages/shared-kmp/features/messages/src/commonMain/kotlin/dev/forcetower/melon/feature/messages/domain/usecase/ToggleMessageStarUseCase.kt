@@ -8,37 +8,35 @@ import dev.zacsweers.metro.Inject
 import kotlin.time.Clock
 import kotlinx.coroutines.CancellationException
 
-// Local-first: flips `readAt` in the device DB, then best-effort acks the
-// backend (`POST api/sync/messages/read`) so other devices see the state.
-// The overlay already flipped the row and the mirror never resurrects an
-// unread dot, so a lost ack only leaves the server behind until the next
-// read. Mirrors `markRead` in iOS `MessagesRepository+Live.swift`.
+// Local-first: flips `starred` in the device DB (preserving `readAt`), then
+// best-effort acks the backend (`POST api/sync/messages/star`) so other
+// devices see the state. Mirrors `setStarred` in iOS
+// `MessagesRepository+Live.swift`.
 @Inject
-class MarkMessageAsReadUseCase internal constructor(
+class ToggleMessageStarUseCase internal constructor(
     private val messageDao: MessageDao,
     private val api: MessagesApi,
     logger: Logger,
 ) {
-    private val log = logger.withTag("MarkMessageAsRead")
+    private val log = logger.withTag("ToggleMessageStar")
 
     suspend operator fun invoke(messageId: String) {
         val existing = messageDao.getState(messageId)
-        if (existing?.readAt != null) return
-        val now = Clock.System.now().toString()
+        val starred = existing?.starred != true
         messageDao.upsertState(
             MessageStateEntity(
                 messageId = messageId,
-                readAt = now,
-                starred = existing?.starred == true,
-                updatedAt = now,
+                readAt = existing?.readAt,
+                starred = starred,
+                updatedAt = Clock.System.now().toString(),
             ),
         )
         try {
-            api.ackRead(listOf(messageId))
+            api.ackStar(id = messageId, starred = starred)
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
-            log.w(e) { "markRead ack failed id=$messageId" }
+            log.w(e) { "setStarred ack failed id=$messageId starred=$starred" }
         }
     }
 }
