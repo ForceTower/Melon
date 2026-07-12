@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Mirrors the design-system NightFixed (#12100E) that the in-app Compose
+         SplashScreen paints as its base, so the OS cold-start splash hands off
+         to the first Compose frame with no color flash. -->
+    <color name="splash_background">#12100E</color>
+</resources>

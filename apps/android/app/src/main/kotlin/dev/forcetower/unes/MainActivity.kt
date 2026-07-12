@@ -1,8 +1,15 @@
 package dev.forcetower.unes
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.os.Bundle
+import android.view.View
+import android.view.animation.AccelerateInterpolator
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.collectAsState
@@ -24,7 +31,25 @@ class MainActivity : FragmentActivity() {
     internal lateinit var themePreferences: ThemePreferenceStore
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
+        // Dissolve the OS splash into the in-app Compose splash instead of
+        // cutting: both share the same dark base color, so fading the OS layer
+        // out (with the icon lifting slightly) reads as one continuous handoff.
+        splashScreen.setOnExitAnimationListener { splashView ->
+            val fade = ObjectAnimator.ofFloat(splashView.view, View.ALPHA, 1f, 0f)
+            val iconLift = ObjectAnimator.ofFloat(splashView.iconView, View.SCALE_X, 1f, 1.06f)
+            val iconLiftY = ObjectAnimator.ofFloat(splashView.iconView, View.SCALE_Y, 1f, 1.06f)
+            AnimatorSet().apply {
+                playTogether(fade, iconLift, iconLiftY)
+                duration = 280L
+                interpolator = AccelerateInterpolator()
+                addListener(object : AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator) = splashView.remove()
+                })
+                start()
+            }
+        }
         enableEdgeToEdge()
         setContent {
             // System is the safe initial: the first route is the always-dark
