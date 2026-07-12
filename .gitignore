@@ -78,6 +78,6 @@ tmp/
 
 claude_scripts/
 claude_design_ref/
-.claude/*.local.json
+.claude/
 
 .raw_pages/
