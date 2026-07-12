@@ -1,5 +1,6 @@
 package dev.forcetower.unes.ui.feature.connected
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,6 +24,13 @@ import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import dev.forcetower.unes.designsystem.theme.MelonTheme
 import dev.forcetower.unes.designsystem.theme.melon
+import dev.forcetower.unes.ui.feature.campusevent.CampusEventActivityScreen
+import dev.forcetower.unes.ui.feature.campusevent.CampusEventOrganizationsScreen
+import dev.forcetower.unes.ui.feature.campusevent.CampusEventScreen
+import dev.forcetower.unes.ui.feature.campusevent.CampusEventSpeakersScreen
+import dev.forcetower.unes.ui.feature.campusevent.CampusEventVenuesScreen
+import dev.forcetower.unes.ui.feature.campusevent.CampusEventViewModel
+import dev.forcetower.unes.ui.feature.campusevent.CampusEventWorkshopsScreen
 import dev.forcetower.unes.ui.feature.disciplinedetail.DisciplineDetailRoute
 import dev.forcetower.unes.ui.feature.disciplines.Discipline
 import dev.forcetower.unes.ui.feature.disciplines.DisciplinesIntent
@@ -33,6 +41,7 @@ import dev.forcetower.unes.ui.feature.messages.MessageDetailRoute
 import dev.forcetower.unes.ui.feature.messages.MessagesIntent
 import dev.forcetower.unes.ui.feature.messages.MessagesScreen
 import dev.forcetower.unes.ui.feature.messages.MessagesViewModel
+import dev.forcetower.unes.ui.feature.onboarding.components.SystemBarIconsEffect
 import dev.forcetower.unes.ui.feature.overview.ColorFor
 import dev.forcetower.unes.ui.feature.overview.OverviewScreen
 import dev.forcetower.unes.ui.feature.schedule.ScheduleScreen
@@ -91,6 +100,11 @@ fun ConnectedScreen(
     // Materiais is online-only with no per-material fetch endpoint, so the
     // detail seed rides the same shared-VM channel.
     val materialsDetailVm: MaterialsDetailViewModel = hiltViewModel()
+    // Shared with the campus-event hub (activity store): while its fullscreen
+    // welcome reveal owns the screen, the bottom bar hides and the status-bar
+    // icons flip light — the Android analogue of iOS `WelcomeChrome`.
+    val campusEventVm: CampusEventViewModel = hiltViewModel()
+    val campusEventState by campusEventVm.state.collectAsStateWithLifecycle()
     val unreadBadges = mapOf(
         ConnectedTab.Messages to messagesState.rawItems.count { it.isUnread },
     ).filterValues { it > 0 }
@@ -134,6 +148,7 @@ fun ConnectedScreen(
                         onOpenMessages = { navigator.selectTab(ConnectedTab.Messages) },
                         onOpenSchedule = { navigator.selectTab(ConnectedTab.Schedule) },
                         onOpenProfile = { navigator.selectTab(ConnectedTab.Me) },
+                        onOpenCampusEvent = { navigator.navigate(ConnectedRoute.CampusEvent) },
                     )
                 }
                 entry<ConnectedRoute.Schedule>(metadata = TabRootMetadata) {
@@ -328,6 +343,53 @@ fun ConnectedScreen(
                 entry<ConnectedRoute.EnrollmentSuccess> {
                     EnrollmentSuccessScreen(onDone = { navigator.goBack() })
                 }
+                entry<ConnectedRoute.CampusEvent> {
+                    CampusEventScreen(
+                        onBack = { navigator.goBack() },
+                        onOpenActivity = { id ->
+                            navigator.navigate(ConnectedRoute.CampusEventActivity(id))
+                        },
+                        onOpenSpeakers = { navigator.navigate(ConnectedRoute.CampusEventSpeakers) },
+                        onOpenWorkshops = { navigator.navigate(ConnectedRoute.CampusEventWorkshops) },
+                        onOpenVenues = { navigator.navigate(ConnectedRoute.CampusEventVenues) },
+                        onOpenOrganizations = {
+                            navigator.navigate(ConnectedRoute.CampusEventOrganizations)
+                        },
+                        bottomInset = bottomInset,
+                    )
+                }
+                entry<ConnectedRoute.CampusEventActivity> { route ->
+                    CampusEventActivityScreen(
+                        activityId = route.id,
+                        onBack = { navigator.goBack() },
+                        onOpenVenues = { navigator.navigate(ConnectedRoute.CampusEventVenues) },
+                        bottomInset = bottomInset,
+                    )
+                }
+                entry<ConnectedRoute.CampusEventSpeakers> {
+                    CampusEventSpeakersScreen(
+                        onBack = { navigator.goBack() },
+                        bottomInset = bottomInset,
+                    )
+                }
+                entry<ConnectedRoute.CampusEventWorkshops> {
+                    CampusEventWorkshopsScreen(
+                        onBack = { navigator.goBack() },
+                        bottomInset = bottomInset,
+                    )
+                }
+                entry<ConnectedRoute.CampusEventVenues> {
+                    CampusEventVenuesScreen(
+                        onBack = { navigator.goBack() },
+                        bottomInset = bottomInset,
+                    )
+                }
+                entry<ConnectedRoute.CampusEventOrganizations> {
+                    CampusEventOrganizationsScreen(
+                        onBack = { navigator.goBack() },
+                        bottomInset = bottomInset,
+                    )
+                }
                 entry<ConnectedRoute.ParadoxoExplore> { route ->
                     ParadoxoExploreScreen(
                         kind = runCatching { ParadoxoExploreKind.valueOf(route.kind) }
@@ -403,6 +465,10 @@ fun ConnectedScreen(
         )
     }
 
+    val welcomeOwnsScreen = campusEventState.isShowingWelcome &&
+        navigator.activeStack.lastOrNull() is ConnectedRoute.CampusEvent
+    SystemBarIconsEffect(darkChrome = welcomeOwnsScreen)
+
     CompositionLocalProvider(LocalConnectedNavigator provides navigator) {
         Column(
             modifier = modifier
@@ -418,11 +484,13 @@ fun ConnectedScreen(
                     predictivePopTransitionSpec = connectedPredictivePopTransition,
                 )
             }
-            ConnectedNavigationBar(
-                active = navigator.activeTab,
-                onChange = { navigator.selectTab(it) },
-                badges = unreadBadges,
-            )
+            AnimatedVisibility(visible = !welcomeOwnsScreen) {
+                ConnectedNavigationBar(
+                    active = navigator.activeTab,
+                    onChange = { navigator.selectTab(it) },
+                    badges = unreadBadges,
+                )
+            }
         }
     }
 }

@@ -13,6 +13,9 @@ import dev.forcetower.melon.feature.auth.domain.usecase.CompletePasskeyLoginUseC
 import dev.forcetower.melon.feature.auth.domain.usecase.LoginUseCase
 import dev.forcetower.melon.feature.calendar.domain.usecase.ObserveActiveSemesterCodeUseCase
 import dev.forcetower.melon.feature.calendar.domain.usecase.ObserveCalendarEventsUseCase
+import dev.forcetower.melon.feature.campusevent.domain.usecase.ClearCampusEventUseCase
+import dev.forcetower.melon.feature.campusevent.domain.usecase.ObserveCampusEventUseCase
+import dev.forcetower.melon.feature.campusevent.domain.usecase.RefreshCampusEventUseCase
 import dev.forcetower.melon.feature.dashboard.domain.usecase.GetReadyOverviewUseCase
 import dev.forcetower.melon.feature.disciplines.domain.usecase.CalculateOverallScoreUseCase
 import dev.forcetower.melon.feature.disciplines.domain.usecase.ObserveDisciplineDetailUseCase
@@ -182,6 +185,13 @@ interface UmbrellaGraph {
     val getEnrollmentWindowUseCase: GetEnrollmentWindowUseCase
     val getEnrollmentOffersUseCase: GetEnrollmentOffersUseCase
     val submitEnrollmentUseCase: SubmitEnrollmentUseCase
+
+    // Campus event (SIECOMP-style weeks) — the featured-event snapshot the
+    // Home entrance card and the event hub observe, plus the silent refresh
+    // whose result lands back through the observe stream.
+    val observeCampusEventUseCase: ObserveCampusEventUseCase
+    val refreshCampusEventUseCase: RefreshCampusEventUseCase
+    val clearCampusEventUseCase: ClearCampusEventUseCase
 
     // Configurações reactive surface — emits the active session's typed
     // upstream credentials so the Settings vault card can render them.

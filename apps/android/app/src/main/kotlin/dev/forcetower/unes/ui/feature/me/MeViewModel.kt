@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.forcetower.melon.core.common.Outcome
 import dev.forcetower.melon.core.session.domain.SessionStore
+import dev.forcetower.melon.feature.campusevent.domain.usecase.ClearCampusEventUseCase
 import dev.forcetower.melon.feature.disciplines.domain.usecase.CalculateOverallScoreUseCase
 import dev.forcetower.melon.feature.disciplines.domain.usecase.OverallScoreSummary
 import dev.forcetower.melon.feature.me.domain.model.AcademicDocument
@@ -121,6 +122,7 @@ internal class MeViewModel @Inject constructor(
     private val fetchDocument: FetchAcademicDocumentUseCase,
     private val localDocuments: LocalDocumentStore,
     private val sessionStore: SessionStore,
+    private val clearCampusEvent: ClearCampusEventUseCase,
 ) : MviViewModel<MeUiState, MeIntent, MeEffect>(MeUiState()) {
 
     init {
@@ -238,6 +240,9 @@ internal class MeViewModel @Inject constructor(
         setState { copy(logoutStep = LogoutStep.Flashing, logoutFirstName = firstName) }
         viewModelScope.launch {
             runCatching { sessionStore.logout() }
+            // User-scoped snapshot outside the DB teardown — iOS wipes it
+            // with the mirror; here it lives in KeyValueStorage.
+            runCatching { clearCampusEvent() }
             // Match iOS pacing: ~0.9s flash before the goodbye view animates in.
             kotlinx.coroutines.delay(LogoutFlashMs)
             setState { copy(logoutStep = LogoutStep.LoggedOut) }

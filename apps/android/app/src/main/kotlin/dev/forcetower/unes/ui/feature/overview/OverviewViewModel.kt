@@ -2,6 +2,9 @@ package dev.forcetower.unes.ui.feature.overview
 
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.forcetower.melon.feature.campusevent.domain.model.CampusEvent
+import dev.forcetower.melon.feature.campusevent.domain.usecase.ObserveCampusEventUseCase
+import dev.forcetower.melon.feature.campusevent.domain.usecase.RefreshCampusEventUseCase
 import dev.forcetower.melon.feature.me.domain.usecase.ObserveMeProfileUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveNextTestTileUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveNowClassUseCase
@@ -13,6 +16,7 @@ import dev.forcetower.unes.mvi.MviViewModel
 import dev.forcetower.unes.mvi.UiEffect
 import dev.forcetower.unes.mvi.UiIntent
 import dev.forcetower.unes.mvi.UiState
+import dev.forcetower.unes.firebase.FeatureFlags
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -20,6 +24,8 @@ import java.time.temporal.ChronoUnit
 import java.util.Locale
 import javax.inject.Inject
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlin.time.Clock
@@ -45,8 +51,15 @@ internal data class OverviewUiState(
     val semesterEndIso: String? = null,
     val messagesTileRaw: KmpOverviewMessagesTile? = null,
     val nextTestTileRaw: KmpOverviewNextTestTile? = null,
+    val campusEventRaw: CampusEvent? = null,
+    val campusEventEnabled: Boolean = false,
     val clock: Instant = Clock.System.now(),
 ) : UiState {
+    // Both gates must open, exactly like iOS: the Remote Config flag AND a
+    // non-null featured event from the server.
+    val campusEvent: CampusEvent?
+        get() = campusEventRaw.takeIf { campusEventEnabled }
+
     val firstName: String?
         get() = userName?.trim()?.substringBefore(' ')?.takeIf { it.isNotBlank() }
 
@@ -106,6 +119,9 @@ internal class OverviewViewModel @Inject constructor(
     observeTomorrow: ObserveTomorrowPreviewUseCase,
     observeMessagesTile: ObserveUnreadMessagesTileUseCase,
     observeNextTestTile: ObserveNextTestTileUseCase,
+    observeCampusEvent: ObserveCampusEventUseCase,
+    refreshCampusEvent: RefreshCampusEventUseCase,
+    featureFlags: FeatureFlags,
 ) : MviViewModel<OverviewUiState, OverviewIntent, OverviewEffect>(OverviewUiState()) {
 
     init {
@@ -137,6 +153,20 @@ internal class OverviewViewModel @Inject constructor(
         }
         viewModelScope.launch {
             observeNextTestTile().collect { value -> setState { copy(nextTestTileRaw = value) } }
+        }
+        viewModelScope.launch {
+            observeCampusEvent().collect { value -> setState { copy(campusEventRaw = value) } }
+        }
+        // The refresh only fires while the flag is on, mirroring iOS
+        // `HomeFeature.refreshCampusEvent`; failures keep the stale snapshot.
+        viewModelScope.launch {
+            featureFlags.gates
+                .map { it.campusEvent }
+                .distinctUntilChanged()
+                .collect { enabled ->
+                    setState { copy(campusEventEnabled = enabled) }
+                    if (enabled) refreshCampusEvent()
+                }
         }
         // Clock ticker — refreshes greeting/eyebrow/countdown labels without
         // forcing KMP flows to re-emit. Mirrors iOS `runClockTicker`.

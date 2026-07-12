@@ -15,6 +15,9 @@ import dev.forcetower.melon.feature.auth.domain.usecase.CompletePasskeyLoginUseC
 import dev.forcetower.melon.feature.auth.domain.usecase.LoginUseCase
 import dev.forcetower.melon.feature.calendar.domain.usecase.ObserveActiveSemesterCodeUseCase
 import dev.forcetower.melon.feature.calendar.domain.usecase.ObserveCalendarEventsUseCase
+import dev.forcetower.melon.feature.campusevent.domain.usecase.ClearCampusEventUseCase
+import dev.forcetower.melon.feature.campusevent.domain.usecase.ObserveCampusEventUseCase
+import dev.forcetower.melon.feature.campusevent.domain.usecase.RefreshCampusEventUseCase
 import dev.forcetower.melon.feature.dashboard.domain.usecase.GetReadyOverviewUseCase
 import dev.forcetower.melon.feature.disciplines.domain.usecase.CalculateOverallScoreUseCase
 import dev.forcetower.melon.feature.disciplines.domain.usecase.ObserveDisciplineDetailUseCase
@@ -259,6 +262,15 @@ object UmbrellaBridgeModule {
         graph.getEnrollmentOffersUseCase
     @Provides fun provideSubmitEnrollmentUseCase(graph: UmbrellaGraph): SubmitEnrollmentUseCase =
         graph.submitEnrollmentUseCase
+
+    // Campus event — the featured-event snapshot behind the Hoje entrance
+    // card and the event hub, plus its silent refresh.
+    @Provides fun provideObserveCampusEventUseCase(graph: UmbrellaGraph): ObserveCampusEventUseCase =
+        graph.observeCampusEventUseCase
+    @Provides fun provideRefreshCampusEventUseCase(graph: UmbrellaGraph): RefreshCampusEventUseCase =
+        graph.refreshCampusEventUseCase
+    @Provides fun provideClearCampusEventUseCase(graph: UmbrellaGraph): ClearCampusEventUseCase =
+        graph.clearCampusEventUseCase
 
     // Calendário — academic-calendar events feed for the agenda + the
     // active-semester code that powers the header eyebrow. Mirrors iOS

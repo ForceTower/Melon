@@ -28,6 +28,7 @@ import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.foundation.fadeInOnAppear
 import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
 import dev.forcetower.unes.designsystem.foundation.scaleInOnAppear
+import dev.forcetower.unes.ui.feature.campusevent.CampusEventHomeCard
 import dev.forcetower.unes.ui.feature.overview.components.FinalStretchCard
 import dev.forcetower.unes.ui.feature.overview.components.HeroCard
 import dev.forcetower.unes.ui.feature.overview.components.MessagesPreview
@@ -55,6 +56,7 @@ internal fun OverviewScreen(
     onOpenMessages: () -> Unit = {},
     onOpenSchedule: () -> Unit = {},
     onOpenProfile: () -> Unit = {},
+    onOpenCampusEvent: () -> Unit = {},
 ) {
     val vm: OverviewViewModel = hiltViewModel()
     val state by vm.state.collectAsStateWithLifecycle()
@@ -98,6 +100,18 @@ internal fun OverviewScreen(
             modifier = Modifier.fadeInOnAppear(delayMs = 50),
         )
         Spacer(Modifier.height(18.dp))
+
+        // Featured campus event — sits above the class hero while the server
+        // features one and the `enable_campus_event` flag is on, like iOS.
+        val campusEvent = state.campusEvent
+        if (campusEvent != null) {
+            CampusEventHomeCard(
+                event = campusEvent,
+                onOpen = onOpenCampusEvent,
+                modifier = Modifier.scaleInOnAppear(delayMs = 60, fromScale = 0.97f),
+            )
+            Spacer(Modifier.height(22.dp))
+        }
 
         if (hero != null) {
             HeroCard(

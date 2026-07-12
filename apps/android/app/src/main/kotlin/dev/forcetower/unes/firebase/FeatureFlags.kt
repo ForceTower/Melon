@@ -26,6 +26,7 @@ internal data class FeatureGates(
     val academicHistory: Boolean = false,
     val paradoxo: Boolean = false,
     val materials: Boolean = false,
+    val campusEvent: Boolean = false,
     val documentCaptchaSiteKey: String = "",
     val documentCaptchaBaseUrl: String = "",
 )
@@ -82,6 +83,7 @@ internal class FeatureFlags @Inject constructor() {
                 academicHistory = true,
                 paradoxo = true,
                 materials = true,
+                campusEvent = true,
                 documentCaptchaSiteKey = captchaSiteKey,
                 documentCaptchaBaseUrl = captchaBaseUrl,
             )
@@ -92,6 +94,7 @@ internal class FeatureFlags @Inject constructor() {
             academicHistory = remoteConfig.getBoolean(KEY_ACADEMIC_HISTORY),
             paradoxo = remoteConfig.getBoolean(KEY_PARADOXO),
             materials = remoteConfig.getBoolean(KEY_MATERIALS),
+            campusEvent = remoteConfig.getBoolean(KEY_CAMPUS_EVENT),
             documentCaptchaSiteKey = captchaSiteKey,
             documentCaptchaBaseUrl = captchaBaseUrl,
         )
@@ -103,6 +106,7 @@ internal class FeatureFlags @Inject constructor() {
         const val KEY_ACADEMIC_HISTORY = "enable_academic_history"
         const val KEY_PARADOXO = "enable_paradoxo"
         const val KEY_MATERIALS = "enable_materials"
+        const val KEY_CAMPUS_EVENT = "enable_campus_event"
         const val KEY_DOCUMENT_CAPTCHA_SITE_KEY = "document_captcha_site_key"
         const val KEY_DOCUMENT_CAPTCHA_BASE_URL = "document_captcha_base_url"
     }

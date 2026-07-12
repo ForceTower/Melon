@@ -41,6 +41,16 @@ internal sealed interface ConnectedRoute : NavKey {
     // carries a `ParadoxoExploreKind` name (rankings ride on the overview
     // held by the shared ViewModel).
     @Serializable data object Paradoxo : ConnectedRoute
+    // Campus event (SIECOMP-style weeks) — the hub is pushed from the Hoje
+    // entrance card; the detail routes are pushed from the hub. No payloads:
+    // every screen reads the shared activity-scoped `CampusEventViewModel`,
+    // and the activity detail carries only the id it renders.
+    @Serializable data object CampusEvent : ConnectedRoute
+    @Serializable data class CampusEventActivity(val id: String) : ConnectedRoute
+    @Serializable data object CampusEventSpeakers : ConnectedRoute
+    @Serializable data object CampusEventWorkshops : ConnectedRoute
+    @Serializable data object CampusEventVenues : ConnectedRoute
+    @Serializable data object CampusEventOrganizations : ConnectedRoute
     @Serializable data class ParadoxoDiscipline(val id: String, val name: String? = null) : ConnectedRoute
     @Serializable data class ParadoxoTeacher(val id: String, val name: String? = null) : ConnectedRoute
     @Serializable data class ParadoxoExplore(val kind: String) : ConnectedRoute

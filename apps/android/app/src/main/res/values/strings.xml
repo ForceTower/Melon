@@ -1212,6 +1212,135 @@
     <string name="paradoxo_teacher_disciplines_note">Média nas matérias que leciona</string>
     <!-- endregion -->
 
+    <!-- region Campus event · Home card -->
+    <string name="campus_event_card_upcoming">Vem aí</string>
+    <string name="campus_event_card_starts_in">Começa em</string>
+    <string name="campus_event_card_day">Dia</string>
+    <string name="campus_event_card_day_of_count">/%1$d</string>
+    <string name="campus_event_card_ended">Encerrado</string>
+    <string name="campus_event_card_open">Abrir</string>
+    <string name="campus_event_card_follow">Acompanhar</string>
+    <string name="campus_event_card_relive">Reviver</string>
+    <string name="campus_event_card_countdown_format">%1$dd %2$sh</string>
+    <!-- endregion -->
+
+    <!-- region Campus event · Phases -->
+    <string name="campus_event_phase_upcoming">Contagem regressiva</string>
+    <string name="campus_event_phase_live">Acontecendo agora</string>
+    <string name="campus_event_phase_ended">Evento encerrado</string>
+    <plurals name="campus_event_phase_live_count">
+        <item quantity="one">%1$d atividade acontecendo agora</item>
+        <item quantity="other">%1$d atividades acontecendo agora</item>
+    </plurals>
+    <!-- endregion -->
+
+    <!-- region Campus event · Countdown -->
+    <string name="campus_event_countdown_days">dias</string>
+    <string name="campus_event_countdown_hours">horas</string>
+    <string name="campus_event_countdown_minutes">min</string>
+    <string name="campus_event_countdown_seconds">seg</string>
+    <!-- endregion -->
+
+    <!-- region Campus event · Categories -->
+    <string name="campus_event_category_quest">Quest</string>
+    <string name="campus_event_category_workshop">Oficina</string>
+    <string name="campus_event_category_lecture">Palestra</string>
+    <string name="campus_event_category_presentation">Apresentação</string>
+    <string name="campus_event_category_dynamic">Dinâmica</string>
+    <string name="campus_event_category_other">Atividade</string>
+    <!-- endregion -->
+
+    <!-- region Campus event · Audience filter -->
+    <string name="campus_event_filter_everyone">Todos</string>
+    <string name="campus_event_filter_freshmen">Calouros</string>
+    <string name="campus_event_filter_veterans">Veteranos</string>
+    <!-- endregion -->
+
+    <!-- region Campus event · Hub -->
+    <string name="campus_event_back_label">Voltar</string>
+    <string name="campus_event_hub_schedule">Cronograma</string>
+    <string name="campus_event_hub_schedule_note">Toque num dia para ver as atividades</string>
+    <string name="campus_event_hub_today">hoje</string>
+    <string name="campus_event_hub_now">Agora</string>
+    <string name="campus_event_hub_next">A seguir</string>
+    <string name="campus_event_hub_opening">Abertura</string>
+    <string name="campus_event_hub_empty_day">Nenhuma atividade para este filtro.</string>
+    <plurals name="campus_event_hub_activity_count">
+        <item quantity="one">%1$d atividade</item>
+        <item quantity="other">%1$d atividades</item>
+    </plurals>
+    <string name="campus_event_hub_ended_title">Foi incrível!</string>
+    <string name="campus_event_hub_ended_body">Obrigado por construir este evento com a gente.</string>
+    <string name="campus_event_hub_stat_activities">atividades</string>
+    <string name="campus_event_hub_stat_speakers">convidados</string>
+    <string name="campus_event_hub_stat_days">dias</string>
+    <string name="campus_event_hub_quick_speakers">Convidados</string>
+    <plurals name="campus_event_hub_quick_speakers_count">
+        <item quantity="one">%1$d convidado</item>
+        <item quantity="other">%1$d convidados</item>
+    </plurals>
+    <string name="campus_event_hub_quick_workshops">Oficinas</string>
+    <plurals name="campus_event_hub_quick_workshops_count">
+        <item quantity="one">%1$d oficina</item>
+        <item quantity="other">%1$d oficinas</item>
+    </plurals>
+    <string name="campus_event_hub_quick_venues">Locais</string>
+    <plurals name="campus_event_hub_quick_venues_count">
+        <item quantity="one">%1$d espaço</item>
+        <item quantity="other">%1$d espaços</item>
+    </plurals>
+    <string name="campus_event_hub_quick_organizations">Entidades</string>
+    <plurals name="campus_event_hub_quick_organizations_count">
+        <item quantity="one">%1$d coletivo</item>
+        <item quantity="other">%1$d coletivos</item>
+    </plurals>
+    <string name="campus_event_day_of">Dia %1$d de %2$d</string>
+    <string name="campus_event_row_done">Concluída</string>
+    <!-- endregion -->
+
+    <!-- region Campus event · Activity detail -->
+    <string name="campus_event_detail_time">Horário</string>
+    <string name="campus_event_detail_venue">Local</string>
+    <string name="campus_event_detail_where">Onde acontece</string>
+    <string name="campus_event_detail_where_hint">Ver os locais do evento</string>
+    <string name="campus_event_detail_signup">Requer inscrição prévia — vagas limitadas.</string>
+    <string name="campus_event_detail_speakers_one">Responsável</string>
+    <string name="campus_event_detail_speakers_many">Responsáveis</string>
+    <string name="campus_event_detail_speaker_fallback">Convidado(a) · entidade</string>
+    <!-- endregion -->
+
+    <!-- region Campus event · Detail screens -->
+    <string name="campus_event_speakers_title">Convidados</string>
+    <string name="campus_event_speakers_subtitle">Docentes, egressos e profissionais que compartilham o evento com você.</string>
+    <string name="campus_event_workshops_title">Oficinas</string>
+    <string name="campus_event_workshops_subtitle">Mão na massa — teoria e prática ao longo do evento.</string>
+    <string name="campus_event_workshops_everyone">Para todo mundo</string>
+    <string name="campus_event_workshops_freshmen">Para calouros</string>
+    <string name="campus_event_workshops_veterans">Para veteranos</string>
+    <string name="campus_event_workshops_signup">Inscrição</string>
+    <plurals name="campus_event_workshops_signup_slots">
+        <item quantity="one">Inscrição · %1$d vaga</item>
+        <item quantity="other">Inscrição · %1$d vagas</item>
+    </plurals>
+    <string name="campus_event_workshops_all_in">Todos já inscritos</string>
+    <string name="campus_event_venues_title">Locais</string>
+    <string name="campus_event_venues_subtitle">Onde tudo acontece no campus.</string>
+    <string name="campus_event_venues_spaces">Espaços</string>
+    <string name="campus_event_organizations_title">Entidades</string>
+    <string name="campus_event_organizations_subtitle">Os coletivos que constroem a vida do curso — e te esperam de braços abertos.</string>
+    <!-- endregion -->
+
+    <!-- region Campus event · Welcome reveal -->
+    <string name="campus_event_welcome_greeting">Que bom te ver,</string>
+    <string name="campus_event_welcome_skip">Pular</string>
+    <string name="campus_event_welcome_starts_in">Começa em</string>
+    <string name="campus_event_welcome_happening">Está acontecendo</string>
+    <string name="campus_event_welcome_thanks">Obrigado por participar!</string>
+    <string name="campus_event_welcome_enter_upcoming">Explorar o evento</string>
+    <string name="campus_event_welcome_enter_live">Entrar</string>
+    <string name="campus_event_welcome_enter_ended">Ver o que rolou</string>
+    <!-- endregion -->
+
     <!-- region Widget · "Próxima aula" -->
     <string name="widget_next_class_title">Próxima aula</string>
     <string name="widget_next_class_description">A próxima aula do dia, com horário, sala e topo de prioridades.</string>
