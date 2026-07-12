@@ -46,12 +46,13 @@ private data class SyncStep(
 
 // Per-step durations mirror iOS `SYNC_STEPS` (apps/ios/.../SyncViewModel.swift).
 // Phase 1 can take a while for alumni users — generous budgets stage the wait
-// visibly rather than bailing.
+// visibly rather than bailing. The visible order follows the dc onboarding
+// spec (horário before turmas); every task runs concurrently regardless.
 private val SYNC_STEPS = listOf(
     SyncStep(key = "auth", minDurationMs = 1_200, maxDurationMs = 3_000),
     SyncStep(key = "profile", minDurationMs = 800, maxDurationMs = 4_000),
-    SyncStep(key = "classes", minDurationMs = 800, maxDurationMs = 30_000),
     SyncStep(key = "schedule", minDurationMs = 800, maxDurationMs = 30_000),
+    SyncStep(key = "classes", minDurationMs = 800, maxDurationMs = 30_000),
     SyncStep(key = "grades", minDurationMs = 800, maxDurationMs = 60_000),
     SyncStep(key = "msgs", minDurationMs = 800, maxDurationMs = 90_000),
 )

@@ -10,6 +10,7 @@ import androidx.navigation3.ui.NavDisplay
 import dev.forcetower.unes.R
 import dev.forcetower.unes.ui.feature.connected.ConnectedScreen
 import dev.forcetower.unes.ui.feature.foliorunner.FolioRunnerScreen
+import dev.forcetower.unes.ui.feature.onboarding.components.SystemBarIconsEffect
 import dev.forcetower.unes.ui.feature.onboarding.intro.IntroCarouselScreen
 import dev.forcetower.unes.ui.feature.onboarding.login.LoginScreen
 import dev.forcetower.unes.ui.feature.onboarding.ready.ReadyScreen
@@ -27,6 +28,13 @@ fun AppNavHost() {
         backStack.clear()
         backStack.add(route)
     }
+
+    // Splash/Welcome/Sync are always-dark — force light status-bar icons
+    // while one of them is on top, theme-following icons everywhere else.
+    val top = backStack.lastOrNull()
+    SystemBarIconsEffect(
+        darkChrome = top is AppRoute.Splash || top is AppRoute.Welcome || top is AppRoute.Sync,
+    )
 
     NavDisplay(
         backStack = backStack,

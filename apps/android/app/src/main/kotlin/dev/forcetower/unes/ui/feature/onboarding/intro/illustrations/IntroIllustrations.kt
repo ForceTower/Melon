@@ -1,12 +1,8 @@
 package dev.forcetower.unes.ui.feature.onboarding.intro.illustrations
 
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.annotation.StringRes
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -14,15 +10,18 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Forum
+import androidx.compose.material.icons.filled.Grade
+import androidx.compose.material.icons.filled.Schedule
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,257 +32,258 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.PathEffect
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.foundation.fadeInOnAppear
 import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
+import dev.forcetower.unes.designsystem.theme.MelonMotion
 import dev.forcetower.unes.designsystem.theme.melon
 import kotlinx.coroutines.delay
 
-private val Plum = Color(0xFF2D1B4E)
-private val Magenta = Color(0xFFB23A7A)
-private val Coral = Color(0xFFE85D4E)
-private val Amber = Color(0xFFF4A23C)
+// Slide illustrations for the intro carousel (dc `UNES Onboarding - Android`).
+// All mock content lives in strings.xml; colors come from the theme.
 
-private val IllustrationSize = 260.dp
+// ──────────────── 1 · Horário (mini timetable) ────────────────
 
-// ──────────────── Schedule (timetable) ────────────────
-
-private data class ClassBlock(
-    val col: Int,
-    val row: Int,
-    val height: Int,
-    val color: Color,
-    val label: String,
-    val room: Int,
-)
-
-private val SCHEDULE_BLOCKS = listOf(
-    ClassBlock(0, 0, 2, Coral, "ALGI", 124),
-    ClassBlock(1, 1, 1, Amber, "CALC", 109),
-    ClassBlock(2, 0, 1, Magenta, "LPOO", 132),
-    ClassBlock(2, 2, 2, Plum, "FIS2", 117),
-    ClassBlock(0, 3, 1, Amber, "PROJ", 102),
-)
+private val ScheduleRowHeight = 50.dp
+private val ScheduleGap = 6.dp
 
 @Composable
-fun ScheduleIllustration() {
-    val gridLine = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.1f)
+internal fun ScheduleIllustration() {
+    val ink4 = MaterialTheme.colorScheme.outlineVariant
+    val brand = MaterialTheme.melon.brand
 
-    val transition = rememberInfiniteTransition(label = "now-line")
-    val dashOffset by transition.animateFloat(
-        initialValue = 0f,
-        targetValue = 10f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(1000, easing = LinearEasing),
-            repeatMode = RepeatMode.Restart,
-        ),
-        label = "dash",
-    )
-    val pulse by transition.animateFloat(
-        initialValue = 3f,
-        targetValue = 5f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(800, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse,
-        ),
-        label = "pulse",
-    )
-
-    Box(modifier = Modifier.size(IllustrationSize)) {
-        Canvas(Modifier.fillMaxSize()) {
-            val left = 20.dp.toPx()
-            val top = 30.dp.toPx()
-            val cellW = 73.dp.toPx()
-            val rowH = 40.dp.toPx()
-
-            // grid lines
-            for (i in 0..5) {
-                drawLine(
-                    color = gridLine,
-                    start = Offset(left, top + i * rowH),
-                    end = Offset(left + 3 * cellW, top + i * rowH),
-                    strokeWidth = 1f,
+    Column(Modifier.width(250.dp)) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(18.dp),
+            horizontalArrangement = Arrangement.spacedBy(ScheduleGap),
+        ) {
+            Spacer(Modifier.width(34.dp))
+            listOf(
+                R.string.onboarding_illu_sched_day_1,
+                R.string.onboarding_illu_sched_day_2,
+                R.string.onboarding_illu_sched_day_3,
+            ).forEach { day ->
+                Text(
+                    text = stringResource(day),
+                    style = MaterialTheme.typography.labelSmall.copy(
+                        fontSize = 9.sp,
+                        fontWeight = FontWeight.Bold,
+                        letterSpacing = 0.9.sp,
+                    ),
+                    color = ink4,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.weight(1f),
                 )
             }
-            for (i in 0..3) {
-                drawLine(
-                    color = gridLine,
-                    start = Offset(left + i * cellW, top),
-                    end = Offset(left + i * cellW, top + 5 * rowH),
-                    strokeWidth = 1f,
-                )
-            }
-
-            // current-time line — dashed, slowly drifting
-            drawLine(
-                color = Coral,
-                start = Offset(left, top + 2 * rowH),
-                end = Offset(left + 3 * cellW, top + 2 * rowH),
-                strokeWidth = 1.5f,
-                pathEffect = PathEffect.dashPathEffect(floatArrayOf(3f, 2f), phase = dashOffset),
-            )
-            // pulse dot
-            drawCircle(
-                color = Coral,
-                radius = pulse.dp.toPx(),
-                center = Offset(left, top + 2 * rowH),
-            )
         }
-
-        // Class blocks reveal one-by-one. Each block is absolutely positioned
-        // via `offset(...)` so the modifier-based fade-up doesn't push siblings
-        // around — the parent Box always reserves the same area.
-        // `fadeUpOnAppear` sits before the visual modifiers so the entire
-        // colored block fades + slides, not just the inner labels.
-        SCHEDULE_BLOCKS.forEachIndexed { i, block ->
-            Box(
+        Row(horizontalArrangement = Arrangement.spacedBy(ScheduleGap)) {
+            Column(
                 modifier = Modifier
-                    .offset(
-                        x = (21 + block.col * 73).dp,
-                        y = (31 + block.row * 40).dp,
-                    )
-                    .fadeUpOnAppear(delayMs = 100 + i * 120, durationMs = 500)
-                    .size(width = 71.dp, height = (block.height * 40 - 2).dp)
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(block.color)
-                    .padding(8.dp),
+                    .width(34.dp)
+                    .height(ScheduleRowHeight * 4 + ScheduleGap * 3)
+                    .padding(end = 4.dp),
+                verticalArrangement = Arrangement.SpaceBetween,
+                horizontalAlignment = Alignment.End,
             ) {
-                Column {
+                listOf(
+                    R.string.onboarding_illu_sched_hour_1,
+                    R.string.onboarding_illu_sched_hour_2,
+                    R.string.onboarding_illu_sched_hour_3,
+                    R.string.onboarding_illu_sched_hour_4,
+                ).forEach { hour ->
                     Text(
-                        text = block.label,
+                        text = stringResource(hour),
                         style = MaterialTheme.typography.labelSmall.copy(
                             fontSize = 9.sp,
                             fontWeight = FontWeight.SemiBold,
-                            letterSpacing = 0.5.sp,
-                            fontFamily = FontFamily.Monospace,
                         ),
-                        color = Color(0xFFFBF7F2),
-                    )
-                    Spacer(Modifier.height(2.dp))
-                    Text(
-                        text = "sala ${block.room}",
-                        style = MaterialTheme.typography.labelSmall.copy(
-                            fontSize = 7.sp,
-                            fontFamily = FontFamily.Monospace,
-                        ),
-                        color = Color(0xFFFBF7F2).copy(alpha = 0.8f),
+                        color = ink4,
                     )
                 }
+            }
+            // seg
+            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(ScheduleGap)) {
+                ScheduleBlock(
+                    color = brand.coral,
+                    codeRes = R.string.onboarding_illu_sched_code_algi,
+                    roomRes = R.string.onboarding_illu_sched_room_214,
+                    height = ScheduleRowHeight * 2 + ScheduleGap,
+                    delayMs = 100,
+                )
+                Spacer(Modifier.height(ScheduleRowHeight))
+                ScheduleBlock(
+                    color = brand.amber,
+                    codeRes = R.string.onboarding_illu_sched_code_proj,
+                    roomRes = null,
+                    height = ScheduleRowHeight,
+                    delayMs = 580,
+                )
+            }
+            // ter
+            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(ScheduleGap)) {
+                Spacer(Modifier.height(ScheduleRowHeight))
+                ScheduleBlock(
+                    color = brand.amber,
+                    codeRes = R.string.onboarding_illu_sched_code_calc,
+                    roomRes = null,
+                    height = ScheduleRowHeight,
+                    delayMs = 340,
+                )
+            }
+            // qua
+            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(ScheduleGap)) {
+                ScheduleBlock(
+                    color = brand.magenta,
+                    codeRes = R.string.onboarding_illu_sched_code_lpoo,
+                    roomRes = null,
+                    height = ScheduleRowHeight,
+                    delayMs = 220,
+                )
+                Spacer(Modifier.height(ScheduleRowHeight))
+                ScheduleBlock(
+                    color = brand.plum,
+                    codeRes = R.string.onboarding_illu_sched_code_fis2,
+                    roomRes = R.string.onboarding_illu_sched_room_312,
+                    height = ScheduleRowHeight * 2 + ScheduleGap,
+                    delayMs = 460,
+                )
             }
         }
     }
 }
 
-// ──────────────── Grades (rising bars) ────────────────
+@Composable
+private fun ScheduleBlock(
+    color: Color,
+    @StringRes codeRes: Int,
+    @StringRes roomRes: Int?,
+    height: Dp,
+    delayMs: Int,
+) {
+    val onHero = MaterialTheme.melon.fixed.onHero
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .fadeUpOnAppear(delayMs = delayMs, durationMs = 500)
+            .shadow(4.dp, RoundedCornerShape(11.dp), spotColor = color)
+            .height(height)
+            .clip(RoundedCornerShape(11.dp))
+            .background(color)
+            .padding(9.dp),
+    ) {
+        Text(
+            text = stringResource(codeRes),
+            style = MaterialTheme.typography.labelMedium.copy(
+                fontSize = 11.sp,
+                fontWeight = FontWeight.ExtraBold,
+            ),
+            color = onHero,
+        )
+        if (roomRes != null) {
+            Spacer(Modifier.height(3.dp))
+            Text(
+                text = stringResource(roomRes),
+                style = MaterialTheme.typography.labelSmall.copy(fontSize = 9.sp),
+                color = onHero.copy(alpha = 0.85f),
+            )
+        }
+    }
+}
 
-private data class Bar(val targetH: Int, val color: Color, val label: String)
+// ──────────────── 2 · Notas (coefficient + bars) ────────────────
 
-private val GRADE_BARS = listOf(
-    Bar(55, Amber, "7.5"),
-    Bar(72, Coral, "8.8"),
-    Bar(88, Magenta, "9.4"),
-    Bar(65, Amber, "8.1"),
-    Bar(80, Coral, "9.0"),
-)
+private data class GradeBar(val labelRes: Int, val height: Dp)
 
 @Composable
-fun GradesIllustration() {
+internal fun GradesIllustration() {
     val ink = MaterialTheme.colorScheme.onBackground
     val ink3 = MaterialTheme.colorScheme.onSurfaceVariant
     val accent = MaterialTheme.colorScheme.primary
+    val brand = MaterialTheme.melon.brand
+    val bars = listOf(
+        GradeBar(R.string.onboarding_illu_grades_bar_1, 58.dp) to brand.amber,
+        GradeBar(R.string.onboarding_illu_grades_bar_2, 76.dp) to brand.coral,
+        GradeBar(R.string.onboarding_illu_grades_bar_3, 92.dp) to brand.magenta,
+        GradeBar(R.string.onboarding_illu_grades_bar_4, 66.dp) to brand.amber,
+        GradeBar(R.string.onboarding_illu_grades_bar_5, 84.dp) to brand.coral,
+    )
 
-    Column(
-        modifier = Modifier
-            .size(IllustrationSize)
-            .padding(top = 16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Row(
-            verticalAlignment = Alignment.Bottom,
-            modifier = Modifier.fadeUpOnAppear(delayMs = 100, durationMs = 500),
-        ) {
-            Text(
-                text = "8",
-                style = MaterialTheme.typography.displayLarge.copy(
-                    fontSize = 92.sp,
-                    lineHeight = 92.sp,
-                    letterSpacing = (-3.7).sp,
-                ),
-                color = ink,
-            )
-            Text(
-                text = ",",
-                style = MaterialTheme.typography.displayLarge.copy(
-                    fontSize = 92.sp,
-                    lineHeight = 92.sp,
-                ),
-                color = accent,
-            )
-            Text(
-                text = "5",
-                style = MaterialTheme.typography.displayLarge.copy(
-                    fontSize = 92.sp,
-                    lineHeight = 92.sp,
-                    letterSpacing = (-3.7).sp,
-                ),
-                color = ink,
-            )
-            Text(
-                text = "/10",
-                style = MaterialTheme.typography.headlineSmall.copy(
-                    fontSize = 28.sp,
-                    fontStyle = FontStyle.Italic,
-                ),
-                color = ink3,
-                modifier = Modifier.padding(start = 2.dp, bottom = 12.dp),
-            )
-        }
-
+    Column(Modifier.width(250.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        val value = stringResource(R.string.onboarding_illu_grades_value)
+        val scale = stringResource(R.string.onboarding_illu_grades_scale)
         Text(
-            text = "COEFICIENTE · 2026.1",
+            text = buildAnnotatedString {
+                value.forEach { char ->
+                    if (char == ',') {
+                        withStyle(SpanStyle(color = accent)) { append(char) }
+                    } else {
+                        append(char)
+                    }
+                }
+                withStyle(
+                    SpanStyle(
+                        fontSize = 26.sp,
+                        color = ink3,
+                        fontWeight = FontWeight.Bold,
+                    ),
+                ) { append(scale) }
+            },
+            style = MaterialTheme.typography.displayLarge.copy(
+                fontSize = 88.sp,
+                lineHeight = 88.sp,
+                letterSpacing = (-3.5).sp,
+                fontWeight = FontWeight.ExtraBold,
+            ),
+            color = ink,
+            modifier = Modifier.fadeUpOnAppear(delayMs = 100),
+        )
+        Spacer(Modifier.height(6.dp))
+        Text(
+            text = stringResource(R.string.onboarding_illu_grades_caption).uppercase(),
             style = MaterialTheme.typography.labelSmall.copy(
                 fontSize = 10.sp,
+                fontWeight = FontWeight.Bold,
                 letterSpacing = 2.sp,
-                fontFamily = FontFamily.Monospace,
             ),
             color = ink3,
-            modifier = Modifier
-                .padding(top = 4.dp)
-                .fadeInOnAppear(delayMs = 300, durationMs = 400),
+            modifier = Modifier.fadeInOnAppear(delayMs = 300, durationMs = 800),
         )
-
+        Spacer(Modifier.height(28.dp))
         Row(
-            modifier = Modifier
-                .padding(top = 28.dp)
-                .height(108.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.Bottom,
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            modifier = Modifier.height(120.dp),
         ) {
-            GRADE_BARS.forEachIndexed { i, bar ->
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(6.dp),
-                ) {
+            bars.forEachIndexed { index, (bar, color) ->
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
-                        text = bar.label,
+                        text = stringResource(bar.labelRes),
                         style = MaterialTheme.typography.labelSmall.copy(
-                            fontSize = 9.sp,
-                            fontFamily = FontFamily.Monospace,
+                            fontSize = 10.sp,
+                            fontWeight = FontWeight.Bold,
                         ),
                         color = ink3,
-                        modifier = Modifier.fadeInOnAppear(delayMs = 600 + i * 100, durationMs = 400),
+                        modifier = Modifier.fadeInOnAppear(delayMs = 700 + index * 100, durationMs = 400),
                     )
-                    GrowingBar(targetHeight = bar.targetH.dp, color = bar.color, delayMs = 300 + i * 80)
+                    Spacer(Modifier.height(7.dp))
+                    GrowingBar(color = color, targetHeight = bar.height, delayMs = 340 + index * 80)
                 }
             }
         }
@@ -291,246 +291,287 @@ fun GradesIllustration() {
 }
 
 @Composable
-private fun GrowingBar(targetHeight: androidx.compose.ui.unit.Dp, color: Color, delayMs: Int) {
-    var triggered by remember { mutableStateOf(false) }
-    val height by androidx.compose.animation.core.animateDpAsState(
-        targetValue = if (triggered) targetHeight else 0.dp,
-        animationSpec = tween(700, easing = androidx.compose.animation.core.CubicBezierEasing(0.2f, 0.9f, 0.3f, 1.2f)),
-        label = "bar-grow",
-    )
+private fun GrowingBar(color: Color, targetHeight: Dp, delayMs: Int) {
+    var grown by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) {
         delay(delayMs.toLong())
-        triggered = true
+        grown = true
     }
+    val height by animateDpAsState(
+        targetValue = if (grown) targetHeight else 0.dp,
+        animationSpec = tween(700, easing = MelonMotion.PopEasing),
+        label = "bar-grow",
+    )
     Box(
         Modifier
-            .width(28.dp)
+            .width(26.dp)
             .height(height)
-            .clip(RoundedCornerShape(topStart = 6.dp, topEnd = 6.dp, bottomStart = 2.dp, bottomEnd = 2.dp))
+            .clip(RoundedCornerShape(topStart = 7.dp, topEnd = 7.dp, bottomStart = 3.dp, bottomEnd = 3.dp))
             .background(color),
     )
 }
 
-// ──────────────── Messages (notification cards) ────────────────
-
-private data class Msg(val from: String, val preview: String, val color: Color, val time: String, val unread: Boolean)
-
-private val MESSAGES = listOf(
-    Msg("Prof. Adriana", "Gabarito da P1 liberado", Magenta, "ag.", true),
-    Msg("Coordenação CC", "Matrícula em optativas", Coral, "09:14", false),
-    Msg("DCE UEFS", "Assembleia geral quinta…", Amber, "ont.", false),
-)
+// ──────────────── 3 · Recados (inbox cards) ────────────────
 
 @Composable
-fun MessagesIllustration() {
+internal fun MessagesIllustration() {
+    val brand = MaterialTheme.melon.brand
+    Column(Modifier.width(258.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        MessageCard(
+            avatarColor = brand.magenta,
+            nameRes = R.string.onboarding_illu_msg_1_name,
+            timeRes = R.string.onboarding_illu_msg_1_time,
+            previewRes = R.string.onboarding_illu_msg_1_preview,
+            rotation = -1.5f,
+            unread = true,
+            delayMs = 100,
+        )
+        MessageCard(
+            avatarColor = brand.coral,
+            nameRes = R.string.onboarding_illu_msg_2_name,
+            timeRes = R.string.onboarding_illu_msg_2_time,
+            previewRes = R.string.onboarding_illu_msg_2_preview,
+            rotation = 1.5f,
+            unread = false,
+            delayMs = 250,
+        )
+        MessageCard(
+            avatarColor = brand.amber,
+            nameRes = R.string.onboarding_illu_msg_3_name,
+            timeRes = R.string.onboarding_illu_msg_3_time,
+            previewRes = R.string.onboarding_illu_msg_3_preview,
+            rotation = -1f,
+            unread = false,
+            delayMs = 400,
+        )
+    }
+}
+
+@Composable
+private fun MessageCard(
+    avatarColor: Color,
+    @StringRes nameRes: Int,
+    @StringRes timeRes: Int,
+    @StringRes previewRes: Int,
+    rotation: Float,
+    unread: Boolean,
+    delayMs: Int,
+) {
     val ink = MaterialTheme.colorScheme.onBackground
     val ink3 = MaterialTheme.colorScheme.onSurfaceVariant
-    val surface = MaterialTheme.colorScheme.surface
-    val line = MaterialTheme.melon.surface.line
+    val ink4 = MaterialTheme.colorScheme.outlineVariant
     val accent = MaterialTheme.colorScheme.primary
+    val onHero = MaterialTheme.melon.fixed.onHero
+    val name = stringResource(nameRes)
 
-    Column(
+    Row(
         modifier = Modifier
-            .size(IllustrationSize)
-            .padding(top = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(10.dp),
+            .fillMaxWidth()
+            .rotate(rotation)
+            .fadeUpOnAppear(delayMs = delayMs, durationMs = 600, fromOffset = 18.dp)
+            .shadow(6.dp, RoundedCornerShape(18.dp))
+            .clip(RoundedCornerShape(18.dp))
+            .background(MaterialTheme.melon.surface.card)
+            .border(1.dp, MaterialTheme.melon.surface.line, RoundedCornerShape(18.dp))
+            .padding(horizontal = 14.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        MESSAGES.forEachIndexed { i, m ->
-            val tilt = if (i % 2 == 0) -1.5f else 1.5f
+        Box(
+            Modifier
+                .size(40.dp)
+                .clip(RoundedCornerShape(12.dp))
+                .background(avatarColor),
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(
+                text = name.first().uppercase(),
+                style = MaterialTheme.typography.titleMedium.copy(
+                    fontSize = 17.sp,
+                    fontWeight = FontWeight.Bold,
+                ),
+                color = onHero,
+            )
+        }
+        Column(Modifier.weight(1f)) {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fadeUpOnAppear(delayMs = 100 + i * 150, durationMs = 500)
-                    .rotate(tilt)
-                    .clip(RoundedCornerShape(18.dp))
-                    .background(surface)
-                    .border(1.dp, line, RoundedCornerShape(18.dp))
-                    .padding(horizontal = 14.dp, vertical = 12.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Bottom,
             ) {
-                Box(
-                    Modifier
-                        .size(40.dp)
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(m.color),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text(
-                        text = m.from.first().toString(),
-                        style = MaterialTheme.typography.headlineSmall.copy(fontSize = 18.sp),
-                        color = Color(0xFFFBF7F2),
-                    )
-                }
-                Column(modifier = Modifier.weight(1f)) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Text(
-                            text = m.from,
-                            style = MaterialTheme.typography.labelLarge.copy(
-                                fontSize = 13.sp,
-                                fontWeight = FontWeight.SemiBold,
-                            ),
-                            color = ink,
-                        )
-                        Text(
-                            text = m.time,
-                            style = MaterialTheme.typography.labelSmall.copy(
-                                fontSize = 10.sp,
-                                fontFamily = FontFamily.Monospace,
-                            ),
-                            color = ink3,
-                        )
-                    }
-                    Text(
-                        text = m.preview,
-                        style = MaterialTheme.typography.bodyMedium.copy(fontSize = 13.sp),
-                        color = ink3,
-                        maxLines = 1,
-                    )
-                }
-                if (m.unread) {
-                    PulsingDot(color = accent)
-                }
+                Text(
+                    text = name,
+                    style = MaterialTheme.typography.labelLarge.copy(
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Bold,
+                    ),
+                    color = ink,
+                )
+                Text(
+                    text = stringResource(timeRes),
+                    style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp),
+                    color = ink4,
+                )
             }
+            Spacer(Modifier.height(2.dp))
+            Text(
+                text = stringResource(previewRes),
+                style = MaterialTheme.typography.bodyMedium.copy(fontSize = 13.sp),
+                color = ink3,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
+        if (unread) {
+            Box(
+                Modifier
+                    .size(8.dp)
+                    .clip(CircleShape)
+                    .background(accent),
+            )
         }
     }
 }
 
-@Composable
-private fun PulsingDot(color: Color) {
-    val transition = rememberInfiniteTransition(label = "pulse-dot")
-    val alpha by transition.animateFloat(
-        initialValue = 1f,
-        targetValue = 0.6f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(1000, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse,
-        ),
-        label = "alpha",
-    )
-    Box(
-        Modifier
-            .size(8.dp)
-            .alpha(alpha)
-            .clip(CircleShape)
-            .background(color),
-    )
-}
-
-// ──────────────── Notifications (push stack) ────────────────
-
-private data class Push(val app: String, val title: String, val body: String, val chip: Color)
-
-private val PUSHES = listOf(
-    Push("Nota publicada", "CÁLCULO II · P2", "8,7 lançado por Prof. Ribamar", Amber),
-    Push("Novo recado", "Prof. Adriana Souza", "Gabarito da P1 está disponível no mural.", Magenta),
-    Push("Mudança de horário", "ALGI II · quinta", "Remanejada: sala 204 → sala 312", Coral),
-    Push("Material novo", "FÍSICA II", "Lista de exercícios · cap. 7", Plum),
-)
+// ──────────────── 4 · Notificações (lockscreen stack) ────────────────
 
 @Composable
-fun NotificationsIllustration() {
+internal fun NotificationsIllustration() {
     val ink = MaterialTheme.colorScheme.onBackground
     val ink3 = MaterialTheme.colorScheme.onSurfaceVariant
-    val surface = MaterialTheme.colorScheme.surface
-    val line = MaterialTheme.melon.surface.line
+    val brand = MaterialTheme.melon.brand
 
-    Column(
-        modifier = Modifier.width(IllustrationSize).padding(top = 4.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
+    Column(Modifier.width(258.dp), horizontalAlignment = Alignment.CenterHorizontally) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fadeInOnAppear(delayMs = 50, durationMs = 400),
+            modifier = Modifier.fadeInOnAppear(delayMs = 50, durationMs = 500),
         ) {
+            val clock = stringResource(R.string.onboarding_illu_notif_clock)
             Text(
-                text = "9:14",
-                style = MaterialTheme.typography.headlineSmall.copy(
-                    fontSize = 22.sp,
-                    letterSpacing = (-0.5).sp,
+                text = buildAnnotatedString {
+                    clock.forEach { char ->
+                        if (char == ':') {
+                            withStyle(SpanStyle(color = ink.copy(alpha = 0.4f))) { append(char) }
+                        } else {
+                            append(char)
+                        }
+                    }
+                },
+                style = MaterialTheme.typography.headlineLarge.copy(
+                    fontSize = 34.sp,
+                    lineHeight = 34.sp,
+                    letterSpacing = (-1).sp,
+                    fontWeight = FontWeight.ExtraBold,
                 ),
                 color = ink,
             )
+            Spacer(Modifier.height(5.dp))
             Text(
-                text = "QUI · 23 ABR",
+                text = stringResource(R.string.onboarding_illu_notif_date).uppercase(),
                 style = MaterialTheme.typography.labelSmall.copy(
-                    fontSize = 8.sp,
-                    letterSpacing = 1.6.sp,
-                    fontFamily = FontFamily.Monospace,
+                    fontSize = 9.sp,
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = 1.8.sp,
                 ),
                 color = ink3,
-                modifier = Modifier.padding(top = 3.dp),
             )
         }
+        Spacer(Modifier.height(16.dp))
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            NotificationCard(
+                icon = Icons.Filled.Grade,
+                iconTint = brand.amber,
+                categoryRes = R.string.onboarding_illu_notif_1_category,
+                titleRes = R.string.onboarding_illu_notif_1_title,
+                bodyRes = R.string.onboarding_illu_notif_1_body,
+                delayMs = 150,
+            )
+            NotificationCard(
+                icon = Icons.Filled.Forum,
+                iconTint = brand.magenta,
+                categoryRes = R.string.onboarding_illu_notif_2_category,
+                titleRes = R.string.onboarding_illu_notif_2_title,
+                bodyRes = R.string.onboarding_illu_notif_2_body,
+                delayMs = 280,
+            )
+            NotificationCard(
+                icon = Icons.Filled.Schedule,
+                iconTint = brand.coral,
+                categoryRes = R.string.onboarding_illu_notif_3_category,
+                titleRes = R.string.onboarding_illu_notif_3_title,
+                bodyRes = R.string.onboarding_illu_notif_3_body,
+                delayMs = 410,
+            )
+        }
+    }
+}
 
-        Spacer(Modifier.height(14.dp))
+@Composable
+private fun NotificationCard(
+    icon: ImageVector,
+    iconTint: Color,
+    @StringRes categoryRes: Int,
+    @StringRes titleRes: Int,
+    @StringRes bodyRes: Int,
+    delayMs: Int,
+) {
+    val ink = MaterialTheme.colorScheme.onBackground
+    val ink3 = MaterialTheme.colorScheme.onSurfaceVariant
+    val onHero = MaterialTheme.melon.fixed.onHero
 
-        Column(verticalArrangement = Arrangement.spacedBy(7.dp), modifier = Modifier.fillMaxWidth()) {
-            PUSHES.forEachIndexed { i, p ->
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fadeUpOnAppear(delayMs = 150 + i * 110, durationMs = 550, fromOffset = 18.dp)
-                        .clip(RoundedCornerShape(14.dp))
-                        .background(surface)
-                        .border(1.dp, line, RoundedCornerShape(14.dp))
-                        .padding(horizontal = 11.dp, vertical = 9.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
-                ) {
-                    Box(
-                        Modifier
-                            .size(28.dp)
-                            .clip(RoundedCornerShape(7.dp))
-                            .background(p.chip),
-                    )
-                    Column(modifier = Modifier.weight(1f)) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Text(
-                                text = p.app.uppercase(),
-                                style = MaterialTheme.typography.labelSmall.copy(
-                                    fontSize = 8.5.sp,
-                                    letterSpacing = 1.2.sp,
-                                    fontFamily = FontFamily.Monospace,
-                                ),
-                                color = ink3,
-                            )
-                            Text(
-                                text = "agora",
-                                style = MaterialTheme.typography.labelSmall.copy(
-                                    fontSize = 8.5.sp,
-                                    fontFamily = FontFamily.Monospace,
-                                ),
-                                color = ink3,
-                            )
-                        }
-                        Text(
-                            text = p.title,
-                            style = MaterialTheme.typography.labelLarge.copy(
-                                fontSize = 12.5.sp,
-                                fontWeight = FontWeight.SemiBold,
-                            ),
-                            color = ink,
-                            maxLines = 1,
-                            modifier = Modifier.padding(top = 1.dp),
-                        )
-                        Text(
-                            text = p.body,
-                            style = MaterialTheme.typography.bodySmall.copy(fontSize = 11.5.sp),
-                            color = ink3,
-                            maxLines = 1,
-                        )
-                    }
-                }
-            }
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .fadeUpOnAppear(delayMs = delayMs, durationMs = 550, fromOffset = 18.dp)
+            .shadow(8.dp, RoundedCornerShape(15.dp))
+            .clip(RoundedCornerShape(15.dp))
+            .background(MaterialTheme.melon.surface.card)
+            .border(1.dp, MaterialTheme.melon.surface.line, RoundedCornerShape(15.dp))
+            .padding(horizontal = 11.dp, vertical = 9.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+    ) {
+        Box(
+            Modifier
+                .size(30.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .background(iconTint),
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = onHero,
+                modifier = Modifier.size(18.dp),
+            )
+        }
+        Column(Modifier.weight(1f)) {
+            Text(
+                text = stringResource(categoryRes).uppercase(),
+                style = MaterialTheme.typography.labelSmall.copy(
+                    fontSize = 8.5.sp,
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = 1.sp,
+                ),
+                color = ink3,
+            )
+            Spacer(Modifier.height(1.dp))
+            Text(
+                text = stringResource(titleRes),
+                style = MaterialTheme.typography.labelLarge.copy(
+                    fontSize = 12.5.sp,
+                    fontWeight = FontWeight.Bold,
+                ),
+                color = ink,
+            )
+            Spacer(Modifier.height(1.dp))
+            Text(
+                text = stringResource(bodyRes),
+                style = MaterialTheme.typography.bodySmall.copy(fontSize = 11.5.sp),
+                color = ink3,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
         }
     }
 }

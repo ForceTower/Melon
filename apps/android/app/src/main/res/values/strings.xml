@@ -4,6 +4,7 @@
 
     <!-- region Onboarding · Splash -->
     <string name="onboarding_splash_wordmark">unes</string>
+    <string name="onboarding_splash_icon_letter" translatable="false">u</string>
     <string name="onboarding_splash_caption">Universidade · Notas · Semestre</string>
     <string name="onboarding_splash_credit_prefix">para</string>
     <string name="onboarding_splash_credit_university">UEFS</string>
@@ -11,11 +12,11 @@
     <!-- endregion -->
 
     <!-- region Onboarding · Welcome -->
-    <string name="onboarding_welcome_eyebrow">◦ Boas vindas ao UNES</string>
+    <string name="onboarding_welcome_eyebrow">Boas vindas ao UNES</string>
     <string name="onboarding_welcome_headline_top">Seu semestre,</string>
     <string name="onboarding_welcome_headline_accent">num só</string>
     <string name="onboarding_welcome_headline_bottom">lugar.</string>
-    <string name="onboarding_welcome_body">Horários, notas, recados da coordenação e turmas da UEFS — tudo conectado à sua matrícula.</string>
+    <string name="onboarding_welcome_body">Horários, notas, recados da coordenação e turmas da UEFS. Tudo conectado à sua matrícula.</string>
     <string name="onboarding_welcome_primary_cta">Conhecer o app</string>
     <string name="onboarding_welcome_secondary_cta">Já tenho matrícula</string>
     <!-- endregion -->
@@ -28,34 +29,78 @@
     <string name="onboarding_intro_continue">Continuar</string>
     <string name="onboarding_intro_finish">Entrar na conta</string>
 
-    <string name="onboarding_intro_schedule_eyebrow">horário</string>
-    <string name="onboarding_intro_schedule_body">A grade da UEFS puxada direto do Portal. Aulas canceladas, salas trocadas e provas — tudo em tempo real.</string>
+    <string name="onboarding_intro_schedule_eyebrow">Horário</string>
+    <string name="onboarding_intro_schedule_body">A grade da UEFS puxada direto do SAGRES. Aulas canceladas, salas trocadas e provas em tempo real.</string>
     <string name="onboarding_intro_schedule_headline_top">Sua semana,</string>
     <string name="onboarding_intro_schedule_headline_accent">organizada.</string>
 
-    <string name="onboarding_intro_grades_eyebrow">notas</string>
-    <string name="onboarding_intro_grades_body">Notas parciais, coeficiente e histórico. Sem precisar entrar no Portal pelo navegador toda semana.</string>
-    <string name="onboarding_intro_grades_headline_top">"Acompanhe\nseu "</string>
+    <string name="onboarding_intro_grades_eyebrow">Notas</string>
+    <string name="onboarding_intro_grades_body">Notas parciais, coeficiente e histórico. Sem precisar entrar no SAGRES pelo navegador toda semana.</string>
+    <string name="onboarding_intro_grades_headline_top">Acompanhe seu</string>
     <string name="onboarding_intro_grades_headline_accent">desempenho.</string>
 
-    <string name="onboarding_intro_messages_eyebrow">recados</string>
-    <string name="onboarding_intro_messages_body">Recados de professores, coordenação e DCE — sem perder prazos nem assembleias importantes.</string>
-    <string name="onboarding_intro_messages_headline_top">"Tudo o que\nvocê "</string>
+    <string name="onboarding_intro_messages_eyebrow">Recados</string>
+    <string name="onboarding_intro_messages_body">Recados de professores, coordenação e DCE. Sem perder prazos nem assembleias importantes.</string>
+    <string name="onboarding_intro_messages_headline_top">Tudo o que você</string>
     <string name="onboarding_intro_messages_headline_accent">precisa saber.</string>
 
-    <string name="onboarding_intro_notifications_eyebrow">notificações</string>
-    <string name="onboarding_intro_notifications_body">Nota nova, recado de professor, material publicado, sala trocada — um toque no bolso antes de você abrir o app.</string>
-    <string name="onboarding_intro_notifications_headline_top">"Avisa no "</string>
-    <string name="onboarding_intro_notifications_headline_accent">instante</string>
-    <string name="onboarding_intro_notifications_headline_bottom">\nque acontece.</string>
+    <string name="onboarding_intro_notifications_eyebrow">Notificações</string>
+    <string name="onboarding_intro_notifications_body">Nota nova, recado de professor, material publicado, sala trocada. Um toque no bolso antes de você abrir o app.</string>
+    <string name="onboarding_intro_notifications_headline_top">Avisa no instante que</string>
+    <string name="onboarding_intro_notifications_headline_accent">acontece.</string>
+
+    <!-- Intro illustration props — mock timetable/inbox/lockscreen content. -->
+    <string name="onboarding_illu_sched_day_1">SEG</string>
+    <string name="onboarding_illu_sched_day_2">TER</string>
+    <string name="onboarding_illu_sched_day_3">QUA</string>
+    <string name="onboarding_illu_sched_hour_1" translatable="false">08</string>
+    <string name="onboarding_illu_sched_hour_2" translatable="false">10</string>
+    <string name="onboarding_illu_sched_hour_3" translatable="false">12</string>
+    <string name="onboarding_illu_sched_hour_4" translatable="false">14</string>
+    <string name="onboarding_illu_sched_code_algi" translatable="false">ALGI</string>
+    <string name="onboarding_illu_sched_code_lpoo" translatable="false">LPOO</string>
+    <string name="onboarding_illu_sched_code_calc" translatable="false">CALC</string>
+    <string name="onboarding_illu_sched_code_fis2" translatable="false">FIS2</string>
+    <string name="onboarding_illu_sched_code_proj" translatable="false">PROJ</string>
+    <string name="onboarding_illu_sched_room_214">sala 214</string>
+    <string name="onboarding_illu_sched_room_312">sala 312</string>
+    <string name="onboarding_illu_grades_value" translatable="false">8,5</string>
+    <string name="onboarding_illu_grades_scale" translatable="false">/10</string>
+    <string name="onboarding_illu_grades_caption">coeficiente · 2026.1</string>
+    <string name="onboarding_illu_grades_bar_1" translatable="false">7,5</string>
+    <string name="onboarding_illu_grades_bar_2" translatable="false">8,8</string>
+    <string name="onboarding_illu_grades_bar_3" translatable="false">9,4</string>
+    <string name="onboarding_illu_grades_bar_4" translatable="false">8,1</string>
+    <string name="onboarding_illu_grades_bar_5" translatable="false">9,0</string>
+    <string name="onboarding_illu_msg_1_name">Prof. Adriana</string>
+    <string name="onboarding_illu_msg_1_time">ag.</string>
+    <string name="onboarding_illu_msg_1_preview">Gabarito da P1 liberado</string>
+    <string name="onboarding_illu_msg_2_name">Coordenação CC</string>
+    <string name="onboarding_illu_msg_2_time" translatable="false">09:14</string>
+    <string name="onboarding_illu_msg_2_preview">Matrícula em optativas abriu</string>
+    <string name="onboarding_illu_msg_3_name">DCE UEFS</string>
+    <string name="onboarding_illu_msg_3_time">ont.</string>
+    <string name="onboarding_illu_msg_3_preview">Assembleia geral quinta-feira</string>
+    <string name="onboarding_illu_notif_clock" translatable="false">9:14</string>
+    <string name="onboarding_illu_notif_date">qui · 23 abr</string>
+    <string name="onboarding_illu_notif_1_category">Nota publicada</string>
+    <string name="onboarding_illu_notif_1_title">Cálculo II · P2</string>
+    <string name="onboarding_illu_notif_1_body">8,7 lançado por Prof. Ribamar</string>
+    <string name="onboarding_illu_notif_2_category">Novo recado</string>
+    <string name="onboarding_illu_notif_2_title">Prof. Adriana Souza</string>
+    <string name="onboarding_illu_notif_2_body">Gabarito da P1 disponível no mural</string>
+    <string name="onboarding_illu_notif_3_category">Mudança de horário</string>
+    <string name="onboarding_illu_notif_3_title">ALGI II · quinta</string>
+    <string name="onboarding_illu_notif_3_body">Remanejada: sala 204 → 312</string>
     <!-- endregion -->
 
     <!-- region Onboarding · Login -->
-    <string name="onboarding_login_eyebrow">◦ UEFS · UNES</string>
+    <string name="onboarding_login_eyebrow">UEFS · SAGRES</string>
     <string name="onboarding_login_headline_top">Entre com seu\n</string>
     <string name="onboarding_login_headline_accent">usuário.</string>
+    <string name="onboarding_login_body">As mesmas credenciais do SAGRES.</string>
     <string name="onboarding_login_id_label">Usuário</string>
-    <string name="onboarding_login_id_placeholder">nome123</string>
+    <string name="onboarding_login_id_placeholder">seu.usuario</string>
     <string name="onboarding_login_password_label">Senha</string>
     <string name="onboarding_login_password_placeholder">••••••••</string>
     <string name="onboarding_login_show_password">Mostrar senha</string>
@@ -63,7 +108,7 @@
     <string name="onboarding_login_forgot_password">Esqueci minha senha</string>
     <string name="onboarding_login_forgot_password_label">Recuperar senha</string>
     <string name="onboarding_login_submit">Entrar</string>
-    <string name="onboarding_login_or_separator">OU</string>
+    <string name="onboarding_login_or_separator">ou</string>
     <string name="onboarding_login_passkey">Entrar com passkey</string>
     <string name="onboarding_login_back">Voltar</string>
     <string name="onboarding_login_terms_prefix">"Ao continuar, você concorda com nossos "</string>
@@ -99,21 +144,22 @@
     <!-- endregion -->
 
     <!-- region Onboarding · Sync -->
-    <string name="onboarding_sync_eyebrow">◦ PREPARANDO SEU SEMESTRE</string>
+    <string name="onboarding_sync_eyebrow">Preparando seu semestre</string>
     <string name="onboarding_sync_headline_top">Quase lá,</string>
     <string name="onboarding_sync_default_user">estudante</string>
     <string name="onboarding_sync_step_auth">Verificando matrícula</string>
     <string name="onboarding_sync_step_profile">Carregando seu perfil</string>
-    <string name="onboarding_sync_step_classes">Conectando às suas turmas</string>
+    <string name="onboarding_sync_step_classes">Conectando às turmas</string>
     <string name="onboarding_sync_step_schedule">Montando seu horário</string>
     <string name="onboarding_sync_step_grades">Baixando notas do semestre</string>
     <string name="onboarding_sync_step_messages">Sincronizando recados</string>
-    <string name="onboarding_sync_footer">Isso levará alguns segundos na sua conexão.</string>
+    <string name="onboarding_sync_step_count" translatable="false">%1$d/%2$d</string>
+    <string name="onboarding_sync_percent_sign" translatable="false" formatted="false">%</string>
     <string name="onboarding_sync_auth_failed">Sua sessão expirou. Entre novamente.</string>
     <!-- endregion -->
 
     <!-- region Onboarding · Ready -->
-    <string name="onboarding_ready_eyebrow">◦ CONECTADO</string>
+    <string name="onboarding_ready_eyebrow">Conectado</string>
     <string name="onboarding_ready_headline_top">Prontinho,</string>
     <string name="onboarding_ready_default_user">estudante</string>
 
@@ -132,22 +178,22 @@
         <item quantity="other">%d créditos</item>
     </plurals>
 
-    <string name="onboarding_ready_next_class_label">PRÓXIMA AULA</string>
+    <string name="onboarding_ready_next_class_label">Próxima aula</string>
+    <string name="onboarding_ready_time_range" translatable="false">%1$s – %2$s</string>
 
-    <!-- Countdown variants. iOS picks the longest non-zero unit pair. -->
-    <string name="onboarding_ready_starts_in_now">agora</string>
-    <string name="onboarding_ready_starts_in_min">em %1$d min</string>
-    <string name="onboarding_ready_starts_in_hour_min">em %1$dh %2$dmin</string>
-    <string name="onboarding_ready_starts_in_hours">em %1$dh</string>
-    <string name="onboarding_ready_starts_in_day_hour">em %1$dd %2$dh</string>
-    <string name="onboarding_ready_starts_in_days">em %1$dd</string>
+    <!-- Next-class meta: "Sala {room} · {teacher}"; variants drop the missing part. -->
+    <string name="onboarding_ready_next_class_meta_full">Sala %1$s · %2$s</string>
+    <string name="onboarding_ready_next_class_meta_no_teacher">Sala %1$s</string>
+    <string name="onboarding_ready_next_class_meta_empty">Sala a definir</string>
 
-    <!-- Next-class meta: "{time} · sala {room} · Prof. {first-name}".
-         Variants drop room or teacher when missing. -->
-    <string name="onboarding_ready_next_class_meta_full">%1$s · sala %2$s · Prof. %3$s</string>
-    <string name="onboarding_ready_next_class_meta_no_room">%1$s · Prof. %2$s</string>
-    <string name="onboarding_ready_next_class_meta_no_teacher">%1$s · sala %2$s</string>
-    <string name="onboarding_ready_next_class_meta_time_only">%1$s</string>
+    <!-- Countdown ring units (abbreviated). -->
+    <string name="onboarding_ready_ring_unit_minutes">min</string>
+    <string name="onboarding_ready_ring_unit_hours">h</string>
+    <string name="onboarding_ready_ring_unit_days">d</string>
+
+    <string name="onboarding_ready_stat_score">Coeficiente</string>
+    <string name="onboarding_ready_stat_attendance">Frequência</string>
+    <string name="onboarding_ready_percent_sign" translatable="false" formatted="false">%</string>
 
     <string name="onboarding_ready_cta">Ver meu semestre</string>
     <!-- endregion -->

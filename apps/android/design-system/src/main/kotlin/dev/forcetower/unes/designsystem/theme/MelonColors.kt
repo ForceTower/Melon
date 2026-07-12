@@ -49,6 +49,9 @@ data class MelonFixedColors(
     // for foregrounds inside always-dark containers (the IdentityCard hero,
     // pressed states on the dark splash buttons, etc.).
     val surfaceLight: Color,
+    // Ink foreground paired with `surfaceLight` — fixed dark regardless of
+    // theme (light-pill CTAs sitting on the always-dark onboarding steps).
+    val onSurfaceLight: Color,
     // Destructive accent for sign-out / wipe-data CTAs. Same hex iOS uses
     // (`MeColors.signOut`); kept fixed so it stays warning-red regardless of
     // theme.
@@ -65,6 +68,10 @@ data class MelonFixedColors(
     // Live-session indicators on the hero ("Agora" dot + label).
     val live: Color,
     val liveText: Color,
+    // Onboarding dark steps (splash/welcome/sync): warm near-black plate under
+    // the mesh + the scrim color layered over it at varying alphas.
+    val night: Color,
+    val nightVeil: Color,
     // Success green for done-state affordances (timeline checks). Matches the
     // "Verde" accent base so success reads consistently in both themes.
     val success: Color,
@@ -128,6 +135,7 @@ data class MelonPaletteColors(
     val violet: Color,
     val green: Color,
     val jade: Color,
+    val orange: Color,
 )
 
 private val MelonBrandDefaults = MelonBrandColors(
@@ -141,6 +149,7 @@ private val MelonBrandDefaults = MelonBrandColors(
 
 private val MelonFixedDefaults = MelonFixedColors(
     surfaceLight = SurfaceLight,
+    onSurfaceLight = InkLight,
     destructive = DestructiveFixed,
     ok = OkFixed,
     okOnDark = OkOnDarkFixed,
@@ -149,6 +158,8 @@ private val MelonFixedDefaults = MelonFixedColors(
     onHero = OnHeroFixed,
     live = LiveFixed,
     liveText = LiveTextFixed,
+    night = NightFixed,
+    nightVeil = NightVeilFixed,
     success = SuccessFixed,
 )
 
@@ -187,6 +198,7 @@ internal fun melonColorsLight() = MelonColors(
         violet = PaletteVioletLight,
         green = PaletteGreenLight,
         jade = PaletteJadeLight,
+        orange = PaletteOrangeLight,
     ),
     fixed = MelonFixedDefaults,
     verdict = MelonVerdictDefaults,
@@ -219,6 +231,7 @@ internal fun melonColorsDark() = MelonColors(
         violet = PaletteVioletDark,
         green = PaletteGreenDark,
         jade = PaletteJadeDark,
+        orange = PaletteOrangeDark,
     ),
     fixed = MelonFixedDefaults,
     verdict = MelonVerdictDefaults,

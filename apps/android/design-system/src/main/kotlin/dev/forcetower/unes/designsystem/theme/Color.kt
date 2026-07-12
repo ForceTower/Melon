@@ -40,6 +40,13 @@ internal val BrandPeach = Color(0xFFFBD9A8)
 // Not adaptive — same in light and dark mode.
 internal val AlwaysDarkBg = Color(0xFF1A0F28)
 
+// Onboarding dark steps (dc `UNES Onboarding - Android`). `night` is the warm
+// near-black plate under the mesh blobs; `nightVeil` is the legibility scrim
+// color layered on top at varying alphas. Fixed across themes — the splash,
+// welcome and sync steps are always dark.
+internal val NightFixed = Color(0xFF12100E)
+internal val NightVeilFixed = Color(0xFF0A0810)
+
 // Fixed semantic tokens (`MelonFixedColors`). These don't flip with light/dark
 // — they're consumed by always-dark surfaces (the IdentityCard hero) or by
 // destructive/success affordances that should stay the same color regardless
@@ -120,6 +127,11 @@ internal val PaletteGreenDark = Color(0xFF4AB878)
 // the rotation.
 internal val PaletteJadeLight = Color(0xFF1F9E93)
 internal val PaletteJadeDark = Color(0xFF3FC3B5)
+// Orange is the onboarding intro "Notas" slide accent (dc `UNES Onboarding -
+// Android`) — softer than brand coral so it reads on `PageBgLight`; outside
+// the discipline rotation.
+internal val PaletteOrangeLight = Color(0xFFE8894E)
+internal val PaletteOrangeDark = Color(0xFFF2A26B)
 
 // Verdict hero gradient pairs (`MelonVerdictColors`). Hand-tuned dark stops
 // for each verdict outcome family in the Final Countdown screen — passed
