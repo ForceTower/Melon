@@ -82,9 +82,10 @@ internal fun CampusEventWorkshopsScreen(
                     modifier = Modifier
                         .padding(bottom = 24.dp)
                         .fadeUpOnAppear(delayMs = 60 + index * 60),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
                     if (groups.size > 1) {
+                        // The header carries its own 12dp bottom padding, so
+                        // it sits outside the spaced card stack.
                         CampusEventSectionHeader(
                             title = stringResource(
                                 when (audience) {
@@ -93,11 +94,12 @@ internal fun CampusEventWorkshopsScreen(
                                     CampusEventAudience.Everyone -> R.string.campus_event_workshops_everyone
                                 },
                             ),
-                            modifier = Modifier.padding(bottom = (-12).dp),
                         )
                     }
-                    groupWorkshops.forEach { workshop ->
-                        WorkshopCard(workshop)
+                    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                        groupWorkshops.forEach { workshop ->
+                            WorkshopCard(workshop)
+                        }
                     }
                 }
             }
