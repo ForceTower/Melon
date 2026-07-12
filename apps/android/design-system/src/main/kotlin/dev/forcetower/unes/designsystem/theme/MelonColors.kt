@@ -111,7 +111,8 @@ data class MelonVerdictColors(
 // dark values are lifted so chips/dots stay legible on `SurfaceDark`. The
 // first ten slots mirror iOS `ColorFor` (Overview/OverviewViewModel.swift) —
 // keep the two in sync. `violet` and `green` are Android additions for the Eu
-// shortcut grid and sit outside the discipline rotation.
+// shortcut grid, and `jade` for the Mensagens category tinting; all three sit
+// outside the discipline rotation.
 @Immutable
 data class MelonPaletteColors(
     val coral: Color,
@@ -126,6 +127,7 @@ data class MelonPaletteColors(
     val mustard: Color,
     val violet: Color,
     val green: Color,
+    val jade: Color,
 )
 
 private val MelonBrandDefaults = MelonBrandColors(
@@ -184,6 +186,7 @@ internal fun melonColorsLight() = MelonColors(
         mustard = PaletteMustardLight,
         violet = PaletteVioletLight,
         green = PaletteGreenLight,
+        jade = PaletteJadeLight,
     ),
     fixed = MelonFixedDefaults,
     verdict = MelonVerdictDefaults,
@@ -215,6 +218,7 @@ internal fun melonColorsDark() = MelonColors(
         mustard = PaletteMustardDark,
         violet = PaletteVioletDark,
         green = PaletteGreenDark,
+        jade = PaletteJadeDark,
     ),
     fixed = MelonFixedDefaults,
     verdict = MelonVerdictDefaults,
