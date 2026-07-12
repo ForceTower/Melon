@@ -63,7 +63,7 @@ internal fun DisciplineDetailScreen(
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.surface)
+            .background(MaterialTheme.colorScheme.background)
             .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)),
         contentPadding = PaddingValues(bottom = bottomInset + 32.dp),
         verticalArrangement = Arrangement.spacedBy(0.dp),

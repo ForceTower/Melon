@@ -2,16 +2,17 @@ package dev.forcetower.unes.designsystem.theme
 
 import androidx.compose.ui.graphics.Color
 
-// Neutrals — light. Mirrors iOS `UNESColor.ink/ink2/.../surface/.../pageBg` light values.
+// Neutrals — light. Mirrors iOS `UNESColor.ink/ink2/.../surface/.../pageBg` light
+// values, with `pageBg`/`surface2` on the 2026 dc palette (pure-white page).
 internal val InkLight = Color(0xFF1A1420)
 internal val Ink2Light = Color(0xFF3A2F42)
 internal val Ink3Light = Color(0xFF6B5E70)
 internal val Ink4Light = Color(0xFF9C8FA0)
 internal val SurfaceLight = Color(0xFFFBF7F2)
-internal val Surface2Light = Color(0xFFF3EDE4)
+internal val Surface2Light = Color(0xFFFFFFFF)
 internal val Surface3Light = Color(0xFFE9E0D2)
 internal val CardLight = Color(0xFFFFFFFF)
-internal val PageBgLight = Color(0xFFEDE7DD)
+internal val PageBgLight = Color(0xFFFFFFFF)
 internal val LineLight = Color(0x171A1420)
 internal val CardLineLight = Color(0x0D000000)
 
