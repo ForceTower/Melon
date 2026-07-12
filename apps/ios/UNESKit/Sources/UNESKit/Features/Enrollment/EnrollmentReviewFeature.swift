@@ -18,11 +18,11 @@ struct EnrollmentReviewFeature {
         }
 
         var isReadonly: Bool {
-            session.window?.state == .closed
+            session.isReadonly
         }
 
         var canSubmit: Bool {
-            session.blockers.isEmpty && !isReadonly
+            session.blockers.isEmpty && session.canEdit
         }
     }
 
@@ -55,14 +55,17 @@ struct EnrollmentReviewFeature {
         Reduce { state, action in
             switch action {
             case let .removeTapped(disciplineId):
+                guard state.session.canEdit else { return .none }
                 state.$session.withLock { $0.remove(disciplineId: disciplineId) }
                 return .none
 
             case let .allowsOtherChanged(disciplineId, value):
+                guard state.session.canEdit else { return .none }
                 state.$session.withLock { $0.setAllowsOther(value, disciplineId: disciplineId) }
                 return .none
 
             case let .waitlistChanged(disciplineId, value):
+                guard state.session.canEdit else { return .none }
                 state.$session.withLock { $0.setWaitlist(value, disciplineId: disciplineId) }
                 return .none
 
@@ -89,7 +92,12 @@ struct EnrollmentReviewFeature {
                 state.isSubmitting = false
                 // The backend finalized the step; mirror it locally so the
                 // entry screen flips to "proposta enviada" without a refetch.
-                state.$session.withLock { $0.window?.state = .closed }
+                // A reopened session locks again — the new proposal replaced
+                // the previous one.
+                state.$session.withLock {
+                    $0.window?.state = .closed
+                    $0.reopened = false
+                }
                 return .send(.delegate(.submitted))
 
             case let .submitFailed(message):

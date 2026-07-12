@@ -63,7 +63,6 @@ struct EnrollmentView: View {
     private func loaded(_ window: EnrollmentWindow) -> some View {
         let session = store.session
         let conflictCount = session.conflicts.count
-        let isClosed = window.state == .closed
 
         EnrollmentHeroCard(window: window, now: store.referenceDate)
             .scaleIn(delay: 0.08, duration: 0.62)
@@ -103,7 +102,7 @@ struct EnrollmentView: View {
             .padding(.bottom, 22)
 
             if !session.resolvedPicks.isEmpty {
-                proposalPreview(isClosed: isClosed)
+                proposalPreview(isReadonly: session.isReadonly)
                     .fadeUp(delay: 0.28)
                     .padding(.bottom, 22)
             }
@@ -120,11 +119,11 @@ struct EnrollmentView: View {
         }
     }
 
-    private func proposalPreview(isClosed: Bool) -> some View {
+    private func proposalPreview(isReadonly: Bool) -> some View {
         VStack(spacing: 0) {
             EnrollmentSectionHeader(
                 title: .enrollmentEntryProposalTitle,
-                action: isClosed ? nil : .commonEdit,
+                action: isReadonly ? nil : .commonEdit,
                 onAction: { store.send(.startTapped) }
             )
             VStack(spacing: 0) {
@@ -146,16 +145,22 @@ struct EnrollmentView: View {
 
     @ViewBuilder
     private func callToAction(_ window: EnrollmentWindow) -> some View {
-        switch window.state {
-        case .open:
-            Button {
-                store.send(.startTapped)
-            } label: {
-                UNESButtonLabel(text: store.session.picks.isEmpty ? .enrollmentBuildStart : .enrollmentBuildContinue)
+        if store.session.isReadonly {
+            VStack(spacing: 10) {
+                Button {
+                    store.send(.reviewTapped)
+                } label: {
+                    Text(.enrollmentEntryViewReceipt)
+                }
+                .buttonStyle(.unesAccent)
+                Button {
+                    store.send(.reopenTapped)
+                } label: {
+                    Text(.enrollmentEntryReopen)
+                }
+                .buttonStyle(.unesNeutral)
             }
-            .buttonStyle(.unesAccent)
-
-        case .upcoming:
+        } else if window.state == .upcoming {
             Text(.enrollmentEntryUpcomingNotice)
                 .font(.system(size: 16, weight: .semibold))
                 .tracking(-0.16)
@@ -167,22 +172,14 @@ struct EnrollmentView: View {
                     RoundedRectangle(cornerRadius: 16, style: .continuous)
                         .strokeBorder(UNESColor.line)
                 }
-
-        case .closed:
-            VStack(spacing: 10) {
-                Button {
-                    store.send(.reviewTapped)
-                } label: {
-                    Text(.enrollmentEntryViewReceipt)
-                }
-                .buttonStyle(.unesAccent)
-                Button {
-                    store.send(.startTapped)
-                } label: {
-                    Text(.enrollmentEntryReopen)
-                }
-                .buttonStyle(.unesNeutral)
+        } else {
+            // Open, or closed-but-reopened — both continue into the catalogue.
+            Button {
+                store.send(.startTapped)
+            } label: {
+                UNESButtonLabel(text: store.session.picks.isEmpty ? .enrollmentBuildStart : .enrollmentBuildContinue)
             }
+            .buttonStyle(.unesAccent)
         }
     }
 

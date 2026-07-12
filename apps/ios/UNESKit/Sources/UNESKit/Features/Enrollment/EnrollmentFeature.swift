@@ -33,8 +33,11 @@ struct EnrollmentFeature {
         case offersLoaded([EnrollmentDiscipline])
         case loadFailed(String)
         case profileLoaded(Profile)
-        /// Montar / continuar / reabrir — every path into the catalogue.
+        /// Montar / continuar — the editable paths into the catalogue.
         case startTapped
+        /// "Reabrir matrícula" on the comprovante state: unlocks editing and
+        /// resubmission, then opens the catalogue.
+        case reopenTapped
         /// Revisar or "Ver comprovante" once the proposal is sent.
         case reviewTapped
         case proposalRowTapped(Int64)
@@ -99,6 +102,11 @@ struct EnrollmentFeature {
                 return .none
 
             case .startTapped:
+                return .send(.delegate(.openOffers))
+
+            case .reopenTapped:
+                log.info("enrollment reopen tapped")
+                state.$session.withLock { $0.reopened = true }
                 return .send(.delegate(.openOffers))
 
             case .reviewTapped:

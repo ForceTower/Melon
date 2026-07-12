@@ -167,6 +167,21 @@ struct EnrollmentFeatureTests {
         await store.send(.proposalRowTapped(203))
         await store.receive(.delegate(.openDiscipline(203)))
     }
+
+    @Test
+    func reopenUnlocksTheSessionAndOpensTheCatalogue() async {
+        var closed = EnrollmentSession.preview
+        closed.window?.state = .closed
+        @Shared(.enrollmentSession) var session = closed
+        let store = TestStore(initialState: EnrollmentFeature.State(profile: .preview, session: closed)) {
+            EnrollmentFeature()
+        }
+
+        await store.send(.reopenTapped) {
+            $0.$session.withLock { $0.reopened = true }
+        }
+        await store.receive(.delegate(.openOffers))
+    }
 }
 
 @MainActor
@@ -211,6 +226,20 @@ struct EnrollmentDisciplineFeatureTests {
         await store.send(.allowsOtherChanged(false)) {
             $0.$session.withLock { $0.setAllowsOther(false, disciplineId: 201) }
         }
+    }
+
+    @Test
+    func readonlySessionIgnoresEdits() async {
+        var closed = EnrollmentSession.preview
+        closed.window?.state = .closed
+        @Shared(.enrollmentSession) var session = closed
+        let store = TestStore(initialState: EnrollmentDisciplineFeature.State(disciplineId: 201)) {
+            EnrollmentDisciplineFeature()
+        }
+
+        // Comprovante mode: taps and toggles are inert until reopened.
+        await store.send(.sectionTapped(30102))
+        await store.send(.allowsOtherChanged(false))
     }
 }
 
@@ -296,5 +325,48 @@ struct EnrollmentReviewFeatureTests {
         await store.send(.removeTapped(203)) {
             $0.$session.withLock { $0.remove(disciplineId: 203) }
         }
+    }
+
+    @Test
+    func readonlyReviewIgnoresEditsAndSubmit() async {
+        var closed = EnrollmentSession.preview
+        closed.window?.state = .closed
+        @Shared(.enrollmentSession) var session = closed
+        let store = TestStore(initialState: EnrollmentReviewFeature.State()) {
+            EnrollmentReviewFeature()
+        }
+
+        #expect(store.state.isReadonly)
+        #expect(!store.state.canSubmit)
+        await store.send(.removeTapped(201))
+        await store.send(.submitTapped)
+    }
+
+    @Test
+    func resubmitAfterReopenLocksTheSessionAgain() async {
+        var reopened = EnrollmentSession.preview
+        reopened.window?.state = .closed
+        reopened.reopened = true
+        @Shared(.enrollmentSession) var session = reopened
+        let store = TestStore(initialState: EnrollmentReviewFeature.State()) {
+            EnrollmentReviewFeature()
+        } withDependencies: {
+            $0.enrollmentRepository.submit = { _ in }
+        }
+
+        #expect(!store.state.isReadonly)
+        #expect(store.state.canSubmit)
+        await store.send(.submitTapped) {
+            $0.isSubmitting = true
+        }
+        await store.receive(.submitSucceeded) {
+            $0.isSubmitting = false
+            $0.$session.withLock {
+                $0.window?.state = .closed
+                $0.reopened = false
+            }
+        }
+        await store.receive(.delegate(.submitted))
+        #expect(store.state.isReadonly)
     }
 }

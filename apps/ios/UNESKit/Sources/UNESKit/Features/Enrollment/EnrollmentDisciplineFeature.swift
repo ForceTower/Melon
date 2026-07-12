@@ -45,6 +45,9 @@ struct EnrollmentDisciplineFeature {
         Reduce { state, action in
             switch action {
             case let .sectionTapped(sectionId):
+                // Comprovante mode — the cards are informational only until
+                // the student explicitly reopens the enrollment.
+                guard state.session.canEdit else { return .none }
                 guard let discipline = state.discipline,
                       let section = discipline.section(sectionId)
                 else { return .none }
@@ -63,6 +66,7 @@ struct EnrollmentDisciplineFeature {
                 return .none
 
             case let .allowsOtherChanged(value):
+                guard state.session.canEdit else { return .none }
                 state.$session.withLock { $0.setAllowsOther(value, disciplineId: state.disciplineId) }
                 return .none
 

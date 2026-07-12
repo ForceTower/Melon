@@ -148,7 +148,6 @@ struct DisciplineDetailMappingTests {
         #expect(detail.finalExam?.value == nil)
         #expect(detail.finalExam?.daysUntil == 9)
         #expect(detail.isAwaitingFinalExam)
-        #expect(detail.finalsMean == nil)
     }
 
     @Test

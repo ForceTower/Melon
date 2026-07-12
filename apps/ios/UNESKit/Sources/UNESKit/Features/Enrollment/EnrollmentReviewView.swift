@@ -237,7 +237,8 @@ struct EnrollmentReviewView: View {
                             SpinnerRing(size: 16, color: .white, trackColor: .white.opacity(0.4))
                             Text(.enrollmentReviewSubmitting)
                         } else {
-                            Text(.enrollmentReviewSubmit)
+                            // A reopened proposal replaces the registered one.
+                            Text(store.session.reopened ? .enrollmentReviewResubmit : .enrollmentReviewSubmit)
                             Image(systemName: "paperplane.fill")
                                 .font(.system(size: 13, weight: .semibold))
                         }

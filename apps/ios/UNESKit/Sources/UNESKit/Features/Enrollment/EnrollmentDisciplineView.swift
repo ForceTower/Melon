@@ -60,7 +60,8 @@ struct EnrollmentDisciplineView: View {
                                     section: section,
                                     isSelected: store.pick?.sectionId == section.id,
                                     clash: store.session.clash(with: section, excluding: discipline.id),
-                                    useQueue: store.session.window?.useQueue ?? false
+                                    useQueue: store.session.window?.useQueue ?? false,
+                                    readonly: store.session.isReadonly
                                 ) {
                                     store.send(.sectionTapped(section.id), animation: UNESMotion.ease(0.3))
                                 }
@@ -69,7 +70,8 @@ struct EnrollmentDisciplineView: View {
                     }
                     .fadeUp(delay: 0.14)
 
-                    if let pick = store.pick, let section = discipline.section(pick.sectionId) {
+                    if let pick = store.pick, let section = discipline.section(pick.sectionId),
+                       !store.session.isReadonly {
                         allowsOtherCard(discipline, section: section, pick: pick)
                             .padding(.top, 16)
                             .transition(.opacity.combined(with: .move(edge: .bottom)))

@@ -8,6 +8,8 @@ struct EnrollmentSectionCard: View {
     var isSelected: Bool
     var clash: EnrollmentClash?
     var useQueue: Bool
+    /// Comprovante mode — the card renders without its action footer.
+    var readonly = false
     var onTap: () -> Void
 
     /// A clash only blocks sections that aren't the current pick.
@@ -38,7 +40,9 @@ struct EnrollmentSectionCard: View {
             }
             .padding(EdgeInsets(top: 14, leading: 15, bottom: 13, trailing: 15))
 
-            footerButton
+            if !readonly {
+                footerButton
+            }
         }
         .background(UNESColor.card)
         .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))

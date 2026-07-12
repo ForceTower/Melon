@@ -206,6 +206,21 @@ struct EnrollmentSession: Equatable, Sendable {
     var window: EnrollmentWindow?
     var disciplines: [EnrollmentDiscipline] = []
     var picks: [EnrollmentPick] = []
+    /// "Reabrir matrícula": re-enables editing and resubmission after the
+    /// window reported the proposal as sent. Session-local — the backend
+    /// reopens the step automatically on the next submit, which replaces
+    /// the saved proposal wholesale.
+    var reopened = false
+
+    /// Closed and not reopened — every screen renders as the comprovante.
+    var isReadonly: Bool {
+        window?.state == .closed && !reopened
+    }
+
+    /// Picks may only mutate while the window is open or explicitly reopened.
+    var canEdit: Bool {
+        window?.state == .open || (window?.state == .closed && reopened)
+    }
 
     func discipline(_ id: Int64) -> EnrollmentDiscipline? {
         disciplines.first { $0.id == id }

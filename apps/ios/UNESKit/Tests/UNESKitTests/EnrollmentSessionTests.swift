@@ -168,6 +168,27 @@ struct EnrollmentSessionTests {
         #expect(fraction > 0.7 && fraction < 0.8)
         #expect(window.remainingFraction(now: window.endDate!.addingTimeInterval(86_400)) == 0)
     }
+
+    @Test
+    func closedWindowIsReadonlyUntilReopened() {
+        var session = EnrollmentSession.preview
+        #expect(!session.isReadonly)
+        #expect(session.canEdit)
+
+        session.window?.state = .closed
+        #expect(session.isReadonly)
+        #expect(!session.canEdit)
+
+        // "Reabrir matrícula" unlocks editing without touching the window —
+        // the next submit replaces the registered proposal wholesale.
+        session.reopened = true
+        #expect(!session.isReadonly)
+        #expect(session.canEdit)
+
+        // An upcoming window never edits, reopened or not.
+        session.window?.state = .upcoming
+        #expect(!session.canEdit)
+    }
 }
 
 extension EnrollmentSession {

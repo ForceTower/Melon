@@ -6071,6 +6071,23 @@
         }
       }
     },
+    "enrollment.review.resubmit" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Send again"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enviar novamente"
+          }
+        }
+      }
+    },
     "enrollment.review.submit" : {
       "extractionState" : "manual",
       "localizations" : {
