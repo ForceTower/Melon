@@ -9,13 +9,6 @@ plugins {
 kotlin {
     val xcf = XCFramework("Umbrella")
     val bundleId = "dev.forcetower.melon.umbrella"
-    iosX64 {
-        binaries.framework {
-            baseName = "Umbrella"
-            binaryOption("bundleId", bundleId)
-            xcf.add(this)
-        }
-    }
     iosArm64 {
         binaries.framework {
             baseName = "Umbrella"
