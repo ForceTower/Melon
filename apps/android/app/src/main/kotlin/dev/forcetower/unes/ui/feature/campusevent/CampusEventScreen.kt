@@ -47,6 +47,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -54,6 +55,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -665,6 +668,29 @@ private fun Schedule(
     val isLive = event.phase(now) == CampusEventPhase.Live
     val selected = selectedDay ?: days.firstOrNull()?.date
 
+    // Time-column width: sized to the widest start/end label this event
+    // renders so times never wrap — 12-hour locales need "12:30 PM", 24-hour
+    // ones stay compact at "08:00". Measured once per event/zone.
+    val textMeasurer = rememberTextMeasurer()
+    val density = LocalDensity.current
+    val startStyle = MaterialTheme.typography.titleSmall.copy(
+        fontSize = 13.5.sp,
+        fontWeight = FontWeight.Bold,
+    )
+    val endStyle = MaterialTheme.typography.bodySmall.copy(fontSize = 11.5.sp)
+    val timeColumnWidth = remember(event, zone, textMeasurer, startStyle, endStyle, density) {
+        val widest = event.activities
+            .flatMap { activity ->
+                listOfNotNull(
+                    CampusEventFormat.time(activity.startsAt, zone) to startStyle,
+                    activity.endsAt?.let { CampusEventFormat.time(it, zone) to endStyle },
+                )
+            }
+            .maxOfOrNull { (text, style) -> textMeasurer.measure(text, style).size.width }
+            ?: 0
+        with(density) { widest.toDp() }.coerceAtLeast(46.dp)
+    }
+
     Column(modifier = modifier) {
         CampusEventSectionHeader(
             title = stringResource(R.string.campus_event_hub_schedule),
@@ -739,6 +765,7 @@ private fun Schedule(
                             activity = activity,
                             state = activity.state(now),
                             zone = zone,
+                            timeColumnWidth = timeColumnWidth,
                             isLast = index == activities.lastIndex,
                             onTap = { onOpenActivity(activity.id) },
                         )
@@ -877,6 +904,7 @@ private fun ActivityRow(
     activity: CampusEventActivity,
     state: CampusEventActivityState,
     zone: ZoneId,
+    timeColumnWidth: Dp,
     isLast: Boolean,
     onTap: () -> Unit,
 ) {
@@ -896,7 +924,7 @@ private fun ActivityRow(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Column(
-                modifier = Modifier.width(46.dp).padding(top = 2.dp),
+                modifier = Modifier.width(timeColumnWidth).padding(top = 2.dp),
                 horizontalAlignment = Alignment.End,
                 verticalArrangement = Arrangement.spacedBy(2.dp),
             ) {
@@ -904,12 +932,14 @@ private fun ActivityRow(
                     text = CampusEventFormat.time(activity.startsAt, zone),
                     style = MaterialTheme.typography.titleSmall.copy(fontSize = 13.5.sp, fontWeight = FontWeight.Bold),
                     color = MaterialTheme.colorScheme.onBackground,
+                    maxLines = 1,
                 )
                 if (activity.endsAt != null) {
                     Text(
                         text = CampusEventFormat.time(activity.endsAt!!, zone),
                         style = MaterialTheme.typography.bodySmall.copy(fontSize = 11.5.sp),
                         color = MaterialTheme.colorScheme.outline,
+                        maxLines = 1,
                     )
                 }
             }
@@ -1009,7 +1039,9 @@ private fun ActivityRow(
             )
         }
         if (!isLast) {
-            CampusEventRowDivider(startIndent = 74.dp)
+            // Row leading padding + time column + gap — keeps the divider
+            // aligned with the badge column whatever the time width is.
+            CampusEventRowDivider(startIndent = timeColumnWidth + 28.dp)
         }
     }
 }
