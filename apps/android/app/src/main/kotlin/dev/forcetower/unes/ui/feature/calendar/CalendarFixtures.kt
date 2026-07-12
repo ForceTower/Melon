@@ -5,8 +5,6 @@ import java.time.LocalDate
 // Seed data mirroring `CAL_EVENTS` in `screens-calendar-data.jsx`. Used only
 // by `@Preview`s; the live screen always pulls from the KMP flow.
 internal object CalendarFixtures {
-    const val SemesterLabel = "2026.1"
-
     val events: List<CalendarEvent> = listOf(
         ev(
             "e-feb-1", "Período para aprovação e homologação do PIT",

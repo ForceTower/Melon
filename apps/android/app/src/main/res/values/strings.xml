@@ -904,15 +904,14 @@
     <!-- endregion -->
 
     <!-- region Calendar · Header -->
-    <string name="calendar_header_eyebrow_format">◦ semestre %1$s</string>
-    <!-- "Calendário acadêmico" — split so the second word can italicize accent. -->
-    <string name="calendar_header_title_lead">Calendário</string>
-    <string name="calendar_header_title_emphasis">acadêmico</string>
+    <string name="calendar_title">Calendário</string>
     <string name="calendar_header_subtitle">Prazos, provas e feriados da UEFS</string>
     <string name="calendar_back_label">Voltar</string>
+    <string name="calendar_view_agenda_label">Ver agenda</string>
+    <string name="calendar_view_grid_label">Ver grade mensal</string>
     <!-- endregion -->
 
-    <!-- region Calendar · Filters (category + scope chip rows) -->
+    <!-- region Calendar · Filters (category segmented + scope chips) -->
     <string name="calendar_filter_category_all">Tudo</string>
     <string name="calendar_filter_category_deadlines">Prazos</string>
     <string name="calendar_filter_category_exams">Provas</string>
@@ -932,28 +931,63 @@
     <!-- endregion -->
 
     <!-- region Calendar · Hero card (next actionable event) -->
-    <string name="calendar_hero_eyebrow_now">acontecendo agora</string>
-    <string name="calendar_hero_eyebrow_next">próxima ação</string>
+    <string name="calendar_hero_eyebrow_now">Acontecendo agora</string>
+    <string name="calendar_hero_eyebrow_next">Próxima ação</string>
     <string name="calendar_countdown_today">hoje</string>
     <string name="calendar_countdown_tomorrow">amanhã</string>
     <string name="calendar_countdown_tail_days">dias</string>
-    <string name="calendar_countdown_tail_days_to_close">dias até fechar</string>
-    <string name="calendar_countdown_tail_one_day_to_close">dia até fechar</string>
-    <string name="calendar_countdown_tail_days_ago">dias atrás</string>
+    <string name="calendar_countdown_tail_days_to_close">restantes</string>
+    <string name="calendar_countdown_tail_one_day_to_close">restante</string>
+    <string name="calendar_countdown_tail_days_ago">atrás</string>
     <string name="calendar_hero_progress_elapsed_format">%1$d%% decorrido</string>
-    <string name="calendar_hero_progress_closes_format">fecha %1$s</string>
+    <string name="calendar_hero_progress_closes_format">termina %1$s</string>
     <!-- endregion -->
 
-    <!-- region Calendar · Agenda + month sections -->
-    <string name="calendar_status_open">aberto</string>
-    <string name="calendar_badge_annual">anual</string>
+    <!-- region Calendar · Agenda rows + month sections -->
     <plurals name="calendar_month_summary">
         <item quantity="one">%1$d · %2$d evento</item>
         <item quantity="other">%1$d · %2$d eventos</item>
     </plurals>
-    <string name="calendar_month_now_badge">agora</string>
-    <string name="calendar_sync_footer">◦ sincronizado com o SAGRES · há 4 min ◦</string>
+    <plurals name="calendar_row_countdown_in">
+        <item quantity="one">em %1$d dia</item>
+        <item quantity="other">em %1$d dias</item>
+    </plurals>
+    <string name="calendar_row_countdown_ends_today">termina hoje</string>
+    <plurals name="calendar_row_countdown_ends_in">
+        <item quantity="one">termina em %1$d dia</item>
+        <item quantity="other">termina em %1$d dias</item>
+    </plurals>
+    <plurals name="calendar_row_countdown_ago">
+        <item quantity="one">há %1$d dia</item>
+        <item quantity="other">há %1$d dias</item>
+    </plurals>
+    <string name="calendar_sync_footer">Sincronizado com o SAGRES</string>
     <string name="calendar_empty_state">Nada por aqui com esses filtros.</string>
+    <!-- endregion -->
+
+    <!-- region Calendar · Month grid -->
+    <string name="calendar_grid_prev_month">Mês anterior</string>
+    <string name="calendar_grid_next_month">Próximo mês</string>
+    <string name="calendar_grid_selected_today">Hoje</string>
+    <string name="calendar_grid_selected_day_format">%1$d de %2$s</string>
+    <string name="calendar_grid_empty">Sem eventos neste dia.</string>
+    <!-- endregion -->
+
+    <!-- region Calendar · Event sheet -->
+    <string name="calendar_sheet_close">Fechar</string>
+    <string name="calendar_sheet_when">Quando</string>
+    <string name="calendar_sheet_duration">Duração</string>
+    <string name="calendar_sheet_scope">Âmbito</string>
+    <string name="calendar_sheet_status">Situação</string>
+    <string name="calendar_sheet_single_day">Dia único</string>
+    <plurals name="calendar_sheet_span_days">
+        <item quantity="one">%1$d dia</item>
+        <item quantity="other">%1$d dias</item>
+    </plurals>
+    <string name="calendar_sheet_status_active">Em andamento</string>
+    <string name="calendar_sheet_status_past">Encerrado</string>
+    <string name="calendar_sheet_fixed_badge">Data fixa · repete todo ano</string>
+    <string name="calendar_sheet_add_cta">Adicionar ao calendário</string>
     <!-- endregion -->
 
     <!-- region Me · About sheet -->

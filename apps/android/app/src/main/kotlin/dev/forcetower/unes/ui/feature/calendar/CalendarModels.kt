@@ -30,6 +30,10 @@ internal enum class CalendarCategory(@StringRes val labelRes: Int) {
 
 internal enum class CalendarStatus { Past, Active, Future }
 
+// Agenda (month-grouped list) vs Grade (month grid + selected day) — the app
+// bar toggle.
+internal enum class CalendarViewMode { Agenda, Grid }
+
 internal data class CalendarEvent(
     val id: String,
     val description: String,
@@ -106,6 +110,22 @@ internal object CalendarMath {
             else -> CountdownParts(CountdownToken.Number(kotlin.math.abs(ds)), R.string.calendar_countdown_tail_days_ago)
         }
     }
+
+    // Fraction of an active window already elapsed, or null when the event is
+    // not an in-progress range — drives the hero progress bar.
+    fun progress(ev: CalendarEvent, today: LocalDate = this.today): Float? {
+        if (ev.end == null || status(ev, today) != CalendarStatus.Active) return null
+        val total = (daysBetween(ev.start, ev.end) + 1).coerceAtLeast(1)
+        val elapsed = daysBetween(ev.start, today) + 1
+        return (elapsed.toFloat() / total.toFloat()).coerceIn(0f, 1f)
+    }
+
+    // Inclusive length of the event in days — 1 for single-day events.
+    fun spanDays(ev: CalendarEvent): Int =
+        if (ev.end == null) 1 else daysBetween(ev.start, ev.end) + 1
+
+    fun occursOn(ev: CalendarEvent, date: LocalDate): Boolean =
+        !date.isBefore(ev.start) && !date.isAfter(ev.endOrStart)
 
     // Pick the most actionable card for the hero. Active deadlines (closing
     // soonest) win, else the nearest upcoming event.
@@ -196,6 +216,9 @@ internal object CalendarFormat {
     private val weekdaysShort: List<String> = listOf(
         "seg", "ter", "qua", "qui", "sex", "sáb", "dom",
     )
+
+    // Month-grid column headers, sunday-first — matches the dc grid layout.
+    val weekdayInitials: List<String> = listOf("D", "S", "T", "Q", "Q", "S", "S")
 
     fun dateShort(d: LocalDate): String = "%02d %s".format(d.dayOfMonth, monthsShort[d.monthValue - 1])
 

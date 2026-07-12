@@ -1,17 +1,19 @@
 package dev.forcetower.unes.ui.feature.calendar.components
 
+import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -19,9 +21,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -30,15 +34,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.foundation.Mesh
+import dev.forcetower.unes.designsystem.foundation.MeshVariant
+import dev.forcetower.unes.designsystem.theme.MelonMotion
 import dev.forcetower.unes.designsystem.theme.melon
 import dev.forcetower.unes.ui.feature.calendar.CalendarEvent
 import dev.forcetower.unes.ui.feature.calendar.CalendarFormat
@@ -46,45 +50,37 @@ import dev.forcetower.unes.ui.feature.calendar.CalendarMath
 import dev.forcetower.unes.ui.feature.calendar.CalendarStatus
 import dev.forcetower.unes.ui.feature.calendar.CountdownToken
 import dev.forcetower.unes.ui.feature.calendar.color
-import dev.forcetower.unes.ui.feature.calendar.meshVariant
-import java.util.Locale
+import dev.forcetower.unes.ui.feature.calendar.icon
 
-// "Hero" card at the top of the calendar — the next actionable event,
-// rendered over a category-tinted mesh on top of the always-dark hero
-// background. Carries a giant countdown number and an optional progress
-// bar for active windows. Mirrors `CalHero` in `screens-calendar.jsx` +
-// iOS `CalHeroCard`.
-//
-// Foreground type is pinned (cream / always-light) — the card is dark in
-// both themes, same as iOS.
-private val HeroLight = Color(0xFFFBF7F2)
-
+// "Próxima ação" hero — the next actionable event over the warm brand mesh on
+// an always-dark plate. Status row + category·scope chip + title + giant
+// countdown, plus a progress strip while an active window is running. Tapping
+// opens the event sheet. Mirrors the dc `CalendarScreen` hero.
 @Composable
-internal fun CalHeroCard(event: CalendarEvent, modifier: Modifier = Modifier) {
+internal fun CalHeroCard(
+    event: CalendarEvent,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     val category = remember(event) { CalendarMath.categorize(event) }
-    val status = remember(event) { CalendarMath.status(event) }
-    val isActive = status == CalendarStatus.Active
+    val isActive = remember(event) { CalendarMath.status(event) == CalendarStatus.Active }
+    val progress = remember(event) { CalendarMath.progress(event) }
     val accent = category.color()
-    val darkBg = MaterialTheme.melon.brand.alwaysDarkBg
-
-    val progress: Float? = remember(event) {
-        if (!isActive || event.end == null) null
-        else {
-            val total = (CalendarMath.daysBetween(event.start, event.end) + 1).coerceAtLeast(1)
-            val elapsed = CalendarMath.daysBetween(event.start, CalendarMath.today) + 1
-            (elapsed.toFloat() / total.toFloat()).coerceIn(0f, 1f)
-        }
-    }
+    val plate = MaterialTheme.melon.brand.alwaysDarkBg
+    val veil = MaterialTheme.melon.fixed.nightVeil
+    val onHero = MaterialTheme.melon.fixed.onHero
+    val shape = RoundedCornerShape(28.dp)
 
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .shadow(elevation = 18.dp, shape = RoundedCornerShape(28.dp))
-            .clip(RoundedCornerShape(28.dp))
-            .background(darkBg),
+            .shadow(elevation = 14.dp, shape = shape)
+            .clip(shape)
+            .background(plate)
+            .clickable(role = Role.Button, onClick = onClick),
     ) {
         Mesh(
-            variant = category.meshVariant(),
+            variant = MeshVariant.Warm,
             intensity = 1.05f,
             modifier = Modifier.fillMaxSize(),
         )
@@ -94,104 +90,118 @@ internal fun CalHeroCard(event: CalendarEvent, modifier: Modifier = Modifier) {
                 .fillMaxSize()
                 .background(
                     Brush.verticalGradient(
-                        0f to darkBg.copy(alpha = 0.12f),
-                        1f to darkBg.copy(alpha = 0.55f),
+                        0f to veil.copy(alpha = 0.14f),
+                        1f to veil.copy(alpha = 0.66f),
                     ),
                 ),
         )
 
-        Column(
-            modifier = Modifier.padding(horizontal = 20.dp, vertical = 18.dp),
-        ) {
-            TopRow(event = event, accent = accent, isActive = isActive)
-            Spacer(modifier = Modifier.height(16.dp))
-            EyebrowRow(event = event, category = category, accent = accent)
-            Spacer(modifier = Modifier.height(10.dp))
-            Title(event = event)
-            Spacer(modifier = Modifier.height(18.dp))
-            CountdownRow(event = event)
+        Column(modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 18.dp, bottom = 20.dp)) {
+            StatusRow(event = event, accent = accent, isActive = isActive, onHero = onHero)
+            Spacer(modifier = Modifier.height(15.dp))
+            CategoryChip(event = event, accent = accent, onHero = onHero)
+            Spacer(modifier = Modifier.height(12.dp))
+            Text(
+                text = event.displayDescription,
+                style = MaterialTheme.typography.headlineSmall.copy(
+                    fontSize = 22.sp,
+                    lineHeight = 26.sp,
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = (-0.44).sp,
+                ),
+                color = onHero,
+            )
+            Spacer(modifier = Modifier.height(14.dp))
+            CountdownRow(event = event, onHero = onHero)
             if (progress != null) {
-                Spacer(modifier = Modifier.height(14.dp))
-                ProgressStrip(progress = progress, end = event.end, accent = accent)
+                Spacer(modifier = Modifier.height(16.dp))
+                ProgressStrip(progress = progress, end = event.end, accent = accent, onHero = onHero)
             }
         }
     }
 }
 
 @Composable
-private fun TopRow(event: CalendarEvent, accent: Color, isActive: Boolean) {
+private fun StatusRow(event: CalendarEvent, accent: Color, isActive: Boolean, onHero: Color) {
     Row(
         modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.Top,
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             PulseDot(accent = accent, animate = isActive)
             Text(
                 text = stringResource(
                     if (isActive) R.string.calendar_hero_eyebrow_now
                     else R.string.calendar_hero_eyebrow_next,
-                ).uppercase(Locale.ROOT),
-                style = monoStyle(10f).copy(letterSpacing = 1.8.sp),
-                color = HeroLight.copy(alpha = 0.75f),
+                ),
+                style = MaterialTheme.typography.labelMedium.copy(
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.SemiBold,
+                ),
+                color = onHero.copy(alpha = 0.9f),
             )
         }
         Spacer(modifier = Modifier.weight(1f))
         Text(
-            text = CalendarFormat.dateRange(event.start, event.end).uppercase(Locale.ROOT),
-            style = monoStyle(10f).copy(letterSpacing = 0.8.sp),
-            color = HeroLight.copy(alpha = 0.6f),
-        )
-    }
-}
-
-@Composable
-private fun EyebrowRow(
-    event: CalendarEvent,
-    category: dev.forcetower.unes.ui.feature.calendar.CalendarCategory,
-    accent: Color,
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        CalCategoryGlyph(category = category, color = accent, size = 13.dp)
-        Text(
-            text = (stringResource(category.labelRes) + " · " + stringResource(event.scope.labelRes))
-                .uppercase(Locale.ROOT),
-            style = MaterialTheme.typography.headlineSmall.copy(
-                fontSize = 14.sp,
-                lineHeight = 14.sp,
-                letterSpacing = 1.68.sp,
+            text = CalendarFormat.dateRange(event.start, event.end),
+            style = MaterialTheme.typography.labelMedium.copy(
+                fontSize = 12.sp,
+                fontWeight = FontWeight.SemiBold,
             ),
-            color = accent,
+            color = onHero.copy(alpha = 0.6f),
         )
     }
 }
 
 @Composable
-private fun Title(event: CalendarEvent) {
-    Text(
-        text = event.displayDescription,
-        style = MaterialTheme.typography.headlineMedium.copy(
-            fontSize = 26.sp,
-            lineHeight = 28.sp,
-            letterSpacing = (-0.39).sp,
-        ),
-        color = HeroLight,
-    )
+private fun CategoryChip(event: CalendarEvent, accent: Color, onHero: Color) {
+    val category = remember(event) { CalendarMath.categorize(event) }
+    Row(
+        modifier = Modifier
+            .clip(CircleShape)
+            .background(onHero.copy(alpha = 0.13f))
+            .padding(start = 6.dp, end = 10.dp, top = 5.dp, bottom = 5.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(7.dp),
+    ) {
+        Box(
+            modifier = Modifier
+                .size(20.dp)
+                .clip(RoundedCornerShape(6.dp))
+                .background(accent),
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(
+                imageVector = category.icon(),
+                contentDescription = null,
+                tint = onHero,
+                modifier = Modifier.size(14.dp),
+            )
+        }
+        Text(
+            text = stringResource(category.labelRes) + " · " + stringResource(event.scope.labelRes),
+            style = MaterialTheme.typography.labelMedium.copy(
+                fontSize = 12.sp,
+                fontWeight = FontWeight.SemiBold,
+            ),
+            color = onHero,
+        )
+    }
 }
 
 @Composable
-private fun CountdownRow(event: CalendarEvent) {
+private fun CountdownRow(event: CalendarEvent, onHero: Color) {
     val parts = remember(event) { CalendarMath.countdownParts(event) }
     val numberLabel = when (val n = parts.number) {
         CountdownToken.Today -> stringResource(R.string.calendar_countdown_today)
         CountdownToken.Tomorrow -> stringResource(R.string.calendar_countdown_tomorrow)
         is CountdownToken.Number -> n.value.toString()
     }
+    // Word tokens ("hoje", "amanhã") drop to a smaller size, same as the dc.
+    val numberSize = if (numberLabel.length > 3) 34.sp else 52.sp
     Row(
         verticalAlignment = Alignment.Bottom,
         horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -199,45 +209,52 @@ private fun CountdownRow(event: CalendarEvent) {
         Text(
             text = numberLabel,
             style = MaterialTheme.typography.displayLarge.copy(
-                fontSize = 48.sp,
-                lineHeight = 48.sp,
-                letterSpacing = (-1.44).sp,
+                fontSize = numberSize,
+                lineHeight = numberSize,
+                fontWeight = FontWeight.ExtraBold,
+                letterSpacing = (-1.5).sp,
             ),
-            color = HeroLight,
+            color = onHero,
         )
         if (parts.tailRes != null) {
             Text(
                 text = stringResource(parts.tailRes),
-                style = MaterialTheme.typography.headlineSmall.copy(
-                    fontSize = 16.sp,
-                    lineHeight = 18.sp,
-                    fontStyle = FontStyle.Italic,
+                style = MaterialTheme.typography.titleMedium.copy(
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.SemiBold,
                 ),
-                color = HeroLight.copy(alpha = 0.8f),
-                modifier = Modifier.padding(bottom = 6.dp),
+                color = onHero.copy(alpha = 0.82f),
+                modifier = Modifier.padding(bottom = 4.dp),
             )
         }
     }
 }
 
 @Composable
-private fun ProgressStrip(progress: Float, end: java.time.LocalDate?, accent: Color) {
-    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        BoxWithConstraints(
+private fun ProgressStrip(
+    progress: Float,
+    end: java.time.LocalDate?,
+    accent: Color,
+    onHero: Color,
+) {
+    val fill = remember { Animatable(0f) }
+    LaunchedEffect(progress) {
+        fill.animateTo(progress, tween(durationMillis = 900, easing = MelonMotion.EmphasizedEasing))
+    }
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(3.dp)
-                .clip(RoundedCornerShape(2.dp))
-                .background(HeroLight.copy(alpha = 0.15f)),
+                .height(5.dp)
+                .clip(RoundedCornerShape(3.dp))
+                .background(onHero.copy(alpha = 0.16f)),
         ) {
-            val maxPx = with(LocalDensity.current) { maxWidth.toPx() }
-            val widthDp = with(LocalDensity.current) { (maxPx * progress).toDp() }
             Box(
                 modifier = Modifier
-                    .height(3.dp)
-                    .clip(RoundedCornerShape(2.dp))
-                    .background(accent)
-                    .size(width = widthDp, height = 3.dp),
+                    .fillMaxWidth(fill.value)
+                    .fillMaxHeight()
+                    .clip(RoundedCornerShape(3.dp))
+                    .background(accent),
             )
         }
         Row(modifier = Modifier.fillMaxWidth()) {
@@ -245,9 +262,9 @@ private fun ProgressStrip(progress: Float, end: java.time.LocalDate?, accent: Co
                 text = stringResource(
                     R.string.calendar_hero_progress_elapsed_format,
                     (progress * 100f).toInt(),
-                ).uppercase(Locale.ROOT),
-                style = monoStyle(9.5f).copy(letterSpacing = 0.95.sp),
-                color = HeroLight.copy(alpha = 0.55f),
+                ),
+                style = MaterialTheme.typography.labelSmall.copy(fontSize = 11.sp),
+                color = onHero.copy(alpha = 0.62f),
             )
             Spacer(modifier = Modifier.weight(1f))
             if (end != null) {
@@ -255,9 +272,9 @@ private fun ProgressStrip(progress: Float, end: java.time.LocalDate?, accent: Co
                     text = stringResource(
                         R.string.calendar_hero_progress_closes_format,
                         CalendarFormat.dateShort(end),
-                    ).uppercase(Locale.ROOT),
-                    style = monoStyle(9.5f).copy(letterSpacing = 0.95.sp),
-                    color = HeroLight.copy(alpha = 0.55f),
+                    ),
+                    style = MaterialTheme.typography.labelSmall.copy(fontSize = 11.sp),
+                    color = onHero.copy(alpha = 0.62f),
                 )
             }
         }
@@ -269,7 +286,7 @@ private fun PulseDot(accent: Color, animate: Boolean) {
     val alpha = if (animate) {
         val transition = rememberInfiniteTransition(label = "hero-pulse")
         val a by transition.animateFloat(
-            initialValue = 0.5f,
+            initialValue = 0.4f,
             targetValue = 1f,
             animationSpec = infiniteRepeatable(
                 animation = tween(durationMillis = 900),
@@ -280,28 +297,20 @@ private fun PulseDot(accent: Color, animate: Boolean) {
         a
     } else 1f
     Box(
-        modifier = Modifier.size(12.dp),
+        modifier = Modifier.size(14.dp),
         contentAlignment = Alignment.Center,
     ) {
         Box(
             modifier = Modifier
-                .size(12.dp)
+                .size(14.dp)
                 .clip(CircleShape)
-                .background(accent.copy(alpha = 0.2f * alpha)),
+                .background(accent.copy(alpha = 0.25f * alpha)),
         )
         Box(
             modifier = Modifier
-                .size(6.dp)
+                .size(8.dp)
                 .clip(CircleShape)
                 .background(accent.copy(alpha = alpha)),
         )
     }
 }
-
-@Composable
-private fun monoStyle(sizeSp: Float, weight: FontWeight = FontWeight.Normal) =
-    MaterialTheme.typography.labelSmall.copy(
-        fontSize = sizeSp.sp,
-        fontWeight = weight,
-        fontFamily = FontFamily.Monospace,
-    )

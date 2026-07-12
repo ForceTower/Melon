@@ -1,11 +1,8 @@
 package dev.forcetower.unes.ui.feature.calendar
 
-import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,7 +10,6 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
@@ -21,57 +17,61 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.ViewAgenda
+import androidx.compose.material.icons.outlined.CalendarMonth
+import androidx.compose.material.icons.outlined.ViewAgenda
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.StrokeJoin
-import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.role
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.forcetower.unes.R
-import dev.forcetower.unes.designsystem.foundation.Mesh
-import dev.forcetower.unes.designsystem.foundation.MeshVariant
+import dev.forcetower.unes.designsystem.foundation.fadeInOnAppear
 import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
+import dev.forcetower.unes.designsystem.theme.MelonTheme
 import dev.forcetower.unes.designsystem.theme.melon
-import dev.forcetower.unes.ui.feature.calendar.components.CalCategoryFilterRow
+import dev.forcetower.unes.ui.feature.calendar.components.CalCategorySegmented
+import dev.forcetower.unes.ui.feature.calendar.components.CalEventRow
+import dev.forcetower.unes.ui.feature.calendar.components.CalEventSheet
 import dev.forcetower.unes.ui.feature.calendar.components.CalHeroCard
-import dev.forcetower.unes.ui.feature.calendar.components.CalMonthSection
-import dev.forcetower.unes.ui.feature.calendar.components.CalScopeFilterRow
+import dev.forcetower.unes.ui.feature.calendar.components.CalMonthGrid
+import dev.forcetower.unes.ui.feature.calendar.components.CalScopeChips
+import java.time.LocalDate
+import java.time.YearMonth
 import java.util.Locale
 
-// Academic-calendar screen — surfaces every UEFS-side date the student should
-// know about (deadlines, exams, holidays) in one agenda. Pushed from the
-// "Calendário" shortcut on the Me hub. Mirrors iOS `CalendarView` (timeline
-// variant — the only one shipped in production).
+// Academic-calendar screen — every UEFS-side date the student should know
+// about (deadlines, exams, holidays), with an Agenda / Grade toggle on the
+// app bar, a "próxima ação" mesh hero, category + scope filters, and an M3
+// bottom sheet per event. Pushed from the "Calendário" shortcut on the Me
+// hub. Mirrors the dc `UNES Calendário - Android`.
 @Composable
 internal fun CalendarScreen(
     onBack: () -> Unit,
@@ -80,200 +80,355 @@ internal fun CalendarScreen(
 ) {
     val vm: CalendarViewModel = hiltViewModel()
     val state by vm.state.collectAsStateWithLifecycle()
+    CalendarContent(
+        events = state.events,
+        onBack = onBack,
+        modifier = modifier,
+        bottomInset = bottomInset,
+    )
+}
 
+@Composable
+private fun CalendarContent(
+    events: List<CalendarEvent>,
+    onBack: () -> Unit,
+    modifier: Modifier = Modifier,
+    bottomInset: Dp = 0.dp,
+) {
     var category by rememberSaveable { mutableStateOf(CalendarCategoryFilter.All) }
     var scope by rememberSaveable { mutableStateOf(CalendarScopeFilter.All) }
+    var viewMode by rememberSaveable { mutableStateOf(CalendarViewMode.Agenda) }
+    var openEventId by rememberSaveable { mutableStateOf<String?>(null) }
 
-    val filtered = remember(state.events, category, scope) {
-        state.events.filter { category.matches(it) && scope.matches(it) }
+    val today = remember { CalendarMath.today }
+    // YearMonth isn't Saveable — persist the grid cursor as a proleptic-month
+    // count and the selection as an epoch day.
+    var gridMonthIndex by rememberSaveable {
+        mutableLongStateOf(today.year * 12L + today.monthValue - 1)
     }
-    // Hide past events from the body, but keep events that are still active
+    var selectedEpochDay by rememberSaveable { mutableLongStateOf(today.toEpochDay()) }
+    val gridMonth = YearMonth.of((gridMonthIndex / 12).toInt(), (gridMonthIndex % 12).toInt() + 1)
+    val selected = LocalDate.ofEpochDay(selectedEpochDay)
+
+    val filtered = remember(events, category, scope) {
+        events.filter { category.matches(it) && scope.matches(it) }
+    }
+    // Hide past events from the agenda, but keep events that are still active
     // even though they started in the past — so the hero + agenda agree.
     val visible = remember(filtered) {
         filtered.filter { CalendarMath.status(it) != CalendarStatus.Past }
     }
     val monthGroups = remember(visible) { visible.groupedByMonth() }
     val hero = remember(filtered) { CalendarMath.nextDeadline(filtered) }
-
-    val surface = MaterialTheme.colorScheme.surface
-
-    Box(
-        modifier = modifier
-            .fillMaxSize()
-            .background(surface),
-    ) {
-        // Ambient warm mesh wash pinned to the top, fading into the surface.
-        Box(modifier = Modifier
-            .fillMaxWidth()
-            .height(280.dp)) {
-            Mesh(
-                variant = MeshVariant.Warm,
-                intensity = 0.5f,
-                modifier = Modifier.fillMaxSize(),
-            )
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(
-                        Brush.verticalGradient(
-                            0f to Color.Transparent,
-                            0.92f to surface,
-                        ),
-                    ),
-            )
-        }
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
-                .verticalScroll(rememberScrollState())
-                .padding(bottom = bottomInset + 32.dp),
-        ) {
-            Header(
-                semesterCode = state.semesterCode,
-                onBack = onBack,
-                modifier = Modifier.fadeUpOnAppear(delayMs = 20),
-            )
-
-            if (hero != null) {
-                CalHeroCard(
-                    event = hero,
-                    modifier = Modifier
-                        .padding(horizontal = 14.dp, vertical = 0.dp)
-                        .padding(bottom = 14.dp)
-                        .fadeUpOnAppear(delayMs = 120),
-                )
-            }
-
-            CalCategoryFilterRow(
-                active = category,
-                onChange = { category = it },
-                modifier = Modifier.fadeUpOnAppear(delayMs = 200),
-            )
-            CalScopeFilterRow(
-                active = scope,
-                onChange = { scope = it },
-                modifier = Modifier
-                    .padding(top = 8.dp, bottom = 10.dp)
-                    .fadeUpOnAppear(delayMs = 260),
-            )
-
-            if (monthGroups.isEmpty()) {
-                EmptyState()
-            } else {
-                Column(
-                    modifier = Modifier
-                        .padding(horizontal = 14.dp)
-                        .fadeUpOnAppear(delayMs = 340),
-                    verticalArrangement = Arrangement.spacedBy(0.dp),
-                ) {
-                    monthGroups.forEach { group ->
-                        key(group.id) {
-                            CalMonthSection(group = group)
-                        }
-                    }
-                }
-            }
-
-            SyncFooter(modifier = Modifier.fadeUpOnAppear(delayMs = 440))
-        }
-    }
-}
-
-@Composable
-private fun Header(
-    semesterCode: String?,
-    onBack: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    val ink = MaterialTheme.colorScheme.onBackground
-    val ink3 = MaterialTheme.colorScheme.onSurfaceVariant
-    val accent = MaterialTheme.colorScheme.primary
-    val effectiveCode = semesterCode ?: CalendarFixtures.SemesterLabel
+    // Resolved against the unfiltered list so the sheet survives filter swaps.
+    val openEvent = remember(events, openEventId) { events.find { it.id == openEventId } }
 
     Column(
         modifier = modifier
-            .fillMaxWidth()
-            .windowInsetsPadding(WindowInsets.statusBars)
-            .padding(horizontal = 20.dp)
-            .padding(top = 4.dp, bottom = 18.dp),
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
+            .verticalScroll(rememberScrollState())
+            .padding(bottom = bottomInset + 32.dp),
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            modifier = Modifier.padding(bottom = 10.dp),
-        ) {
-            BackChevronButton(onBack = onBack)
-            Text(
-                text = stringResource(R.string.calendar_header_eyebrow_format, effectiveCode)
-                    .uppercase(Locale.ROOT),
-                style = MaterialTheme.typography.labelSmall.copy(
-                    fontSize = 10.sp,
-                    fontWeight = FontWeight.Medium,
-                    fontFamily = FontFamily.Monospace,
-                    letterSpacing = 1.2.sp,
-                ),
-                color = ink3,
+        AppBar(
+            viewMode = viewMode,
+            onBack = onBack,
+            onViewModeChange = { viewMode = it },
+            modifier = Modifier.fadeInOnAppear(delayMs = 20),
+        )
+        Headline(modifier = Modifier.fadeInOnAppear(delayMs = 40))
+
+        if (hero != null) {
+            CalHeroCard(
+                event = hero,
+                onClick = { openEventId = hero.id },
+                modifier = Modifier
+                    .padding(start = 20.dp, end = 20.dp, top = 14.dp)
+                    .fadeUpOnAppear(delayMs = 100, fromOffset = 20.dp),
             )
         }
-        Text(
-            text = buildAnnotatedString {
-                withStyle(SpanStyle(color = ink)) { append(stringResource(R.string.calendar_header_title_lead)) }
-                append(" ")
-                withStyle(
-                    SpanStyle(
-                        color = accent,
-                        fontStyle = FontStyle.Italic,
-                    ),
-                ) { append(stringResource(R.string.calendar_header_title_emphasis)) }
-            },
-            style = MaterialTheme.typography.headlineLarge.copy(
-                fontSize = 32.sp,
-                lineHeight = 32.sp,
-                letterSpacing = (-0.64).sp,
-            ),
+
+        CalCategorySegmented(
+            active = category,
+            onChange = { category = it },
+            modifier = Modifier
+                .padding(start = 20.dp, end = 20.dp, top = 18.dp)
+                .fadeUpOnAppear(delayMs = 200),
         )
-        Spacer(modifier = Modifier.height(4.dp))
-        Text(
-            text = stringResource(R.string.calendar_header_subtitle),
-            style = MaterialTheme.typography.bodyMedium.copy(fontSize = 13.sp),
-            color = ink3,
+        CalScopeChips(
+            active = scope,
+            onChange = { scope = it },
+            modifier = Modifier
+                .padding(top = 12.dp)
+                .fadeUpOnAppear(delayMs = 260),
+        )
+
+        when (viewMode) {
+            CalendarViewMode.Agenda -> AgendaBody(monthGroups = monthGroups, onOpen = { openEventId = it })
+            CalendarViewMode.Grid -> GridBody(
+                month = gridMonth,
+                events = filtered,
+                selected = selected,
+                today = today,
+                onSelect = { selectedEpochDay = it.toEpochDay() },
+                onMonthShift = { gridMonthIndex += it },
+                onOpen = { openEventId = it },
+            )
+        }
+
+        SyncFooter(modifier = Modifier.fadeUpOnAppear(delayMs = 440))
+    }
+
+    if (openEvent != null) {
+        CalEventSheet(event = openEvent, onDismiss = { openEventId = null })
+    }
+}
+
+@Composable
+private fun AppBar(
+    viewMode: CalendarViewMode,
+    onBack: () -> Unit,
+    onViewModeChange: (CalendarViewMode) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .windowInsetsPadding(WindowInsets.statusBars)
+            .padding(horizontal = 8.dp, vertical = 2.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        IconButton(onClick = onBack) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = stringResource(R.string.calendar_back_label),
+                tint = MaterialTheme.colorScheme.onBackground,
+            )
+        }
+        Spacer(modifier = Modifier.weight(1f))
+        ViewToggleButton(
+            active = viewMode == CalendarViewMode.Agenda,
+            activeIcon = Icons.Filled.ViewAgenda,
+            inactiveIcon = Icons.Outlined.ViewAgenda,
+            label = stringResource(R.string.calendar_view_agenda_label),
+            onClick = { onViewModeChange(CalendarViewMode.Agenda) },
+        )
+        ViewToggleButton(
+            active = viewMode == CalendarViewMode.Grid,
+            activeIcon = Icons.Filled.CalendarMonth,
+            inactiveIcon = Icons.Outlined.CalendarMonth,
+            label = stringResource(R.string.calendar_view_grid_label),
+            onClick = { onViewModeChange(CalendarViewMode.Grid) },
         )
     }
 }
 
 @Composable
-private fun BackChevronButton(onBack: () -> Unit) {
-    val card = MaterialTheme.melon.surface.card
-    val cardLine = MaterialTheme.melon.surface.cardLine
-    val ink = MaterialTheme.colorScheme.onBackground
-    val backLabel = stringResource(R.string.calendar_back_label)
-    Box(
-        modifier = Modifier
-            .size(38.dp)
-            .clip(CircleShape)
-            .background(card)
-            .border(1.dp, cardLine, CircleShape)
-            .clickable(onClick = onBack)
-            .semantics {
-                role = Role.Button
-                contentDescription = backLabel
+private fun ViewToggleButton(
+    active: Boolean,
+    activeIcon: ImageVector,
+    inactiveIcon: ImageVector,
+    label: String,
+    onClick: () -> Unit,
+) {
+    IconButton(
+        onClick = onClick,
+        colors = IconButtonDefaults.iconButtonColors(
+            containerColor = if (active) {
+                MaterialTheme.colorScheme.primary.copy(alpha = 0.18f)
+            } else {
+                Color.Transparent
             },
-        contentAlignment = Alignment.Center,
+            contentColor = if (active) {
+                MaterialTheme.colorScheme.primary
+            } else {
+                MaterialTheme.colorScheme.onSurfaceVariant
+            },
+        ),
     ) {
-        Canvas(modifier = Modifier.size(14.dp)) {
-            val w = size.width
-            val h = size.height
-            val sx = w / 14f
-            val sy = h / 14f
-            val stroke = Stroke(width = 1.5f * density, cap = StrokeCap.Round, join = StrokeJoin.Round)
-            val path = Path().apply {
-                moveTo(8.5f * sx, 3f * sy)
-                lineTo(4.5f * sx, 7f * sy)
-                lineTo(8.5f * sx, 11f * sy)
+        Icon(
+            imageVector = if (active) activeIcon else inactiveIcon,
+            contentDescription = label,
+            modifier = Modifier.size(22.dp),
+        )
+    }
+}
+
+@Composable
+private fun Headline(modifier: Modifier = Modifier) {
+    Column(modifier = modifier.padding(horizontal = 20.dp)) {
+        Text(
+            text = stringResource(R.string.calendar_title),
+            style = MaterialTheme.typography.headlineLarge.copy(
+                fontSize = 32.sp,
+                lineHeight = 34.sp,
+                letterSpacing = (-0.64).sp,
+            ),
+            color = MaterialTheme.colorScheme.onBackground,
+        )
+        Text(
+            text = stringResource(R.string.calendar_header_subtitle),
+            style = MaterialTheme.typography.bodyMedium.copy(fontSize = 13.sp),
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(top = 7.dp),
+        )
+    }
+}
+
+@Composable
+private fun AgendaBody(
+    monthGroups: List<CalendarMonthGroup>,
+    onOpen: (String) -> Unit,
+) {
+    if (monthGroups.isEmpty()) {
+        EmptyState()
+        return
+    }
+    Column(
+        modifier = Modifier
+            .padding(horizontal = 20.dp)
+            .fadeUpOnAppear(delayMs = 340),
+    ) {
+        monthGroups.forEach { group ->
+            key(group.id) {
+                MonthSection(group = group, onOpen = onOpen)
             }
-            drawPath(path = path, color = ink, style = stroke)
+        }
+    }
+}
+
+@Composable
+private fun MonthSection(group: CalendarMonthGroup, onOpen: (String) -> Unit) {
+    val today = remember { CalendarMath.today }
+    val isCurrent = today.year == group.year && today.monthValue == group.month
+    val monthName = CalendarFormat.monthsLong[group.month - 1]
+        .replaceFirstChar { it.titlecase(Locale.ROOT) }
+
+    Column(modifier = Modifier.padding(top = 10.dp)) {
+        Row(
+            modifier = Modifier.padding(start = 2.dp, end = 2.dp, top = 12.dp, bottom = 10.dp),
+            verticalAlignment = Alignment.Bottom,
+            horizontalArrangement = Arrangement.spacedBy(9.dp),
+        ) {
+            Text(
+                text = monthName,
+                style = MaterialTheme.typography.headlineSmall.copy(
+                    fontSize = 22.sp,
+                    lineHeight = 22.sp,
+                    letterSpacing = (-0.44).sp,
+                ),
+                color = if (isCurrent) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground,
+            )
+            Text(
+                text = pluralStringResource(
+                    R.plurals.calendar_month_summary,
+                    group.events.size,
+                    group.year,
+                    group.events.size,
+                ),
+                style = MaterialTheme.typography.labelSmall.copy(fontSize = 12.sp),
+                color = MaterialTheme.colorScheme.outlineVariant,
+                modifier = Modifier.padding(bottom = 1.dp),
+            )
+        }
+        Column(verticalArrangement = Arrangement.spacedBy(9.dp)) {
+            group.events.forEach { event ->
+                key(event.id) {
+                    CalEventRow(event = event, onClick = { onOpen(event.id) })
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun GridBody(
+    month: YearMonth,
+    events: List<CalendarEvent>,
+    selected: LocalDate,
+    today: LocalDate,
+    onSelect: (LocalDate) -> Unit,
+    onMonthShift: (Long) -> Unit,
+    onOpen: (String) -> Unit,
+) {
+    val selectedEvents = remember(events, selected) {
+        events.filter { CalendarMath.occursOn(it, selected) }.sortedBy { it.start }
+    }
+
+    Column(
+        modifier = Modifier
+            .padding(horizontal = 20.dp)
+            .fadeUpOnAppear(delayMs = 340),
+    ) {
+        CalMonthGrid(
+            month = month,
+            events = events,
+            selected = selected,
+            onSelect = onSelect,
+            onPrevMonth = { onMonthShift(-1L) },
+            onNextMonth = { onMonthShift(1L) },
+            modifier = Modifier.padding(top = 12.dp),
+        )
+
+        Row(
+            modifier = Modifier.padding(start = 6.dp, end = 6.dp, top = 16.dp, bottom = 10.dp),
+            verticalAlignment = Alignment.Bottom,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Text(
+                text = if (selected == today) {
+                    stringResource(R.string.calendar_grid_selected_today)
+                } else {
+                    stringResource(
+                        R.string.calendar_grid_selected_day_format,
+                        selected.dayOfMonth,
+                        CalendarFormat.monthsLong[selected.monthValue - 1],
+                    )
+                },
+                style = MaterialTheme.typography.titleMedium.copy(
+                    fontSize = 18.sp,
+                    letterSpacing = (-0.36).sp,
+                ),
+                color = MaterialTheme.colorScheme.onBackground,
+            )
+            Text(
+                text = CalendarFormat.weekday(selected),
+                style = MaterialTheme.typography.labelSmall.copy(fontSize = 12.sp),
+                color = MaterialTheme.colorScheme.outlineVariant,
+                modifier = Modifier.padding(bottom = 1.dp),
+            )
+        }
+
+        if (selectedEvents.isEmpty()) {
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(18.dp),
+                color = MaterialTheme.melon.surface.card,
+                border = BorderStroke(1.dp, MaterialTheme.melon.surface.line),
+            ) {
+                Text(
+                    text = stringResource(R.string.calendar_grid_empty),
+                    style = MaterialTheme.typography.bodyMedium.copy(fontSize = 13.sp),
+                    color = MaterialTheme.colorScheme.outlineVariant,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(20.dp),
+                )
+            }
+        } else {
+            Column(verticalArrangement = Arrangement.spacedBy(9.dp)) {
+                selectedEvents.forEach { event ->
+                    key(event.id) {
+                        CalEventRow(
+                            event = event,
+                            onClick = { onOpen(event.id) },
+                            showDate = false,
+                        )
+                    }
+                }
+            }
         }
     }
 }
@@ -281,18 +436,13 @@ private fun BackChevronButton(onBack: () -> Unit) {
 @Composable
 private fun SyncFooter(modifier: Modifier = Modifier) {
     Text(
-        text = stringResource(R.string.calendar_sync_footer).uppercase(Locale.ROOT),
-        style = MaterialTheme.typography.labelSmall.copy(
-            fontSize = 9.sp,
-            fontWeight = FontWeight.Normal,
-            fontFamily = FontFamily.Monospace,
-            letterSpacing = 1.26.sp,
-        ),
+        text = stringResource(R.string.calendar_sync_footer),
+        style = MaterialTheme.typography.labelSmall.copy(fontSize = 11.5.sp),
         color = MaterialTheme.colorScheme.outlineVariant,
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 24.dp, vertical = 10.dp),
-        textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+            .padding(horizontal = 24.dp, vertical = 22.dp),
+        textAlign = TextAlign.Center,
     )
 }
 
@@ -305,6 +455,14 @@ private fun EmptyState() {
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 40.dp, vertical = 80.dp),
-        textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+        textAlign = TextAlign.Center,
     )
+}
+
+@Preview
+@Composable
+private fun CalendarPreview() {
+    MelonTheme {
+        CalendarContent(events = CalendarFixtures.events, onBack = {})
+    }
 }
