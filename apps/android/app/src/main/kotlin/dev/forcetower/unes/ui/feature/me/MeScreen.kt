@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.forcetower.melon.feature.me.domain.model.AcademicDocument
 import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
 import dev.forcetower.unes.designsystem.foundation.scaleInOnAppear
@@ -57,6 +58,7 @@ import dev.forcetower.unes.ui.feature.me.components.SettingsCard
 import dev.forcetower.unes.ui.feature.me.components.ShortcutGrid
 import dev.forcetower.unes.ui.feature.me.components.WideShortcutCard
 import dev.forcetower.unes.ui.feature.me.components.rememberAppInfo
+import dev.forcetower.unes.ui.feature.me.documents.MeDocumentSheet
 import java.util.Locale
 
 // "Eu" tab — 2026 redesign (dc project `UNES Eu - Android`). Stack from top
@@ -97,10 +99,13 @@ internal fun MeScreen(
         when (kind) {
             ShortcutKind.Calendar -> connectedNavigator.navigate(ConnectedRoute.Calendar)
             ShortcutKind.Countdown -> connectedNavigator.navigate(ConnectedRoute.FinalCountdown)
-            // Gated tiles without an Android screen yet (Matrícula,
-            // Comprovante, Histórico, Paradoxo, Materiais) — they only render
-            // in debug builds or once the remote flag flips, and routing
-            // lands together with each feature.
+            ShortcutKind.Certificate ->
+                vm.onIntent(MeIntent.OpenDocument(AcademicDocument.EnrollmentCertificate))
+            ShortcutKind.History ->
+                vm.onIntent(MeIntent.OpenDocument(AcademicDocument.AcademicHistory))
+            // Gated tiles without an Android screen yet (Matrícula, Paradoxo,
+            // Materiais) — they only render in debug builds or once the
+            // remote flag flips, and routing lands together with each feature.
             else -> Unit
         }
     }
@@ -174,6 +179,20 @@ internal fun MeScreen(
                 modifier = Modifier.fadeUpOnAppear(delayMs = 540),
             )
         }
+    }
+
+    val documentSheet = state.documentSheet
+    if (documentSheet != null) {
+        MeDocumentSheet(
+            sheet = documentSheet,
+            identity = identity,
+            captchaSiteKey = state.gates.documentCaptchaSiteKey,
+            captchaBaseUrl = state.gates.documentCaptchaBaseUrl,
+            onRequest = { vm.onIntent(MeIntent.RequestDocument) },
+            onCaptchaSolved = { token -> vm.onIntent(MeIntent.CaptchaSolved(token)) },
+            onCaptchaCanceled = { vm.onIntent(MeIntent.CaptchaCanceled) },
+            onDismiss = { vm.onIntent(MeIntent.CloseDocument) },
+        )
     }
 
     if (state.logoutStep == LogoutStep.Confirming && identity != null) {

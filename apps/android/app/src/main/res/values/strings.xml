@@ -563,6 +563,42 @@
     <string name="me_settings_row_licenses_hint">pacotes open source</string>
     <!-- endregion -->
 
+    <!-- region Me · Document sheet (Comprovante / Histórico) -->
+    <string name="me_document_certificate_title">Comprovante de matrícula</string>
+    <string name="me_document_certificate_subtitle">vínculo ativo</string>
+    <string name="me_document_history_title">Histórico escolar</string>
+    <string name="me_document_history_subtitle">notas e créditos</string>
+    <string name="me_document_close">Fechar</string>
+    <string name="me_document_row_student">Aluno</string>
+    <string name="me_document_row_course">Curso</string>
+    <string name="me_document_row_status">Situação</string>
+    <string name="me_document_row_status_active">Vínculo regular</string>
+    <string name="me_document_download">Baixar PDF</string>
+    <string name="me_document_offline_footnote">fica salvo no dispositivo para acesso offline</string>
+    <string name="me_document_open">Abrir PDF</string>
+    <string name="me_document_refresh">Buscar versão atualizada</string>
+    <string name="me_document_retry">Tentar novamente</string>
+    <string name="me_document_cancel">Cancelar</string>
+    <string name="me_document_captcha_prompt">Confirme que você não é um robô</string>
+    <string name="me_document_generating">Gerando documento…</string>
+    <string name="me_document_generating_certificate">Baixando comprovante…</string>
+    <string name="me_document_generating_sub">gerando documento no portal da UEFS</string>
+    <string name="me_document_refreshing">Buscando versão atualizada…</string>
+    <string name="me_document_refreshing_sub">conectando ao servidor da UEFS</string>
+    <string name="me_document_pdf_badge" translatable="false">PDF</string>
+    <!-- "v3" — offline copy revision chip. -->
+    <string name="me_document_version_format" translatable="false">v%1$d</string>
+    <string name="me_document_status_saved_format">disponível offline · salvo em %1$s</string>
+    <string name="me_document_status_fresh">versão atualizada · salva agora no dispositivo</string>
+    <string name="me_document_status_stale">exibindo versão salva no dispositivo</string>
+    <string name="me_document_stale_title">Não foi possível atualizar</string>
+    <string name="me_document_stale_body">exibindo a cópia salva no dispositivo</string>
+    <string name="me_document_unavailable_title">Documento não disponível</string>
+    <string name="me_document_unavailable_body">o portal não emitiu este documento para a sua matrícula</string>
+    <string name="me_document_error_title">Sem conexão com o servidor</string>
+    <string name="me_document_error_body">não há cópia salva neste dispositivo para abrir offline</string>
+    <!-- endregion -->
+
     <!-- region Me · Sign out + footer -->
     <string name="me_sign_out_label">Sair da conta</string>
     <!-- "UNES v{version} · build {build}" — first footer line. -->
@@ -881,19 +917,21 @@
 
     <!-- region Me · About sheet -->
     <string name="me_about_title">Sobre o aplicativo</string>
-    <string name="me_about_subtitle">unes · informações de depuração</string>
-    <string name="me_about_build_format">build %1$s</string>
-    <string name="me_about_row_version">versão</string>
-    <string name="me_about_row_version_origin">Play Store</string>
-    <string name="me_about_row_build">build</string>
-    <string name="me_about_row_build_origin_format">origem · %1$s</string>
-    <string name="me_about_row_machine_id">machine id</string>
-    <string name="me_about_row_machine_id_sub">gerado para depuração</string>
-    <string name="me_about_row_device">aparelho</string>
-    <string name="me_about_row_device_sub">detectado automaticamente</string>
-    <string name="me_about_copy_label">Copiar informações</string>
-    <string name="me_about_copy_done">Copiado para a área de transferência</string>
-    <string name="me_about_footer">◦ feito com ♥ em feira de santana ◦</string>
+    <string name="me_about_subtitle">versão, build e depuração</string>
+    <string name="me_about_hero_initial" translatable="false">U</string>
+    <string name="me_about_hero_wordmark" translatable="false">UNES</string>
+    <string name="me_about_hero_tagline">o semestre da UEFS no bolso</string>
+    <string name="me_about_tile_build">Build</string>
+    <!-- "origem · Debug / Play Store" -->
+    <string name="me_about_tile_build_sub_format">origem · %1$s</string>
+    <string name="me_about_tile_channel">Canal</string>
+    <string name="me_about_tile_channel_sub_format">versão %1$s</string>
+    <string name="me_about_tile_device">Aparelho</string>
+    <string name="me_about_tile_device_sub_format">Android %1$s</string>
+    <string name="me_about_tile_machine_id">Machine ID</string>
+    <string name="me_about_tile_machine_id_sub">para depuração</string>
+    <string name="me_about_copy_label">Copiar informações de depuração</string>
+    <string name="me_about_copy_done">Copiado!</string>
     <!-- endregion -->
 
     <!-- region Licenças open source · Header chrome -->
