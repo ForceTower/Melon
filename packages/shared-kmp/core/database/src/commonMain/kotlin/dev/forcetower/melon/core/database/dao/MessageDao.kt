@@ -73,7 +73,8 @@ abstract class MessageDao {
     )
     abstract fun observeUnreadCount(): Flow<Int>
 
-    // Latest unread message head — for the Overview "recados" tile preview.
+    // Latest message head, read or unread — the Overview "recados" tile always
+    // surfaces the most recent message; the unread count drives its badge.
     @Query(
         """
         SELECT m.senderName AS senderName,
@@ -81,13 +82,11 @@ abstract class MessageDao {
                m.content AS content,
                m.timestamp AS timestamp
           FROM Message m
-          LEFT JOIN MessageState ms ON ms.messageId = m.id
-         WHERE m.read IS NOT 1 AND ms.readAt IS NULL
          ORDER BY m.timestamp DESC, m.id DESC
          LIMIT 1
         """,
     )
-    abstract fun observeLatestUnread(): Flow<UnreadMessageHeadRow?>
+    abstract fun observeLatestHead(): Flow<UnreadMessageHeadRow?>
 
     @Upsert
     abstract suspend fun upsertMessages(messages: List<MessageEntity>)

@@ -72,8 +72,8 @@ data class OverviewMessagesTile(
     val unreadCount: Int,
     val lastSender: String?,
     val lastPreview: String?,
-    // ISO timestamp of the latest unread message — the UI renders the relative
-    // "2h" chip from it. Null when the inbox has no unread messages.
+    // ISO timestamp of the latest message — the UI renders the relative "2h"
+    // chip from it. Null only when the inbox is empty.
     val lastTimestamp: String?,
 )
 

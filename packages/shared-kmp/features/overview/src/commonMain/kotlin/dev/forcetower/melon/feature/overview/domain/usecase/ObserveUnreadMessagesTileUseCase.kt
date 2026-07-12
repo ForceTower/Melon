@@ -13,7 +13,7 @@ class ObserveUnreadMessagesTileUseCase internal constructor(
     operator fun invoke(): Flow<OverviewMessagesTile> =
         combine(
             messageDao.observeUnreadCount(),
-            messageDao.observeLatestUnread(),
+            messageDao.observeLatestHead(),
         ) { count, head ->
             val preview = head?.subject
                 ?.takeIf { it.isNotBlank() }
