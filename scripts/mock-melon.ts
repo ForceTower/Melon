@@ -154,12 +154,15 @@ const disciplines = [
 // ── campus-event fixture: SIECOMP-shaped, dates pinned around now ──
 // `upcoming` starts in 2 days; `live` started yesterday (today = day 2 of 5)
 // with today's schedule anchored to the current clock — two activities
-// already done, two happening right now, one later today; `ended` wrapped 9
-// days ago. Switching phases bumps the revision so clients replace their
-// (id, revision)-deduped snapshot instead of ignoring the new dates.
+// already done, two happening right now, one later today; `ended` wrapped
+// TODAY, 2 hours ago (today = day 5, closing talk just finished). Switching
+// phases bumps the revision so clients replace their (id, revision)-deduped
+// snapshot instead of ignoring the new dates.
 type CampusPhase = "upcoming" | "live" | "ended";
 let campusPhase: CampusPhase = "upcoming";
-let campusRevision = 1;
+// Minutes-since-epoch base so a server restart never reissues a revision the
+// client already stored — clients dedupe snapshots by (id, revision).
+let campusRevision = Math.floor(Date.now() / 60_000) % 1_000_000;
 
 // Now + `hours`, snapped to the half-hour so mocked times read naturally.
 function offsetHours(hours: number) {
@@ -169,7 +172,7 @@ function offsetHours(hours: number) {
 }
 
 function campusEventPayload() {
-  const dayShift = { upcoming: 2, live: -1, ended: -9 }[campusPhase];
+  const dayShift = { upcoming: 2, live: -1, ended: -4 }[campusPhase];
   const at = (day: number, hour: number, minute = 0) => offsetDate(dayShift + day, hour, minute);
 
   const activities = [
@@ -250,17 +253,27 @@ function campusEventPayload() {
       speakerIds: ["spk-matheus"], speakerNames: ["Matheus Oliveira Borges"], startsAt: at(4, 15, 30), endsAt: at(4, 17, 30) },
   ];
 
-  // Live phase: re-anchor today's (day 2) schedule to the current clock so
-  // the states are guaranteed whenever you test — two done, two happening
-  // right now, one still ahead today.
-  if (campusPhase === "live") {
-    const anchored: Record<string, [string, string | null]> = {
-      "act-cd-1": [offsetHours(-4), offsetHours(-2.5)],
-      "act-integracao": [offsetHours(-3), offsetHours(-1.5)],
-      "act-jogos": [offsetHours(-1), offsetHours(1)],
-      "act-entidades": [offsetHours(-0.5), offsetHours(1.5)],
-      "act-maratona": [offsetHours(2.5), offsetHours(4)],
-    };
+  // Live/ended phases re-anchor "today" to the current clock so the states
+  // are guaranteed whenever you test. Live: today = day 2, two done, two
+  // happening right now, one still ahead. Ended: today = day 5, the closing
+  // talk wrapped 2 hours ago.
+  const anchored: Record<string, [string, string | null]> | null =
+    campusPhase === "live"
+      ? {
+          "act-cd-1": [offsetHours(-4), offsetHours(-2.5)],
+          "act-integracao": [offsetHours(-3), offsetHours(-1.5)],
+          "act-jogos": [offsetHours(-1), offsetHours(1)],
+          "act-entidades": [offsetHours(-0.5), offsetHours(1.5)],
+          "act-maratona": [offsetHours(2.5), offsetHours(4)],
+        }
+      : campusPhase === "ended"
+        ? {
+            "act-boas-praticas": [offsetHours(-8), offsetHours(-6.5)],
+            "act-pbl-final": [offsetHours(-6.5), offsetHours(-4.5)],
+            "act-mundo-real": [offsetHours(-4), offsetHours(-2)],
+          }
+        : null;
+  if (anchored) {
     for (const activity of activities) {
       const times = anchored[activity.id];
       if (times) {
@@ -281,7 +294,9 @@ function campusEventPayload() {
       credit: "Uma realização do DAECOMP · Gestão Bittencourt",
       timezone: "America/Bahia",
       startsAt: at(0, 8),
-      endsAt: at(4, 17, 30),
+      // Freshly-ended events must place the end alongside the re-anchored
+      // closing talk, exactly 2h in the past.
+      endsAt: campusPhase === "ended" ? offsetHours(-2) : at(4, 17, 30),
       activities,
       speakers: [
         { id: "spk-joao", name: "João B. Rocha", role: "Coordenador do curso", organization: "UEFS · PGCC",
