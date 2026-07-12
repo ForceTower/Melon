@@ -56,13 +56,16 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLinkStyles
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withLink
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -510,25 +513,32 @@ private fun loginHeadline(ink: Color, accent: Color): AnnotatedString =
         }
     }
 
+private const val TERMS_URL = "https://unes.forcetower.dev/terms"
+private const val PRIVACY_URL = "https://unes.forcetower.dev/privacy"
+
 @Composable
-private fun termsFooter(subtle: Color, strong: Color): AnnotatedString =
-    buildAnnotatedString {
+private fun termsFooter(subtle: Color, strong: Color): AnnotatedString {
+    val linkStyles = TextLinkStyles(
+        style = SpanStyle(color = strong, fontWeight = FontWeight.Bold),
+    )
+    return buildAnnotatedString {
         withStyle(SpanStyle(color = subtle)) {
             append(stringResource(R.string.onboarding_login_terms_prefix))
         }
-        withStyle(SpanStyle(color = strong, fontWeight = FontWeight.Bold)) {
+        withLink(LinkAnnotation.Url(TERMS_URL, linkStyles)) {
             append(stringResource(R.string.onboarding_login_terms_link_terms))
         }
         withStyle(SpanStyle(color = subtle)) {
             append(stringResource(R.string.onboarding_login_terms_separator))
         }
-        withStyle(SpanStyle(color = strong, fontWeight = FontWeight.Bold)) {
+        withLink(LinkAnnotation.Url(PRIVACY_URL, linkStyles)) {
             append(stringResource(R.string.onboarding_login_terms_link_privacy))
         }
         withStyle(SpanStyle(color = subtle)) {
             append(stringResource(R.string.onboarding_login_terms_suffix))
         }
     }
+}
 
 @Preview
 @Composable
