@@ -3,7 +3,7 @@
     <string name="app_name">UNES</string>
 
     <!-- region Onboarding · Splash -->
-    <string name="onboarding_splash_wordmark">unes</string>
+    <string name="onboarding_splash_wordmark">UNES</string>
     <string name="onboarding_splash_caption">Universidade · Notas · Semestre</string>
     <string name="onboarding_splash_credit_prefix">for</string>
     <string name="onboarding_splash_credit_university">UEFS</string>
