@@ -47,7 +47,7 @@
 - The project builds with **Swift 6** and `SWIFT_STRICT_CONCURRENCY = complete`. Code that
   compiles can still crash at runtime when actor-isolation preconditions are violated —
   write isolation-safe code, don't just satisfy the compiler.
-- If you make big changes to iOS or KMP and are on macOS, try to compile the app.
+- If you make big changes to iOS and are on macOS, try to compile the app.
 - English identifiers/comments always; pt-BR only for user-facing copy (folder is
   `Features/Enrollment`, not `Matricula`).
 - Native back chevrons only; multi-step flows value-route on the host `NavigationStack`
@@ -58,6 +58,8 @@
 - `packages/shared-kmp` holds the shared business logic and is consumed by the Android
   app. The iOS app (`apps/ios`) is fully native and does not consume KMP; the iOS
   XCFramework target is kept building regardless.
+- KMP changes only need the Android (Gradle) build to verify — no iOS compile required.
+  Keep both KMP targets (Android library + iOS XCFramework) in the build config.
 
 ## Android (Kotlin)
 
