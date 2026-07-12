@@ -96,7 +96,7 @@ internal fun ConnectedNavigationBar(
                     },
                     colors = NavigationBarItemDefaults.colors(
                         selectedIconColor = MaterialTheme.colorScheme.primary,
-                        selectedTextColor = MaterialTheme.colorScheme.onSurface,
+                        selectedTextColor = MaterialTheme.colorScheme.primary,
                         indicatorColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.20f),
                         unselectedIconColor = MaterialTheme.colorScheme.outline,
                         unselectedTextColor = MaterialTheme.colorScheme.outline,
