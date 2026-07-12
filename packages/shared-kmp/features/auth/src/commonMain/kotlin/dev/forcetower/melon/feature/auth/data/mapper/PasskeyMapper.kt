@@ -1,10 +1,15 @@
 package dev.forcetower.melon.feature.auth.data.mapper
 
 import dev.forcetower.melon.feature.auth.data.dto.PasskeyAssertionPayload
+import dev.forcetower.melon.feature.auth.data.dto.PasskeyAttestationPayload
 import dev.forcetower.melon.feature.auth.data.dto.PasskeyAuthOptionsResponse
+import dev.forcetower.melon.feature.auth.data.dto.PasskeyCredentialDto
+import dev.forcetower.melon.feature.auth.data.dto.PasskeyRegisterVerifyRequest
 import dev.forcetower.melon.feature.auth.domain.model.PasskeyAllowedCredential
 import dev.forcetower.melon.feature.auth.domain.model.PasskeyAssertion
+import dev.forcetower.melon.feature.auth.domain.model.PasskeyAttestation
 import dev.forcetower.melon.feature.auth.domain.model.PasskeyChallenge
+import dev.forcetower.melon.feature.auth.domain.model.PasskeyCredential
 
 internal fun PasskeyAuthOptionsResponse.toDomain(): PasskeyChallenge {
     return PasskeyChallenge(
@@ -33,5 +38,27 @@ internal fun PasskeyAssertion.toDto(): PasskeyAssertionPayload {
         authenticatorData = authenticatorData,
         signature = signature,
         userHandle = userHandle,
+    )
+}
+
+internal fun PasskeyAttestation.toVerifyRequest(deviceName: String?): PasskeyRegisterVerifyRequest {
+    return PasskeyRegisterVerifyRequest(
+        response = PasskeyAttestationPayload(
+            id = id,
+            rawId = rawId,
+            authenticatorAttachment = authenticatorAttachment,
+            clientDataJSON = clientDataJSON,
+            attestationObject = attestationObject,
+        ),
+        deviceName = deviceName,
+    )
+}
+
+internal fun PasskeyCredentialDto.toDomain(): PasskeyCredential {
+    return PasskeyCredential(
+        id = id,
+        deviceName = deviceName,
+        isSynced = deviceType == "multiDevice",
+        createdAt = createdAt,
     )
 }

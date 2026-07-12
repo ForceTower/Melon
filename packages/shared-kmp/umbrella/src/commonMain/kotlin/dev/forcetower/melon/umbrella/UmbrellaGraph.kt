@@ -10,7 +10,12 @@ import dev.forcetower.melon.core.network.BaseUrl
 import dev.forcetower.melon.core.session.domain.SessionStore
 import dev.forcetower.melon.feature.auth.domain.usecase.BeginPasskeyLoginUseCase
 import dev.forcetower.melon.feature.auth.domain.usecase.CompletePasskeyLoginUseCase
+import dev.forcetower.melon.feature.auth.domain.usecase.DeletePasskeyUseCase
+import dev.forcetower.melon.feature.auth.domain.usecase.GetPasskeyRegistrationOptionsUseCase
+import dev.forcetower.melon.feature.auth.domain.usecase.ListPasskeysUseCase
 import dev.forcetower.melon.feature.auth.domain.usecase.LoginUseCase
+import dev.forcetower.melon.feature.auth.domain.usecase.RegisterPasskeyUseCase
+import dev.forcetower.melon.feature.auth.domain.usecase.RenamePasskeyUseCase
 import dev.forcetower.melon.feature.calendar.domain.usecase.ObserveActiveSemesterCodeUseCase
 import dev.forcetower.melon.feature.calendar.domain.usecase.ObserveCalendarEventsUseCase
 import dev.forcetower.melon.feature.campusevent.domain.usecase.ClearCampusEventUseCase
@@ -76,6 +81,15 @@ interface UmbrellaGraph {
     val loginUseCase: LoginUseCase
     val beginPasskeyLoginUseCase: BeginPasskeyLoginUseCase
     val completePasskeyLoginUseCase: CompletePasskeyLoginUseCase
+
+    // Passkey management (Configurações → Chaves de acesso). Registration is
+    // two-legged (options → verify) around the platform CredentialManager;
+    // list/rename/delete back the management screen.
+    val getPasskeyRegistrationOptionsUseCase: GetPasskeyRegistrationOptionsUseCase
+    val registerPasskeyUseCase: RegisterPasskeyUseCase
+    val listPasskeysUseCase: ListPasskeysUseCase
+    val renamePasskeyUseCase: RenamePasskeyUseCase
+    val deletePasskeyUseCase: DeletePasskeyUseCase
     val refreshSessionUseCase: RefreshSessionUseCase
     val backfillMirrorUseCase: BackfillMirrorUseCase
     val registerNotificationTokenUseCase: RegisterNotificationTokenUseCase
