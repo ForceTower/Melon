@@ -20,6 +20,7 @@ import dev.forcetower.melon.feature.disciplines.domain.usecase.ObserveDiscipline
 import dev.forcetower.melon.feature.enrollment.domain.usecase.GetEnrollmentOffersUseCase
 import dev.forcetower.melon.feature.enrollment.domain.usecase.GetEnrollmentWindowUseCase
 import dev.forcetower.melon.feature.enrollment.domain.usecase.SubmitEnrollmentUseCase
+import dev.forcetower.melon.feature.me.domain.usecase.FetchAcademicDocumentUseCase
 import dev.forcetower.melon.feature.me.domain.usecase.ObserveCurrentCredentialsUseCase
 import dev.forcetower.melon.feature.me.domain.usecase.ObserveMeProfileUseCase
 import dev.forcetower.melon.feature.messages.domain.usecase.MarkAllMessagesAsReadUseCase
@@ -135,6 +136,10 @@ interface UmbrellaGraph {
     // Eu (Me) reactive surface — emits the hero identity, semester strip data,
     // CR/hours rollup, and the closest upcoming evaluation as one snapshot.
     val observeMeProfileUseCase: ObserveMeProfileUseCase
+
+    // Eu (Me) document requests — Comprovante/Histórico PDFs pulled through
+    // the backend, optionally carrying a solved reCAPTCHA token.
+    val fetchAcademicDocumentUseCase: FetchAcademicDocumentUseCase
 
     // Matrícula (enrollment) — all live/uncached. `window` is the cheap hub-gate
     // + entry-screen check, `offers` is the full disciplines tree, and `submit`
