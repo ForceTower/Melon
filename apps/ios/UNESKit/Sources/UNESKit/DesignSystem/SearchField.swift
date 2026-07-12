@@ -17,7 +17,10 @@ struct SearchField: View {
 
             TextField(
                 "",
-                text: Binding(get: { query }, set: { onQueryChange($0) }),
+                // Same-value writes are dropped: TextField re-commits its text when it
+                // resigns first responder during a pop, which would otherwise send an
+                // action to an element already removed from the navigation stack.
+                text: Binding(get: { query }, set: { if $0 != query { onQueryChange($0) } }),
                 prompt: Text(placeholder)
             )
             .font(.system(size: 16, weight: .medium))
