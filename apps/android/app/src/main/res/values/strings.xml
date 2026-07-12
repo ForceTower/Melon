@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">unes</string>
+    <string name="app_name">UNES</string>
 
     <!-- region Onboarding · Splash -->
     <string name="onboarding_splash_wordmark">unes</string>
