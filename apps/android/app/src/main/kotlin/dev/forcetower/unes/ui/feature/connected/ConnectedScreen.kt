@@ -172,6 +172,15 @@ fun ConnectedScreen(
                         offerId = route.offerId,
                         listVm = disciplinesVm,
                         onBack = { navigator.goBack() },
+                        onOpenMaterials = { disciplineId, code, name ->
+                            navigator.navigate(
+                                ConnectedRoute.MaterialsDiscipline(
+                                    disciplineId = disciplineId,
+                                    code = code,
+                                    name = name,
+                                ),
+                            )
+                        },
                         bottomInset = bottomInset,
                     )
                 }

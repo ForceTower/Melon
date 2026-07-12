@@ -170,6 +170,7 @@ private fun mapGrade(raw: KmpGrade): GradeEntry = GradeEntry(
     title = raw.name,
     date = DisciplineDateFormatting.ddMmYyyy(raw.date),
     score = raw.value,
+    weight = raw.weight,
 )
 
 // "Te · Pr"-style label from the upstream slug. Empty/unknown labels become an

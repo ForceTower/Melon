@@ -5,6 +5,9 @@ package dev.forcetower.melon.feature.disciplines.domain.model
 // pre-ordered the way the UI expects: groups by class type then name, sections
 // one-per-class, grades by (evaluation.position, ordinal), lectures ascending
 // by date, attachments newest-first.
+// `lectures` carries the full lesson plan (placeholder rows filtered out);
+// windowing/collapsing to the "interesting" slice around today is a
+// presentation concern handled by the native side via `isPast`/`isCurrent`.
 data class DisciplineDetail(
     val offerId: String,
     val semesterId: String,
@@ -52,9 +55,13 @@ data class DisciplineDetailSection(
 
 // One evaluation slot for a student. `value` / `weight` are parsed — upstream
 // stores them as strings with comma decimals which the use case normalizes.
+// `gradeName` is the raw upstream grade name ("Prova Final" etc.) — the native
+// side needs it verbatim to pull the final-exam row out of the regular list
+// (name "Prova Final" + short "Adicional", never inferred from the value).
 data class DisciplineDetailGrade(
     val evaluationId: String,
     val evaluationName: String?,
+    val gradeName: String,
     val gradeNameShort: String?,
     val position: Int,
     val ordinal: Int,

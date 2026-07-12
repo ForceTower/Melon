@@ -425,87 +425,123 @@
     </plurals>
     <!-- endregion -->
 
-    <!-- region Discipline Detail · Hero / stats -->
+    <!-- region Discipline Detail · Top bar / header -->
     <string name="discipline_detail_back">Voltar</string>
-    <!-- "Departamento de Ciências Exatas" — eyebrow line under the code chip. -->
+    <string name="discipline_detail_topbar_title">Detalhes da turma</string>
+    <!-- "Departamento de Ciências Exatas" — eyebrow line next to the code chip. -->
     <string name="discipline_detail_department_format">Departamento de %1$s</string>
-    <string name="discipline_detail_stat_hours">Carga horária</string>
-    <string name="discipline_detail_stat_hours_sub">total da disciplina</string>
-    <string name="discipline_detail_stat_absences">Faltas</string>
-    <!-- "13 ainda disponíveis" — sub-line under the absences stat value. -->
-    <string name="discipline_detail_stat_absences_sub_format">%1$d ainda disponíveis</string>
+    <string name="discipline_detail_teacher_role">Professor</string>
     <string name="discipline_detail_group_all">Tudo</string>
+    <!-- endregion -->
+
+    <!-- region Discipline Detail · Média hero -->
+    <string name="discipline_detail_media_partial">Média parcial</string>
+    <string name="discipline_detail_media_final">Média final</string>
+    <!-- "3 de 3 notas lançadas" — quantity keyed on the total. -->
+    <plurals name="discipline_detail_media_released">
+        <item quantity="one">%1$d de %2$d nota lançada</item>
+        <item quantity="other">%1$d de %2$d notas lançadas</item>
+    </plurals>
+    <string name="discipline_detail_media_after_final">após a prova final</string>
+    <string name="discipline_detail_media_no_grades">sem notas lançadas</string>
+    <string name="discipline_detail_status_approved">Aprovado</string>
+    <string name="discipline_detail_status_approved_final">Aprovado na final</string>
+    <string name="discipline_detail_status_failed">Reprovado</string>
+    <string name="discipline_detail_status_finals">Prova final</string>
+    <string name="discipline_detail_status_ongoing">Em andamento</string>
+    <string name="discipline_detail_status_low">Nota baixa</string>
+    <string name="discipline_detail_status_pending">Sem notas</string>
     <!-- endregion -->
 
     <!-- region Discipline Detail · Notas -->
     <string name="discipline_detail_grades_title">Notas</string>
-    <string name="discipline_detail_grades_partial_label">MÉDIA PARCIAL</string>
-    <!-- "MÉDIA PARCIAL · T01" — eyebrow when a specific group pill is selected. -->
-    <string name="discipline_detail_grades_partial_label_with_group_format">MÉDIA PARCIAL · %1$s</string>
-    <!-- Headline label swap when the discipline already has a final grade — the
-         ring renders the final, the subtitle swaps to a status sentence below. -->
-    <string name="discipline_detail_grades_final_label">MÉDIA FINAL</string>
-    <string name="discipline_detail_grades_final_label_with_group_format">MÉDIA FINAL · %1$s</string>
-    <string name="discipline_detail_grades_final_status_approved">Disciplina concluída — aprovado.</string>
-    <string name="discipline_detail_grades_final_status_failed">Disciplina concluída — reprovado.</string>
-    <string name="discipline_detail_grades_final_status_final">Foi para prova final.</string>
-    <string name="discipline_detail_grades_doing_well">Você está indo bem.</string>
-    <string name="discipline_detail_grades_no_grades">Ainda sem notas lançadas.</string>
-    <!-- "Precisa de 7,5 na 1 avaliação restante para fechar em 7,0." — assembled
-         in code so the required-score chunk can carry its own SpanStyle color.
-         Wrapped in double-quotes so Android keeps the leading/trailing spaces
-         around the spliced number; otherwise the resource loader trims them
-         and the line collapses to "Precisa de7,5nas 2 avaliações…". -->
-    <string name="discipline_detail_grades_needed_lead">"Precisa de "</string>
-    <string name="discipline_detail_grades_needed_unreachable">—</string>
-    <string name="discipline_detail_grades_needed_pending_one_format">" na %1$d avaliação restante para fechar em "</string>
-    <string name="discipline_detail_grades_needed_pending_other_format">" nas %1$d avaliações restantes para fechar em "</string>
-    <string name="discipline_detail_grades_needed_target">7,0</string>
-    <string name="discipline_detail_grades_needed_dot">.</string>
+    <string name="discipline_detail_weight_equal">peso igual</string>
+    <string name="discipline_detail_weight_weighted">média ponderada</string>
+    <string name="discipline_detail_grades_empty">O professor ainda não cadastrou avaliações.</string>
+    <string name="discipline_detail_final_section">Prova Final</string>
+    <!-- Tag chip on the Prova Final row — replaces upstream's "Adicional". -->
+    <string name="discipline_detail_final_tag">Final</string>
     <string name="discipline_detail_grade_no_label">—</string>
     <string name="discipline_detail_grade_no_title">Avaliação</string>
     <string name="discipline_detail_grade_no_date">data não divulgada</string>
     <string name="discipline_detail_grade_empty_score">—</string>
     <!-- endregion -->
 
-    <!-- region Discipline Detail · Ementa -->
-    <string name="discipline_detail_ementa_title">Ementa</string>
-    <string name="discipline_detail_ementa_show_more">ler mais</string>
-    <string name="discipline_detail_ementa_show_less">mostrar menos</string>
+    <!-- region Discipline Detail · Carga / Prova Final callout -->
+    <string name="discipline_detail_stat_hours">Carga horária</string>
+    <string name="discipline_detail_stat_hours_sub">total do semestre</string>
+    <string name="discipline_detail_callout_title">Você foi para a prova final</string>
+    <!-- "Sua média parcial ficou em 3,5, abaixo de 7,0 para aprovação direta." —
+         assembled in code so the mean carries its own bold SpanStyle. Quoted so
+         the spaces around the spliced number survive the resource trim. -->
+    <string name="discipline_detail_callout_lead">"Sua média parcial ficou em "</string>
+    <string name="discipline_detail_callout_tail">", abaixo de %1$s para aprovação direta."</string>
+    <string name="discipline_detail_callout_min_caption">é o mínimo na prova final</string>
     <!-- endregion -->
 
-    <!-- region Discipline Detail · Aulas -->
-    <string name="discipline_detail_classes_title">Aulas</string>
-    <!-- "12 aulas" — count caption next to the section title. -->
+    <!-- region Discipline Detail · Frequência -->
+    <string name="discipline_detail_freq_title">Frequência</string>
+    <!-- " de 15" — small "of N" tail after the absences count. Quoted so the
+         leading space survives the resource loader's trim. -->
+    <string name="discipline_detail_freq_of_format">" de %1$d"</string>
+    <string name="discipline_detail_freq_registered">faltas registradas</string>
+    <string name="discipline_detail_freq_remaining">restantes</string>
+    <plurals name="discipline_detail_freq_ok">
+        <item quantity="one">Frequência tranquila — você ainda tem folga para %d falta.</item>
+        <item quantity="other">Frequência tranquila — você ainda tem folga para %d faltas.</item>
+    </plurals>
+    <string name="discipline_detail_freq_warn_mid">Monitore suas faltas com cuidado.</string>
+    <string name="discipline_detail_freq_warn_high">Atenção: você está próximo do limite de faltas.</string>
+    <!-- endregion -->
+
+    <!-- region Discipline Detail · Ementa -->
+    <string name="discipline_detail_ementa_overline">Conteúdo programático</string>
+    <string name="discipline_detail_ementa_show_more">ler mais</string>
+    <string name="discipline_detail_ementa_show_less">ver menos</string>
+    <!-- endregion -->
+
+    <!-- region Discipline Detail · Colaborativo -->
+    <string name="discipline_detail_collab_overline">Colaborativo</string>
+    <plurals name="discipline_detail_collab_count">
+        <item quantity="one">%d material da turma</item>
+        <item quantity="other">%d materiais da turma</item>
+    </plurals>
+    <string name="discipline_detail_collab_empty_title">Seja o primeiro a contribuir</string>
+    <string name="discipline_detail_collab_empty_sub">Compartilhe uma prova antiga ou lista resolvida e ajude a próxima turma.</string>
+    <!-- endregion -->
+
+    <!-- region Discipline Detail · Tabs -->
+    <string name="discipline_detail_tab_materials">Materiais</string>
+    <string name="discipline_detail_tab_classes">Aulas</string>
+    <!-- endregion -->
+
+    <!-- region Discipline Detail · Materiais tab -->
+    <string name="discipline_detail_attachments_header">Publicados pelo professor</string>
+    <plurals name="discipline_detail_attachments_count">
+        <item quantity="one">%d arquivo</item>
+        <item quantity="other">%d arquivos</item>
+    </plurals>
+    <string name="discipline_detail_attachments_empty">Sem anexos desta turma.</string>
+    <string name="discipline_detail_attachment_open">Abrir anexo</string>
+    <!-- "PDF · 24/03" — kind plus lecture date; kind-only when there's no date. -->
+    <string name="discipline_detail_attachment_meta_with_date_format">%1$s · %2$s</string>
+    <string name="discipline_detail_attachment_meta_kind_only_format">%1$s</string>
+    <!-- endregion -->
+
+    <!-- region Discipline Detail · Aulas tab -->
+    <string name="discipline_detail_classes_header">Plano de aulas</string>
+    <!-- "12 aulas" — count caption next to the tab header. -->
     <plurals name="discipline_detail_classes_count">
         <item quantity="one">%d aula</item>
         <item quantity="other">%d aulas</item>
     </plurals>
     <string name="discipline_detail_classes_empty">O professor ainda não registrou aulas.</string>
-    <string name="discipline_detail_classes_next_eyebrow">PRÓXIMA AULA</string>
+    <string name="discipline_detail_class_number_format">Aula %1$d</string>
+    <string name="discipline_detail_class_next_pill">próxima</string>
+    <string name="discipline_detail_classes_show_all_format">Ver todas as %1$d aulas</string>
+    <string name="discipline_detail_classes_show_less">Mostrar menos</string>
     <string name="discipline_detail_classes_no_date">—</string>
     <string name="discipline_detail_classes_no_title">—</string>
-    <string name="discipline_detail_classes_separator">·</string>
-    <!-- endregion -->
-
-    <!-- region Discipline Detail · Anexos -->
-    <string name="discipline_detail_attachments_title">Anexos</string>
-    <string name="discipline_detail_attachments_empty">Sem anexos desta turma.</string>
-    <!-- "PDF · adicionado em 24/03" — assembled when the attachment carries a
-         lecture date (most do); falls back to the kind-only variant otherwise. -->
-    <string name="discipline_detail_attachment_meta_with_date_format">%1$s · adicionado em %2$s</string>
-    <string name="discipline_detail_attachment_meta_kind_only_format">%1$s</string>
-    <!-- endregion -->
-
-    <!-- region Discipline Detail · Presença -->
-    <string name="discipline_detail_presence_title">Presença</string>
-    <!-- " de 15" — small "of N" tail after the absences count. Quoted so the
-         leading space survives the resource loader's trim. -->
-    <string name="discipline_detail_presence_of_format">" de %1$d"</string>
-    <string name="discipline_detail_presence_so_far">faltas até agora</string>
-    <string name="discipline_detail_presence_remaining_label">AINDA PODEM</string>
-    <string name="discipline_detail_presence_warn_high">Atenção: próximo do limite de faltas.</string>
-    <string name="discipline_detail_presence_warn_mid">Monitore suas faltas com cuidado.</string>
     <!-- endregion -->
 
     <!-- region Schedule · Header -->

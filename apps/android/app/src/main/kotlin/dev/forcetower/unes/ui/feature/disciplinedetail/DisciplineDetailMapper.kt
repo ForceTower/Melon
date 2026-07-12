@@ -23,8 +23,18 @@ internal fun mapDetail(raw: KmpDetail, seed: Discipline?): Discipline {
     val hasMultipleGroups = raw.groups.size > 1
     val classIdToGroupName = raw.groups.associate { it.classId to it.code }
     val groups = raw.groups.map(::mapGroup)
-    val sections = raw.sections.map(::mapSection)
-    val classes = raw.lectures.map(::mapLecture)
+    // The Prova Final row rides the regular grade list upstream (name
+    // "Prova Final", short "Adicional" — both must match, teacher-named
+    // "prova final" evaluations carry AV-style shorts). Pull it out so it
+    // renders in its own section and never averages into the partial mean.
+    val finalExam = raw.sections
+        .flatMap { it.grades }
+        .firstOrNull(::isFinalExamGrade)
+        ?.let(::mapGrade)
+    val sections = raw.sections
+        .map { sec -> mapSection(sec, grades = sec.grades.filterNot(::isFinalExamGrade)) }
+        .filter { it.grades.isNotEmpty() }
+    val classes = raw.lectures.map { mapLecture(it, group = classIdToGroupName[it.classId]) }
     val attachments = raw.attachments.map { att ->
         mapAttachment(
             att,
@@ -51,6 +61,7 @@ internal fun mapDetail(raw: KmpDetail, seed: Discipline?): Discipline {
         groups = groups,
         finalGrade = raw.finalGrade,
         approved = raw.approved,
+        finalExam = finalExam,
         disciplineId = raw.disciplineId,
         offerId = raw.offerId,
         semesterId = raw.semesterId,
@@ -63,13 +74,20 @@ private fun mapGroup(raw: KmpGroup) = DisciplineGroup(
     prof = raw.teacherName.orEmpty(),
 )
 
+// Both halves must match — "Prova Final" evaluations named by the teacher
+// carry AV-style shorts and stay in the regular list. Mirrors iOS
+// `isFinalExamRow`.
+private fun isFinalExamGrade(raw: KmpGrade): Boolean =
+    raw.gradeName.trim().equals("prova final", ignoreCase = true) &&
+        raw.gradeNameShort?.trim().equals("adicional", ignoreCase = true)
+
 // KMP emits a single merged section per discipline (groupName null, kind ""
 // on multi-group). The UI's section header reads `name`, so a blank kind
 // falls back to "Notas".
-private fun mapSection(raw: KmpSection) = GradeSection(
+private fun mapSection(raw: KmpSection, grades: List<KmpGrade>) = GradeSection(
     name = if (raw.kind.isEmpty()) "Notas" else kindLabel(raw.kind),
     group = raw.groupName,
-    grades = raw.grades.map(::mapGrade),
+    grades = grades.map(::mapGrade),
 )
 
 private fun mapGrade(raw: KmpGrade) = GradeEntry(
@@ -77,14 +95,17 @@ private fun mapGrade(raw: KmpGrade) = GradeEntry(
     title = raw.evaluationName.orEmpty(),
     date = DisciplineDateFormatting.ddMmYyyy(raw.dateIso),
     score = raw.value,
+    weight = raw.weight,
 )
 
-private fun mapLecture(raw: KmpLecture) = ClassEntry(
+private fun mapLecture(raw: KmpLecture, group: String?) = ClassEntry(
     date = DisciplineDateFormatting.ddMmYyyy(raw.dateIso),
     title = raw.subject.orEmpty(),
     attachments = raw.attachmentCount.takeIf { it > 0 },
     past = raw.isPast,
     isNext = raw.isCurrent,
+    ordinal = raw.ordinal,
+    group = group,
 )
 
 private fun mapAttachment(

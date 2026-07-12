@@ -9,38 +9,46 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
-import dev.forcetower.unes.ui.feature.disciplinedetail.components.DetailStatCard
-import dev.forcetower.unes.ui.feature.disciplinedetail.components.DisciplineAttachmentsBlock
-import dev.forcetower.unes.ui.feature.disciplinedetail.components.DisciplineClassesBlock
-import dev.forcetower.unes.ui.feature.disciplinedetail.components.DisciplineDetailHero
-import dev.forcetower.unes.ui.feature.disciplinedetail.components.DisciplineEmentaBlock
-import dev.forcetower.unes.ui.feature.disciplinedetail.components.DisciplineFaltasBlock
-import dev.forcetower.unes.ui.feature.disciplinedetail.components.DisciplineGradesBlock
-import dev.forcetower.unes.ui.feature.disciplines.AbsenceRisk
+import dev.forcetower.unes.ui.feature.disciplinedetail.components.DisciplineCargaCard
+import dev.forcetower.unes.ui.feature.disciplinedetail.components.DisciplineCollabBanner
+import dev.forcetower.unes.ui.feature.disciplinedetail.components.DisciplineDetailHeader
+import dev.forcetower.unes.ui.feature.disciplinedetail.components.DisciplineDetailTabs
+import dev.forcetower.unes.ui.feature.disciplinedetail.components.DisciplineEmentaCard
+import dev.forcetower.unes.ui.feature.disciplinedetail.components.DisciplineFinalsCallout
+import dev.forcetower.unes.ui.feature.disciplinedetail.components.DisciplineFrequenciaCard
+import dev.forcetower.unes.ui.feature.disciplinedetail.components.DisciplineMediaHero
+import dev.forcetower.unes.ui.feature.disciplinedetail.components.DisciplineNotasCard
 import dev.forcetower.unes.ui.feature.disciplines.Discipline
-import dev.forcetower.unes.ui.feature.disciplines.DisciplineScoreColor
-import dev.forcetower.unes.ui.feature.disciplines.absenceRisk
+import dev.forcetower.unes.ui.feature.disciplines.isAwaitingFinal
+import java.util.Locale
 
-// Single-scroll discipline detail. Top to bottom: hero / stats row / grades /
-// ementa / classes / attachments / presença. Mirrors iOS
-// `DisciplineDetailView` — same section order, same fade-up reveal cadence.
+// Detalhe da disciplina — the dc `DisciplineDetailScreen` as one scroll: M3
+// top bar, headline (code chip / teachers / group filter), média-parcial hero,
+// Notas list with the Prova Final section, carga horária, the finals callout,
+// frequência, ementa, the Colaborativo banner into Materiais, and the
+// Materiais/Aulas secondary tabs.
 @Composable
 internal fun DisciplineDetailScreen(
     discipline: Discipline,
@@ -48,139 +56,152 @@ internal fun DisciplineDetailScreen(
     onSelectGroup: (String?) -> Unit,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
+    collabCount: Int? = null,
+    onOpenMaterials: (() -> Unit)? = null,
     bottomInset: Dp = 0.dp,
 ) {
-    val surface = MaterialTheme.colorScheme.surface
-
-    Box(
+    LazyColumn(
         modifier = modifier
             .fillMaxSize()
-            .background(surface),
+            .background(MaterialTheme.colorScheme.surface)
+            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)),
+        contentPadding = PaddingValues(bottom = bottomInset + 32.dp),
+        verticalArrangement = Arrangement.spacedBy(0.dp),
     ) {
-        // Ambient color wash carrying the discipline's tint across the top of
-        // the screen — fades into the surface. iOS uses a RadialGradient with
-        // a 320pt radius from the top-center; the linear approximation here
-        // reads close enough on phones and avoids the per-pixel cost of a
-        // real radial.
-        AmbientWash(discipline = discipline)
-
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)),
-            contentPadding = PaddingValues(bottom = bottomInset + 32.dp),
-            verticalArrangement = Arrangement.spacedBy(0.dp),
-        ) {
-            item("hero") {
-                DisciplineDetailHero(
-                    discipline = discipline,
-                    selectedGroup = selectedGroup,
-                    onSelectGroup = onSelectGroup,
-                    onBack = onBack,
-                )
-            }
-            item("stats") {
-                StatsRow(
+        item("topbar") {
+            TopBar(onBack = onBack)
+        }
+        item("header") {
+            DisciplineDetailHeader(
+                discipline = discipline,
+                selectedGroup = selectedGroup,
+                onSelectGroup = onSelectGroup,
+                modifier = Modifier.fadeUpOnAppear(),
+            )
+        }
+        item("hero") {
+            DisciplineMediaHero(
+                discipline = discipline,
+                modifier = Modifier
+                    .fadeUpOnAppear(delayMs = 60)
+                    .padding(horizontal = 16.dp)
+                    .padding(top = 18.dp),
+            )
+        }
+        item("notas") {
+            DisciplineNotasCard(
+                discipline = discipline,
+                selectedGroup = selectedGroup,
+                modifier = Modifier
+                    .fadeUpOnAppear(delayMs = 120)
+                    .padding(horizontal = 16.dp)
+                    .padding(top = 18.dp),
+            )
+        }
+        item("carga") {
+            DisciplineCargaCard(
+                discipline = discipline,
+                modifier = Modifier
+                    .fadeUpOnAppear(delayMs = 160)
+                    .padding(horizontal = 16.dp)
+                    .padding(top = 14.dp),
+            )
+        }
+        if (discipline.isAwaitingFinal) {
+            item("callout") {
+                DisciplineFinalsCallout(
                     discipline = discipline,
                     modifier = Modifier
-                        .fadeUpOnAppear(delayMs = 100)
+                        .fadeUpOnAppear(delayMs = 200)
                         .padding(horizontal = 16.dp)
-                        .padding(bottom = 22.dp),
+                        .padding(top = 14.dp),
                 )
             }
-            item("grades") {
-                DisciplineGradesBlock(
-                    discipline = discipline,
-                    selectedGroup = selectedGroup,
-                    modifier = Modifier.fadeUpOnAppear(delayMs = 180),
-                )
-            }
+        }
+        item("frequencia") {
+            SectionOverline(
+                text = stringResource(R.string.discipline_detail_freq_title),
+                modifier = Modifier.padding(top = 18.dp),
+            )
+            DisciplineFrequenciaCard(
+                discipline = discipline,
+                modifier = Modifier
+                    .fadeUpOnAppear(delayMs = 240)
+                    .padding(horizontal = 16.dp),
+            )
+        }
+        if (!discipline.ementa.isNullOrEmpty()) {
             item("ementa") {
-                DisciplineEmentaBlock(
+                DisciplineEmentaCard(
                     discipline = discipline,
-                    modifier = Modifier.fadeUpOnAppear(delayMs = 240),
+                    modifier = Modifier
+                        .fadeUpOnAppear(delayMs = 280)
+                        .padding(horizontal = 16.dp)
+                        .padding(top = 14.dp),
                 )
             }
-            item("classes") {
-                DisciplineClassesBlock(
+        }
+        if (collabCount != null && onOpenMaterials != null) {
+            item("colaborativo") {
+                DisciplineCollabBanner(
                     discipline = discipline,
-                    modifier = Modifier.fadeUpOnAppear(delayMs = 300),
+                    count = collabCount,
+                    onOpen = onOpenMaterials,
+                    modifier = Modifier
+                        .fadeUpOnAppear(delayMs = 320)
+                        .padding(horizontal = 16.dp)
+                        .padding(top = 14.dp),
                 )
             }
-            item("attachments") {
-                DisciplineAttachmentsBlock(
-                    discipline = discipline,
-                    selectedGroup = selectedGroup,
-                    modifier = Modifier.fadeUpOnAppear(delayMs = 360),
-                )
-            }
-            item("faltas") {
-                DisciplineFaltasBlock(
-                    discipline = discipline,
-                    modifier = Modifier.fadeUpOnAppear(delayMs = 420),
-                )
-            }
+        }
+        item("tabs") {
+            DisciplineDetailTabs(
+                discipline = discipline,
+                selectedGroup = selectedGroup,
+                modifier = Modifier
+                    .fadeUpOnAppear(delayMs = 360)
+                    .padding(top = 20.dp),
+            )
         }
     }
 }
 
 @Composable
-private fun AmbientWash(discipline: Discipline) {
-    val surface = MaterialTheme.colorScheme.surface
-    Box(
+private fun TopBar(onBack: () -> Unit) {
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(340.dp)
-            .background(
-                Brush.radialGradient(
-                    colors = listOf(
-                        discipline.color.copy(alpha = 0.20f),
-                        surface.copy(alpha = 0f),
-                    ),
-                    center = Offset(540f, -120f),
-                    radius = 1100f,
-                ),
-            ),
-    )
+            .windowInsetsPadding(WindowInsets.statusBars)
+            .padding(horizontal = 8.dp, vertical = 4.dp),
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        IconButton(onClick = onBack) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = stringResource(R.string.discipline_detail_back),
+                tint = MaterialTheme.colorScheme.onSurface,
+            )
+        }
+        Text(
+            text = stringResource(R.string.discipline_detail_topbar_title),
+            style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
 }
 
 @Composable
-private fun StatsRow(
-    discipline: Discipline,
-    modifier: Modifier = Modifier,
-) {
-    val absenceColor = when (discipline.absenceRisk) {
-        AbsenceRisk.Risk -> DisciplineScoreColor.danger()
-        AbsenceRisk.Warn -> DisciplineScoreColor.caution()
-        AbsenceRisk.Ok -> MaterialTheme.colorScheme.onBackground
-    }
-    val absenceIconTint = if (discipline.absenceRisk == AbsenceRisk.Ok) {
-        MaterialTheme.colorScheme.outlineVariant
-    } else {
-        DisciplineScoreColor.caution()
-    }
-    val remaining = (discipline.allowedAbsences - discipline.absences).coerceAtLeast(0)
-    Row(
-        modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalAlignment = Alignment.Top,
-    ) {
-        DetailStatCard(
-            label = stringResource(R.string.discipline_detail_stat_hours),
-            value = stringResource(R.string.disciplines_card_hours_format, discipline.hours),
-            sub = stringResource(R.string.discipline_detail_stat_hours_sub),
-            modifier = Modifier.weight(1f),
-        ) {
-            dev.forcetower.unes.ui.feature.disciplinedetail.components.ClockIcon(tint = discipline.color)
-        }
-        DetailStatCard(
-            label = stringResource(R.string.discipline_detail_stat_absences),
-            value = discipline.absences.toString(),
-            sub = stringResource(R.string.discipline_detail_stat_absences_sub_format, remaining),
-            valueColor = absenceColor,
-            modifier = Modifier.weight(1f),
-        ) {
-            dev.forcetower.unes.ui.feature.disciplinedetail.components.AbsencesIcon(tint = absenceIconTint)
-        }
+private fun SectionOverline(text: String, modifier: Modifier = Modifier) {
+    Box(modifier = modifier.padding(horizontal = 20.dp, vertical = 0.dp)) {
+        Text(
+            text = text.uppercase(Locale.ROOT),
+            style = MaterialTheme.typography.labelMedium.copy(
+                fontWeight = FontWeight.Bold,
+                letterSpacing = 1.2.sp,
+            ),
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(bottom = 10.dp),
+        )
     }
 }

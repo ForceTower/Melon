@@ -110,13 +110,11 @@ private fun build(
 
     val classIdToGroupName = classRows.associate { it.classId to it.groupName }
 
-    // Native side needs a narrow window of "interesting" lectures, not the
-    // full semester dump. Filter out placeholder rows (no subject and no
-    // materials — upstream emits these for cancelled / TBD slots), then
-    // window to 1 past + 1 current + 3 upcoming around today so both native
-    // targets render the same slice without duplicating the logic.
-    // `isPast` / `isCurrent` are classified here against real today so the
-    // native layer doesn't need its own clock to agree with ours.
+    // Full lesson plan, minus placeholder rows (no subject and no materials —
+    // upstream emits these for cancelled / TBD slots). The native side windows
+    // the list around today for the collapsed view and expands to the full
+    // plan on demand. `isPast` / `isCurrent` are classified here against real
+    // today so the native layer doesn't need its own clock to agree with ours.
     val today = Clock.System
         .now()
         .toLocalDateTime(TimeZone.currentSystemDefault())
@@ -143,7 +141,6 @@ private fun build(
                 isCurrent = idx == anchorIndex,
             )
         }
-        .let { windowAroundToday(it, anchorIndex) }
 
     val mappedAttachments = materials.map { row ->
         DisciplineDetailAttachment(
@@ -176,25 +173,11 @@ private fun build(
     )
 }
 
-// Returns at most 5 lectures: 1 past + the "current" (anchor) + 3 upcoming.
-// If every dated lecture is already in the past (anchor < 0) we fall back to
-// the 5 most recent entries. `lectures` must already be ordered by
-// (date ASC, ordinal ASC) — the DAO query guarantees this.
-internal fun windowAroundToday(
-    lectures: List<DisciplineDetailLecture>,
-    anchor: Int,
-): List<DisciplineDetailLecture> {
-    if (lectures.size <= 5) return lectures
-    if (anchor < 0) return lectures.takeLast(5)
-    val start = (anchor - 1).coerceAtLeast(0)
-    val end = (anchor + 4).coerceAtMost(lectures.size)
-    return lectures.subList(start, end)
-}
-
 private fun toDetailGrade(row: DisciplineDetailGradeRow): DisciplineDetailGrade =
     DisciplineDetailGrade(
         evaluationId = row.evaluationId,
         evaluationName = row.evaluationName ?: row.gradeName,
+        gradeName = row.gradeName,
         gradeNameShort = row.gradeNameShort,
         position = row.evaluationPosition,
         ordinal = row.ordinal,

@@ -24,6 +24,7 @@ internal fun DisciplineDetailRoute(
     offerId: String,
     listVm: DisciplinesListViewModel,
     onBack: () -> Unit,
+    onOpenMaterials: (disciplineId: String, code: String, name: String) -> Unit,
     bottomInset: Dp = 0.dp,
 ) {
     val detailVm: DisciplineDetailViewModel = hiltViewModel()
@@ -62,11 +63,16 @@ internal fun DisciplineDetailRoute(
     }
 
     val rendered = detailState.discipline?.let { tinted(it) } ?: return
+    val disciplineId = rendered.disciplineId
     DisciplineDetailScreen(
         discipline = rendered,
         selectedGroup = detailState.selectedGroup,
         onSelectGroup = { detailVm.onIntent(DisciplineDetailIntent.SelectGroup(it)) },
         onBack = onBack,
+        collabCount = detailState.collabCount,
+        onOpenMaterials = disciplineId?.let { id ->
+            { onOpenMaterials(id, rendered.code, rendered.title) }
+        },
         bottomInset = bottomInset,
     )
 }

@@ -16,6 +16,9 @@ internal data class GradeEntry(
     // dd/MM/yyyy. Null when upstream hasn't scheduled the evaluation yet.
     val date: String?,
     val score: Double?,
+    // Evaluation weight. Null when upstream doesn't set one (treated as equal
+    // weighting by the average / "peso igual" pill).
+    val weight: Double? = null,
 )
 
 internal data class GradeSection(
@@ -41,6 +44,10 @@ internal data class ClassEntry(
     val attachments: Int?,
     val past: Boolean,
     val isNext: Boolean = false,
+    // Upstream lecture number, 1-based. 0 when the source doesn't carry one.
+    val ordinal: Int = 0,
+    // Class group name ("T01"). Null on single-group disciplines.
+    val group: String? = null,
 )
 
 internal enum class AttachmentKind {
@@ -92,6 +99,10 @@ internal data class Discipline(
     // Weighted partial average computed upstream. When null, `partialAverage`
     // falls back to the unweighted mean of released scores.
     val storedPartialAverage: Double? = null,
+    // Prova Final row, pulled out of `sections` by the detail mapper so it
+    // never averages into the partial mean and renders in its own section.
+    // Score stays null until the grade is published.
+    val finalExam: GradeEntry? = null,
     // Keys carried for the detail-view handoff. Populated when the data
     // originates from the KMP feed.
     val disciplineId: String? = null,
@@ -129,10 +140,29 @@ internal val Discipline.allGrades: List<GradeEntry>
 internal val Discipline.partialAverage: Double?
     get() {
         storedPartialAverage?.let { return it }
-        val scores = allGrades.mapNotNull { it.score }
-        if (scores.isEmpty()) return null
-        return scores.sum() / scores.size
+        val released = allGrades.filter { it.score != null }
+        if (released.isEmpty()) return null
+        // Weight-aware when every released grade carries a positive weight
+        // (mirrors iOS `DisciplineRules.partialAverage`); plain mean otherwise.
+        val weightSum = released.sumOf { it.weight ?: 0.0 }
+        if (released.all { (it.weight ?: 0.0) > 0.0 } && weightSum > 0.0) {
+            return released.sumOf { it.score!! * it.weight!! } / weightSum
+        }
+        return released.sumOf { it.score!! } / released.size
     }
+
+// True when the evaluations carry no distinguishing weights — drives the
+// "peso igual" vs "média ponderada" pill on the Notas header.
+internal val Discipline.hasEqualWeights: Boolean
+    get() {
+        val weights = allGrades.mapNotNull { it.weight }
+        return weights.isEmpty() || weights.distinct().size == 1
+    }
+
+// The student is sitting the Prova Final: the row exists, the grade hasn't
+// been published, and upstream hasn't recorded a verdict yet.
+internal val Discipline.isAwaitingFinal: Boolean
+    get() = finalExam != null && finalExam.score == null && approved == null
 
 internal val Discipline.completedCount: Int
     get() = allGrades.count { it.score != null }
@@ -220,6 +250,12 @@ internal fun Discipline.sectionsForGroup(groupCode: String?): List<GradeSection>
 internal fun Discipline.attachmentsForGroup(groupCode: String?): List<Attachment> {
     if (groupCode == null) return attachments
     return attachments.filter { it.group == groupCode || it.group == null }
+}
+
+// And for the lesson plan.
+internal fun Discipline.classesForGroup(groupCode: String?): List<ClassEntry> {
+    if (groupCode == null) return classes
+    return classes.filter { it.group == groupCode || it.group == null }
 }
 
 // Trend across the last two completed grades (null when fewer than two).

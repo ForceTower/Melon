@@ -2,7 +2,10 @@ package dev.forcetower.unes.ui.feature.disciplinedetail
 
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.forcetower.melon.core.common.Outcome
 import dev.forcetower.melon.feature.disciplines.domain.usecase.ObserveDisciplineDetailUseCase
+import dev.forcetower.melon.feature.materials.domain.usecase.GetMaterialsDisciplineUseCase
+import dev.forcetower.unes.firebase.FeatureFlags
 import dev.forcetower.unes.mvi.MviViewModel
 import dev.forcetower.unes.mvi.UiEffect
 import dev.forcetower.unes.mvi.UiIntent
@@ -30,6 +33,10 @@ internal data class DisciplineDetailUiState(
     val hydrated: Discipline? = null,
     // Currently-selected group pill on multi-group disciplines. Null = "Tudo".
     val selectedGroup: String? = null,
+    // Shelf size of the collaborative Materiais feature for this discipline.
+    // Null hides the banner — flag off, fetch pending, or fetch failed (the
+    // shelf is online-only, so a quiet miss beats an error state here).
+    val collabCount: Int? = null,
 ) : UiState {
     // What the screen actually renders. Hydrated payload wins over the seed
     // once it lands; until then we paint the list-card data so the screen
@@ -41,10 +48,14 @@ internal data class DisciplineDetailUiState(
 @HiltViewModel
 internal class DisciplineDetailViewModel @Inject constructor(
     private val observeDetail: ObserveDisciplineDetailUseCase,
+    private val getMaterialsDiscipline: GetMaterialsDisciplineUseCase,
+    private val featureFlags: FeatureFlags,
 ) : MviViewModel<DisciplineDetailUiState, DisciplineDetailIntent, DisciplineDetailEffect>(
     DisciplineDetailUiState(),
 ) {
     private var detailJob: Job? = null
+    private var collabJob: Job? = null
+    private var collabLoadedFor: String? = null
 
     override fun onIntent(intent: DisciplineDetailIntent) {
         when (intent) {
@@ -63,14 +74,34 @@ internal class DisciplineDetailViewModel @Inject constructor(
             return
         }
         detailJob?.cancel()
+        collabJob?.cancel()
+        collabLoadedFor = null
         setState {
-            copy(offerId = offerId, seed = seed, hydrated = null, selectedGroup = null)
+            copy(offerId = offerId, seed = seed, hydrated = null, selectedGroup = null, collabCount = null)
         }
+        loadCollabCount(seed?.disciplineId)
         detailJob = viewModelScope.launch {
             observeDetail(offerId).collect { raw ->
                 if (raw == null) return@collect
                 val mapped = mapDetail(raw, seed = currentState.seed)
                 setState { copy(hydrated = mapped) }
+                loadCollabCount(raw.disciplineId)
+            }
+        }
+    }
+
+    // One-shot count for the "Colaborativo" banner — the same count-only read
+    // iOS does from its detail screen. Gated on the Materiais remote flag and
+    // deduped per discipline so DB re-emissions don't refetch.
+    private fun loadCollabCount(disciplineId: String?) {
+        if (disciplineId == null || !featureFlags.gates.value.materials) return
+        if (collabLoadedFor == disciplineId) return
+        collabLoadedFor = disciplineId
+        collabJob?.cancel()
+        collabJob = viewModelScope.launch {
+            when (val outcome = getMaterialsDiscipline(disciplineId)) {
+                is Outcome.Ok -> setState { copy(collabCount = outcome.value.published.size) }
+                is Outcome.Err -> collabLoadedFor = null
             }
         }
     }
@@ -78,6 +109,9 @@ internal class DisciplineDetailViewModel @Inject constructor(
     private fun close() {
         detailJob?.cancel()
         detailJob = null
+        collabJob?.cancel()
+        collabJob = null
+        collabLoadedFor = null
         setState { DisciplineDetailUiState() }
     }
 }
