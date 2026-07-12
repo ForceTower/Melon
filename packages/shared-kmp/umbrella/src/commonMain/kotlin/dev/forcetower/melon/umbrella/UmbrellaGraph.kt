@@ -20,6 +20,14 @@ import dev.forcetower.melon.feature.disciplines.domain.usecase.ObserveDiscipline
 import dev.forcetower.melon.feature.enrollment.domain.usecase.GetEnrollmentOffersUseCase
 import dev.forcetower.melon.feature.enrollment.domain.usecase.GetEnrollmentWindowUseCase
 import dev.forcetower.melon.feature.enrollment.domain.usecase.SubmitEnrollmentUseCase
+import dev.forcetower.melon.feature.materials.domain.usecase.GetMaterialsDisciplineUseCase
+import dev.forcetower.melon.feature.materials.domain.usecase.GetMaterialsOverviewUseCase
+import dev.forcetower.melon.feature.materials.domain.usecase.GetSavedMaterialsUseCase
+import dev.forcetower.melon.feature.materials.domain.usecase.OpenMaterialUseCase
+import dev.forcetower.melon.feature.materials.domain.usecase.ReportMaterialUseCase
+import dev.forcetower.melon.feature.materials.domain.usecase.SetMaterialSavedUseCase
+import dev.forcetower.melon.feature.materials.domain.usecase.SetMaterialUsefulUseCase
+import dev.forcetower.melon.feature.materials.domain.usecase.SubmitMaterialUseCase
 import dev.forcetower.melon.feature.me.domain.usecase.FetchAcademicDocumentUseCase
 import dev.forcetower.melon.feature.me.domain.usecase.ObserveCurrentCredentialsUseCase
 import dev.forcetower.melon.feature.me.domain.usecase.ObserveMeProfileUseCase
@@ -154,6 +162,19 @@ interface UmbrellaGraph {
     val getParadoxoIndexUseCase: GetParadoxoIndexUseCase
     val getParadoxoDisciplineUseCase: GetParadoxoDisciplineUseCase
     val getParadoxoTeacherUseCase: GetParadoxoTeacherUseCase
+
+    // Materiais — collaborative study-materials shelf, all live/uncached
+    // (online-only by design; "Salvar" is a server bookmark). Reads feed the
+    // hub/list/saved screens; mutations back optimistic UI on the detail
+    // screen; submit runs the presigned-slot upload transaction.
+    val getMaterialsOverviewUseCase: GetMaterialsOverviewUseCase
+    val getMaterialsDisciplineUseCase: GetMaterialsDisciplineUseCase
+    val getSavedMaterialsUseCase: GetSavedMaterialsUseCase
+    val setMaterialUsefulUseCase: SetMaterialUsefulUseCase
+    val setMaterialSavedUseCase: SetMaterialSavedUseCase
+    val reportMaterialUseCase: ReportMaterialUseCase
+    val openMaterialUseCase: OpenMaterialUseCase
+    val submitMaterialUseCase: SubmitMaterialUseCase
 
     // Matrícula (enrollment) — all live/uncached. `window` is the cheap hub-gate
     // + entry-screen check, `offers` is the full disciplines tree, and `submit`

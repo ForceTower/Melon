@@ -19,6 +19,14 @@ import dev.forcetower.melon.feature.dashboard.domain.usecase.GetReadyOverviewUse
 import dev.forcetower.melon.feature.disciplines.domain.usecase.CalculateOverallScoreUseCase
 import dev.forcetower.melon.feature.disciplines.domain.usecase.ObserveDisciplineDetailUseCase
 import dev.forcetower.melon.feature.disciplines.domain.usecase.ObserveDisciplinesListUseCase
+import dev.forcetower.melon.feature.materials.domain.usecase.GetMaterialsDisciplineUseCase
+import dev.forcetower.melon.feature.materials.domain.usecase.GetMaterialsOverviewUseCase
+import dev.forcetower.melon.feature.materials.domain.usecase.GetSavedMaterialsUseCase
+import dev.forcetower.melon.feature.materials.domain.usecase.OpenMaterialUseCase
+import dev.forcetower.melon.feature.materials.domain.usecase.ReportMaterialUseCase
+import dev.forcetower.melon.feature.materials.domain.usecase.SetMaterialSavedUseCase
+import dev.forcetower.melon.feature.materials.domain.usecase.SetMaterialUsefulUseCase
+import dev.forcetower.melon.feature.materials.domain.usecase.SubmitMaterialUseCase
 import dev.forcetower.melon.feature.me.domain.usecase.FetchAcademicDocumentUseCase
 import dev.forcetower.melon.feature.me.domain.usecase.ObserveCurrentCredentialsUseCase
 import dev.forcetower.melon.feature.me.domain.usecase.ObserveMeProfileUseCase
@@ -218,6 +226,26 @@ object UmbrellaBridgeModule {
         graph.getParadoxoDisciplineUseCase
     @Provides fun provideGetParadoxoTeacherUseCase(graph: UmbrellaGraph): GetParadoxoTeacherUseCase =
         graph.getParadoxoTeacherUseCase
+
+    // Materiais — collaborative study-materials shelf (online-only). Reads
+    // feed the hub/list/saved screens; the toggles back optimistic UI on the
+    // detail screen; submit runs the presigned-slot upload transaction.
+    @Provides fun provideGetMaterialsOverviewUseCase(graph: UmbrellaGraph): GetMaterialsOverviewUseCase =
+        graph.getMaterialsOverviewUseCase
+    @Provides fun provideGetMaterialsDisciplineUseCase(graph: UmbrellaGraph): GetMaterialsDisciplineUseCase =
+        graph.getMaterialsDisciplineUseCase
+    @Provides fun provideGetSavedMaterialsUseCase(graph: UmbrellaGraph): GetSavedMaterialsUseCase =
+        graph.getSavedMaterialsUseCase
+    @Provides fun provideSetMaterialUsefulUseCase(graph: UmbrellaGraph): SetMaterialUsefulUseCase =
+        graph.setMaterialUsefulUseCase
+    @Provides fun provideSetMaterialSavedUseCase(graph: UmbrellaGraph): SetMaterialSavedUseCase =
+        graph.setMaterialSavedUseCase
+    @Provides fun provideReportMaterialUseCase(graph: UmbrellaGraph): ReportMaterialUseCase =
+        graph.reportMaterialUseCase
+    @Provides fun provideOpenMaterialUseCase(graph: UmbrellaGraph): OpenMaterialUseCase =
+        graph.openMaterialUseCase
+    @Provides fun provideSubmitMaterialUseCase(graph: UmbrellaGraph): SubmitMaterialUseCase =
+        graph.submitMaterialUseCase
 
     // Calendário — academic-calendar events feed for the agenda + the
     // active-semester code that powers the header eyebrow. Mirrors iOS

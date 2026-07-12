@@ -1180,4 +1180,181 @@
     <string name="widget_next_class_title">Próxima aula</string>
     <string name="widget_next_class_description">A próxima aula do dia, com horário, sala e topo de prioridades.</string>
     <!-- endregion -->
+
+    <!-- region Materiais · Hub -->
+    <string name="materials_back">Voltar</string>
+    <string name="materials_title">Materiais</string>
+    <string name="materials_hub_subtitle">%1$d materiais nas suas %2$d disciplinas de %3$s</string>
+    <string name="materials_hero_badge">Feito por estudantes</string>
+    <string name="materials_hero_title">Provas antigas, listas resolvidas e resumos, compartilhados pela sua turma.</string>
+    <string name="materials_hero_subtitle">Contribua com um arquivo e desbloqueie o acervo das suas turmas.</string>
+    <string name="materials_hero_contribute">Contribuir</string>
+    <string name="materials_hero_saved_hint">Materiais salvos</string>
+    <string name="materials_section_disciplines">Suas disciplinas</string>
+    <string name="materials_disc_empty_hint">Sem materiais ainda · seja o primeiro</string>
+    <string name="materials_disc_empty_tag">vazia</string>
+    <string name="materials_hub_footer">Materiais são enviados por estudantes e passam por moderação antes de aparecer aqui.</string>
+    <string name="materials_error_title">Não deu pra carregar</string>
+    <string name="materials_error_subtitle">Verifique sua conexão e tente novamente.</string>
+    <string name="materials_error_retry">Tentar novamente</string>
+    <!-- endregion -->
+
+    <!-- region Materiais · Tipos -->
+    <string name="materials_type_exam">Prova</string>
+    <string name="materials_type_exam_plural">Provas</string>
+    <string name="materials_type_list">Lista</string>
+    <string name="materials_type_list_plural">Listas</string>
+    <string name="materials_type_summary">Resumo</string>
+    <string name="materials_type_summary_plural">Resumos</string>
+    <string name="materials_type_formula">Formulário</string>
+    <string name="materials_type_formula_plural">Formulários</string>
+    <plurals name="materials_tally_exam">
+        <item quantity="one">%d prova</item>
+        <item quantity="other">%d provas</item>
+    </plurals>
+    <plurals name="materials_tally_list">
+        <item quantity="one">%d lista</item>
+        <item quantity="other">%d listas</item>
+    </plurals>
+    <plurals name="materials_tally_summary">
+        <item quantity="one">%d resumo</item>
+        <item quantity="other">%d resumos</item>
+    </plurals>
+    <plurals name="materials_tally_formula">
+        <item quantity="one">%d formulário</item>
+        <item quantity="other">%d formulários</item>
+    </plurals>
+    <!-- endregion -->
+
+    <!-- region Materiais · Lista da disciplina -->
+    <string name="materials_list_eyebrow">Materiais da turma</string>
+    <plurals name="materials_available_count">
+        <item quantity="one">%d material disponível</item>
+        <item quantity="other">%d materiais disponíveis</item>
+    </plurals>
+    <string name="materials_search_placeholder">Buscar por título ou professor</string>
+    <string name="materials_filter_all">Tudo</string>
+    <string name="materials_section_mine">Meus envios</string>
+    <string name="materials_section_shelf">Acervo</string>
+    <plurals name="materials_item_count">
+        <item quantity="one">%d item</item>
+        <item quantity="other">%d itens</item>
+    </plurals>
+    <string name="materials_no_results_title">Nada encontrado</string>
+    <string name="materials_no_results_subtitle">Ajuste os filtros ou envie você mesmo esse material.</string>
+    <string name="materials_contribute_cta">Contribuir com material</string>
+    <string name="materials_list_empty_title">Seja o primeiro a contribuir</string>
+    <string name="materials_list_empty_body">Ainda não há materiais de %1$s. Sua prova antiga ou lista resolvida pode salvar a próxima turma na véspera da prova.</string>
+    <string name="materials_list_empty_cta">Enviar primeiro material</string>
+    <string name="materials_status_pending">Em análise</string>
+    <string name="materials_status_rejected">Não aprovado</string>
+    <string name="materials_saved_marker">Salvo</string>
+    <!-- endregion -->
+
+    <!-- region Materiais · Detalhe -->
+    <string name="materials_action_useful">Útil</string>
+    <string name="materials_action_save">Salvar</string>
+    <string name="materials_action_saved">Salvo</string>
+    <string name="materials_detail_about">Sobre o material</string>
+    <string name="materials_detail_details">Detalhes</string>
+    <string name="materials_detail_row_discipline">Disciplina</string>
+    <string name="materials_detail_row_semester">Semestre</string>
+    <string name="materials_detail_row_teacher">Professor</string>
+    <string name="materials_detail_row_file">Arquivo</string>
+    <string name="materials_detail_teacher_unknown">Não informado</string>
+    <string name="materials_file_kind_pdf">PDF</string>
+    <string name="materials_file_kind_photo">Foto</string>
+    <plurals name="materials_pages">
+        <item quantity="one">%d página</item>
+        <item quantity="other">%d páginas</item>
+    </plurals>
+    <plurals name="materials_pages_short">
+        <item quantity="one">%d pág</item>
+        <item quantity="other">%d págs</item>
+    </plurals>
+    <string name="materials_uploader_name">Colega de %1$s</string>
+    <string name="materials_uploader_sub">Entrou em %1$d · identidade preservada</string>
+    <string name="materials_detail_disclaimer">Respeite direitos autorais e restrições do professor ao usar este material.</string>
+    <string name="materials_open_pdf">Abrir PDF</string>
+    <string name="materials_open_photo">Abrir foto</string>
+    <string name="materials_toast_saved">Salvo na sua lista</string>
+    <string name="materials_toast_unsaved">Removido dos salvos</string>
+    <string name="materials_toast_reported">Denúncia enviada — obrigado</string>
+    <string name="materials_toast_sync_failed">Não foi possível sincronizar. Tente de novo.</string>
+    <string name="materials_toast_open_failed">Não foi possível abrir o arquivo.</string>
+    <!-- endregion -->
+
+    <!-- region Materiais · Moderação (status dos meus envios) -->
+    <string name="materials_moderation_pending_title">Seu material está em análise</string>
+    <string name="materials_moderation_pending_body">A moderação costuma revisar novos envios em até 48 horas. Você recebe uma notificação assim que ele for publicado.</string>
+    <string name="materials_moderation_rejected_title">Este material não foi aprovado</string>
+    <string name="materials_moderation_rejected_body">Ele não entrou no acervo público. Veja o motivo abaixo e reenvie ajustado, se fizer sentido.</string>
+    <string name="materials_moderation_reason_title">Motivo da moderação</string>
+    <string name="materials_moderation_resubmit">Reenviar ajustado</string>
+    <string name="materials_moderation_step_sent">Enviado</string>
+    <string name="materials_moderation_step_sent_sub">recebido pela plataforma</string>
+    <string name="materials_moderation_step_review">Em análise pela moderação</string>
+    <string name="materials_moderation_step_review_sub">em até 48h</string>
+    <string name="materials_moderation_step_published">Publicado no acervo</string>
+    <string name="materials_moderation_step_published_sub">visível para a turma</string>
+    <!-- endregion -->
+
+    <!-- region Materiais · Denúncia -->
+    <string name="materials_report">Denunciar material</string>
+    <string name="materials_report_subtitle">Sua denúncia é anônima e ajuda a moderação a manter o acervo confiável.</string>
+    <string name="materials_report_reason_illegible">Arquivo de baixa qualidade ou ilegível</string>
+    <string name="materials_report_reason_ongoing">Prova do semestre atual em andamento</string>
+    <string name="materials_report_reason_restricted">Conteúdo restrito pelo professor</string>
+    <string name="materials_report_reason_wrong">Não corresponde à disciplina</string>
+    <string name="materials_report_reason_other">Outro motivo</string>
+    <string name="materials_report_confirm">Enviar denúncia</string>
+    <string name="materials_close">Fechar</string>
+    <!-- endregion -->
+
+    <!-- region Materiais · Salvos -->
+    <string name="materials_saved_title">Salvos</string>
+    <string name="materials_saved_empty_title">Nada salvo ainda</string>
+    <string name="materials_saved_empty_body">Toque em Salvar num material para guardá-lo aqui.</string>
+    <!-- endregion -->
+
+    <!-- region Materiais · Assistente de envio -->
+    <string name="materials_upload_title_disc">Nova contribuição</string>
+    <string name="materials_upload_title_source">Novo material</string>
+    <string name="materials_upload_title_details">Detalhes do material</string>
+    <string name="materials_upload_title_guidelines">Diretrizes da comunidade</string>
+    <string name="materials_upload_disc_prompt">Para qual disciplina é este material?</string>
+    <plurals name="materials_count">
+        <item quantity="one">%d material</item>
+        <item quantity="other">%d materiais</item>
+    </plurals>
+    <string name="materials_upload_source_prompt">Envie um PDF já pronto ou digitalize suas folhas com a câmera.</string>
+    <string name="materials_upload_source_file_title">Escolher arquivo</string>
+    <string name="materials_upload_source_file_sub">PDF do seu dispositivo ou nuvem</string>
+    <string name="materials_upload_source_scan_title">Digitalizar com a câmera</string>
+    <string name="materials_upload_source_scan_sub">Fotografe as folhas — vira PDF</string>
+    <string name="materials_upload_soon">Em breve</string>
+    <string name="materials_upload_source_note">Só envie material que você tem permissão de compartilhar. Nada de provas do semestre atual em andamento.</string>
+    <string name="materials_upload_file_read_failed">Não foi possível ler o arquivo. Tente outro.</string>
+    <string name="materials_upload_field_type">Tipo de material</string>
+    <string name="materials_upload_field_title">Título</string>
+    <string name="materials_upload_title_placeholder">Ex: Prova 1 — listas e pilhas</string>
+    <string name="materials_upload_field_semester">Semestre</string>
+    <string name="materials_upload_field_teacher">Professor</string>
+    <string name="materials_upload_optional">opcional</string>
+    <string name="materials_upload_teacher_placeholder">Nome do professor</string>
+    <string name="materials_upload_continue">Continuar</string>
+    <string name="materials_upload_guidelines_prompt">Antes de publicar, confirme que seu envio segue as diretrizes da comunidade.</string>
+    <string name="materials_upload_rule_current_title">Nada do semestre atual</string>
+    <string name="materials_upload_rule_current_body">Não compartilhe provas de avaliações que ainda estão em andamento neste período.</string>
+    <string name="materials_upload_rule_teacher_title">Respeite o professor</string>
+    <string name="materials_upload_rule_teacher_body">Alguns professores restringem a circulação do próprio material. Na dúvida, não publique.</string>
+    <string name="materials_upload_rule_quality_title">Qualidade ajuda todo mundo</string>
+    <string name="materials_upload_rule_quality_body">Prefira arquivos legíveis e completos. Resoluções comentadas valem ouro na véspera.</string>
+    <string name="materials_upload_ack">Li e concordo com as diretrizes. Este material pode ser compartilhado.</string>
+    <string name="materials_upload_publish">Enviar para análise</string>
+    <string name="materials_upload_submit_failed">Não foi possível enviar. Verifique a conexão e tente de novo.</string>
+    <string name="materials_upload_success_title">Enviado! Agora é com a moderação</string>
+    <string name="materials_upload_success_body">Seu material está em análise e aparece no acervo assim que for aprovado — normalmente em até 48h.</string>
+    <string name="materials_upload_done">Concluir</string>
+    <!-- endregion -->
 </resources>

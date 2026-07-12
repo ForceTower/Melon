@@ -99,14 +99,15 @@ internal fun MeScreen(
         when (kind) {
             ShortcutKind.Calendar -> connectedNavigator.navigate(ConnectedRoute.Calendar)
             ShortcutKind.Countdown -> connectedNavigator.navigate(ConnectedRoute.FinalCountdown())
+            ShortcutKind.Materials -> connectedNavigator.navigate(ConnectedRoute.Materials)
             ShortcutKind.Certificate ->
                 vm.onIntent(MeIntent.OpenDocument(AcademicDocument.EnrollmentCertificate))
             ShortcutKind.History ->
                 vm.onIntent(MeIntent.OpenDocument(AcademicDocument.AcademicHistory))
             ShortcutKind.Paradoxo -> connectedNavigator.navigate(ConnectedRoute.Paradoxo)
-            // Gated tiles without an Android screen yet (Matrícula,
-            // Materiais) — they only render in debug builds or once the
-            // remote flag flips, and routing lands together with each feature.
+            // Gated tiles without an Android screen yet (Matrícula) — they
+            // only render in debug builds or once the remote flag flips, and
+            // routing lands together with each feature.
             else -> Unit
         }
     }

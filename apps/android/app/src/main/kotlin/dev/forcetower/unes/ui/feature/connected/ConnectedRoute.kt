@@ -44,6 +44,29 @@ internal sealed interface ConnectedRoute : NavKey {
     @Serializable data class ParadoxoDiscipline(val id: String, val name: String? = null) : ConnectedRoute
     @Serializable data class ParadoxoTeacher(val id: String, val name: String? = null) : ConnectedRoute
     @Serializable data class ParadoxoExplore(val kind: String) : ConnectedRoute
+    // Materiais hub — pushed from the "Materiais" shortcut on the Me hub
+    // (remote-config gated behind `enable_materials`).
+    @Serializable data object Materials : ConnectedRoute
+    // One discipline's materials shelf. `disciplineId` is the id served by
+    // `api/materials/overview` (the mirror's discipline id, NOT the offerId),
+    // so any surface that knows a discipline — hub, discipline detail,
+    // schedule quick actions — can push this directly. `code`/`name` are
+    // optional seeds that let the header render before the fetch resolves.
+    @Serializable data class MaterialsDiscipline(
+        val disciplineId: String,
+        val code: String? = null,
+        val name: String? = null,
+    ) : ConnectedRoute
+    // Material detail (or the moderation-status variant for own uploads).
+    // The full payload is handed off in-memory through the shared
+    // `MaterialsDetailViewModel.Seed`; the ids only re-hydrate it from the
+    // discipline shelf after process death.
+    @Serializable data class MaterialsDetail(
+        val materialId: String,
+        val disciplineId: String,
+    ) : ConnectedRoute
+    // "Salvos" — the server-side bookmark shelf, from the hub hero counter.
+    @Serializable data object MaterialsSaved : ConnectedRoute
 }
 
 internal fun ConnectedTab.rootRoute(): ConnectedRoute = when (this) {

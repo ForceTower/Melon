@@ -40,6 +40,12 @@ import dev.forcetower.unes.ui.feature.calendar.CalendarScreen
 import dev.forcetower.melon.feature.paradoxo.domain.model.ParadoxoExploreKind
 import dev.forcetower.unes.ui.feature.finalcountdown.FinalCountdownScreen
 import dev.forcetower.unes.ui.feature.licenses.LicensesScreen
+import dev.forcetower.unes.ui.feature.materials.MaterialsDetailIntent
+import dev.forcetower.unes.ui.feature.materials.MaterialsDetailScreen
+import dev.forcetower.unes.ui.feature.materials.MaterialsDetailViewModel
+import dev.forcetower.unes.ui.feature.materials.MaterialsHubScreen
+import dev.forcetower.unes.ui.feature.materials.MaterialsListScreen
+import dev.forcetower.unes.ui.feature.materials.MaterialsSavedScreen
 import dev.forcetower.unes.ui.feature.paradoxo.ParadoxoDisciplineScreen
 import dev.forcetower.unes.ui.feature.paradoxo.ParadoxoExploreScreen
 import dev.forcetower.unes.ui.feature.paradoxo.ParadoxoScreen
@@ -76,6 +82,9 @@ fun ConnectedScreen(
     // tap seed, so the detail route can read it without an extra navigation
     // payload (which Nav3 would have to serialize).
     val disciplinesVm: DisciplinesListViewModel = hiltViewModel()
+    // Materiais is online-only with no per-material fetch endpoint, so the
+    // detail seed rides the same shared-VM channel.
+    val materialsDetailVm: MaterialsDetailViewModel = hiltViewModel()
     val unreadBadges = mapOf(
         ConnectedTab.Messages to messagesState.rawItems.count { it.isUnread },
     ).filterValues { it > 0 }
@@ -256,6 +265,63 @@ fun ConnectedScreen(
                         },
                         onOpenTeacher = { id, name ->
                             navigator.navigate(ConnectedRoute.ParadoxoTeacher(id, name))
+                        },
+                        bottomInset = bottomInset,
+                    )
+                }
+                entry<ConnectedRoute.Materials> {
+                    MaterialsHubScreen(
+                        onBack = { navigator.goBack() },
+                        onOpenDiscipline = { discipline ->
+                            navigator.navigate(
+                                ConnectedRoute.MaterialsDiscipline(
+                                    disciplineId = discipline.id,
+                                    code = discipline.code,
+                                    name = discipline.name,
+                                ),
+                            )
+                        },
+                        onOpenSaved = { navigator.navigate(ConnectedRoute.MaterialsSaved) },
+                        bottomInset = bottomInset,
+                    )
+                }
+                entry<ConnectedRoute.MaterialsDiscipline> { route ->
+                    MaterialsListScreen(
+                        disciplineId = route.disciplineId,
+                        seedCode = route.code,
+                        seedName = route.name,
+                        onBack = { navigator.goBack() },
+                        onOpenMaterial = { material ->
+                            materialsDetailVm.onIntent(MaterialsDetailIntent.Seed(material))
+                            navigator.navigate(
+                                ConnectedRoute.MaterialsDetail(
+                                    materialId = material.id,
+                                    disciplineId = material.discipline.id,
+                                ),
+                            )
+                        },
+                        bottomInset = bottomInset,
+                    )
+                }
+                entry<ConnectedRoute.MaterialsDetail> { route ->
+                    MaterialsDetailScreen(
+                        materialId = route.materialId,
+                        disciplineId = route.disciplineId,
+                        onBack = { navigator.goBack() },
+                        bottomInset = bottomInset,
+                    )
+                }
+                entry<ConnectedRoute.MaterialsSaved> {
+                    MaterialsSavedScreen(
+                        onBack = { navigator.goBack() },
+                        onOpenMaterial = { material ->
+                            materialsDetailVm.onIntent(MaterialsDetailIntent.Seed(material))
+                            navigator.navigate(
+                                ConnectedRoute.MaterialsDetail(
+                                    materialId = material.id,
+                                    disciplineId = material.discipline.id,
+                                ),
+                            )
                         },
                         bottomInset = bottomInset,
                     )
