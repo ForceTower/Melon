@@ -8,6 +8,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext as HiltApplicationContext
 import dagger.hilt.components.SingletonComponent
 import dev.forcetower.melon.core.common.ApplicationContext
+import dev.forcetower.melon.core.common.ForegroundSignal
 import dev.forcetower.melon.core.session.domain.SessionStore
 import dev.forcetower.melon.feature.auth.domain.usecase.BeginPasskeyLoginUseCase
 import dev.forcetower.melon.feature.auth.domain.usecase.CompletePasskeyLoginUseCase
@@ -82,6 +83,8 @@ object UmbrellaBridgeModule {
 
     @Provides fun provideSessionStore(graph: UmbrellaGraph): SessionStore = graph.sessionStore
     @Provides fun provideLogger(graph: UmbrellaGraph): Logger = graph.logger
+    @Provides fun provideForegroundSignal(graph: UmbrellaGraph): ForegroundSignal =
+        graph.foregroundSignal
 
     // Auth
     @Provides fun provideLoginUseCase(graph: UmbrellaGraph): LoginUseCase =
