@@ -94,8 +94,6 @@ internal fun OverviewScreen(
             greeting = greeting,
             courseLine = state.courseName,
             avatarInitials = state.avatarInitials ?: "?",
-            showNotificationDot = (state.messagesTileRaw?.unreadCount ?: 0) > 0,
-            onOpenNotifications = onOpenMessages,
             onOpenProfile = onOpenProfile,
             modifier = Modifier.fadeInOnAppear(delayMs = 50),
         )

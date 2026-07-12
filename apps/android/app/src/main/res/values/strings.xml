@@ -213,7 +213,6 @@
     <!-- "Boa noite, Marina" — greeting + first name on one line. -->
     <string name="overview_greeting_format">%1$s, %2$s</string>
     <string name="overview_default_user">Mariana</string>
-    <string name="overview_notifications_label">Notificações</string>
     <string name="overview_avatar_label">Sua conta</string>
     <!-- endregion -->
 
