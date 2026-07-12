@@ -22,6 +22,7 @@ class MarkMessageAsReadUseCase internal constructor(
     private val log = logger.withTag("MarkMessageAsRead")
 
     suspend operator fun invoke(messageId: String) {
+        if (messageDao.getMessage(messageId)?.read == true) return
         val existing = messageDao.getState(messageId)
         if (existing?.readAt != null) return
         val now = Clock.System.now().toString()

@@ -57,8 +57,8 @@ class ObserveMessagesInboxUseCase internal constructor(
             senderName = entity.senderName,
             senderType = entity.senderType,
             timestamp = entity.timestamp,
-            isUnread = state?.readAt == null,
-            isStarred = state?.starred == true,
+            isUnread = entity.read != true && state?.readAt == null,
+            isStarred = entity.starred == true || state?.starred == true,
             attachmentCount = attachments.size,
             imageCount = imageCount,
         )

@@ -17,6 +17,8 @@ internal fun MessageDto.toEntity(): MessageEntity = MessageEntity(
     senderType = senderType,
     timestamp = timestamp,
     createdAt = createdAt,
+    read = read,
+    starred = starred,
 )
 
 // SAGRES occasionally emits content where real line breaks were serialized

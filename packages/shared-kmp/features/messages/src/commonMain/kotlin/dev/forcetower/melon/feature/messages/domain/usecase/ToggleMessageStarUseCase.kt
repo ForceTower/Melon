@@ -22,7 +22,11 @@ class ToggleMessageStarUseCase internal constructor(
 
     suspend operator fun invoke(messageId: String) {
         val existing = messageDao.getState(messageId)
-        val starred = existing?.starred != true
+        val message = messageDao.getMessage(messageId)
+        // Toggle off the merged value the UI shows (server OR overlay), and
+        // also flip the mirrored server flag — otherwise an unstar would stay
+        // shadowed by the OR-merge until the ack round-trips through a sync.
+        val starred = !(message?.starred == true || existing?.starred == true)
         messageDao.upsertState(
             MessageStateEntity(
                 messageId = messageId,
@@ -31,6 +35,7 @@ class ToggleMessageStarUseCase internal constructor(
                 updatedAt = Clock.System.now().toString(),
             ),
         )
+        messageDao.updateMessageStarred(messageId, starred)
         try {
             api.ackStar(id = messageId, starred = starred)
         } catch (e: CancellationException) {

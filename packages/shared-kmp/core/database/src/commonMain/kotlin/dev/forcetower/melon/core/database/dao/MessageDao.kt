@@ -34,8 +34,17 @@ abstract class MessageDao {
     @Query("SELECT * FROM MessageAttachment WHERE messageId = :messageId ORDER BY position ASC")
     abstract fun observeAttachmentsFor(messageId: String): Flow<List<MessageAttachmentEntity>>
 
+    @Query("SELECT * FROM Message WHERE id = :id")
+    abstract suspend fun getMessage(id: String): MessageEntity?
+
     @Query("SELECT * FROM MessageState WHERE messageId = :messageId")
     abstract suspend fun getState(messageId: String): MessageStateEntity?
+
+    // Mirrored server value only — display OR-merges it with the overlay, so
+    // an unstar must also clear it or it would stay shadowed until the ack
+    // round-trips through a refresh (matches iOS `setMessageStarred`).
+    @Query("UPDATE Message SET starred = :starred WHERE id = :id")
+    abstract suspend fun updateMessageStarred(id: String, starred: Boolean)
 
     @Query("SELECT * FROM MessageState WHERE messageId IN (:ids)")
     abstract fun observeStates(ids: List<String>): Flow<List<MessageStateEntity>>
@@ -43,24 +52,23 @@ abstract class MessageDao {
     @Query("SELECT * FROM MessageState WHERE messageId IN (:ids)")
     abstract suspend fun getStates(ids: List<String>): List<MessageStateEntity>
 
-    // Unread = no MessageState row (initial sync) or readAt is null.
+    // Unread = server hasn't marked it read AND no local overlay has either
+    // (a missing MessageState row counts as unread). Matches iOS
+    // `MirrorStore.messageItem`: read != true && readAt == null.
     @Query(
         """
         SELECT m.id FROM Message m
           LEFT JOIN MessageState ms ON ms.messageId = m.id
-         WHERE ms.readAt IS NULL
+         WHERE m.read IS NOT 1 AND ms.readAt IS NULL
         """,
     )
     abstract suspend fun unreadMessageIds(): List<String>
 
-    // Count of unread messages — a missing MessageState row counts as unread
-    // (matches MirrorRepositoryImpl, which applies messages without states
-    // during initial sync).
     @Query(
         """
         SELECT COUNT(*) FROM Message m
           LEFT JOIN MessageState ms ON ms.messageId = m.id
-         WHERE ms.readAt IS NULL
+         WHERE m.read IS NOT 1 AND ms.readAt IS NULL
         """,
     )
     abstract fun observeUnreadCount(): Flow<Int>
@@ -74,7 +82,7 @@ abstract class MessageDao {
                m.timestamp AS timestamp
           FROM Message m
           LEFT JOIN MessageState ms ON ms.messageId = m.id
-         WHERE ms.readAt IS NULL
+         WHERE m.read IS NOT 1 AND ms.readAt IS NULL
          ORDER BY m.timestamp DESC, m.id DESC
          LIMIT 1
         """,

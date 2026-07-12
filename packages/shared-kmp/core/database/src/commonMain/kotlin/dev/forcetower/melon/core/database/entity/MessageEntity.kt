@@ -18,4 +18,10 @@ data class MessageEntity(
     val senderType: Int?,
     val timestamp: String,
     val createdAt: String,
+    // Server-merged read/starred across all linked devices, mirrored at sync
+    // time. Display merges them with the local MessageState overlay (matches
+    // iOS `MirrorStore.messageItem`): unread = read != true && readAt == null,
+    // starred = starred == true || overlay.starred.
+    val read: Boolean?,
+    val starred: Boolean?,
 )

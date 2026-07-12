@@ -71,7 +71,7 @@ import dev.forcetower.melon.core.database.entity.UserSettingsEntity
         PendingMutationEntity::class,
         AcademicCalendarEventEntity::class,
     ],
-    version = 7,
+    version = 8,
 )
 @ConstructedBy(MelonDatabaseConstructor::class)
 abstract class MelonDatabase : RoomDatabase() {

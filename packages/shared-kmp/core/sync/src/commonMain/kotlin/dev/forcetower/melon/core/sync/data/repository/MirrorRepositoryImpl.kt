@@ -154,10 +154,10 @@ internal class MirrorRepositoryImpl(
                 val page = mapped.value
                 val scopesCount = page.messages.sumOf { it.scopes.size }
                 val attachmentsCount = page.messages.sumOf { it.attachments.size }
-                // Read/starred state is per-student locally but server-merged
-                // across all linked students — without a 1:1 student mapping
-                // we skip persisting MessageState here. Fresh inbox lands as
-                // unread; a later state-sync pass can reconcile.
+                // Server-merged read/starred land on the Message row itself;
+                // the local MessageState overlay is deliberately left alone so
+                // sync never resurrects an unread dot (matches iOS
+                // `MirrorStore.upsertMessages`).
                 messageDao.applyMessagePage(
                     messages = page.messages.map { it.toEntity() },
                     scopes = page.messages.flatMap { msg -> msg.scopes.map { it.toEntity(msg.id) } },
