@@ -158,24 +158,22 @@ internal fun OverviewScreen(
                 Spacer(Modifier.height(24.dp))
             }
 
-            if (today.isNotEmpty()) {
-                TodayTimeline(
-                    items = today,
-                    weekdayLabel = state.weekdayLabel,
-                    onOpenClass = { item ->
-                        onOpenDiscipline(
-                            OverviewDiscipline(
-                                code = item.code,
-                                title = item.title,
-                                offerId = item.offerId,
-                            ),
-                        )
-                    },
-                    onOpenSchedule = onOpenSchedule,
-                    modifier = Modifier.fadeUpOnAppear(delayMs = 640),
-                )
-                Spacer(Modifier.height(22.dp))
-            }
+            TodayTimeline(
+                items = today,
+                weekdayLabel = state.weekdayLabel,
+                onOpenClass = { item ->
+                    onOpenDiscipline(
+                        OverviewDiscipline(
+                            code = item.code,
+                            title = item.title,
+                            offerId = item.offerId,
+                        ),
+                    )
+                },
+                onOpenSchedule = onOpenSchedule,
+                modifier = Modifier.fadeUpOnAppear(delayMs = 640),
+            )
+            Spacer(Modifier.height(22.dp))
 
             if (messages != null) {
                 MessagesPreview(

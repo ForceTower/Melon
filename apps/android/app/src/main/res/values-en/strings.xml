@@ -244,6 +244,7 @@
     <string name="overview_today_next_badge">Next</string>
     <string name="overview_today_now_badge">Now</string>
     <string name="overview_today_done_label">Class complete</string>
+    <string name="overview_today_empty">No classes today</string>
     <!-- endregion -->
 
     <!-- region Overview · Messages preview -->

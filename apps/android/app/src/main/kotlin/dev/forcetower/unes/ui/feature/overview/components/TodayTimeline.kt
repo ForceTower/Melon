@@ -72,18 +72,25 @@ internal fun TodayTimeline(
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.outline,
             )
-            Text(
-                text = pluralStringResource(
-                    R.plurals.overview_today_summary,
-                    items.size,
-                    weekdayLabel,
-                    items.size,
-                ),
-                style = MaterialTheme.typography.bodyMedium.copy(fontSize = 13.sp),
-                color = MaterialTheme.colorScheme.outline,
-            )
+            if (items.isNotEmpty()) {
+                Text(
+                    text = pluralStringResource(
+                        R.plurals.overview_today_summary,
+                        items.size,
+                        weekdayLabel,
+                        items.size,
+                    ),
+                    style = MaterialTheme.typography.bodyMedium.copy(fontSize = 13.sp),
+                    color = MaterialTheme.colorScheme.outline,
+                )
+            }
         }
         Spacer(Modifier.height(14.dp))
+
+        if (items.isEmpty()) {
+            EmptyDayCard()
+            return@Column
+        }
 
         Box {
             // Spine behind the dots, inset from the first/last card edges.
@@ -106,6 +113,28 @@ internal fun TodayTimeline(
                 }
             }
         }
+    }
+}
+
+// Shown when the day has no scheduled classes — a quiet full-width card, like
+// the design's "Sem aulas hoje" placeholder.
+@Composable
+private fun EmptyDayCard() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(20.dp))
+            .background(MaterialTheme.melon.surface.card)
+            .border(1.dp, MaterialTheme.melon.surface.line, RoundedCornerShape(20.dp))
+            .padding(vertical = 26.dp, horizontal = 16.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = stringResource(R.string.overview_today_empty),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.outline,
+            textAlign = TextAlign.Center,
+        )
     }
 }
 
@@ -318,6 +347,21 @@ private fun TodayTimelinePreview() {
         Box(Modifier.background(MaterialTheme.colorScheme.background)) {
             TodayTimeline(
                 items = OverviewFixtures.today,
+                weekdayLabel = OverviewFixtures.WEEKDAY,
+                onOpenClass = {},
+                onOpenSchedule = {},
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun TodayTimelineEmptyPreview() {
+    MelonTheme {
+        Box(Modifier.background(MaterialTheme.colorScheme.background)) {
+            TodayTimeline(
+                items = emptyList(),
                 weekdayLabel = OverviewFixtures.WEEKDAY,
                 onOpenClass = {},
                 onOpenSchedule = {},
