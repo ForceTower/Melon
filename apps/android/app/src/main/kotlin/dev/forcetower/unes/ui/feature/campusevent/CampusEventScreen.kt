@@ -76,6 +76,7 @@ import dev.forcetower.melon.feature.campusevent.domain.model.CampusEventCategory
 import dev.forcetower.melon.feature.campusevent.domain.model.CampusEventDay
 import dev.forcetower.melon.feature.campusevent.domain.model.CampusEventPhase
 import dev.forcetower.unes.R
+import dev.forcetower.unes.designsystem.components.MelonSegmentedRow
 import dev.forcetower.unes.designsystem.foundation.Mesh
 import dev.forcetower.unes.designsystem.foundation.MeshVariant
 import dev.forcetower.unes.designsystem.foundation.fadeInOnAppear
@@ -855,67 +856,29 @@ private fun DayTab(
     }
 }
 
-// Tonal track with a raised card thumb, each option carrying its audience
-// dot — the same segmented recipe as `CalCategorySegmented` on Calendário,
-// mirroring the dc filter row.
 @Composable
 private fun AudienceFilter(
     filter: CampusEventAudience,
     onFilterChanged: (CampusEventAudience) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(14.dp))
-            .background(MaterialTheme.colorScheme.surfaceContainer)
-            .padding(3.dp),
-        horizontalArrangement = Arrangement.spacedBy(3.dp),
-    ) {
-        listOf(
-            CampusEventAudience.Everyone,
-            CampusEventAudience.Freshmen,
-            CampusEventAudience.Veterans,
-        ).forEach { audience ->
-            val isActive = filter == audience
-            Surface(
-                onClick = { onFilterChanged(audience) },
-                modifier = Modifier.weight(1f),
-                shape = RoundedCornerShape(11.dp),
-                color = if (isActive) MaterialTheme.melon.surface.card else Color.Transparent,
-                shadowElevation = if (isActive) 1.dp else 0.dp,
-            ) {
-                Row(
-                    modifier = Modifier.padding(vertical = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center,
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .padding(end = 5.dp)
-                            .size(8.dp)
-                            .clip(CircleShape)
-                            .background(
-                                audience.tone().copy(alpha = if (isActive) 1f else 0.5f),
-                            ),
-                    )
-                    Text(
-                        text = stringResource(audience.label),
-                        style = MaterialTheme.typography.labelMedium.copy(
-                            fontSize = 12.5.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            letterSpacing = (-0.12).sp,
-                        ),
-                        color = if (isActive) {
-                            MaterialTheme.colorScheme.onBackground
-                        } else {
-                            MaterialTheme.colorScheme.onSurfaceVariant
-                        },
-                    )
-                }
-            }
-        }
-    }
+    val options = listOf(
+        CampusEventAudience.Everyone,
+        CampusEventAudience.Freshmen,
+        CampusEventAudience.Veterans,
+    )
+    val labels = options.associateWith { stringResource(it.label) }
+    val tones = options.associateWith { it.tone() }
+    MelonSegmentedRow(
+        options = options,
+        selected = filter,
+        onSelect = onFilterChanged,
+        label = { audience -> labels.getValue(audience) },
+        dot = { audience, active ->
+            tones.getValue(audience).copy(alpha = if (active) 1f else 0.5f)
+        },
+        modifier = modifier,
+    )
 }
 
 // One schedule entry: time column, category rail, badges + title + venue.

@@ -23,90 +23,37 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dev.forcetower.unes.designsystem.components.MelonSegmentedRow
 import dev.forcetower.unes.designsystem.theme.melon
 import dev.forcetower.unes.ui.feature.calendar.CalendarCategory
 import dev.forcetower.unes.ui.feature.calendar.CalendarCategoryFilter
 import dev.forcetower.unes.ui.feature.calendar.CalendarScopeFilter
 import dev.forcetower.unes.ui.feature.calendar.color
 
-// Full-width segmented control for the category filter — tonal track with a
-// raised card thumb, each category option carrying its color dot. Same pill
-// recipe as `GroupSegmented` on the discipline detail. Mirrors the dc
-// segmented row.
+// Full-width segmented control for the category filter — the shared design
+// system track/thumb recipe, each category option carrying its color dot.
+// Mirrors the dc segmented row.
 @Composable
 internal fun CalCategorySegmented(
     active: CalendarCategoryFilter,
     onChange: (CalendarCategoryFilter) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(14.dp))
-            .background(MaterialTheme.colorScheme.surfaceContainer)
-            .padding(3.dp),
-        horizontalArrangement = Arrangement.spacedBy(3.dp),
-    ) {
-        CalendarCategoryFilter.entries.forEach { filter ->
-            SegmentButton(
-                filter = filter,
-                isActive = active == filter,
-                onClick = { onChange(filter) },
-                modifier = Modifier.weight(1f),
-            )
-        }
-    }
-}
-
-@Composable
-private fun SegmentButton(
-    filter: CalendarCategoryFilter,
-    isActive: Boolean,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    val dotColor = when (filter) {
-        CalendarCategoryFilter.All -> null
-        CalendarCategoryFilter.Deadline -> CalendarCategory.Deadline.color()
-        CalendarCategoryFilter.Exam -> CalendarCategory.Exam.color()
-        CalendarCategoryFilter.Holiday -> CalendarCategory.Holiday.color()
-    }
-    Surface(
-        onClick = onClick,
+    val options = CalendarCategoryFilter.entries.toList()
+    val labels = options.associateWith { stringResource(it.labelRes) }
+    val dots = mapOf(
+        CalendarCategoryFilter.Deadline to CalendarCategory.Deadline.color(),
+        CalendarCategoryFilter.Exam to CalendarCategory.Exam.color(),
+        CalendarCategoryFilter.Holiday to CalendarCategory.Holiday.color(),
+    )
+    MelonSegmentedRow(
+        options = options,
+        selected = active,
+        onSelect = onChange,
+        label = { filter -> labels.getValue(filter) },
+        dot = { filter, _ -> dots[filter] },
         modifier = modifier,
-        shape = RoundedCornerShape(11.dp),
-        color = if (isActive) MaterialTheme.melon.surface.card else androidx.compose.ui.graphics.Color.Transparent,
-        shadowElevation = if (isActive) 1.dp else 0.dp,
-    ) {
-        Row(
-            modifier = Modifier.padding(vertical = 8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center,
-        ) {
-            if (dotColor != null) {
-                Box(
-                    modifier = Modifier
-                        .padding(end = 5.dp)
-                        .size(8.dp)
-                        .clip(RoundedCornerShape(4.dp))
-                        .background(dotColor),
-                )
-            }
-            Text(
-                text = stringResource(filter.labelRes),
-                style = MaterialTheme.typography.labelMedium.copy(
-                    fontSize = 12.5.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    letterSpacing = (-0.12).sp,
-                ),
-                color = if (isActive) {
-                    MaterialTheme.colorScheme.onBackground
-                } else {
-                    MaterialTheme.colorScheme.onSurfaceVariant
-                },
-            )
-        }
-    }
+    )
 }
 
 // Horizontally-scrolling scope pills: active = filled ink, inactive = outlined
