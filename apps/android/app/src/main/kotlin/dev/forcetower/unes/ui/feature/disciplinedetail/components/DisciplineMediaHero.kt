@@ -60,8 +60,15 @@ internal fun DisciplineMediaHero(
     val subject = discipline.color
     val card = MaterialTheme.melon.surface.card
     val shape = RoundedCornerShape(26.dp)
-    val closed = discipline.finalGrade != null
-    val shown = discipline.finalGrade ?: discipline.partialAverage
+    // "Média final" only once upstream recorded a verdict — finalGrade is
+    // published LIVE (as the partial mean) while the Prova Final is pending,
+    // so its presence alone doesn't close the discipline.
+    val closed = discipline.approved != null
+    val shown = if (closed) {
+        discipline.finalGrade ?: discipline.partialAverage
+    } else {
+        discipline.partialAverage
+    }
     val released = discipline.allGrades.count { it.score != null }
     val total = discipline.allGrades.size
 
@@ -125,7 +132,7 @@ internal fun DisciplineMediaHero(
                         color = MaterialTheme.colorScheme.onBackground,
                     )
                     val caption = when {
-                        closed && discipline.finalExam != null ->
+                        closed && (discipline.wentToFinals || discipline.finalExam != null) ->
                             stringResource(R.string.discipline_detail_media_after_final)
                         total == 0 || released == 0 ->
                             stringResource(R.string.discipline_detail_media_no_grades)
@@ -180,7 +187,7 @@ private fun StatusPill(discipline: Discipline, modifier: Modifier = Modifier) {
 
     data class Pill(val label: String, val color: Color, val icon: ImageVector)
     val pill = when {
-        discipline.approved == true && discipline.finalExam != null -> Pill(
+        discipline.approved == true && (discipline.wentToFinals || discipline.finalExam != null) -> Pill(
             stringResource(R.string.discipline_detail_status_approved_final),
             ok,
             Icons.Filled.WorkspacePremium,

@@ -119,6 +119,7 @@ private fun buildItem(
     val finalGradeString = rows.firstOrNull { !it.finalGrade.isNullOrBlank() }?.finalGrade
     val finalGrade = finalGradeString?.replace(",", ".")?.toDoubleOrNull()
     val approved = rows.firstOrNull { it.approved != null }?.approved
+    val wentToFinals = rows.any { it.wentToFinals }
 
     val groupsLabel = buildGroupsLabel(rows)
 
@@ -137,8 +138,10 @@ private fun buildItem(
         partialAverage = partialAverage,
         finalGrade = finalGrade,
         approved = approved,
+        wentToFinals = wentToFinals,
         status = classifyStatus(
             approved = approved,
+            wentToFinals = wentToFinals,
             finalGrade = finalGrade,
             partialAverage = partialAverage,
         ),
@@ -187,13 +190,19 @@ private fun buildGroupsLabel(rows: List<EnrolledDisciplineRow>): String? {
 
 private const val PASS_THRESHOLD = 5.5
 
+// `approved` is authoritative; `wentToFinals` must be checked before any
+// finalGrade inference because upstream publishes finalGrade (= the partial
+// mean) LIVE while the Prova Final is still pending — a low live value would
+// otherwise read as a verdict.
 private fun classifyStatus(
     approved: Boolean?,
+    wentToFinals: Boolean,
     finalGrade: Double?,
     partialAverage: Double?,
 ): DisciplineStatusKind = when {
     approved == true -> DisciplineStatusKind.APROVADO
     approved == false -> DisciplineStatusKind.REPROVADO
+    wentToFinals -> DisciplineStatusKind.FINAL
     finalGrade != null -> DisciplineStatusKind.FINAL
     partialAverage == null -> DisciplineStatusKind.PENDING
     partialAverage < PASS_THRESHOLD -> DisciplineStatusKind.LOW

@@ -376,6 +376,7 @@ abstract class AcademicDao {
                d.department AS department,
                sc.finalGrade AS finalGrade,
                sc.approved AS approved,
+               sc.wentToFinals AS wentToFinals,
                sc.missedClasses AS missedClasses,
                (
                  SELECT t.name FROM Teacher t
@@ -436,6 +437,7 @@ abstract class AcademicDao {
                c.groupName AS groupName,
                sc.finalGrade AS finalGrade,
                sc.approved AS approved,
+               sc.wentToFinals AS wentToFinals,
                sc.missedClasses AS missedClasses,
                (
                  SELECT t.name FROM Teacher t

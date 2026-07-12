@@ -69,6 +69,7 @@ private fun build(
     val finalGradeString = enrollments.firstOrNull { !it.finalGrade.isNullOrBlank() }?.finalGrade
     val finalGrade = finalGradeString?.replace(",", ".")?.toDoubleOrNull()
     val approved = enrollments.firstOrNull { it.approved != null }?.approved
+    val wentToFinals = enrollments.any { it.wentToFinals }
 
     val groups = classRows.map { row ->
         DisciplineDetailGroup(
@@ -166,6 +167,7 @@ private fun build(
         allowedMissedHours = allowedMissedHours,
         finalGrade = finalGrade,
         approved = approved,
+        wentToFinals = wentToFinals,
         groups = groups,
         sections = sections,
         lectures = mappedLectures,

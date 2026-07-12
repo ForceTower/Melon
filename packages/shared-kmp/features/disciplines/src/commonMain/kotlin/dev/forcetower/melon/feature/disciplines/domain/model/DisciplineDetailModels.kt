@@ -22,8 +22,11 @@ data class DisciplineDetail(
     val missedHours: Int,
     // Derived `ceil(hours * 0.25)` — matches the list-view rule.
     val allowedMissedHours: Int,
+    // LIVE while the Prova Final is pending — never infer a verdict from it.
     val finalGrade: Double?,
     val approved: Boolean?,
+    // Upstream "Em prova final" marker on any of the offer's StudentClass rows.
+    val wentToFinals: Boolean,
     val groups: List<DisciplineDetailGroup>,
     val sections: List<DisciplineDetailSection>,
     val lectures: List<DisciplineDetailLecture>,

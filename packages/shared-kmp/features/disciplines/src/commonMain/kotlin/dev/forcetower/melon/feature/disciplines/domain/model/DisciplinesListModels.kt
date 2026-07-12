@@ -35,9 +35,12 @@ data class DisciplineListItem(
     val allowedMissedHours: Int,
     // Weighted mean of released grades, null when nothing is released.
     val partialAverage: Double?,
-    // Parsed from the String upstream stores; null when not set.
+    // Parsed from the String upstream stores; null when not set. LIVE while
+    // the Prova Final is pending — never infer a verdict from it alone.
     val finalGrade: Double?,
     val approved: Boolean?,
+    // Upstream "Em prova final" marker on any of the offer's StudentClass rows.
+    val wentToFinals: Boolean,
     val status: DisciplineStatusKind,
     // "Te · Pr" when the discipline has more than one group (class type);
     // null when the student is enrolled in a single group.

@@ -90,12 +90,17 @@ internal data class Discipline(
     val attachments: List<Attachment> = emptyList(),
     val ementa: String? = null,
     val groups: List<DisciplineGroup> = emptyList(),
+    // LIVE while the Prova Final is pending (upstream publishes the partial
+    // mean here during finals) — never infer a verdict from it alone.
     val finalGrade: Double? = null,
     // Authoritative pass/fail flag from upstream — set once the semester
     // closes (after finals). When null the discipline is still in progress
     // (or upstream simply hasn't recorded a result), and `status` falls back
     // to grade thresholds.
     val approved: Boolean? = null,
+    // Upstream "Em prova final" marker — the student is sitting (or sat) the
+    // Prova Final. Checked before any finalGrade-based inference.
+    val wentToFinals: Boolean = false,
     // Weighted partial average computed upstream. When null, `partialAverage`
     // falls back to the unweighted mean of released scores.
     val storedPartialAverage: Double? = null,
@@ -159,10 +164,12 @@ internal val Discipline.hasEqualWeights: Boolean
         return weights.isEmpty() || weights.distinct().size == 1
     }
 
-// The student is sitting the Prova Final: the row exists, the grade hasn't
-// been published, and upstream hasn't recorded a verdict yet.
+// The student is sitting the Prova Final and upstream hasn't recorded a
+// verdict yet. The upstream marker is authoritative; the pending final-exam
+// row covers seeds/payloads that predate the flag.
 internal val Discipline.isAwaitingFinal: Boolean
-    get() = finalExam != null && finalExam.score == null && approved == null
+    get() = approved == null &&
+        (wentToFinals || (finalExam != null && finalExam.score == null))
 
 internal val Discipline.completedCount: Int
     get() = allGrades.count { it.score != null }
@@ -206,6 +213,12 @@ internal val Discipline.status: DisciplineStatus
             } else {
                 DisciplineStatus(DisciplineStatus.Key.Failed, "reprovado")
             }
+        }
+        // During finals upstream publishes finalGrade LIVE (it equals the
+        // partial mean), so the wentToFinals marker must win before any
+        // threshold check — a 3,5 live value is not a failed verdict.
+        if (wentToFinals) {
+            return DisciplineStatus(DisciplineStatus.Key.Final, "prova final")
         }
         val final = finalGrade
         if (final != null) {

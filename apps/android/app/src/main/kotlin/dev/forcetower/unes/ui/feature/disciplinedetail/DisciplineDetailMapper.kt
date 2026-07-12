@@ -61,6 +61,7 @@ internal fun mapDetail(raw: KmpDetail, seed: Discipline?): Discipline {
         groups = groups,
         finalGrade = raw.finalGrade,
         approved = raw.approved,
+        wentToFinals = raw.wentToFinals,
         finalExam = finalExam,
         disciplineId = raw.disciplineId,
         offerId = raw.offerId,

@@ -125,6 +125,10 @@ data class EnrolledDisciplineRow(
     val department: String?,
     val finalGrade: String?,
     val approved: Boolean?,
+    // Upstream "Em prova final" marker. `finalGrade` is LIVE while the exam
+    // is pending, so status classification must check this before any
+    // grade-threshold fallback.
+    val wentToFinals: Boolean,
     val missedClasses: Int?,
     val teacherName: String?,
 )
@@ -167,6 +171,9 @@ data class DisciplineDetailEnrollmentRow(
     val groupName: String,
     val finalGrade: String?,
     val approved: Boolean?,
+    // See EnrolledDisciplineRow — pending-finals marker, checked before any
+    // finalGrade-based inference.
+    val wentToFinals: Boolean,
     val missedClasses: Int?,
     val teacherName: String?,
 )
