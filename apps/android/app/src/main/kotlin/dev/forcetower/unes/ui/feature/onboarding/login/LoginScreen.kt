@@ -46,7 +46,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Brush
@@ -410,11 +409,12 @@ private fun LoginFieldRow(
     val ink3 = MaterialTheme.colorScheme.onSurfaceVariant
     val ink4 = MaterialTheme.colorScheme.outlineVariant
     val accent = MaterialTheme.colorScheme.primary
+    val line = MaterialTheme.melon.surface.line
 
-    val indicator by animateColorAsState(
-        targetValue = if (isFocused) accent else Color.Transparent,
+    val borderColor by animateColorAsState(
+        targetValue = if (isFocused) accent else line,
         animationSpec = tween(180),
-        label = "field-indicator",
+        label = "field-border",
     )
     val iconTint by animateColorAsState(
         targetValue = if (isFocused) accent else ink4,
@@ -432,13 +432,7 @@ private fun LoginFieldRow(
             .fillMaxWidth()
             .clip(RoundedCornerShape(14.dp))
             .background(MaterialTheme.colorScheme.surfaceVariant)
-            .drawBehind {
-                drawRect(
-                    color = indicator,
-                    topLeft = androidx.compose.ui.geometry.Offset(0f, size.height - 2.dp.toPx()),
-                    size = androidx.compose.ui.geometry.Size(size.width, 2.dp.toPx()),
-                )
-            }
+            .border(1.5.dp, borderColor, RoundedCornerShape(14.dp))
             .padding(start = 16.dp, end = 6.dp, top = 11.dp, bottom = 11.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(13.dp),
