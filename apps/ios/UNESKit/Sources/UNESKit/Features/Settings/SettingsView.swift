@@ -61,6 +61,15 @@ struct SettingsView: View {
                     .padding(.bottom, 22)
 
                     VStack(spacing: 0) {
+                        sectionHeader(String.localized(.settingsSecurity))
+                        SettingsSecurityCard {
+                            store.send(.securityRowTapped)
+                        }
+                    }
+                    .fadeUp(delay: 0.16)
+                    .padding(.bottom, 12)
+
+                    VStack(spacing: 0) {
                         sectionHeader(String.localized(.settingsAppearance))
                         VStack(spacing: 12) {
                             SettingsAppearanceCard(theme: store.theme) {

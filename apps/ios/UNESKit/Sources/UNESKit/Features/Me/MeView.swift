@@ -16,6 +16,8 @@ struct MeView: View {
             switch store.case {
             case let .settings(store):
                 SettingsView(store: store)
+            case let .passkeys(store):
+                PasskeysView(store: store)
             case let .calendar(store):
                 CalendarView(store: store)
             case let .countdown(store):

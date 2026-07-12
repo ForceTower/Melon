@@ -59,6 +59,13 @@ struct SettingsFeature {
         case revealExpired
         case copyTapped(CredentialField)
         case copyFeedbackExpired
+        case securityRowTapped
+        case delegate(Delegate)
+
+        enum Delegate: Equatable {
+            /// The host stack should push the passkeys manager.
+            case openPasskeys
+        }
     }
 
     @Dependency(\.settingsRepository) var settingsRepository
@@ -245,6 +252,13 @@ struct SettingsFeature {
 
             case .copyFeedbackExpired:
                 state.copied = nil
+                return .none
+
+            case .securityRowTapped:
+                log.info("open passkeys")
+                return .send(.delegate(.openPasskeys))
+
+            case .delegate:
                 return .none
             }
         }

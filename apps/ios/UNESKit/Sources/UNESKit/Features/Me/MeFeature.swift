@@ -62,6 +62,7 @@ struct MeFeature {
     @Reducer
     enum Path {
         case settings(SettingsFeature)
+        case passkeys(PasskeysFeature)
         case calendar(CalendarFeature)
         case countdown(FinalCountdownFeature)
         case licenses(LicensesFeature)
@@ -240,6 +241,7 @@ struct MeFeature {
 
             case let .path(.element(id: _, action: pathAction)):
                 return .merge(
+                    routeSettings(pathAction, state: &state),
                     routeEnrollment(pathAction, state: &state),
                     routeParadoxo(pathAction, state: &state),
                     routeMaterials(pathAction, state: &state)
@@ -263,6 +265,14 @@ struct MeFeature {
             score: state.overview?.coefficient?.value,
             stored: localDocuments.load(document)
         )
+    }
+
+    /// Settings pushes the passkeys manager onto the host stack.
+    private func routeSettings(_ action: Path.Action, state: inout State) -> Effect<Action> {
+        if case .settings(.delegate(.openPasskeys)) = action {
+            state.path.append(.passkeys(PasskeysFeature.State(accountName: state.displayName)))
+        }
+        return .none
     }
 
     /// The matrícula steps are sibling path elements sharing one in-memory

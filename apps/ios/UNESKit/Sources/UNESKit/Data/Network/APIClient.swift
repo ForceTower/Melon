@@ -106,6 +106,21 @@ extension APIClient {
         return try Self.unwrap(await send(request))
     }
 
+    /// PATCH whose response carries no data payload.
+    func patch(at path: String, query: [URLQueryItem] = [], body: some Encodable & Sendable) async throws {
+        _ = try await send(APIRequest(
+            method: "PATCH",
+            path: path,
+            query: query,
+            body: try JSONEncoder().encode(body)
+        ))
+    }
+
+    /// DELETE whose response carries no data payload.
+    func delete(_ path: String, query: [URLQueryItem] = []) async throws {
+        _ = try await send(APIRequest(method: "DELETE", path: path, query: query))
+    }
+
     private static func unwrap<T: Decodable>(_ data: Data) throws -> T {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601

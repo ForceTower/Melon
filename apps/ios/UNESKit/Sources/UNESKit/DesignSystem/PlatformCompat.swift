@@ -35,6 +35,16 @@ extension View {
         #endif
     }
 
+    /// Forces the large title even when pushed from an inline screen.
+    @ViewBuilder
+    func largeNavigationBar() -> some View {
+        #if os(iOS)
+        navigationBarTitleDisplayMode(.large)
+        #else
+        self
+        #endif
+    }
+
     /// Fully hidden navigation bar (root screens with their own chrome).
     @ViewBuilder
     func hiddenNavigationBar() -> some View {
@@ -126,6 +136,19 @@ extension View {
     func decimalKeyboard() -> some View {
         #if os(iOS)
         keyboardType(.decimalPad)
+        #else
+        self
+        #endif
+    }
+
+    /// The iOS grouped-list look; `.insetGrouped`/`.grouped` are unavailable
+    /// outside iOS/macOS.
+    @ViewBuilder
+    func insetGroupedListStyle() -> some View {
+        #if os(iOS)
+        listStyle(.insetGrouped)
+        #elseif os(macOS)
+        listStyle(.grouped)
         #else
         self
         #endif

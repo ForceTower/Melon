@@ -24,6 +24,26 @@ extension PasskeyClient: DependencyKey {
             log.warn("assert unavailable: platform not supported")
             throw AuthError.passkeyUnavailable
             #endif
+        },
+        register: { options, target in
+            #if os(iOS)
+            log.info("register attempt rpId=\(options.rpId) target=\(target)")
+            do {
+                let attestation = try await PasskeyRegistrar().register(options: options, target: target)
+                log.info("register ok")
+                return attestation
+            } catch {
+                if case AuthError.cancelled = error {
+                    log.info("register cancelled")
+                } else {
+                    log.warn("register failed", error: error)
+                }
+                throw error
+            }
+            #else
+            log.warn("register unavailable: platform not supported")
+            throw AuthError.passkeyUnavailable
+            #endif
         }
     )
 }
@@ -114,13 +134,138 @@ extension PasskeyAuthenticator: ASAuthorizationControllerDelegate {
 
 extension PasskeyAuthenticator: ASAuthorizationControllerPresentationContextProviding {
     nonisolated func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
-        MainActor.assumeIsolated {
-            UIApplication.shared.connectedScenes
-                .compactMap { $0 as? UIWindowScene }
-                .flatMap(\.windows)
-                .first { $0.isKeyWindow } ?? ASPresentationAnchor()
+        MainActor.assumeIsolated { passkeyPresentationAnchor() }
+    }
+}
+
+/// Drives a single ASAuthorization registration request. Owned per-call, like
+/// `PasskeyAuthenticator`. The system presents its own creation sheet — Face ID
+/// (platform) or key-tap (security key) is confirmed there, not by us.
+@MainActor
+private final class PasskeyRegistrar: NSObject {
+    private var continuation: CheckedContinuation<PasskeyAttestation, Error>?
+    private var attachment = "platform"
+
+    func register(options: PasskeyRegistrationOptions, target: PasskeyTarget) async throws -> PasskeyAttestation {
+        guard let challengeData = Data(base64URLEncoded: options.challenge),
+              let userIDData = Data(base64URLEncoded: options.userId) else {
+            log.warn("register failed: invalid options encoding")
+            throw AuthError.server(String.localized(.dataErrorInvalidChallenge))
+        }
+
+        let request = makeRequest(options: options, target: target, challenge: challengeData, userID: userIDData)
+        let controller = ASAuthorizationController(authorizationRequests: [request])
+        controller.delegate = self
+        controller.presentationContextProvider = self
+
+        return try await withCheckedThrowingContinuation { continuation in
+            self.continuation = continuation
+            controller.performRequests()
         }
     }
+
+    private func makeRequest(
+        options: PasskeyRegistrationOptions,
+        target: PasskeyTarget,
+        challenge: Data,
+        userID: Data
+    ) -> ASAuthorizationRequest {
+        switch target {
+        case .thisDevice:
+            attachment = "platform"
+            let provider = ASAuthorizationPlatformPublicKeyCredentialProvider(relyingPartyIdentifier: options.rpId)
+            let request = provider.createCredentialRegistrationRequest(
+                challenge: challenge,
+                name: options.userName,
+                userID: userID
+            )
+            request.userVerificationPreference = .required
+            request.excludedCredentials = options.excludedCredentialIds.compactMap { id in
+                Data(base64URLEncoded: id).map(ASAuthorizationPlatformPublicKeyCredentialDescriptor.init(credentialID:))
+            }
+            return request
+
+        case .securityKey:
+            attachment = "cross-platform"
+            let provider = ASAuthorizationSecurityKeyPublicKeyCredentialProvider(relyingPartyIdentifier: options.rpId)
+            let request = provider.createCredentialRegistrationRequest(
+                challenge: challenge,
+                displayName: options.userDisplayName,
+                name: options.userName,
+                userID: userID
+            )
+            request.credentialParameters = options.algorithms.map {
+                ASAuthorizationPublicKeyCredentialParameters(algorithm: ASCOSEAlgorithmIdentifier(rawValue: $0))
+            }
+            request.residentKeyPreference = .required
+            request.userVerificationPreference = .required
+            request.excludedCredentials = options.excludedCredentialIds.compactMap { id in
+                Data(base64URLEncoded: id).map {
+                    ASAuthorizationSecurityKeyPublicKeyCredentialDescriptor(credentialID: $0, transports: [])
+                }
+            }
+            return request
+        }
+    }
+}
+
+extension PasskeyRegistrar: ASAuthorizationControllerDelegate {
+    nonisolated func authorizationController(
+        controller: ASAuthorizationController,
+        didCompleteWithAuthorization authorization: ASAuthorization
+    ) {
+        Task { @MainActor in
+            guard let credential = authorization.credential as? ASAuthorizationPublicKeyCredentialRegistration,
+                  let attestationObject = credential.rawAttestationObject else {
+                log.warn("registration completion failed: unexpected credential type")
+                continuation?.resume(throwing: AuthError.passkeyUnavailable)
+                continuation = nil
+                return
+            }
+
+            let attestation = PasskeyAttestation(
+                id: credential.credentialID.base64URLEncodedString(),
+                rawId: credential.credentialID.base64URLEncodedString(),
+                authenticatorAttachment: attachment,
+                clientDataJSON: credential.rawClientDataJSON.base64URLEncodedString(),
+                attestationObject: attestationObject.base64URLEncodedString()
+            )
+            log.debug("registration completion ok")
+            continuation?.resume(returning: attestation)
+            continuation = nil
+        }
+    }
+
+    nonisolated func authorizationController(
+        controller: ASAuthorizationController,
+        didCompleteWithError error: Error
+    ) {
+        Task { @MainActor in
+            if let authError = error as? ASAuthorizationError, authError.code == .canceled {
+                log.info("registration cancelled")
+                continuation?.resume(throwing: AuthError.cancelled)
+            } else {
+                log.warn("registration completion error", error: error)
+                continuation?.resume(throwing: AuthError.server(error.localizedDescription))
+            }
+            continuation = nil
+        }
+    }
+}
+
+extension PasskeyRegistrar: ASAuthorizationControllerPresentationContextProviding {
+    nonisolated func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
+        MainActor.assumeIsolated { passkeyPresentationAnchor() }
+    }
+}
+
+/// The key window that hosts the system authorization sheet.
+@MainActor
+private func passkeyPresentationAnchor() -> ASPresentationAnchor {
+    UIApplication.shared.connectedScenes
+        .compactMap { $0 as? UIWindowScene }
+        .flatMap(\.windows)
+        .first { $0.isKeyWindow } ?? ASPresentationAnchor()
 }
 #endif
 
