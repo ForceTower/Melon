@@ -8,30 +8,17 @@ import dev.forcetower.unes.mvi.UiEffect
 import dev.forcetower.unes.mvi.UiIntent
 import dev.forcetower.unes.mvi.UiState
 import javax.inject.Inject
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlin.time.Clock
-import kotlin.time.Instant
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 import dev.forcetower.melon.feature.schedule.domain.model.ScheduleWeek as KmpScheduleWeek
 
 internal data class ScheduleUiState(
     val raw: KmpScheduleWeek? = null,
-    val clock: Instant = Clock.System.now(),
 ) : UiState {
     val todayIdx: Int
         get() = raw?.todayDayIndex ?: -1
 
     val weekNumber: Int
         get() = raw?.weekNumber ?: 0
-
-    val nowMin: Int
-        get() {
-            val ldt = clock.toLocalDateTime(TimeZone.currentSystemDefault())
-            return ldt.hour * 60 + ldt.minute
-        }
 
     val dates: List<Int>
         get() {
@@ -40,6 +27,17 @@ internal data class ScheduleUiState(
             for (day in days) {
                 val idx = day.dayIndex
                 if (idx in 0..6) out[idx] = parseDayOfMonth(day.dateIso)
+            }
+            return out
+        }
+
+    val dateIsos: List<String?>
+        get() {
+            val days = raw?.days ?: return List(7) { null }
+            val out = MutableList<String?>(7) { null }
+            for (day in days) {
+                val idx = day.dayIndex
+                if (idx in 0..6) out[idx] = day.dateIso
             }
             return out
         }
@@ -63,22 +61,9 @@ internal class ScheduleViewModel @Inject constructor(
         viewModelScope.launch {
             observeScheduleWeek().collect { value -> setState { copy(raw = value) } }
         }
-        // Clock ticker — `nowMin` derives from `state.clock`, so a 30s tick is
-        // enough for class state transitions (DONE/NOW/NEXT/LATER) to land
-        // close to real time without forcing the KMP flow to re-emit.
-        viewModelScope.launch {
-            while (isActive) {
-                setState { copy(clock = Clock.System.now()) }
-                delay(CLOCK_TICK_MS)
-            }
-        }
     }
 
     override fun onIntent(intent: ScheduleIntent) = Unit
-
-    private companion object {
-        const val CLOCK_TICK_MS = 30_000L
-    }
 }
 
 // ISO "yyyy-MM-dd" → day-of-month. 0 if malformed (defensive only — upstream

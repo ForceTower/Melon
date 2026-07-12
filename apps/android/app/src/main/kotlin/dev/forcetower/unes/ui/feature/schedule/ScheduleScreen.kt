@@ -1,14 +1,10 @@
 package dev.forcetower.unes.ui.feature.schedule
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
@@ -25,10 +21,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -36,29 +30,31 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.forcetower.unes.R
-import dev.forcetower.unes.designsystem.foundation.Mesh
-import dev.forcetower.unes.designsystem.foundation.MeshVariant
+import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
 import dev.forcetower.unes.designsystem.theme.MelonPaletteColors
 import dev.forcetower.unes.designsystem.theme.MelonTheme
 import dev.forcetower.unes.designsystem.theme.melon
 import dev.forcetower.unes.ui.feature.overview.ColorFor
-import dev.forcetower.unes.ui.feature.schedule.components.ScheduleDayColumn
+import dev.forcetower.unes.ui.feature.schedule.components.ScheduleDayHeader
+import dev.forcetower.unes.ui.feature.schedule.components.ScheduleEmptyDay
 import dev.forcetower.unes.ui.feature.schedule.components.ScheduleHeader
-import dev.forcetower.unes.ui.feature.schedule.components.ScheduleWeekSpine
+import dev.forcetower.unes.ui.feature.schedule.components.ScheduleTimeline
+import dev.forcetower.unes.ui.feature.schedule.components.ScheduleWeekRail
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
-import kotlinx.coroutines.delay
 import dev.forcetower.melon.feature.schedule.domain.model.ScheduleClass as KmpScheduleClass
 import dev.forcetower.melon.feature.schedule.domain.model.ScheduleDay as KmpScheduleDay
 import dev.forcetower.melon.feature.schedule.domain.model.ScheduleWeek as KmpScheduleWeek
 
-// "Horário" tab inside `ConnectedScreen`. Day-focused weekly view: header +
-// horizontal week pills + the active day's class column. Mirrors iOS
-// `ScheduleFocusedView`. The `ScheduleViewModel` owns the KMP flow + clock
-// ticker; this composable maps the raw KMP payload into the local UI
-// projection types (the local `ScheduleClass` carries a Color so the column
-// stays self-contained — same call iOS made).
+// "Horário" tab inside `ConnectedScreen` — 2026 redesign (dc project `UNES
+// Horário - Android`): M3 large-style app bar with the week eyebrow, the
+// tonal week date rail, the selected-day header with the meta chip, and a
+// connected timeline of tonal per-discipline cards with expandable quick
+// actions. A "Hoje" FAB jumps back to today whenever another day is
+// selected. Free days keep the Folio mascot (long-press opens the runner
+// easter egg). The `ScheduleViewModel` owns the KMP flow; this composable
+// maps the raw KMP payload into the local UI projection types.
 @Composable
 internal fun ScheduleScreen(
     modifier: Modifier = Modifier,
@@ -91,123 +87,72 @@ private fun ScheduleContent(
     onOpenFolioRunner: () -> Unit = {},
 ) {
     var activeIdx by rememberSaveable { mutableIntStateOf(-1) }
-    // Seed the active pill once the first valid emission lands. iOS does the
-    // same in `init` via a Calendar lookup; Android waits for KMP because the
-    // use case is the source of truth on what counts as "today".
+    // Seed the active day once the first valid emission lands — the KMP use
+    // case is the source of truth on what counts as "today".
     LaunchedEffect(state.todayIdx >= 0) {
         if (activeIdx < 0 && state.todayIdx >= 0) {
             activeIdx = state.todayIdx.coerceAtLeast(0)
         }
     }
+    // Expanded quick-actions card, keyed "<code>-<index>"; empty = none.
+    // Collapses when another day is picked, same as the dc prototype.
+    var expandedId by rememberSaveable { mutableStateOf("") }
 
-    // `entering` flips false after the first staggered enter pass so subsequent
-    // day swaps use the lighter horizontal slide animation on each block.
-    var entering by rememberSaveable { mutableStateOf(true) }
-    LaunchedEffect(Unit) {
-        if (entering) {
-            delay(1400)
-            entering = false
-        }
-    }
-
-    val surface = MaterialTheme.colorScheme.surface
     val resolvedActive = activeIdx.coerceAtLeast(0)
-    val showTodayButton = state.todayIdx != -1 && resolvedActive != state.todayIdx
+    val classes = week.getOrNull(resolvedActive).orEmpty()
+    val activeIso = state.dateIsos.getOrNull(resolvedActive)
 
-    Box(
+    Column(
         modifier = modifier
             .fillMaxSize()
-            .background(surface),
+            .background(MaterialTheme.colorScheme.background)
+            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
+            .verticalScroll(rememberScrollState())
+            .padding(bottom = bottomInset + 32.dp),
     ) {
-        AmbientMeshTop(surface = surface, modifier = Modifier.align(Alignment.TopCenter))
-
-        Column(
+        ScheduleHeader(
+            weekNumber = state.weekNumber,
+            weekRange = formatWeekRange(state.firstIso, state.lastIso),
+            modifier = Modifier.fadeUpOnAppear(
+                delayMs = 80,
+                durationMs = 500,
+                fromOffset = (-10).dp,
+            ),
+        )
+        ScheduleWeekRail(
+            activeIdx = resolvedActive,
+            todayIdx = state.todayIdx,
+            dates = state.dates,
+            counts = week.map { it.size },
+            onSelect = {
+                activeIdx = it
+                expandedId = ""
+            },
             modifier = Modifier
-                .fillMaxSize()
-                .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
-                .verticalScroll(rememberScrollState())
-                .padding(bottom = bottomInset),
-        ) {
-            ScheduleHeader(
-                weekNumber = state.weekNumber,
-                weekRange = formatWeekRange(state.firstIso, state.lastIso),
-                showTodayButton = showTodayButton,
-                onToday = { activeIdx = state.todayIdx.coerceAtLeast(0) },
-                entering = entering,
-            )
-
-            ScheduleWeekSpine(
-                activeIdx = resolvedActive,
-                onChange = { activeIdx = it },
-                week = week,
-                dates = state.dates,
-                todayIdx = state.todayIdx,
-                entering = entering,
-            )
-
-            // Keying on `activeIdx` remounts the day column so its enter
-            // animation re-runs on each pill tap — same trick the JSX uses
-            // with `<DayColumn key={activeIdx} … />`.
-            DayColumnSlot(
-                key = resolvedActive,
-                classes = week.getOrNull(resolvedActive).orEmpty(),
-                isToday = resolvedActive == state.todayIdx,
-                nowMin = state.nowMin,
-                entering = entering,
-                onOpenDiscipline = onOpenDiscipline,
-                onOpenFolioRunner = onOpenFolioRunner,
-            )
-
-            Spacer(Modifier.height(20.dp))
+                .padding(horizontal = 14.dp)
+                .padding(top = 14.dp)
+                .fadeUpOnAppear(delayMs = 140, durationMs = 550, fromOffset = (-8).dp),
+        )
+        ScheduleDayHeader(
+            dayName = remember(activeIso) { formatDayName(activeIso) },
+            dayDate = formatDayDate(activeIso),
+            meta = dayMeta(classes),
+        )
+        // Keying on the active day remounts the timeline so the row enter
+        // animation re-runs on each rail tap — same trick the dc
+        // prototype uses by re-rendering the `sc-for`.
+        key(resolvedActive) {
+            if (classes.isEmpty()) {
+                ScheduleEmptyDay(onLongPress = onOpenFolioRunner)
+            } else {
+                ScheduleTimeline(
+                    classes = classes,
+                    expandedId = expandedId.ifEmpty { null },
+                    onToggle = { id -> expandedId = if (expandedId == id) "" else id },
+                    onOpenDiscipline = onOpenDiscipline,
+                )
+            }
         }
-    }
-}
-
-@Composable
-private fun DayColumnSlot(
-    key: Int,
-    classes: List<ScheduleClass>,
-    isToday: Boolean,
-    nowMin: Int,
-    entering: Boolean,
-    onOpenDiscipline: (ScheduleClass) -> Unit,
-    onOpenFolioRunner: () -> Unit,
-) {
-    key(key) {
-        ScheduleDayColumn(
-            classes = classes,
-            isToday = isToday,
-            nowMin = nowMin,
-            showGaps = true,
-            entering = entering,
-            onOpenDiscipline = onOpenDiscipline,
-            onOpenFolioRunner = onOpenFolioRunner,
-        )
-    }
-}
-
-@Composable
-private fun AmbientMeshTop(surface: Color, modifier: Modifier = Modifier) {
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(300.dp),
-    ) {
-        Mesh(
-            variant = MeshVariant.Warm,
-            intensity = 0.28f,
-            modifier = Modifier.fillMaxSize(),
-        )
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    Brush.verticalGradient(
-                        0f to Color.Transparent,
-                        0.95f to surface,
-                    ),
-                ),
-        )
     }
 }
 
@@ -252,6 +197,38 @@ private fun trimTime(value: String): String = value.take(5)
 // ───────── formatting helpers ─────────
 
 @Composable
+private fun dayMeta(classes: List<ScheduleClass>): String {
+    if (classes.isEmpty()) return stringResource(R.string.schedule_day_meta_empty)
+    return stringResource(
+        R.string.schedule_day_meta_format,
+        pluralStringResource(R.plurals.schedule_day_meta_classes, classes.size, classes.size),
+        classes.first().start,
+        classes.last().end,
+    )
+}
+
+// "Terça-feira" — full weekday from the device locale, title-cased. Same
+// derivation Overview uses (no manual weekday-string surgery).
+private fun formatDayName(iso: String?): String {
+    if (iso == null) return ""
+    val date = runCatching { LocalDate.parse(iso) }.getOrNull() ?: return ""
+    return DateTimeFormatter.ofPattern("EEEE", Locale.getDefault())
+        .format(date)
+        .replaceFirstChar { it.titlecase(Locale.getDefault()) }
+}
+
+@Composable
+private fun formatDayDate(iso: String?): String {
+    if (iso == null) return ""
+    val date = runCatching { LocalDate.parse(iso) }.getOrNull() ?: return ""
+    return stringResource(
+        R.string.schedule_day_date_format,
+        date.dayOfMonth,
+        DateTimeFormatter.ofPattern("MMMM", Locale.getDefault()).format(date),
+    )
+}
+
+@Composable
 private fun formatWeekRange(firstIso: String?, lastIso: String?): String {
     if (firstIso == null || lastIso == null) return ""
     val first = runCatching { LocalDate.parse(firstIso) }.getOrNull() ?: return ""
@@ -276,18 +253,13 @@ private fun formatWeekRange(firstIso: String?, lastIso: String?): String {
     }
 }
 
-private val PtBr: Locale = Locale.forLanguageTag("pt-BR")
-
 // Mirrors `OverviewScreen.formatShortDate` post-processing — strip the
-// trailing dot some pt-BR locales emit for `MMM` and lowercase. Same shape
-// iOS uses in `ScheduleFocusedViewModel.shortMonth`.
-private val ShortMonthFormatter: DateTimeFormatter =
-    DateTimeFormatter.ofPattern("MMM", PtBr)
-
+// trailing dot some locales emit for `MMM`. Rendered uppercase by the header
+// anyway.
 private fun formatShortMonth(date: LocalDate): String =
-    ShortMonthFormatter.format(date)
+    DateTimeFormatter.ofPattern("MMM", Locale.getDefault())
+        .format(date)
         .replace(".", "")
-        .lowercase(PtBr)
 
 @Preview
 @Composable

@@ -464,42 +464,37 @@
 
     <!-- region Schedule · Header -->
     <string name="schedule_title">Horário</string>
-    <string name="schedule_eyebrow_format">◦ SEMANA %1$s</string>
-    <string name="schedule_today_button">hoje</string>
-    <!-- "14 – 20 abr" — same-month: first · last · month abbreviation. -->
-    <string name="schedule_week_range_same_month_format">%1$d – %2$d %3$s</string>
+    <!-- "Semana 28" — rendered uppercase as the accent eyebrow. -->
+    <string name="schedule_week_label_format">Semana %1$d</string>
+    <!-- "6–12 jul" — same-month: first · last · month abbreviation. -->
+    <string name="schedule_week_range_same_month_format">%1$d–%2$d %3$s</string>
     <!-- "28 abr – 4 mai" — spanning two months: first · firstMonth · last · lastMonth. -->
     <string name="schedule_week_range_spanning_format">%1$d %2$s – %3$d %4$s</string>
     <!-- endregion -->
 
-    <!-- region Schedule · Week spine -->
-    <string-array name="schedule_days_short">
-        <item>seg</item>
-        <item>ter</item>
-        <item>qua</item>
-        <item>qui</item>
-        <item>sex</item>
-        <item>sáb</item>
-        <item>dom</item>
-    </string-array>
+    <!-- region Schedule · Day header -->
+    <!-- "11 de julho" — day-of-month · full month name. -->
+    <string name="schedule_day_date_format">%1$d de %2$s</string>
+    <plurals name="schedule_day_meta_classes">
+        <item quantity="one">%d aula</item>
+        <item quantity="other">%d aulas</item>
+    </plurals>
+    <!-- "4 aulas · 07:30–17:30" — class count · first start · last end. -->
+    <string name="schedule_day_meta_format">%1$s · %2$s–%3$s</string>
+    <string name="schedule_day_meta_empty">—</string>
     <!-- endregion -->
 
-    <!-- region Schedule · Class block -->
-    <string name="schedule_now_state">AGORA</string>
-    <string name="schedule_duration_format">%1$dmin</string>
-    <string name="schedule_topic_format">“%1$s”</string>
-    <!-- "{label} de intervalo" — label is "30min" or "2h15". -->
-    <string name="schedule_gap_format">%1$s de intervalo</string>
-    <!-- endregion -->
-
-    <!-- region Schedule · Location -->
+    <!-- region Schedule · Timeline -->
+    <!-- "2h livre" — label is "30min" or "2h15". -->
+    <string name="schedule_gap_free_format">%1$s livre</string>
     <string name="schedule_location_unknown">Local não divulgado</string>
-    <string name="schedule_location_online">ONLINE</string>
+    <string name="schedule_action_class">Turma</string>
+    <string name="schedule_action_materials">Materiais</string>
     <!-- endregion -->
 
     <!-- region Schedule · Empty day -->
     <string name="schedule_empty_title">Nenhuma aula</string>
-    <string name="schedule_empty_subtitle">Dia livre. Aproveite.</string>
+    <string name="schedule_empty_subtitle">Aproveite o dia livre para revisar ou descansar.</string>
     <!-- endregion -->
 
     <!-- region Folio runner · Easter egg game -->
