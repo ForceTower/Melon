@@ -92,6 +92,7 @@ androidx-compose-ui-text-google-fonts = { module = "androidx.compose.ui:ui-text-
 # Navigation 3
 androidx-navigation3-runtime = { module = "androidx.navigation3:navigation3-runtime", version.ref = "android-navigation3" }
 androidx-navigation3-ui = { module = "androidx.navigation3:navigation3-ui", version.ref = "android-navigation3" }
+androidx-lifecycle-viewmodel-navigation3 = { module = "androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "android-lifecycle" }
 
 # Hilt
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "android-hilt" }

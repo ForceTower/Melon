@@ -4,8 +4,10 @@ import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import dev.forcetower.unes.R
 import dev.forcetower.unes.ui.feature.connected.ConnectedScreen
@@ -39,6 +41,13 @@ fun AppNavHost() {
     NavDisplay(
         backStack = backStack,
         onBack = { backStack.removeLastOrNull() },
+        // Scope ViewModels to each NavEntry (cleared on pop/replace). Without
+        // this, hiltViewModel() falls back to the Activity store and a second
+        // login reuses the finished SyncViewModel, wedging onboarding at 100%.
+        entryDecorators = listOf(
+            rememberSaveableStateHolderNavEntryDecorator(),
+            rememberViewModelStoreNavEntryDecorator(),
+        ),
         transitionSpec = { iosPush() },
         popTransitionSpec = { iosPop() },
         predictivePopTransitionSpec = { _ -> iosPop() },
