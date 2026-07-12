@@ -322,7 +322,9 @@ private fun AulasTab(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 4.dp)
+                    // Start-aligned with the lecture cards (dot column + gap),
+                    // clear of the last card's bottom edge.
+                    .padding(start = 26.dp, top = 16.dp)
                     .height(46.dp)
                     .clip(CircleShape)
                     .background(MaterialTheme.colorScheme.surfaceVariant)
