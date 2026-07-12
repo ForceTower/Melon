@@ -22,6 +22,10 @@ internal data class LicensesUiState(
     // the fresh-checkout case before the Licensee task has run; the screen
     // surfaces an explicit message for that.
     val packages: List<LicensePackage>? = null,
+    // Byte size of the bundled `artifacts.json` — drives the "Licensee · JSON ·
+    // N KB" meta on the export row. `null` while loading / when the asset is
+    // absent (the export row hides itself in that case).
+    val manifestSizeBytes: Int? = null,
 ) : UiState
 
 @HiltViewModel
@@ -31,8 +35,10 @@ internal class LicensesViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            val loaded = withContext(Dispatchers.IO) { LicensesAssetLoader.load(context) }
-            setState { copy(packages = loaded) }
+            val (loaded, size) = withContext(Dispatchers.IO) {
+                LicensesAssetLoader.load(context) to LicensesAssetLoader.rawManifest(context)?.size
+            }
+            setState { copy(packages = loaded, manifestSizeBytes = size) }
         }
     }
 

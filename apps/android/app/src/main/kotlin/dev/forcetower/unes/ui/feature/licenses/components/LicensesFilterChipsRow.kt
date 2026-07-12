@@ -1,42 +1,34 @@
 package dev.forcetower.unes.ui.feature.licenses.components
 
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.role
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.selected
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.theme.melon
 import dev.forcetower.unes.ui.feature.licenses.LicenseBreakdown
-import dev.forcetower.unes.ui.feature.licenses.LicenseFamily
 import dev.forcetower.unes.ui.feature.licenses.LicenseFilter
 
-// "todos" + one chip per license family present in the loaded set. Mirrors
-// `LicensesFilterChipsRow` (iOS) and the JSX filters strip — the chip row is
-// horizontally scrollable, active chip is filled with its tone color (or ink
-// for "todos"), inactive chips are neutral pills.
+// "Tudo" + one M3 `FilterChip` per license family present in the bundled set.
+// Selecting a chip filters the group list; the active chip picks up the accent
+// tint and a leading check, matching the dc `LicensesScreen`. Full-bleed: the
+// row scrolls edge-to-edge with a 20.dp content inset so chips travel to the
+// screen edge rather than clipping at a padded container.
 @Composable
 internal fun LicensesFilterChipsRow(
     breakdown: List<LicenseBreakdown>,
@@ -44,29 +36,26 @@ internal fun LicensesFilterChipsRow(
     onFilterChange: (LicenseFilter) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Row(
-        modifier = modifier
-            .horizontalScroll(rememberScrollState())
-            .padding(horizontal = 2.dp, vertical = 2.dp),
-        horizontalArrangement = Arrangement.spacedBy(6.dp),
+    LazyRow(
+        modifier = modifier.fillMaxWidth(),
+        contentPadding = PaddingValues(horizontal = 20.dp, vertical = 2.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        FilterChip(
-            label = stringResource(R.string.licenses_filter_all),
-            isActive = filter is LicenseFilter.All,
-            activeBackground = MaterialTheme.colorScheme.onBackground,
-            activeForeground = MaterialTheme.colorScheme.surface,
-            onClick = { onFilterChange(LicenseFilter.All) },
-        )
-        breakdown.forEach { row ->
-            val active = (filter as? LicenseFilter.Family)?.value == row.family
-            FilterChip(
+        item(key = "all") {
+            LicenseChip(
+                label = stringResource(R.string.licenses_filter_all),
+                selected = filter is LicenseFilter.All,
+                onClick = { onFilterChange(LicenseFilter.All) },
+            )
+        }
+        items(breakdown, key = { it.family.name }) { row ->
+            val selected = (filter as? LicenseFilter.Family)?.value == row.family
+            LicenseChip(
                 label = row.family.displayName,
-                isActive = active,
-                activeBackground = row.family.toneBackground(),
-                activeForeground = row.family.toneForeground(),
+                selected = selected,
                 onClick = {
                     onFilterChange(
-                        if (active) LicenseFilter.All else LicenseFilter.Family(row.family),
+                        if (selected) LicenseFilter.All else LicenseFilter.Family(row.family),
                     )
                 },
             )
@@ -75,82 +64,42 @@ internal fun LicensesFilterChipsRow(
 }
 
 @Composable
-private fun FilterChip(
+private fun LicenseChip(
     label: String,
-    isActive: Boolean,
-    activeBackground: Color,
-    activeForeground: Color,
+    selected: Boolean,
     onClick: () -> Unit,
 ) {
-    val inactiveBg = MaterialTheme.colorScheme.surfaceVariant
-    val inactiveFg = MaterialTheme.colorScheme.onSurface
-    val inactiveLine = MaterialTheme.melon.surface.line
+    val accent = MaterialTheme.colorScheme.primary
+    val line = MaterialTheme.melon.surface.line
 
-    val bg by animateColorAsState(
-        targetValue = if (isActive) activeBackground else inactiveBg,
-        animationSpec = tween(durationMillis = 150),
-        label = "chip-bg",
+    FilterChip(
+        selected = selected,
+        onClick = onClick,
+        label = { Text(text = label) },
+        shape = RoundedCornerShape(10.dp),
+        leadingIcon = if (selected) {
+            {
+                Icon(
+                    imageVector = Icons.Filled.Check,
+                    contentDescription = null,
+                    modifier = Modifier.size(FilterChipDefaults.IconSize),
+                )
+            }
+        } else {
+            null
+        },
+        colors = FilterChipDefaults.filterChipColors(
+            containerColor = Color.Transparent,
+            labelColor = MaterialTheme.colorScheme.onSurface,
+            selectedContainerColor = accent.copy(alpha = 0.20f),
+            selectedLabelColor = accent,
+            selectedLeadingIconColor = accent,
+        ),
+        border = FilterChipDefaults.filterChipBorder(
+            enabled = true,
+            selected = selected,
+            borderColor = line,
+            selectedBorderColor = Color.Transparent,
+        ),
     )
-    val fg by animateColorAsState(
-        targetValue = if (isActive) activeForeground else inactiveFg,
-        animationSpec = tween(durationMillis = 150),
-        label = "chip-fg",
-    )
-    val border by animateColorAsState(
-        targetValue = if (isActive) activeBackground else inactiveLine,
-        animationSpec = tween(durationMillis = 150),
-        label = "chip-border",
-    )
-
-    Row(
-        modifier = Modifier
-            .clip(CircleShape)
-            .background(bg)
-            .border(1.dp, border, CircleShape)
-            .clickable(onClick = onClick)
-            .padding(horizontal = 11.dp, vertical = 6.dp)
-            .semantics {
-                role = Role.Tab
-                selected = isActive
-            },
-    ) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.labelSmall.copy(
-                fontFamily = FontFamily.Monospace,
-                fontSize = 10.sp,
-                letterSpacing = 0.4.sp,
-                fontWeight = FontWeight.Medium,
-            ),
-            color = fg,
-            maxLines = 1,
-        )
-    }
-}
-
-// Smaller fixed-tone chip used inside group headers and rows. Always shows
-// the family display name on its branded background.
-@Composable
-internal fun LicenseFamilyChip(family: LicenseFamily, compact: Boolean = true) {
-    Row(
-        modifier = Modifier
-            .clip(androidx.compose.foundation.shape.RoundedCornerShape(6.dp))
-            .background(family.toneBackground())
-            .padding(
-                horizontal = if (compact) 6.dp else 9.dp,
-                vertical = if (compact) 2.dp else 4.dp,
-            ),
-    ) {
-        Text(
-            text = family.displayName,
-            style = MaterialTheme.typography.labelSmall.copy(
-                fontFamily = FontFamily.Monospace,
-                fontSize = if (compact) 9.sp else 10.sp,
-                letterSpacing = 0.4.sp,
-                fontWeight = FontWeight.Medium,
-            ),
-            color = family.toneForeground(),
-            maxLines = 1,
-        )
-    }
 }

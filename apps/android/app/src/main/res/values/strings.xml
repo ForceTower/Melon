@@ -1045,73 +1045,57 @@
     <string name="me_about_copy_done">Copiado!</string>
     <!-- endregion -->
 
-    <!-- region Licenças open source · Header chrome -->
+    <!-- region Licenças · Chrome (M3 top app bar + large headline) -->
+    <string name="licenses_topbar_title">Sobre o app</string>
     <string name="licenses_back">Voltar</string>
-    <!-- "◦ BUILD 1842 · V0.1.0" — top-right monospace stamp on the header. -->
-    <string name="licenses_header_meta_format">◦ BUILD %1$s · V%2$s</string>
-    <!-- "◦ CRÉDITOS · 126 PACOTES" — eyebrow above the editorial title. Plural
-         is folded into a single format because the prototype keeps the noun
-         fixed regardless of count. -->
-    <string name="licenses_header_eyebrow_format">◦ CRÉDITOS · %1$d PACOTES</string>
-    <!-- The title is split so the second word can be italicised in the accent
-         color (matches the JSX `<em className="accent-text">open source</em>`
-         and iOS `Text("open source").font(UNESFont.serif(40, italic: true))`). -->
-    <string name="licenses_header_title_lead">"Licenças "</string>
-    <string name="licenses_header_title_accent">open source</string>
-    <string name="licenses_header_subtitle">UNES é construído sobre o trabalho de centenas de pessoas que compartilham seu código abertamente. Aqui está quem.</string>
+    <string name="licenses_title">Licenças</string>
+    <string name="licenses_subtitle">O UNES é construído sobre o trabalho de quem compartilha código abertamente. Aqui está quem.</string>
     <!-- endregion -->
 
-    <!-- region Licenças open source · Distribution summary card -->
-    <string name="licenses_summary_eyebrow">◦ DISTRIBUIÇÃO</string>
-    <plurals name="licenses_summary_packages">
-        <item quantity="one">pacote direto</item>
-        <item quantity="other">pacotes diretos</item>
+    <!-- region Licenças · Hero "Código aberto" -->
+    <string name="licenses_hero_eyebrow">Código aberto</string>
+    <!-- Unit after the big package count; the number is rendered separately. -->
+    <plurals name="licenses_hero_packages">
+        <item quantity="one">pacote</item>
+        <item quantity="other">pacotes</item>
     </plurals>
-    <plurals name="licenses_summary_families">
-        <item quantity="one">◦ %1$d FAMÍLIA</item>
-        <item quantity="other">◦ %1$d FAMÍLIAS</item>
-    </plurals>
+    <string name="licenses_hero_caption">Nada disso existiria sem quem publicou seu código de graça.</string>
     <!-- endregion -->
 
-    <!-- region Licenças open source · Tribute card -->
-    <string name="licenses_tribute_eyebrow">◦ UM OBRIGADO COLETIVO</string>
-    <!-- Body is split into three runs so the middle phrase can be italicised
-         and tinted amber. Matches `LicensesTributeCard` (iOS) verbatim. -->
-    <string name="licenses_tribute_body_lead">"Nada disso aqui existiria sem quem "</string>
-    <string name="licenses_tribute_body_accent">publicou seu código</string>
-    <string name="licenses_tribute_body_tail">" de graça."</string>
-    <!-- endregion -->
-
-    <!-- region Licenças open source · Search + filter -->
-    <string name="licenses_search_placeholder">buscar por pacote ou licença</string>
+    <!-- region Licenças · Dependências (search + filter) -->
+    <string name="licenses_section_dependencies">Dependências</string>
+    <string name="licenses_search_placeholder">Buscar pacote ou licença</string>
     <string name="licenses_search_clear">Limpar busca</string>
-    <string name="licenses_filter_all">todos</string>
+    <string name="licenses_filter_all">Tudo</string>
+    <!-- "13 de 13" — matched packages of the family total, on each group header. -->
+    <string name="licenses_group_count_format">%1$d de %2$d</string>
     <!-- endregion -->
 
-    <!-- region Licenças open source · Group rows -->
+    <!-- region Licenças · Group rows -->
     <string name="licenses_row_unknown_group">grupo desconhecido</string>
-    <!-- "Distribuído por {coords} sob a licença {LicenseId}. O software é fornecido…"
-         — split into runs so the coords and license id are weighted-bold
-         while the surrounding prose stays in the muted ink-3 tone. -->
-    <string name="licenses_row_blurb_lead">Distribuído por</string>
-    <string name="licenses_row_blurb_under">sob a licença</string>
-    <string name="licenses_row_blurb_tail">. O software é fornecido \"como está\", sem garantia de qualquer espécie.</string>
+    <!-- Copyright notice inside an expanded row. %1$s = the maven group (the
+         closest thing we ship to an author), %2$s = the license display name. -->
+    <string name="licenses_notice_format">© %1$s. Distribuído sob a licença %2$s. Fornecido \"como está\", sem garantia de qualquer espécie.</string>
     <string name="licenses_action_text_format">Texto · %1$s</string>
     <string name="licenses_action_text_fallback">licença</string>
-    <string name="licenses_action_copied">copiado</string>
+    <string name="licenses_action_copied">Copiado</string>
     <!-- endregion -->
 
-    <!-- region Licenças open source · Empty states -->
+    <!-- region Licenças · Empty states -->
     <string name="licenses_empty_artifact_title">Sem licenças bundladas</string>
     <string name="licenses_empty_artifact_subtitle">Rode o build uma vez para gerar artifacts.json no diretório de assets do app.</string>
-    <string name="licenses_empty_title">nada por aqui</string>
-    <string name="licenses_empty_subtitle">TENTE OUTRA BUSCA OU FILTRO</string>
+    <string name="licenses_empty_title">Nenhum pacote encontrado</string>
+    <string name="licenses_empty_subtitle">Ajuste a busca ou o filtro de licença.</string>
     <!-- endregion -->
 
-    <!-- region Licenças open source · Footer signature -->
-    <string name="licenses_footer_signature">unes</string>
-    <string name="licenses_footer_build_format">V%1$s · BUILD %2$s</string>
-    <string name="licenses_footer_compliance">EM CONFORMIDADE COM OS TERMOS\nDE CADA LICENÇA REPRODUZIDA ACIMA</string>
+    <!-- region Licenças · Manifesto export + footer -->
+    <string name="licenses_sbom_title">Baixar manifesto de licenças</string>
+    <!-- "Licensee · JSON · 7 KB" — %1$d is the manifest size in whole KB. -->
+    <string name="licenses_sbom_meta_format">Licensee · JSON · %1$d KB</string>
+    <!-- Suggested filename in the system "Salvar em…" picker. -->
+    <string name="licenses_sbom_filename">unes-licencas-manifesto.json</string>
+    <string name="licenses_footer_version_format">UNES v%1$s · build %2$s</string>
+    <string name="licenses_footer_compliance">Em conformidade com os termos de cada licença reproduzida acima.</string>
     <!-- endregion -->
 
     <!-- region Paradoxo · Home -->

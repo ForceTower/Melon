@@ -7,16 +7,17 @@ import androidx.compose.ui.graphics.Color
 import dev.forcetower.unes.designsystem.theme.melon
 import dev.forcetower.unes.ui.feature.licenses.LicenseFamily
 
-// Maps a license family onto the existing brand/palette/fixed tokens. Same
-// six-tone palette iOS draws on (`LicenseTone` in `LicensesView.swift`); each
-// family is paired with a foreground that reads at >= 4.5:1 against its
-// background, so the chip stays legible against either the cream or plum
-// surfaces without retuning per appearance.
+// One accent color per license family — feeds the group icon tint, the row
+// dot, the distribution-bar segment, the copyright-notice wash, and the
+// repository link button. Matches the dc `LicensesScreen` palette: MIT rides
+// the adaptive accent (`--mit`), Apache-2.0 the jade token (`--apache`); the
+// remaining families (rare in our dependency set, but real) reuse the brand /
+// palette tokens so every group still reads distinctly.
 @Composable
 @ReadOnlyComposable
 internal fun LicenseFamily.toneBackground(): Color = when (this) {
-    LicenseFamily.Mit -> MaterialTheme.melon.brand.amber
-    LicenseFamily.Apache2 -> MaterialTheme.melon.palette.teal
+    LicenseFamily.Mit -> MaterialTheme.colorScheme.primary
+    LicenseFamily.Apache2 -> MaterialTheme.melon.palette.jade
     LicenseFamily.Bsd3,
     LicenseFamily.Bsd2,
     LicenseFamily.Other -> MaterialTheme.melon.brand.plum
@@ -26,17 +27,4 @@ internal fun LicenseFamily.toneBackground(): Color = when (this) {
     LicenseFamily.Mpl2,
     LicenseFamily.Epl1 -> MaterialTheme.melon.brand.magenta
     LicenseFamily.CcBy4 -> MaterialTheme.melon.brand.coral
-}
-
-@Composable
-@ReadOnlyComposable
-internal fun LicenseFamily.toneForeground(): Color = when (this) {
-    // Amber bg + dark plum text — the only inverted pair, since amber is the
-    // brightest tone in the palette.
-    LicenseFamily.Mit -> MaterialTheme.melon.brand.plum
-    // Plum bg + warm peach text — lifts from the deep purple background.
-    LicenseFamily.Bsd3,
-    LicenseFamily.Bsd2,
-    LicenseFamily.Other -> MaterialTheme.melon.brand.peach
-    else -> MaterialTheme.melon.fixed.surfaceLight
 }

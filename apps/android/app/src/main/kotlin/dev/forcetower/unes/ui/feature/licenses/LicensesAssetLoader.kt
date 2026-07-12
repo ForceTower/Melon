@@ -18,9 +18,7 @@ internal object LicensesAssetLoader {
     }
 
     fun load(context: Context): List<LicensePackage> {
-        val raw = runCatching {
-            context.assets.open(ASSET_NAME).use { it.readBytes().decodeToString() }
-        }.getOrNull() ?: return emptyList()
+        val raw = rawManifest(context)?.decodeToString() ?: return emptyList()
 
         val artifacts: List<LicenseeArtifact> = runCatching {
             json.decodeFromString<List<LicenseeArtifact>>(raw)
@@ -28,6 +26,14 @@ internal object LicensesAssetLoader {
 
         return artifacts.mapNotNull { it.toPackage() }.distinctBy { it.coordinates }
     }
+
+    // Raw bytes of the bundled `artifacts.json` — the license manifest the
+    // "Baixar manifesto" action exports verbatim (so what the user saves is
+    // exactly what shipped in the APK, not a re-serialisation). `null` when the
+    // asset is missing (fresh checkout before the Licensee task has run).
+    fun rawManifest(context: Context): ByteArray? = runCatching {
+        context.assets.open(ASSET_NAME).use { it.readBytes() }
+    }.getOrNull()
 
     private fun LicenseeArtifact.toPackage(): LicensePackage? {
         val group = groupId.orEmpty()
