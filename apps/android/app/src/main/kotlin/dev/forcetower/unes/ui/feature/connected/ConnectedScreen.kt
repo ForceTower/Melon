@@ -9,6 +9,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -17,11 +18,13 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation3.runtime.NavEntryDecorator
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberDecoratedNavEntries
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
+import dev.forcetower.unes.designsystem.foundation.RevealWindowHost
 import dev.forcetower.unes.designsystem.theme.MelonTheme
 import dev.forcetower.unes.designsystem.theme.melon
 import dev.forcetower.unes.ui.feature.campusevent.CampusEventActivityScreen
@@ -121,11 +124,18 @@ fun ConnectedScreen(
     // (lazy scroll positions, expanded/collapsed flags) survives tab
     // switches even though inactive tabs leave composition.
     val saveableDecorator = rememberSaveableStateHolderNavEntryDecorator<NavKey>()
+    // Scopes the design-system on-appear reveal to each destination: the
+    // staggered entrance plays whenever a screen (re)appears, and the first
+    // user scroll closes the window so lazy rows composed by scrolling —
+    // in either direction — render in place instead of replaying it.
+    val revealDecorator = remember {
+        NavEntryDecorator<NavKey> { entry -> RevealWindowHost { entry.Content() } }
+    }
 
     val entriesByTab = navigator.stacks.mapValues { (_, stack) ->
         rememberDecoratedNavEntries(
             backStack = stack,
-            entryDecorators = listOf(saveableDecorator),
+            entryDecorators = listOf(saveableDecorator, revealDecorator),
             entryProvider = entryProvider {
                 entry<ConnectedRoute.Overview>(metadata = TabRootMetadata) {
                     OverviewScreen(

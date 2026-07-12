@@ -2,12 +2,19 @@ package dev.forcetower.unes.designsystem.foundation
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.forcetower.unes.designsystem.theme.MelonMotion
@@ -30,6 +37,66 @@ import kotlinx.coroutines.launch
 // AFTER it, so trailing-position usage animates only the inner children
 // while the container's background/border stay fixed. Layout modifiers
 // (`offset`, `size`, `weight`) can sit on either side.
+//
+// SCROLL CONTAINERS: lazy items compose when scrolled into view, which would
+// replay the entrance (and hide rows for their stagger delay) on every
+// scroll. Screens hosted under a `RevealWindowHost` avoid this: the reveal
+// only plays for content composed before the user's first scroll; anything
+// composed after it appears in place instantly.
+
+/**
+ * Per-screen gate for the on-appear modifiers. Open while the screen is
+ * playing its entrance; closed forever by the first user scroll, so content
+ * composed by scrolling (in either direction) skips the reveal.
+ */
+class RevealWindow internal constructor() {
+    var isOpen: Boolean = true
+        private set
+
+    fun close() {
+        isOpen = false
+    }
+}
+
+/** `null` (no host) means the reveal always plays — e.g. previews. */
+val LocalRevealWindow = staticCompositionLocalOf<RevealWindow?> { null }
+
+/**
+ * Scopes a [RevealWindow] to [content] and closes it on the first user
+ * scroll anywhere inside (observed via a non-consuming [NestedScrollConnection]).
+ * Wrap each navigation destination once; the on-appear modifiers pick the
+ * window up through [LocalRevealWindow].
+ */
+@Composable
+fun RevealWindowHost(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
+    val window = remember { RevealWindow() }
+    val closeOnScroll = remember(window) {
+        object : NestedScrollConnection {
+            override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
+                if (source == NestedScrollSource.UserInput) window.close()
+                return Offset.Zero
+            }
+        }
+    }
+    CompositionLocalProvider(LocalRevealWindow provides window) {
+        Box(
+            modifier = modifier.nestedScroll(closeOnScroll),
+            propagateMinConstraints = true,
+        ) {
+            content()
+        }
+    }
+}
+
+/**
+ * Decided once per call site, at first composition: reveal if there is no
+ * window (previews, unhosted screens) or the window is still open.
+ */
+@Composable
+private fun revealOnAppear(): Boolean {
+    val window = LocalRevealWindow.current
+    return remember { window?.isOpen != false }
+}
 
 /** Slide up from `fromOffset` while fading in. Defaults match iOS `fadeUpOnAppear`. */
 fun Modifier.fadeUpOnAppear(
@@ -37,6 +104,7 @@ fun Modifier.fadeUpOnAppear(
     durationMs: Int = 600,
     fromOffset: Dp = 12.dp,
 ): Modifier = composed {
+    if (!revealOnAppear()) return@composed Modifier
     val alpha = remember { Animatable(0f) }
     val translation = remember { Animatable(fromOffset.value) }
     LaunchedEffect(Unit) {
@@ -59,6 +127,7 @@ fun Modifier.fadeInOnAppear(
     delayMs: Int = 0,
     durationMs: Int = 600,
 ): Modifier = composed {
+    if (!revealOnAppear()) return@composed Modifier
     val alpha = remember { Animatable(0f) }
     LaunchedEffect(Unit) {
         delay(delayMs.toLong())
@@ -73,6 +142,7 @@ fun Modifier.scaleInOnAppear(
     durationMs: Int = 500,
     fromScale: Float = 0.92f,
 ): Modifier = composed {
+    if (!revealOnAppear()) return@composed Modifier
     val alpha = remember { Animatable(0f) }
     val scale = remember { Animatable(fromScale) }
     LaunchedEffect(Unit) {
