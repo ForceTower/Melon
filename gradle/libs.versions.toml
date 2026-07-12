@@ -116,6 +116,9 @@ androidx-glance-material3 = { module = "androidx.glance:glance-material3", versi
 # WorkManager
 androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "android-work" }
 
+# ML Kit document scanner (Play-services-delivered camera digitization for Materiais uploads)
+play-services-mlkit-document-scanner = { module = "com.google.android.gms:play-services-mlkit-document-scanner", version = "16.0.0-beta1" }
+
 # Timber (Android logging tree backing core/logging)
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 

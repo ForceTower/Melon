@@ -87,6 +87,10 @@ internal sealed interface MaterialsUploadIntent : UiIntent {
 
     data class PickDiscipline(val disciplineId: String) : MaterialsUploadIntent
     data class FilePicked(val uri: Uri) : MaterialsUploadIntent
+
+    // ML Kit document scanner result — already a PDF in app storage, with the
+    // page count reported by the scanner.
+    data class ScanPicked(val pdfUri: Uri, val pages: Int) : MaterialsUploadIntent
     data class TypeChanged(val type: MaterialType) : MaterialsUploadIntent
     data class TitleChanged(val title: String) : MaterialsUploadIntent
     data class SemesterChanged(val semester: String) : MaterialsUploadIntent
@@ -137,6 +141,7 @@ internal class MaterialsUploadViewModel @Inject constructor(
                 setState { copy(discipline = choice, step = MaterialsUploadStep.Source) }
             }
             is MaterialsUploadIntent.FilePicked -> readFile(intent.uri)
+            is MaterialsUploadIntent.ScanPicked -> readScan(intent)
             is MaterialsUploadIntent.TypeChanged -> setState { copy(type = intent.type) }
             is MaterialsUploadIntent.TitleChanged -> setState { copy(title = intent.title) }
             is MaterialsUploadIntent.SemesterChanged -> setState { copy(semester = intent.semester) }
@@ -224,6 +229,36 @@ internal class MaterialsUploadViewModel @Inject constructor(
 
     private fun pageCount(descriptor: ParcelFileDescriptor): Int =
         PdfRenderer(descriptor).use { it.pageCount }
+
+    // The scanner flattens the captured sheets into a PDF and reports its
+    // page count, so only the bytes need lifting. Fixed name mirrors iOS
+    // ("digitalizacao.pdf").
+    private fun readScan(intent: MaterialsUploadIntent.ScanPicked) {
+        viewModelScope.launch {
+            val bytes = withContext(Dispatchers.IO) {
+                runCatching {
+                    context.contentResolver.openInputStream(intent.pdfUri)?.use { it.readBytes() }
+                }.getOrNull()
+            }
+            setState {
+                if (bytes == null) {
+                    copy(fileReadFailed = true)
+                } else {
+                    copy(
+                        file = MaterialsPickedFile(
+                            fileName = "digitalizacao.pdf",
+                            byteCount = bytes.size,
+                            pages = intent.pages.coerceAtLeast(1),
+                            bytes = bytes,
+                            isScan = true,
+                        ),
+                        fileReadFailed = false,
+                        step = MaterialsUploadStep.Details,
+                    )
+                }
+            }
+        }
+    }
 
     private fun submit() {
         val state = currentState

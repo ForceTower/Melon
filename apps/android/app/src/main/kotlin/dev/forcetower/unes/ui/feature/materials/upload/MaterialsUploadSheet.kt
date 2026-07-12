@@ -1,7 +1,10 @@
 package dev.forcetower.unes.ui.feature.materials.upload
 
+import android.app.Activity
 import android.text.format.Formatter
+import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -28,7 +31,6 @@ import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material.icons.filled.Shield
@@ -49,7 +51,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -62,6 +63,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.google.mlkit.vision.documentscanner.GmsDocumentScannerOptions
+import com.google.mlkit.vision.documentscanner.GmsDocumentScanning
+import com.google.mlkit.vision.documentscanner.GmsDocumentScanningResult
 import dev.forcetower.melon.feature.materials.domain.model.MaterialType
 import dev.forcetower.melon.feature.materials.domain.model.MaterialsDiscipline
 import dev.forcetower.unes.R
@@ -295,6 +299,32 @@ private fun SourceStep(
     ) { uri ->
         if (uri != null) onIntent(MaterialsUploadIntent.FilePicked(uri))
     }
+    // ML Kit document scanner: full-screen Play-services capture flow that
+    // flattens the sheets into one PDF (mirrors iOS VisionKit digitization).
+    val activity = LocalActivity.current
+    val scanLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartIntentSenderForResult(),
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val pdf = GmsDocumentScanningResult.fromActivityResultIntent(result.data)?.pdf
+            if (pdf != null) {
+                onIntent(MaterialsUploadIntent.ScanPicked(pdf.uri, pdf.pageCount))
+            }
+        }
+    }
+    val launchScanner = launchScanner@{
+        val host = activity ?: return@launchScanner
+        val options = GmsDocumentScannerOptions.Builder()
+            .setGalleryImportAllowed(true)
+            .setResultFormats(GmsDocumentScannerOptions.RESULT_FORMAT_PDF)
+            .setScannerMode(GmsDocumentScannerOptions.SCANNER_MODE_FULL)
+            .build()
+        GmsDocumentScanning.getClient(options)
+            .getStartScanIntent(host)
+            .addOnSuccessListener { intentSender ->
+                scanLauncher.launch(IntentSenderRequest.Builder(intentSender).build())
+            }
+    }
 
     Column(modifier = Modifier.padding(horizontal = 20.dp)) {
         Text(
@@ -308,19 +338,15 @@ private fun SourceStep(
             tint = MaterialTheme.melon.palette.teal,
             title = stringResource(R.string.materials_upload_source_file_title),
             subtitle = stringResource(R.string.materials_upload_source_file_sub),
-            enabled = true,
             onTap = { filePicker.launch(arrayOf("application/pdf")) },
         )
         Spacer(Modifier.height(12.dp))
-        // Camera digitization ships later — surfaced per the dc spec's "soon"
-        // treatment so the affordance is discoverable.
         SourceOption(
             icon = Icons.Filled.PhotoCamera,
             tint = MaterialTheme.melon.palette.magenta,
             title = stringResource(R.string.materials_upload_source_scan_title),
             subtitle = stringResource(R.string.materials_upload_source_scan_sub),
-            enabled = false,
-            onTap = {},
+            onTap = launchScanner,
         )
         if (state.fileReadFailed) {
             Text(
@@ -359,21 +385,15 @@ private fun SourceOption(
     tint: Color,
     title: String,
     subtitle: String,
-    enabled: Boolean,
     onTap: () -> Unit,
 ) {
-    MaterialsCard(
-        cornerRadius = 20,
-        modifier = Modifier
-            .fillMaxWidth()
-            .alpha(if (enabled) 1f else 0.55f),
-    ) {
+    MaterialsCard(cornerRadius = 20, modifier = Modifier.fillMaxWidth()) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(15.dp),
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable(enabled = enabled, onClick = onTap)
+                .clickable(onClick = onTap)
                 .padding(16.dp),
         ) {
             Box(
@@ -391,35 +411,15 @@ private fun SourceOption(
                 )
             }
             Column(modifier = Modifier.weight(1f)) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
-                    Text(
-                        text = title,
-                        style = MaterialTheme.typography.titleSmall.copy(
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            letterSpacing = (-0.32).sp,
-                        ),
-                        color = MaterialTheme.colorScheme.onBackground,
-                    )
-                    if (!enabled) {
-                        Text(
-                            text = stringResource(R.string.materials_upload_soon).uppercase(),
-                            style = MaterialTheme.typography.labelSmall.copy(
-                                fontSize = 10.sp,
-                                fontWeight = FontWeight.ExtraBold,
-                                letterSpacing = 0.6.sp,
-                            ),
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier
-                                .clip(CircleShape)
-                                .background(MaterialTheme.colorScheme.surfaceContainerHigh)
-                                .padding(horizontal = 8.dp, vertical = 3.dp),
-                        )
-                    }
-                }
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleSmall.copy(
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        letterSpacing = (-0.32).sp,
+                    ),
+                    color = MaterialTheme.colorScheme.onBackground,
+                )
                 Text(
                     text = subtitle,
                     style = MaterialTheme.typography.bodySmall.copy(fontSize = 13.sp),
@@ -428,7 +428,7 @@ private fun SourceOption(
                 )
             }
             Icon(
-                imageVector = if (enabled) Icons.Filled.ChevronRight else Icons.Filled.Lock,
+                imageVector = Icons.Filled.ChevronRight,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.outline,
                 modifier = Modifier.size(18.dp),

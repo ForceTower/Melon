@@ -79,6 +79,8 @@ licensee {
     // URL only (no SPDX id), so allow the Android SDK terms URL explicitly —
     // the bundled libraries that ship under it are first-party Google.
     allowUrl("https://developer.android.com/studio/terms.html")
+    // ML Kit (document scanner) ships under Google's ML Kit terms, URL-only.
+    allowUrl("https://developers.google.com/ml-kit/terms")
     // slf4j declares MIT by URL form rather than SPDX id.
     allowUrl("https://opensource.org/license/mit")
 }
@@ -145,6 +147,8 @@ dependencies {
     implementation(libs.androidx.glance.appwidget)
     implementation(libs.androidx.glance.material3)
     implementation(libs.androidx.work.runtime.ktx)
+
+    implementation(libs.play.services.mlkit.document.scanner)
 
     // Firebase BoM pins all SDK versions in lockstep — Analytics for usage
     // tracking, Crashlytics for crash reporting, Messaging for FCM push,

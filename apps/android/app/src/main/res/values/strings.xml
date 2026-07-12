@@ -1332,7 +1332,6 @@
     <string name="materials_upload_source_file_sub">PDF do seu dispositivo ou nuvem</string>
     <string name="materials_upload_source_scan_title">Digitalizar com a câmera</string>
     <string name="materials_upload_source_scan_sub">Fotografe as folhas — vira PDF</string>
-    <string name="materials_upload_soon">Em breve</string>
     <string name="materials_upload_source_note">Só envie material que você tem permissão de compartilhar. Nada de provas do semestre atual em andamento.</string>
     <string name="materials_upload_file_read_failed">Não foi possível ler o arquivo. Tente outro.</string>
     <string name="materials_upload_field_type">Tipo de material</string>
