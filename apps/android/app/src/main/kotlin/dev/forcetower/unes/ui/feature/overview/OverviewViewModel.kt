@@ -2,6 +2,7 @@ package dev.forcetower.unes.ui.feature.overview
 
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.forcetower.melon.core.common.ForegroundSignal
 import dev.forcetower.melon.feature.campusevent.domain.model.CampusEvent
 import dev.forcetower.melon.feature.campusevent.domain.usecase.ObserveCampusEventUseCase
 import dev.forcetower.melon.feature.campusevent.domain.usecase.RefreshCampusEventUseCase
@@ -122,6 +123,7 @@ internal class OverviewViewModel @Inject constructor(
     observeCampusEvent: ObserveCampusEventUseCase,
     refreshCampusEvent: RefreshCampusEventUseCase,
     featureFlags: FeatureFlags,
+    foregroundSignal: ForegroundSignal,
 ) : MviViewModel<OverviewUiState, OverviewIntent, OverviewEffect>(OverviewUiState()) {
 
     init {
@@ -167,6 +169,14 @@ internal class OverviewViewModel @Inject constructor(
                     setState { copy(campusEventEnabled = enabled) }
                     if (enabled) refreshCampusEvent()
                 }
+        }
+        // Re-fetch on background → foreground so mid-event edits land without
+        // a pull — the campus analogue of the ConnectedViewModel foreground
+        // sync; the result flows in through the observe stream above.
+        viewModelScope.launch {
+            foregroundSignal.pulses.collect {
+                if (currentState.campusEventEnabled) refreshCampusEvent()
+            }
         }
         // Clock ticker — refreshes greeting/eyebrow/countdown labels without
         // forcing KMP flows to re-emit. Mirrors iOS `runClockTicker`.
