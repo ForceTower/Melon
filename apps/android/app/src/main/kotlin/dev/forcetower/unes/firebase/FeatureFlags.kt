@@ -15,12 +15,19 @@ import timber.log.Timber
 // Remote-gated feature switches for the Eu shortcuts. `true` means the tile
 // renders; DEBUG builds surface everything so gated features stay reachable
 // during development — the exact rule iOS applies in `MeFeature.State.shortcuts`.
+//
+// The captcha pair gates the document-request flow: a non-empty site key
+// means the portal demands a solved reCAPTCHA before issuing PDFs, rendered
+// against `documentCaptchaBaseUrl` (the portal origin Google's domain
+// allow-list is checked against). Both come through as-is even in DEBUG.
 internal data class FeatureGates(
     val enrollment: Boolean = false,
     val enrollmentCertificate: Boolean = false,
     val academicHistory: Boolean = false,
     val paradoxo: Boolean = false,
     val materials: Boolean = false,
+    val documentCaptchaSiteKey: String = "",
+    val documentCaptchaBaseUrl: String = "",
 )
 
 // Firebase Remote Config bridge — the Android analogue of iOS
@@ -66,6 +73,8 @@ internal class FeatureFlags @Inject constructor() {
     }
 
     private fun readGates(): FeatureGates {
+        val captchaSiteKey = remoteConfig.getString(KEY_DOCUMENT_CAPTCHA_SITE_KEY)
+        val captchaBaseUrl = remoteConfig.getString(KEY_DOCUMENT_CAPTCHA_BASE_URL)
         if (BuildConfig.DEBUG) {
             return FeatureGates(
                 enrollment = true,
@@ -73,6 +82,8 @@ internal class FeatureFlags @Inject constructor() {
                 academicHistory = true,
                 paradoxo = true,
                 materials = true,
+                documentCaptchaSiteKey = captchaSiteKey,
+                documentCaptchaBaseUrl = captchaBaseUrl,
             )
         }
         return FeatureGates(
@@ -81,6 +92,8 @@ internal class FeatureFlags @Inject constructor() {
             academicHistory = remoteConfig.getBoolean(KEY_ACADEMIC_HISTORY),
             paradoxo = remoteConfig.getBoolean(KEY_PARADOXO),
             materials = remoteConfig.getBoolean(KEY_MATERIALS),
+            documentCaptchaSiteKey = captchaSiteKey,
+            documentCaptchaBaseUrl = captchaBaseUrl,
         )
     }
 
@@ -90,5 +103,7 @@ internal class FeatureFlags @Inject constructor() {
         const val KEY_ACADEMIC_HISTORY = "enable_academic_history"
         const val KEY_PARADOXO = "enable_paradoxo"
         const val KEY_MATERIALS = "enable_materials"
+        const val KEY_DOCUMENT_CAPTCHA_SITE_KEY = "document_captcha_site_key"
+        const val KEY_DOCUMENT_CAPTCHA_BASE_URL = "document_captcha_base_url"
     }
 }

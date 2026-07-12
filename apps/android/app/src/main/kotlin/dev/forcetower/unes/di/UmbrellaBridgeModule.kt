@@ -18,6 +18,7 @@ import dev.forcetower.melon.feature.dashboard.domain.usecase.GetReadyOverviewUse
 import dev.forcetower.melon.feature.disciplines.domain.usecase.CalculateOverallScoreUseCase
 import dev.forcetower.melon.feature.disciplines.domain.usecase.ObserveDisciplineDetailUseCase
 import dev.forcetower.melon.feature.disciplines.domain.usecase.ObserveDisciplinesListUseCase
+import dev.forcetower.melon.feature.me.domain.usecase.FetchAcademicDocumentUseCase
 import dev.forcetower.melon.feature.me.domain.usecase.ObserveCurrentCredentialsUseCase
 import dev.forcetower.melon.feature.me.domain.usecase.ObserveMeProfileUseCase
 import dev.forcetower.melon.feature.messages.domain.usecase.MarkAllMessagesAsReadUseCase
@@ -151,6 +152,8 @@ object UmbrellaBridgeModule {
         graph.observeMeProfileUseCase
     @Provides fun provideCalculateOverallScoreUseCase(graph: UmbrellaGraph): CalculateOverallScoreUseCase =
         graph.calculateOverallScoreUseCase
+    @Provides fun provideFetchAcademicDocumentUseCase(graph: UmbrellaGraph): FetchAcademicDocumentUseCase =
+        graph.fetchAcademicDocumentUseCase
 
     // Disciplinas tab — list (current + past + pending semesters) and per-offer
     // detail. Pair with `SyncSemesterUseCase` (already provided above) for the
