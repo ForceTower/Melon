@@ -26,46 +26,46 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.components.MelonPrimaryButton
 import dev.forcetower.unes.designsystem.foundation.Mesh
-import dev.forcetower.unes.designsystem.foundation.MeshVariant
 import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
 import dev.forcetower.unes.designsystem.theme.melon
 import java.util.Locale
 
 // Goodbye screen rendered in place of the Me hub once the logout flow lands
-// in `LogoutStep.LoggedOut`. Mirrors `LoggedOutView` on iOS — rose mesh halo
-// at the top fading into the surface, serif farewell with the user's first
-// name styled italic in accent, a reassurance card, and a CTA that flips the
-// state machine back to `Idle`.
+// in `LogoutStep.LoggedOut` — dc `EuScreen` "out" step. Magenta/coral mesh
+// halo bleeding off the top into the page background, accent eyebrow, bold
+// farewell with the user's first name in accent, a "dados limpos" reassurance
+// card, and an ink CTA that flips the state machine back to `Idle`.
 @Composable
 internal fun LoggedOutView(
     firstName: String,
     onSignIn: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val surface = MaterialTheme.colorScheme.surface
+    val pageBg = MaterialTheme.colorScheme.background
+    val brand = MaterialTheme.melon.brand
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(surface),
+            .background(pageBg),
     ) {
-        // Ambient mesh — bleeds off the top into the surface so there's no
-        // visible seam where the gradient stops. Behind everything else.
+        // Ambient mesh — bleeds off the top into the page background so
+        // there's no visible seam where the gradient stops. Behind everything.
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(360.dp),
+                .height(380.dp),
         ) {
             Mesh(
-                variant = MeshVariant.Rose,
-                intensity = 0.38f,
+                colors = listOf(brand.magenta, brand.coral),
+                intensity = 0.5f,
                 modifier = Modifier.fillMaxSize(),
             )
             Box(
@@ -74,7 +74,7 @@ internal fun LoggedOutView(
                     .background(
                         Brush.verticalGradient(
                             0f to Color.Transparent,
-                            1f to surface,
+                            0.92f to pageBg,
                         ),
                     ),
             )
@@ -88,19 +88,20 @@ internal fun LoggedOutView(
             horizontalAlignment = Alignment.Start,
         ) {
             Eyebrow()
-            Spacer(Modifier.height(10.dp))
+            Spacer(Modifier.height(12.dp))
             Greeting(firstName = firstName)
-            Spacer(Modifier.height(14.dp))
+            Spacer(Modifier.height(16.dp))
             BodyCopy()
-            Spacer(Modifier.height(24.dp))
+            Spacer(Modifier.height(26.dp))
             LocalDataCard()
-            Spacer(Modifier.height(20.dp))
+            Spacer(Modifier.height(22.dp))
             MelonPrimaryButton(
                 text = stringResource(R.string.me_logged_out_cta),
                 onClick = onSignIn,
+                contentColor = pageBg,
                 modifier = Modifier.fadeUpOnAppear(delayMs = 400),
             )
-            Spacer(Modifier.height(14.dp))
+            Spacer(Modifier.height(16.dp))
             Footer()
         }
     }
@@ -109,13 +110,13 @@ internal fun LoggedOutView(
 @Composable
 private fun Eyebrow() {
     Text(
-        text = "◦ ${stringResource(R.string.me_logged_out_eyebrow)}".uppercase(Locale.ROOT),
+        text = stringResource(R.string.me_logged_out_eyebrow).uppercase(Locale.ROOT),
         style = MaterialTheme.typography.labelMedium.copy(
-            fontSize = 12.sp,
-            letterSpacing = 1.44.sp,
-            fontWeight = FontWeight.Medium,
+            fontSize = 13.sp,
+            letterSpacing = 0.78.sp,
+            fontWeight = FontWeight.Bold,
         ),
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        color = MaterialTheme.colorScheme.primary,
         modifier = Modifier.fadeUpOnAppear(delayMs = 50),
     )
 }
@@ -130,16 +131,14 @@ private fun Greeting(firstName: String) {
                 append(stringResource(R.string.me_logged_out_greeting_prefix))
                 append('\n')
             }
-            withStyle(SpanStyle(color = accent, fontStyle = FontStyle.Italic)) {
-                append(firstName.lowercase(Locale.ROOT))
-            }
+            withStyle(SpanStyle(color = accent)) { append(firstName) }
             withStyle(SpanStyle(color = ink)) { append(".") }
         },
         style = MaterialTheme.typography.headlineLarge.copy(
             fontSize = 40.sp,
-            lineHeight = 40.sp,
-            letterSpacing = (-0.8).sp,
-            fontWeight = FontWeight.Normal,
+            lineHeight = 41.sp,
+            letterSpacing = (-1.6).sp,
+            fontWeight = FontWeight.ExtraBold,
         ),
         modifier = Modifier.fadeUpOnAppear(delayMs = 120),
     )
@@ -150,59 +149,59 @@ private fun BodyCopy() {
     Text(
         text = stringResource(R.string.me_logged_out_body),
         style = MaterialTheme.typography.bodyMedium.copy(
-            fontSize = 14.sp,
-            lineHeight = 21.sp,
+            fontSize = 15.sp,
+            lineHeight = 22.sp,
+            fontWeight = FontWeight.Medium,
         ),
-        color = MaterialTheme.colorScheme.onSurface,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
         modifier = Modifier
-            .widthIn(max = 280.dp)
+            .widthIn(max = 300.dp)
             .fadeUpOnAppear(delayMs = 220),
     )
 }
 
 @Composable
 private fun LocalDataCard() {
-    val card = MaterialTheme.melon.surface.card
-    val cardLine = MaterialTheme.melon.surface.cardLine
-    val ink = MaterialTheme.colorScheme.onBackground
-    val ink4 = MaterialTheme.colorScheme.outlineVariant
-    val ok = MaterialTheme.melon.fixed.ok
+    val ok = MaterialTheme.melon.fixed.success
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
-            .background(card)
-            .border(1.dp, cardLine, RoundedCornerShape(16.dp))
-            .padding(horizontal = 14.dp, vertical = 12.dp)
+            .clip(RoundedCornerShape(18.dp))
+            .background(MaterialTheme.melon.surface.card)
+            .border(1.dp, MaterialTheme.melon.surface.line, RoundedCornerShape(18.dp))
+            .padding(horizontal = 15.dp, vertical = 13.dp)
             .fadeUpOnAppear(delayMs = 300),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(
             modifier = Modifier
-                .size(8.dp)
+                .size(15.dp)
                 .clip(CircleShape)
-                .background(ok)
-                .border(3.dp, ok.copy(alpha = 0.2f), CircleShape),
-        )
-        Spacer(Modifier.size(11.dp))
+                .background(ok.copy(alpha = 0.2f)),
+            contentAlignment = Alignment.Center,
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(9.dp)
+                    .clip(CircleShape)
+                    .background(ok),
+            )
+        }
+        Spacer(Modifier.size(12.dp))
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = stringResource(R.string.me_logged_out_local_data_title),
                 style = MaterialTheme.typography.bodyMedium.copy(
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Medium,
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Bold,
                 ),
-                color = ink,
+                color = MaterialTheme.colorScheme.onBackground,
             )
-            Spacer(Modifier.height(2.dp))
+            Spacer(Modifier.height(1.dp))
             Text(
                 text = stringResource(R.string.me_logged_out_local_data_hint),
-                style = MaterialTheme.typography.labelSmall.copy(
-                    fontSize = 9.sp,
-                    letterSpacing = 0.54.sp,
-                    fontWeight = FontWeight.Medium,
-                ),
-                color = ink4,
+                style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
+                color = MaterialTheme.colorScheme.outline,
             )
         }
     }
@@ -210,17 +209,18 @@ private fun LocalDataCard() {
 
 @Composable
 private fun Footer() {
+    val appInfo = rememberAppInfo()
     Text(
-        text = stringResource(R.string.me_logged_out_footer).uppercase(Locale.ROOT),
-        style = MaterialTheme.typography.labelSmall.copy(
-            fontSize = 9.sp,
-            letterSpacing = 1.26.sp,
-            fontWeight = FontWeight.Medium,
+        text = stringResource(R.string.me_logged_out_footer_format, appInfo.version),
+        style = MaterialTheme.typography.labelMedium.copy(
+            fontSize = 12.sp,
+            letterSpacing = 0.48.sp,
+            fontWeight = FontWeight.SemiBold,
         ),
         color = MaterialTheme.colorScheme.outlineVariant,
         modifier = Modifier
             .fillMaxWidth()
             .fadeUpOnAppear(delayMs = 500),
-        textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+        textAlign = TextAlign.Center,
     )
 }

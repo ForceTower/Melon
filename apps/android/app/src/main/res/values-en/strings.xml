@@ -660,24 +660,21 @@
 
     <!-- region Me · Logout confirmation sheet -->
     <string name="me_logout_sheet_title">Sign out?</string>
-    <string name="me_logout_sheet_eyebrow_format">id · %1$s</string>
-    <string name="me_logout_sheet_account_username_format">username · %1$s</string>
-    <string name="me_logout_sheet_description">You\'ll need to sign in with your username again to see schedules, grades, and messages from the coordination office.</string>
-    <string name="me_logout_sheet_keep_data_label">Keep data on this device</string>
-    <string name="me_logout_sheet_keep_data_hint">reminders, themes, and shortcuts stay saved</string>
+    <string name="me_logout_sheet_session_format">Session · %1$s</string>
+    <string name="me_logout_sheet_description">You\'ll need to sign in with your SAGRES credentials again to see your enrollment, grades, and messages. Nothing is kept on this device.</string>
     <string name="me_logout_sheet_cancel">Cancel</string>
     <string name="me_logout_sheet_confirm">Sign out now</string>
     <!-- endregion -->
 
     <!-- region Me · Logout flash + goodbye -->
-    <string name="me_logout_flash_caption">signing out…</string>
-    <string name="me_logged_out_eyebrow">session ended</string>
+    <string name="me_logout_flash_caption">Signing out…</string>
+    <string name="me_logged_out_eyebrow">Session ended</string>
     <string name="me_logged_out_greeting_prefix">See you soon,</string>
-    <string name="me_logged_out_body">Your reminders and preferences are saved right here on this device. Whenever you\'re ready to come back, your enrollment will be waiting.</string>
-    <string name="me_logged_out_local_data_title">Local data preserved</string>
-    <string name="me_logged_out_local_data_hint">reminders, themes, and shortcuts stay saved</string>
+    <string name="me_logged_out_body">Your session has ended and this device\'s data has been cleared. Whenever you\'re ready to come back, your enrollment will be waiting.</string>
+    <string name="me_logged_out_local_data_title">Local data cleared</string>
+    <string name="me_logged_out_local_data_hint">nothing stays saved on this device</string>
     <string name="me_logged_out_cta">Sign in again</string>
-    <string name="me_logged_out_footer">◦ unes ◦</string>
+    <string name="me_logged_out_footer_format">UNES v%1$s</string>
     <!-- endregion -->
 
     <!-- region Settings · Header / chrome -->

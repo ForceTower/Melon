@@ -705,24 +705,22 @@
 
     <!-- region Me · Logout confirmation sheet -->
     <string name="me_logout_sheet_title">Sair da conta?</string>
-    <string name="me_logout_sheet_eyebrow_format">id · %1$s</string>
-    <string name="me_logout_sheet_account_username_format">usuário · %1$s</string>
-    <string name="me_logout_sheet_description">Você precisará entrar com o seu nome de usuário novamente para ver horários, notas e mensagens da coordenação.</string>
-    <string name="me_logout_sheet_keep_data_label">Manter dados no dispositivo</string>
-    <string name="me_logout_sheet_keep_data_hint">lembretes, temas e atalhos ficam salvos</string>
+    <!-- "Sessão · Nome do Estudante" — the argument is the profile name. -->
+    <string name="me_logout_sheet_session_format">Sessão · %1$s</string>
+    <string name="me_logout_sheet_description">Você precisará entrar com as suas credenciais do SAGRES novamente para ver matrícula, notas e mensagens. Nada é guardado neste aparelho.</string>
     <string name="me_logout_sheet_cancel">Cancelar</string>
     <string name="me_logout_sheet_confirm">Sair agora</string>
     <!-- endregion -->
 
     <!-- region Me · Logout flash + goodbye -->
-    <string name="me_logout_flash_caption">encerrando sessão…</string>
-    <string name="me_logged_out_eyebrow">sessão encerrada</string>
+    <string name="me_logout_flash_caption">Encerrando sessão…</string>
+    <string name="me_logged_out_eyebrow">Sessão encerrada</string>
     <string name="me_logged_out_greeting_prefix">Até logo,</string>
-    <string name="me_logged_out_body">Seus lembretes e preferências ficaram guardados aqui no aparelho. Quando quiser voltar, a sua matrícula te espera.</string>
-    <string name="me_logged_out_local_data_title">Dados locais preservados</string>
-    <string name="me_logged_out_local_data_hint">lembretes, temas e atalhos ficam salvos</string>
+    <string name="me_logged_out_body">Sua sessão foi encerrada e os dados deste aparelho foram limpos. Quando quiser voltar, a sua matrícula te espera.</string>
+    <string name="me_logged_out_local_data_title">Dados locais limpos</string>
+    <string name="me_logged_out_local_data_hint">nada fica salvo neste aparelho</string>
     <string name="me_logged_out_cta">Entrar novamente</string>
-    <string name="me_logged_out_footer">◦ unes ◦</string>
+    <string name="me_logged_out_footer_format">UNES v%1$s</string>
     <!-- endregion -->
 
     <!-- region Settings · Header / chrome -->

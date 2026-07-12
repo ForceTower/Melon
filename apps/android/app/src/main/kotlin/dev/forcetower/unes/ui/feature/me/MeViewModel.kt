@@ -50,7 +50,7 @@ internal sealed interface MeIntent : UiIntent {
     data object CaptchaCanceled : MeIntent
     data object BeginLogout : MeIntent
     data object CancelLogout : MeIntent
-    data class ConfirmLogout(val keepData: Boolean) : MeIntent
+    data object ConfirmLogout : MeIntent
     // Bounces the state machine back to Idle. The screen fires this when the
     // goodbye view's CTA is tapped — Hilt scopes this VM to the Activity, so
     // without an explicit reset the next time the Me tab mounts (after the
@@ -148,7 +148,7 @@ internal class MeViewModel @Inject constructor(
             }
             MeIntent.BeginLogout -> setState { copy(logoutStep = LogoutStep.Confirming) }
             MeIntent.CancelLogout -> setState { copy(logoutStep = LogoutStep.Idle) }
-            is MeIntent.ConfirmLogout -> performLogout(intent.keepData)
+            MeIntent.ConfirmLogout -> performLogout()
             MeIntent.ResetLogout -> setState {
                 copy(logoutStep = LogoutStep.Idle, profileRaw = null, scoreRaw = null, documentSheet = null)
             }
@@ -232,10 +232,7 @@ internal class MeViewModel @Inject constructor(
         }
     }
 
-    private fun performLogout(@Suppress("UNUSED_PARAMETER") keepData: Boolean) {
-        // `keepData` is captured for a future SessionStore branch that keeps
-        // local prefs (themes, reminders) on logout; the KMP API doesn't take
-        // it yet — match iOS, which threads it through to a no-op as well.
+    private fun performLogout() {
         val firstName = currentState.identity?.firstName?.ifBlank { null } ?: "Estudante"
         setState { copy(logoutStep = LogoutStep.Flashing, logoutFirstName = firstName) }
         viewModelScope.launch {

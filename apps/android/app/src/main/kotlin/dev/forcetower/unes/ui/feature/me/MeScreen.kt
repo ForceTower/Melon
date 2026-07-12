@@ -198,7 +198,7 @@ internal fun MeScreen(
         LogoutSheet(
             identity = identity,
             onCancel = { vm.onIntent(MeIntent.CancelLogout) },
-            onConfirm = { keep -> vm.onIntent(MeIntent.ConfirmLogout(keepData = keep)) },
+            onConfirm = { vm.onIntent(MeIntent.ConfirmLogout) },
         )
     }
 
