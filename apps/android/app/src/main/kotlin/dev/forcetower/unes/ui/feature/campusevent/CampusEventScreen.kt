@@ -10,6 +10,8 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -829,14 +831,15 @@ private fun DayTab(
             color = if (isSelected) surface else ink,
         )
         Box(
-            modifier = Modifier.height(9.dp).padding(top = 2.dp),
+            modifier = Modifier.height(12.dp),
             contentAlignment = Alignment.Center,
         ) {
             if (isToday) {
                 Text(
                     text = stringResource(R.string.campus_event_hub_today).uppercase(),
-                    style = MaterialTheme.typography.labelSmall.copy(fontSize = 8.5.sp, lineHeight = 9.sp),
+                    style = MaterialTheme.typography.labelSmall.copy(fontSize = 8.5.sp, lineHeight = 12.sp),
                     color = if (isSelected) surface else accent,
+                    maxLines = 1,
                 )
             } else {
                 Box(
@@ -882,6 +885,7 @@ private fun AudienceFilter(
 }
 
 // One schedule entry: time column, category rail, badges + title + venue.
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun ActivityRow(
     activity: CampusEventActivity,
@@ -939,9 +943,12 @@ private fun ActivityRow(
             )
 
             Column(modifier = Modifier.weight(1f)) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
+                // Badges wrap like the design's `flex-wrap` row — three chips
+                // (category + audience + AGORA) can overflow narrow rows.
+                FlowRow(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                    itemVerticalAlignment = Alignment.CenterVertically,
                 ) {
                     CampusEventCategoryPill(category = activity.category)
                     CampusEventAudienceChip(audience = activity.audience)

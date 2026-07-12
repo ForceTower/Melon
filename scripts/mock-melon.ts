@@ -152,15 +152,24 @@ const disciplines = [
 ];
 
 // ── campus-event fixture: SIECOMP-shaped, dates pinned around now ──
-// `upcoming` starts in 2 days, `live` started 2 days ago (mid-week), `ended`
-// wrapped 9 days ago. Switching phases bumps the revision so clients replace
-// their (id, revision)-deduped snapshot instead of ignoring the new dates.
+// `upcoming` starts in 2 days; `live` started yesterday (today = day 2 of 5)
+// with today's schedule anchored to the current clock — two activities
+// already done, two happening right now, one later today; `ended` wrapped 9
+// days ago. Switching phases bumps the revision so clients replace their
+// (id, revision)-deduped snapshot instead of ignoring the new dates.
 type CampusPhase = "upcoming" | "live" | "ended";
 let campusPhase: CampusPhase = "upcoming";
 let campusRevision = 1;
 
+// Now + `hours`, snapped to the half-hour so mocked times read naturally.
+function offsetHours(hours: number) {
+  const d = new Date(Date.now() + hours * 3_600_000);
+  d.setMinutes(d.getMinutes() >= 30 ? 30 : 0, 0, 0);
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}:00-03:00`;
+}
+
 function campusEventPayload() {
-  const dayShift = { upcoming: 2, live: -2, ended: -9 }[campusPhase];
+  const dayShift = { upcoming: 2, live: -1, ended: -9 }[campusPhase];
   const at = (day: number, hour: number, minute = 0) => offsetDate(dayShift + day, hour, minute);
 
   const activities = [
@@ -197,6 +206,10 @@ function campusEventPayload() {
       details: "Apresentação das duas entidades estudantis mais importantes para o curso.",
       category: "presentation", audience: "freshmen", venueId: "ven-aud", venueName: "Auditório da Biblioteca",
       speakerNames: ["DAECOMP", "DCE"], startsAt: at(1, 15, 30), endsAt: at(1, 17, 30) },
+    { id: "act-maratona", title: "Mini-maratona de programação",
+      details: "Duplas enfrentam problemas curtos de programação em ritmo de maratona — vale ponto pra Atlética.",
+      category: "dynamic", audience: "everyone", venueId: "ven-less", venueName: "LESS (i11) — LABOTEC III",
+      speakerNames: ["Liga de Jogos"], startsAt: at(1, 19), endsAt: at(1, 20, 30) },
     { id: "act-direito-ia", title: "Direito x IA — Aspectos cíveis e penais",
       details: "Os impactos da inteligência artificial no campo jurídico: desafios éticos e caminhos para uma regulação mais eficaz na era digital.",
       category: "lecture", audience: "everyone", venueId: "ven-aud", venueName: "Auditório da Biblioteca",
@@ -236,6 +249,26 @@ function campusEventPayload() {
       category: "lecture", audience: "everyone", venueId: "ven-aud", venueName: "Auditório da Biblioteca",
       speakerIds: ["spk-matheus"], speakerNames: ["Matheus Oliveira Borges"], startsAt: at(4, 15, 30), endsAt: at(4, 17, 30) },
   ];
+
+  // Live phase: re-anchor today's (day 2) schedule to the current clock so
+  // the states are guaranteed whenever you test — two done, two happening
+  // right now, one still ahead today.
+  if (campusPhase === "live") {
+    const anchored: Record<string, [string, string | null]> = {
+      "act-cd-1": [offsetHours(-4), offsetHours(-2.5)],
+      "act-integracao": [offsetHours(-3), offsetHours(-1.5)],
+      "act-jogos": [offsetHours(-1), offsetHours(1)],
+      "act-entidades": [offsetHours(-0.5), offsetHours(1.5)],
+      "act-maratona": [offsetHours(2.5), offsetHours(4)],
+    };
+    for (const activity of activities) {
+      const times = anchored[activity.id];
+      if (times) {
+        activity.startsAt = times[0];
+        activity.endsAt = times[1];
+      }
+    }
+  }
 
   return {
     event: {
