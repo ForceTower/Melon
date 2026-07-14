@@ -35,6 +35,7 @@ licensee = "1.14.1"
 google-services = "4.5.0"
 firebase-bom = "34.16.0"
 firebase-crashlytics-gradle = "3.0.7"
+posthog-android = "3.53.7"
 
 [libraries]
 # Gradle plugin artifacts used by the build-logic convention project
@@ -135,6 +136,9 @@ firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-config = { module = "com.google.firebase:firebase-config" }
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
 firebase-messaging = { module = "com.google.firebase:firebase-messaging" }
+
+# PostHog (product analytics — sent to our first-party proxy at a.forcetower.dev)
+posthog-android = { module = "com.posthog:posthog-android", version.ref = "posthog-android" }
 
 [plugins]
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }

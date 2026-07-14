@@ -22,6 +22,7 @@ include(":apps:android:design-system")
 include(":apps:android:mvi")
 
 include(":packages:shared-kmp:core:common")
+include(":packages:shared-kmp:core:analytics")
 include(":packages:shared-kmp:core:logging")
 include(":packages:shared-kmp:core:network")
 include(":packages:shared-kmp:core:database")

@@ -1,12 +1,14 @@
 package dev.forcetower.melon.umbrella
 
 import co.touchlab.kermit.Logger
+import dev.forcetower.melon.core.analytics.Analytics
 import dev.forcetower.melon.core.common.ApplicationContext
 import dev.forcetower.melon.core.common.ForegroundSignal
 import dev.forcetower.melon.core.logging.CrashReporter
 import dev.forcetower.melon.core.logging.LoggingConfig
 import dev.forcetower.melon.core.logging.NoopCrashReporter
 import dev.forcetower.melon.core.network.BaseUrl
+import dev.forcetower.melon.core.network.MachineIdSource
 import dev.forcetower.melon.core.session.domain.SessionStore
 import dev.forcetower.melon.feature.auth.domain.usecase.BeginPasskeyLoginUseCase
 import dev.forcetower.melon.feature.auth.domain.usecase.CompletePasskeyLoginUseCase
@@ -95,6 +97,8 @@ interface UmbrellaGraph {
     val registerNotificationTokenUseCase: RegisterNotificationTokenUseCase
     val sessionStore: SessionStore
     val logger: Logger
+    val analytics: Analytics
+    val machineIdSource: MachineIdSource
 
     // App-lifecycle foreground pulse. The native shell calls pulse() on resume;
     // time-derived flows (today/now class, schedule week, next class, next test)
@@ -224,6 +228,7 @@ interface UmbrellaGraph {
             @Provides loggingConfig: LoggingConfig,
             @Provides crashReporter: CrashReporter,
             @Provides appContext: ApplicationContext,
+            @Provides analytics: Analytics,
         ): UmbrellaGraph
     }
 }
@@ -238,5 +243,6 @@ fun UmbrellaGraph(config: UmbrellaConfig): UmbrellaGraph {
             logging,
             config.crashReporter ?: NoopCrashReporter,
             config.appContext,
+            config.analytics,
         )
 }

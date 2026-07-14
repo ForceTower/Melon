@@ -27,6 +27,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(project(":packages:shared-kmp:core:common"))
+            api(project(":packages:shared-kmp:core:analytics"))
             api(project(":packages:shared-kmp:core:logging"))
             api(project(":packages:shared-kmp:core:network"))
             api(project(":packages:shared-kmp:core:database"))

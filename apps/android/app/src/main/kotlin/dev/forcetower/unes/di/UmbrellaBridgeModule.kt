@@ -7,8 +7,10 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext as HiltApplicationContext
 import dagger.hilt.components.SingletonComponent
+import dev.forcetower.melon.core.analytics.Analytics
 import dev.forcetower.melon.core.common.ApplicationContext
 import dev.forcetower.melon.core.common.ForegroundSignal
+import dev.forcetower.melon.core.network.MachineIdSource
 import dev.forcetower.melon.core.session.domain.SessionStore
 import dev.forcetower.melon.feature.auth.domain.usecase.BeginPasskeyLoginUseCase
 import dev.forcetower.melon.feature.auth.domain.usecase.CompletePasskeyLoginUseCase
@@ -76,6 +78,7 @@ import dev.forcetower.melon.feature.sync.domain.usecase.SyncSemesterUseCase
 import dev.forcetower.melon.umbrella.UmbrellaConfig
 import dev.forcetower.melon.umbrella.UmbrellaGraph
 import dev.forcetower.unes.BuildConfig
+import dev.forcetower.unes.analytics.PostHogAnalytics
 import dev.forcetower.unes.firebase.FirebaseCrashReporter
 import javax.inject.Singleton
 
@@ -103,11 +106,17 @@ object UmbrellaBridgeModule {
                 // Routes KMP logger non-fatals + breadcrumbs into Crashlytics.
                 // iOS wires its equivalent in AppDelegate.swift.
                 crashReporter = FirebaseCrashReporter(),
+                // PostHog product analytics. The SDK is initialized in MelonApp;
+                // this wrapper forwards typed events through the shared graph.
+                analytics = PostHogAnalytics(),
             ),
         )
 
     @Provides fun provideSessionStore(graph: UmbrellaGraph): SessionStore = graph.sessionStore
     @Provides fun provideLogger(graph: UmbrellaGraph): Logger = graph.logger
+    @Provides fun provideAnalytics(graph: UmbrellaGraph): Analytics = graph.analytics
+    @Provides fun provideMachineIdSource(graph: UmbrellaGraph): MachineIdSource =
+        graph.machineIdSource
     @Provides fun provideForegroundSignal(graph: UmbrellaGraph): ForegroundSignal =
         graph.foregroundSignal
 

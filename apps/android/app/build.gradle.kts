@@ -47,6 +47,16 @@ android {
         val apiBaseUrl = providers.gradleProperty("melon.apiBaseUrl")
             .getOrElse("https://melon.forcetower.dev")
         buildConfigField("String", "API_BASE_URL", "\"$apiBaseUrl\"")
+
+        // PostHog product analytics. The `phc_` project key is a public client
+        // token by design; host is our first-party proxy in front of PostHog
+        // Cloud EU.
+        buildConfigField(
+            "String",
+            "POSTHOG_API_KEY",
+            "\"phc_uhYjeNJg9RpdEknMM8mNxdRqeiEtr4jqEm6zsv9TETqu\"",
+        )
+        buildConfigField("String", "POSTHOG_HOST", "\"https://a.forcetower.dev\"")
     }
 
     signingConfigs {
@@ -179,4 +189,7 @@ dependencies {
     implementation(libs.firebase.messaging)
     // `await()` extension for FirebaseMessaging.getToken() / Tasks.
     implementation(libs.kotlinx.coroutines.play.services)
+
+    // PostHog — product analytics, routed to our first-party proxy (a.forcetower.dev).
+    implementation(libs.posthog.android)
 }
