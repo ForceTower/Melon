@@ -195,7 +195,7 @@ internal fun EnrollmentSectionCard(
                 }
             }
 
-            if (blocked && clash != null) {
+            if (blocked) {
                 SectionNotice(
                     hue = status.bad,
                     icon = Icons.Filled.Warning,

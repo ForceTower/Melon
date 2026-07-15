@@ -6,7 +6,7 @@ plugins {
 kotlin {
     jvmToolchain(21)
     compilerOptions {
-        freeCompilerArgs.add("-Xannotation-default-target=param-property")
+        allWarningsAsErrors = true
     }
 }
 
@@ -21,5 +21,17 @@ android {
     }
     buildFeatures {
         compose = true
+    }
+    lint {
+        warningsAsErrors = true
+        abortOnError = true
+        // Typos: false positives on base64 font-cert hashes and pt-BR copy.
+        // The version checks flag upstream releases, not code issues.
+        disable += setOf(
+            "Typos",
+            "NewerVersionAvailable",
+            "GradleDependency",
+            "AndroidGradlePluginVersion",
+        )
     }
 }

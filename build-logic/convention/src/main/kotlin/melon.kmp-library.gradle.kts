@@ -5,6 +5,9 @@ plugins {
 
 kotlin {
     jvmToolchain(21)
+    compilerOptions {
+        allWarningsAsErrors = true
+    }
 
     android {
         namespace = "dev.forcetower.unes.shared" +
@@ -21,7 +24,6 @@ kotlin {
             compileTaskProvider.configure {
                 compilerOptions {
                     freeCompilerArgs.add("-Xexpect-actual-classes")
-                    freeCompilerArgs.add("-Xannotation-default-target=param-property")
                 }
             }
         }

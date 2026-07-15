@@ -2,7 +2,6 @@ package dev.forcetower.unes.ui.feature.me
 
 import android.content.ActivityNotFoundException
 import android.content.Intent
-import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -28,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -37,6 +37,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.forcetower.melon.feature.me.domain.model.AcademicDocument
@@ -61,7 +62,6 @@ import dev.forcetower.unes.ui.feature.me.components.ShortcutGrid
 import dev.forcetower.unes.ui.feature.me.components.WideShortcutCard
 import dev.forcetower.unes.ui.feature.me.components.rememberAppInfo
 import dev.forcetower.unes.ui.feature.me.documents.MeDocumentSheet
-import java.util.Locale
 
 // "Eu" tab — 2026 redesign (dc project `UNES Eu - Android`). Stack from top
 // to bottom: M3 large header, identity mesh card with the
@@ -93,7 +93,7 @@ internal fun MeScreen(
         appInfo.version,
         appInfo.build,
         appInfo.phoneModel,
-        Locale.getDefault().toLanguageTag(),
+        LocalConfiguration.current.locales[0].toLanguageTag(),
         appInfo.machineId,
     )
 
@@ -274,7 +274,7 @@ private fun launchFeedbackEmail(
     body: String,
 ) {
     val intent = Intent(Intent.ACTION_SENDTO).apply {
-        data = Uri.parse("mailto:")
+        data = "mailto:".toUri()
         putExtra(Intent.EXTRA_EMAIL, arrayOf(recipient))
         putExtra(Intent.EXTRA_TEXT, body)
     }

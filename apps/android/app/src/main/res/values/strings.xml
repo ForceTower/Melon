@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">UNES</string>
 
     <!-- region Onboarding · Splash -->
@@ -281,8 +281,11 @@
 
     <!-- region Messages -->
     <string name="messages_title">Mensagens</string>
-    <string name="messages_unread_count_format">%1$d não lidas</string>
-    <string name="messages_total_count_format">%1$d no total</string>
+    <plurals name="messages_unread_count_format">
+        <item quantity="one">%1$d não lida</item>
+        <item quantity="other">%1$d não lidas</item>
+    </plurals>
+    <string name="messages_total_count_format" tools:ignore="PluralsCandidate">%1$d no total</string>
     <string name="messages_empty_title">Nada por aqui</string>
     <string name="messages_empty_body">Nenhuma mensagem corresponde a este filtro.</string>
     <string name="messages_back_label">Voltar</string>
@@ -383,10 +386,6 @@
         <item quantity="other">faltas livres</item>
     </plurals>
     <!-- "{remaining} restantes" — used by the absence bar tail label. -->
-    <plurals name="disciplines_absences_remaining">
-        <item quantity="one">%d restante</item>
-        <item quantity="other">%d restantes</item>
-    </plurals>
     <!-- endregion -->
 
     <!-- region Disciplinas · Status labels -->
@@ -410,7 +409,7 @@
     </plurals>
     <string name="disciplines_past_mean_label">média</string>
     <!-- "5/6 aprovadas" — past semester pass count over total. -->
-    <string name="disciplines_past_approved_format">%1$d/%2$d aprovadas</string>
+    <string name="disciplines_past_approved_format" tools:ignore="PluralsCandidate">%1$d/%2$d aprovadas</string>
     <!-- endregion -->
 
     <!-- region Disciplinas · Undownloaded placeholder -->
@@ -538,7 +537,10 @@
     <string name="discipline_detail_classes_empty">O professor ainda não registrou aulas.</string>
     <string name="discipline_detail_class_number_format">Aula %1$d</string>
     <string name="discipline_detail_class_next_pill">próxima</string>
-    <string name="discipline_detail_classes_show_all_format">Ver todas as %1$d aulas</string>
+    <plurals name="discipline_detail_classes_show_all_format">
+        <item quantity="one">Ver %1$d aula</item>
+        <item quantity="other">Ver todas as %1$d aulas</item>
+    </plurals>
     <string name="discipline_detail_classes_show_less">Mostrar menos</string>
     <string name="discipline_detail_classes_no_date">—</string>
     <string name="discipline_detail_classes_no_title">—</string>
@@ -584,7 +586,6 @@
     <string name="folio_runner_hint">toque para pular · arraste pra baixo para abaixar</string>
     <string name="folio_runner_game_over">acabou</string>
     <string name="folio_runner_retry_hint">toque para tentar de novo</string>
-    <string name="folio_runner_close">Fechar</string>
     <!-- endregion -->
 
     <!-- region Me · Header -->
@@ -781,7 +782,7 @@
     <!-- "5/9 ativas" — total active toggles, top-right of the section label. -->
     <string name="settings_notif_total_format">%1$d/9 ativas</string>
     <!-- "2/3 ativas" — per-group counter chip. -->
-    <string name="settings_notif_group_count_format">%1$d/%2$d ativas</string>
+    <string name="settings_notif_group_count_format" tools:ignore="PluralsCandidate">%1$d/%2$d ativas</string>
 
     <string name="settings_notif_group_messages_title">Mensagens</string>
     <string name="settings_notif_msg_broadcast_label">Broadcasts</string>
@@ -856,7 +857,6 @@
     <string name="passkeys_rename">Renomear</string>
     <string name="passkeys_delete">Excluir</string>
     <string name="passkeys_rename_save">Salvar</string>
-    <string name="passkeys_rename_hint">Nome da chave</string>
 
     <!-- Delete dialog. The argument is the passkey's name. -->
     <string name="passkeys_delete_title">Excluir “%1$s”?</string>
@@ -972,7 +972,7 @@
 
     <!-- region Final Countdown · Editable rows + actions -->
     <string name="final_countdown_evaluations_title">Suas avaliações</string>
-    <string name="final_countdown_filled_format">%1$d/%2$d preenchidas</string>
+    <string name="final_countdown_filled_format" tools:ignore="PluralsCandidate">%1$d/%2$d preenchidas</string>
     <string name="final_countdown_weighted_title">Modo ponderado</string>
     <string name="final_countdown_weighted_hint_on">pesos ativos · ajuste ×</string>
     <string name="final_countdown_weighted_hint_off">média simples · todas valem igual</string>
@@ -1390,7 +1390,7 @@
     <!-- region Materiais · Hub -->
     <string name="materials_back">Voltar</string>
     <string name="materials_title">Materiais</string>
-    <string name="materials_hub_subtitle">%1$d materiais nas suas %2$d disciplinas de %3$s</string>
+    <string name="materials_hub_subtitle" tools:ignore="PluralsCandidate">%1$d materiais nas suas %2$d disciplinas de %3$s</string>
     <string name="materials_hero_badge">Feito por estudantes</string>
     <string name="materials_hero_title">Provas antigas, listas resolvidas e resumos, compartilhados pela sua turma.</string>
     <string name="materials_hero_subtitle">Contribua com um arquivo e desbloqueie o acervo das suas turmas.</string>
@@ -1617,7 +1617,10 @@
     <!-- region Matrícula · Ofertadas -->
     <string name="enrollment_offers_appbar">Disciplinas ofertadas</string>
     <string name="enrollment_offers_title">Ofertadas</string>
-    <string name="enrollment_offers_sub_format">%1$d matérias disponíveis</string>
+    <plurals name="enrollment_offers_sub_format">
+        <item quantity="one">%1$d matéria disponível</item>
+        <item quantity="other">%1$d matérias disponíveis</item>
+    </plurals>
     <string name="enrollment_search_placeholder">Buscar por código ou nome</string>
     <string name="enrollment_search_clear">Limpar busca</string>
     <string name="enrollment_filter_all">Todas</string>
@@ -1655,7 +1658,7 @@
     <string name="enrollment_conflict_text_format">Choca com %1$s %2$s na %3$s. Troque uma das turmas.</string>
     <string name="enrollment_full_title">Turma lotada</string>
     <string name="enrollment_full_queue">Entre na fila de espera.</string>
-    <string name="enrollment_full_queue_ahead_format">Entre na fila de espera — %1$d na frente.</string>
+    <string name="enrollment_full_queue_ahead_format" tools:ignore="PluralsCandidate">Entre na fila de espera — %1$d na frente.</string>
     <string name="enrollment_full_no_queue">Sem vagas disponíveis.</string>
     <string name="enrollment_section_select">Selecionar esta turma</string>
     <string name="enrollment_section_selected">Selecionada · tocar para remover</string>
@@ -1759,7 +1762,10 @@
     <string name="enrollment_success_title">Proposta enviada</string>
     <string name="enrollment_success_body_intro">"Sua matrícula de "</string>
     <string name="enrollment_success_body_middle">" em "</string>
-    <string name="enrollment_success_body_count_format">%1$d disciplinas</string>
+    <plurals name="enrollment_success_body_count_format">
+        <item quantity="one">%1$d disciplina</item>
+        <item quantity="other">%1$d disciplinas</item>
+    </plurals>
     <string name="enrollment_success_body_outro">" foi registrada. A confirmação das vagas chega por mensagem."</string>
     <string name="enrollment_success_disciplines">disciplinas</string>
     <string name="enrollment_success_queue">em fila</string>

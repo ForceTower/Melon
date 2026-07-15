@@ -32,6 +32,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.compositeOver
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
@@ -48,7 +49,6 @@ import dev.forcetower.unes.ui.feature.me.MeFixtures
 import dev.forcetower.unes.ui.feature.me.Shortcut
 import dev.forcetower.unes.ui.feature.me.ShortcutKind
 import dev.forcetower.unes.ui.feature.me.hue
-import java.util.Locale
 
 // Two-column grid of tonal shortcut cards — dc `EuScreen` "Atalhos". Each
 // card follows the `DisciplineCard` tonal recipe (8% plate, 20% border, 20%
@@ -233,7 +233,7 @@ private fun IconContainer(shortcut: Shortcut, hue: Color, size: androidx.compose
 private fun BetaBadge() {
     val accent = MaterialTheme.colorScheme.primary
     Text(
-        text = stringResource(R.string.me_shortcut_beta).uppercase(Locale.getDefault()),
+        text = stringResource(R.string.me_shortcut_beta).uppercase(LocalConfiguration.current.locales[0]),
         style = MaterialTheme.typography.labelSmall.copy(
             fontSize = 9.sp,
             fontWeight = FontWeight.ExtraBold,

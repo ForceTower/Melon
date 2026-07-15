@@ -127,10 +127,10 @@ internal fun MessageDetailRoute(
 internal fun MessageDetailScreen(
     message: Message,
     onBack: () -> Unit,
+    modifier: Modifier = Modifier,
     onToggleStar: () -> Unit = {},
     bottomInset: Dp = 0.dp,
     onAppear: (() -> Unit)? = null,
-    modifier: Modifier = Modifier,
 ) {
     val hue = categoryColor(message.category)
     val images = message.attachments.filter { it.kind == MessageAttachmentKind.Image }

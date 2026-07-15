@@ -30,6 +30,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -44,7 +45,6 @@ import dev.forcetower.unes.designsystem.theme.melon
 import dev.forcetower.unes.ui.feature.disciplines.formatGrade
 import dev.forcetower.unes.ui.feature.me.MeFixtures
 import dev.forcetower.unes.ui.feature.me.ProfileIdentity
-import java.util.Locale
 import kotlin.math.abs
 
 // Identity mesh card — dc `EuScreen` hero. Always-dark `heroNight` plate with
@@ -151,7 +151,7 @@ private fun CampusChip(label: String) {
             modifier = Modifier.size(14.dp),
         )
         Text(
-            text = label.uppercase(Locale.getDefault()),
+            text = label.uppercase(LocalConfiguration.current.locales[0]),
             style = MaterialTheme.typography.labelSmall.copy(
                 fontSize = 11.sp,
                 letterSpacing = 0.88.sp,
@@ -269,7 +269,7 @@ private fun Stat(
     val onHero = MaterialTheme.melon.fixed.onHero
     Column(modifier = modifier) {
         Text(
-            text = label.uppercase(Locale.getDefault()),
+            text = label.uppercase(LocalConfiguration.current.locales[0]),
             style = MaterialTheme.typography.labelSmall.copy(
                 fontSize = 10.sp,
                 letterSpacing = 1.2.sp,

@@ -1,0 +1,94 @@
+name: iOS
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "apps/ios/**"
+      - ".github/workflows/ios.yml"
+  pull_request:
+    paths:
+      - "apps/ios/**"
+      - ".github/workflows/ios.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: ios-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-app:
+    name: Build app (UNES)
+    # macos-26 ships Xcode 26, required for the iOS 26.5 deployment target.
+    runs-on: macos-26
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: Show toolchain
+        run: xcodebuild -version && swift --version
+
+      - name: Cache SwiftPM
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/Library/Caches/org.swift.swiftpm
+            ~/Library/org.swift.swiftpm
+          key: swiftpm-${{ runner.os }}-${{ hashFiles('apps/ios/**/Package.resolved') }}
+          restore-keys: swiftpm-${{ runner.os }}-
+
+      - name: Build for iOS Simulator
+        working-directory: apps/ios
+        run: |
+          set -o pipefail
+          xcodebuild build \
+            -project UNES.xcodeproj \
+            -scheme UNES \
+            -configuration Debug \
+            -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath .derivedData \
+            -skipMacroValidation \
+            -skipPackagePluginValidation \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            -quiet
+
+  test-kit:
+    name: Test UNESKit
+    runs-on: macos-26
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: Cache SwiftPM
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/Library/Caches/org.swift.swiftpm
+            ~/Library/org.swift.swiftpm
+          key: swiftpm-${{ runner.os }}-${{ hashFiles('apps/ios/**/Package.resolved') }}
+          restore-keys: swiftpm-${{ runner.os }}-
+
+      # iOS Simulator, not macOS: UNESKit has iOS-only SwiftUI (navigationBar*) that won't build for macOS.
+      # Pin pt-BR: alert-copy assertions expect the app's primary language, not the sim default (en).
+      - name: Run UNESKit tests
+        working-directory: apps/ios/UNESKit
+        run: |
+          set -o pipefail
+          xcodebuild test \
+            -scheme UNESKit \
+            -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest' \
+            -testLanguage pt-BR \
+            -testRegion BR \
+            -skipMacroValidation \
+            -skipPackagePluginValidation

@@ -227,9 +227,10 @@ internal class PasskeysViewModel @Inject constructor(
         const val SUCCESS_DWELL_MS = 1100L
         const val TOAST_MS = 2200L
         const val FLASH_MS = 1800L
-        val CreatedFormatter: DateTimeFormatter = DateTimeFormatter
-            .ofLocalizedDate(FormatStyle.MEDIUM)
-            .withLocale(Locale.getDefault())
-            .withZone(ZoneId.systemDefault())
+        val CreatedFormatter: DateTimeFormatter
+            get() = DateTimeFormatter
+                .ofLocalizedDate(FormatStyle.MEDIUM)
+                .withLocale(Locale.getDefault())
+                .withZone(ZoneId.systemDefault())
     }
 }

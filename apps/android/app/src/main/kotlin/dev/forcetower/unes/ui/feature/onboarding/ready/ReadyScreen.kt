@@ -215,7 +215,7 @@ private fun ReadyContent(
                     }
                     if (showAttendance) {
                         AttendanceStatCard(
-                            percent = state.attendancePercent ?: 0,
+                            percent = state.attendancePercent,
                             modifier = Modifier.weight(1f),
                         )
                     }

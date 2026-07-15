@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
 @Composable
+@Suppress("ComposableNaming")
 fun <E : UiEffect> Flow<E>.collectAsEffect(
     minActiveState: Lifecycle.State = Lifecycle.State.STARTED,
     onEffect: suspend (E) -> Unit,
