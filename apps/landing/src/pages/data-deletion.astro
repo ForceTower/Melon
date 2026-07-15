@@ -85,7 +85,7 @@ import Base from "../layouts/base.astro";
   const messageEl = document.getElementById("df-message") as HTMLDivElement | null;
 
   if (form && submitBtn && messageEl) {
-    const API_URL = import.meta.env.PUBLIC_API_URL ?? "https://api.unes.app";
+    const API_URL = import.meta.env.PUBLIC_API_URL ?? "https://melon.forcetower.dev";
 
     const showMessage = (kind: "success" | "error", text: string) => {
       messageEl.className = `df-message df-message--${kind}`;
