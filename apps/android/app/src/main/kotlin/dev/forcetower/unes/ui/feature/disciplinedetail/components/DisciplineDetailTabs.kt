@@ -19,18 +19,18 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.InsertDriveFile
+import androidx.compose.material.icons.automirrored.filled.StickyNote2
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.PictureAsPdf
 import androidx.compose.material.icons.filled.Slideshow
-import androidx.compose.material.icons.filled.StickyNote2
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SecondaryTabRow
 import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -72,7 +72,7 @@ internal fun DisciplineDetailTabs(
     var selectedTab by rememberSaveable { mutableStateOf(0) }
 
     Column(modifier = modifier.fillMaxWidth()) {
-        TabRow(
+        SecondaryTabRow(
             selectedTabIndex = selectedTab,
             containerColor = Color.Transparent,
             contentColor = MaterialTheme.colorScheme.primary,
@@ -245,7 +245,7 @@ private val AttachmentKind.icon: ImageVector
     get() = when (this) {
         AttachmentKind.Pdf -> Icons.Filled.PictureAsPdf
         AttachmentKind.Slides -> Icons.Filled.Slideshow
-        AttachmentKind.Notes -> Icons.Filled.StickyNote2
+        AttachmentKind.Notes -> Icons.AutoMirrored.Filled.StickyNote2
         AttachmentKind.Link -> Icons.Filled.Link
         AttachmentKind.Other -> Icons.AutoMirrored.Filled.InsertDriveFile
     }
@@ -337,7 +337,7 @@ private fun AulasTab(
                     text = if (expanded) {
                         stringResource(R.string.discipline_detail_classes_show_less)
                     } else {
-                        stringResource(R.string.discipline_detail_classes_show_all_format, classes.size)
+                        pluralStringResource(R.plurals.discipline_detail_classes_show_all_format, classes.size, classes.size)
                     },
                     style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
                     color = MaterialTheme.colorScheme.onSurface,

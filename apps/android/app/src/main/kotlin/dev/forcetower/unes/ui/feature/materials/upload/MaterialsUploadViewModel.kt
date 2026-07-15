@@ -5,6 +5,7 @@ import android.graphics.pdf.PdfRenderer
 import android.net.Uri
 import android.os.ParcelFileDescriptor
 import android.provider.OpenableColumns
+import androidx.core.content.edit
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -279,7 +280,7 @@ internal class MaterialsUploadViewModel @Inject constructor(
             )
             when (val outcome = submitMaterial(submission)) {
                 is Outcome.Ok -> {
-                    prefs().edit().putBoolean(KEY_GUIDELINES, true).apply()
+                    prefs().edit { putBoolean(KEY_GUIDELINES, true) }
                     setState {
                         copy(
                             isSubmitting = false,

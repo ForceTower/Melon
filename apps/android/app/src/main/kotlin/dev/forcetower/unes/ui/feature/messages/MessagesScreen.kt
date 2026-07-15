@@ -41,6 +41,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.compositeOver
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
@@ -74,8 +75,8 @@ import dev.forcetower.melon.feature.messages.domain.model.MessageFeedItem as Kmp
 @Composable
 internal fun MessagesScreen(
     onOpen: (id: String, seed: KmpMessageFeedItem) -> Unit,
-    bottomInset: Dp = 0.dp,
     modifier: Modifier = Modifier,
+    bottomInset: Dp = 0.dp,
 ) {
     val vm: MessagesViewModel = hiltViewModel()
     val state by vm.state.collectAsStateWithLifecycle()
@@ -217,7 +218,7 @@ private fun Header(unreadCount: Int, total: Int, modifier: Modifier = Modifier) 
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                text = stringResource(R.string.messages_unread_count_format, unreadCount),
+                text = pluralStringResource(R.plurals.messages_unread_count_format, unreadCount, unreadCount),
                 style = MaterialTheme.typography.bodySmall.copy(
                     fontSize = 13.sp,
                     fontWeight = FontWeight.ExtraBold,

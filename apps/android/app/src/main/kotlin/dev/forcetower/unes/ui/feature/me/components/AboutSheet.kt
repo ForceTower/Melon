@@ -1,5 +1,6 @@
 package dev.forcetower.unes.ui.feature.me.components
 
+import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -85,6 +86,7 @@ internal data class AppInfo(
         """.trimIndent()
 }
 
+@SuppressLint("HardwareIds")
 @Composable
 internal fun rememberAppInfo(): AppInfo {
     val context = LocalContext.current
@@ -92,11 +94,7 @@ internal fun rememberAppInfo(): AppInfo {
         val pm = context.packageManager
         val info = pm.getPackageInfo(context.packageName, 0)
         val versionName = info.versionName.orEmpty().ifBlank { "—" }
-        val versionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            info.longVersionCode.toString()
-        } else {
-            @Suppress("DEPRECATION") info.versionCode.toString()
-        }
+        val versionCode = info.longVersionCode.toString()
         // `ApplicationInfo.FLAG_DEBUGGABLE` is the runtime-equivalent of
         // `BuildConfig.DEBUG` and works without leaking the app module's
         // generated BuildConfig type into this composable's caller.

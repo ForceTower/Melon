@@ -46,6 +46,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.edit
 import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.components.FolioPalette
 import kotlin.math.sqrt
@@ -70,7 +71,7 @@ internal fun FolioRunnerScreen(
     // Persist the new best when it climbs. Re-keying on `engine.bestScore`
     // restarts the effect on every change — the body just writes the value.
     LaunchedEffect(engine.bestScore) {
-        prefs.edit().putInt(BestScoreKey, engine.bestScore).apply()
+        prefs.edit { putInt(BestScoreKey, engine.bestScore) }
     }
 
     // Viewport in dp — written by the Canvas's onSizeChanged-equivalent (read

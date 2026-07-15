@@ -1,10 +1,10 @@
 package dev.forcetower.unes.ui.feature.materials
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.StickyNote2
 import androidx.compose.material.icons.filled.Checklist
 import androidx.compose.material.icons.filled.Functions
 import androidx.compose.material.icons.filled.Quiz
-import androidx.compose.material.icons.filled.StickyNote2
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
@@ -32,7 +32,7 @@ internal fun MaterialType.hue(): Color {
 internal fun MaterialType.icon(): ImageVector = when (this) {
     MaterialType.Exam -> Icons.Filled.Quiz
     MaterialType.SolvedList -> Icons.Filled.Checklist
-    MaterialType.Summary -> Icons.Filled.StickyNote2
+    MaterialType.Summary -> Icons.AutoMirrored.Filled.StickyNote2
     MaterialType.FormulaSheet -> Icons.Filled.Functions
 }
 

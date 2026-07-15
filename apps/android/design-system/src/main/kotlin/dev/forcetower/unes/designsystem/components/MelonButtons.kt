@@ -235,13 +235,13 @@ fun MelonGlassButton(
 
 @Composable
 internal fun ArrowRightGlyph(
+    modifier: Modifier = Modifier,
     color: Color = LocalContentColor.current,
-    modifier: Modifier = Modifier.size(18.dp),
 ) {
     // Pure decoration — the parent button's `onClickLabel` carries the
     // semantic meaning. Strip semantics so screen readers don't read it
     // as a separate node.
-    Canvas(modifier.clearAndSetSemantics {}) {
+    Canvas(modifier.size(18.dp).clearAndSetSemantics {}) {
         val w = size.width
         val h = size.height
         val stroke = Stroke(width = 1.8f * density, cap = StrokeCap.Round)

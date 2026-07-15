@@ -253,8 +253,8 @@ internal class MeViewModel @Inject constructor(
 
 // ───────── KMP → UI mapping ─────────
 
-private val ShortDateFormatter: DateTimeFormatter =
-    DateTimeFormatter.ofPattern("d MMM", Locale.getDefault())
+private val ShortDateFormatter: DateTimeFormatter
+    get() = DateTimeFormatter.ofPattern("d MMM", Locale.getDefault())
 
 private fun mapIdentity(raw: MeProfile, score: OverallScoreSummary?): ProfileIdentity {
     val canonical = raw.identity.userName.ifBlank { raw.identity.firstName }

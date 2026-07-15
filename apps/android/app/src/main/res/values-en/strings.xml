@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">UNES</string>
 
     <!-- region Onboarding · Splash -->
@@ -257,8 +257,11 @@
 
     <!-- region Messages -->
     <string name="messages_title">Messages</string>
-    <string name="messages_unread_count_format">%1$d unread</string>
-    <string name="messages_total_count_format">%1$d total</string>
+    <plurals name="messages_unread_count_format">
+        <item quantity="one">%1$d unread</item>
+        <item quantity="other">%1$d unread</item>
+    </plurals>
+    <string name="messages_total_count_format" tools:ignore="PluralsCandidate">%1$d total</string>
     <string name="messages_empty_title">Nothing here</string>
     <string name="messages_empty_body">No messages match this filter.</string>
     <string name="messages_back_label">Back</string>
@@ -359,10 +362,6 @@
         <item quantity="other">free absences</item>
     </plurals>
     <!-- "{remaining} restantes" — used by the absence bar tail label. -->
-    <plurals name="disciplines_absences_remaining">
-        <item quantity="one">%d remaining</item>
-        <item quantity="other">%d remaining</item>
-    </plurals>
     <!-- endregion -->
 
     <!-- region Disciplinas · Status labels -->
@@ -386,7 +385,7 @@
     </plurals>
     <string name="disciplines_past_mean_label">average</string>
     <!-- "5/6 aprovadas" — past semester pass count over total. -->
-    <string name="disciplines_past_approved_format">%1$d/%2$d passed</string>
+    <string name="disciplines_past_approved_format" tools:ignore="PluralsCandidate">%1$d/%2$d passed</string>
     <!-- endregion -->
 
     <!-- region Disciplinas · Undownloaded placeholder -->
@@ -514,7 +513,10 @@
     <string name="discipline_detail_classes_empty">The professor hasn\'t logged any classes yet.</string>
     <string name="discipline_detail_class_number_format">Class %1$d</string>
     <string name="discipline_detail_class_next_pill">next</string>
-    <string name="discipline_detail_classes_show_all_format">See all %1$d classes</string>
+    <plurals name="discipline_detail_classes_show_all_format">
+        <item quantity="one">See %1$d class</item>
+        <item quantity="other">See all %1$d classes</item>
+    </plurals>
     <string name="discipline_detail_classes_show_less">Show less</string>
     <string name="discipline_detail_classes_no_date">—</string>
     <string name="discipline_detail_classes_no_title">—</string>
@@ -554,7 +556,6 @@
     <string name="folio_runner_hint">tap to jump · swipe down to duck</string>
     <string name="folio_runner_game_over">game over</string>
     <string name="folio_runner_retry_hint">tap to try again</string>
-    <string name="folio_runner_close">Close</string>
     <!-- endregion -->
 
     <!-- region Me · Header -->
@@ -735,7 +736,7 @@
     <!-- "5/9 ativas" — total active toggles, top-right of the section label. -->
     <string name="settings_notif_total_format">%1$d/9 active</string>
     <!-- "2/3 ativas" — per-group counter chip. -->
-    <string name="settings_notif_group_count_format">%1$d/%2$d active</string>
+    <string name="settings_notif_group_count_format" tools:ignore="PluralsCandidate">%1$d/%2$d active</string>
 
     <string name="settings_notif_group_messages_title">Messages</string>
     <string name="settings_notif_msg_broadcast_label">Broadcasts</string>
@@ -806,7 +807,6 @@
     <string name="passkeys_rename">Rename</string>
     <string name="passkeys_delete">Delete</string>
     <string name="passkeys_rename_save">Save</string>
-    <string name="passkeys_rename_hint">Passkey name</string>
 
     <string name="passkeys_delete_title">Delete “%1$s”?</string>
     <string name="passkeys_delete_body_synced">You won\'t be able to use this passkey to sign in. It will be removed from the devices connected to your Google Account.</string>
@@ -920,7 +920,7 @@
 
     <!-- region Final Countdown · Editable rows + actions -->
     <string name="final_countdown_evaluations_title">Your evaluations</string>
-    <string name="final_countdown_filled_format">%1$d/%2$d filled in</string>
+    <string name="final_countdown_filled_format" tools:ignore="PluralsCandidate">%1$d/%2$d filled in</string>
     <string name="final_countdown_weighted_title">Weighted mode</string>
     <string name="final_countdown_weighted_hint_on">weights active · adjust ×</string>
     <string name="final_countdown_weighted_hint_off">simple average · everything counts equally</string>
@@ -1336,7 +1336,7 @@
     <!-- region Materiais · Hub -->
     <string name="materials_back">Back</string>
     <string name="materials_title">Materials</string>
-    <string name="materials_hub_subtitle">%1$d materials across your %2$d courses for %3$s</string>
+    <string name="materials_hub_subtitle" tools:ignore="PluralsCandidate">%1$d materials across your %2$d courses for %3$s</string>
     <string name="materials_hero_badge">Made by students</string>
     <string name="materials_hero_title">Old exams, solved problem sets, and summaries, shared by your class.</string>
     <string name="materials_hero_subtitle">Contribute a file and unlock your classes\' collection.</string>
@@ -1563,7 +1563,10 @@
     <!-- region Matrícula · Ofertadas -->
     <string name="enrollment_offers_appbar">Course offerings</string>
     <string name="enrollment_offers_title">Offerings</string>
-    <string name="enrollment_offers_sub_format">%1$d courses available</string>
+    <plurals name="enrollment_offers_sub_format">
+        <item quantity="one">%1$d course available</item>
+        <item quantity="other">%1$d courses available</item>
+    </plurals>
     <string name="enrollment_search_placeholder">Search by code or name</string>
     <string name="enrollment_search_clear">Clear search</string>
     <string name="enrollment_filter_all">All</string>
@@ -1601,7 +1604,7 @@
     <string name="enrollment_conflict_text_format">Clashes with %1$s %2$s on %3$s. Swap one of the classes.</string>
     <string name="enrollment_full_title">Class full</string>
     <string name="enrollment_full_queue">Join the waitlist.</string>
-    <string name="enrollment_full_queue_ahead_format">Join the waitlist — %1$d ahead of you.</string>
+    <string name="enrollment_full_queue_ahead_format" tools:ignore="PluralsCandidate">Join the waitlist — %1$d ahead of you.</string>
     <string name="enrollment_full_no_queue">No seats available.</string>
     <string name="enrollment_section_select">Select this class</string>
     <string name="enrollment_section_selected">Selected · tap to remove</string>
@@ -1705,7 +1708,10 @@
     <string name="enrollment_success_title">Proposal submitted</string>
     <string name="enrollment_success_body_intro">"Your enrollment for "</string>
     <string name="enrollment_success_body_middle">" in "</string>
-    <string name="enrollment_success_body_count_format">%1$d courses</string>
+    <plurals name="enrollment_success_body_count_format">
+        <item quantity="one">%1$d course</item>
+        <item quantity="other">%1$d courses</item>
+    </plurals>
     <string name="enrollment_success_body_outro">" has been recorded. Seat confirmation arrives by message."</string>
     <string name="enrollment_success_disciplines">courses</string>
     <string name="enrollment_success_queue">in queue</string>

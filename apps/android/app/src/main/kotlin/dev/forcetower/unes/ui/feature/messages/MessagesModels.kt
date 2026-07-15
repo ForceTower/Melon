@@ -162,8 +162,8 @@ internal sealed class RelativeTime {
     data class Literal(val text: String) : RelativeTime()
 }
 
-private val ShortDateFormatter: DateTimeFormatter =
-    DateTimeFormatter.ofPattern("d MMM", Locale.getDefault())
+private val ShortDateFormatter: DateTimeFormatter
+    get() = DateTimeFormatter.ofPattern("d MMM", Locale.getDefault())
 
 internal fun relativeTime(received: LocalDateTime, now: LocalDateTime = LocalDateTime.now()): RelativeTime {
     val mins = floor(secondsBetween(received, now) / 60.0).toInt()
@@ -177,8 +177,8 @@ internal fun relativeTime(received: LocalDateTime, now: LocalDateTime = LocalDat
     return RelativeTime.Literal(ShortDateFormatter.format(received))
 }
 
-private val LongDateFormatter: DateTimeFormatter =
-    DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG).withLocale(Locale.getDefault())
+private val LongDateFormatter: DateTimeFormatter
+    get() = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG).withLocale(Locale.getDefault())
 
 // Long form used on the detail screen — "18 de abril de 2026 · 09:14".
 internal fun fullTime(received: LocalDateTime): String {

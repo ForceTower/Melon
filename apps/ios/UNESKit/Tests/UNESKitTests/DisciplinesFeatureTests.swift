@@ -187,9 +187,12 @@ struct DisciplineDetailFeatureTests {
     func taskStreamsTheDetailFromTheMirror() async {
         let summary = DisciplinesOverview.preview(now: Self.referenceDate).current!.disciplines[0]
         let detail = DisciplineDetail.preview(now: Self.referenceDate)
+        let materials = MaterialsDisciplineDetails.preview()
+        // Left un-yielded so the detail lands on demand: `.task` merges the
+        // mirror observation with the one-shot Materiais fetch, and driving
+        // the mirror explicitly keeps the two effects' order deterministic
+        // instead of racing.
         let (updates, mirror) = AsyncStream.makeStream(of: DisciplineDetail.self)
-        mirror.yield(detail)
-        mirror.finish()
 
         let store = TestStore(
             initialState: DisciplineDetailFeature.State(summary: summary, semesterId: "sem-2026-1")
@@ -201,9 +204,25 @@ struct DisciplineDetailFeatureTests {
                 #expect(disciplineId == summary.id)
                 return updates
             }
+            // The detail flow also fires the one-shot Materiais entry-count
+            // load, which is gated on in DEBUG (showsMaterials == true).
+            $0.materialsRepository.discipline = { disciplineId in
+                #expect(disciplineId == summary.id)
+                return materials
+            }
         }
 
         await store.send(.task)
+        // The one-shot fetch resolves immediately; the shelf entry inherits the
+        // screen's tint (the summary `colorIndex`, since the detail hasn't
+        // landed yet).
+        await store.receive(.materialsLoaded(materials.discipline)) {
+            var loaded = materials.discipline
+            loaded.colorIndex = $0.colorIndex
+            $0.materials = loaded
+        }
+        mirror.yield(detail)
+        mirror.finish()
         await store.receive(.detailUpdated(detail)) {
             $0.detail = detail
             $0.name = detail.name

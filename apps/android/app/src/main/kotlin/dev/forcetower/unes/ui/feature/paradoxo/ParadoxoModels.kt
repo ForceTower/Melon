@@ -58,7 +58,7 @@ internal data class ParadoxoSearchResults(
 }
 
 private val MarksRegex = Regex("\\p{Mn}+")
-private val PtBr = Locale("pt", "BR")
+private val PtBr = Locale.forLanguageTag("pt-BR")
 
 // Diacritic/case fold, mirroring iOS's `folding(options:locale:)` — "Cálculo"
 // and "calculo" match each other.

@@ -18,12 +18,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.forcetower.unes.R
-import java.util.Locale
 
 // M3 large-style app bar (dc `UNES Horário - Android`): the "Horário" title
 // with the accent "SEMANA NN · 6–12 JUL" eyebrow row beneath it.
@@ -57,7 +57,7 @@ internal fun ScheduleHeader(
         ) {
             Text(
                 text = stringResource(R.string.schedule_week_label_format, weekNumber)
-                    .uppercase(Locale.getDefault()),
+                    .uppercase(LocalConfiguration.current.locales[0]),
                 style = MaterialTheme.typography.labelSmall.copy(
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Bold,
@@ -73,7 +73,7 @@ internal fun ScheduleHeader(
                     .background(MaterialTheme.colorScheme.outlineVariant),
             )
             Text(
-                text = weekRange.uppercase(Locale.getDefault()),
+                text = weekRange.uppercase(LocalConfiguration.current.locales[0]),
                 style = MaterialTheme.typography.labelSmall.copy(
                     fontSize = 12.sp,
                     fontWeight = FontWeight.SemiBold,

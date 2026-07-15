@@ -223,13 +223,29 @@ struct MeFeatureTests {
 
     @Test
     func shortcutGridFollowsTheFeatureFlags() {
-        let state = MeFeature.State()
-        #expect(state.shortcuts == [.calendar, .countdown])
+        withDependencies {
+            // Isolate app storage so this neither reads flag pollution from
+            // other suites nor writes into UserDefaults.standard.
+            $0.defaultAppStorage = UserDefaults(suiteName: "shortcutGridFollowsTheFeatureFlags")!
+        } operation: {
+            let state = MeFeature.State()
 
-        state.$isEnrollmentEnabled.withLock { $0 = true }
-        state.$isCertificateEnabled.withLock { $0 = true }
-        state.$isHistoryEnabled.withLock { $0 = true }
-        #expect(state.shortcuts == MeShortcut.allCases)
+            state.$isEnrollmentEnabled.withLock { $0 = false }
+            state.$isCertificateEnabled.withLock { $0 = false }
+            state.$isHistoryEnabled.withLock { $0 = false }
+            state.$isParadoxoEnabled.withLock { $0 = false }
+            state.$isMaterialsEnabled.withLock { $0 = false }
+            // `shortcuts` returns allCases in DEBUG, so assert the gating on
+            // `gatedShortcuts`, which always applies the flag filter.
+            #expect(state.gatedShortcuts == [.calendar, .countdown])
+
+            state.$isEnrollmentEnabled.withLock { $0 = true }
+            state.$isCertificateEnabled.withLock { $0 = true }
+            state.$isHistoryEnabled.withLock { $0 = true }
+            state.$isParadoxoEnabled.withLock { $0 = true }
+            state.$isMaterialsEnabled.withLock { $0 = true }
+            #expect(state.gatedShortcuts == MeShortcut.allCases)
+        }
     }
 
     @Test

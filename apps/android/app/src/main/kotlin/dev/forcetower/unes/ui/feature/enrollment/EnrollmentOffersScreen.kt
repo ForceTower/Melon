@@ -137,7 +137,7 @@ private fun EnrollmentOffersContent(
                             color = MaterialTheme.colorScheme.onBackground,
                         )
                         Text(
-                            text = stringResource(R.string.enrollment_offers_sub_format, state.disciplines.size),
+                            text = pluralStringResource(R.plurals.enrollment_offers_sub_format, state.disciplines.size, state.disciplines.size),
                             style = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp),
                             color = MaterialTheme.colorScheme.outline,
                             modifier = Modifier.padding(top = 6.dp),

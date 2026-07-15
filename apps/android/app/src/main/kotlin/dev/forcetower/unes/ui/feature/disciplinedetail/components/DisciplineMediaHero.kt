@@ -31,11 +31,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.TrendingUp
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Flag
 import androidx.compose.material.icons.filled.HourglassEmpty
-import androidx.compose.material.icons.filled.TrendingUp
 import androidx.compose.material.icons.filled.WarningAmber
 import androidx.compose.material.icons.filled.WorkspacePremium
 import dev.forcetower.unes.R
@@ -221,7 +221,7 @@ private fun StatusPill(discipline: Discipline, modifier: Modifier = Modifier) {
             else -> Pill(
                 stringResource(R.string.discipline_detail_status_ongoing),
                 MaterialTheme.colorScheme.primary,
-                Icons.Filled.TrendingUp,
+                Icons.AutoMirrored.Filled.TrendingUp,
             )
         }
     }

@@ -25,17 +25,18 @@ class MelonFirebaseMessagingService : FirebaseMessagingService() {
 
     @Inject lateinit var registerNotificationToken: RegisterNotificationTokenUseCase
     @Inject lateinit var sessionStore: SessionStore
+    @Inject internal lateinit var fcmTokenStore: FcmTokenStore
     @Inject @ApplicationScope lateinit var applicationScope: CoroutineScope
 
-    @Deprecated("Deprecated in Java")
+    // onNewToken(String) is deprecated in the FCM SDK but remains the token-refresh callback we must override.
+    @Suppress("OVERRIDE_DEPRECATION", "DEPRECATION")
     override fun onNewToken(token: String) {
         super.onNewToken(token)
+        applicationScope.launch {
+            runCatching { fcmTokenStore.setToken(token) }
+                .onFailure { Timber.tag(TAG).w(it, "fcm token persist failed") }
+        }
         onTokenReceived(token)
-    }
-
-    override fun onRegistered(installationId: String) {
-        super.onRegistered(installationId)
-        onTokenReceived(installationId)
     }
 
     private fun onTokenReceived(token: String) {

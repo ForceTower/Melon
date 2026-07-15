@@ -30,6 +30,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.SpanStyle
@@ -221,7 +222,7 @@ private fun SuccessBody(totalHours: Int, pickCount: Int, onHero: Color, modifier
             append(stringResource(R.string.enrollment_success_body_intro))
             withStyle(bold) { append(hoursText) }
             append(stringResource(R.string.enrollment_success_body_middle))
-            withStyle(bold) { append(stringResource(R.string.enrollment_success_body_count_format, pickCount)) }
+            withStyle(bold) { append(pluralStringResource(R.plurals.enrollment_success_body_count_format, pickCount, pickCount)) }
             append(stringResource(R.string.enrollment_success_body_outro))
         },
         style = MaterialTheme.typography.bodyMedium.copy(fontSize = 15.sp, lineHeight = 22.sp),

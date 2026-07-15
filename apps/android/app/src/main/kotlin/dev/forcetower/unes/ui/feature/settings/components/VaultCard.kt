@@ -1,5 +1,6 @@
 package dev.forcetower.unes.ui.feature.settings.components
 
+import android.annotation.SuppressLint
 import android.app.KeyguardManager
 import android.content.ClipData
 import android.content.ClipDescription
@@ -477,6 +478,7 @@ private fun FieldRow(
 private const val MaskedPassword = "••••••••"
 private const val CopiedFlashMs = 1400L
 
+@SuppressLint("InlinedApi")
 private fun copyToClipboard(context: Context, label: String, value: String, sensitive: Boolean) {
     val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager ?: return
     val clip = ClipData.newPlainText(label, value)

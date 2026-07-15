@@ -2,7 +2,6 @@ package dev.forcetower.unes.ui.feature.onboarding.sync
 
 import android.os.Build
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.forcetower.melon.core.common.Outcome
 import dev.forcetower.melon.core.session.domain.SessionStore
@@ -18,6 +17,7 @@ import dev.forcetower.melon.feature.sync.domain.usecase.SyncSemesterListUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.SyncSemesterUseCase
 import dev.forcetower.unes.BuildConfig
 import dev.forcetower.unes.di.ApplicationScope
+import dev.forcetower.unes.firebase.FcmTokenStore
 import dev.forcetower.unes.mvi.MviViewModel
 import dev.forcetower.unes.mvi.UiEffect
 import dev.forcetower.unes.mvi.UiIntent
@@ -31,7 +31,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withTimeoutOrNull
 import kotlin.time.Clock
 import kotlinx.datetime.TimeZone
@@ -75,7 +74,7 @@ sealed interface SyncEffect : UiEffect {
 }
 
 @HiltViewModel
-class SyncViewModel @Inject constructor(
+class SyncViewModel @Inject internal constructor(
     private val pingActivity: PingActivityUseCase,
     private val syncProfile: SyncProfileUseCase,
     private val syncSemesterList: SyncSemesterListUseCase,
@@ -83,6 +82,7 @@ class SyncViewModel @Inject constructor(
     private val syncMessages: SyncMessagesUseCase,
     private val fetchOnboardingStatus: FetchOnboardingStatusUseCase,
     private val registerNotificationToken: RegisterNotificationTokenUseCase,
+    private val fcmTokenStore: FcmTokenStore,
     private val sessionStore: SessionStore,
     @ApplicationScope private val applicationScope: CoroutineScope,
 ) : MviViewModel<SyncUiState, SyncIntent, SyncEffect>(SyncUiState()) {
@@ -136,14 +136,9 @@ class SyncViewModel @Inject constructor(
     }
 
     private suspend fun sendDeviceTokenIfPresent() {
-        val token = runCatching { FirebaseMessaging.getInstance().token.await() }
-            .getOrElse {
-                if (it is CancellationException) throw it
-                Timber.tag(TAG).w(it, "fcm getToken threw")
-                return
-            }
+        val token = fcmTokenStore.token()
         if (token.isNullOrEmpty()) {
-            Timber.tag(TAG).i("fcm token not available yet — skipping register")
+            Timber.tag(TAG).i("fcm token not cached yet — skipping register")
             return
         }
         when (val result = registerNotificationToken(
