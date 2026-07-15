@@ -15,7 +15,7 @@ extension AuthRepository: TestDependencyKey {
     static let previewValue = AuthRepository(
         login: { _, _ in .preview },
         beginPasskeyLogin: {
-            PasskeyChallenge(sessionId: "preview", challenge: "", rpId: "melon.forcetower.dev", allowedCredentialIds: [])
+            PasskeyChallenge(sessionId: "preview", challenge: "", rpId: "unes.forcetower.dev", allowedCredentialIds: [])
         },
         completePasskeyLogin: { _, _ in .preview }
     )

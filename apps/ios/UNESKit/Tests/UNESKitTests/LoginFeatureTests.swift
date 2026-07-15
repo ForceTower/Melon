@@ -53,7 +53,7 @@ struct LoginFeatureTests {
         let challenge = PasskeyChallenge(
             sessionId: "session-1",
             challenge: "Y2hhbGxlbmdl",
-            rpId: "melon.forcetower.dev",
+            rpId: "unes.forcetower.dev",
             allowedCredentialIds: []
         )
         let assertion = PasskeyAssertion(

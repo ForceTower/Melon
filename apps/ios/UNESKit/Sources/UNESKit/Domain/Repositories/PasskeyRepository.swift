@@ -18,7 +18,7 @@ extension PasskeyRepository: TestDependencyKey {
         registrationOptions: {
             PasskeyRegistrationOptions(
                 challenge: "",
-                rpId: "melon.forcetower.dev",
+                rpId: "unes.forcetower.dev",
                 userId: "",
                 userName: "mariana.nogueira",
                 userDisplayName: "Mariana Nogueira",
