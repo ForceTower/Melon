@@ -6,7 +6,6 @@ import dev.forcetower.melon.core.sync.domain.model.SyncError
 import dev.forcetower.melon.core.sync.domain.repository.MirrorRepository
 import dev.forcetower.melon.core.sync.domain.repository.SyncStateRepository
 import dev.zacsweers.metro.Inject
-import kotlin.time.Clock
 
 // Initial / onboarding pull: profile + full semester list + every semester's
 // payload. Serial on purpose — server filters by the caller's student and
@@ -51,7 +50,6 @@ class FullSyncUseCase internal constructor(
             }
         }
 
-        syncState.setLastActiveSemesterPulledAt(Clock.System.now().toEpochMilliseconds())
         syncState.setOnboardingComplete(true)
         log.i { "full sync complete semesters=${summaries.size}" }
         return Outcome.Ok(Unit)

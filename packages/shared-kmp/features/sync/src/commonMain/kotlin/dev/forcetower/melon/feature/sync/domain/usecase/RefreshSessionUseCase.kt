@@ -4,21 +4,16 @@ import co.touchlab.kermit.Logger
 import dev.forcetower.melon.core.common.Outcome
 import dev.forcetower.melon.core.sync.domain.model.SyncError
 import dev.forcetower.melon.core.sync.domain.repository.MirrorRepository
-import dev.forcetower.melon.core.sync.domain.repository.SyncStateRepository
 import dev.zacsweers.metro.Inject
 import kotlin.time.Clock
-import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
-private const val ONE_HOUR_MILLIS = 60L * 60L * 1000L
-
-// Per-session refresh fired on every authenticated shell entry (fresh launch
-// or logout→login). Profile + first-page messages run unthrottled — they're
-// cheap single requests, and profile is what unsticks the overview footer's
-// "sincronizando" label by importing the server's lastSyncCompletedAt.
-// Per-semester payload pulls stay behind the 1h throttle; pull-to-refresh
-// bypasses via SyncSemesterUseCase directly.
+// Session refresh fired on every entry into the authenticated shell — fresh
+// launch, logout→login, and background → foreground. Profile + first-page
+// messages are cheap single requests; profile is what unsticks the overview
+// footer's "sincronizando" label by importing the server's
+// lastSyncCompletedAt.
 //
 // Profile + messages errors are logged and swallowed so a hiccup in one
 // subsystem doesn't cancel the others. Per-semester payload errors still
@@ -26,15 +21,12 @@ private const val ONE_HOUR_MILLIS = 60L * 60L * 1000L
 @Inject
 class RefreshSessionUseCase internal constructor(
     private val mirror: MirrorRepository,
-    private val syncState: SyncStateRepository,
     logger: Logger,
 ) {
     private val log = logger.withTag("RefreshSessionUseCase")
 
-    suspend operator fun invoke(force: Boolean = false): Outcome<Unit, SyncError> {
-        log.i { "refresh session start force=$force" }
-        val now = Clock.System.now()
-        val nowEpoch = now.toEpochMilliseconds()
+    suspend operator fun invoke(): Outcome<Unit, SyncError> {
+        log.i { "refresh session start" }
 
         when (val result = mirror.syncProfile()) {
             is Outcome.Err -> log.w { "profile refresh failed (ignored) err=${result.error}" }
@@ -60,19 +52,15 @@ class RefreshSessionUseCase internal constructor(
             is Outcome.Ok -> listOutcome.value
         }
 
-        if (!force) {
-            val last = syncState.getLastActiveSemesterPulledAt()
-            if (last != null && nowEpoch - last < ONE_HOUR_MILLIS) {
-                log.d { "per-semester pull throttled lastPulledAt=$last deltaMs=${nowEpoch - last}" }
-                return Outcome.Ok(Unit)
-            }
-        }
+        // Same rule as the KMP dashboard and iOS: every semester whose
+        // [startDate, endDate] contains today; between terms, the most recent
+        // one. Lex compare of yyyy-MM-dd matches calendar order.
+        val today = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date.toString()
+        val inRange = summaries.filter { it.startDate <= today && today <= it.endDate }
+        val targets = inRange.ifEmpty { listOfNotNull(summaries.maxByOrNull { it.startDate }) }
+        log.i { "refresh semesters total=${summaries.size} targets=${targets.size}" }
 
-        val today = now.toLocalDateTime(TimeZone.currentSystemDefault()).date
-        val active = summaries.filter { inRange(today, it.startDate, it.endDate) }
-        log.i { "refresh active semesters total=${summaries.size} active=${active.size}" }
-
-        for (summary in active) {
+        for (summary in targets) {
             when (val result = mirror.syncSemester(summary.id)) {
                 is Outcome.Err -> {
                     log.w { "refresh failed on semester id=${summary.id} err=${result.error}" }
@@ -82,14 +70,7 @@ class RefreshSessionUseCase internal constructor(
             }
         }
 
-        syncState.setLastActiveSemesterPulledAt(nowEpoch)
-        log.i { "refresh complete active=${active.size}" }
+        log.i { "refresh complete semesters=${targets.size}" }
         return Outcome.Ok(Unit)
-    }
-
-    private fun inRange(today: LocalDate, startIso: String, endIso: String): Boolean {
-        val start = runCatching { LocalDate.parse(startIso) }.getOrNull() ?: return false
-        val end = runCatching { LocalDate.parse(endIso) }.getOrNull() ?: return false
-        return today in start..end
     }
 }

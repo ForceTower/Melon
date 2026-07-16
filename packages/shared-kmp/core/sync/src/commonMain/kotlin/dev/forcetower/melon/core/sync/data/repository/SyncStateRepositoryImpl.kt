@@ -8,7 +8,6 @@ import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
 
-internal const val KEY_LAST_ACTIVE_SEMESTER_PULLED_AT = "sync.last_active_semester_pulled_at"
 internal const val KEY_ONBOARDING_COMPLETE = "sync.onboarding_complete"
 internal const val KEY_BACKFILL_MIRROR_COMPLETE = "sync.backfill_mirror_complete"
 
@@ -16,13 +15,6 @@ internal const val KEY_BACKFILL_MIRROR_COMPLETE = "sync.backfill_mirror_complete
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
 internal class SyncStateRepositoryImpl(private val dao: SyncStateDao) : SyncStateRepository {
-
-    override suspend fun getLastActiveSemesterPulledAt(): Long? =
-        dao.get(KEY_LAST_ACTIVE_SEMESTER_PULLED_AT)?.toLongOrNull()
-
-    override suspend fun setLastActiveSemesterPulledAt(epochMillis: Long) {
-        dao.put(SyncStateEntity(key = KEY_LAST_ACTIVE_SEMESTER_PULLED_AT, value = epochMillis.toString()))
-    }
 
     override suspend fun getOnboardingComplete(): Boolean =
         dao.get(KEY_ONBOARDING_COMPLETE) == "true"

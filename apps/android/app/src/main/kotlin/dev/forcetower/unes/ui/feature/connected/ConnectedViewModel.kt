@@ -16,7 +16,7 @@ import kotlinx.coroutines.sync.Mutex
 // Mirrors iOS `ConnectedView`'s sync orchestration: every entry into the
 // authenticated shell — first launch, logout→login, background→foreground —
 // fires `RefreshSession` to refresh profile + first-page messages and pull
-// active-semester payloads (1h-throttled inside the use case) and `PingActivity`
+// active-semester payloads (latest semester between terms) and `PingActivity`
 // to bump `users.last_active_at` so the worker keeps the student on the hourly
 // cadence tier. The once-per-session `BackfillMirror` runs on first appearance
 // only; its own `backfillMirrorComplete` flag in SyncState makes subsequent
@@ -58,7 +58,7 @@ internal class ConnectedViewModel @Inject constructor(
         }
         try {
             log.i { "refreshing session reason=$reason" }
-            when (val outcome = refreshSession(force = false)) {
+            when (val outcome = refreshSession()) {
                 is Outcome.Ok -> log.i { "session refresh ok reason=$reason" }
                 is Outcome.Err -> log.w { "session refresh failed reason=$reason err=${outcome.error}" }
             }

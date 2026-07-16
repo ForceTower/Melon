@@ -72,7 +72,9 @@ private fun KermitLogger.asKtorLogger(): KtorLogger {
     val scoped = this.withTag("ktor")
     return object : KtorLogger {
         override fun log(message: String) {
-            scoped.log(severity = Severity.Info, tag = "ktor", throwable = null, message = message)
+            // Debug keeps request/response lines in logcat but below
+            // minRemoteSeverity, so they never ship to OpenObserve.
+            scoped.log(severity = Severity.Debug, tag = "ktor", throwable = null, message = message)
         }
     }
 }
