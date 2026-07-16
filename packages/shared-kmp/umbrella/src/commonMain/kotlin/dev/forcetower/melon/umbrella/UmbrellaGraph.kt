@@ -47,6 +47,7 @@ import dev.forcetower.melon.feature.messages.domain.usecase.ObserveMessageDetail
 import dev.forcetower.melon.feature.messages.domain.usecase.ObserveMessagesInboxUseCase
 import dev.forcetower.melon.feature.messages.domain.usecase.ToggleMessageStarUseCase
 import dev.forcetower.melon.feature.notifications.domain.usecase.RegisterNotificationTokenUseCase
+import dev.forcetower.melon.feature.notifications.domain.usecase.UnregisterNotificationTokenUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveAttendanceTileUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveDisciplinesUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveGradeTileUseCase
@@ -95,6 +96,7 @@ interface UmbrellaGraph {
     val refreshSessionUseCase: RefreshSessionUseCase
     val backfillMirrorUseCase: BackfillMirrorUseCase
     val registerNotificationTokenUseCase: RegisterNotificationTokenUseCase
+    val unregisterNotificationTokenUseCase: UnregisterNotificationTokenUseCase
     val sessionStore: SessionStore
     val logger: Logger
     val analytics: Analytics

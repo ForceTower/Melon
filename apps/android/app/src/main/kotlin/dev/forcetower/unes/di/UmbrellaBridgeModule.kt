@@ -49,6 +49,7 @@ import dev.forcetower.melon.feature.messages.domain.usecase.ObserveMessageDetail
 import dev.forcetower.melon.feature.messages.domain.usecase.ObserveMessagesInboxUseCase
 import dev.forcetower.melon.feature.messages.domain.usecase.ToggleMessageStarUseCase
 import dev.forcetower.melon.feature.notifications.domain.usecase.RegisterNotificationTokenUseCase
+import dev.forcetower.melon.feature.notifications.domain.usecase.UnregisterNotificationTokenUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveAttendanceTileUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveDisciplinesUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveGradeTileUseCase
@@ -190,9 +191,13 @@ object UmbrellaBridgeModule {
     @Provides fun provideGetReadyOverviewUseCase(graph: UmbrellaGraph): GetReadyOverviewUseCase =
         graph.getReadyOverviewUseCase
 
-    // Notifications — token registration during the auth phase of sync.
+    // Notifications — push identifier registration (reconcile + auth phase of
+    // sync) and the owner-scoped removal used on identifier swaps and logout.
     @Provides fun provideRegisterNotificationTokenUseCase(graph: UmbrellaGraph): RegisterNotificationTokenUseCase =
         graph.registerNotificationTokenUseCase
+
+    @Provides fun provideUnregisterNotificationTokenUseCase(graph: UmbrellaGraph): UnregisterNotificationTokenUseCase =
+        graph.unregisterNotificationTokenUseCase
 
     // Me ("Eu") tab — single flow with the hero identity, semester strip data,
     // CR/hours rollup, and the closest upcoming evaluation. Lifetime CR (the

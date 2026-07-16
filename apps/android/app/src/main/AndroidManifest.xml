@@ -54,6 +54,11 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+        <!-- Register with FCM by Firebase Installation ID (onRegistered) —
+             registration-token targeting is retired. -->
+        <meta-data
+            android:name="firebase_messaging_installation_id_enabled"
+            android:value="true" />
 
         <!-- "Próxima aula" home-screen widget. The receiver runs in the host
              app process; Glance handles the actual RemoteViews rendering.

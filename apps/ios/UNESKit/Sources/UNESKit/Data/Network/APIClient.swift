@@ -121,6 +121,15 @@ extension APIClient {
         _ = try await send(APIRequest(method: "DELETE", path: path, query: query))
     }
 
+    /// DELETE with a request body (e.g. push identifier removal).
+    func delete(_ path: String, body: some Encodable & Sendable) async throws {
+        _ = try await send(APIRequest(
+            method: "DELETE",
+            path: path,
+            body: try JSONEncoder().encode(body)
+        ))
+    }
+
     private static func unwrap<T: Decodable>(_ data: Data) throws -> T {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601

@@ -1,6 +1,5 @@
 package dev.forcetower.unes.ui.feature.onboarding.sync
 
-import android.os.Build
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.forcetower.melon.core.common.Outcome
@@ -8,21 +7,18 @@ import dev.forcetower.melon.core.session.domain.SessionStore
 import dev.forcetower.melon.core.sync.domain.model.OnboardingStatus
 import dev.forcetower.melon.core.sync.domain.model.SemesterSummary
 import dev.forcetower.melon.core.sync.domain.model.SyncError
-import dev.forcetower.melon.feature.notifications.domain.usecase.RegisterNotificationTokenUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.FetchOnboardingStatusUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.PingActivityUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.SyncMessagesUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.SyncProfileUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.SyncSemesterListUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.SyncSemesterUseCase
-import dev.forcetower.unes.BuildConfig
 import dev.forcetower.unes.di.ApplicationScope
-import dev.forcetower.unes.firebase.FcmTokenStore
+import dev.forcetower.unes.firebase.PushRegistrar
 import dev.forcetower.unes.mvi.MviViewModel
 import dev.forcetower.unes.mvi.UiEffect
 import dev.forcetower.unes.mvi.UiIntent
 import dev.forcetower.unes.mvi.UiState
-import java.util.Locale
 import javax.inject.Inject
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
@@ -81,8 +77,7 @@ class SyncViewModel @Inject internal constructor(
     private val syncSemester: SyncSemesterUseCase,
     private val syncMessages: SyncMessagesUseCase,
     private val fetchOnboardingStatus: FetchOnboardingStatusUseCase,
-    private val registerNotificationToken: RegisterNotificationTokenUseCase,
-    private val fcmTokenStore: FcmTokenStore,
+    private val pushRegistrar: PushRegistrar,
     private val sessionStore: SessionStore,
     @ApplicationScope private val applicationScope: CoroutineScope,
 ) : MviViewModel<SyncUiState, SyncIntent, SyncEffect>(SyncUiState()) {
@@ -126,31 +121,10 @@ class SyncViewModel @Inject internal constructor(
     private suspend fun runAuthStep(): StepResult {
         runCatching { recordAuthIfFailed(pingActivity()) }
             .onFailure { Timber.tag(TAG).w(it, "ping failed") }
-        // Pull the cached FCM token (or wait for one if Firebase hasn't
-        // produced it yet) and forward it to the backend. Mirrors iOS path B
-        // in SyncViewModel, which reads UserDefaults instead — Firebase
-        // persists the token internally on Android, so we just ask for it.
-        runCatching { sendDeviceTokenIfPresent() }
-            .onFailure { Timber.tag(TAG).w(it, "fcm token register failed") }
+        // The FID usually lands before login and sits cached, unregistered —
+        // reconcile now that the session exists.
+        pushRegistrar.reconcile()
         return StepResult.Ok
-    }
-
-    private suspend fun sendDeviceTokenIfPresent() {
-        val token = fcmTokenStore.token()
-        if (token.isNullOrEmpty()) {
-            Timber.tag(TAG).i("fcm token not cached yet — skipping register")
-            return
-        }
-        when (val result = registerNotificationToken(
-            token = token,
-            platform = "android",
-            deviceName = "${Build.MANUFACTURER} ${Build.MODEL}".trim(),
-            appVersion = BuildConfig.VERSION_NAME,
-            locale = Locale.getDefault().toLanguageTag(),
-        )) {
-            is Outcome.Ok -> Timber.tag(TAG).i("fcm token registered with backend")
-            is Outcome.Err -> Timber.tag(TAG).w("fcm token register err=${result.error}")
-        }
     }
 
     // MARK: profile
@@ -428,6 +402,7 @@ class SyncViewModel @Inject internal constructor(
         waitForReadiness()
         if (anyAuthBroken) {
             Timber.tag(TAG).i("sync: finish -> AuthFailed")
+            runCatching { pushRegistrar.unregisterAll() }
             runCatching { sessionStore.logout() }
             emitEffect(SyncEffect.AuthFailed)
         } else {

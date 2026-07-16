@@ -962,7 +962,10 @@
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 12.12.1;
+				/* 12.16.0 introduced FID registration: messaging(_:didReceiveRegistration:) +
+				   FirebaseMessagingInstallationIdEnabled. Older versions compile but never
+				   deliver the FID. */
+				minimumVersion = 12.16.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

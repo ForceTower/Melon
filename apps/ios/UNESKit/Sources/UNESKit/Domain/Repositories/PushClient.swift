@@ -1,19 +1,24 @@
 import ComposableArchitecture
 
-/// Device-side push plumbing: the system permission prompt, the FCM-token
-/// registration against apps/api, and the fan-out of data notifications to
-/// reducers. Tokens and notifications are delivered by Firebase/iOS to the
-/// app delegate, which hands them over through `PushTokens`/`PushEvents`.
+/// Device-side push plumbing: the system permission prompt, the Firebase
+/// Installation ID (FID) registration against apps/api, and the fan-out of
+/// data notifications to reducers. The FID and notifications are delivered by
+/// Firebase/iOS to the app delegate, which hands them over through
+/// `PushTokens`/`PushEvents`.
 @DependencyClient
 struct PushClient: Sendable {
     /// Idempotent — iOS only ever shows the prompt once.
     var requestAuthorization: @Sendable () async -> Void
-    /// App-delegate hand-off: persist the token and register it right away
-    /// when a session already exists (fresh installs are registered by the
+    /// App-delegate hand-off: persist the FID and register it right away when
+    /// a session already exists (fresh installs are registered by the
     /// onboarding sync step instead).
-    var tokenReceived: @Sendable (_ token: String) async -> Void
-    /// Post-login: register the token FCM minted before the session existed.
-    var registerStoredToken: @Sendable () async -> Void
+    var fidReceived: @Sendable (_ installationId: String) async -> Void
+    /// Post-login: register the FID FCM minted before the session existed and
+    /// delete any stale identifier row still on the backend.
+    var reconcile: @Sendable () async -> Void
+    /// Logout teardown: unmap every identifier this device registered, then
+    /// drop the local caches. Must run while the session bearer is valid.
+    var unregister: @Sendable () async -> Void
     /// App-delegate hand-off: the data payload of a notification presented
     /// while the app was in the foreground. Payloads carrying a `kind`
     /// discriminator surface on `dataEvents`; the rest are display-only.
@@ -35,8 +40,9 @@ extension PushClient: TestDependencyKey {
 
     static let previewValue = PushClient(
         requestAuthorization: {},
-        tokenReceived: { _ in },
-        registerStoredToken: {},
+        fidReceived: { _ in },
+        reconcile: {},
+        unregister: {},
         dataNotificationReceived: { _ in },
         dataEvents: { .finished }
     )

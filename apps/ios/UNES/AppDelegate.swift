@@ -100,14 +100,14 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
 }
 
 extension AppDelegate: MessagingDelegate, UNUserNotificationCenterDelegate {
-    nonisolated func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
+    nonisolated func messaging(_ messaging: Messaging, didReceiveRegistration installationId: String?) {
         let log = Log.scoped("AppDelegate")
-        guard let fcmToken else {
-            log.warn("FCM token was nil")
+        guard let installationId else {
+            log.warn("FID was nil")
             return
         }
-        log.info("FCM token received length=\(fcmToken.count)")
-        Task { await PushTokens.received(fcmToken) }
+        log.info("FID received length=\(installationId.count)")
+        Task { await PushTokens.registrationReceived(installationId) }
     }
 
     nonisolated func userNotificationCenter(

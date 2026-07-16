@@ -12,6 +12,7 @@ class RegisterNotificationTokenUseCase internal constructor(
 ) {
     suspend operator fun invoke(
         token: String,
+        identifierType: String,
         platform: String,
         deviceName: String? = null,
         appVersion: String? = null,
@@ -20,6 +21,7 @@ class RegisterNotificationTokenUseCase internal constructor(
         repository.register(
             RegisterNotificationTokenRequest(
                 token = token,
+                identifierType = identifierType,
                 platform = platform,
                 deviceName = deviceName,
                 appVersion = appVersion,

@@ -4,6 +4,7 @@ import co.touchlab.kermit.Logger
 import dev.forcetower.melon.core.common.Outcome
 import dev.forcetower.melon.core.network.ApiEnvelope
 import dev.forcetower.melon.feature.notifications.data.dto.RegisterNotificationTokenRequest
+import dev.forcetower.melon.feature.notifications.data.dto.UnregisterNotificationTokenRequest
 import dev.forcetower.melon.feature.notifications.data.network.NotificationTokenService
 import dev.forcetower.melon.feature.notifications.domain.model.NotificationTokenError
 import dev.forcetower.melon.feature.notifications.domain.repository.NotificationTokenRepository
@@ -28,37 +29,51 @@ internal class NotificationTokenRepositoryImpl(
 
     override suspend fun register(
         request: RegisterNotificationTokenRequest,
+    ): Outcome<Unit, NotificationTokenError> = call("register") {
+        log.i { "register start platform=${request.platform} type=${request.identifierType}" }
+        api.registerToken(request)
+    }
+
+    override suspend fun unregister(
+        request: UnregisterNotificationTokenRequest,
+    ): Outcome<Unit, NotificationTokenError> = call("unregister") {
+        log.i { "unregister start" }
+        api.unregisterToken(request)
+    }
+
+    private suspend fun call(
+        op: String,
+        request: suspend () -> HttpResponse,
     ): Outcome<Unit, NotificationTokenError> = try {
-        log.i { "register start platform=${request.platform}" }
-        classifyResponse(api.registerToken(request))
+        classifyResponse(op, request())
     } catch (cancellation: CancellationException) {
         throw cancellation
     } catch (ex: SerializationException) {
-        log.e(throwable = ex) { "register failed: envelope deserialization" }
+        log.e(throwable = ex) { "$op failed: envelope deserialization" }
         Outcome.Err(NotificationTokenError.Kind.Unexpected)
     } catch (ex: Throwable) {
-        log.w(throwable = ex) { "register failed: transport" }
+        log.w(throwable = ex) { "$op failed: transport" }
         Outcome.Err(NotificationTokenError.Kind.NoConnection)
     }
 
-    private suspend fun classifyResponse(response: HttpResponse): Outcome<Unit, NotificationTokenError> {
+    private suspend fun classifyResponse(op: String, response: HttpResponse): Outcome<Unit, NotificationTokenError> {
         val status = response.status.value
         return when (status) {
             in 200..299 -> {
-                log.i { "register ok" }
+                log.i { "$op ok" }
                 Outcome.Ok(Unit)
             }
             401 -> {
-                log.w { "register unauthorized" }
+                log.w { "$op unauthorized" }
                 Outcome.Err(NotificationTokenError.Kind.Unauthorized)
             }
             in 500..599 -> {
                 val envelope = runCatching { response.body<ApiEnvelope<Unit>>() }.getOrNull()
-                log.w { "register server $status message=${envelope?.message ?: "<none>"}" }
+                log.w { "$op server $status message=${envelope?.message ?: "<none>"}" }
                 Outcome.Err(NotificationTokenError.Server(envelope?.message))
             }
             else -> {
-                log.w { "register unexpected status $status" }
+                log.w { "$op unexpected status $status" }
                 Outcome.Err(NotificationTokenError.Kind.Unexpected)
             }
         }

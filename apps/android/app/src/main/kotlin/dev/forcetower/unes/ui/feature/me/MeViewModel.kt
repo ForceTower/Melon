@@ -14,6 +14,7 @@ import dev.forcetower.melon.feature.me.domain.usecase.FetchAcademicDocumentUseCa
 import dev.forcetower.melon.feature.me.domain.usecase.ObserveMeProfileUseCase
 import dev.forcetower.unes.firebase.FeatureFlags
 import dev.forcetower.unes.firebase.FeatureGates
+import dev.forcetower.unes.firebase.PushRegistrar
 import dev.forcetower.unes.mvi.MviViewModel
 import dev.forcetower.unes.mvi.UiEffect
 import dev.forcetower.unes.mvi.UiIntent
@@ -123,6 +124,7 @@ internal class MeViewModel @Inject constructor(
     private val localDocuments: LocalDocumentStore,
     private val sessionStore: SessionStore,
     private val clearCampusEvent: ClearCampusEventUseCase,
+    private val pushRegistrar: PushRegistrar,
 ) : MviViewModel<MeUiState, MeIntent, MeEffect>(MeUiState()) {
 
     init {
@@ -236,6 +238,8 @@ internal class MeViewModel @Inject constructor(
         val firstName = currentState.identity?.firstName?.ifBlank { null } ?: "Estudante"
         setState { copy(logoutStep = LogoutStep.Flashing, logoutFirstName = firstName) }
         viewModelScope.launch {
+            // Before logout() — the DELETEs need the session bearer.
+            runCatching { pushRegistrar.unregisterAll() }
             runCatching { sessionStore.logout() }
             // User-scoped snapshot outside the DB teardown — iOS wipes it
             // with the mirror; here it lives in KeyValueStorage.

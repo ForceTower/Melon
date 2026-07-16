@@ -19,22 +19,14 @@ extension PushClient: DependencyKey {
                 log.warn("requestAuthorization failed", error: error)
             }
         },
-        tokenReceived: { token in
-            UserDefaults.standard.set(token, forKey: tokenKey)
-            log.debug("tokenReceived stored length=\(token.count)")
-            @Dependency(\.sessionStore) var sessionStore
-            guard sessionStore.current() != nil else {
-                log.debug("tokenReceived deferred: no session")
-                return
-            }
-            await register(token)
+        fidReceived: { installationId in
+            await registrar.fidReceived(installationId)
         },
-        registerStoredToken: {
-            guard let token = UserDefaults.standard.string(forKey: tokenKey) else {
-                log.debug("registerStoredToken skipped: no stored token")
-                return
-            }
-            await register(token)
+        reconcile: {
+            await registrar.reconcile()
+        },
+        unregister: {
+            await registrar.unregister()
         },
         dataNotificationReceived: { data in
             guard let kind = data["kind"] else {
@@ -46,12 +38,73 @@ extension PushClient: DependencyKey {
         },
         dataEvents: { hub.stream() }
     )
+}
 
-    private static let tokenKey = "messaging_notification_token"
+private let registrar = PushRegistrar()
 
-    /// Best-effort: FCM re-delivers the token on every launch, so a failed
+/// Owns the device's push registration: the Firebase Installation ID is
+/// registered with apps/api, and any row left behind by the retired FCM-token
+/// path is deleted. The backend dedups rows by identifier value, so the token
+/// row a previous app version registered stays live next to the FID row — and
+/// every push would arrive twice — until the delete lands; failed deletes are
+/// queued and retried on later reconciles.
+private actor PushRegistrar {
+    private static let fidKey = "messaging_installation_id"
+    /// Written by app versions that registered FCM tokens; read once so the
+    /// stale token row can be deleted, then cleared for good.
+    private static let legacyTokenKey = "messaging_notification_token"
+    private static let pendingDeletesKey = "messaging_pending_deletes"
+
+    func fidReceived(_ installationId: String) async {
+        UserDefaults.standard.set(installationId, forKey: Self.fidKey)
+        log.debug("fid stored length=\(installationId.count)")
+        await reconcile()
+    }
+
+    func reconcile() async {
+        @Dependency(\.sessionStore) var sessionStore
+        guard sessionStore.current() != nil else {
+            log.debug("reconcile deferred: no session")
+            return
+        }
+        guard let fid = UserDefaults.standard.string(forKey: Self.fidKey) else {
+            await flushPendingDeletes()
+            return
+        }
+        guard await register(fid) else { return }
+        // Queue the legacy token's delete only after the FID is registered —
+        // deleting first would leave a push gap.
+        if let legacyToken = UserDefaults.standard.string(forKey: Self.legacyTokenKey), legacyToken != fid {
+            addPendingDelete(legacyToken)
+            UserDefaults.standard.removeObject(forKey: Self.legacyTokenKey)
+        }
+        await flushPendingDeletes()
+    }
+
+    /// Logout teardown — best-effort: after logout there is nothing to retry
+    /// with; the backend's invalid-token prune eventually collects what this
+    /// misses.
+    func unregister() async {
+        var identifiers = Set(pendingDeletes())
+        for key in [Self.fidKey, Self.legacyTokenKey] {
+            if let value = UserDefaults.standard.string(forKey: key) {
+                identifiers.insert(value)
+            }
+        }
+        for identifier in identifiers {
+            let deleted = await delete(identifier)
+            if !deleted {
+                log.warn("logout unregister failed for a push identifier")
+            }
+        }
+        for key in [Self.fidKey, Self.legacyTokenKey, Self.pendingDeletesKey] {
+            UserDefaults.standard.removeObject(forKey: key)
+        }
+    }
+
+    /// Best-effort: FCM re-delivers the FID on every launch, so a failed
     /// registration heals on the next one.
-    private static func register(_ token: String) async {
+    private func register(_ fid: String) async -> Bool {
         @Dependency(\.apiClient) var apiClient
         #if canImport(UIKit) && !os(watchOS)
         let deviceName: String? = await UIDevice.current.name
@@ -59,16 +112,18 @@ extension PushClient: DependencyKey {
         let deviceName: String? = nil
         #endif
         let body = RegisterTokenBody(
-            token: token,
+            token: fid,
+            identifierType: "fid",
             platform: "ios",
             deviceName: deviceName,
             appVersion: Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String,
             locale: Locale.current.identifier
         )
-        log.debug("register start tokenLength=\(token.count)")
+        log.debug("register start fidLength=\(fid.count)")
         do {
             try await apiClient.post(to: "api/notifications/token", body: body)
-            log.info("register ok tokenLength=\(token.count)")
+            log.info("register ok")
+            return true
         } catch {
             switch error {
             case APIError.server(401, _):
@@ -80,7 +135,46 @@ extension PushClient: DependencyKey {
             default:
                 log.error("register failed", error: error)
             }
+            return false
         }
+    }
+
+    private func delete(_ identifier: String) async -> Bool {
+        @Dependency(\.apiClient) var apiClient
+        do {
+            try await apiClient.delete("api/notifications/token", body: UnregisterTokenBody(token: identifier))
+            log.info("unregister ok")
+            return true
+        } catch {
+            log.warn("unregister failed", error: error)
+            return false
+        }
+    }
+
+    private func flushPendingDeletes() async {
+        for identifier in pendingDeletes() {
+            if await delete(identifier) {
+                removePendingDelete(identifier)
+            } else {
+                log.warn("stale push identifier delete failed — will retry")
+            }
+        }
+    }
+
+    private func pendingDeletes() -> [String] {
+        UserDefaults.standard.stringArray(forKey: Self.pendingDeletesKey) ?? []
+    }
+
+    private func addPendingDelete(_ identifier: String) {
+        var pending = pendingDeletes()
+        guard !pending.contains(identifier) else { return }
+        pending.append(identifier)
+        UserDefaults.standard.set(pending, forKey: Self.pendingDeletesKey)
+    }
+
+    private func removePendingDelete(_ identifier: String) {
+        let pending = pendingDeletes().filter { $0 != identifier }
+        UserDefaults.standard.set(pending, forKey: Self.pendingDeletesKey)
     }
 }
 
@@ -111,10 +205,17 @@ private struct PushEventHub: Sendable {
     }
 }
 
+/// `token` carries the Firebase Installation ID; `identifierType` tells the
+/// backend it's a FID and not a legacy FCM registration token.
 private struct RegisterTokenBody: Encodable {
     let token: String
+    let identifierType: String
     let platform: String
     let deviceName: String?
     let appVersion: String?
     let locale: String
+}
+
+private struct UnregisterTokenBody: Encodable {
+    let token: String
 }

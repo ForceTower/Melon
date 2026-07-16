@@ -197,6 +197,7 @@ struct MeFeatureTests {
     func logoutWipesTheMirrorThemeAndSession() async {
         let sessionStore = SessionStore.inMemory(initial: .preview)
         let wiped = LockIsolated(false)
+        let unregistered = LockIsolated(false)
 
         let initialState = MeFeature.State(userName: "Mariana Souza")
         initialState.$theme.withLock { $0 = .dark }
@@ -206,6 +207,7 @@ struct MeFeatureTests {
         } withDependencies: {
             $0.sessionStore = sessionStore
             $0.meRepository.wipeLocalData = { wiped.setValue(true) }
+            $0.push.unregister = { unregistered.setValue(true) }
         }
 
         await store.send(.logoutTapped) {
@@ -219,6 +221,7 @@ struct MeFeatureTests {
 
         #expect(sessionStore.current() == nil)
         #expect(wiped.value == true)
+        #expect(unregistered.value == true)
     }
 
     @Test
