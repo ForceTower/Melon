@@ -1,5 +1,6 @@
 package dev.forcetower.unes.firebase
 
+import android.annotation.SuppressLint
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import dagger.hilt.android.AndroidEntryPoint
@@ -14,6 +15,10 @@ import timber.log.Timber
 // meta-data; FCM retired registration-token targeting). The FID is cached,
 // then the registrar pushes it to the backend. Without a session it skips —
 // `SyncViewModel` reconciles right after login.
+//
+// The lint check predates FID registration: this app observes onRegistered,
+// so the onNewToken it demands would be dead code.
+@SuppressLint("MissingFirebaseInstanceTokenRefresh")
 @AndroidEntryPoint
 class MelonFirebaseMessagingService : FirebaseMessagingService() {
 
