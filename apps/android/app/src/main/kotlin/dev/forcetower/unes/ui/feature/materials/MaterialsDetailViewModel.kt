@@ -162,8 +162,8 @@ internal class MaterialsDetailViewModel @Inject constructor(
             when (val outcome = openMaterial(material.id)) {
                 is Outcome.Ok -> {
                     val file = withContext(Dispatchers.IO) {
-                        File(context.cacheDir, "materials").apply { mkdirs() }
-                            .resolve(outcome.value.fileName.ifBlank { "material.pdf" })
+                        materialCacheFile(material.id, outcome.value.fileName)
+                            .apply { parentFile?.mkdirs() }
                             .apply { writeBytes(outcome.value.bytes) }
                     }
                     setState {
@@ -185,6 +185,22 @@ internal class MaterialsDetailViewModel @Inject constructor(
             }
         }
     }
+
+    // The name is uploader-supplied and not a trusted path. Every scan is named
+    // "digitalizacao.pdf", so the id keys the directory to stop distinct
+    // materials overwriting each other.
+    private fun materialCacheFile(materialId: String, fileName: String): File {
+        val root = File(context.cacheDir, "materials")
+        val target = File(root, "${basename(materialId)}/${basename(fileName)}")
+        if (!target.canonicalPath.startsWith(root.canonicalPath + File.separator)) {
+            return File(root, "untrusted/material.pdf")
+        }
+        return target
+    }
+
+    private fun basename(value: String) = File(value).name
+        .takeUnless { it.isBlank() || it == "." || it == ".." }
+        ?: "material.pdf"
 
     private fun confirmReport() {
         val material = currentState.material ?: return
