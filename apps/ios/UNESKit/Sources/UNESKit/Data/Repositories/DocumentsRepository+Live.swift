@@ -67,7 +67,7 @@ private func downloadPDF(from url: URL, filename: String) async throws -> URL {
     guard let http = response as? HTTPURLResponse, 200..<300 ~= http.statusCode else {
         throw APIError.invalidResponse
     }
-    let destination = FileManager.default.temporaryDirectory.appendingPathComponent(filename)
+    let destination = FileManager.default.temporaryDirectory.appendingPathComponent(safeFileName(filename))
     try data.write(to: destination, options: .atomic)
     return destination
 }

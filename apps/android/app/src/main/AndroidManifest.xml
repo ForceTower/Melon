@@ -35,8 +35,9 @@
             </intent-filter>
         </activity>
 
-        <!-- Grants PDF viewers read access to the offline document slots
-             under filesDir/documents (Comprovante / Histórico). -->
+        <!-- Grants external viewers read access to the offline document slots
+             under filesDir/documents (Comprovante / Histórico) and to the
+             downloaded material attachments under cacheDir/materials. -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"

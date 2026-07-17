@@ -97,7 +97,7 @@ extension MaterialsRepository: DependencyKey {
                     query: [URLQueryItem(name: "id", value: material.id)],
                     body: EmptyBody()
                 )
-                let url = try await downloadFile(from: dto.url, filename: dto.filename)
+                let url = try await downloadFile(from: dto.url, materialId: material.id, filename: dto.filename)
                 log.info("open ok id=\(material.id)")
                 return url
             } catch {
@@ -164,12 +164,19 @@ extension MaterialsRepository: DependencyKey {
 
 /// The presigned URL is its own bearer token — plain requests, no session
 /// header (same recipe as `DocumentsRepository`).
-private func downloadFile(from url: URL, filename: String) async throws -> URL {
+///
+/// Every scan uploads as "digitalizacao.pdf", so the id keys the directory to
+/// stop distinct materials overwriting each other.
+private func downloadFile(from url: URL, materialId: String, filename: String) async throws -> URL {
     let (data, response) = try await URLSession.shared.data(from: url)
     guard let http = response as? HTTPURLResponse, 200..<300 ~= http.statusCode else {
         throw APIError.invalidResponse
     }
-    let destination = FileManager.default.temporaryDirectory.appendingPathComponent(filename)
+    let directory = FileManager.default.temporaryDirectory
+        .appendingPathComponent("materials", isDirectory: true)
+        .appendingPathComponent(safeFileName(materialId), isDirectory: true)
+    try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+    let destination = directory.appendingPathComponent(safeFileName(filename))
     try data.write(to: destination, options: .atomic)
     return destination
 }

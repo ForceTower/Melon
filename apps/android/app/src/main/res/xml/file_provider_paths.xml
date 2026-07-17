@@ -4,4 +4,8 @@
     <files-path
         name="documents"
         path="documents/" />
+    <!-- Downloaded material attachments, handed to the system viewer. -->
+    <cache-path
+        name="materials"
+        path="materials/" />
 </paths>
