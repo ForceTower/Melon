@@ -165,6 +165,7 @@ internal class MaterialsDetailViewModel @Inject constructor(
                         materialCacheFile(material.id, outcome.value.fileName)
                             .apply { parentFile?.mkdirs() }
                             .apply { writeBytes(outcome.value.bytes) }
+                            .also { pruneMaterialCache(keeping = it) }
                     }
                     setState {
                         copy(
@@ -202,6 +203,26 @@ internal class MaterialsDetailViewModel @Inject constructor(
         .takeUnless { it.isBlank() || it == "." || it == ".." }
         ?: "material.pdf"
 
+    // Downloads accumulate here until the OS evicts the cache dir. Once past the
+    // budget, drop the oldest entries — never the one just written, which an
+    // external viewer is about to read.
+    private fun pruneMaterialCache(keeping: File) {
+        val root = File(context.cacheDir, "materials")
+        val entries = root.listFiles().orEmpty()
+        var total = entries.sumOf { it.cachedSize() }
+        if (total <= MATERIAL_CACHE_BUDGET_BYTES) return
+
+        val keptDir = keeping.parentFile?.canonicalFile
+        entries
+            .filter { it.canonicalFile != keptDir }
+            .sortedBy { it.lastModified() }
+            .forEach { entry ->
+                if (total <= MATERIAL_CACHE_BUDGET_BYTES) return
+                total -= entry.cachedSize()
+                entry.deleteRecursively()
+            }
+    }
+
     private fun confirmReport() {
         val material = currentState.material ?: return
         val reason = currentState.reportReason ?: return
@@ -224,3 +245,8 @@ internal class MaterialsDetailViewModel @Inject constructor(
         }
     }
 }
+
+private const val MATERIAL_CACHE_BUDGET_BYTES = 50L * 1024 * 1024
+
+private fun File.cachedSize(): Long =
+    if (isFile) length() else walkBottomUp().filter { it.isFile }.sumOf { it.length() }
