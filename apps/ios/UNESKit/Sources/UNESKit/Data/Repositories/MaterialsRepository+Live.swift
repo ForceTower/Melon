@@ -172,13 +172,55 @@ private func downloadFile(from url: URL, materialId: String, filename: String) a
     guard let http = response as? HTTPURLResponse, 200..<300 ~= http.statusCode else {
         throw APIError.invalidResponse
     }
-    let directory = FileManager.default.temporaryDirectory
-        .appendingPathComponent("materials", isDirectory: true)
-        .appendingPathComponent(safeFileName(materialId), isDirectory: true)
+    let directory = materialsCacheRoot().appendingPathComponent(safeFileName(materialId), isDirectory: true)
     try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
     let destination = directory.appendingPathComponent(safeFileName(filename))
     try data.write(to: destination, options: .atomic)
+    pruneMaterialsCache(keeping: directory)
     return destination
+}
+
+private func materialsCacheRoot() -> URL {
+    FileManager.default.temporaryDirectory.appendingPathComponent("materials", isDirectory: true)
+}
+
+private let materialsCacheBudget = 50 * 1024 * 1024
+
+/// Downloads pile up in the temp directory until the system purges it. Once the
+/// materials cache passes the budget, drop the oldest entries — never `kept`,
+/// which the viewer is about to read.
+private func pruneMaterialsCache(keeping kept: URL) {
+    let fm = FileManager.default
+    guard let entries = try? fm.contentsOfDirectory(
+        at: materialsCacheRoot(),
+        includingPropertiesForKeys: [.contentModificationDateKey, .totalFileAllocatedSizeKey]
+    ) else { return }
+
+    let items = entries.map { (url: $0, size: directorySize($0), modified: modificationDate($0)) }
+    var total = items.reduce(0) { $0 + $1.size }
+    guard total > materialsCacheBudget else { return }
+
+    let keptPath = kept.standardizedFileURL.path
+    for item in items.sorted(by: { $0.modified < $1.modified }) {
+        if total <= materialsCacheBudget { break }
+        if item.url.standardizedFileURL.path == keptPath { continue }
+        total -= item.size
+        try? fm.removeItem(at: item.url)
+    }
+}
+
+private func directorySize(_ url: URL) -> Int {
+    let fm = FileManager.default
+    guard let files = fm.enumerator(at: url, includingPropertiesForKeys: [.totalFileAllocatedSizeKey]) else { return 0 }
+    var bytes = 0
+    for case let file as URL in files {
+        bytes += (try? file.resourceValues(forKeys: [.totalFileAllocatedSizeKey]).totalFileAllocatedSize) ?? 0
+    }
+    return bytes
+}
+
+private func modificationDate(_ url: URL) -> Date {
+    (try? url.resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate) ?? .distantPast
 }
 
 private func uploadFile(_ data: Data, to url: URL, fileKind: MaterialFileKind) async throws {
