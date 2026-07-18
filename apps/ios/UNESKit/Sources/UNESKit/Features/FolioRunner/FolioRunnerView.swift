@@ -6,6 +6,7 @@ import SwiftUI
 /// mascot to open it as a full-screen cover.
 struct FolioRunnerView: View {
     @Environment(\.dismiss) private var dismiss
+    @Dependency(\.analytics) private var analytics
     @State private var engine = FolioRunnerEngine()
     @Shared(.unlockedSecretIcons) private var unlockedSecretIcons
 
@@ -58,6 +59,9 @@ struct FolioRunnerView: View {
         )
         .preferredColorScheme(.light)
         .immersiveChromeHidden()
+        .task {
+            analytics.screen(Screens.folioRunner)
+        }
         // Finding the runner unlocks the Paper icon. Recorded on dismissal,
         // not appearance: AppFeature reacts by presenting the celebration
         // sheet, which would rip this full-screen cover away mid-game.

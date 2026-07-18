@@ -66,6 +66,7 @@ struct DisciplineDetailFeature {
 
     @Dependency(\.disciplinesRepository) var disciplinesRepository
     @Dependency(\.materialsRepository) var materialsRepository
+    @Dependency(\.analytics) var analytics
 
     private let log = Log.scoped("DisciplineDetailFeature")
 
@@ -75,6 +76,11 @@ struct DisciplineDetailFeature {
         Reduce { state, action in
             switch action {
             case .task:
+                // The iOS detail merges a discipline's offers, so it carries a
+                // discipline id — label it honestly ("discipline_id", the key
+                // materials_discipline already uses) instead of polluting the
+                // offer_id namespace.
+                analytics.screen(name: Screens.disciplineDetail, properties: ["discipline_id": state.disciplineId])
                 // The observation replays the mirror on subscription, so
                 // every appearance rehydrates and later writes (sync
                 // refreshes from any tab) land live.
@@ -112,6 +118,7 @@ struct DisciplineDetailFeature {
 
             case .materialsTapped:
                 guard let materials = state.materials else { return .none }
+                analytics.selectContent(contentType: ContentTypes.material, itemId: state.disciplineId)
                 log.info("open materials id=\(materials.id)")
                 return .send(.delegate(.openMaterials(materials)))
 

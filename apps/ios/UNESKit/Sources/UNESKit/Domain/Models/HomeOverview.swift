@@ -28,6 +28,8 @@ struct CachedHomeOverview: Equatable, Sendable {
 /// through (the day's last class until it ends), then the next one takes over.
 struct HomeHeroClass: Equatable, Sendable {
     var disciplineId: String?
+    /// Analytics identity for the tap (cross-platform itemId).
+    var offerId: String? = nil
     var disciplineName: String
     var startsAt: Date
     var endsAt: Date?
@@ -88,6 +90,8 @@ struct TodayClass: Equatable, Sendable, Identifiable {
     var id: String
     var classId: String
     var disciplineId: String
+    /// Analytics identity for the tap (cross-platform itemId).
+    var offerId: String? = nil
     /// Minutes into the day.
     var startMinute: Int
     var endMinute: Int?
@@ -102,6 +106,10 @@ struct TodayClass: Equatable, Sendable, Identifiable {
 
 struct DisciplineCard: Equatable, Sendable, Identifiable {
     var id: String
+    /// Analytics identity when the discipline has a single offer; nil for
+    /// split (theory/practical) disciplines, where no one offer represents
+    /// the merged card.
+    var offerId: String? = nil
     var code: String
     var name: String
     /// Plain mean of posted grades; truncate for display.

@@ -75,6 +75,7 @@ struct MeDocumentFeature {
     @Dependency(\.documentsRepository) var documentsRepository
     @Dependency(\.localDocuments) var localDocuments
     @Dependency(\.dismiss) var dismiss
+    @Dependency(\.analytics) var analytics
 
     private let log = Log.scoped("MeDocumentFeature")
 
@@ -87,11 +88,21 @@ struct MeDocumentFeature {
                     state.stage = .captcha
                     return .none
                 }
+                analytics.selectContent(
+                    contentType: ContentTypes.document,
+                    itemId: state.document.rawValue,
+                    properties: ["action": "fetch"]
+                )
                 state.stage = .generating
                 return fetch(state.document, token: nil)
 
             case let .captchaSolved(token):
                 log.info("document captcha solved kind=\(state.document.rawValue)")
+                analytics.selectContent(
+                    contentType: ContentTypes.document,
+                    itemId: state.document.rawValue,
+                    properties: ["action": "fetch"]
+                )
                 state.stage = .generating
                 return fetch(state.document, token: token)
 

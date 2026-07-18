@@ -25,6 +25,7 @@ struct EnrollmentOffersView: View {
         }
         .inlineNavigationBar()
         .hiddenTabBar()
+        .task { await store.send(.task).finish() }
         .safeAreaInset(edge: .bottom) {
             EnrollmentDock(
                 session: store.session,

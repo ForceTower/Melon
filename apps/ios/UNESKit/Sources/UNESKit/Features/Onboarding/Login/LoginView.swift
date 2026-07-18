@@ -59,6 +59,7 @@ struct LoginView: View {
         .animation(.easeInOut(duration: 0.2), value: store.errorMessage)
         .safeAreaInset(edge: .bottom) { bottomBar }
         .bareNavigationBar()
+        .task { await store.send(.task).finish() }
     }
 
     // MARK: Chrome

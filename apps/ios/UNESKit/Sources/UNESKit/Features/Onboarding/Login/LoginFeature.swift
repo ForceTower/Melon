@@ -19,6 +19,7 @@ struct LoginFeature {
     }
 
     enum Action: BindableAction, Equatable {
+        case task
         case binding(BindingAction<State>)
         case toggleShowPassword
         case forgotPasswordTapped
@@ -37,6 +38,7 @@ struct LoginFeature {
     @Dependency(\.authRepository) var authRepository
     @Dependency(\.passkeyClient) var passkeyClient
     @Dependency(\.openURL) var openURL
+    @Dependency(\.analytics) var analytics
 
     private let log = Log.scoped("LoginFeature")
 
@@ -45,6 +47,10 @@ struct LoginFeature {
 
         Reduce { state, action in
             switch action {
+            case .task:
+                analytics.screen(Screens.login)
+                return .none
+
             case .binding:
                 return .none
 
@@ -57,6 +63,7 @@ struct LoginFeature {
 
             case .submitTapped:
                 guard state.canSubmit else { return .none }
+                analytics.selectContent(contentType: ContentTypes.cta, itemId: "login_credentials")
                 log.info("login submit for student=\(state.username)")
                 state.isLoading = true
                 state.errorMessage = nil
@@ -68,6 +75,7 @@ struct LoginFeature {
 
             case .passkeyTapped:
                 guard !state.isLoading else { return .none }
+                analytics.selectContent(contentType: ContentTypes.cta, itemId: "login_passkey")
                 log.info("passkey login start")
                 state.isLoading = true
                 state.errorMessage = nil

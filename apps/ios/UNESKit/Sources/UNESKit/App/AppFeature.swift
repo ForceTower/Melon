@@ -49,6 +49,7 @@ struct AppFeature {
     }
 
     @Dependency(\.push) var push
+    @Dependency(\.analytics) var analytics
     @Dependency(\.syncRepository) var syncRepository
     @Dependency(\.homeRepository) var homeRepository
     @Dependency(\.disciplinesRepository) var disciplinesRepository
@@ -73,6 +74,7 @@ struct AppFeature {
         Reduce { state, action in
             switch action {
             case .task:
+                reportTabScreen(state.tab)
                 // Safety net for accounts that never saw the intro's prompt
                 // (skip path, reinstalls) — a no-op once iOS has asked.
                 return .merge(
@@ -113,11 +115,13 @@ struct AppFeature {
                 )
 
             case let .tabChanged(tab):
+                reportTabScreen(tab, previous: state.tab)
                 state.tab = tab
                 return .none
 
             case let .intentRoute(tab):
                 log.info("intent route consumed tab=\(tab.rawValue)")
+                reportTabScreen(tab, previous: state.tab)
                 state.tab = tab
                 return .none
 
@@ -260,12 +264,16 @@ struct AppFeature {
             case let .home(.delegate(delegate)):
                 switch delegate {
                 case .openSchedule:
+                    reportTabScreen(.schedule, previous: state.tab)
                     state.tab = .schedule
                 case .openClasses:
+                    reportTabScreen(.classes, previous: state.tab)
                     state.tab = .classes
                 case .openMessages:
+                    reportTabScreen(.messages, previous: state.tab)
                     state.tab = .messages
                 case .openMe:
+                    reportTabScreen(.me, previous: state.tab)
                     state.tab = .me
                 case let .unreadMessagesChanged(count):
                     state.unreadMessages = count
@@ -285,6 +293,24 @@ struct AppFeature {
     private func pingEffect() -> Effect<Action> {
         .run { _ in try? await syncRepository.ping() }
             .cancellable(id: CancelID.ping, cancelInFlight: true)
+    }
+
+    /// Fires `screen_view` for the five tab roots — initial mount and every
+    /// selection change, deduped against the previous tab so an unrelated
+    /// re-entry into the same tab (e.g. a delegate action) can't double-fire.
+    private func reportTabScreen(_ tab: Tab, previous: Tab? = nil) {
+        guard tab != previous else { return }
+        analytics.screen(screenName(for: tab))
+    }
+
+    private func screenName(for tab: Tab) -> String {
+        switch tab {
+        case .home: Screens.overview
+        case .schedule: Screens.schedule
+        case .classes: Screens.disciplines
+        case .messages: Screens.messages
+        case .me: Screens.me
+        }
     }
 
     private func markCelebrationAnnounced(_ state: inout State) {

@@ -22,6 +22,7 @@ struct MaterialsDetailView: View {
             }
         }
         .navigationBarTitleDisplayMode(.inline)
+        .task { await store.send(.task).finish() }
         .toolbar {
             if !store.showsModerationStatus {
                 ToolbarItem(placement: .primaryAction) {

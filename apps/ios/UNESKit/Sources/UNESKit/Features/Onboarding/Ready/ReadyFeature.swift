@@ -9,6 +9,7 @@ struct ReadyFeature {
     }
 
     enum Action: Equatable {
+        case task
         case enterTapped
         case delegate(Delegate)
 
@@ -17,12 +18,18 @@ struct ReadyFeature {
         }
     }
 
+    @Dependency(\.analytics) var analytics
+
     private let log = Log.scoped("ReadyFeature")
 
     var body: some ReducerOf<Self> {
         Reduce { _, action in
             switch action {
+            case .task:
+                analytics.screen(Screens.ready)
+                return .none
             case .enterTapped:
+                analytics.selectContent(contentType: ContentTypes.cta, itemId: "ready_enter")
                 return .send(.delegate(.enter))
             case .delegate:
                 return .none

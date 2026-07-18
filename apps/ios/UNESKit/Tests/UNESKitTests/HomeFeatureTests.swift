@@ -272,7 +272,7 @@ struct HomeFeatureTests {
             HomeFeature()
         }
 
-        await store.send(.disciplineTapped(id: "d2", name: "Cálculo II")) {
+        await store.send(.disciplineTapped(id: "d2", name: "Cálculo II", offerId: nil, isNowClass: false)) {
             $0.path.append(.detail(DisciplineDetailFeature.State(
                 semesterId: "sem1",
                 disciplineId: "d2",

@@ -39,6 +39,7 @@ struct DisciplinesFeature {
 
     @Dependency(\.disciplinesRepository) var disciplinesRepository
     @Dependency(\.date.now) var now
+    @Dependency(\.analytics) var analytics
 
     private let log = Log.scoped("DisciplinesFeature")
 
@@ -84,6 +85,11 @@ struct DisciplinesFeature {
             case let .downloadSemesterTapped(semesterId):
                 guard !state.downloadingSemesterIds.contains(semesterId) else { return .none }
                 state.downloadingSemesterIds.insert(semesterId)
+                analytics.selectContent(
+                    contentType: ContentTypes.semester,
+                    itemId: semesterId,
+                    properties: ["action": "sync"]
+                )
                 log.info("semester sync start code=\(semesterId)")
                 return .run { [log] send in
                     do {
@@ -112,6 +118,12 @@ struct DisciplinesFeature {
                 return .none
 
             case let .disciplineTapped(semesterId, discipline):
+                if let offerId = discipline.offerId {
+                    // Android skips the event when the offer is unknown —
+                    // mirror that rather than mixing discipline ids into the
+                    // offer-id namespace.
+                    analytics.selectContent(contentType: ContentTypes.discipline, itemId: offerId)
+                }
                 state.path.append(
                     .detail(DisciplineDetailFeature.State(summary: discipline, semesterId: semesterId))
                 )

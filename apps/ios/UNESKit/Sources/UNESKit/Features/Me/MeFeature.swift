@@ -130,6 +130,7 @@ struct MeFeature {
     @Dependency(\.openURL) var openURL
     @Dependency(\.locale) var locale
     @Dependency(\.continuousClock) var clock
+    @Dependency(\.analytics) var analytics
 
     private let log = Log.scoped("MeFeature")
 
@@ -161,6 +162,7 @@ struct MeFeature {
                 return .none
 
             case let .shortcutTapped(shortcut):
+                analytics.selectContent(contentType: ContentTypes.shortcut, itemId: shortcut.analyticsItemId)
                 switch shortcut {
                 case .enrollment:
                     state.path.append(.enrollment(EnrollmentFeature.State(profile: state.profile)))
@@ -200,6 +202,7 @@ struct MeFeature {
             case let .settingsRowTapped(row):
                 switch row {
                 case .settings:
+                    analytics.selectContent(contentType: ContentTypes.shortcut, itemId: "settings")
                     state.path.append(.settings(SettingsFeature.State(
                         profile: state.profile,
                         userName: state.userName
@@ -260,6 +263,7 @@ struct MeFeature {
 
             case .logoutConfirmed:
                 log.info("confirm logout")
+                analytics.selectContent(contentType: ContentTypes.setting, itemId: "logout", properties: ["action": "logout"])
                 state.isLogoutPromptPresented = false
                 state.$theme.withLock { $0 = .system }
                 let firstName = firstName(of: state.displayName)
@@ -448,6 +452,22 @@ struct MeFeature {
             return nil
         }
         return URL(string: "sms:joaopaulo761@gmail.com?&body=\(encoded)")
+    }
+}
+
+/// The analytics `item_id` for each shortcut — mirrors Android's
+/// `trackShortcutOpen`/`shortcutItemId` literals verbatim.
+extension MeShortcut {
+    var analyticsItemId: String {
+        switch self {
+        case .enrollment: "enrollment"
+        case .calendar: "calendar"
+        case .countdown: "final_countdown"
+        case .certificate: "certificate"
+        case .history: "academic_history"
+        case .paradoxo: "paradoxo"
+        case .materials: "materials"
+        }
     }
 }
 

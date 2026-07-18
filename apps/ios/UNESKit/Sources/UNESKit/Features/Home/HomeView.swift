@@ -70,7 +70,9 @@ struct HomeView: View {
                     if let hero = overview.hero {
                         HomeHeroCard(hero: hero) {
                             guard let id = hero.disciplineId else { return }
-                            store.send(.disciplineTapped(id: id, name: hero.disciplineName))
+                            store.send(.disciplineTapped(
+                                id: id, name: hero.disciplineName, offerId: hero.offerId, isNowClass: true
+                            ))
                         }
                         .scaleIn(delay: 0.1, duration: 0.62)
                         .padding(.bottom, 22)
@@ -85,7 +87,9 @@ struct HomeView: View {
                     HomeDaySection(today: overview.today) {
                         store.send(.seeScheduleTapped)
                     } onOpenClass: { item in
-                        store.send(.disciplineTapped(id: item.disciplineId, name: item.title))
+                        store.send(.disciplineTapped(
+                            id: item.disciplineId, name: item.title, offerId: item.offerId, isNowClass: false
+                        ))
                     }
                     .fadeUp(delay: 0.3)
                     .padding(.bottom, 26)
@@ -96,7 +100,9 @@ struct HomeView: View {
                     HomeClassesCarousel(disciplines: overview.disciplines) {
                         store.send(.seeAllClassesTapped)
                     } onOpen: { discipline in
-                        store.send(.disciplineTapped(id: discipline.id, name: discipline.name))
+                        store.send(.disciplineTapped(
+                            id: discipline.id, name: discipline.name, offerId: discipline.offerId, isNowClass: false
+                        ))
                     }
                     .fadeUp(delay: 0.38)
                     .padding(.bottom, 20)

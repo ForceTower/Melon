@@ -33,6 +33,7 @@ extension SemesterSnapshot {
             id: session.allocationId,
             classId: session.classId,
             disciplineId: index.discipline(forClass: session.classId)?.id ?? session.classId,
+            offerId: index.offerId(forClass: session.classId),
             code: index.displayCode(forClass: session.classId),
             title: index.discipline(forClass: session.classId)?.name ?? "",
             startMinute: session.startMinute,

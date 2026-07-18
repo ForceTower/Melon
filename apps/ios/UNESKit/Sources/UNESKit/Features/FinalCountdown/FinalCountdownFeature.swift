@@ -92,6 +92,7 @@ struct FinalCountdownFeature {
     @Dependency(\.disciplinesRepository) var disciplinesRepository
     @Dependency(\.date.now) var now
     @Dependency(\.uuid) var uuid
+    @Dependency(\.analytics) var analytics
 
     private let log = Log.scoped("FinalCountdownFeature")
 
@@ -99,6 +100,11 @@ struct FinalCountdownFeature {
         Reduce { state, action in
             switch action {
             case .task:
+                if let offerId = state.discipline?.id {
+                    analytics.screen(name: Screens.finalCountdown, properties: ["offer_id": offerId])
+                } else {
+                    analytics.screen(Screens.finalCountdown)
+                }
                 return .run { [log] send in
                     var overview: DisciplinesOverview?
                     do {
@@ -164,6 +170,7 @@ struct FinalCountdownFeature {
                     state.rows = State.fallbackRows
                     return .none
                 }
+                analytics.selectContent(contentType: ContentTypes.discipline, itemId: id, properties: ["action": "simulate"])
                 guard let summary = state.choices.first(where: { $0.id == id }) else { return .none }
                 state.seed(from: summary)
                 return .none

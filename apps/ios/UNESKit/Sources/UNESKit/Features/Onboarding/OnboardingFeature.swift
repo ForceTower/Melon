@@ -35,6 +35,7 @@ struct OnboardingFeature {
     }
 
     @Dependency(\.continuousClock) var clock
+    @Dependency(\.analytics) var analytics
 
     private let log = Log.scoped("OnboardingFeature")
 
@@ -50,13 +51,16 @@ struct OnboardingFeature {
 
             case .splashFinished:
                 state.splash = false
+                analytics.screen(Screens.welcome)
                 return .none
 
             case .exploreTapped:
+                analytics.selectContent(contentType: ContentTypes.cta, itemId: "welcome_start")
                 state.path.append(.intro(IntroFeature.State()))
                 return .none
 
             case .loginTapped:
+                analytics.selectContent(contentType: ContentTypes.cta, itemId: "welcome_login")
                 state.path.append(.login(LoginFeature.State(username: state.prefillUsername ?? "")))
                 return .none
 

@@ -31,6 +31,8 @@ struct CalendarView: View {
         .sheet(item: detailBinding) { event in
             CalendarEventSheet(event: event, today: store.today) {
                 store.send(.detailDismissed)
+            } onAddToCalendar: {
+                store.send(.addToCalendarTapped(event))
             }
         }
     }

@@ -99,6 +99,7 @@ struct MaterialsUploadFeature {
 
     @Dependency(\.materialsRepository) var materialsRepository
     @Dependency(\.dismiss) var dismiss
+    @Dependency(\.analytics) var analytics
 
     private let log = Log.scoped("MaterialsUploadFeature")
 
@@ -165,6 +166,11 @@ struct MaterialsUploadFeature {
 
             case let .submitted(material):
                 log.info("upload submitted id=\(material.id)")
+                analytics.selectContent(
+                    contentType: ContentTypes.material,
+                    itemId: material.id,
+                    properties: ["action": "submit"]
+                )
                 state.isSubmitting = false
                 state.submitted = material
                 state.$hasAcknowledgedGuidelines.withLock { $0 = true }

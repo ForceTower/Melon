@@ -53,6 +53,7 @@ struct ReadyView: View {
         .safeAreaInset(edge: .bottom) { enterButton }
         .navigationBarBackButtonHidden()
         .bareNavigationBar()
+        .task { await store.send(.task).finish() }
     }
 
     private var successWash: some View {

@@ -37,6 +37,7 @@ struct MaterialsDetailFeature {
     }
 
     enum Action: Equatable, BindableAction {
+        case task
         case usefulTapped
         case usefulSyncFailed(previousCount: Int, wasUseful: Bool)
         case saveTapped
@@ -57,6 +58,7 @@ struct MaterialsDetailFeature {
 
     @Dependency(\.materialsRepository) var materialsRepository
     @Dependency(\.continuousClock) var clock
+    @Dependency(\.analytics) var analytics
 
     private let log = Log.scoped("MaterialsDetailFeature")
 
@@ -66,6 +68,10 @@ struct MaterialsDetailFeature {
         BindingReducer()
         Reduce { state, action in
             switch action {
+            case .task:
+                analytics.screen(name: Screens.materialsDetail, properties: ["material_id": state.material.id])
+                return .none
+
             case .usefulTapped:
                 // Optimistic: flip locally, reconcile with the server count,
                 // roll back if the vote never landed.
@@ -74,6 +80,11 @@ struct MaterialsDetailFeature {
                 state.material.isUseful = !wasUseful
                 state.material.usefulCount += wasUseful ? -1 : 1
                 log.info("useful toggle id=\(state.material.id) useful=\(!wasUseful)")
+                analytics.selectContent(
+                    contentType: ContentTypes.material,
+                    itemId: state.material.id,
+                    properties: ["action": wasUseful ? "not_useful" : "useful"]
+                )
                 return .run { [id = state.material.id] _ in
                     _ = try await materialsRepository.setUseful(id, !wasUseful)
                 } catch: { _, send in
@@ -89,6 +100,11 @@ struct MaterialsDetailFeature {
                 let wasSaved = state.material.isSaved
                 state.material.isSaved = !wasSaved
                 log.info("save toggle id=\(state.material.id) saved=\(!wasSaved)")
+                analytics.selectContent(
+                    contentType: ContentTypes.material,
+                    itemId: state.material.id,
+                    properties: ["action": wasSaved ? "unsave" : "save"]
+                )
                 return .merge(
                     show(wasSaved ? .unsaved : .saved, in: &state),
                     .run { [id = state.material.id] _ in
@@ -106,6 +122,11 @@ struct MaterialsDetailFeature {
                 guard !state.isOpening else { return .none }
                 state.isOpening = true
                 log.info("open file id=\(state.material.id)")
+                analytics.selectContent(
+                    contentType: ContentTypes.material,
+                    itemId: state.material.id,
+                    properties: ["action": "open"]
+                )
                 return .run { [material = state.material] send in
                     do {
                         let url = try await materialsRepository.open(material)
@@ -138,6 +159,11 @@ struct MaterialsDetailFeature {
             case .reportConfirmed:
                 guard let reason = state.reportReason else { return .none }
                 state.isReportPresented = false
+                analytics.selectContent(
+                    contentType: ContentTypes.material,
+                    itemId: state.material.id,
+                    properties: ["action": "report", "reason": reason.rawValue]
+                )
                 return .run { [id = state.material.id] send in
                     try await materialsRepository.report(id, reason)
                     await send(.reportSent)

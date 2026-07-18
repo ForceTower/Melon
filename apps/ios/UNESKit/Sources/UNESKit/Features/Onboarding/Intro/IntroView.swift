@@ -31,6 +31,7 @@ struct IntroView: View {
             }
         }
         .bareNavigationBar()
+        .task { await store.send(.task).finish() }
     }
 
     private var pageDots: some View {

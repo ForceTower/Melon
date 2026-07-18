@@ -27,6 +27,7 @@ struct EnrollmentReviewFeature {
     }
 
     enum Action: Equatable {
+        case task
         case removeTapped(Int64)
         case allowsOtherChanged(Int64, Bool)
         case waitlistChanged(Int64, Bool)
@@ -46,6 +47,7 @@ struct EnrollmentReviewFeature {
 
     @Dependency(\.enrollmentRepository) var enrollmentRepository
     @Dependency(\.dismiss) var dismiss
+    @Dependency(\.analytics) var analytics
 
     private let log = Log.scoped("EnrollmentReviewFeature")
 
@@ -54,8 +56,19 @@ struct EnrollmentReviewFeature {
     var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
+            case .task:
+                analytics.screen(Screens.enrollmentReview)
+                return .none
+
             case let .removeTapped(disciplineId):
                 guard state.session.canEdit else { return .none }
+                if let sectionId = state.session.pick(for: disciplineId)?.sectionId {
+                    analytics.selectContent(
+                        contentType: ContentTypes.offer,
+                        itemId: sectionId.description,
+                        properties: ["action": "remove"]
+                    )
+                }
                 state.$session.withLock { $0.remove(disciplineId: disciplineId) }
                 return .none
 
@@ -90,6 +103,7 @@ struct EnrollmentReviewFeature {
 
             case .submitSucceeded:
                 state.isSubmitting = false
+                analytics.selectContent(contentType: ContentTypes.enrollment, itemId: nil, properties: ["action": "submit"])
                 // The backend finalized the step; mirror it locally so the
                 // entry screen flips to "proposta enviada" without a refetch.
                 // A reopened session locks again — the new proposal replaced

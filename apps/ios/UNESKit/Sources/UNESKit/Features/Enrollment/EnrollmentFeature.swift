@@ -53,6 +53,7 @@ struct EnrollmentFeature {
     @Dependency(\.enrollmentRepository) var enrollmentRepository
     @Dependency(\.profileRepository) var profileRepository
     @Dependency(\.date.now) var now
+    @Dependency(\.analytics) var analytics
 
     private let log = Log.scoped("EnrollmentFeature")
 
@@ -62,6 +63,7 @@ struct EnrollmentFeature {
         Reduce { state, action in
             switch action {
             case .task:
+                analytics.screen(Screens.enrollment)
                 state.referenceDate = now
                 guard !state.hasLoaded else { return .none }
                 state.hasLoaded = true

@@ -33,6 +33,7 @@ struct ScheduleFeature {
 
     @Dependency(\.scheduleRepository) var scheduleRepository
     @Dependency(\.date.now) var now
+    @Dependency(\.analytics) var analytics
 
     private let log = Log.scoped("ScheduleFeature")
 
@@ -76,6 +77,13 @@ struct ScheduleFeature {
                 return .none
 
             case let .daySelected(index):
+                if let days = state.overview?.days, days.indices.contains(index) {
+                    analytics.selectContent(
+                        contentType: ContentTypes.scheduleDay,
+                        itemId: days[index].dayStamp,
+                        properties: ["action": "select", "day_index": index]
+                    )
+                }
                 // Picking today's own column just resumes following today.
                 state.selectedIndex = index == state.overview?.todayIndex(now: now) ? nil : index
                 return .none
@@ -86,6 +94,13 @@ struct ScheduleFeature {
 
             case let .classTapped(scheduleClass):
                 guard let semesterId = state.overview?.semesterId else { return .none }
+                if let offerId = scheduleClass.offerId {
+                    analytics.selectContent(
+                        contentType: ContentTypes.discipline,
+                        itemId: offerId,
+                        properties: ["code": scheduleClass.code]
+                    )
+                }
                 state.path.append(
                     .detail(DisciplineDetailFeature.State(
                         semesterId: semesterId,

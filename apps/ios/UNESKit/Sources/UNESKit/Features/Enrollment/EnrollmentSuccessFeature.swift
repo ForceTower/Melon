@@ -21,6 +21,7 @@ struct EnrollmentSuccessFeature {
     }
 
     enum Action: Equatable {
+        case task
         case doneTapped
         case delegate(Delegate)
 
@@ -29,9 +30,14 @@ struct EnrollmentSuccessFeature {
         }
     }
 
+    @Dependency(\.analytics) var analytics
+
     var body: some ReducerOf<Self> {
         Reduce { _, action in
             switch action {
+            case .task:
+                analytics.screen(Screens.enrollmentSuccess)
+                return .none
             case .doneTapped:
                 return .send(.delegate(.finished))
             case .delegate:

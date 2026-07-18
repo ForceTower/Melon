@@ -72,6 +72,7 @@ struct MessageDetailView: View {
             }
         }
         .inlineNavigationBar()
+        .task { await store.send(.task).finish() }
     }
 
     // MARK: Sender

@@ -52,6 +52,7 @@ struct EnrollmentOffersFeature {
     }
 
     enum Action: Equatable {
+        case task
         case queryChanged(String)
         case filterChanged(EnrollmentOfferFilter)
         case disciplineTapped(Int64)
@@ -66,9 +67,15 @@ struct EnrollmentOffersFeature {
         }
     }
 
+    @Dependency(\.analytics) var analytics
+
     var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
+            case .task:
+                analytics.screen(Screens.enrollmentOffers)
+                return .none
+
             case let .queryChanged(query):
                 state.query = query
                 return .none

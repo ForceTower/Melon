@@ -38,7 +38,7 @@ struct HomeFeature {
         case profileLoaded(Profile)
         case campusEventLoaded(CampusEvent?)
         case campusEventCardTapped
-        case disciplineTapped(id: String, name: String)
+        case disciplineTapped(id: String, name: String, offerId: String?, isNowClass: Bool)
         case seeScheduleTapped
         case seeAllClassesTapped
         case messagesWidgetTapped
@@ -60,6 +60,7 @@ struct HomeFeature {
     @Dependency(\.campusEventRepository) var campusEventRepository
     @Dependency(\.date.now) var now
     @Dependency(\.continuousClock) var clock
+    @Dependency(\.analytics) var analytics
 
     private let log = Log.scoped("HomeFeature")
 
@@ -123,11 +124,24 @@ struct HomeFeature {
 
             case .campusEventCardTapped:
                 guard let event = state.campusEvent else { return .none }
+                analytics.selectContent(contentType: ContentTypes.hub, itemId: "campus_event")
                 log.info("open campus event id=\(event.id)")
                 state.path.append(.campusEvent(CampusEventFeature.State(event: event)))
                 return .none
 
-            case let .disciplineTapped(id, name):
+            case let .disciplineTapped(id, name, offerId, isNowClass):
+                if isNowClass {
+                    analytics.selectContent(
+                        contentType: ContentTypes.tile,
+                        itemId: "now_class",
+                        properties: offerId.map { ["offer_id": $0] } ?? [:]
+                    )
+                } else if let offerId {
+                    // Android skips the event when the offer is unknown —
+                    // mirror that rather than mixing discipline ids into the
+                    // offer-id namespace.
+                    analytics.selectContent(contentType: ContentTypes.discipline, itemId: offerId)
+                }
                 guard let overview = state.overview, let semesterId = overview.semesterId else { return .none }
                 let colorIndex = overview.disciplines.first { $0.id == id }?.colorIndex ?? 0
                 state.path.append(.detail(DisciplineDetailFeature.State(
@@ -139,12 +153,14 @@ struct HomeFeature {
                 return .none
 
             case .seeScheduleTapped:
+                analytics.selectContent(contentType: ContentTypes.tile, itemId: "schedule")
                 return .send(.delegate(.openSchedule))
 
             case .seeAllClassesTapped:
                 return .send(.delegate(.openClasses))
 
             case .messagesWidgetTapped:
+                analytics.selectContent(contentType: ContentTypes.tile, itemId: "unread_messages")
                 return .send(.delegate(.openMessages))
 
             case .avatarTapped:

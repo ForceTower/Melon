@@ -43,6 +43,7 @@ struct MaterialsSavedFeature {
     }
 
     @Dependency(\.materialsRepository) var materialsRepository
+    @Dependency(\.analytics) var analytics
 
     private let log = Log.scoped("MaterialsSavedFeature")
 
@@ -52,6 +53,7 @@ struct MaterialsSavedFeature {
         Reduce { state, action in
             switch action {
             case .task:
+                analytics.screen(Screens.materialsSaved)
                 guard state.materials == nil else { return .none }
                 state.isLoading = true
                 state.loadFailed = false
@@ -79,6 +81,7 @@ struct MaterialsSavedFeature {
 
             case let .materialTapped(material):
                 log.info("open saved material id=\(material.id)")
+                analytics.selectContent(contentType: ContentTypes.material, itemId: material.id)
                 return .send(.delegate(.openMaterial(material)))
 
             case .delegate:

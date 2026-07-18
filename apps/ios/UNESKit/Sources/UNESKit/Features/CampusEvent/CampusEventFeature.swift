@@ -51,6 +51,7 @@ struct CampusEventFeature {
 
     @Dependency(\.campusEventRepository) var campusEventRepository
     @Dependency(\.date.now) var now
+    @Dependency(\.analytics) var analytics
 
     private let log = Log.scoped("CampusEventFeature")
 
@@ -60,6 +61,7 @@ struct CampusEventFeature {
         Reduce { state, action in
             switch action {
             case .task:
+                analytics.screen(Screens.campusEvent)
                 if state.selectedDay == nil {
                     state.selectedDay = state.event.currentDayDate(now: now)
                 }
@@ -101,6 +103,11 @@ struct CampusEventFeature {
                 return .none
 
             case let .dayTapped(day):
+                analytics.selectContent(
+                    contentType: ContentTypes.tile,
+                    itemId: "schedule_day",
+                    properties: ["date": CampusEventFormat.isoDay(for: day, in: state.event.timeZone)]
+                )
                 state.selectedDay = day
                 return .none
 
@@ -110,22 +117,27 @@ struct CampusEventFeature {
 
             case let .activityTapped(activity):
                 log.info("open activity id=\(activity.id)")
+                analytics.selectContent(contentType: ContentTypes.activity, itemId: activity.id)
                 return .send(.delegate(.openActivity(activity, state.event)))
 
             case .speakersTapped:
                 log.info("open speakers")
+                analytics.selectContent(contentType: ContentTypes.hub, itemId: "speakers")
                 return .send(.delegate(.openSpeakers(state.event)))
 
             case .workshopsTapped:
                 log.info("open workshops")
+                analytics.selectContent(contentType: ContentTypes.hub, itemId: "workshops")
                 return .send(.delegate(.openWorkshops(state.event)))
 
             case .venuesTapped:
                 log.info("open venues")
+                analytics.selectContent(contentType: ContentTypes.hub, itemId: "venues")
                 return .send(.delegate(.openVenues(state.event)))
 
             case .organizationsTapped:
                 log.info("open organizations")
+                analytics.selectContent(contentType: ContentTypes.hub, itemId: "organizations")
                 return .send(.delegate(.openOrganizations(state.event)))
 
             case .delegate:

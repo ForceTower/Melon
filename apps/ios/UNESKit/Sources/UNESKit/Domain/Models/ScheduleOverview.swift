@@ -34,6 +34,8 @@ struct ScheduleClass: Equatable, Sendable, Identifiable {
     var id: String
     var classId: String
     var disciplineId: String
+    /// Analytics identity for the discipline tap (cross-platform itemId).
+    var offerId: String? = nil
     var code: String
     var title: String
     /// Minutes into the day.

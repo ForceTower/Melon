@@ -63,11 +63,13 @@ struct CalendarFeature {
         case daySelected(Date)
         case eventTapped(CalendarEvent)
         case detailDismissed
+        case addToCalendarTapped(CalendarEvent)
     }
 
     @Dependency(\.eventsRepository) var eventsRepository
     @Dependency(\.calendar) var calendar
     @Dependency(\.date.now) var now
+    @Dependency(\.analytics) var analytics
 
     private let log = Log.scoped("CalendarFeature")
 
@@ -75,6 +77,7 @@ struct CalendarFeature {
         Reduce { state, action in
             switch action {
             case .task:
+                analytics.screen(Screens.calendar)
                 state.today = calendar.startOfDay(for: now)
                 if state.fetchedAt == nil {
                     state.selectedDay = state.today
@@ -116,11 +119,24 @@ struct CalendarFeature {
                 return .none
 
             case let .eventTapped(event):
+                analytics.selectContent(
+                    contentType: ContentTypes.calendarEvent,
+                    itemId: event.id,
+                    properties: ["category": event.category.analyticsValue]
+                )
                 state.detail = event
                 return .none
 
             case .detailDismissed:
                 state.detail = nil
+                return .none
+
+            case let .addToCalendarTapped(event):
+                analytics.selectContent(
+                    contentType: ContentTypes.calendarEvent,
+                    itemId: event.id,
+                    properties: ["action": "save"]
+                )
                 return .none
             }
         }

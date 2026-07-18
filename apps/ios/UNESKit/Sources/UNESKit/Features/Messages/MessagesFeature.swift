@@ -42,6 +42,7 @@ struct MessagesFeature {
 
     @Dependency(\.messagesRepository) var messagesRepository
     @Dependency(\.date.now) var now
+    @Dependency(\.analytics) var analytics
 
     private let log = Log.scoped("MessagesFeature")
 
@@ -84,6 +85,11 @@ struct MessagesFeature {
                 return .none
 
             case let .filterSelected(filter):
+                analytics.selectContent(
+                    contentType: ContentTypes.message,
+                    itemId: nil,
+                    properties: ["action": "filter", "filter": filter.rawValue]
+                )
                 state.filter = filter
                 state.revealLimit = Self.revealStep
                 return .none
@@ -94,6 +100,11 @@ struct MessagesFeature {
 
             case .markAllReadTapped:
                 guard var overview = state.overview, overview.unreadCount > 0 else { return .none }
+                analytics.selectContent(
+                    contentType: ContentTypes.message,
+                    itemId: nil,
+                    properties: ["action": "mark_all_read"]
+                )
                 log.info("mark all messages read")
                 // Optimistic: the digest settles instantly; the write's own
                 // mirror emission then confirms (or corrects) it.
@@ -113,6 +124,7 @@ struct MessagesFeature {
                 )
 
             case let .messageTapped(message):
+                analytics.selectContent(contentType: ContentTypes.message, itemId: message.id)
                 var opened = message
                 opened.unread = false
                 if let index = state.overview?.messages.firstIndex(where: { $0.id == message.id }) {

@@ -25,6 +25,7 @@ struct EnrollmentTimetableFeature {
     }
 
     enum Action: Equatable {
+        case task
         case reviewTapped
         case delegate(Delegate)
 
@@ -33,9 +34,14 @@ struct EnrollmentTimetableFeature {
         }
     }
 
+    @Dependency(\.analytics) var analytics
+
     var body: some ReducerOf<Self> {
         Reduce { _, action in
             switch action {
+            case .task:
+                analytics.screen(Screens.enrollmentTimetable)
+                return .none
             case .reviewTapped:
                 return .send(.delegate(.openReview))
             case .delegate:

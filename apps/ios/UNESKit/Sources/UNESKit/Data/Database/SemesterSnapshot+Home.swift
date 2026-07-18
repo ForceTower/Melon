@@ -21,6 +21,7 @@ extension SemesterSnapshot {
                     id: session.allocationId,
                     classId: session.classId,
                     disciplineId: index.discipline(forClass: session.classId)?.id ?? session.classId,
+                    offerId: index.offerId(forClass: session.classId),
                     startMinute: session.startMinute,
                     endMinute: session.endMinute,
                     startTime: minutesLabel(session.startMinute),
@@ -32,8 +33,10 @@ extension SemesterSnapshot {
                 )
             },
             disciplines: index.sortedDisciplines.enumerated().map { position, discipline in
-                DisciplineCard(
+                let offers = disciplineOffers.filter { $0.disciplineId == discipline.id }
+                return DisciplineCard(
                     id: discipline.id,
+                    offerId: offers.count == 1 ? offers.first?.id : nil,
                     code: index.displayCode(for: discipline),
                     name: discipline.name,
                     partial: index.partialGrade(forDiscipline: discipline.id),
@@ -98,6 +101,7 @@ extension SemesterSnapshot {
         let discipline = index.discipline(forClass: session.classId)
         return HomeHeroClass(
             disciplineId: discipline?.id,
+            offerId: index.offerId(forClass: session.classId),
             disciplineName: discipline?.name ?? "",
             startsAt: startsAt,
             endsAt: endMinute.flatMap { calendar.date(byAdding: .minute, value: $0, to: dayStart) },

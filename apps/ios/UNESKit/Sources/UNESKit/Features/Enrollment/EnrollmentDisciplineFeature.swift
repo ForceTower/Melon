@@ -27,6 +27,7 @@ struct EnrollmentDisciplineFeature {
     }
 
     enum Action: Equatable {
+        case task
         /// Selects the section — or removes it when it's the current pick.
         case sectionTapped(Int64)
         case allowsOtherChanged(Bool)
@@ -40,10 +41,15 @@ struct EnrollmentDisciplineFeature {
     }
 
     @Dependency(\.dismiss) var dismiss
+    @Dependency(\.analytics) var analytics
 
     var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
+            case .task:
+                analytics.screen(name: Screens.enrollmentDiscipline, properties: ["offer_id": state.disciplineId])
+                return .none
+
             case let .sectionTapped(sectionId):
                 // Comprovante mode — the cards are informational only until
                 // the student explicitly reopens the enrollment.
@@ -53,6 +59,11 @@ struct EnrollmentDisciplineFeature {
                 else { return .none }
 
                 if state.pick?.sectionId == sectionId {
+                    analytics.selectContent(
+                        contentType: ContentTypes.offer,
+                        itemId: sectionId.description,
+                        properties: ["action": "remove"]
+                    )
                     state.$session.withLock { $0.remove(disciplineId: discipline.id) }
                     return .none
                 }
@@ -62,6 +73,11 @@ struct EnrollmentDisciplineFeature {
                 let useQueue = state.session.window?.useQueue ?? false
                 guard !section.seats.isFull || useQueue else { return .none }
 
+                analytics.selectContent(
+                    contentType: ContentTypes.offer,
+                    itemId: sectionId.description,
+                    properties: ["action": "select"]
+                )
                 state.$session.withLock { $0.select(discipline, section: section) }
                 return .none
 

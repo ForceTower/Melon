@@ -10,10 +10,20 @@ struct CampusEventSpeakersFeature {
         let speakers: [CampusEventSpeaker]
     }
 
-    enum Action: Equatable {}
+    enum Action: Equatable {
+        case task
+    }
+
+    @Dependency(\.analytics) var analytics
 
     var body: some ReducerOf<Self> {
-        EmptyReducer()
+        Reduce { _, action in
+            switch action {
+            case .task:
+                analytics.screen(Screens.campusEventSpeakers)
+                return .none
+            }
+        }
     }
 }
 
@@ -46,6 +56,7 @@ struct CampusEventSpeakersView: View {
             .scrollIndicators(.hidden)
         }
         .navigationTitle(Text(.campusEventSpeakersTitle))
+        .task { await store.send(.task).finish() }
     }
 
     private func speakerCard(_ speaker: CampusEventSpeaker) -> some View {

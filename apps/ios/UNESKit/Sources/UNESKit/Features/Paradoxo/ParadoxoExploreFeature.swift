@@ -10,6 +10,7 @@ struct ParadoxoExploreFeature {
     }
 
     enum Action: Equatable {
+        case task
         case entryTapped(ParadoxoRankedEntry)
         case delegate(Delegate)
 
@@ -18,13 +19,29 @@ struct ParadoxoExploreFeature {
         }
     }
 
+    @Dependency(\.analytics) var analytics
+
     private let log = Log.scoped("ParadoxoExploreFeature")
 
     var body: some ReducerOf<Self> {
-        Reduce { _, action in
+        Reduce { state, action in
             switch action {
+            case .task:
+                // Matches the Android route's `kind.name` (Pascal-case), not the
+                // lowercase `rawValue` used for select_content — mirrors the
+                // Android screen_view payload verbatim.
+                analytics.screen(
+                    name: Screens.paradoxoExplore,
+                    properties: ["kind": state.ranking.kind.rawValue.capitalized]
+                )
+                return .none
             case let .entryTapped(entry):
                 log.info("open ranked entry kind=\(entry.ref.kind.rawValue) id=\(entry.ref.id)")
+                analytics.selectContent(
+                    contentType: ContentTypes.paradoxoEntity,
+                    itemId: entry.ref.id,
+                    properties: ["kind": entry.ref.kind.rawValue]
+                )
                 return .send(.delegate(.open(entry.ref, name: entry.name)))
             case .delegate:
                 return .none
@@ -70,6 +87,7 @@ struct ParadoxoExploreView: View {
         }
         .navigationTitle(Text(store.ranking.kind.title))
         .navigationBarTitleDisplayMode(.large)
+        .task { await store.send(.task).finish() }
     }
 }
 

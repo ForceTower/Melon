@@ -28,6 +28,7 @@ struct EnrollmentSuccessView: View {
         .navigationBarBackButtonHidden(true)
         .bareNavigationBar()
         .hiddenTabBar()
+        .task { await store.send(.task).finish() }
     }
 
     private var content: some View {

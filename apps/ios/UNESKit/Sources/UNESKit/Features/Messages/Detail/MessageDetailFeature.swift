@@ -9,6 +9,7 @@ struct MessageDetailFeature {
     }
 
     enum Action: Equatable {
+        case task
         case starTapped
         case delegate(Delegate)
 
@@ -18,16 +19,26 @@ struct MessageDetailFeature {
     }
 
     @Dependency(\.messagesRepository) var messagesRepository
+    @Dependency(\.analytics) var analytics
 
     private let log = Log.scoped("MessageDetailFeature")
 
     var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
+            case .task:
+                analytics.screen(name: Screens.messageDetail, properties: ["message_id": state.message.id])
+                return .none
+
             case .starTapped:
                 state.message.starred.toggle()
                 let id = state.message.id
                 let starred = state.message.starred
+                analytics.selectContent(
+                    contentType: ContentTypes.message,
+                    itemId: id,
+                    properties: ["action": starred ? "star" : "unstar"]
+                )
                 log.info("toggle message star id=\(id) starred=\(starred)")
                 return .merge(
                     .send(.delegate(.starredChanged(id: id, starred: starred))),

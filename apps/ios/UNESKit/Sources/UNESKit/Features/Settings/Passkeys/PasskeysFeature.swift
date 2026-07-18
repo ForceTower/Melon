@@ -90,6 +90,7 @@ struct PasskeysFeature {
     @Dependency(\.passkeyRepository) var passkeyRepository
     @Dependency(\.passkeyClient) var passkeyClient
     @Dependency(\.continuousClock) var clock
+    @Dependency(\.analytics) var analytics
 
     private let log = Log.scoped("PasskeysFeature")
 
@@ -103,6 +104,7 @@ struct PasskeysFeature {
         Reduce { state, action in
             switch action {
             case .task:
+                analytics.screen(Screens.passkeys)
                 return loadCredentials()
 
             case let .credentialsResponse(credentials):
@@ -130,6 +132,11 @@ struct PasskeysFeature {
 
             case .addContinueTapped:
                 guard !state.isCreating else { return .none }
+                analytics.selectContent(
+                    contentType: ContentTypes.passkey,
+                    itemId: nil,
+                    properties: ["action": "create"]
+                )
                 state.isCreating = true
                 state.createError = nil
                 let target = state.addTarget
@@ -206,6 +213,11 @@ struct PasskeysFeature {
                 let name = state.renameText.trimmingCharacters(in: .whitespacesAndNewlines)
                 state.isEditingName = false
                 guard !name.isEmpty, name != detail.deviceName else { return .none }
+                analytics.selectContent(
+                    contentType: ContentTypes.passkey,
+                    itemId: detail.id,
+                    properties: ["action": "rename"]
+                )
                 state.isMutating = true
                 state.mutationError = nil
                 log.info("rename passkey")
@@ -242,6 +254,11 @@ struct PasskeysFeature {
 
             case .deleteConfirmed:
                 guard let target = state.pendingDelete else { return .none }
+                analytics.selectContent(
+                    contentType: ContentTypes.passkey,
+                    itemId: target.id,
+                    properties: ["action": "revoke"]
+                )
                 state.pendingDelete = nil
                 state.isMutating = true
                 state.mutationError = nil

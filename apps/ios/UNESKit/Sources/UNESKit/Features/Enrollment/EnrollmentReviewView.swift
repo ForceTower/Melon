@@ -30,6 +30,7 @@ struct EnrollmentReviewView: View {
         }
         .inlineNavigationBar()
         .hiddenTabBar()
+        .task { await store.send(.task).finish() }
         .alert($store.scope(state: \.alert, action: \.alert))
         .safeAreaInset(edge: .bottom) {
             if !store.isReadonly {

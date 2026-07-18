@@ -76,7 +76,17 @@ extension AnalyticsClient: DependencyKey {
 }
 
 extension AnalyticsClient: TestDependencyKey {
-    public static let testValue = AnalyticsClient()
+    /// No-op rather than unimplemented: analytics fires from dozens of reducer
+    /// paths as passive telemetry, so forcing an override in every test adds
+    /// noise without assertion value. Tests that care spy on the endpoints
+    /// explicitly.
+    public static let testValue = AnalyticsClient(
+        screen: { _, _ in },
+        selectContent: { _, _, _ in },
+        register: { _ in },
+        identify: { _, _ in },
+        reset: {}
+    )
     public static let previewValue = AnalyticsClient(
         screen: { _, _ in },
         selectContent: { _, _, _ in },

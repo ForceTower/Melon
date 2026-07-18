@@ -25,6 +25,7 @@ struct LicensesView: View {
             }
         }
         .inlineNavigationBar()
+        .task { await store.send(.task).finish() }
     }
 
     private var content: some View {

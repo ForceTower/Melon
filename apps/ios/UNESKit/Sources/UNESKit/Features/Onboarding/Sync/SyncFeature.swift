@@ -63,6 +63,7 @@ struct SyncFeature {
     @Dependency(\.push) var push
     @Dependency(\.continuousClock) var clock
     @Dependency(\.date.now) var now
+    @Dependency(\.analytics) var analytics
 
     private let log = Log.scoped("SyncFeature")
 
@@ -71,6 +72,7 @@ struct SyncFeature {
             switch action {
             case .task:
                 guard state.completedSteps == 0 else { return .none }
+                analytics.screen(Screens.sync)
                 log.info("onboarding sync start")
                 return .run { [log] send in
                     do {

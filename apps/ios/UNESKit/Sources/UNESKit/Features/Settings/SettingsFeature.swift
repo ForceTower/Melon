@@ -74,6 +74,7 @@ struct SettingsFeature {
     @Dependency(\.localAuth) var localAuth
     @Dependency(\.pasteboard) var pasteboard
     @Dependency(\.continuousClock) var clock
+    @Dependency(\.analytics) var analytics
 
     private let log = Log.scoped("SettingsFeature")
 
@@ -98,6 +99,7 @@ struct SettingsFeature {
         Reduce { state, action in
             switch action {
             case .task:
+                analytics.screen(Screens.settings)
                 if state.userName == nil {
                     state.userName = sessionStore.current()?.user.name
                 }
@@ -124,11 +126,21 @@ struct SettingsFeature {
                 return .none
 
             case let .themeSelected(theme):
+                analytics.selectContent(
+                    contentType: ContentTypes.setting,
+                    itemId: "theme",
+                    properties: ["action": "select", "value": theme.rawValue]
+                )
                 state.$theme.withLock { $0 = theme }
                 return .none
 
             case let .spoilerSelected(spoiler):
                 guard spoiler != state.settings.gradeSpoiler else { return .none }
+                analytics.selectContent(
+                    contentType: ContentTypes.setting,
+                    itemId: "grade_spoiler",
+                    properties: ["action": "select", "value": spoiler.analyticsValue]
+                )
                 let revert = SettingsChange.gradeSpoiler(state.settings.gradeSpoiler)
                 state.settings.gradeSpoiler = spoiler
                 log.info("set grade spoiler \(spoiler)")
@@ -136,6 +148,11 @@ struct SettingsFeature {
 
             case let .notificationToggled(toggle):
                 let isOn = !state.settings[keyPath: toggle.keyPath]
+                analytics.selectContent(
+                    contentType: ContentTypes.setting,
+                    itemId: toggle.analyticsKey,
+                    properties: ["action": "toggle", "value": isOn]
+                )
                 state.settings[keyPath: toggle.keyPath] = isOn
                 log.info("set notification toggle \(toggle) isOn=\(isOn)")
                 return save(
@@ -226,6 +243,11 @@ struct SettingsFeature {
                 }
 
             case .revealAuthenticated:
+                analytics.selectContent(
+                    contentType: ContentTypes.setting,
+                    itemId: "credentials",
+                    properties: ["action": "reveal"]
+                )
                 state.isPasswordRevealed = true
                 return .run { send in
                     try await clock.sleep(for: Self.revealWindow)
@@ -325,5 +347,35 @@ struct SettingsFeature {
             await send(.settingsUpdateFailed(revert: revert))
         }
         .cancellable(id: CancelID.save(change.field), cancelInFlight: true)
+    }
+}
+
+/// The analytics `item_id` for a notification switch, mirroring Android's
+/// `NotifToggle.analyticsKey` verbatim.
+private extension NotificationToggle {
+    var analyticsKey: String {
+        switch self {
+        case .messageBroadcast: "notif_msg_broadcast"
+        case .messageClass: "notif_msg_class"
+        case .messageDirect: "notif_msg_direct"
+        case .gradePosted: "notif_grade_posted"
+        case .gradeChanged: "notif_grade_changed"
+        case .gradeDateChanged: "notif_grade_date_changed"
+        case .classLocation: "notif_class_location"
+        case .classMaterial: "notif_class_material"
+        case .classSubject: "notif_class_subject"
+        }
+    }
+}
+
+/// The analytics `value`, mirroring Android's `SpoilerMode.name.lowercase()`
+/// (`Value`/`Comment`/`Posted`) rather than this enum's own case names.
+private extension GradeSpoiler {
+    var analyticsValue: String {
+        switch self {
+        case .value: "value"
+        case .summary: "comment"
+        case .discreet: "posted"
+        }
     }
 }

@@ -61,6 +61,7 @@ extension SemesterSnapshot {
 
             return DisciplineSummary(
                 id: discipline.id,
+                offerId: offers.count == 1 ? offers.first?.id : nil,
                 code: displayCode(for: discipline),
                 name: discipline.name,
                 teacherName: enrollments

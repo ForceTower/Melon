@@ -50,6 +50,7 @@ struct ParadoxoFeature {
     }
 
     @Dependency(\.paradoxoRepository) var paradoxoRepository
+    @Dependency(\.analytics) var analytics
 
     private let log = Log.scoped("ParadoxoFeature")
 
@@ -60,6 +61,7 @@ struct ParadoxoFeature {
         Reduce { state, action in
             switch action {
             case .task:
+                analytics.screen(Screens.paradoxo)
                 guard state.overview == nil else { return .none }
                 state.isLoading = true
                 state.loadFailed = false
@@ -99,10 +101,16 @@ struct ParadoxoFeature {
                     return .none
                 }
                 log.info("open explore kind=\(kind.rawValue)")
+                analytics.selectContent(contentType: ContentTypes.paradoxoExplore, itemId: kind.rawValue)
                 return .send(.delegate(.openExplore(ranking)))
 
             case let .myDisciplineTapped(summary):
                 log.info("open my discipline id=\(summary.id)")
+                analytics.selectContent(
+                    contentType: ContentTypes.paradoxoEntity,
+                    itemId: summary.id,
+                    properties: ["kind": ParadoxoEntityKind.discipline.rawValue]
+                )
                 return .send(.delegate(.openDiscipline(id: summary.id, name: summary.name)))
 
             case let .searchResultTapped(entry):
@@ -116,7 +124,12 @@ struct ParadoxoFeature {
     }
 
     private func open(_ ref: ParadoxoEntityRef, name: String?) -> Effect<Action> {
-        switch ref.kind {
+        analytics.selectContent(
+            contentType: ContentTypes.paradoxoEntity,
+            itemId: ref.id,
+            properties: ["kind": ref.kind.rawValue]
+        )
+        return switch ref.kind {
         case .discipline: .send(.delegate(.openDiscipline(id: ref.id, name: name)))
         case .teacher: .send(.delegate(.openTeacher(id: ref.id, name: name)))
         }

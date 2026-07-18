@@ -41,6 +41,10 @@ struct PendingSemester: Equatable, Sendable, Identifiable {
 /// merged into a single entry, grades deduplicated across groups.
 struct DisciplineSummary: Equatable, Sendable, Identifiable {
     var id: String
+    /// Analytics identity when the discipline has a single offer; nil for
+    /// split (theory/practical) disciplines, where no one offer represents
+    /// the merged card.
+    var offerId: String? = nil
     var code: String
     var name: String
     var teacherName: String?

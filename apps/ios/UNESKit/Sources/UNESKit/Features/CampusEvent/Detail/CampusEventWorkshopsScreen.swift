@@ -9,10 +9,20 @@ struct CampusEventWorkshopsFeature {
         let workshops: [CampusEventWorkshop]
     }
 
-    enum Action: Equatable {}
+    enum Action: Equatable {
+        case task
+    }
+
+    @Dependency(\.analytics) var analytics
 
     var body: some ReducerOf<Self> {
-        EmptyReducer()
+        Reduce { _, action in
+            switch action {
+            case .task:
+                analytics.screen(Screens.campusEventWorkshops)
+                return .none
+            }
+        }
     }
 }
 
@@ -52,6 +62,7 @@ struct CampusEventWorkshopsView: View {
             .scrollIndicators(.hidden)
         }
         .navigationTitle(Text(.campusEventWorkshopsTitle))
+        .task { await store.send(.task).finish() }
     }
 
     /// Freshmen first, then veterans, then shared — skipping empty groups.

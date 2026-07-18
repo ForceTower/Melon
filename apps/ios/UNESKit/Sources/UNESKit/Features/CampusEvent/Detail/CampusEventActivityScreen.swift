@@ -12,6 +12,7 @@ struct CampusEventActivityFeature {
     }
 
     enum Action: Equatable {
+        case task
         case venueTapped
         case delegate(Delegate)
 
@@ -20,13 +21,19 @@ struct CampusEventActivityFeature {
         }
     }
 
+    @Dependency(\.analytics) var analytics
+
     private let log = Log.scoped("CampusEventActivityFeature")
 
     var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
+            case .task:
+                analytics.screen(name: Screens.campusEventActivity, properties: ["activity_id": state.activity.id])
+                return .none
             case .venueTapped:
                 log.info("open venues from activity id=\(state.activity.id)")
+                analytics.selectContent(contentType: ContentTypes.hub, itemId: "venues")
                 return .send(.delegate(.openVenues(state.event)))
             case .delegate:
                 return .none
@@ -80,6 +87,7 @@ struct CampusEventActivityView: View {
         }
         .navigationTitle(Text(activity.category.label))
         .inlineNavigationBar()
+        .task { await store.send(.task).finish() }
     }
 
     // MARK: Hero

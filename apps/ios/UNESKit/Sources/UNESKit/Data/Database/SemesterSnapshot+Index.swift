@@ -43,6 +43,10 @@ struct SnapshotIndex {
             .flatMap { disciplinesById[$0.disciplineId] }
     }
 
+    func offerId(forClass classId: String) -> String? {
+        classesById[classId]?.offerId
+    }
+
     func teacherName(forClass classId: String) -> String? {
         teacherIdByClass[classId].flatMap { teachersById[$0]?.name }
     }

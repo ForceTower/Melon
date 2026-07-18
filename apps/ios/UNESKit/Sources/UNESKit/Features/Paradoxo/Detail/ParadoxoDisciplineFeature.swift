@@ -29,6 +29,7 @@ struct ParadoxoDisciplineFeature {
     }
 
     @Dependency(\.paradoxoRepository) var paradoxoRepository
+    @Dependency(\.analytics) var analytics
 
     private let log = Log.scoped("ParadoxoDisciplineFeature")
 
@@ -38,6 +39,7 @@ struct ParadoxoDisciplineFeature {
         Reduce { state, action in
             switch action {
             case .task:
+                analytics.screen(name: Screens.paradoxoDiscipline, properties: ["entity_id": state.disciplineId])
                 guard state.details == nil else { return .none }
                 state.isLoading = true
                 state.loadFailed = false
@@ -66,6 +68,11 @@ struct ParadoxoDisciplineFeature {
 
             case let .teacherPageTapped(teacher):
                 log.info("open teacher from discipline id=\(teacher.id)")
+                analytics.selectContent(
+                    contentType: ContentTypes.paradoxoEntity,
+                    itemId: teacher.id,
+                    properties: ["kind": ParadoxoEntityKind.teacher.rawValue]
+                )
                 return .send(.delegate(.openTeacher(id: teacher.id, name: teacher.name)))
 
             case .delegate:

@@ -10,6 +10,7 @@ struct CalendarEventSheet: View {
     let event: CalendarEvent
     let today: Date
     var onClose: () -> Void
+    var onAddToCalendar: () -> Void = {}
 
     @State private var isCalendarEditPresented = false
 
@@ -159,6 +160,7 @@ struct CalendarEventSheet: View {
     private var addToCalendarButton: some View {
         #if canImport(EventKitUI)
         Button {
+            onAddToCalendar()
             isCalendarEditPresented = true
         } label: {
             HStack(spacing: 7) {

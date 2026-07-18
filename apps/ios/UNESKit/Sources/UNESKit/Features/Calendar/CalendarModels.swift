@@ -88,6 +88,16 @@ enum CalendarCategory: CaseIterable, Equatable, Sendable {
         }
     }
 
+    /// Mirrors Android's `CalendarMath.categorize(event).name.lowercase()`
+    /// analytics property value.
+    var analyticsValue: String {
+        switch self {
+        case .deadline: "deadline"
+        case .exam: "exam"
+        case .holiday: "holiday"
+        }
+    }
+
     /// coral / violet / tangerine, lifted for dark surfaces.
     var color: Color {
         switch self {

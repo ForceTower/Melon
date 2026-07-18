@@ -51,6 +51,15 @@ enum CampusEventFormat {
         return "\(time(for: start, in: timeZone)) – \(time(for: end, in: timeZone))"
     }
 
+    /// "2025-08-04" — plain ISO calendar day (event zone), used as an
+    /// analytics property so it matches the Android `LocalDate.toString()`.
+    static func isoDay(for date: Date, in timeZone: TimeZone) -> String {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = timeZone
+        let components = calendar.dateComponents([.year, .month, .day], from: date)
+        return String(format: "%04d-%02d-%02d", components.year ?? 0, components.month ?? 0, components.day ?? 0)
+    }
+
     private static func style(_ base: Date.FormatStyle, _ timeZone: TimeZone) -> Date.FormatStyle {
         var style = base
         style.locale = locale

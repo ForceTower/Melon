@@ -12,10 +12,20 @@ struct CampusEventVenuesFeature {
         var venues: [CampusEventVenue] { event.venues }
     }
 
-    enum Action: Equatable {}
+    enum Action: Equatable {
+        case task
+    }
+
+    @Dependency(\.analytics) var analytics
 
     var body: some ReducerOf<Self> {
-        EmptyReducer()
+        Reduce { _, action in
+            switch action {
+            case .task:
+                analytics.screen(Screens.campusEventVenues)
+                return .none
+            }
+        }
     }
 }
 
@@ -62,6 +72,7 @@ struct CampusEventVenuesView: View {
             .scrollIndicators(.hidden)
         }
         .navigationTitle(Text(.campusEventVenuesTitle))
+        .task { await store.send(.task).finish() }
     }
 
     private var mappedVenues: [CampusEventVenue] {

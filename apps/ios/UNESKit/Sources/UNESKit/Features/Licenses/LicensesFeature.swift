@@ -36,6 +36,7 @@ struct LicensesFeature {
     }
 
     enum Action: Equatable {
+        case task
         case queryChanged(String)
         case familySelected(LicenseFamily?)
         case packageToggled(LicensePackage.ID)
@@ -48,12 +49,17 @@ struct LicensesFeature {
     @Dependency(\.pasteboard) var pasteboard
     @Dependency(\.openURL) var openURL
     @Dependency(\.continuousClock) var clock
+    @Dependency(\.analytics) var analytics
 
     private enum CancelID { case copyFeedback }
 
     var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
+            case .task:
+                analytics.screen(Screens.licenses)
+                return .none
+
             case let .queryChanged(query):
                 state.query = query
                 return .none

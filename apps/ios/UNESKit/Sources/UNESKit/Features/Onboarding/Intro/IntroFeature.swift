@@ -10,6 +10,7 @@ struct IntroFeature {
     }
 
     enum Action: Equatable {
+        case task
         case slideChanged(Int)
         case continueTapped
         case skipTapped
@@ -21,12 +22,17 @@ struct IntroFeature {
     }
 
     @Dependency(\.push) var push
+    @Dependency(\.analytics) var analytics
 
     private let log = Log.scoped("IntroFeature")
 
     var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
+            case .task:
+                analytics.screen(Screens.intro)
+                return .none
+
             case let .slideChanged(index):
                 state.slide = index
                 return .none
