@@ -44,33 +44,37 @@ struct CampusEventHomeCard: View {
             .foregroundStyle(.white.opacity(0.9))
             .frame(maxWidth: .infinity, alignment: .leading)
 
+            VStack(alignment: .leading, spacing: 0) {
+                if let edition = event.edition {
+                    Text(edition)
+                        .font(.system(size: 13, weight: .bold))
+                        .tracking(1.82)
+                        .foregroundStyle(.white.opacity(0.72))
+                }
+                Text(event.name)
+                    .font(.system(size: 36, weight: .heavy))
+                    .tracking(-1.44)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.6)
+                    .foregroundStyle(.white)
+                    .padding(.top, 2)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.top, 16)
+
             HStack(alignment: .bottom, spacing: 14) {
                 VStack(alignment: .leading, spacing: 0) {
-                    if let edition = event.edition {
-                        Text(edition)
-                            .font(.system(size: 13, weight: .bold))
-                            .tracking(1.82)
-                            .foregroundStyle(.white.opacity(0.72))
-                    }
-                    Text(event.name)
-                        .font(.system(size: 40, weight: .heavy))
-                        .tracking(-1.6)
-                        .lineLimit(2)
-                        .minimumScaleFactor(0.6)
-                        .foregroundStyle(.white)
-                        .padding(.top, 2)
                     if let tagline = event.tagline {
                         Text(tagline)
                             .font(.system(size: 13.5, weight: .medium))
                             .foregroundStyle(.white.opacity(0.82))
-                            .padding(.top, 8)
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
 
                 rightBlock(for: phase, now: now)
             }
-            .padding(.top, 16)
+            .padding(.top, 8)
 
             footer(for: phase)
                 .padding(.top, 18)
