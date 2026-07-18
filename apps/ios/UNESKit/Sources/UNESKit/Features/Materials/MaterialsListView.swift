@@ -155,6 +155,9 @@ struct MaterialsListView: View {
             .padding(.horizontal, 20)
         }
         .scrollIndicators(.hidden)
+        // The row is exactly chip height, so without this the chip shadows
+        // clip at the scroll bounds.
+        .scrollClipDisabled()
         .padding(.horizontal, -16)
     }
 
