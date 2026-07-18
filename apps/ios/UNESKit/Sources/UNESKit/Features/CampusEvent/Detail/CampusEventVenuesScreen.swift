@@ -1,7 +1,7 @@
 import ComposableArchitecture
 import SwiftUI
 
-/// Where the event happens: a schematic campus map (when the venues carry
+/// Where the event happens: an illustrated campus map (when the venues carry
 /// coordinates) over the venue list. Pin selection is view-only state.
 @Reducer
 struct CampusEventVenuesFeature {
@@ -19,10 +19,18 @@ struct CampusEventVenuesFeature {
     }
 }
 
+private let campusMapAspectRatio: CGFloat = 1368 / 1150
+private let campusMapMaxZoom: CGFloat = 3
+private let campusMapDoubleTapZoom: CGFloat = 2
+
 struct CampusEventVenuesView: View {
     let store: StoreOf<CampusEventVenuesFeature>
 
     @State private var selectedId: CampusEventVenue.ID?
+    @State private var mapZoom: CGFloat = 1
+    @State private var mapPan: CGPoint = .zero
+    @State private var pinchStart: (zoom: CGFloat, pan: CGPoint)?
+    @State private var dragStartPan: CGPoint?
 
     var body: some View {
         ZStack(alignment: .top) {
@@ -65,32 +73,39 @@ struct CampusEventVenuesView: View {
         return campusEventPalette[index % campusEventPalette.count]
     }
 
-    // MARK: Schematic map
+    // MARK: Campus map
 
     private var map: some View {
         GeometryReader { proxy in
-            ZStack {
-                mapBackdrop
+            let size = proxy.size
+            ZStack(alignment: .topLeading) {
+                Image("CampusMap", bundle: .module)
+                    .resizable()
+                    .frame(width: size.width, height: size.height)
+                    .scaleEffect(mapZoom, anchor: .topLeading)
+                    .offset(x: mapPan.x, y: mapPan.y)
+                    .allowsHitTesting(false)
 
+                // Pins follow the map transform but keep their own size.
                 ForEach(mappedVenues) { venue in
                     pin(for: venue)
                         .position(
-                            x: proxy.size.width * (venue.mapX ?? 0) / 100,
-                            y: proxy.size.height * (venue.mapY ?? 0) / 100
+                            x: size.width * (venue.mapX ?? 0) / 100 * mapZoom + mapPan.x,
+                            y: size.height * (venue.mapY ?? 0) / 100 * mapZoom + mapPan.y
                         )
                 }
             }
+            .contentShape(Rectangle())
+            .gesture(doubleTapGesture(in: size))
+            #if !os(watchOS)
+            .gesture(pinchGesture(in: size))
+            #endif
+            // Only claims drags from the scroll view while zoomed in.
+            .highPriorityGesture(panGesture(in: size), isEnabled: mapZoom > 1)
         }
-        .frame(height: 268)
-        .background(
-            LinearGradient.css(
-                stops: [
-                    .init(color: UNESColor.surface2, location: 0),
-                    .init(color: UNESColor.surface3, location: 1),
-                ],
-                angle: 160
-            )
-        )
+        // Keeps the card at the image's aspect ratio so the venues'
+        // percentage pin coordinates land on the right map features.
+        .aspectRatio(campusMapAspectRatio, contentMode: .fit)
         .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
         .overlay {
             RoundedRectangle(cornerRadius: 24, style: .continuous)
@@ -99,42 +114,74 @@ struct CampusEventVenuesView: View {
         .shadow(color: Color(hex: 0x141020, opacity: 0.08), radius: 12, y: 8)
     }
 
-    /// Blueprint grid plus a few soft "building" blocks — decorative only;
-    /// the pins carry the information.
-    private var mapBackdrop: some View {
-        ZStack {
-            Canvas { context, size in
-                var grid = Path()
-                for x in stride(from: CGFloat.zero, through: size.width, by: 40) {
-                    grid.move(to: CGPoint(x: x, y: 0))
-                    grid.addLine(to: CGPoint(x: x, y: size.height))
-                }
-                for y in stride(from: CGFloat.zero, through: size.height, by: 40) {
-                    grid.move(to: CGPoint(x: 0, y: y))
-                    grid.addLine(to: CGPoint(x: size.width, y: y))
-                }
-                context.stroke(grid, with: .color(UNESColor.line.opacity(0.5)), lineWidth: 1)
+    #if !os(watchOS)
+    private func pinchGesture(in size: CGSize) -> some Gesture {
+        MagnifyGesture()
+            .onChanged { value in
+                let start = pinchStart ?? (mapZoom, mapPan)
+                pinchStart = start
+                let zoom = min(max(start.zoom * value.magnification, 1), campusMapMaxZoom)
+                // Keep the map point under the gesture anchor fixed while zooming.
+                let anchor = CGPoint(
+                    x: value.startAnchor.x * size.width,
+                    y: value.startAnchor.y * size.height
+                )
+                mapZoom = zoom
+                mapPan = clampedPan(
+                    CGPoint(
+                        x: anchor.x - (anchor.x - start.pan.x) * (zoom / start.zoom),
+                        y: anchor.y - (anchor.y - start.pan.y) * (zoom / start.zoom)
+                    ),
+                    zoom: zoom,
+                    in: size
+                )
             }
+            .onEnded { _ in pinchStart = nil }
+    }
+    #endif
 
-            GeometryReader { proxy in
-                let blocks: [(x: Double, y: Double, w: Double, h: Double)] = [
-                    (8, 14, 38, 30), (56, 10, 34, 40), (12, 52, 32, 34), (58, 50, 34, 38),
-                ]
-                ForEach(Array(blocks.enumerated()), id: \.offset) { _, block in
-                    RoundedRectangle(cornerRadius: 16, style: .continuous)
-                        .fill(UNESColor.card.opacity(0.55))
-                        .frame(
-                            width: proxy.size.width * block.w / 100,
-                            height: proxy.size.height * block.h / 100
-                        )
-                        .offset(
-                            x: proxy.size.width * block.x / 100,
-                            y: proxy.size.height * block.y / 100
-                        )
+    private func doubleTapGesture(in size: CGSize) -> some Gesture {
+        SpatialTapGesture(count: 2)
+            .onEnded { value in
+                let zoom: CGFloat = mapZoom > 1 ? 1 : campusMapDoubleTapZoom
+                let pan = clampedPan(
+                    CGPoint(
+                        x: value.location.x - (value.location.x - mapPan.x) * (zoom / mapZoom),
+                        y: value.location.y - (value.location.y - mapPan.y) * (zoom / mapZoom)
+                    ),
+                    zoom: zoom,
+                    in: size
+                )
+                withAnimation(UNESMotion.ease()) {
+                    mapZoom = zoom
+                    mapPan = pan
                 }
             }
-        }
-        .allowsHitTesting(false)
+    }
+
+    private func panGesture(in size: CGSize) -> some Gesture {
+        DragGesture()
+            .onChanged { value in
+                let start = dragStartPan ?? mapPan
+                dragStartPan = start
+                mapPan = clampedPan(
+                    CGPoint(
+                        x: start.x + value.translation.width,
+                        y: start.y + value.translation.height
+                    ),
+                    zoom: mapZoom,
+                    in: size
+                )
+            }
+            .onEnded { _ in dragStartPan = nil }
+    }
+
+    /// Keeps the scaled map covering the whole viewport (no gaps at the edges).
+    private func clampedPan(_ pan: CGPoint, zoom: CGFloat, in size: CGSize) -> CGPoint {
+        CGPoint(
+            x: min(max(pan.x, size.width * (1 - zoom)), 0),
+            y: min(max(pan.y, size.height * (1 - zoom)), 0)
+        )
     }
 
     private func pin(for venue: CampusEventVenue) -> some View {
