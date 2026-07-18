@@ -108,47 +108,51 @@ private fun EyebrowRow(phase: CampusEventPhase) {
     }
 }
 
+// The phase block shares a row with the tagline only, so the title keeps the
+// full card width instead of wrapping around the block's reserved column.
 @Composable
 private fun IdentityRow(event: CampusEvent, phase: CampusEventPhase, now: Instant) {
     val onHero = MaterialTheme.melon.fixed.onHero
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.Bottom,
-        horizontalArrangement = Arrangement.spacedBy(14.dp),
-    ) {
-        Column(modifier = Modifier.weight(1f)) {
-            if (event.edition != null) {
-                Text(
-                    text = event.edition.orEmpty(),
-                    style = MaterialTheme.typography.labelSmall.copy(
-                        fontSize = 13.sp,
-                        letterSpacing = 1.82.sp,
-                    ),
-                    color = onHero.copy(alpha = 0.72f),
-                )
-            }
+    Column(modifier = Modifier.fillMaxWidth()) {
+        if (event.edition != null) {
             Text(
-                text = event.name,
-                style = MaterialTheme.typography.displayMedium.copy(
-                    fontSize = 28.sp,
-                    lineHeight = 30.sp,
-                    fontWeight = FontWeight.ExtraBold,
+                text = event.edition.orEmpty(),
+                style = MaterialTheme.typography.labelSmall.copy(
+                    fontSize = 13.sp,
+                    letterSpacing = 1.82.sp,
                 ),
-                color = onHero,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.padding(top = 2.dp),
+                color = onHero.copy(alpha = 0.72f),
             )
-            if (event.tagline != null) {
-                Text(
-                    text = event.tagline.orEmpty(),
-                    style = MaterialTheme.typography.bodySmall.copy(fontSize = 13.5.sp),
-                    color = onHero.copy(alpha = 0.82f),
-                    modifier = Modifier.padding(top = 8.dp),
-                )
-            }
         }
-        PhaseBlock(event, phase, now)
+        Text(
+            text = event.name,
+            style = MaterialTheme.typography.displayMedium.copy(
+                fontSize = 28.sp,
+                lineHeight = 30.sp,
+                fontWeight = FontWeight.ExtraBold,
+            ),
+            color = onHero,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.padding(top = 2.dp),
+        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.Bottom,
+            horizontalArrangement = Arrangement.spacedBy(14.dp),
+        ) {
+            Box(modifier = Modifier.weight(1f)) {
+                if (event.tagline != null) {
+                    Text(
+                        text = event.tagline.orEmpty(),
+                        style = MaterialTheme.typography.bodySmall.copy(fontSize = 13.5.sp),
+                        color = onHero.copy(alpha = 0.82f),
+                        modifier = Modifier.padding(top = 8.dp),
+                    )
+                }
+            }
+            PhaseBlock(event, phase, now)
+        }
     }
 }
 
