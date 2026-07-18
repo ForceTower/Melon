@@ -52,7 +52,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
     /// builds opt out so development runs don't pollute the dashboards.
     private func configurePostHog() {
         let config = PostHogConfig(
-            apiKey: "phc_uhYjeNJg9RpdEknMM8mNxdRqeiEtr4jqEm6zsv9TETqu",
+            projectToken: "phc_uhYjeNJg9RpdEknMM8mNxdRqeiEtr4jqEm6zsv9TETqu",
             host: "https://a.forcetower.dev"
         )
         config.sessionReplay = false
