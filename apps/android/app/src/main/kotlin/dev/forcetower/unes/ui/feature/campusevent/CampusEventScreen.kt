@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -907,136 +906,148 @@ private fun ActivityRow(
     val isPast = state == CampusEventActivityState.Past
     val ok = MaterialTheme.melon.status.ok
 
+    val railWidth = if (isNow) 4.dp else 3.dp
     Column {
-        Row(
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(IntrinsicSize.Min)
                 .clickable(onClick = onTap)
                 .background(if (isNow) tone.copy(alpha = 0.07f) else Color.Transparent)
-                .alpha(if (isPast) 0.55f else 1f)
-                .padding(start = 14.dp, top = 13.dp, end = 12.dp, bottom = 13.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                .alpha(if (isPast) 0.55f else 1f),
         ) {
-            Column(
-                modifier = Modifier.width(timeColumnWidth).padding(top = 2.dp),
-                horizontalAlignment = Alignment.End,
-                verticalArrangement = Arrangement.spacedBy(2.dp),
-            ) {
-                Text(
-                    text = CampusEventFormat.time(activity.startsAt, zone),
-                    style = MaterialTheme.typography.titleSmall.copy(fontSize = 13.5.sp, fontWeight = FontWeight.Bold),
-                    color = MaterialTheme.colorScheme.onBackground,
-                    maxLines = 1,
-                )
-                if (activity.endsAt != null) {
-                    Text(
-                        text = CampusEventFormat.time(activity.endsAt!!, zone),
-                        style = MaterialTheme.typography.bodySmall.copy(fontSize = 11.5.sp),
-                        color = MaterialTheme.colorScheme.outline,
-                        maxLines = 1,
-                    )
-                }
-            }
-
-            // Category rail — stretches the full row like the dc design's
-            // `align-items: stretch` bar.
+            // Category rail — spans the row's final height like the dc
+            // design's `align-items: stretch` bar. Drawn as an overlay
+            // because `height(IntrinsicSize.Min)` under-measured the row
+            // when the badge FlowRow wrapped, clipping the content.
             Box(
                 modifier = Modifier
-                    .width(if (isNow) 4.dp else 3.dp)
-                    .fillMaxHeight()
-                    .clip(RoundedCornerShape(2.dp))
-                    .background(tone),
-            )
-
-            Column(modifier = Modifier.weight(1f)) {
-                // Badges wrap like the design's `flex-wrap` row — three chips
-                // (category + audience + AGORA) can overflow narrow rows.
-                FlowRow(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalArrangement = Arrangement.spacedBy(4.dp),
-                    itemVerticalAlignment = Alignment.CenterVertically,
-                ) {
-                    CampusEventCategoryPill(category = activity.category)
-                    CampusEventAudienceChip(audience = activity.audience)
-                    if (isNow) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(5.dp),
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(100.dp))
-                                .background(ok.copy(alpha = 0.12f))
-                                .padding(horizontal = 8.dp, vertical = 3.dp),
-                        ) {
-                            CampusEventLiveDot(size = 6.dp, color = ok)
-                            Text(
-                                text = stringResource(R.string.campus_event_hub_now).uppercase(),
-                                style = MaterialTheme.typography.labelSmall.copy(
-                                    fontSize = 11.sp,
-                                    letterSpacing = 0.sp,
-                                ),
-                                color = ok,
-                            )
-                        }
-                    }
-                    if (isPast) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(4.dp),
-                        ) {
-                            Icon(
-                                imageVector = Icons.Rounded.Check,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.outline,
-                                modifier = Modifier.size(11.dp),
-                            )
-                            Text(
-                                text = stringResource(R.string.campus_event_row_done),
-                                style = MaterialTheme.typography.labelSmall.copy(
-                                    fontSize = 11.sp,
-                                    letterSpacing = 0.sp,
-                                ),
-                                color = MaterialTheme.colorScheme.outline,
-                            )
-                        }
-                    }
-                }
-                Text(
-                    text = activity.title,
-                    style = MaterialTheme.typography.titleSmall.copy(fontSize = 15.5.sp),
-                    color = MaterialTheme.colorScheme.onBackground,
-                    textDecoration = if (isPast) TextDecoration.LineThrough else TextDecoration.None,
-                    modifier = Modifier.padding(top = 7.dp),
+                    .matchParentSize()
+                    .padding(start = 14.dp + timeColumnWidth + 12.dp, top = 13.dp, bottom = 13.dp),
+            ) {
+                Box(
+                    modifier = Modifier
+                        .width(railWidth)
+                        .fillMaxHeight()
+                        .clip(RoundedCornerShape(2.dp))
+                        .background(tone),
                 )
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(6.dp),
-                    modifier = Modifier.padding(top = 5.dp),
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.LocationOn,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.outline,
-                        modifier = Modifier.size(14.dp),
-                    )
-                    Text(
-                        text = activity.venueName,
-                        style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.5.sp),
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                }
             }
+            Row(
+                modifier = Modifier.padding(start = 14.dp, top = 13.dp, end = 12.dp, bottom = 13.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                Column(
+                    modifier = Modifier.width(timeColumnWidth).padding(top = 2.dp),
+                    horizontalAlignment = Alignment.End,
+                    verticalArrangement = Arrangement.spacedBy(2.dp),
+                ) {
+                    Text(
+                        text = CampusEventFormat.time(activity.startsAt, zone),
+                        style = MaterialTheme.typography.titleSmall.copy(fontSize = 13.5.sp, fontWeight = FontWeight.Bold),
+                        color = MaterialTheme.colorScheme.onBackground,
+                        maxLines = 1,
+                    )
+                    if (activity.endsAt != null) {
+                        Text(
+                            text = CampusEventFormat.time(activity.endsAt!!, zone),
+                            style = MaterialTheme.typography.bodySmall.copy(fontSize = 11.5.sp),
+                            color = MaterialTheme.colorScheme.outline,
+                            maxLines = 1,
+                        )
+                    }
+                }
 
-            Icon(
-                imageVector = Icons.Rounded.ChevronRight,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.outline,
-                modifier = Modifier
-                    .size(18.dp)
-                    .align(Alignment.CenterVertically),
-            )
+                Spacer(Modifier.width(railWidth))
+
+                Column(modifier = Modifier.weight(1f)) {
+                    // Badges wrap like the design's `flex-wrap` row — three chips
+                    // (category + audience + AGORA) can overflow narrow rows.
+                    FlowRow(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(4.dp),
+                        itemVerticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        CampusEventCategoryPill(category = activity.category)
+                        CampusEventAudienceChip(audience = activity.audience)
+                        if (isNow) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(5.dp),
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(100.dp))
+                                    .background(ok.copy(alpha = 0.12f))
+                                    .padding(horizontal = 8.dp, vertical = 3.dp),
+                            ) {
+                                CampusEventLiveDot(size = 6.dp, color = ok)
+                                Text(
+                                    text = stringResource(R.string.campus_event_hub_now).uppercase(),
+                                    style = MaterialTheme.typography.labelSmall.copy(
+                                        fontSize = 11.sp,
+                                        letterSpacing = 0.sp,
+                                    ),
+                                    color = ok,
+                                )
+                            }
+                        }
+                        if (isPast) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Rounded.Check,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.outline,
+                                    modifier = Modifier.size(11.dp),
+                                )
+                                Text(
+                                    text = stringResource(R.string.campus_event_row_done),
+                                    style = MaterialTheme.typography.labelSmall.copy(
+                                        fontSize = 11.sp,
+                                        letterSpacing = 0.sp,
+                                    ),
+                                    color = MaterialTheme.colorScheme.outline,
+                                )
+                            }
+                        }
+                    }
+                    Text(
+                        text = activity.title,
+                        style = MaterialTheme.typography.titleSmall.copy(fontSize = 15.5.sp),
+                        color = MaterialTheme.colorScheme.onBackground,
+                        textDecoration = if (isPast) TextDecoration.LineThrough else TextDecoration.None,
+                        modifier = Modifier.padding(top = 7.dp),
+                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                        modifier = Modifier.padding(top = 5.dp),
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.LocationOn,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.outline,
+                            modifier = Modifier.size(14.dp),
+                        )
+                        Text(
+                            text = activity.venueName,
+                            style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.5.sp),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    }
+                }
+
+                Icon(
+                    imageVector = Icons.Rounded.ChevronRight,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.outline,
+                    modifier = Modifier
+                        .size(18.dp)
+                        .align(Alignment.CenterVertically),
+                )
+            }
         }
         if (!isLast) {
             // Row leading padding + time column + gap — keeps the divider
