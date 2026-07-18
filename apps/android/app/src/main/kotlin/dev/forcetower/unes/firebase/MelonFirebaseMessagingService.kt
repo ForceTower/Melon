@@ -20,10 +20,10 @@ import timber.log.Timber
 // so the onNewToken it demands would be dead code.
 @SuppressLint("MissingFirebaseInstanceTokenRefresh")
 @AndroidEntryPoint
-class MelonFirebaseMessagingService : FirebaseMessagingService() {
+internal class MelonFirebaseMessagingService : FirebaseMessagingService() {
 
-    @Inject internal lateinit var identifierStore: PushIdentifierStore
-    @Inject internal lateinit var pushRegistrar: PushRegistrar
+    @Inject lateinit var identifierStore: PushIdentifierStore
+    @Inject lateinit var pushRegistrar: PushRegistrar
     @Inject @ApplicationScope lateinit var applicationScope: CoroutineScope
 
     override fun onRegistered(installationId: String) {

@@ -23,26 +23,25 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @HiltAndroidApp
-class MelonApp : Application() {
+internal class MelonApp : Application() {
+    @Inject
+    lateinit var featureFlags: FeatureFlags
 
     @Inject
-    internal lateinit var featureFlags: FeatureFlags
+    lateinit var foregroundSignal: ForegroundSignal
 
     @Inject
-    internal lateinit var foregroundSignal: ForegroundSignal
+    lateinit var sessionStore: SessionStore
 
     @Inject
-    internal lateinit var sessionStore: SessionStore
+    lateinit var analytics: Analytics
 
     @Inject
-    internal lateinit var analytics: Analytics
-
-    @Inject
-    internal lateinit var machineIdSource: MachineIdSource
+    lateinit var machineIdSource: MachineIdSource
 
     @Inject
     @ApplicationScope
-    internal lateinit var applicationScope: CoroutineScope
+    lateinit var applicationScope: CoroutineScope
 
     override fun onCreate() {
         super.onCreate()
