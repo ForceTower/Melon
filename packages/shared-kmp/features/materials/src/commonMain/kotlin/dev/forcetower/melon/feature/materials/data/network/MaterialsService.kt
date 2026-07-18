@@ -75,6 +75,19 @@ internal class MaterialsService(
             )
         }
 
+    // One material by id — the deeplink hydration path, where no shelf
+    // context exists yet. A payload with unknown enums decodes but maps to
+    // null, which collapses to Connection like any other unusable response.
+    suspend fun material(id: String): Outcome<Material, MaterialsError> =
+        when (val outcome = envelope<MaterialBody> {
+            client.get("api/materials/material") { parameter("id", id) }
+        }) {
+            is Outcome.Ok -> outcome.value.toDomain()
+                ?.let { Outcome.Ok(it) }
+                ?: Outcome.Err(MaterialsError.Connection)
+            is Outcome.Err -> outcome
+        }
+
     suspend fun saved(): Outcome<List<Material>, MaterialsError> =
         envelope<MaterialsListBody> { client.get("api/materials/saved") }
             .map { body -> body.materials.mapNotNull { it.toDomain() } }

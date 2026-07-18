@@ -73,12 +73,9 @@ internal sealed interface ConnectedRoute : NavKey {
     ) : ConnectedRoute
     // Material detail (or the moderation-status variant for own uploads).
     // The full payload is handed off in-memory through the shared
-    // `MaterialsDetailViewModel.Seed`; the ids only re-hydrate it from the
-    // discipline shelf after process death.
-    @Serializable data class MaterialsDetail(
-        val materialId: String,
-        val disciplineId: String,
-    ) : ConnectedRoute
+    // `MaterialsDetailViewModel.Seed`; the id re-hydrates it via
+    // `api/materials/material` after process death or a deeplink entry.
+    @Serializable data class MaterialsDetail(val materialId: String) : ConnectedRoute
     // "Salvos" — the server-side bookmark shelf, from the hub hero counter.
     @Serializable data object MaterialsSaved : ConnectedRoute
     // Matrícula — the enrollment flow, pushed from the Me shortcut grid.

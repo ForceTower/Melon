@@ -192,4 +192,6 @@ dependencies {
 
     // PostHog — product analytics, routed to our first-party proxy (a.forcetower.dev).
     implementation(libs.posthog.android)
+
+    testImplementation(kotlin("test-junit"))
 }

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -91,6 +92,12 @@ fun ConnectedScreen(
     LifecycleEventEffect(Lifecycle.Event.ON_START) { vm.onAppeared() }
 
     val navigator = rememberConnectedNavigator(initial = ConnectedTab.Overview)
+    // Applies buffered deeplink targets (notification taps, VIEW intents) —
+    // including one that arrived before this shell existed (cold start,
+    // mid-onboarding): the handler's conflated channel holds it until here.
+    LaunchedEffect(navigator) {
+        vm.deepLinks.collect { target -> navigator.open(target) }
+    }
     // Live unread count piggybacks on `MessagesViewModel`. Without nav3
     // viewmodel-decoration, `hiltViewModel()` resolves to the activity
     // store, so this instance is shared with the one inside the Messages
@@ -446,12 +453,7 @@ fun ConnectedScreen(
                         onBack = { navigator.goBack() },
                         onOpenMaterial = { material ->
                             materialsDetailVm.onIntent(MaterialsDetailIntent.Seed(material))
-                            navigator.navigate(
-                                ConnectedRoute.MaterialsDetail(
-                                    materialId = material.id,
-                                    disciplineId = material.discipline.id,
-                                ),
-                            )
+                            navigator.navigate(ConnectedRoute.MaterialsDetail(material.id))
                         },
                         bottomInset = bottomInset,
                     )
@@ -459,7 +461,6 @@ fun ConnectedScreen(
                 entry<ConnectedRoute.MaterialsDetail> { route ->
                     MaterialsDetailScreen(
                         materialId = route.materialId,
-                        disciplineId = route.disciplineId,
                         onBack = { navigator.goBack() },
                         bottomInset = bottomInset,
                     )
@@ -469,12 +470,7 @@ fun ConnectedScreen(
                         onBack = { navigator.goBack() },
                         onOpenMaterial = { material ->
                             materialsDetailVm.onIntent(MaterialsDetailIntent.Seed(material))
-                            navigator.navigate(
-                                ConnectedRoute.MaterialsDetail(
-                                    materialId = material.id,
-                                    disciplineId = material.discipline.id,
-                                ),
-                            )
+                            navigator.navigate(ConnectedRoute.MaterialsDetail(material.id))
                         },
                         bottomInset = bottomInset,
                     )

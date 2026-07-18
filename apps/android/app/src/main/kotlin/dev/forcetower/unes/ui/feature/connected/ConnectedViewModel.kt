@@ -28,8 +28,14 @@ internal class ConnectedViewModel @Inject constructor(
     private val backfillMirror: BackfillMirrorUseCase,
     private val pingActivity: PingActivityUseCase,
     private val widgetSnapshotPublisher: WidgetSnapshotPublisher,
+    deepLinkHandler: DeepLinkHandler,
     logger: Logger,
 ) : ViewModel() {
+    // Deeplink targets buffered since the notification tap (or VIEW intent).
+    // Surfaces here because the screen already holds this VM — the handler
+    // itself stays an activity-agnostic singleton.
+    val deepLinks = deepLinkHandler.targets
+
     private val log = logger.withTag("ConnectedViewModel")
     private val refreshMutex = Mutex()
     private val pingMutex = Mutex()

@@ -104,7 +104,6 @@ import java.io.File
 @Composable
 internal fun MaterialsDetailScreen(
     materialId: String,
-    disciplineId: String,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
     bottomInset: Dp = 0.dp,
@@ -115,9 +114,9 @@ internal fun MaterialsDetailScreen(
     val context = LocalContext.current
 
     // The row tap seeded the material in-memory (`Seed`); this only fetches
-    // after process death or a stale shared-VM payload.
+    // after process death, a deeplink entry, or a stale shared-VM payload.
     LaunchedEffect(materialId) {
-        vm.onIntent(MaterialsDetailIntent.Ensure(materialId, disciplineId))
+        vm.onIntent(MaterialsDetailIntent.Ensure(materialId))
     }
     vm.effects.collectAsEffect { effect ->
         when (effect) {

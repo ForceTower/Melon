@@ -30,6 +30,7 @@ import dev.forcetower.melon.feature.disciplines.domain.usecase.ObserveDiscipline
 import dev.forcetower.melon.feature.enrollment.domain.usecase.GetEnrollmentOffersUseCase
 import dev.forcetower.melon.feature.enrollment.domain.usecase.GetEnrollmentWindowUseCase
 import dev.forcetower.melon.feature.enrollment.domain.usecase.SubmitEnrollmentUseCase
+import dev.forcetower.melon.feature.materials.domain.usecase.GetMaterialUseCase
 import dev.forcetower.melon.feature.materials.domain.usecase.GetMaterialsDisciplineUseCase
 import dev.forcetower.melon.feature.materials.domain.usecase.GetMaterialsOverviewUseCase
 import dev.forcetower.melon.feature.materials.domain.usecase.GetSavedMaterialsUseCase
@@ -192,6 +193,7 @@ interface UmbrellaGraph {
     // screen; submit runs the presigned-slot upload transaction.
     val getMaterialsOverviewUseCase: GetMaterialsOverviewUseCase
     val getMaterialsDisciplineUseCase: GetMaterialsDisciplineUseCase
+    val getMaterialUseCase: GetMaterialUseCase
     val getSavedMaterialsUseCase: GetSavedMaterialsUseCase
     val setMaterialUsefulUseCase: SetMaterialUsefulUseCase
     val setMaterialSavedUseCase: SetMaterialSavedUseCase

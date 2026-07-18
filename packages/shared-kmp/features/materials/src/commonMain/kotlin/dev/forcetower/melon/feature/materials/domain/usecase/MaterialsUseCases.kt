@@ -35,6 +35,17 @@ class GetMaterialsDisciplineUseCase internal constructor(
     ): Outcome<MaterialsDisciplineDetails, MaterialsError> = service.discipline(disciplineId)
 }
 
+// One material by id — hydrates the detail screen from a `unes://materials/<id>`
+// deeplink, where neither a seed nor a shelf exists yet.
+@Inject
+class GetMaterialUseCase internal constructor(
+    private val service: MaterialsService,
+) {
+    suspend operator fun invoke(
+        materialId: String,
+    ): Outcome<Material, MaterialsError> = service.material(materialId)
+}
+
 // The server-side bookmark shelf, in server order.
 @Inject
 class GetSavedMaterialsUseCase internal constructor(

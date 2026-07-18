@@ -9,7 +9,7 @@ import dev.forcetower.melon.feature.materials.domain.model.Material
 import dev.forcetower.melon.feature.materials.domain.model.MaterialFileKind
 import dev.forcetower.melon.feature.materials.domain.model.MaterialReportReason
 import dev.forcetower.melon.feature.materials.domain.model.MaterialStatus
-import dev.forcetower.melon.feature.materials.domain.usecase.GetMaterialsDisciplineUseCase
+import dev.forcetower.melon.feature.materials.domain.usecase.GetMaterialUseCase
 import dev.forcetower.melon.feature.materials.domain.usecase.OpenMaterialUseCase
 import dev.forcetower.melon.feature.materials.domain.usecase.ReportMaterialUseCase
 import dev.forcetower.melon.feature.materials.domain.usecase.SetMaterialSavedUseCase
@@ -29,8 +29,8 @@ import kotlinx.coroutines.withContext
 
 // Drives the material detail (and its moderation-status variant for the
 // student's own pending/rejected uploads). The material itself travels
-// in-memory from the list tap (`Seed`); `Ensure` re-hydrates it from the
-// discipline shelf when the seed is gone (process death restore). Útil/Salvar
+// in-memory from the list tap (`Seed`); `Ensure` re-hydrates it by id when
+// the seed is gone (process death restore, deeplink entry). Útil/Salvar
 // are optimistic with rollback — mirrors iOS `MaterialsDetailFeature`.
 internal data class MaterialsDetailUiState(
     val material: Material? = null,
@@ -51,9 +51,9 @@ internal sealed interface MaterialsDetailIntent : UiIntent {
     // In-memory handoff fired by the list/saved row tap before navigation.
     data class Seed(val material: Material) : MaterialsDetailIntent
 
-    // Route-driven fallback: refetch the discipline shelf and pick the
-    // material by id when there's no seed (or a different one).
-    data class Ensure(val materialId: String, val disciplineId: String) : MaterialsDetailIntent
+    // Route-driven fallback: fetch the material by id when there's no seed
+    // (or a different one).
+    data class Ensure(val materialId: String) : MaterialsDetailIntent
 
     data object ToggleUseful : MaterialsDetailIntent
     data object ToggleSave : MaterialsDetailIntent
@@ -73,7 +73,7 @@ internal sealed interface MaterialsDetailEffect : UiEffect {
 @HiltViewModel
 internal class MaterialsDetailViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val getDiscipline: GetMaterialsDisciplineUseCase,
+    private val getMaterial: GetMaterialUseCase,
     private val setUseful: SetMaterialUsefulUseCase,
     private val setSaved: SetMaterialSavedUseCase,
     private val reportMaterial: ReportMaterialUseCase,
@@ -107,13 +107,8 @@ internal class MaterialsDetailViewModel @Inject constructor(
         if (currentState.material?.id == intent.materialId) return
         viewModelScope.launch {
             setState { MaterialsDetailUiState(isLoading = true) }
-            when (val outcome = getDiscipline(intent.disciplineId)) {
-                is Outcome.Ok -> {
-                    val material = outcome.value.materials.firstOrNull { it.id == intent.materialId }
-                    setState {
-                        copy(material = material, isLoading = false, loadFailed = material == null)
-                    }
-                }
+            when (val outcome = getMaterial(intent.materialId)) {
+                is Outcome.Ok -> setState { copy(material = outcome.value, isLoading = false) }
                 is Outcome.Err -> setState { copy(isLoading = false, loadFailed = true) }
             }
         }

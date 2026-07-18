@@ -29,6 +29,7 @@ import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarBorder
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -116,6 +117,46 @@ internal fun MessageDetailRoute(
             onAppear = { vm.onIntent(MessagesIntent.MarkRead(id)) },
             bottomInset = bottomInset,
         )
+    } else {
+        // Deeplink race: the push usually lands before the device has synced
+        // the message it points at. `ConnectedViewModel.onAppeared` is already
+        // pulling; once the inbox flow emits the id, the branch above takes
+        // over. Until then, back chrome + a spinner instead of a blank frame.
+        MessageDetailLoading(onBack = onBack)
+    }
+}
+
+@Composable
+private fun MessageDetailLoading(onBack: () -> Unit, modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)),
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .windowInsetsPadding(WindowInsets.statusBars)
+                .padding(horizontal = 8.dp)
+                .padding(top = 6.dp),
+        ) {
+            IconButton(onClick = onBack) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = stringResource(R.string.messages_back_label),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = 48.dp),
+            contentAlignment = Alignment.Center,
+        ) {
+            CircularProgressIndicator()
+        }
     }
 }
 
