@@ -2,6 +2,8 @@ package dev.forcetower.unes.ui.feature.campusevent
 
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.forcetower.melon.core.analytics.Analytics
+import dev.forcetower.melon.core.analytics.ContentTypes
 import dev.forcetower.melon.feature.campusevent.domain.model.CampusEvent
 import dev.forcetower.melon.feature.campusevent.domain.model.CampusEventAudience
 import dev.forcetower.melon.feature.campusevent.domain.usecase.ObserveCampusEventUseCase
@@ -48,6 +50,7 @@ internal class CampusEventViewModel @Inject constructor(
     observeCampusEvent: ObserveCampusEventUseCase,
     private val refreshCampusEvent: RefreshCampusEventUseCase,
     private val welcomeStore: CampusEventWelcomeStore,
+    private val analytics: Analytics,
 ) : MviViewModel<CampusEventUiState, CampusEventIntent, CampusEventEffect>(CampusEventUiState()) {
 
     init {
@@ -85,7 +88,14 @@ internal class CampusEventViewModel @Inject constructor(
 
     override fun onIntent(intent: CampusEventIntent) {
         when (intent) {
-            is CampusEventIntent.DayTapped -> setState { copy(selectedDay = intent.day) }
+            is CampusEventIntent.DayTapped -> {
+                analytics.selectContent(
+                    contentType = ContentTypes.TILE,
+                    itemId = "schedule_day",
+                    properties = mapOf("date" to intent.day.toString()),
+                )
+                setState { copy(selectedDay = intent.day) }
+            }
             is CampusEventIntent.FilterChanged -> setState { copy(filter = intent.filter) }
             CampusEventIntent.WelcomeContinueTapped -> {
                 val eventId = currentState.event?.id
@@ -102,5 +112,13 @@ internal class CampusEventViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun trackHubOpen(hub: String) {
+        analytics.selectContent(contentType = ContentTypes.HUB, itemId = hub)
+    }
+
+    fun trackActivityOpen(activityId: String) {
+        analytics.selectContent(contentType = ContentTypes.ACTIVITY, itemId = activityId)
     }
 }

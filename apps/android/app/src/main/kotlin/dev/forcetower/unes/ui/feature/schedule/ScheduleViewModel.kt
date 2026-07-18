@@ -2,6 +2,8 @@ package dev.forcetower.unes.ui.feature.schedule
 
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.forcetower.melon.core.analytics.Analytics
+import dev.forcetower.melon.core.analytics.ContentTypes
 import dev.forcetower.melon.feature.schedule.domain.usecase.ObserveScheduleWeekUseCase
 import dev.forcetower.unes.mvi.MviViewModel
 import dev.forcetower.unes.mvi.UiEffect
@@ -55,6 +57,7 @@ internal sealed interface ScheduleEffect : UiEffect
 @HiltViewModel
 internal class ScheduleViewModel @Inject constructor(
     observeScheduleWeek: ObserveScheduleWeekUseCase,
+    private val analytics: Analytics,
 ) : MviViewModel<ScheduleUiState, ScheduleIntent, ScheduleEffect>(ScheduleUiState()) {
 
     init {
@@ -64,6 +67,24 @@ internal class ScheduleViewModel @Inject constructor(
     }
 
     override fun onIntent(intent: ScheduleIntent) = Unit
+
+    fun trackOpenDiscipline(cls: ScheduleClass) {
+        val offerId = cls.offerId ?: return
+        analytics.selectContent(
+            contentType = ContentTypes.DISCIPLINE,
+            itemId = offerId,
+            properties = mapOf("code" to cls.code),
+        )
+    }
+
+    fun trackDaySelect(dateIso: String?, dayIndex: Int) {
+        if (dateIso == null) return
+        analytics.selectContent(
+            contentType = ContentTypes.SCHEDULE_DAY,
+            itemId = dateIso,
+            properties = mapOf("action" to "select", "day_index" to dayIndex),
+        )
+    }
 }
 
 // ISO "yyyy-MM-dd" → day-of-month. 0 if malformed (defensive only — upstream

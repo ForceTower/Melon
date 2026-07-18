@@ -183,6 +183,7 @@ internal fun ParadoxoExploreScreen(
                                 entry = entry,
                                 showDivider = index > 0,
                                 onClick = {
+                                    vm.trackEntityOpen(entry.ref)
                                     when (val ref = entry.ref) {
                                         is ParadoxoRef.Discipline ->
                                             onOpenDiscipline(ref.id, entry.name)

@@ -116,10 +116,15 @@ internal fun ParadoxoScreen(
     BackHandler(enabled = searching) { closeSearch() }
 
     val openRef: (ParadoxoRef, String) -> Unit = { ref, name ->
+        vm.trackEntityOpen(ref)
         when (ref) {
             is ParadoxoRef.Discipline -> onOpenDiscipline(ref.id, name)
             is ParadoxoRef.Teacher -> onOpenTeacher(ref.id, name)
         }
+    }
+    val trackedOpenExplore: (ParadoxoExploreKind) -> Unit = { kind ->
+        vm.trackExploreOpen(kind)
+        onOpenExplore(kind)
     }
 
     Column(
@@ -143,7 +148,7 @@ internal fun ParadoxoScreen(
                 onRetry = { vm.onIntent(ParadoxoIntent.Retry) },
                 onOpenSearch = { searching = true },
                 onOpen = openRef,
-                onOpenExplore = onOpenExplore,
+                onOpenExplore = trackedOpenExplore,
                 bottomInset = bottomInset,
             )
         }

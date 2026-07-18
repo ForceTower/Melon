@@ -124,7 +124,10 @@ internal fun OverviewScreen(
             if (campusEvent != null) {
                 CampusEventHomeCard(
                     event = campusEvent,
-                    onOpen = onOpenCampusEvent,
+                    onOpen = {
+                        vm.trackCampusEventTap()
+                        onOpenCampusEvent()
+                    },
                     modifier = Modifier.scaleInOnAppear(delayMs = 60, fromScale = 0.97f),
                 )
                 Spacer(Modifier.height(22.dp))
@@ -137,6 +140,7 @@ internal fun OverviewScreen(
                     tomorrowEyebrow = state.tomorrowEyebrow,
                     isEvening = state.greetingKind == GreetingKind.Evening,
                     onOpenClassDetails = { klass ->
+                        vm.trackNowClassTap(klass.offerId)
                         onOpenDiscipline(
                             OverviewDiscipline(
                                 code = klass.code,
@@ -162,6 +166,7 @@ internal fun OverviewScreen(
                 items = today,
                 weekdayLabel = state.weekdayLabel,
                 onOpenClass = { item ->
+                    vm.trackDisciplineTap(item.offerId)
                     onOpenDiscipline(
                         OverviewDiscipline(
                             code = item.code,
@@ -170,7 +175,10 @@ internal fun OverviewScreen(
                         ),
                     )
                 },
-                onOpenSchedule = onOpenSchedule,
+                onOpenSchedule = {
+                    vm.trackScheduleTileTap()
+                    onOpenSchedule()
+                },
                 modifier = Modifier.fadeUpOnAppear(delayMs = 640),
             )
             Spacer(Modifier.height(22.dp))
@@ -178,7 +186,10 @@ internal fun OverviewScreen(
             if (messages != null) {
                 MessagesPreview(
                     data = messages,
-                    onOpenMessages = onOpenMessages,
+                    onOpenMessages = {
+                        vm.trackMessagesTileTap()
+                        onOpenMessages()
+                    },
                     modifier = Modifier.fadeUpOnAppear(delayMs = 920),
                 )
             }

@@ -61,6 +61,7 @@ import java.util.Locale
 internal fun CalEventSheet(
     event: CalendarEvent,
     onDismiss: () -> Unit,
+    onAddToCalendar: (CalendarEvent) -> Unit = {},
 ) {
     val category = remember(event) { CalendarMath.categorize(event) }
     val accent = category.color()
@@ -82,7 +83,7 @@ internal fun CalEventSheet(
                 FixedBadge()
             }
             Spacer(modifier = Modifier.height(18.dp))
-            AddToCalendarButton(event = event, accent = accent)
+            AddToCalendarButton(event = event, accent = accent, onAddToCalendar = onAddToCalendar)
         }
     }
 }
@@ -276,10 +277,15 @@ private fun FixedBadge() {
 }
 
 @Composable
-private fun AddToCalendarButton(event: CalendarEvent, accent: androidx.compose.ui.graphics.Color) {
+private fun AddToCalendarButton(
+    event: CalendarEvent,
+    accent: androidx.compose.ui.graphics.Color,
+    onAddToCalendar: (CalendarEvent) -> Unit,
+) {
     val context = LocalContext.current
     Button(
         onClick = {
+            onAddToCalendar(event)
             val zone = ZoneId.systemDefault()
             val begin = event.start.atStartOfDay(zone).toInstant().toEpochMilli()
             val end = event.endOrStart.plusDays(1).atStartOfDay(zone).toInstant().toEpochMilli()

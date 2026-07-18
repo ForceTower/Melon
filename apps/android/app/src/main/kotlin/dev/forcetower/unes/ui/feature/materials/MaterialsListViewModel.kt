@@ -2,6 +2,8 @@ package dev.forcetower.unes.ui.feature.materials
 
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.forcetower.melon.core.analytics.Analytics
+import dev.forcetower.melon.core.analytics.ContentTypes
 import dev.forcetower.melon.core.common.Outcome
 import dev.forcetower.melon.feature.materials.domain.model.Material
 import dev.forcetower.melon.feature.materials.domain.model.MaterialType
@@ -77,6 +79,7 @@ internal sealed interface MaterialsListEffect : UiEffect
 @HiltViewModel
 internal class MaterialsListViewModel @Inject constructor(
     private val getDiscipline: GetMaterialsDisciplineUseCase,
+    private val analytics: Analytics,
 ) : MviViewModel<MaterialsListUiState, MaterialsListIntent, MaterialsListEffect>(
     MaterialsListUiState(),
 ) {
@@ -89,6 +92,10 @@ internal class MaterialsListViewModel @Inject constructor(
             is MaterialsListIntent.QueryChanged -> setState { copy(query = intent.query) }
             is MaterialsListIntent.FilterChanged -> setState { copy(typeFilter = intent.filter) }
         }
+    }
+
+    fun trackMaterialOpen(materialId: String) {
+        analytics.selectContent(contentType = ContentTypes.MATERIAL, itemId = materialId)
     }
 
     private fun open(intent: MaterialsListIntent.Open) {

@@ -2,6 +2,8 @@ package dev.forcetower.unes.ui.feature.messages
 
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.forcetower.melon.core.analytics.Analytics
+import dev.forcetower.melon.core.analytics.ContentTypes
 import dev.forcetower.melon.feature.messages.domain.usecase.MarkAllMessagesAsReadUseCase
 import dev.forcetower.melon.feature.messages.domain.usecase.MarkMessageAsReadUseCase
 import dev.forcetower.melon.feature.messages.domain.usecase.ObserveMessageDetailUseCase
@@ -53,6 +55,7 @@ internal class MessagesViewModel @Inject constructor(
     private val markReadUseCase: MarkMessageAsReadUseCase,
     private val markAllReadUseCase: MarkAllMessagesAsReadUseCase,
     private val toggleStarUseCase: ToggleMessageStarUseCase,
+    private val analytics: Analytics,
 ) : MviViewModel<MessagesUiState, MessagesIntent, MessagesEffect>(MessagesUiState()) {
 
     private var detailJob: Job? = null
@@ -69,7 +72,7 @@ internal class MessagesViewModel @Inject constructor(
         when (intent) {
             is MessagesIntent.OpenMessage -> open(intent.id, intent.seed)
             MessagesIntent.CloseMessage -> close()
-            is MessagesIntent.SetFilter -> setState { copy(filter = intent.filter) }
+            is MessagesIntent.SetFilter -> setFilter(intent.filter)
             is MessagesIntent.MarkRead -> markRead(intent.id)
             MessagesIntent.MarkAllRead -> markAllRead()
             is MessagesIntent.ToggleStar -> toggleStar(intent.id)
@@ -77,9 +80,18 @@ internal class MessagesViewModel @Inject constructor(
     }
 
     private fun open(id: String, seed: KmpMessageFeedItem) {
+        analytics.selectContent(contentType = ContentTypes.MESSAGE, itemId = id)
         setState { copy(openMessageId = id, openSeed = seed, openDetail = null) }
         startDetail(id)
         markRead(id)
+    }
+
+    private fun setFilter(filter: MessageFilter) {
+        analytics.selectContent(
+            contentType = ContentTypes.MESSAGE,
+            properties = mapOf("action" to "filter", "filter" to filter.analyticsValue),
+        )
+        setState { copy(filter = filter) }
     }
 
     private fun close() {
@@ -102,10 +114,27 @@ internal class MessagesViewModel @Inject constructor(
     }
 
     private fun markAllRead() {
+        analytics.selectContent(contentType = ContentTypes.MESSAGE, properties = mapOf("action" to "mark_all_read"))
         viewModelScope.launch { runCatching { markAllReadUseCase.invoke() } }
     }
 
     private fun toggleStar(id: String) {
+        val wasStarred = currentState.rawItems.firstOrNull { it.id == id }?.isStarred == true
+        analytics.selectContent(
+            contentType = ContentTypes.MESSAGE,
+            itemId = id,
+            properties = mapOf("action" to if (wasStarred) "unstar" else "star"),
+        )
         viewModelScope.launch { runCatching { toggleStarUseCase.invoke(id) } }
     }
 }
+
+private val MessageFilter.analyticsValue: String
+    get() = when (this) {
+        MessageFilter.All -> "all"
+        MessageFilter.Unread -> "unread"
+        MessageFilter.Starred -> "starred"
+        MessageFilter.Disc -> "disciplines"
+        MessageFilter.Univ -> "university"
+        MessageFilter.App -> "app"
+    }

@@ -73,7 +73,8 @@ internal fun ScheduleScreen(
     ScheduleContent(
         state = state,
         week = week,
-        onOpenDiscipline = onOpenDiscipline,
+        onOpenDiscipline = { cls -> vm.trackOpenDiscipline(cls); onOpenDiscipline(cls) },
+        onDaySelect = vm::trackDaySelect,
         onOpenFolioRunner = onOpenFolioRunner,
         modifier = modifier,
         bottomInset = bottomInset,
@@ -87,6 +88,7 @@ private fun ScheduleContent(
     modifier: Modifier = Modifier,
     bottomInset: Dp = 0.dp,
     onOpenDiscipline: (ScheduleClass) -> Unit = {},
+    onDaySelect: (String?, Int) -> Unit = { _, _ -> },
     onOpenFolioRunner: () -> Unit = {},
 ) {
     var activeIdx by rememberSaveable { mutableIntStateOf(-1) }
@@ -133,6 +135,7 @@ private fun ScheduleContent(
             onSelect = {
                 activeIdx = it
                 expandedId = ""
+                onDaySelect(state.dateIsos.getOrNull(it), it)
             },
             modifier = Modifier
                 .padding(horizontal = 14.dp)

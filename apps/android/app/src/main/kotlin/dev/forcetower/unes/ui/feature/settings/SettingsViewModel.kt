@@ -2,6 +2,8 @@ package dev.forcetower.unes.ui.feature.settings
 
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.forcetower.melon.core.analytics.Analytics
+import dev.forcetower.melon.core.analytics.ContentTypes
 import dev.forcetower.melon.core.common.Outcome
 import dev.forcetower.melon.feature.auth.domain.usecase.ListPasskeysUseCase
 import dev.forcetower.melon.feature.me.domain.usecase.ObserveCurrentCredentialsUseCase
@@ -43,6 +45,7 @@ internal class SettingsViewModel @Inject constructor(
     private val updateSettings: UpdateSettingsUseCase,
     private val listPasskeys: ListPasskeysUseCase,
     private val themePreferences: ThemePreferenceStore,
+    private val analytics: Analytics,
 ) : MviViewModel<SettingsUiState, SettingsIntent, SettingsEffect>(SettingsUiState()) {
 
     init {
@@ -100,12 +103,26 @@ internal class SettingsViewModel @Inject constructor(
         }
     }
 
+    fun trackCredentialReveal() {
+        analytics.selectContent(ContentTypes.SETTING, "credentials", mapOf("action" to "reveal"))
+    }
+
     private fun setTheme(value: ThemeMode) {
+        analytics.selectContent(
+            ContentTypes.SETTING,
+            "theme",
+            mapOf("action" to "select", "value" to value.name.lowercase()),
+        )
         setState { copy(themeMode = value) }
         viewModelScope.launch { themePreferences.set(value) }
     }
 
     private fun setSpoiler(value: SpoilerMode) {
+        analytics.selectContent(
+            ContentTypes.SETTING,
+            "grade_spoiler",
+            mapOf("action" to "select", "value" to value.name.lowercase()),
+        )
         setState { copy(spoiler = value) }
         viewModelScope.launch {
             val outcome = updateSettings(gradeSpoiler = value.serverInt)
@@ -117,6 +134,11 @@ internal class SettingsViewModel @Inject constructor(
     }
 
     private fun setToggle(toggle: NotifToggle, value: Boolean) {
+        analytics.selectContent(
+            ContentTypes.SETTING,
+            toggle.analyticsKey,
+            mapOf("action" to "toggle", "value" to value),
+        )
         setState { applyToggle(toggle, value) }
         viewModelScope.launch {
             val outcome = when (toggle) {
@@ -152,4 +174,17 @@ private fun SettingsUiState.applyToggle(toggle: NotifToggle, value: Boolean): Se
         NotifToggle.ClassLocation -> copy(notifClassLocation = value)
         NotifToggle.ClassMaterial -> copy(notifClassMaterial = value)
         NotifToggle.ClassSubject -> copy(notifClassSubject = value)
+    }
+
+private val NotifToggle.analyticsKey: String
+    get() = when (this) {
+        NotifToggle.MsgBroadcast -> "notif_msg_broadcast"
+        NotifToggle.MsgClass -> "notif_msg_class"
+        NotifToggle.MsgDirect -> "notif_msg_direct"
+        NotifToggle.GradePosted -> "notif_grade_posted"
+        NotifToggle.GradeChanged -> "notif_grade_changed"
+        NotifToggle.GradeDateChanged -> "notif_grade_date_changed"
+        NotifToggle.ClassLocation -> "notif_class_location"
+        NotifToggle.ClassMaterial -> "notif_class_material"
+        NotifToggle.ClassSubject -> "notif_class_subject"
     }

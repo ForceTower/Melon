@@ -27,6 +27,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.foundation.Mesh
 import dev.forcetower.unes.designsystem.foundation.MeshVariant
@@ -36,7 +37,25 @@ import dev.forcetower.unes.designsystem.theme.melon
 import dev.forcetower.unes.ui.feature.onboarding.components.OnboardingPillButton
 
 @Composable
-fun WelcomeScreen(
+internal fun WelcomeScreen(
+    onNext: () -> Unit,
+    onLogin: () -> Unit,
+    vm: WelcomeViewModel = hiltViewModel(),
+) {
+    WelcomeContent(
+        onNext = {
+            vm.trackStart()
+            onNext()
+        },
+        onLogin = {
+            vm.trackLogin()
+            onLogin()
+        },
+    )
+}
+
+@Composable
+private fun WelcomeContent(
     onNext: () -> Unit,
     onLogin: () -> Unit,
 ) {
@@ -153,5 +172,5 @@ private fun welcomeHeadline(accent: Color, cream: Color): AnnotatedString {
 @Preview
 @Composable
 private fun WelcomeScreenPreview() {
-    MelonTheme { WelcomeScreen(onNext = {}, onLogin = {}) }
+    MelonTheme { WelcomeContent(onNext = {}, onLogin = {}) }
 }

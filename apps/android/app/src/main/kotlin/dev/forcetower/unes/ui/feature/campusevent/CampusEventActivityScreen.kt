@@ -109,7 +109,10 @@ internal fun CampusEventActivityScreen(
             VenueLink(
                 event = event,
                 activity = activity,
-                onOpenVenues = onOpenVenues,
+                onOpenVenues = {
+                    vm.trackHubOpen("venues")
+                    onOpenVenues()
+                },
                 modifier = Modifier.fadeUpOnAppear(delayMs = 220),
             )
         }

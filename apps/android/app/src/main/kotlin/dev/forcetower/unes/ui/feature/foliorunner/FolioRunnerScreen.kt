@@ -47,6 +47,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.edit
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.components.FolioPalette
 import kotlin.math.sqrt
@@ -58,6 +59,7 @@ import kotlin.math.sqrt
 internal fun FolioRunnerScreen(
     onClose: () -> Unit,
     modifier: Modifier = Modifier,
+    vm: FolioRunnerViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
     val prefs = remember(context) {

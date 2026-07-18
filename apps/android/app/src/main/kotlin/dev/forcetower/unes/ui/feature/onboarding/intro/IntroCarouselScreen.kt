@@ -46,6 +46,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.foundation.Mesh
 import dev.forcetower.unes.designsystem.foundation.MeshVariant
@@ -109,10 +110,24 @@ private fun IntroSlide.accent(palette: MelonPaletteColors): Color = when (this) 
 }
 
 @Composable
-fun IntroCarouselScreen(
+internal fun IntroCarouselScreen(
     onDone: () -> Unit,
     onBack: () -> Unit,
     requestNotifications: () -> Unit = rememberRequestNotificationPermission(),
+    vm: IntroViewModel = hiltViewModel(),
+) {
+    IntroCarouselContent(
+        onDone = onDone,
+        onBack = onBack,
+        requestNotifications = requestNotifications,
+    )
+}
+
+@Composable
+private fun IntroCarouselContent(
+    onDone: () -> Unit,
+    onBack: () -> Unit,
+    requestNotifications: () -> Unit,
 ) {
     val slides = remember { IntroSlide.entries.toList() }
     val pagerState = rememberPagerState { slides.size }
@@ -345,7 +360,7 @@ private fun slideHeadline(slide: IntroSlide, ink: Color, accent: Color): Annotat
 @Composable
 private fun IntroCarouselScreenPreview() {
     MelonTheme {
-        IntroCarouselScreen(
+        IntroCarouselContent(
             onDone = {},
             onBack = {},
             requestNotifications = {},

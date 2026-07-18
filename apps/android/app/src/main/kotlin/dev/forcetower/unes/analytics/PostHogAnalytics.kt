@@ -12,7 +12,7 @@ class PostHogAnalytics : Analytics {
     }
 
     override fun selectContent(contentType: String, itemId: String?, properties: Map<String, Any>) {
-        val base = buildMap<String, Any> {
+        val base = buildMap {
             put("content_type", contentType)
             itemId?.let { put("item_id", it) }
             putAll(properties)

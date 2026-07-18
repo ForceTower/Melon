@@ -9,6 +9,8 @@ import androidx.core.content.edit
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dev.forcetower.melon.core.analytics.Analytics
+import dev.forcetower.melon.core.analytics.ContentTypes
 import dev.forcetower.melon.core.common.Outcome
 import dev.forcetower.melon.feature.materials.domain.model.Material
 import dev.forcetower.melon.feature.materials.domain.model.MaterialFileKind
@@ -116,6 +118,7 @@ internal sealed interface MaterialsUploadEffect : UiEffect {
 internal class MaterialsUploadViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val submitMaterial: SubmitMaterialUseCase,
+    private val analytics: Analytics,
 ) : MviViewModel<MaterialsUploadUiState, MaterialsUploadIntent, MaterialsUploadEffect>(
     MaterialsUploadUiState(),
 ) {
@@ -280,6 +283,11 @@ internal class MaterialsUploadViewModel @Inject constructor(
             )
             when (val outcome = submitMaterial(submission)) {
                 is Outcome.Ok -> {
+                    analytics.selectContent(
+                        contentType = ContentTypes.MATERIAL,
+                        itemId = outcome.value.id,
+                        properties = mapOf("action" to "submit"),
+                    )
                     prefs().edit { putBoolean(KEY_GUIDELINES, true) }
                     setState {
                         copy(

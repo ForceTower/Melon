@@ -151,8 +151,14 @@ internal fun MaterialsHubScreen(
             when {
                 overview != null -> HubContent(
                     overview = overview,
-                    onOpenDiscipline = onOpenDiscipline,
-                    onOpenSaved = onOpenSaved,
+                    onOpenDiscipline = {
+                        vm.trackDisciplineOpen(it.id)
+                        onOpenDiscipline(it)
+                    },
+                    onOpenSaved = {
+                        vm.trackSavedOpen()
+                        onOpenSaved()
+                    },
                     onContribute = {
                         uploadVm.onIntent(MaterialsUploadIntent.StartFromHub(overview.disciplines))
                     },

@@ -85,6 +85,8 @@ internal fun CalendarScreen(
     CalendarContent(
         events = state.events,
         onBack = onBack,
+        onOpenEvent = vm::trackOpenEvent,
+        onAddToCalendar = vm::trackAddToCalendar,
         modifier = modifier,
         bottomInset = bottomInset,
     )
@@ -94,6 +96,8 @@ internal fun CalendarScreen(
 private fun CalendarContent(
     events: List<CalendarEvent>,
     onBack: () -> Unit,
+    onOpenEvent: (CalendarEvent) -> Unit = {},
+    onAddToCalendar: (CalendarEvent) -> Unit = {},
     modifier: Modifier = Modifier,
     bottomInset: Dp = 0.dp,
 ) {
@@ -154,7 +158,7 @@ private fun CalendarContent(
             if (hero != null) {
                 CalHeroCard(
                     event = hero,
-                    onClick = { openEventId = hero.id },
+                    onClick = { onOpenEvent(hero); openEventId = hero.id },
                     modifier = Modifier
                         .padding(start = 20.dp, end = 20.dp, top = 14.dp)
                         .fadeUpOnAppear(delayMs = 100, fromOffset = 20.dp),
@@ -179,7 +183,7 @@ private fun CalendarContent(
             when (viewMode) {
                 CalendarViewMode.Agenda -> AgendaBody(
                     monthGroups = monthGroups,
-                    onOpen = { openEventId = it },
+                    onOpen = { ev -> onOpenEvent(ev); openEventId = ev.id },
                 )
                 CalendarViewMode.Grid -> GridBody(
                     month = gridMonth,
@@ -188,7 +192,7 @@ private fun CalendarContent(
                     today = today,
                     onSelect = { selectedEpochDay = it.toEpochDay() },
                     onMonthShift = { gridMonthIndex += it },
-                    onOpen = { openEventId = it },
+                    onOpen = { ev -> onOpenEvent(ev); openEventId = ev.id },
                 )
             }
 
@@ -197,7 +201,11 @@ private fun CalendarContent(
     }
 
     if (openEvent != null) {
-        CalEventSheet(event = openEvent, onDismiss = { openEventId = null })
+        CalEventSheet(
+            event = openEvent,
+            onDismiss = { openEventId = null },
+            onAddToCalendar = onAddToCalendar,
+        )
     }
 }
 
@@ -295,7 +303,7 @@ private fun Headline(modifier: Modifier = Modifier) {
 @Composable
 private fun AgendaBody(
     monthGroups: List<CalendarMonthGroup>,
-    onOpen: (String) -> Unit,
+    onOpen: (CalendarEvent) -> Unit,
 ) {
     if (monthGroups.isEmpty()) {
         EmptyState()
@@ -315,7 +323,7 @@ private fun AgendaBody(
 }
 
 @Composable
-private fun MonthSection(group: CalendarMonthGroup, onOpen: (String) -> Unit) {
+private fun MonthSection(group: CalendarMonthGroup, onOpen: (CalendarEvent) -> Unit) {
     val today = remember { CalendarMath.today }
     val isCurrent = today.year == group.year && today.monthValue == group.month
     val monthName = CalendarFormat.monthsLong[group.month - 1]
@@ -351,7 +359,7 @@ private fun MonthSection(group: CalendarMonthGroup, onOpen: (String) -> Unit) {
         Column(verticalArrangement = Arrangement.spacedBy(9.dp)) {
             group.events.forEach { event ->
                 key(event.id) {
-                    CalEventRow(event = event, onClick = { onOpen(event.id) })
+                    CalEventRow(event = event, onClick = { onOpen(event) })
                 }
             }
         }
@@ -366,7 +374,7 @@ private fun GridBody(
     today: LocalDate,
     onSelect: (LocalDate) -> Unit,
     onMonthShift: (Long) -> Unit,
-    onOpen: (String) -> Unit,
+    onOpen: (CalendarEvent) -> Unit,
 ) {
     val selectedEvents = remember(events, selected) {
         events.filter { CalendarMath.occursOn(it, selected) }.sortedBy { it.start }
@@ -439,7 +447,7 @@ private fun GridBody(
                     key(event.id) {
                         CalEventRow(
                             event = event,
-                            onClick = { onOpen(event.id) },
+                            onClick = { onOpen(event) },
                             showDate = false,
                         )
                     }

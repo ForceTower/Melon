@@ -2,6 +2,8 @@ package dev.forcetower.unes.ui.feature.finalcountdown
 
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.forcetower.melon.core.analytics.Analytics
+import dev.forcetower.melon.core.analytics.ContentTypes
 import dev.forcetower.melon.feature.disciplines.domain.usecase.ObserveDisciplinesListUseCase
 import dev.forcetower.unes.mvi.MviViewModel
 import dev.forcetower.unes.mvi.UiEffect
@@ -57,6 +59,7 @@ internal sealed interface FinalCountdownEffect : UiEffect
 @HiltViewModel
 internal class FinalCountdownViewModel @Inject constructor(
     observeList: ObserveDisciplinesListUseCase,
+    private val analytics: Analytics,
 ) : MviViewModel<FinalCountdownUiState, FinalCountdownIntent, FinalCountdownEffect>(
     FinalCountdownUiState(),
 ) {
@@ -117,7 +120,12 @@ internal class FinalCountdownViewModel @Inject constructor(
                         ?: FinalCountdownUiState.freeRows(),
                 )
             }
-            is FinalCountdownIntent.PickDiscipline -> pick(intent.offerId)
+            is FinalCountdownIntent.PickDiscipline -> {
+                intent.offerId?.let {
+                    analytics.selectContent(ContentTypes.DISCIPLINE, it, mapOf("action" to "simulate"))
+                }
+                pick(intent.offerId)
+            }
             is FinalCountdownIntent.SeedFromRoute -> {
                 val offerId = intent.offerId ?: return
                 if (currentState.choices.any { it.offerId == offerId }) {

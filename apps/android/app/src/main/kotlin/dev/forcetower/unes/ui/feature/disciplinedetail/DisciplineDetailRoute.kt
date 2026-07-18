@@ -71,7 +71,10 @@ internal fun DisciplineDetailRoute(
         onBack = onBack,
         collabCount = detailState.collabCount,
         onOpenMaterials = disciplineId?.let { id ->
-            { onOpenMaterials(id, rendered.code, rendered.title) }
+            {
+                detailVm.trackOpenMaterials(id)
+                onOpenMaterials(id, rendered.code, rendered.title)
+            }
         },
         bottomInset = bottomInset,
     )

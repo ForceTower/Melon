@@ -104,6 +104,10 @@ internal fun MaterialsListScreen(
 
     val tint = ColorFor.discipline(state.code.ifBlank { disciplineId })
     val details = state.details
+    val trackedOpenMaterial: (Material) -> Unit = {
+        vm.trackMaterialOpen(it.id)
+        onOpenMaterial(it)
+    }
     val contribute = {
         val discipline = details?.discipline
         if (discipline != null) {
@@ -228,7 +232,7 @@ internal fun MaterialsListScreen(
                             state = state,
                             onQuery = { vm.onIntent(MaterialsListIntent.QueryChanged(it)) },
                             onFilter = { vm.onIntent(MaterialsListIntent.FilterChanged(it)) },
-                            onOpenMaterial = onOpenMaterial,
+                            onOpenMaterial = trackedOpenMaterial,
                         )
                     }
                 }

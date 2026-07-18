@@ -99,15 +99,32 @@ internal fun MeScreen(
 
     val openShortcut: (ShortcutKind) -> Unit = { kind ->
         when (kind) {
-            ShortcutKind.Enrollment -> connectedNavigator.navigate(ConnectedRoute.Enrollment)
-            ShortcutKind.Calendar -> connectedNavigator.navigate(ConnectedRoute.Calendar)
-            ShortcutKind.Countdown -> connectedNavigator.navigate(ConnectedRoute.FinalCountdown())
-            ShortcutKind.Materials -> connectedNavigator.navigate(ConnectedRoute.Materials)
+            ShortcutKind.Enrollment -> {
+                vm.trackShortcutOpen("enrollment")
+                connectedNavigator.navigate(ConnectedRoute.Enrollment)
+            }
+            ShortcutKind.Calendar -> {
+                vm.trackShortcutOpen("calendar")
+                connectedNavigator.navigate(ConnectedRoute.Calendar)
+            }
+            ShortcutKind.Countdown -> {
+                vm.trackShortcutOpen("final_countdown")
+                connectedNavigator.navigate(ConnectedRoute.FinalCountdown())
+            }
+            ShortcutKind.Materials -> {
+                vm.trackShortcutOpen("materials")
+                connectedNavigator.navigate(ConnectedRoute.Materials)
+            }
+            // Certificate/History track from inside `openDocument` — the tap
+            // already routes through a ViewModel handler.
             ShortcutKind.Certificate ->
                 vm.onIntent(MeIntent.OpenDocument(AcademicDocument.EnrollmentCertificate))
             ShortcutKind.History ->
                 vm.onIntent(MeIntent.OpenDocument(AcademicDocument.AcademicHistory))
-            ShortcutKind.Paradoxo -> connectedNavigator.navigate(ConnectedRoute.Paradoxo)
+            ShortcutKind.Paradoxo -> {
+                vm.trackShortcutOpen("paradoxo")
+                connectedNavigator.navigate(ConnectedRoute.Paradoxo)
+            }
         }
     }
 
@@ -165,7 +182,10 @@ internal fun MeScreen(
                     rows = settingsRows,
                     onSelect = { id ->
                         when (id) {
-                            SettingsRowKind.Settings -> connectedNavigator.navigate(ConnectedRoute.Settings)
+                            SettingsRowKind.Settings -> {
+                                vm.trackShortcutOpen("settings")
+                                connectedNavigator.navigate(ConnectedRoute.Settings)
+                            }
                             SettingsRowKind.About -> aboutOpen = true
                             SettingsRowKind.Feedback -> launchFeedbackEmail(
                                 context = context,

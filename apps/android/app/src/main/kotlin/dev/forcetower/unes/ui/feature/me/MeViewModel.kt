@@ -2,6 +2,8 @@ package dev.forcetower.unes.ui.feature.me
 
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.forcetower.melon.core.analytics.Analytics
+import dev.forcetower.melon.core.analytics.ContentTypes
 import dev.forcetower.melon.core.common.Outcome
 import dev.forcetower.melon.core.session.domain.SessionStore
 import dev.forcetower.melon.feature.campusevent.domain.usecase.ClearCampusEventUseCase
@@ -125,6 +127,7 @@ internal class MeViewModel @Inject constructor(
     private val sessionStore: SessionStore,
     private val clearCampusEvent: ClearCampusEventUseCase,
     private val pushRegistrar: PushRegistrar,
+    private val analytics: Analytics,
 ) : MviViewModel<MeUiState, MeIntent, MeEffect>(MeUiState()) {
 
     init {
@@ -157,9 +160,16 @@ internal class MeViewModel @Inject constructor(
         }
     }
 
+    // Fired from the composable for shortcuts that only bubble a hoisted nav
+    // lambda (no ViewModel handler of their own to piggyback on).
+    fun trackShortcutOpen(itemId: String) {
+        analytics.selectContent(ContentTypes.SHORTCUT, itemId)
+    }
+
     // ───────── Document sheet (Comprovante / Histórico) ─────────
 
     private fun openDocument(document: AcademicDocument) {
+        analytics.selectContent(ContentTypes.SHORTCUT, document.shortcutItemId)
         viewModelScope.launch {
             val stored = withContext(Dispatchers.IO) { localDocuments.load(document) }
             setState {
@@ -184,6 +194,7 @@ internal class MeViewModel @Inject constructor(
 
     private fun startFetch(captchaToken: String?) {
         val sheet = currentState.documentSheet ?: return
+        analytics.selectContent(ContentTypes.DOCUMENT, sheet.document.kind, mapOf("action" to "fetch"))
         updateDocumentSheet { it.copy(stage = DocumentStage.Generating) }
         viewModelScope.launch {
             when (val outcome = fetchDocument(sheet.document, captchaToken)) {
@@ -235,6 +246,7 @@ internal class MeViewModel @Inject constructor(
     }
 
     private fun performLogout() {
+        analytics.selectContent(ContentTypes.SETTING, "logout", mapOf("action" to "logout"))
         val firstName = currentState.identity?.firstName?.ifBlank { null } ?: "Estudante"
         setState { copy(logoutStep = LogoutStep.Flashing, logoutFirstName = firstName) }
         viewModelScope.launch {
@@ -254,6 +266,14 @@ internal class MeViewModel @Inject constructor(
         const val LogoutFlashMs = 900L
     }
 }
+
+// analytics itemId for the two shortcuts that route through the document
+// sheet rather than straight navigation.
+private val AcademicDocument.shortcutItemId: String
+    get() = when (this) {
+        AcademicDocument.EnrollmentCertificate -> "certificate"
+        AcademicDocument.AcademicHistory -> "academic_history"
+    }
 
 // ───────── KMP → UI mapping ─────────
 

@@ -2,9 +2,13 @@ package dev.forcetower.unes.ui.feature.paradoxo
 
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.forcetower.melon.core.analytics.Analytics
+import dev.forcetower.melon.core.analytics.ContentTypes
 import dev.forcetower.melon.core.common.Outcome
 import dev.forcetower.melon.feature.me.domain.usecase.ObserveMeProfileUseCase
 import dev.forcetower.melon.feature.paradoxo.domain.model.ParadoxoDisciplineDetail
+import dev.forcetower.melon.feature.paradoxo.domain.model.ParadoxoExploreKind
+import dev.forcetower.melon.feature.paradoxo.domain.model.ParadoxoRef
 import dev.forcetower.melon.feature.paradoxo.domain.model.ParadoxoTeacherDetail
 import dev.forcetower.melon.feature.paradoxo.domain.usecase.GetParadoxoDisciplineUseCase
 import dev.forcetower.melon.feature.paradoxo.domain.usecase.GetParadoxoIndexUseCase
@@ -27,6 +31,7 @@ internal class ParadoxoViewModel @Inject constructor(
     private val getIndex: GetParadoxoIndexUseCase,
     private val getDiscipline: GetParadoxoDisciplineUseCase,
     private val getTeacher: GetParadoxoTeacherUseCase,
+    private val analytics: Analytics,
     observeMeProfile: ObserveMeProfileUseCase,
 ) : MviViewModel<ParadoxoUiState, ParadoxoIntent, ParadoxoEffect>(ParadoxoUiState()) {
 
@@ -104,5 +109,21 @@ internal class ParadoxoViewModel @Inject constructor(
             }
             setState { copy(teachers = teachers + (id to detail)) }
         }
+    }
+
+    fun trackEntityOpen(ref: ParadoxoRef) {
+        val (kind, id) = when (ref) {
+            is ParadoxoRef.Discipline -> "discipline" to ref.id
+            is ParadoxoRef.Teacher -> "teacher" to ref.id
+        }
+        analytics.selectContent(
+            contentType = ContentTypes.PARADOXO_ENTITY,
+            itemId = id,
+            properties = mapOf("kind" to kind),
+        )
+    }
+
+    fun trackExploreOpen(kind: ParadoxoExploreKind) {
+        analytics.selectContent(contentType = ContentTypes.PARADOXO_EXPLORE, itemId = kind.name.lowercase())
     }
 }

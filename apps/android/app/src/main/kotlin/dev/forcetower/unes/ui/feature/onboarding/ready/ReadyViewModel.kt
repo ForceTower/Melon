@@ -2,6 +2,9 @@ package dev.forcetower.unes.ui.feature.onboarding.ready
 
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.forcetower.melon.core.analytics.Analytics
+import dev.forcetower.melon.core.analytics.ContentTypes
+import dev.forcetower.melon.core.analytics.Screens
 import dev.forcetower.melon.feature.dashboard.domain.model.NextClassInfo
 import dev.forcetower.melon.feature.dashboard.domain.usecase.GetReadyOverviewUseCase
 import dev.forcetower.melon.feature.disciplines.domain.model.DisciplinesListState
@@ -50,9 +53,11 @@ class ReadyViewModel @Inject constructor(
     private val getReadyOverview: GetReadyOverviewUseCase,
     private val calculateOverallScore: CalculateOverallScoreUseCase,
     private val observeDisciplinesList: ObserveDisciplinesListUseCase,
+    private val analytics: Analytics,
 ) : MviViewModel<ReadyUiState, ReadyIntent, ReadyEffect>(ReadyUiState()) {
 
     init {
+        analytics.screen(Screens.READY)
         viewModelScope.launch {
             val overview = runCatching { getReadyOverview() }.getOrNull()
             if (overview == null) {
@@ -75,6 +80,10 @@ class ReadyViewModel @Inject constructor(
     }
 
     override fun onIntent(intent: ReadyIntent) = Unit
+
+    fun trackEnter() {
+        analytics.selectContent(ContentTypes.CTA, itemId = "ready_enter")
+    }
 
     private suspend fun loadStats() {
         val disciplines = observeDisciplinesList().first()

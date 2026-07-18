@@ -2,6 +2,8 @@ package dev.forcetower.unes.ui.feature.onboarding.sync
 
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.forcetower.melon.core.analytics.Analytics
+import dev.forcetower.melon.core.analytics.Screens
 import dev.forcetower.melon.core.common.Outcome
 import dev.forcetower.melon.core.session.domain.SessionStore
 import dev.forcetower.melon.core.sync.domain.model.OnboardingStatus
@@ -80,6 +82,7 @@ class SyncViewModel @Inject internal constructor(
     private val pushRegistrar: PushRegistrar,
     private val sessionStore: SessionStore,
     @ApplicationScope private val applicationScope: CoroutineScope,
+    private val analytics: Analytics,
 ) : MviViewModel<SyncUiState, SyncIntent, SyncEffect>(SyncUiState()) {
 
     private var didStart = false
@@ -94,6 +97,7 @@ class SyncViewModel @Inject internal constructor(
     private var msgsTask: Deferred<StepResult>? = null
 
     init {
+        analytics.screen(Screens.SYNC)
         start()
     }
 

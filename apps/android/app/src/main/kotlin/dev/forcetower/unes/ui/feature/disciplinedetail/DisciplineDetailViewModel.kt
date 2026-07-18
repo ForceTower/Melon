@@ -2,6 +2,8 @@ package dev.forcetower.unes.ui.feature.disciplinedetail
 
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.forcetower.melon.core.analytics.Analytics
+import dev.forcetower.melon.core.analytics.ContentTypes
 import dev.forcetower.melon.core.common.Outcome
 import dev.forcetower.melon.feature.disciplines.domain.usecase.ObserveDisciplineDetailUseCase
 import dev.forcetower.melon.feature.materials.domain.usecase.GetMaterialsDisciplineUseCase
@@ -50,12 +52,20 @@ internal class DisciplineDetailViewModel @Inject constructor(
     private val observeDetail: ObserveDisciplineDetailUseCase,
     private val getMaterialsDiscipline: GetMaterialsDisciplineUseCase,
     private val featureFlags: FeatureFlags,
+    private val analytics: Analytics,
 ) : MviViewModel<DisciplineDetailUiState, DisciplineDetailIntent, DisciplineDetailEffect>(
     DisciplineDetailUiState(),
 ) {
     private var detailJob: Job? = null
     private var collabJob: Job? = null
     private var collabLoadedFor: String? = null
+
+    // Called from the composable click handler right before the hoisted
+    // navigation lambda fires — the Colaborativo banner only invokes a nav
+    // callback, so it has no ViewModel handler of its own to piggyback on.
+    fun trackOpenMaterials(disciplineId: String) {
+        analytics.selectContent(ContentTypes.MATERIAL, disciplineId)
+    }
 
     override fun onIntent(intent: DisciplineDetailIntent) {
         when (intent) {

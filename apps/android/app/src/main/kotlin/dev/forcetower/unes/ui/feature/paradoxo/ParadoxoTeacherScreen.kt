@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.forcetower.melon.feature.paradoxo.domain.model.ParadoxoRef
 import dev.forcetower.melon.feature.paradoxo.domain.model.ParadoxoSemesterMean
 import dev.forcetower.melon.feature.paradoxo.domain.model.ParadoxoStats
 import dev.forcetower.melon.feature.paradoxo.domain.model.ParadoxoTaughtDiscipline
@@ -84,6 +85,10 @@ internal fun ParadoxoTeacherScreen(
 
     val detail = state.teachers[id]
     val loaded = (detail as? ParadoxoDetail.Loaded)?.data
+    val trackedOpenDiscipline: (id: String, name: String) -> Unit = { disciplineId, name ->
+        vm.trackEntityOpen(ParadoxoRef.Discipline(disciplineId))
+        onOpenDiscipline(disciplineId, name)
+    }
 
     val scrollState = rememberScrollState()
     val scrolled by remember { derivedStateOf { scrollState.value > 0 } }
@@ -118,7 +123,7 @@ internal fun ParadoxoTeacherScreen(
                 when (detail) {
                     is ParadoxoDetail.Loaded -> ParadoxoTeacherContent(
                         detail = detail.data,
-                        onOpenDiscipline = onOpenDiscipline,
+                        onOpenDiscipline = trackedOpenDiscipline,
                     )
                     ParadoxoDetail.Failed -> ParadoxoFailure(
                         onRetry = { vm.onIntent(ParadoxoIntent.RetryTeacher(id)) },

@@ -59,6 +59,10 @@ internal fun MaterialsSavedScreen(
     val state by vm.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) { vm.onIntent(MaterialsSavedIntent.Load) }
+    val trackedOpenMaterial: (Material) -> Unit = {
+        vm.trackMaterialOpen(it.id)
+        onOpenMaterial(it)
+    }
 
     val scrollState = rememberScrollState()
     val scrolled by remember { derivedStateOf { scrollState.value > 0 } }
@@ -137,7 +141,7 @@ internal fun MaterialsSavedScreen(
                                     items.forEachIndexed { index, material ->
                                         MaterialRow(
                                             material = material,
-                                            onTap = { onOpenMaterial(material) },
+                                            onTap = { trackedOpenMaterial(material) },
                                             showDivider = index < items.lastIndex,
                                         )
                                     }

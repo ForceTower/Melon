@@ -11,6 +11,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -97,6 +98,14 @@ fun ConnectedScreen(
     // mid-onboarding): the handler's conflated channel holds it until here.
     LaunchedEffect(navigator) {
         vm.deepLinks.collect { target -> navigator.open(target) }
+    }
+    // Central screen_view pipeline for every route inside the shell: fires
+    // on the initial route, every tab switch (each tab root is its own
+    // screen), every push, and every pop — the ViewModel dedupes consecutive
+    // repeats so recompositions don't double-fire.
+    LaunchedEffect(navigator) {
+        snapshotFlow { navigator.activeStack.lastOrNull() }
+            .collect { route -> route?.let { vm.onRouteShown(it) } }
     }
     // Live unread count piggybacks on `MessagesViewModel`. Without nav3
     // viewmodel-decoration, `hiltViewModel()` resolves to the activity

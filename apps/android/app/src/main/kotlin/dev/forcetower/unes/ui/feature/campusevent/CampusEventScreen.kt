@@ -129,11 +129,26 @@ internal fun CampusEventScreen(
                     onBack = onBack,
                     onDayTapped = { vm.onIntent(CampusEventIntent.DayTapped(it)) },
                     onFilterChanged = { vm.onIntent(CampusEventIntent.FilterChanged(it)) },
-                    onOpenActivity = onOpenActivity,
-                    onOpenSpeakers = onOpenSpeakers,
-                    onOpenWorkshops = onOpenWorkshops,
-                    onOpenVenues = onOpenVenues,
-                    onOpenOrganizations = onOpenOrganizations,
+                    onOpenActivity = { id ->
+                        vm.trackActivityOpen(id)
+                        onOpenActivity(id)
+                    },
+                    onOpenSpeakers = {
+                        vm.trackHubOpen("speakers")
+                        onOpenSpeakers()
+                    },
+                    onOpenWorkshops = {
+                        vm.trackHubOpen("workshops")
+                        onOpenWorkshops()
+                    },
+                    onOpenVenues = {
+                        vm.trackHubOpen("venues")
+                        onOpenVenues()
+                    },
+                    onOpenOrganizations = {
+                        vm.trackHubOpen("organizations")
+                        onOpenOrganizations()
+                    },
                 )
             }
 

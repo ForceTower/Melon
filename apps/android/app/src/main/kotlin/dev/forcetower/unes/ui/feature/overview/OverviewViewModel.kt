@@ -2,6 +2,8 @@ package dev.forcetower.unes.ui.feature.overview
 
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.forcetower.melon.core.analytics.Analytics
+import dev.forcetower.melon.core.analytics.ContentTypes
 import dev.forcetower.melon.core.common.ForegroundSignal
 import dev.forcetower.melon.feature.campusevent.domain.model.CampusEvent
 import dev.forcetower.melon.feature.campusevent.domain.usecase.ObserveCampusEventUseCase
@@ -33,6 +35,7 @@ import kotlin.time.Clock
 import kotlin.time.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import kotlin.time.Duration.Companion.milliseconds
 import dev.forcetower.melon.feature.overview.domain.model.OverviewClassState as KmpOverviewClassState
 import dev.forcetower.melon.feature.overview.domain.model.OverviewMessagesTile as KmpOverviewMessagesTile
 import dev.forcetower.melon.feature.overview.domain.model.OverviewNextTestTile as KmpOverviewNextTestTile
@@ -124,6 +127,7 @@ internal class OverviewViewModel @Inject constructor(
     refreshCampusEvent: RefreshCampusEventUseCase,
     featureFlags: FeatureFlags,
     foregroundSignal: ForegroundSignal,
+    private val analytics: Analytics,
 ) : MviViewModel<OverviewUiState, OverviewIntent, OverviewEffect>(OverviewUiState()) {
 
     init {
@@ -183,12 +187,37 @@ internal class OverviewViewModel @Inject constructor(
         viewModelScope.launch {
             while (isActive) {
                 setState { copy(clock = Clock.System.now()) }
-                delay(CLOCK_TICK_MS)
+                delay(CLOCK_TICK_MS.milliseconds)
             }
         }
     }
 
     override fun onIntent(intent: OverviewIntent) = Unit
+
+    fun trackNowClassTap(offerId: String?) {
+        analytics.selectContent(
+            contentType = ContentTypes.TILE,
+            itemId = "now_class",
+            properties = offerId?.let { mapOf("offer_id" to it) } ?: emptyMap(),
+        )
+    }
+
+    fun trackDisciplineTap(offerId: String?) {
+        if (offerId == null) return
+        analytics.selectContent(contentType = ContentTypes.DISCIPLINE, itemId = offerId)
+    }
+
+    fun trackScheduleTileTap() {
+        analytics.selectContent(contentType = ContentTypes.TILE, itemId = "schedule")
+    }
+
+    fun trackMessagesTileTap() {
+        analytics.selectContent(contentType = ContentTypes.TILE, itemId = "unread_messages")
+    }
+
+    fun trackCampusEventTap() {
+        analytics.selectContent(contentType = ContentTypes.HUB, itemId = "campus_event")
+    }
 
     private companion object {
         const val CLOCK_TICK_MS = 30_000L

@@ -2,6 +2,8 @@ package dev.forcetower.unes.ui.feature.materials
 
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.forcetower.melon.core.analytics.Analytics
+import dev.forcetower.melon.core.analytics.ContentTypes
 import dev.forcetower.melon.core.common.Outcome
 import dev.forcetower.melon.feature.materials.domain.model.MaterialsOverview
 import dev.forcetower.melon.feature.materials.domain.usecase.GetMaterialsOverviewUseCase
@@ -33,6 +35,7 @@ internal sealed interface MaterialsHubEffect : UiEffect
 @HiltViewModel
 internal class MaterialsHubViewModel @Inject constructor(
     private val getOverview: GetMaterialsOverviewUseCase,
+    private val analytics: Analytics,
 ) : MviViewModel<MaterialsHubUiState, MaterialsHubIntent, MaterialsHubEffect>(
     MaterialsHubUiState(),
 ) {
@@ -42,6 +45,14 @@ internal class MaterialsHubViewModel @Inject constructor(
         when (intent) {
             MaterialsHubIntent.Load, MaterialsHubIntent.Retry -> load()
         }
+    }
+
+    fun trackDisciplineOpen(disciplineId: String) {
+        analytics.selectContent(contentType = ContentTypes.DISCIPLINE, itemId = disciplineId)
+    }
+
+    fun trackSavedOpen() {
+        analytics.selectContent(contentType = ContentTypes.HUB, itemId = "materials_saved")
     }
 
     private fun load() {

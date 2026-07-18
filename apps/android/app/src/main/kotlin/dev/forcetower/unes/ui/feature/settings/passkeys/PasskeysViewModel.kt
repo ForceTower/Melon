@@ -4,6 +4,8 @@ import android.app.Activity
 import android.os.Build
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.forcetower.melon.core.analytics.Analytics
+import dev.forcetower.melon.core.analytics.ContentTypes
 import dev.forcetower.melon.core.common.Outcome
 import dev.forcetower.melon.feature.auth.domain.model.PasskeyCredential
 import dev.forcetower.melon.feature.auth.domain.model.PasskeyError
@@ -37,6 +39,7 @@ internal class PasskeysViewModel @Inject constructor(
     private val renamePasskey: RenamePasskeyUseCase,
     private val deletePasskey: DeletePasskeyUseCase,
     private val passkeyClient: PasskeyClient,
+    private val analytics: Analytics,
 ) : MviViewModel<PasskeysUiState, PasskeysIntent, PasskeysEffect>(PasskeysUiState()) {
 
     private var toastJob: Job? = null
@@ -88,6 +91,7 @@ internal class PasskeysViewModel @Inject constructor(
     }
 
     private fun continueAdd(activity: Activity) {
+        analytics.selectContent(ContentTypes.PASSKEY, properties = mapOf("action" to "create"))
         setState { copy(addStep = AddStep.Auth) }
         viewModelScope.launch {
             val options = when (val outcome = getRegistrationOptions()) {
@@ -152,6 +156,7 @@ internal class PasskeysViewModel @Inject constructor(
             setState { copy(editing = false) }
             return
         }
+        analytics.selectContent(ContentTypes.PASSKEY, id, mapOf("action" to "rename"))
         setState { copy(savingName = true) }
         viewModelScope.launch {
             when (val outcome = renamePasskey(id, name)) {
@@ -174,6 +179,7 @@ internal class PasskeysViewModel @Inject constructor(
 
     private fun confirmDelete() {
         val id = currentState.confirmDeleteId ?: return
+        analytics.selectContent(ContentTypes.PASSKEY, id, mapOf("action" to "revoke"))
         setState { copy(deleting = true) }
         viewModelScope.launch {
             when (deletePasskey(id)) {

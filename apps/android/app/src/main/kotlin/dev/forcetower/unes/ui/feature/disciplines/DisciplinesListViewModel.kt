@@ -2,6 +2,8 @@ package dev.forcetower.unes.ui.feature.disciplines
 
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.forcetower.melon.core.analytics.Analytics
+import dev.forcetower.melon.core.analytics.ContentTypes
 import dev.forcetower.melon.core.common.Outcome
 import dev.forcetower.melon.feature.disciplines.domain.usecase.CalculateOverallScoreUseCase
 import dev.forcetower.melon.feature.disciplines.domain.usecase.ObserveDisciplinesListUseCase
@@ -55,6 +57,7 @@ internal class DisciplinesListViewModel @Inject constructor(
     observeList: ObserveDisciplinesListUseCase,
     calculateOverallScore: CalculateOverallScoreUseCase,
     private val syncSemester: SyncSemesterUseCase,
+    private val analytics: Analytics,
 ) : MviViewModel<DisciplinesUiState, DisciplinesIntent, DisciplinesEffect>(DisciplinesUiState()) {
 
     init {
@@ -69,8 +72,11 @@ internal class DisciplinesListViewModel @Inject constructor(
     override fun onIntent(intent: DisciplinesIntent) {
         when (intent) {
             is DisciplinesIntent.Download -> download(intent.semesterCode)
-            is DisciplinesIntent.OpenDiscipline -> setState {
-                copy(openOfferId = intent.discipline.offerId, openSeed = intent.discipline)
+            is DisciplinesIntent.OpenDiscipline -> {
+                analytics.selectContent(ContentTypes.DISCIPLINE, intent.discipline.offerId)
+                setState {
+                    copy(openOfferId = intent.discipline.offerId, openSeed = intent.discipline)
+                }
             }
             DisciplinesIntent.CloseDiscipline -> setState {
                 copy(openOfferId = null, openSeed = null)
@@ -93,6 +99,7 @@ internal class DisciplinesListViewModel @Inject constructor(
         val dbId = pendingEntry?.dbSemesterId ?: return
         if (semesterCode in currentState.downloading) return
 
+        analytics.selectContent(ContentTypes.SEMESTER, semesterCode, mapOf("action" to "sync"))
         viewModelScope.launch {
             setState { copy(downloading = downloading + semesterCode, downloadError = null) }
             val outcome = runCatching { syncSemester(dbId) }.getOrElse {

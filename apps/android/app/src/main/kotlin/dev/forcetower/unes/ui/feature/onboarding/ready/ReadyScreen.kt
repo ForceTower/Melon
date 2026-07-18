@@ -82,7 +82,14 @@ fun ReadyScreen(
     vm: ReadyViewModel = hiltViewModel(),
 ) {
     val state by vm.state.collectAsStateWithLifecycle()
-    ReadyContent(firstName = firstName, state = state, onEnter = onEnter)
+    ReadyContent(
+        firstName = firstName,
+        state = state,
+        onEnter = {
+            vm.trackEnter()
+            onEnter()
+        },
+    )
 }
 
 @Composable

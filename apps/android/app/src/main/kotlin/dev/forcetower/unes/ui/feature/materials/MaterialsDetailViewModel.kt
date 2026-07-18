@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dev.forcetower.melon.core.analytics.Analytics
+import dev.forcetower.melon.core.analytics.ContentTypes
 import dev.forcetower.melon.core.common.Outcome
 import dev.forcetower.melon.feature.materials.domain.model.Material
 import dev.forcetower.melon.feature.materials.domain.model.MaterialFileKind
@@ -78,6 +80,7 @@ internal class MaterialsDetailViewModel @Inject constructor(
     private val setSaved: SetMaterialSavedUseCase,
     private val reportMaterial: ReportMaterialUseCase,
     private val openMaterial: OpenMaterialUseCase,
+    private val analytics: Analytics,
 ) : MviViewModel<MaterialsDetailUiState, MaterialsDetailIntent, MaterialsDetailEffect>(
     MaterialsDetailUiState(),
 ) {
@@ -117,6 +120,11 @@ internal class MaterialsDetailViewModel @Inject constructor(
     private fun toggleUseful() {
         val material = currentState.material ?: return
         val wasUseful = material.isUseful
+        analytics.selectContent(
+            contentType = ContentTypes.MATERIAL,
+            itemId = material.id,
+            properties = mapOf("action" to if (wasUseful) "not_useful" else "useful"),
+        )
         val optimistic = material.copy(
             isUseful = !wasUseful,
             usefulCount = (material.usefulCount + if (wasUseful) -1 else 1).coerceAtLeast(0),
@@ -136,6 +144,11 @@ internal class MaterialsDetailViewModel @Inject constructor(
     private fun toggleSave() {
         val material = currentState.material ?: return
         val wasSaved = material.isSaved
+        analytics.selectContent(
+            contentType = ContentTypes.MATERIAL,
+            itemId = material.id,
+            properties = mapOf("action" to if (wasSaved) "unsave" else "save"),
+        )
         setState { copy(material = material.copy(isSaved = !wasSaved)) }
         flash(if (wasSaved) MaterialsToastKind.Unsaved else MaterialsToastKind.Saved)
         viewModelScope.launch {
@@ -152,6 +165,11 @@ internal class MaterialsDetailViewModel @Inject constructor(
     private fun openFile() {
         val material = currentState.material ?: return
         if (currentState.isOpening) return
+        analytics.selectContent(
+            contentType = ContentTypes.MATERIAL,
+            itemId = material.id,
+            properties = mapOf("action" to "open"),
+        )
         setState { copy(isOpening = true) }
         viewModelScope.launch {
             when (val outcome = openMaterial(material.id)) {
@@ -221,6 +239,11 @@ internal class MaterialsDetailViewModel @Inject constructor(
     private fun confirmReport() {
         val material = currentState.material ?: return
         val reason = currentState.reportReason ?: return
+        analytics.selectContent(
+            contentType = ContentTypes.MATERIAL,
+            itemId = material.id,
+            properties = mapOf("action" to "report", "reason" to reason.analyticsValue),
+        )
         setState { copy(isReportOpen = false) }
         flash(MaterialsToastKind.Reported)
         viewModelScope.launch {
@@ -245,3 +268,12 @@ private const val MATERIAL_CACHE_BUDGET_BYTES = 50L * 1024 * 1024
 
 private fun File.cachedSize(): Long =
     if (isFile) length() else walkBottomUp().filter { it.isFile }.sumOf { it.length() }
+
+private val MaterialReportReason.analyticsValue: String
+    get() = when (this) {
+        MaterialReportReason.Illegible -> "illegible"
+        MaterialReportReason.OngoingExam -> "ongoing_exam"
+        MaterialReportReason.RestrictedByTeacher -> "restricted_by_teacher"
+        MaterialReportReason.WrongDiscipline -> "wrong_discipline"
+        MaterialReportReason.Other -> "other"
+    }

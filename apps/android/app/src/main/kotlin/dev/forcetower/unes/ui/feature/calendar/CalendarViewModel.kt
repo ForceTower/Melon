@@ -2,6 +2,8 @@ package dev.forcetower.unes.ui.feature.calendar
 
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.forcetower.melon.core.analytics.Analytics
+import dev.forcetower.melon.core.analytics.ContentTypes
 import dev.forcetower.melon.feature.calendar.domain.usecase.ObserveCalendarEventsUseCase
 import dev.forcetower.unes.mvi.MviViewModel
 import dev.forcetower.unes.mvi.UiEffect
@@ -22,6 +24,7 @@ internal sealed interface CalendarEffect : UiEffect
 @HiltViewModel
 internal class CalendarViewModel @Inject constructor(
     observeEvents: ObserveCalendarEventsUseCase,
+    private val analytics: Analytics,
 ) : MviViewModel<CalendarUiState, CalendarIntent, CalendarEffect>(CalendarUiState()) {
 
     init {
@@ -33,4 +36,20 @@ internal class CalendarViewModel @Inject constructor(
     }
 
     override fun onIntent(intent: CalendarIntent) = Unit
+
+    fun trackOpenEvent(event: CalendarEvent) {
+        analytics.selectContent(
+            contentType = ContentTypes.CALENDAR_EVENT,
+            itemId = event.id,
+            properties = mapOf("category" to CalendarMath.categorize(event).name.lowercase()),
+        )
+    }
+
+    fun trackAddToCalendar(event: CalendarEvent) {
+        analytics.selectContent(
+            contentType = ContentTypes.CALENDAR_EVENT,
+            itemId = event.id,
+            properties = mapOf("action" to "save"),
+        )
+    }
 }

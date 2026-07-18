@@ -136,7 +136,10 @@ internal fun SettingsScreen(
                     username = state.username.orEmpty(),
                     password = state.password.orEmpty(),
                     revealed = revealed,
-                    onToggleReveal = { revealed = !revealed },
+                    onToggleReveal = {
+                        if (!revealed) vm.trackCredentialReveal()
+                        revealed = !revealed
+                    },
                     passkeyCount = state.passkeyCount,
                     onOpenPasskeys = onOpenPasskeys,
                     modifier = Modifier.fadeUpOnAppear(delayMs = 120),

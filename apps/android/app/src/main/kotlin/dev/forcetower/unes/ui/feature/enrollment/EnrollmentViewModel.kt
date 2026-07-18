@@ -2,6 +2,8 @@ package dev.forcetower.unes.ui.feature.enrollment
 
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.forcetower.melon.core.analytics.Analytics
+import dev.forcetower.melon.core.analytics.ContentTypes
 import dev.forcetower.melon.core.common.Outcome
 import dev.forcetower.melon.feature.enrollment.domain.model.EnrollmentWindowState
 import dev.forcetower.melon.feature.enrollment.domain.usecase.GetEnrollmentOffersUseCase
@@ -23,6 +25,7 @@ internal class EnrollmentViewModel @Inject constructor(
     private val getWindow: GetEnrollmentWindowUseCase,
     private val getOffers: GetEnrollmentOffersUseCase,
     private val submitEnrollment: SubmitEnrollmentUseCase,
+    private val analytics: Analytics,
     observeMeProfile: ObserveMeProfileUseCase,
 ) : MviViewModel<EnrollmentUiState, EnrollmentIntent, EnrollmentEffect>(EnrollmentUiState()) {
 
@@ -53,7 +56,15 @@ internal class EnrollmentViewModel @Inject constructor(
             is EnrollmentIntent.SectionTapped -> sectionTapped(intent.disciplineId, intent.sectionId)
             is EnrollmentIntent.RemovePick -> {
                 if (currentState.canEdit) {
+                    val sectionId = currentState.pickFor(intent.disciplineId)?.sectionId
                     setState { copy(picks = picks.filter { it.disciplineId != intent.disciplineId }) }
+                    if (sectionId != null) {
+                        analytics.selectContent(
+                            contentType = ContentTypes.OFFER,
+                            itemId = sectionId.toString(),
+                            properties = mapOf("action" to "remove"),
+                        )
+                    }
                 }
             }
             is EnrollmentIntent.AllowsOtherChanged -> {
@@ -147,11 +158,21 @@ internal class EnrollmentViewModel @Inject constructor(
         val section = discipline.sections.find { it.id == sectionId } ?: return
         val existing = state.pickFor(disciplineId)
         if (existing?.sectionId == sectionId) {
+            analytics.selectContent(
+                contentType = ContentTypes.OFFER,
+                itemId = sectionId.toString(),
+                properties = mapOf("action" to "remove"),
+            )
             setState { copy(picks = picks.filter { it.disciplineId != disciplineId }) }
             return
         }
         if (state.clashFor(discipline, section) != null) return
         if (section.seats.isFull && state.window?.useQueue != true) return
+        analytics.selectContent(
+            contentType = ContentTypes.OFFER,
+            itemId = sectionId.toString(),
+            properties = mapOf("action" to "select"),
+        )
         val pick = makePick(state.window, discipline, section)
         setState {
             copy(
@@ -176,6 +197,10 @@ internal class EnrollmentViewModel @Inject constructor(
         submitJob = viewModelScope.launch {
             when (val outcome = submitEnrollment(state.selections)) {
                 is Outcome.Ok -> {
+                    analytics.selectContent(
+                        contentType = ContentTypes.ENROLLMENT,
+                        properties = mapOf("action" to "submit"),
+                    )
                     setState {
                         copy(
                             submitting = false,

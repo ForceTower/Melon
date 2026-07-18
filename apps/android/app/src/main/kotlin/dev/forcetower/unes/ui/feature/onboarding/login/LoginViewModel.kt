@@ -4,6 +4,9 @@ import android.app.Activity
 import androidx.annotation.StringRes
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.forcetower.melon.core.analytics.Analytics
+import dev.forcetower.melon.core.analytics.ContentTypes
+import dev.forcetower.melon.core.analytics.Screens
 import dev.forcetower.melon.core.common.Outcome
 import dev.forcetower.melon.feature.auth.domain.model.LoginError
 import dev.forcetower.melon.feature.auth.domain.usecase.BeginPasskeyLoginUseCase
@@ -49,7 +52,12 @@ class LoginViewModel @Inject constructor(
     private val beginPasskeyLogin: BeginPasskeyLoginUseCase,
     private val completePasskeyLogin: CompletePasskeyLoginUseCase,
     private val passkeyClient: PasskeyClient,
+    private val analytics: Analytics,
 ) : MviViewModel<LoginUiState, LoginIntent, LoginEffect>(LoginUiState()) {
+
+    init {
+        analytics.screen(Screens.LOGIN)
+    }
 
     override fun onIntent(intent: LoginIntent) {
         when (intent) {
@@ -76,6 +84,7 @@ class LoginViewModel @Inject constructor(
             }
             return
         }
+        analytics.selectContent(ContentTypes.CTA, itemId = "login_credentials")
         setState { copy(isLoading = true, errorRes = null, errorArg = null) }
         viewModelScope.launch {
             val result = loginUseCase(trimmedUsername, state.password)
@@ -85,6 +94,7 @@ class LoginViewModel @Inject constructor(
 
     private fun submitPasskey(activity: Activity) {
         if (currentState.isLoading) return
+        analytics.selectContent(ContentTypes.CTA, itemId = "login_passkey")
         setState { copy(isLoading = true, errorRes = null, errorArg = null) }
         viewModelScope.launch {
             when (val begin = beginPasskeyLogin(username = null)) {
