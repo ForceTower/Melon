@@ -168,12 +168,16 @@ struct DisciplineDetailMappingTests {
     }
 
     @Test
-    func summariesKeepTheFinalExamOutOfChipsAndAverages() {
+    func summariesRenderTheFinalExamLastButKeepItOutOfAverages() {
         let summary = detailPayload(withFinalExam: true).snapshot
             .disciplineSummaries(now: now, calendar: calendar)[0]
 
-        #expect(summary.grades.map(\.label) == ["AV1", "AV2"])
-        // Ordinal 0 with an upcoming date would otherwise win the pick.
+        // The exam renders as the last chip despite its ordinal 0, pending
+        // with no value…
+        #expect(summary.grades.map(\.label) == ["AV1", "AV2", String.localized(.disciplinesDetailFinalExamLabel)])
+        #expect(summary.grades.last?.value == nil)
+        // …but stays out of the average and the next-evaluation pick, where
+        // its upcoming date would otherwise win.
         #expect(summary.nextEvaluation?.label == "AV2")
         #expect(summary.partialAverage == 6.8)
     }
