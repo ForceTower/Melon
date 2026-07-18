@@ -55,7 +55,7 @@ struct CampusEventHomeCard: View {
                     Text(event.name)
                         .font(.system(size: 40, weight: .heavy))
                         .tracking(-1.6)
-                        .lineLimit(1)
+                        .lineLimit(2)
                         .minimumScaleFactor(0.6)
                         .foregroundStyle(.white)
                         .padding(.top, 2)
@@ -63,7 +63,6 @@ struct CampusEventHomeCard: View {
                         Text(tagline)
                             .font(.system(size: 13.5, weight: .medium))
                             .foregroundStyle(.white.opacity(0.82))
-                            .lineLimit(2)
                             .padding(.top, 8)
                     }
                 }
@@ -111,12 +110,10 @@ struct CampusEventHomeCard: View {
                 }
             }
         case .ended:
-            VStack(alignment: .trailing, spacing: 4) {
-                Text(.campusEventCardEnded)
-                    .font(.system(size: 24, weight: .heavy))
-                    .tracking(-0.72)
-                    .foregroundStyle(.white)
-            }
+            Text(.campusEventCardEnded)
+                .font(.system(size: 18, weight: .heavy))
+                .tracking(-0.54)
+                .foregroundStyle(.white)
         }
     }
 

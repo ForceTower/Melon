@@ -67,15 +67,15 @@ struct CampusEventWelcomeView: View {
                 if let edition = event.edition {
                     Text(edition)
                         .font(.system(size: 16, weight: .bold))
-                        .tracking(5.44)
                         .foregroundStyle(.white.opacity(0.62))
                         .fadeUp(delay: 0.5)
                 }
                 Text(event.name)
                     .font(.system(size: 76, weight: .heavy))
-                    .tracking(-3.8)
-                    .lineLimit(1)
+                    .tracking(-2.28)
+                    .lineLimit(3)
                     .minimumScaleFactor(0.5)
+                    .multilineTextAlignment(.center)
                     .foregroundStyle(.white)
                     .shadow(color: .black.opacity(0.4), radius: 20, y: 12)
                     .popIn(delay: 0.66, from: 0.94, offsetY: 20, overshoot: 1.1)
