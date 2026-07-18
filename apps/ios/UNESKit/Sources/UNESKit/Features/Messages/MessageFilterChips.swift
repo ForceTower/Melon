@@ -16,6 +16,9 @@ struct MessageFilterChips: View {
             .padding(.horizontal, 16)
             .padding(.bottom, 4)
         }
+        // The active chip's shadow reaches ~10pt below the row, so it clips
+        // at the scroll bounds without this.
+        .scrollClipDisabled()
         .animation(.easeOut(duration: 0.15), value: active)
     }
 
