@@ -1,10 +1,14 @@
 package dev.forcetower.unes.ui.feature.campusevent
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.VectorConverter
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -27,18 +31,25 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.TransformOrigin
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -48,8 +59,10 @@ import dev.forcetower.melon.feature.campusevent.domain.model.CampusEventVenue
 import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
 import dev.forcetower.unes.designsystem.foundation.scaleInOnAppear
+import dev.forcetower.unes.designsystem.theme.MelonMotion
 import dev.forcetower.unes.designsystem.theme.melon
 import kotlin.math.roundToInt
+import kotlinx.coroutines.launch
 
 // Where the event happens: an illustrated campus map (when the venues carry
 // coordinates) over the venue list. Pin selection is view-only state.
@@ -113,6 +126,8 @@ internal fun CampusEventVenuesScreen(
 // MARK: Campus map
 
 private const val CAMPUS_MAP_ASPECT_RATIO = 1368f / 1150f
+private const val CAMPUS_MAP_MAX_ZOOM = 3f
+private const val CAMPUS_MAP_DOUBLE_TAP_ZOOM = 2f
 
 @Composable
 private fun CampusMap(
@@ -124,6 +139,9 @@ private fun CampusMap(
 ) {
     val shape = RoundedCornerShape(24.dp)
     val card = MaterialTheme.melon.surface.card
+    val scope = rememberCoroutineScope()
+    val zoom = remember { Animatable(1f) }
+    val pan = remember { Animatable(Offset.Zero, Offset.VectorConverter) }
 
     BoxWithConstraints(
         modifier = modifier
@@ -132,7 +150,36 @@ private fun CampusMap(
             // right map features.
             .aspectRatio(CAMPUS_MAP_ASPECT_RATIO)
             .clip(shape)
-            .border(1.dp, MaterialTheme.melon.surface.cardLine, shape),
+            .border(1.dp, MaterialTheme.melon.surface.cardLine, shape)
+            .pointerInput(Unit) {
+                detectTransformGestures { centroid, panChange, zoomChange, _ ->
+                    val newZoom = (zoom.value * zoomChange).coerceIn(1f, CAMPUS_MAP_MAX_ZOOM)
+                    // Keep the point under the gesture centroid fixed while zooming.
+                    val newPan = clampMapPan(
+                        pan = centroid - (centroid - pan.value) * (newZoom / zoom.value) + panChange,
+                        zoom = newZoom,
+                        size = size,
+                    )
+                    scope.launch {
+                        zoom.snapTo(newZoom)
+                        pan.snapTo(newPan)
+                    }
+                }
+            }
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onDoubleTap = { tap ->
+                        val targetZoom = if (zoom.value > 1f) 1f else CAMPUS_MAP_DOUBLE_TAP_ZOOM
+                        val targetPan = clampMapPan(
+                            pan = tap - (tap - pan.value) * (targetZoom / zoom.value),
+                            zoom = targetZoom,
+                            size = size,
+                        )
+                        scope.launch { zoom.animateTo(targetZoom, MelonMotion.ease()) }
+                        scope.launch { pan.animateTo(targetPan, MelonMotion.ease()) }
+                    },
+                )
+            },
     ) {
         val widthPx = constraints.maxWidth
         val heightPx = constraints.maxHeight
@@ -141,7 +188,15 @@ private fun CampusMap(
             painter = painterResource(R.drawable.campus_map),
             contentDescription = null,
             contentScale = ContentScale.FillBounds,
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .graphicsLayer {
+                    transformOrigin = TransformOrigin(0f, 0f)
+                    scaleX = zoom.value
+                    scaleY = zoom.value
+                    translationX = pan.value.x
+                    translationY = pan.value.y
+                },
         )
 
         mapped.forEach { venue ->
@@ -153,9 +208,10 @@ private fun CampusMap(
                 verticalArrangement = Arrangement.spacedBy(6.dp),
                 modifier = Modifier
                     .offset {
+                        // Pins follow the map transform but keep their own size.
                         IntOffset(
-                            (widthPx * (venue.mapX ?: 0.0) / 100.0).roundToInt(),
-                            (heightPx * (venue.mapY ?: 0.0) / 100.0).roundToInt(),
+                            (widthPx * (venue.mapX ?: 0.0) / 100.0 * zoom.value + pan.value.x).roundToInt(),
+                            (heightPx * (venue.mapY ?: 0.0) / 100.0 * zoom.value + pan.value.y).roundToInt(),
                         )
                     }
                     // Anchor the pin bottom-center on the coordinate, label above.
@@ -197,6 +253,12 @@ private fun CampusMap(
         }
     }
 }
+
+// Keeps the scaled map covering the whole viewport (no gaps at the edges).
+private fun clampMapPan(pan: Offset, zoom: Float, size: IntSize): Offset = Offset(
+    x = pan.x.coerceIn(size.width * (1f - zoom), 0f),
+    y = pan.y.coerceIn(size.height * (1f - zoom), 0f),
+)
 
 // MARK: Venue list
 
