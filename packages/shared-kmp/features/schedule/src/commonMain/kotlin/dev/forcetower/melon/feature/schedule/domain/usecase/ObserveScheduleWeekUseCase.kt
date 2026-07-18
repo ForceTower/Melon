@@ -47,17 +47,14 @@ class ObserveScheduleWeekUseCase internal constructor(
             val todayIso = today.toString()
             val running = semesters.firstOrNull { todayIso in it.startDate..it.endDate }
             // Between semesters the view still shows the last one the student
-            // attended, anchored on that semester's final week so the column
-            // reflects real allocations instead of a phantom today.
+            // attended (so the column reflects real allocations instead of
+            // being empty), but the week itself always stays anchored on
+            // today's real Mon-Sun — matching iOS, which never jumps the date
+            // rail to a past semester's final week.
             val semester = running ?: semesters
                 .filter { runCatching { LocalDate.parse(it.endDate) }.isSuccess }
                 .maxByOrNull { it.endDate }
-            val anchorDay = when {
-                running != null -> today
-                semester != null -> LocalDate.parse(semester.endDate)
-                else -> today
-            }
-            val monday = anchorDay.minus(DatePeriod(days = anchorDay.dayOfWeek.ordinal))
+            val monday = today.minus(DatePeriod(days = today.dayOfWeek.ordinal))
             WeekKey(semester, today, monday)
         }.distinctUntilChanged()
 
