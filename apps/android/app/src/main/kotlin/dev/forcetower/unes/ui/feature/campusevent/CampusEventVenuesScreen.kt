@@ -1,7 +1,7 @@
 package dev.forcetower.unes.ui.feature.campusevent
 
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -10,14 +10,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -34,9 +32,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
@@ -53,7 +51,7 @@ import dev.forcetower.unes.designsystem.foundation.scaleInOnAppear
 import dev.forcetower.unes.designsystem.theme.melon
 import kotlin.math.roundToInt
 
-// Where the event happens: a schematic campus map (when the venues carry
+// Where the event happens: an illustrated campus map (when the venues carry
 // coordinates) over the venue list. Pin selection is view-only state.
 // Mirrors iOS `CampusEventVenuesScreen` and the dc map screen.
 @Composable
@@ -112,7 +110,9 @@ internal fun CampusEventVenuesScreen(
     }
 }
 
-// MARK: Schematic map
+// MARK: Campus map
+
+private const val CAMPUS_MAP_ASPECT_RATIO = 1368f / 1150f
 
 @Composable
 private fun CampusMap(
@@ -123,56 +123,26 @@ private fun CampusMap(
     modifier: Modifier = Modifier,
 ) {
     val shape = RoundedCornerShape(24.dp)
-    val line = MaterialTheme.melon.surface.line
     val card = MaterialTheme.melon.surface.card
-    val surfaceVariant = MaterialTheme.colorScheme.surfaceVariant
-    val surfaceContainer = MaterialTheme.colorScheme.surfaceContainerHigh
 
     BoxWithConstraints(
         modifier = modifier
             .fillMaxWidth()
-            .height(268.dp)
+            // Matches the image so the percentage pin coordinates land on the
+            // right map features.
+            .aspectRatio(CAMPUS_MAP_ASPECT_RATIO)
             .clip(shape)
-            .background(Brush.verticalGradient(listOf(surfaceVariant, surfaceContainer)))
             .border(1.dp, MaterialTheme.melon.surface.cardLine, shape),
     ) {
         val widthPx = constraints.maxWidth
         val heightPx = constraints.maxHeight
 
-        // Blueprint grid plus a few soft "building" blocks — decorative only;
-        // the pins carry the information.
-        Canvas(modifier = Modifier.fillMaxSize()) {
-            val step = 40.dp.toPx()
-            var x = 0f
-            while (x <= size.width) {
-                drawLine(line.copy(alpha = line.alpha * 0.5f), Offset(x, 0f), Offset(x, size.height))
-                x += step
-            }
-            var y = 0f
-            while (y <= size.height) {
-                drawLine(line.copy(alpha = line.alpha * 0.5f), Offset(0f, y), Offset(size.width, y))
-                y += step
-            }
-        }
-        listOf(
-            listOf(0.08f, 0.14f, 0.38f, 0.30f),
-            listOf(0.56f, 0.10f, 0.34f, 0.40f),
-            listOf(0.12f, 0.52f, 0.32f, 0.34f),
-            listOf(0.58f, 0.50f, 0.34f, 0.38f),
-        ).forEach { (bx, by, bw, bh) ->
-            Box(
-                modifier = Modifier
-                    .offset {
-                        IntOffset((widthPx * bx).roundToInt(), (heightPx * by).roundToInt())
-                    }
-                    .size(
-                        width = (maxWidth * bw),
-                        height = (maxHeight * bh),
-                    )
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(card.copy(alpha = 0.55f)),
-            )
-        }
+        Image(
+            painter = painterResource(R.drawable.campus_map),
+            contentDescription = null,
+            contentScale = ContentScale.FillBounds,
+            modifier = Modifier.fillMaxSize(),
+        )
 
         mapped.forEach { venue ->
             val isSelected = selectedId == venue.id
