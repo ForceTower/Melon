@@ -130,12 +130,12 @@ private fun IdentityRow(event: CampusEvent, phase: CampusEventPhase, now: Instan
             Text(
                 text = event.name,
                 style = MaterialTheme.typography.displayMedium.copy(
-                    fontSize = 40.sp,
-                    lineHeight = 40.sp,
+                    fontSize = 28.sp,
+                    lineHeight = 30.sp,
                     fontWeight = FontWeight.ExtraBold,
                 ),
                 color = onHero,
-                maxLines = 1,
+                maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.padding(top = 2.dp),
             )
@@ -144,8 +144,6 @@ private fun IdentityRow(event: CampusEvent, phase: CampusEventPhase, now: Instan
                     text = event.tagline.orEmpty(),
                     style = MaterialTheme.typography.bodySmall.copy(fontSize = 13.5.sp),
                     color = onHero.copy(alpha = 0.82f),
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.padding(top = 8.dp),
                 )
             }

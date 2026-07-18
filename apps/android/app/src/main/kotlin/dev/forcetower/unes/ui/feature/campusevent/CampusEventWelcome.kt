@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowForward
 import androidx.compose.material.icons.outlined.CalendarMonth
@@ -37,6 +38,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import dev.forcetower.melon.feature.campusevent.domain.model.CampusEvent
 import dev.forcetower.melon.feature.campusevent.domain.model.CampusEventPhase
@@ -117,7 +119,7 @@ internal fun CampusEventWelcome(
                     text = event.edition.orEmpty(),
                     style = MaterialTheme.typography.labelSmall.copy(
                         fontSize = 16.sp,
-                        letterSpacing = 5.44.sp,
+                        letterSpacing = 0.sp,
                     ),
                     color = onHero.copy(alpha = 0.62f),
                     modifier = Modifier.fadeUpOnAppear(delayMs = 500),
@@ -126,12 +128,12 @@ internal fun CampusEventWelcome(
             Text(
                 text = event.name,
                 style = MaterialTheme.typography.displayLarge.copy(
-                    fontSize = 68.sp,
-                    lineHeight = 64.sp,
-                    letterSpacing = (-3.4).sp,
+                    lineHeight = 1.05.em,
+                    letterSpacing = (-0.03).em,
                 ),
+                autoSize = TextAutoSize.StepBased(minFontSize = 22.sp, maxFontSize = 30.sp, stepSize = 1.sp),
                 color = onHero,
-                maxLines = 1,
+                maxLines = 3,
                 overflow = TextOverflow.Ellipsis,
                 textAlign = TextAlign.Center,
                 modifier = Modifier

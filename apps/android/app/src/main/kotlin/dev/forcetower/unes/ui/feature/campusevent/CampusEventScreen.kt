@@ -286,10 +286,17 @@ private fun Hub(
 private fun Header(event: CampusEvent, zone: ZoneId, modifier: Modifier = Modifier) {
     val context = LocalContext.current
     val range = CampusEventFormat.dateRange(context, event.startsAt, event.endsAt, zone)
-    val eyebrow = event.edition?.let { "$it · $range" } ?: range
     Column(modifier = modifier) {
+        if (event.edition != null) {
+            Text(
+                text = event.edition.orEmpty().uppercase(),
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(bottom = 3.dp),
+            )
+        }
         Text(
-            text = eyebrow.uppercase(),
+            text = range.uppercase(),
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.primary,
         )
