@@ -116,20 +116,18 @@ internal fun DisciplineCard(
         val grades = discipline.allGrades
         if (grades.isNotEmpty()) {
             Spacer(Modifier.height(14.dp))
-            // Wraps past three chips per row — real semesters can carry more
-            // evaluations than the design's three (e.g. the "Adicional" finals
-            // row), and squeezing them clips the grade values.
+            // Chips keep their intrinsic width and wrap freely — equal-weight
+            // rows clipped long labels like "Adicional" and stretched a lone
+            // chip on the last row to full width.
             FlowRow(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
-                maxItemsInEachRow = 3,
             ) {
                 grades.forEach { grade ->
                     EvaluationChip(
                         label = grade.label,
                         score = grade.score,
                         hue = hue,
-                        modifier = Modifier.weight(1f),
                     )
                 }
             }
