@@ -31,12 +31,19 @@ struct RootFeature {
     @Dependency(\.watchSync) var watchSync
     @Dependency(\.spotlightSync) var spotlightSync
     @Dependency(\.legacyMigration) var legacyMigration
+    @Dependency(\.sessionStore) var sessionStore
+    @Dependency(\.analytics) var analytics
     private let log = Log.scoped("RootFeature")
 
     var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
             case .task:
+                // Identifying every launch is safe — the SDK no-ops when the
+                // distinct id is unchanged.
+                if let session = sessionStore.current() {
+                    analytics.identify(session.user.id)
+                }
                 // App-lifetime mirror → widget/watch/Spotlight republishing,
                 // alive across login/logout so a wipe also clears them all.
                 let widgets = Effect<Action>.run { _ in await widgetSync.run() }
@@ -53,6 +60,7 @@ struct RootFeature {
             case let .legacyMigration(.migrated(session)):
                 guard case .onboarding = state else { return .none }
                 log.info("legacy session migrated userId=\(session.user.id) -> connected")
+                analytics.identify(session.user.id)
                 state = .connected(AppFeature.State())
                 return .none
 
@@ -65,11 +73,18 @@ struct RootFeature {
 
             case .onboarding(.delegate(.finished)):
                 log.info("onboarding completed -> connected")
+                if let session = sessionStore.current() {
+                    analytics.identify(session.user.id)
+                }
                 state = .connected(AppFeature.State())
                 return .none
 
             case let .connected(.me(.delegate(.loggedOut(firstName)))):
                 log.info("user logged out -> farewell")
+                // reset() also drops super properties, so re-stamp the device
+                // id that ties analytics rows to the OTel logs.
+                analytics.reset()
+                analytics.register(properties: ["machine_id": MachineIdentity.id])
                 state = .farewell(FarewellFeature.State(firstName: firstName))
                 return .none
 

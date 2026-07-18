@@ -2,6 +2,7 @@ import FirebaseCore
 import FirebaseCrashlytics
 import FirebaseMessaging
 import FirebaseRemoteConfig
+import PostHog
 import UIKit
 import UNESKit
 import UserNotifications
@@ -42,8 +43,30 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         application.registerForRemoteNotifications()
 
         configureRemoteConfig()
+        configurePostHog()
         log.info("app launch finished")
         return true
+    }
+
+    /// Events only — session replay and screen autocapture stay off, and DEBUG
+    /// builds opt out so development runs don't pollute the dashboards.
+    private func configurePostHog() {
+        let config = PostHogConfig(
+            apiKey: "phc_uhYjeNJg9RpdEknMM8mNxdRqeiEtr4jqEm6zsv9TETqu",
+            host: "https://a.forcetower.dev"
+        )
+        config.sessionReplay = false
+        config.captureScreenViews = false
+        #if DEBUG
+        config.debug = true
+        config.optOut = true
+        #endif
+        PostHogSDK.shared.setup(config)
+        let sink = PostHogAnalyticsSink()
+        AnalyticsSupport.install(sink)
+        // Same super property Android stamps, so PostHog rows line up with
+        // the OTel logs keyed on machine_id.
+        sink.register(properties: ["machine_id": MachineIdentity.id])
     }
 
     /// Launch fetch for the baseline, then the real-time stream so console

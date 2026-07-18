@@ -7,13 +7,22 @@ import Testing
 struct RootFeatureTests {
     @Test
     func logoutSwapsTheShellForTheFarewell() async {
+        let analyticsCalls = LockIsolated<[String]>([])
         let store = TestStore(initialState: RootFeature.State.connected(AppFeature.State())) {
             RootFeature()
+        } withDependencies: {
+            $0.analytics.reset = { analyticsCalls.withValue { $0.append("reset") } }
+            $0.analytics.register = { properties in
+                analyticsCalls.withValue { $0.append("register \(properties.keys.sorted().joined(separator: ","))") }
+            }
         }
 
         await store.send(.connected(.me(.delegate(.loggedOut(firstName: "Mariana"))))) {
             $0 = .farewell(FarewellFeature.State(firstName: "Mariana"))
         }
+        // Logout unlinks the person and re-stamps the device id (reset drops
+        // super properties).
+        #expect(analyticsCalls.value == ["reset", "register machine_id"])
     }
 
     @Test

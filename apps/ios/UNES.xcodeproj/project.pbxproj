@@ -20,6 +20,7 @@
 		CAFEFB0000000000000000A4 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = CAFEFB0000000000000000A3 /* FirebaseCrashlytics */; };
 		CAFEFB0000000000000000A6 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = CAFEFB0000000000000000A5 /* FirebaseMessaging */; };
 		CAFEFB0000000000000000AA /* FirebaseRemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = CAFEFB0000000000000000A9 /* FirebaseRemoteConfig */; };
+		CAFEFB0000000000000000B2 /* PostHog in Frameworks */ = {isa = PBXBuildFile; productRef = CAFEFB0000000000000000B1 /* PostHog */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -173,6 +174,7 @@
 				CAFEFB0000000000000000A4 /* FirebaseCrashlytics in Frameworks */,
 				CAFEFB0000000000000000A6 /* FirebaseMessaging in Frameworks */,
 				CAFEFB0000000000000000AA /* FirebaseRemoteConfig in Frameworks */,
+				CAFEFB0000000000000000B2 /* PostHog in Frameworks */,
 				CAFECAFE0000000000000003 /* UNESKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -259,6 +261,7 @@
 				CAFEFB0000000000000000A3 /* FirebaseCrashlytics */,
 				CAFEFB0000000000000000A5 /* FirebaseMessaging */,
 				CAFEFB0000000000000000A9 /* FirebaseRemoteConfig */,
+				CAFEFB0000000000000000B1 /* PostHog */,
 			);
 			productName = UNES;
 			productReference = 6CF5E0FB2FF5A43F00953BC4 /* UNES.app */;
@@ -366,6 +369,7 @@
 			packageReferences = (
 				CAFECAFE0000000000000001 /* XCLocalSwiftPackageReference "UNESKit" */,
 				CAFEFB0000000000000000A0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				CAFEFB0000000000000000B0 /* XCRemoteSwiftPackageReference "posthog-ios" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 6CF5E0FC2FF5A43F00953BC4 /* Products */;
@@ -962,10 +966,15 @@
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
 			requirement = {
 				kind = upToNextMajorVersion;
-				/* 12.16.0 introduced FID registration: messaging(_:didReceiveRegistration:) +
-				   FirebaseMessagingInstallationIdEnabled. Older versions compile but never
-				   deliver the FID. */
 				minimumVersion = 12.16.0;
+			};
+		};
+		CAFEFB0000000000000000B0 /* XCRemoteSwiftPackageReference "posthog-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/PostHog/posthog-ios.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.66.1;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -1016,6 +1025,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = CAFEFB0000000000000000A0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseRemoteConfig;
+		};
+		CAFEFB0000000000000000B1 /* PostHog */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CAFEFB0000000000000000B0 /* XCRemoteSwiftPackageReference "posthog-ios" */;
+			productName = PostHog;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
