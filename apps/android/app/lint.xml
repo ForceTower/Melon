@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<lint>
+    <!-- The launcher icon must stay in mipmap-anydpi-v26: merging it into
+         plain mipmap-anydpi (as this check suggests) makes AGP silently drop
+         the adaptive-icon XMLs from the APK, so launchers fall back to the
+         legacy webp on a white plate. -->
+    <issue id="ObsoleteSdkInt">
+        <ignore path="src/main/res/mipmap-anydpi-v26" />
+    </issue>
+</lint>
