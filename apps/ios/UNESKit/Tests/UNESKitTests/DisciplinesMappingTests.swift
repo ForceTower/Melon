@@ -61,6 +61,11 @@ enum DisciplinesFixtures {
                         id: "\(p)g-alg-2", studentClassId: "\(p)sc-alg", name: "Prova 2", nameShort: "AV2",
                         ordinal: 2, value: nil, date: "2026-05-12", platformId: "pg-alg-2", weight: "5"
                     ),
+                    // A pending Prova Final — value stays NULL until posted.
+                    .init(
+                        id: "\(p)g-alg-f", studentClassId: "\(p)sc-alg", name: "Prova Final", nameShort: "Adicional",
+                        ordinal: 3, value: nil, date: "2026-07-20", platformId: "pg-alg-final"
+                    ),
                 ],
             lectures: [
                 .init(id: "\(p)l1", classId: "\(p)c-alg", date: "2026-04-09", subject: "Filas"),
@@ -87,6 +92,11 @@ enum DisciplinesFixtures {
                 id: "\(rowPrefix)-3", studentClassId: studentClassId, name: "Relatórios", nameShort: "LAB",
                 ordinal: 3, value: "9.0", date: nil, platformId: "pg-fis-3", weight: "5"
             ),
+            // A posted Prova Final, replicated across groups like the rest.
+            .init(
+                id: "\(rowPrefix)-f", studentClassId: studentClassId, name: "Prova Final", nameShort: "Adicional",
+                ordinal: 4, value: "6.5", date: "2026-07-10", platformId: "pg-fis-final"
+            ),
         ]
     }
 }
@@ -108,21 +118,27 @@ struct DisciplinesMappingTests {
         #expect(summaries.map(\.colorIndex) == [0, 1])
 
         let fis = summaries[1]
-        // Replicated grade rows collapse by platform id.
-        #expect(fis.grades.map(\.label) == ["AV1", "AV2", "LAB"])
+        // Replicated grade rows collapse by platform id; the Prova Final row
+        // renders last under the localized "Final" label.
+        #expect(fis.grades.map(\.label) == ["AV1", "AV2", "LAB", "Final"])
+        #expect(fis.grades.last?.value == 6.5)
         // totalFaltas is replicated per group — never summed.
         #expect(fis.missedHours == 4)
         #expect(fis.hours == 75)
         #expect(fis.groupsLabel == "Te · Pr")
         // Theory group ("T01") wins the teacher slot over "T01P01".
         #expect(fis.teacherName == "João Nascimento")
-        // Weighted mean: (6.8×2.5 + 9.0×5) / 7.5.
+        // Weighted mean: (6.8×2.5 + 9.0×5) / 7.5 — the Prova Final grade
+        // stays out of the partial average.
         let weighted = try! #require(fis.partialAverage)
         #expect(abs(weighted - 62.0 / 7.5) < 0.0001)
         #expect(fis.nextEvaluation == UpcomingEvaluation(label: "AV2", daysUntil: 31))
 
         let alg = summaries[0]
-        #expect(alg.grades.count == 2)
+        // A pending Prova Final shows as an ungraded last chip but never
+        // becomes the next-evaluation pick.
+        #expect(alg.grades.map(\.label) == ["AV1", "AV2", "Final"])
+        #expect(alg.grades.last?.value == nil)
         #expect(alg.missedHours == 2)
         #expect(alg.groupsLabel == nil)
         #expect(alg.nextEvaluation == UpcomingEvaluation(label: "AV2", daysUntil: 24))

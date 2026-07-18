@@ -35,15 +35,16 @@ extension SemesterSnapshot {
             // The backend replicates the discipline's grade set onto every
             // group row — dedup by upstream id or the chips double up and the
             // average over-weights nothing in particular. The Prova Final row
-            // is not a regular evaluation: `wentToFinals` already carries the
-            // state, so it stays out of the chips, the average, and the
-            // next-evaluation pick.
+            // is not a regular evaluation: it renders as the last chip, but
+            // stays out of the average and the next-evaluation pick —
+            // `wentToFinals` already carries the state.
             var seenGradeKeys: Set<String> = []
-            let grades = enrollments
+            let dedupedGrades = enrollments
                 .flatMap { gradesByStudentClass[$0.studentClass.id] ?? [] }
-                .filter { !isFinalExamRow($0) }
                 .sorted { ($0.ordinal, $0.date ?? "", $0.id) < ($1.ordinal, $1.date ?? "", $1.id) }
                 .filter { seenGradeKeys.insert($0.platformId ?? $0.id).inserted }
+            let grades = dedupedGrades.filter { !isFinalExamRow($0) }
+            let finalExam = dedupedGrades.first(where: isFinalExamRow)
 
             let today = now.dayStamp
             let nextEvaluation = grades
@@ -80,7 +81,17 @@ extension SemesterSnapshot {
                         value: $0.value.flatMap(parseDecimal),
                         date: $0.date
                     )
-                },
+                } + (finalExam.map {
+                    // The SAGRES "Adicional" short label gives way to
+                    // localized copy, same as the detail section.
+                    [DisciplineGrade(
+                        id: $0.platformId ?? $0.id,
+                        label: String.localized(.disciplinesDetailFinalExamLabel),
+                        name: gradeTitle($0),
+                        value: $0.value.flatMap(parseDecimal),
+                        date: $0.date
+                    )]
+                } ?? []),
                 partialAverage: partialAverage(of: grades),
                 finalGrade: enrollments.firstNonNil(\.studentClass.finalGrade).flatMap(parseDecimal),
                 approved: enrollments.firstNonNil(\.studentClass.approved),
