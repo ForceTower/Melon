@@ -71,10 +71,10 @@ struct CampusEventWelcomeView: View {
                         .fadeUp(delay: 0.5)
                 }
                 Text(event.name)
-                    .font(.system(size: 76, weight: .heavy))
-                    .tracking(-2.28)
+                    .font(.system(size: 30, weight: .heavy))
+                    .tracking(-0.9)
                     .lineLimit(3)
-                    .minimumScaleFactor(0.5)
+                    .minimumScaleFactor(0.73)
                     .multilineTextAlignment(.center)
                     .foregroundStyle(.white)
                     .shadow(color: .black.opacity(0.4), radius: 20, y: 12)

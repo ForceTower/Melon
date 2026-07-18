@@ -66,7 +66,12 @@ struct CampusEventView: View {
 
     private var header: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Eyebrow(text: headerEyebrow)
+            VStack(alignment: .leading, spacing: 3) {
+                if let edition = store.event.edition {
+                    Eyebrow(text: edition)
+                }
+                Eyebrow(text: CampusEventFormat.dateRange(from: store.event.startsAt, to: store.event.endsAt, in: store.event.timeZone))
+            }
             if let tagline = store.event.tagline {
                 Text(tagline)
                     .font(.system(size: 15, weight: .medium))
@@ -76,12 +81,6 @@ struct CampusEventView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.horizontal, 20)
-    }
-
-    private var headerEyebrow: String {
-        let range = CampusEventFormat.dateRange(from: store.event.startsAt, to: store.event.endsAt, in: store.event.timeZone)
-        guard let edition = store.event.edition else { return range }
-        return "\(edition) · \(range)"
     }
 
     // MARK: Quick links
