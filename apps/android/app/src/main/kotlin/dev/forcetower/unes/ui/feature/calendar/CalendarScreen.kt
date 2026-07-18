@@ -96,9 +96,9 @@ internal fun CalendarScreen(
 private fun CalendarContent(
     events: List<CalendarEvent>,
     onBack: () -> Unit,
+    modifier: Modifier = Modifier,
     onOpenEvent: (CalendarEvent) -> Unit = {},
     onAddToCalendar: (CalendarEvent) -> Unit = {},
-    modifier: Modifier = Modifier,
     bottomInset: Dp = 0.dp,
 ) {
     var category by rememberSaveable { mutableStateOf(CalendarCategoryFilter.All) }
