@@ -115,16 +115,33 @@ extension AppDelegate: MessagingDelegate, UNUserNotificationCenterDelegate {
         willPresent notification: UNNotification,
         withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
     ) {
-        // FCM data payloads ride along as string entries in userInfo; the
-        // non-string values ("aps" & friends) are system metadata.
-        let data = notification.request.content.userInfo
-            .reduce(into: [String: String]()) { payload, entry in
-                guard let key = entry.key as? String, let value = entry.value as? String else { return }
-                payload[key] = value
-            }
+        let data = Self.stringPayload(of: notification)
         if !data.isEmpty {
             Task { await PushEvents.received(data) }
         }
         completionHandler([.list, .sound, .banner])
+    }
+
+    nonisolated func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        didReceive response: UNNotificationResponse,
+        withCompletionHandler completionHandler: @escaping () -> Void
+    ) {
+        // Only the tap itself routes — a custom-action dismissal shouldn't.
+        let data = Self.stringPayload(of: response.notification)
+        if response.actionIdentifier == UNNotificationDefaultActionIdentifier, !data.isEmpty {
+            Task { await PushEvents.tapped(data) }
+        }
+        completionHandler()
+    }
+
+    /// FCM data payloads ride along as string entries in userInfo; the
+    /// non-string values ("aps" & friends) are system metadata.
+    private nonisolated static func stringPayload(of notification: UNNotification) -> [String: String] {
+        notification.request.content.userInfo
+            .reduce(into: [String: String]()) { payload, entry in
+                guard let key = entry.key as? String, let value = entry.value as? String else { return }
+                payload[key] = value
+            }
     }
 }

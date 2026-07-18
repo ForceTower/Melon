@@ -94,6 +94,7 @@ struct MeFeature {
         case overviewUpdated(CachedMeOverview)
         case profileLoaded(Profile)
         case shortcutTapped(MeShortcut)
+        case deeplinkOpened(Deeplink)
         case settingsRowTapped(MeSettingsRow)
         case aboutInfoResolved(AppInfo)
         case aboutCopyTapped
@@ -108,6 +109,14 @@ struct MeFeature {
 
         enum Delegate: Equatable {
             case loggedOut(firstName: String?)
+        }
+
+        /// A `unes://` landing resolved by `AppFeature` — the hub is the
+        /// fallback floor when the target can't be fetched.
+        enum Deeplink: Equatable {
+            case materialsHub
+            case material(Material)
+            case materialsDiscipline(MaterialsDiscipline)
         }
     }
 
@@ -168,6 +177,24 @@ struct MeFeature {
                 case .materials:
                     state.path.append(.materials(MaterialsFeature.State()))
                 }
+                return .none
+
+            case let .deeplinkOpened(deeplink):
+                // Rewrite the stack to the path the user would have walked
+                // organically, so back behaves as if they had — and a
+                // notification tap lands in a predictable place even when
+                // the tab already had depth.
+                var path = StackState<Path.State>()
+                path.append(.materials(MaterialsFeature.State()))
+                switch deeplink {
+                case .materialsHub:
+                    break
+                case let .material(material):
+                    path.append(.materialsDetail(MaterialsDetailFeature.State(material: material)))
+                case let .materialsDiscipline(discipline):
+                    path.append(.materialsList(MaterialsListFeature.State(discipline: discipline)))
+                }
+                state.path = path
                 return .none
 
             case let .settingsRowTapped(row):

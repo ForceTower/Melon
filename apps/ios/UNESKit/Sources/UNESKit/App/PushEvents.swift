@@ -11,4 +11,16 @@ public enum PushEvents {
         log.debug("foreground notification keys=\(data.keys.sorted().joined(separator: ","))")
         await push.dataNotificationReceived(data)
     }
+
+    /// Notification-tap entry point — the tap signals fresh data (same
+    /// refresh path as a foreground push) and carries the destination as a
+    /// `unes://` URL in the `url` data key.
+    public static func tapped(_ data: [String: String]) async {
+        @Dependency(\.push) var push
+        log.info("notification tap keys=\(data.keys.sorted().joined(separator: ","))")
+        await push.dataNotificationReceived(data)
+        if let url = data["url"] {
+            Deeplinks.post(url)
+        }
+    }
 }

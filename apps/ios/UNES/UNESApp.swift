@@ -22,6 +22,9 @@ struct UNESApp: App {
                     else { return }
                     IntentSupport.openEntity(identifier: identifier)
                 }
+                .onOpenURL { url in
+                    Deeplinks.open(url)
+                }
         }
     }
 }

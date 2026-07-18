@@ -1,12 +1,14 @@
 import ComposableArchitecture
 import Foundation
 
-/// An in-app destination requested by a Siri/Shortcuts intent or a
-/// Spotlight result tap.
+/// An in-app destination requested by a Siri/Shortcuts intent, a Spotlight
+/// result tap, or a `unes://` deeplink.
 enum IntentRoute: Equatable, Sendable {
     case tab(AppFeature.Tab)
     case discipline(semesterId: String, disciplineId: String)
     case message(id: String)
+    case material(id: String)
+    case materialsDiscipline(disciplineId: String)
 
     /// Log label — never carries ids or names (remote log).
     var kindLabel: String {
@@ -14,6 +16,8 @@ enum IntentRoute: Equatable, Sendable {
         case .tab: "tab"
         case .discipline: "discipline"
         case .message: "message"
+        case .material: "material"
+        case .materialsDiscipline: "materialsDiscipline"
         }
     }
 }

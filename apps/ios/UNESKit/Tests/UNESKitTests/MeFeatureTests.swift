@@ -63,6 +63,26 @@ struct MeFeatureTests {
     }
 
     @Test
+    func deeplinkRewritesThePathToTheOrganicStack() async {
+        // Existing depth on the tab — the deeplink must land predictably
+        // anyway, replacing the stack rather than piling on top of it.
+        var initialState = MeFeature.State()
+        initialState.path.append(.calendar(CalendarFeature.State()))
+        let material = Material.preview()[0]
+
+        let store = TestStore(initialState: initialState) {
+            MeFeature()
+        }
+
+        await store.send(.deeplinkOpened(.material(material))) {
+            var path = StackState<MeFeature.Path.State>()
+            path.append(.materials(MaterialsFeature.State()))
+            path.append(.materialsDetail(MaterialsDetailFeature.State(material: material)))
+            $0.path = path
+        }
+    }
+
+    @Test
     func resumeWakesAPushedCalendar() async {
         let calendar = Calendar.current
         let today = calendar.startOfDay(for: Self.referenceDate)

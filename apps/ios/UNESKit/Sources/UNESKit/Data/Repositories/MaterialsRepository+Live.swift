@@ -34,6 +34,22 @@ extension MaterialsRepository: DependencyKey {
                 throw error
             }
         },
+        material: { id in
+            @Dependency(\.apiClient) var apiClient
+            log.debug("material start id=\(id)")
+            do {
+                let dto: MaterialDTO = try await apiClient.get(
+                    from: "api/materials/material",
+                    query: [URLQueryItem(name: "id", value: id)]
+                )
+                guard let material = dto.domain else { throw APIError.emptyEnvelope }
+                log.info("material ok id=\(id)")
+                return material
+            } catch {
+                logFailure("material", error: error)
+                throw error
+            }
+        },
         saved: {
             @Dependency(\.apiClient) var apiClient
             log.debug("saved start")

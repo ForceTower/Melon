@@ -9,6 +9,9 @@ import Foundation
 struct MaterialsRepository: Sendable {
     var overview: @Sendable () async throws -> MaterialsOverview
     var discipline: @Sendable (_ id: String) async throws -> MaterialsDisciplineDetails
+    /// One material by id — serves the notification deeplink, which lands on
+    /// the detail without a shelf in hand.
+    var material: @Sendable (_ id: String) async throws -> Material
     var saved: @Sendable () async throws -> [Material]
     /// Toggles the "útil" vote; returns the new vote count.
     var setUseful: @Sendable (_ materialId: String, _ isUseful: Bool) async throws -> Int
@@ -29,6 +32,7 @@ extension MaterialsRepository: TestDependencyKey {
         discipline: { id in
             id == "d5" ? .previewEmpty() : .preview()
         },
+        material: { _ in Material.preview()[0] },
         saved: { Material.preview().filter(\.isSaved) },
         setUseful: { _, isUseful in isUseful ? 129 : 128 },
         setSaved: { _, _ in },

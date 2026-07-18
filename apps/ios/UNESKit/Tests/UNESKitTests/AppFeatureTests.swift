@@ -141,11 +141,96 @@ struct AppFeatureTests {
         } withDependencies: {
             $0.date = .constant(Self.referenceDate)
             $0.messagesRepository.cached = { _ in nil }
+            $0.messagesRepository.refresh = { _ in }
         }
 
         await store.send(.intentOpenMessage(id: "gone"))
         await store.receive(.intentRoute(.messages)) {
             $0.tab = .messages
+        }
+    }
+
+    @Test
+    func messageRouteRefreshesWhenTheTapOutrunsTheMirror() async {
+        let message = MessageItem(
+            id: "m1", origin: .campus, disciplineCode: nil, disciplineName: nil,
+            disciplineColorIndex: nil, subject: "Prazo de matrícula", body: "O prazo termina sexta.",
+            senderName: "Colegiado", receivedAt: Self.referenceDate, unread: false, starred: false
+        )
+        // Empty until the refresh "writes" the row — the push-tap race.
+        let synced = LockIsolated(false)
+        let store = TestStore(initialState: AppFeature.State()) {
+            AppFeature()
+        } withDependencies: {
+            $0.date = .constant(Self.referenceDate)
+            $0.messagesRepository.cached = { _ in
+                synced.value ? MessagesOverview(messages: [message]) : nil
+            }
+            $0.messagesRepository.refresh = { _ in synced.setValue(true) }
+        }
+
+        await store.send(.intentOpenMessage(id: "m1"))
+        await store.receive(.intentRoute(.messages)) {
+            $0.tab = .messages
+        }
+        await store.receive(.messages(.messageTapped(message))) {
+            $0.messages.path[id: 0] = .detail(MessageDetailFeature.State(message: message))
+        }
+    }
+
+    @Test
+    func materialRouteFetchesTheDetailAndLandsOnIt() async {
+        let material = Material.preview()[0]
+        let store = TestStore(initialState: AppFeature.State()) {
+            AppFeature()
+        } withDependencies: {
+            $0.materialsRepository.material = { _ in material }
+        }
+
+        await store.send(.intentOpenMaterial(id: material.id))
+        await store.receive(.intentRoute(.me)) {
+            $0.tab = .me
+        }
+        await store.receive(.me(.deeplinkOpened(.material(material)))) {
+            $0.me.path[id: 0] = .materials(MaterialsFeature.State())
+            $0.me.path[id: 1] = .materialsDetail(MaterialsDetailFeature.State(material: material))
+        }
+    }
+
+    @Test
+    func unfetchableMaterialRouteFallsBackToTheHub() async {
+        let store = TestStore(initialState: AppFeature.State()) {
+            AppFeature()
+        } withDependencies: {
+            $0.materialsRepository.material = { _ in throw APIError.emptyEnvelope }
+        }
+
+        await store.send(.intentOpenMaterial(id: "gone"))
+        await store.receive(.intentRoute(.me)) {
+            $0.tab = .me
+        }
+        await store.receive(.me(.deeplinkOpened(.materialsHub))) {
+            $0.me.path[id: 0] = .materials(MaterialsFeature.State())
+        }
+    }
+
+    @Test
+    func materialsDisciplineRouteResolvesTheShelfFromTheOverview() async {
+        let overview = MaterialsOverview.preview()
+        let discipline = overview.disciplines[1]
+        let store = TestStore(initialState: AppFeature.State()) {
+            AppFeature()
+        } withDependencies: {
+            $0.materialsRepository.overview = { overview }
+        }
+
+        await store.send(.intentOpenMaterialsDiscipline(disciplineId: discipline.id))
+        await store.receive(.intentRoute(.me)) {
+            $0.tab = .me
+        }
+        await store.receive(.me(.deeplinkOpened(.materialsDiscipline(discipline)))) {
+            $0.me.path[id: 0] = .materials(MaterialsFeature.State())
+            $0.me.path[id: 1] = .materialsList(MaterialsListFeature.State(discipline: discipline))
         }
     }
 

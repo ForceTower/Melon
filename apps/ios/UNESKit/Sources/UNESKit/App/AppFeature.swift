@@ -36,6 +36,8 @@ struct AppFeature {
         case intentRoute(Tab)
         case intentOpenDiscipline(semesterId: String, disciplineId: String)
         case intentOpenMessage(id: String)
+        case intentOpenMaterial(id: String)
+        case intentOpenMaterialsDiscipline(disciplineId: String)
         case secretIconsChanged
         case iconCelebrationDismissed
         case iconCelebrationUsed(AppIcon)
@@ -51,6 +53,7 @@ struct AppFeature {
     @Dependency(\.homeRepository) var homeRepository
     @Dependency(\.disciplinesRepository) var disciplinesRepository
     @Dependency(\.messagesRepository) var messagesRepository
+    @Dependency(\.materialsRepository) var materialsRepository
     @Dependency(\.intentRouter) var intentRouter
     @Dependency(\.appIconClient) var appIconClient
     @Dependency(\.settingsRepository) var settingsRepository
@@ -92,6 +95,10 @@ struct AppFeature {
                                 await send(.intentOpenDiscipline(semesterId: semesterId, disciplineId: disciplineId))
                             case let .message(id):
                                 await send(.intentOpenMessage(id: id))
+                            case let .material(id):
+                                await send(.intentOpenMaterial(id: id))
+                            case let .materialsDiscipline(disciplineId):
+                                await send(.intentOpenMaterialsDiscipline(disciplineId: disciplineId))
                             }
                         }
                     }
@@ -134,7 +141,14 @@ struct AppFeature {
 
             case let .intentOpenMessage(id):
                 return .run { [log, now = date.now] send in
-                    let overview = try? await messagesRepository.cached(now)
+                    var overview = try? await messagesRepository.cached(now)
+                    if overview?.messages.first(where: { $0.id == id }) == nil {
+                        // A notification tap can outrun the mirror — the
+                        // message it announced may not be local yet. One
+                        // refresh before giving up to the inbox.
+                        try? await messagesRepository.refresh(now)
+                        overview = try? await messagesRepository.cached(now)
+                    }
                     guard let message = overview?.messages.first(where: { $0.id == id }) else {
                         log.info("entity route fallback kind=message")
                         await send(.intentRoute(.messages))
@@ -142,6 +156,34 @@ struct AppFeature {
                     }
                     await send(.intentRoute(.messages))
                     await send(.messages(.messageTapped(message)))
+                }
+
+            case let .intentOpenMaterial(id):
+                // Materiais is online-only, so the deeplink resolves with a
+                // fetch; the hub is the floor when it can't (offline,
+                // deleted, audience mismatch) — never an error dialog.
+                return .run { [log] send in
+                    guard let material = try? await materialsRepository.material(id) else {
+                        log.info("entity route fallback kind=material")
+                        await send(.intentRoute(.me))
+                        await send(.me(.deeplinkOpened(.materialsHub)))
+                        return
+                    }
+                    await send(.intentRoute(.me))
+                    await send(.me(.deeplinkOpened(.material(material))))
+                }
+
+            case let .intentOpenMaterialsDiscipline(disciplineId):
+                return .run { [log] send in
+                    let overview = try? await materialsRepository.overview()
+                    guard let discipline = overview?.disciplines.first(where: { $0.id == disciplineId }) else {
+                        log.info("entity route fallback kind=materialsDiscipline")
+                        await send(.intentRoute(.me))
+                        await send(.me(.deeplinkOpened(.materialsHub)))
+                        return
+                    }
+                    await send(.intentRoute(.me))
+                    await send(.me(.deeplinkOpened(.materialsDiscipline(discipline))))
                 }
 
             case .secretIconsChanged:
