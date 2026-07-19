@@ -55,9 +55,27 @@ private actor PushRegistrar {
     private static let legacyTokenKey = "messaging_notification_token"
     private static let pendingDeletesKey = "messaging_pending_deletes"
 
+    /// A real FID is a short opaque id (~22 chars); anything token-shaped is
+    /// the legacy FCM registration token leaking through the SDK's FID
+    /// delegate — registering it as a FID strands the device once FCM stops
+    /// honoring token sends.
+    private static func isFidShaped(_ value: String) -> Bool {
+        value.count <= 50 && !value.contains(":")
+    }
+
     func fidReceived(_ installationId: String) async {
+        guard Self.isFidShaped(installationId) else {
+            log.error("rejected mis-shaped fid length=\(installationId.count)")
+            return
+        }
+        let previous = UserDefaults.standard.string(forKey: Self.fidKey)
         UserDefaults.standard.set(installationId, forKey: Self.fidKey)
         log.debug("fid stored length=\(installationId.count)")
+        if let previous, previous != installationId {
+            // FID rotation, or a legacy token an earlier build mis-registered
+            // as the FID: retire that row once the new one is registered.
+            addPendingDelete(previous)
+        }
         await reconcile()
     }
 

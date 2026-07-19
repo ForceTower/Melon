@@ -21,6 +21,7 @@
 		CAFEFB0000000000000000A6 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = CAFEFB0000000000000000A5 /* FirebaseMessaging */; };
 		CAFEFB0000000000000000AA /* FirebaseRemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = CAFEFB0000000000000000A9 /* FirebaseRemoteConfig */; };
 		CAFEFB0000000000000000B2 /* PostHog in Frameworks */ = {isa = PBXBuildFile; productRef = CAFEFB0000000000000000B1 /* PostHog */; };
+		CAFEFB0000000000000000C2 /* FirebaseInstallations in Frameworks */ = {isa = PBXBuildFile; productRef = CAFEFB0000000000000000C1 /* FirebaseInstallations */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -172,6 +173,7 @@
 			files = (
 				CAFEFB0000000000000000A2 /* FirebaseCore in Frameworks */,
 				CAFEFB0000000000000000A4 /* FirebaseCrashlytics in Frameworks */,
+				CAFEFB0000000000000000C2 /* FirebaseInstallations in Frameworks */,
 				CAFEFB0000000000000000A6 /* FirebaseMessaging in Frameworks */,
 				CAFEFB0000000000000000AA /* FirebaseRemoteConfig in Frameworks */,
 				CAFEFB0000000000000000B2 /* PostHog in Frameworks */,
@@ -259,6 +261,7 @@
 				CAFECAFE0000000000000002 /* UNESKit */,
 				CAFEFB0000000000000000A1 /* FirebaseCore */,
 				CAFEFB0000000000000000A3 /* FirebaseCrashlytics */,
+				CAFEFB0000000000000000C1 /* FirebaseInstallations */,
 				CAFEFB0000000000000000A5 /* FirebaseMessaging */,
 				CAFEFB0000000000000000A9 /* FirebaseRemoteConfig */,
 				CAFEFB0000000000000000B1 /* PostHog */,
@@ -1030,6 +1033,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = CAFEFB0000000000000000B0 /* XCRemoteSwiftPackageReference "posthog-ios" */;
 			productName = PostHog;
+		};
+		CAFEFB0000000000000000C1 /* FirebaseInstallations */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CAFEFB0000000000000000A0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseInstallations;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
