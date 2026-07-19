@@ -32,7 +32,9 @@ extension MirrorStore {
         guard parts.count == 3,
               let end = calendar.date(from: DateComponents(year: parts[0], month: parts[1], day: parts[2])),
               let closes = calendar.date(byAdding: .day, value: retrospectiveWindowDays, to: end),
-              now <= closes
+              // Day-granular: the 14th day is the last full day the window
+              // is open, whatever the hour.
+              today <= closes.dayStamp
         else { return nil }
 
         let summaries = try snapshot(for: ended, db: db).disciplineSummaries(now: now)
