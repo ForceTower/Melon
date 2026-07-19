@@ -43,6 +43,10 @@ internal data class SettingsUiState(
     val notifClassLocation: Boolean = true,
     val notifClassMaterial: Boolean = true,
     val notifClassSubject: Boolean = false,
+    // Device-local evening-before reminder (DataStore, never syncs) and its
+    // Remote Config gate. Not part of the "n/9 ativas" server-toggle count.
+    val evaluationRemindersAvailable: Boolean = false,
+    val evaluationRemindersEnabled: Boolean = true,
 ) : UiState {
     val messageActiveCount: Int get() = countOn(notifMsgBroadcast, notifMsgClass, notifMsgDirect)
     val gradeActiveCount: Int get() = countOn(notifGradePosted, notifGradeChanged, notifGradeDateChanged)

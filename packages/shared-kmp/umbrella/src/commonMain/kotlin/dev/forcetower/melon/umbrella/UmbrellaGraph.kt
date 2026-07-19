@@ -53,6 +53,7 @@ import dev.forcetower.melon.feature.overview.domain.usecase.ObserveAttendanceTil
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveDisciplinesUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveGradeTileUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveLastSyncUseCase
+import dev.forcetower.melon.feature.overview.domain.usecase.ObserveEvaluationRemindersUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveNextTestTileUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveNowClassUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveOverviewHeaderUseCase
@@ -128,6 +129,7 @@ interface UmbrellaGraph {
     val observeDisciplinesUseCase: ObserveDisciplinesUseCase
     val observeUnreadMessagesTileUseCase: ObserveUnreadMessagesTileUseCase
     val observeNextTestTileUseCase: ObserveNextTestTileUseCase
+    val observeEvaluationRemindersUseCase: ObserveEvaluationRemindersUseCase
     val observeAttendanceTileUseCase: ObserveAttendanceTileUseCase
     val observeGradeTileUseCase: ObserveGradeTileUseCase
     val observeLastSyncUseCase: ObserveLastSyncUseCase

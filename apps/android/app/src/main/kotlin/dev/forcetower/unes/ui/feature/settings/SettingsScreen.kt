@@ -1,6 +1,7 @@
 package dev.forcetower.unes.ui.feature.settings
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -18,9 +19,11 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.MenuBook
+import androidx.compose.material.icons.filled.Alarm
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Campaign
 import androidx.compose.material.icons.filled.Edit
@@ -43,6 +46,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
@@ -207,6 +211,9 @@ internal fun SettingsScreen(
                         MessagesGroup(state = state, onToggle = vm::onIntent)
                         GradesGroup(state = state, onToggle = vm::onIntent)
                         ClassesGroup(state = state, onToggle = vm::onIntent)
+                        if (state.evaluationRemindersAvailable) {
+                            EvaluationReminderCard(state = state, onToggle = vm::onIntent)
+                        }
                     }
                 }
 
@@ -375,6 +382,31 @@ private fun ClassesGroup(state: SettingsUiState, onToggle: (SettingsIntent) -> U
             hint = stringResource(R.string.settings_notif_class_subject_hint),
             on = state.notifClassSubject,
             onToggle = { onToggle(SettingsIntent.SetToggle(NotifToggle.ClassSubject, it)) },
+        )
+    }
+}
+
+// Device-local evening-before reminder — a single-row card without the
+// server groups' header counter, because it schedules on this device and
+// never PATCHes `user_settings`.
+@Composable
+private fun EvaluationReminderCard(state: SettingsUiState, onToggle: (SettingsIntent) -> Unit) {
+    val shape = RoundedCornerShape(24.dp)
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(shape)
+            .background(MaterialTheme.melon.surface.card)
+            .border(1.dp, MaterialTheme.melon.surface.line, shape),
+    ) {
+        NotificationToggleRow(
+            icon = Icons.Filled.Alarm,
+            iconTint = MaterialTheme.melon.palette.violet,
+            label = stringResource(R.string.settings_notif_evaluation_reminder_label),
+            hint = stringResource(R.string.settings_notif_evaluation_reminder_hint),
+            on = state.evaluationRemindersEnabled,
+            onToggle = { onToggle(SettingsIntent.SetEvaluationReminders(it)) },
+            showDivider = false,
         )
     }
 }

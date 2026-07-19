@@ -3,6 +3,9 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- Evaluation-reminder alarms are RTC and die with a reboot; the boot
+         broadcast re-arms them from the on-disk snapshot. -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <queries>
         <intent>
@@ -89,6 +92,19 @@
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/next_class_widget_info" />
+        </receiver>
+
+        <!-- Evening-before evaluation reminders: fires the local notification
+             from the on-disk snapshot and re-arms after boot / clock changes
+             (all protected broadcasts, so the receiver stays unexported). -->
+        <receiver
+            android:name=".reminders.EvaluationReminderReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+            </intent-filter>
         </receiver>
     </application>
 

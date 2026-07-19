@@ -761,6 +761,14 @@
     <string name="settings_notif_class_material_hint">Slides, prompts, lists</string>
     <string name="settings_notif_class_subject_label">Class subject</string>
     <string name="settings_notif_class_subject_hint">The planned topic changed</string>
+    <string name="settings_notif_evaluation_reminder_label">Evaluation reminder</string>
+    <string name="settings_notif_evaluation_reminder_hint">8 PM the evening before, on this device</string>
+    <!-- endregion -->
+
+    <!-- region Evaluation reminder notification -->
+    <string name="notif_evaluation_reminder_channel">Evaluation reminders</string>
+    <string name="notif_evaluation_reminder_title">Evaluation tomorrow</string>
+    <string name="notif_evaluation_reminder_body_format">%1$s — %2$s</string>
     <!-- endregion -->
 
     <!-- region Settings · Footer -->

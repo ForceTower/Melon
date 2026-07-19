@@ -84,6 +84,17 @@ data class OverviewNextTestTile(
     val daysUntil: Int,
 )
 
+// One upcoming un-graded evaluation for the local reminder scheduler. `key`
+// stays stable across sync's wipe-then-insert (discipline + platform grade
+// id), so a re-sync maps onto the same reminder instead of duplicating it.
+data class OverviewEvaluationReminder(
+    val key: String,
+    val label: String,
+    val disciplineName: String,
+    // ISO yyyy-MM-dd — the evaluation day; reminders fire the evening before.
+    val date: String,
+)
+
 data class OverviewAttendanceTile(
     // 0..100, rounded. Null when the semester has no hours tracked yet.
     val percentage: Int?,

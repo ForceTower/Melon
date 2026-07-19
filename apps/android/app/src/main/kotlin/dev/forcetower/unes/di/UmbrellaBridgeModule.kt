@@ -55,6 +55,7 @@ import dev.forcetower.melon.feature.overview.domain.usecase.ObserveAttendanceTil
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveDisciplinesUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveGradeTileUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveLastSyncUseCase
+import dev.forcetower.melon.feature.overview.domain.usecase.ObserveEvaluationRemindersUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveNextTestTileUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveNowClassUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveOverviewHeaderUseCase
@@ -157,6 +158,8 @@ object UmbrellaBridgeModule {
         graph.observeUnreadMessagesTileUseCase
     @Provides fun provideObserveNextTestTileUseCase(graph: UmbrellaGraph): ObserveNextTestTileUseCase =
         graph.observeNextTestTileUseCase
+    @Provides fun provideObserveEvaluationRemindersUseCase(graph: UmbrellaGraph): ObserveEvaluationRemindersUseCase =
+        graph.observeEvaluationRemindersUseCase
     @Provides fun provideObserveAttendanceTileUseCase(graph: UmbrellaGraph): ObserveAttendanceTileUseCase =
         graph.observeAttendanceTileUseCase
     @Provides fun provideObserveGradeTileUseCase(graph: UmbrellaGraph): ObserveGradeTileUseCase =

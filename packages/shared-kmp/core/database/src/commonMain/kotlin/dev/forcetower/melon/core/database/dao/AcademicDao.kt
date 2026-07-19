@@ -30,6 +30,7 @@ import dev.forcetower.melon.core.database.query.SemesterClassAggregate
 import dev.forcetower.melon.core.database.query.SemesterHoursProgressRow
 import dev.forcetower.melon.core.database.query.StudentDisciplineRow
 import dev.forcetower.melon.core.database.query.TodayLectureRow
+import dev.forcetower.melon.core.database.query.UpcomingEvaluationDetailRow
 import dev.forcetower.melon.core.database.query.UpcomingEvaluationRow
 import dev.forcetower.melon.core.database.query.WeekLectureRow
 import kotlinx.coroutines.flow.Flow
@@ -258,6 +259,34 @@ abstract class AcademicDao {
         semesterId: String,
         today: String,
     ): Flow<UpcomingEvaluationRow?>
+
+    // Every upcoming evaluation under the same heuristic, soonest first,
+    // with the identifiers the reminder scheduler keys notifications on.
+    @Query(
+        """
+        SELECT sg.platformId AS gradePlatformId,
+               sg.date AS date,
+               sg.name AS gradeName,
+               e.name AS evaluationName,
+               d.id AS disciplineId,
+               d.name AS disciplineName
+          FROM StudentGrade sg
+          JOIN ClassEvaluation e ON e.id = sg.evaluationId
+          JOIN StudentClass sc ON sc.id = sg.studentClassId
+          JOIN Class c ON c.id = sc.classId
+          JOIN DisciplineOffer o ON o.id = c.offerId
+          JOIN Discipline d ON d.id = o.disciplineId
+         WHERE o.semesterId = :semesterId
+           AND sg.date IS NOT NULL
+           AND sg.date >= :today
+           AND (sg.value IS NULL OR sg.value = '')
+         ORDER BY sg.date ASC, sg.ordinal ASC
+        """,
+    )
+    abstract fun observeUpcomingEvaluations(
+        semesterId: String,
+        today: String,
+    ): Flow<List<UpcomingEvaluationDetailRow>>
 
     // Class-hours elapsed vs. total for the semester. Elapsed is lecture-count
     // weighted per class: `c.hours * (lecturesBefore:today / lecturesTotal)`.

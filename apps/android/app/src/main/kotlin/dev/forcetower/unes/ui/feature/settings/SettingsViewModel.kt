@@ -10,9 +10,11 @@ import dev.forcetower.melon.feature.me.domain.usecase.ObserveCurrentCredentialsU
 import dev.forcetower.melon.feature.me.domain.usecase.ObserveMeProfileUseCase
 import dev.forcetower.melon.feature.settings.domain.usecase.ObserveSettingsUseCase
 import dev.forcetower.melon.feature.settings.domain.usecase.UpdateSettingsUseCase
+import dev.forcetower.unes.firebase.FeatureFlags
 import dev.forcetower.unes.mvi.MviViewModel
 import dev.forcetower.unes.mvi.UiEffect
 import dev.forcetower.unes.mvi.UiIntent
+import dev.forcetower.unes.reminders.EvaluationReminderPreferenceStore
 import dev.forcetower.unes.theme.ThemeMode
 import dev.forcetower.unes.theme.ThemePreferenceStore
 import javax.inject.Inject
@@ -33,6 +35,7 @@ internal sealed interface SettingsIntent : UiIntent {
     data class SetTheme(val value: ThemeMode) : SettingsIntent
     data class SetSpoiler(val value: SpoilerMode) : SettingsIntent
     data class SetToggle(val toggle: NotifToggle, val value: Boolean) : SettingsIntent
+    data class SetEvaluationReminders(val value: Boolean) : SettingsIntent
 }
 
 internal sealed interface SettingsEffect : UiEffect
@@ -45,6 +48,8 @@ internal class SettingsViewModel @Inject constructor(
     private val updateSettings: UpdateSettingsUseCase,
     private val listPasskeys: ListPasskeysUseCase,
     private val themePreferences: ThemePreferenceStore,
+    private val reminderPreferences: EvaluationReminderPreferenceStore,
+    featureFlags: FeatureFlags,
     private val analytics: Analytics,
 ) : MviViewModel<SettingsUiState, SettingsIntent, SettingsEffect>(SettingsUiState()) {
 
@@ -71,6 +76,16 @@ internal class SettingsViewModel @Inject constructor(
             themePreferences.mode.collect { mode -> setState { copy(themeMode = mode) } }
         }
         viewModelScope.launch {
+            reminderPreferences.enabled.collect { enabled ->
+                setState { copy(evaluationRemindersEnabled = enabled) }
+            }
+        }
+        viewModelScope.launch {
+            featureFlags.gates.collect { gates ->
+                setState { copy(evaluationRemindersAvailable = gates.evaluationReminders) }
+            }
+        }
+        viewModelScope.launch {
             observeSettings().collect { snapshot ->
                 if (snapshot != null) setState { applySnapshot(snapshot) }
             }
@@ -90,6 +105,7 @@ internal class SettingsViewModel @Inject constructor(
             is SettingsIntent.SetTheme -> setTheme(intent.value)
             is SettingsIntent.SetSpoiler -> setSpoiler(intent.value)
             is SettingsIntent.SetToggle -> setToggle(intent.toggle, intent.value)
+            is SettingsIntent.SetEvaluationReminders -> setEvaluationReminders(intent.value)
         }
     }
 
@@ -115,6 +131,18 @@ internal class SettingsViewModel @Inject constructor(
         )
         setState { copy(themeMode = value) }
         viewModelScope.launch { themePreferences.set(value) }
+    }
+
+    // Device-local, no PATCH — the app-scope scheduler collects this store
+    // and re-arms (or cancels) the alarm as soon as the write lands.
+    private fun setEvaluationReminders(value: Boolean) {
+        analytics.selectContent(
+            ContentTypes.SETTING,
+            "evaluation_reminders",
+            mapOf("action" to "toggle", "value" to value),
+        )
+        setState { copy(evaluationRemindersEnabled = value) }
+        viewModelScope.launch { reminderPreferences.set(value) }
     }
 
     private fun setSpoiler(value: SpoilerMode) {

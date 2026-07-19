@@ -73,6 +73,18 @@ data class UpcomingEvaluationRow(
     val disciplineName: String,
 )
 
+// Every upcoming evaluation with identity, for the reminder scheduler. The
+// platform id keys a reminder across sync's wipe-then-insert (row ids churn,
+// the platform id survives — the same key the grade detail screens use).
+data class UpcomingEvaluationDetailRow(
+    val gradePlatformId: String,
+    val date: String,
+    val gradeName: String?,
+    val evaluationName: String?,
+    val disciplineId: String,
+    val disciplineName: String,
+)
+
 // Aggregate miss/hours across the semester. Percentage and allowed-absences
 // (75% rule) are computed from this on the client.
 data class AttendanceSummaryRow(

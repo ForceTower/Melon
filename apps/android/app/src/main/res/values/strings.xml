@@ -807,6 +807,14 @@
     <string name="settings_notif_class_material_hint">Slides, enunciados, listas</string>
     <string name="settings_notif_class_subject_label">Assunto da aula</string>
     <string name="settings_notif_class_subject_hint">O tópico previsto mudou</string>
+    <string name="settings_notif_evaluation_reminder_label">Lembrete de avaliação</string>
+    <string name="settings_notif_evaluation_reminder_hint">Às 20h da véspera, neste aparelho</string>
+    <!-- endregion -->
+
+    <!-- region Evaluation reminder notification -->
+    <string name="notif_evaluation_reminder_channel">Lembretes de avaliação</string>
+    <string name="notif_evaluation_reminder_title">Avaliação amanhã</string>
+    <string name="notif_evaluation_reminder_body_format">%1$s — %2$s</string>
     <!-- endregion -->
 
     <!-- region Settings · Footer -->

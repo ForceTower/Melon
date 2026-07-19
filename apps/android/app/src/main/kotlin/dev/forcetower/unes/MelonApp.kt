@@ -15,6 +15,7 @@ import dev.forcetower.melon.core.session.domain.SessionStore
 import dev.forcetower.melon.core.session.domain.model.AuthState
 import dev.forcetower.unes.di.ApplicationScope
 import dev.forcetower.unes.firebase.FeatureFlags
+import dev.forcetower.unes.reminders.EvaluationReminderScheduler
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -38,6 +39,9 @@ internal class MelonApp : Application() {
 
     @Inject
     lateinit var machineIdSource: MachineIdSource
+
+    @Inject
+    lateinit var evaluationReminders: EvaluationReminderScheduler
 
     @Inject
     @ApplicationScope
@@ -95,6 +99,9 @@ internal class MelonApp : Application() {
                 }
         }
         featureFlags.start()
+        // App-lifetime like the analytics collector: also runs when a boot
+        // broadcast spins the process up, so alarms re-anchor to fresh data.
+        evaluationReminders.start()
         // Process-wide (not per-Activity) so time-derived KMP flows recompute
         // "today" the instant the app resumes, mirroring iOS `.sceneActivated`.
         ProcessLifecycleOwner.get().lifecycle.addObserver(object : DefaultLifecycleObserver {
