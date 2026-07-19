@@ -5,7 +5,7 @@ import SwiftUI
 /// "n ativas" counter: it schedules on this device, it doesn't PATCH.
 struct SettingsEvaluationReminderCard: View {
     var isOn: Bool
-    var onToggle: (Bool) -> Void
+    var onToggle: @MainActor (Bool) -> Void
 
     private let tone = UNESColor.readable(0x7A5AD0)
 
@@ -31,7 +31,7 @@ struct SettingsEvaluationReminderCard: View {
 
             Toggle(
                 String.localized(.settingsNotificationsEvaluationReminderLabel),
-                isOn: Binding(get: { isOn }, set: onToggle)
+                isOn: Binding(get: { isOn }, set: { onToggle($0) })
             )
             .labelsHidden()
         }
