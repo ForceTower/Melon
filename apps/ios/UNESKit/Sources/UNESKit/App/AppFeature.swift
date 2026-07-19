@@ -56,6 +56,7 @@ struct AppFeature {
     @Dependency(\.messagesRepository) var messagesRepository
     @Dependency(\.materialsRepository) var materialsRepository
     @Dependency(\.intentRouter) var intentRouter
+    @Dependency(\.evaluationReminders) var evaluationReminders
     @Dependency(\.appIconClient) var appIconClient
     @Dependency(\.settingsRepository) var settingsRepository
     @Dependency(\.continuousClock) var clock
@@ -240,6 +241,10 @@ struct AppFeature {
                 // and its initial replay recomputes with the current date.
                 return .merge(
                     pingEffect(),
+                    // A crossed midnight also moves which reminders are still
+                    // "ahead", and the mirror observation won't re-emit
+                    // without a write — reconcile explicitly.
+                    .run { _ in await evaluationReminders.reconcile() },
                     .concatenate(
                         .send(.home(.task)),
                         .send(.schedule(.task)),

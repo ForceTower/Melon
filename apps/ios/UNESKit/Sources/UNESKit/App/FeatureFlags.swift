@@ -19,6 +19,9 @@ public enum FeatureFlags {
     /// Gates the featured campus-event card on Home — the
     /// `enable_campus_event` key.
     public static let campusEventEnabledKey = "flag_enable_campus_event"
+    /// Gates the evening-before evaluation reminders — the
+    /// `enable_evaluation_reminders` key.
+    public static let evaluationRemindersEnabledKey = "flag_enable_evaluation_reminders"
     /// reCAPTCHA site key for document requests — the `document_captcha_site_key`
     /// key. Empty means the portal isn't demanding a captcha right now.
     public static let documentCaptchaSiteKeyKey = "flag_document_captcha_site_key"
@@ -35,6 +38,7 @@ public enum FeatureFlags {
         paradoxoEnabled: Bool,
         materialsEnabled: Bool,
         campusEventEnabled: Bool,
+        evaluationRemindersEnabled: Bool,
         documentCaptchaSiteKey: String,
         documentCaptchaBaseURL: String
     ) {
@@ -45,6 +49,7 @@ public enum FeatureFlags {
         defaults.set(paradoxoEnabled, forKey: paradoxoEnabledKey)
         defaults.set(materialsEnabled, forKey: materialsEnabledKey)
         defaults.set(campusEventEnabled, forKey: campusEventEnabledKey)
+        defaults.set(evaluationRemindersEnabled, forKey: evaluationRemindersEnabledKey)
         defaults.set(documentCaptchaSiteKey, forKey: documentCaptchaSiteKeyKey)
         defaults.set(documentCaptchaBaseURL, forKey: documentCaptchaBaseURLKey)
         log.info("""
@@ -52,6 +57,7 @@ public enum FeatureFlags {
         certificate=\(certificateEnabled) history=\(historyEnabled) \
         paradoxo=\(paradoxoEnabled) materials=\(materialsEnabled) \
         campusEvent=\(campusEventEnabled) \
+        evaluationReminders=\(evaluationRemindersEnabled) \
         captcha=\(!documentCaptchaSiteKey.isEmpty)
         """)
     }

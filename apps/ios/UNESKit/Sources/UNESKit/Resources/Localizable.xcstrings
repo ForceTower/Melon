@@ -1,6 +1,57 @@
 {
   "sourceLanguage" : "pt-BR",
   "strings" : {
+    "evaluationReminder.notificationTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Evaluation tomorrow"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avaliação amanhã"
+          }
+        }
+      }
+    },
+    "settings.notifications.evaluationReminderLabel" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Evaluation reminder"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lembrete de avaliação"
+          }
+        }
+      }
+    },
+    "settings.notifications.evaluationReminderHint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "8 PM the evening before, on this device"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Às 20h da véspera, neste aparelho"
+          }
+        }
+      }
+    },
     "passkeys.target.thisDevice.sub" : {
       "extractionState" : "manual",
       "localizations" : {

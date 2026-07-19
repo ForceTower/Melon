@@ -30,6 +30,7 @@ struct RootFeature {
     @Dependency(\.widgetSync) var widgetSync
     @Dependency(\.watchSync) var watchSync
     @Dependency(\.spotlightSync) var spotlightSync
+    @Dependency(\.evaluationReminders) var evaluationReminders
     @Dependency(\.legacyMigration) var legacyMigration
     @Dependency(\.sessionStore) var sessionStore
     @Dependency(\.analytics) var analytics
@@ -49,11 +50,12 @@ struct RootFeature {
                 let widgets = Effect<Action>.run { _ in await widgetSync.run() }
                 let watch = Effect<Action>.run { _ in await watchSync.run() }
                 let spotlight = Effect<Action>.run { _ in await spotlightSync.run() }
+                let reminders = Effect<Action>.run { _ in await evaluationReminders.run() }
                 guard case .onboarding = state else {
                     // Already signed in — sweep anything the legacy app left.
-                    return .merge(widgets, watch, spotlight, .run { _ in legacyMigration.removeArtifacts() })
+                    return .merge(widgets, watch, spotlight, reminders, .run { _ in legacyMigration.removeArtifacts() })
                 }
-                return .merge(widgets, watch, spotlight, .run { send in
+                return .merge(widgets, watch, spotlight, reminders, .run { send in
                     await send(.legacyMigration(legacyMigration.attempt()))
                 })
 

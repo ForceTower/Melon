@@ -109,6 +109,11 @@ struct SettingsView: View {
                                     store.send(.notificationToggled($0))
                                 }
                             }
+                            if store.showsEvaluationReminders {
+                                SettingsEvaluationReminderCard(isOn: store.evaluationRemindersEnabled) {
+                                    store.send(.evaluationRemindersToggled($0))
+                                }
+                            }
                         }
                     }
                     .fadeUp(delay: 0.36)

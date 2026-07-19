@@ -22,10 +22,21 @@ struct SettingsFeature {
         /// Icons being celebrated by the unlock sheet right now.
         var unlockSheetIcons: [AppIcon]?
         @Shared(.appStorage("theme")) var theme: AppTheme = .system
+        @Shared(.appStorage(EvaluationReminderPreference.key)) var evaluationRemindersEnabled = true
+        @Shared(.appStorage(FeatureFlags.evaluationRemindersEnabledKey)) var isEvaluationRemindersFlagOn = false
         @Shared(.unlockedSecretIcons) var unlockedSecretIcons
         @Shared(.announcedSecretIcons) var announcedSecretIcons
 
         var displayName: String? { profile?.name ?? userName }
+
+        /// The device-local reminder row appears only while its flag is on.
+        var showsEvaluationReminders: Bool {
+            #if DEBUG
+            true
+            #else
+            isEvaluationRemindersFlagOn
+            #endif
+        }
     }
 
     enum CredentialField: Equatable, Sendable {
@@ -46,6 +57,7 @@ struct SettingsFeature {
         case themeSelected(AppTheme)
         case spoilerSelected(GradeSpoiler)
         case notificationToggled(NotificationToggle)
+        case evaluationRemindersToggled(Bool)
         case settingsUpdateFailed(revert: SettingsChange)
         case appIconLoaded(AppIcon)
         case appIconSelected(AppIcon)
@@ -69,6 +81,7 @@ struct SettingsFeature {
     }
 
     @Dependency(\.settingsRepository) var settingsRepository
+    @Dependency(\.evaluationReminders) var evaluationReminders
     @Dependency(\.appIconClient) var appIconClient
     @Dependency(\.sessionStore) var sessionStore
     @Dependency(\.localAuth) var localAuth
@@ -159,6 +172,18 @@ struct SettingsFeature {
                     .notification(toggle, isOn: isOn),
                     revert: .notification(toggle, isOn: !isOn)
                 )
+
+            case let .evaluationRemindersToggled(isOn):
+                analytics.selectContent(
+                    contentType: ContentTypes.setting,
+                    itemId: "evaluation_reminders",
+                    properties: ["action": "toggle", "value": isOn]
+                )
+                state.$evaluationRemindersEnabled.withLock { $0 = isOn }
+                log.info("set evaluation reminders isOn=\(isOn)")
+                // Device-local, no PATCH — but the pending requests must
+                // follow the switch immediately, off included.
+                return .run { _ in await evaluationReminders.reconcile() }
 
             case let .settingsUpdateFailed(revert):
                 state.settings.apply(revert)

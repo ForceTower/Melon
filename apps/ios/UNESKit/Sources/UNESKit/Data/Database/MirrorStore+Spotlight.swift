@@ -17,6 +17,16 @@ extension MirrorStore {
             .values(in: writer)
     }
 
+    /// Emits the pending-evaluation projection on subscription and again
+    /// after every write that feeds it — the reminder scheduler's input.
+    /// Empties on logout wipe, so the scheduler also cancels everything.
+    func evaluationReminderUpdates(now: @escaping @Sendable () -> Date) -> AsyncValueObservation<[SpotlightEvaluation]> {
+        ValueObservation
+            .tracking { db in try Self.spotlightEvaluations(db, now: now()) }
+            .removeDuplicates()
+            .values(in: writer)
+    }
+
     // MARK: One-shot lookups (entity queries)
 
     func spotlightDisciplines(ids: [String], now: Date) async throws -> [SpotlightDiscipline] {
