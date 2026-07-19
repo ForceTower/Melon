@@ -4,14 +4,17 @@ import GRDB
 // MARK: - Mirror → RetrospectiveDeck (one closed semester distilled)
 
 extension MirrorStore {
-    /// How long a semester's Retrospectiva window stays open after its end
-    /// date — a moment, not a season.
-    static let retrospectiveWindowDays = 14
+    /// Teachers get a buffer to post grades after the semester ends — the
+    /// window only opens once it has passed.
+    static let retrospectiveOpensAfterDays = 7
+    /// …and closes a week later. A moment, not a season.
+    static let retrospectiveClosesAfterDays = 14
 
     /// The semester whose window is open right now — the most recently
-    /// ended one, still inside its window, with at least half its results
-    /// decided (a story of pending grades isn't worth telling). Nil keeps
-    /// every entry point hidden; no per-semester flag flipping needed.
+    /// ended one, past the grade-posting buffer, inside its window, with at
+    /// least half its results decided (a story of pending grades isn't
+    /// worth telling). Nil keeps every entry point hidden; no per-semester
+    /// flag flipping needed.
     func retrospectiveWindowCode(now: Date) async throws -> String? {
         try await writer.read { db in try Self.retrospectiveWindowCode(db: db, now: now) }
     }
@@ -31,9 +34,11 @@ extension MirrorStore {
         let parts = ended.endDate.split(separator: "-").compactMap { Int($0) }
         guard parts.count == 3,
               let end = calendar.date(from: DateComponents(year: parts[0], month: parts[1], day: parts[2])),
-              let closes = calendar.date(byAdding: .day, value: retrospectiveWindowDays, to: end),
-              // Day-granular: the 14th day is the last full day the window
-              // is open, whatever the hour.
+              let opens = calendar.date(byAdding: .day, value: retrospectiveOpensAfterDays, to: end),
+              let closes = calendar.date(byAdding: .day, value: retrospectiveClosesAfterDays, to: end),
+              // Day-granular on both edges: opens on the 7th day after the
+              // end, and the 14th is the last full day, whatever the hour.
+              today >= opens.dayStamp,
               today <= closes.dayStamp
         else { return nil }
 
