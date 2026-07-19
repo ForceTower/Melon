@@ -16,6 +16,19 @@ struct CoefficientHistory {
     /// Nil until some discipline has a closed result — callers keep the
     /// active snapshot's partial mean as the stand-in until then.
     func summary() -> CoefficientSummary? {
+        let spark = checkpoints().map(\.value)
+        guard let value = spark.last else { return nil }
+        return CoefficientSummary(
+            value: value,
+            spark: spark,
+            delta: spark.count >= 2 ? value - spark[spark.count - 2] : nil
+        )
+    }
+
+    /// The CR as it stood after each semester that closed anything, in
+    /// chronological order — the sparkline with its semesters attached, so
+    /// the Retrospectiva can read the before/after around one semester.
+    func checkpoints() -> [CoefficientCheckpoint] {
         let ordered = semesters.sorted { ($0.startDate, $0.code) < ($1.startDate, $1.code) }
         let takenBySemester = takenBySemester()
         // The newest semester with enrollments is still open: a missing
@@ -26,7 +39,7 @@ struct CoefficientHistory {
 
         var gradeHours = 0.0
         var totalHours = 0.0
-        var spark: [Double] = []
+        var points: [CoefficientCheckpoint] = []
         for semester in ordered {
             var closedAny = false
             for taken in takenBySemester[semester.id] ?? [] where taken.hours > 0 {
@@ -37,16 +50,15 @@ struct CoefficientHistory {
                 closedAny = true
             }
             if closedAny {
-                spark.append(gradeHours / totalHours)
+                points.append(CoefficientCheckpoint(semesterId: semester.id, value: gradeHours / totalHours))
             }
         }
+        return points
+    }
 
-        guard let value = spark.last else { return nil }
-        return CoefficientSummary(
-            value: value,
-            spark: spark,
-            delta: spark.count >= 2 ? value - spark[spark.count - 2] : nil
-        )
+    struct CoefficientCheckpoint: Equatable {
+        var semesterId: String
+        var value: Double
     }
 
     private struct TakenDiscipline {

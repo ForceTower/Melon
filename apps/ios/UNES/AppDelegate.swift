@@ -110,6 +110,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
             materialsEnabled: remoteConfig.configValue(forKey: "enable_materials").boolValue,
             campusEventEnabled: remoteConfig.configValue(forKey: "enable_campus_event").boolValue,
             evaluationRemindersEnabled: remoteConfig.configValue(forKey: "enable_evaluation_reminders").boolValue,
+            retrospectiveEnabled: remoteConfig.configValue(forKey: "enable_retrospective").boolValue,
             documentCaptchaSiteKey: remoteConfig.configValue(forKey: "document_captcha_site_key").stringValue,
             documentCaptchaBaseURL: remoteConfig.configValue(forKey: "document_captcha_base_url").stringValue
         )

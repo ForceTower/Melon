@@ -22,6 +22,11 @@ public enum FeatureFlags {
     /// Gates the evening-before evaluation reminders — the
     /// `enable_evaluation_reminders` key.
     public static let evaluationRemindersEnabledKey = "flag_enable_evaluation_reminders"
+    /// Kill switch for the Retrospectiva — the `enable_retrospective` key.
+    /// Which semester gets celebrated is auto-detected from the mirror
+    /// (latest ended semester, inside its window), so this is flipped once
+    /// and never per semester.
+    public static let retrospectiveEnabledKey = "flag_enable_retrospective"
     /// reCAPTCHA site key for document requests — the `document_captcha_site_key`
     /// key. Empty means the portal isn't demanding a captcha right now.
     public static let documentCaptchaSiteKeyKey = "flag_document_captcha_site_key"
@@ -39,6 +44,7 @@ public enum FeatureFlags {
         materialsEnabled: Bool,
         campusEventEnabled: Bool,
         evaluationRemindersEnabled: Bool,
+        retrospectiveEnabled: Bool,
         documentCaptchaSiteKey: String,
         documentCaptchaBaseURL: String
     ) {
@@ -50,6 +56,7 @@ public enum FeatureFlags {
         defaults.set(materialsEnabled, forKey: materialsEnabledKey)
         defaults.set(campusEventEnabled, forKey: campusEventEnabledKey)
         defaults.set(evaluationRemindersEnabled, forKey: evaluationRemindersEnabledKey)
+        defaults.set(retrospectiveEnabled, forKey: retrospectiveEnabledKey)
         defaults.set(documentCaptchaSiteKey, forKey: documentCaptchaSiteKeyKey)
         defaults.set(documentCaptchaBaseURL, forKey: documentCaptchaBaseURLKey)
         log.info("""
@@ -58,6 +65,7 @@ public enum FeatureFlags {
         paradoxo=\(paradoxoEnabled) materials=\(materialsEnabled) \
         campusEvent=\(campusEventEnabled) \
         evaluationReminders=\(evaluationRemindersEnabled) \
+        retrospective=\(retrospectiveEnabled) \
         captcha=\(!documentCaptchaSiteKey.isEmpty)
         """)
     }

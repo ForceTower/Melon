@@ -31,6 +31,8 @@ struct HomeView: View {
                 DisciplineDetailView(store: store)
             case let .campusEvent(store):
                 CampusEventView(store: store)
+            case let .retrospective(store):
+                RetrospectiveView(store: store)
             case let .campusEventActivity(store):
                 CampusEventActivityView(store: store)
             case let .campusEventSpeakers(store):
@@ -63,6 +65,17 @@ struct HomeView: View {
                         CampusEventHomeCard(event: event) {
                             store.send(.campusEventCardTapped)
                         }
+                        .scaleIn(delay: 0.06, duration: 0.62)
+                        .padding(.bottom, 22)
+                    }
+
+                    if store.showsRetrospectiveBanner, let retroCode = store.retrospectiveSemester {
+                        RetrospectiveBanner(
+                            semesterLabel: MirrorStore.semesterLabel(code: retroCode),
+                            seen: store.isRetrospectiveSeen,
+                            onOpen: { store.send(.retrospectiveCardTapped) },
+                            onDismiss: { store.send(.retrospectiveBannerDismissed, animation: UNESMotion.ease(0.4)) }
+                        )
                         .scaleIn(delay: 0.06, duration: 0.62)
                         .padding(.bottom, 22)
                     }

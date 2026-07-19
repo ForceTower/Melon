@@ -15,12 +15,30 @@ struct HomeFeature {
 
         @ObservationStateIgnored
         @Shared(.appStorage(FeatureFlags.campusEventEnabledKey)) var isCampusEventEnabled = false
+        @Shared(.appStorage(FeatureFlags.retrospectiveEnabledKey)) var isRetrospectiveEnabled = false
+        @Shared(.appStorage(RetrospectiveFeature.seenSemesterKey)) var retrospectiveSeenSemester = ""
+        @Shared(.appStorage("retrospective_banner_dismissed_semester")) var retrospectiveDismissedSemester = ""
+        /// The semester whose window the mirror says is open — auto-detected,
+        /// nil outside the window (or while grades are still landing).
+        var retrospectiveSemester: String?
+
+        var isRetrospectiveSeen: Bool {
+            retrospectiveSemester.map { $0 == retrospectiveSeenSemester } ?? false
+        }
+
+        /// The celebratory banner can be dismissed until seen; the slim
+        /// "toque pra rever" row stays for the whole window.
+        var showsRetrospectiveBanner: Bool {
+            guard let semester = retrospectiveSemester else { return false }
+            return !(!isRetrospectiveSeen && retrospectiveDismissedSemester == semester)
+        }
     }
 
     @Reducer
     enum Path {
         case detail(DisciplineDetailFeature)
         case campusEvent(CampusEventFeature)
+        case retrospective(RetrospectiveFeature)
         case campusEventActivity(CampusEventActivityFeature)
         case campusEventSpeakers(CampusEventSpeakersFeature)
         case campusEventWorkshops(CampusEventWorkshopsFeature)
@@ -37,6 +55,9 @@ struct HomeFeature {
         case refreshFailed(String)
         case profileLoaded(Profile)
         case campusEventLoaded(CampusEvent?)
+        case retrospectiveChecked(String?)
+        case retrospectiveCardTapped
+        case retrospectiveBannerDismissed
         case campusEventCardTapped
         case disciplineTapped(id: String, name: String, offerId: String?, isNowClass: Bool)
         case seeScheduleTapped
@@ -58,6 +79,7 @@ struct HomeFeature {
     @Dependency(\.homeRepository) var homeRepository
     @Dependency(\.profileRepository) var profileRepository
     @Dependency(\.campusEventRepository) var campusEventRepository
+    @Dependency(\.database) var database
     @Dependency(\.date.now) var now
     @Dependency(\.continuousClock) var clock
     @Dependency(\.analytics) var analytics
@@ -75,13 +97,17 @@ struct HomeFeature {
                 // each appearance until the mirror has data, so a first load
                 // cancelled mid-flight (tab switch) can't wedge the spinner.
                 guard state.overview == nil else {
-                    return .merge(observeMirror(), observeCampusEvent(state), refreshCampusEvent(state))
+                    return .merge(
+                        observeMirror(), observeCampusEvent(state), refreshCampusEvent(state),
+                        checkRetrospective(state)
+                    )
                 }
                 state.isLoading = true
                 state.errorMessage = nil
                 return .merge(
                     observeMirror(), refresh(), loadProfile(),
-                    observeCampusEvent(state), refreshCampusEvent(state)
+                    observeCampusEvent(state), refreshCampusEvent(state),
+                    checkRetrospective(state)
                 )
 
             case .refreshPulled:
@@ -120,6 +146,22 @@ struct HomeFeature {
 
             case let .campusEventLoaded(event):
                 state.campusEvent = event
+                return .none
+
+            case let .retrospectiveChecked(semester):
+                state.retrospectiveSemester = semester
+                return .none
+
+            case .retrospectiveBannerDismissed:
+                guard let code = state.retrospectiveSemester else { return .none }
+                state.$retrospectiveDismissedSemester.withLock { $0 = code }
+                return .none
+
+            case .retrospectiveCardTapped:
+                guard let code = state.retrospectiveSemester else { return .none }
+                analytics.selectContent(contentType: ContentTypes.hub, itemId: "retrospective")
+                log.info("open retrospective semester=\(code)")
+                state.path.append(.retrospective(RetrospectiveFeature.State(semesterCode: code)))
                 return .none
 
             case .campusEventCardTapped:
@@ -298,6 +340,16 @@ struct HomeFeature {
             try? await campusEventRepository.refresh()
         }
         .cancellable(id: CancelID.campusEventRefresh, cancelInFlight: true)
+    }
+
+    /// Asks the mirror which semester's window is open (if any) — the
+    /// banner fronts only a story the mirror can actually tell.
+    private func checkRetrospective(_ state: State) -> Effect<Action> {
+        guard state.isRetrospectiveEnabled else { return .none }
+        return .run { [now] send in
+            let mirror = MirrorStore(writer: database)
+            await send(.retrospectiveChecked(try? await mirror.retrospectiveWindowCode(now: now)))
+        }
     }
 }
 

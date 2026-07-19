@@ -4,7 +4,7 @@ import Foundation
 /// The pinned shortcuts — most push their flow; the document ones
 /// (comprovante / histórico) open the request sheet instead.
 enum MeShortcut: String, Equatable, Sendable, Identifiable, CaseIterable {
-    case enrollment, calendar, countdown, certificate, history, paradoxo, materials
+    case enrollment, calendar, countdown, certificate, history, paradoxo, materials, retrospective
 
     var id: String { rawValue }
 }
@@ -36,6 +36,9 @@ struct MeFeature {
         @Shared(.appStorage(FeatureFlags.historyEnabledKey)) var isHistoryEnabled = false
         @Shared(.appStorage(FeatureFlags.paradoxoEnabledKey)) var isParadoxoEnabled = false
         @Shared(.appStorage(FeatureFlags.materialsEnabledKey)) var isMaterialsEnabled = false
+        @Shared(.appStorage(FeatureFlags.retrospectiveEnabledKey)) var isRetrospectiveEnabled = false
+        /// The semester whose Retrospectiva window the mirror says is open.
+        var retrospectiveSemester: String?
 
         var displayName: String? { profile?.name ?? userName }
 
@@ -50,6 +53,7 @@ struct MeFeature {
                 case .history: isHistoryEnabled
                 case .paradoxo: isParadoxoEnabled
                 case .materials: isMaterialsEnabled
+                case .retrospective: isRetrospectiveEnabled && retrospectiveSemester != nil
                 case .calendar, .countdown: true
                 }
             }
@@ -80,6 +84,7 @@ struct MeFeature {
         case enrollmentReview(EnrollmentReviewFeature)
         case enrollmentSuccess(EnrollmentSuccessFeature)
         case paradoxo(ParadoxoFeature)
+        case retrospective(RetrospectiveFeature)
         case paradoxoExplore(ParadoxoExploreFeature)
         case paradoxoDiscipline(ParadoxoDisciplineFeature)
         case paradoxoTeacher(ParadoxoTeacherFeature)
@@ -91,6 +96,7 @@ struct MeFeature {
 
     enum Action: Equatable {
         case task
+        case retrospectiveWindowChecked(String?)
         case overviewUpdated(CachedMeOverview)
         case profileLoaded(Profile)
         case shortcutTapped(MeShortcut)
@@ -130,6 +136,8 @@ struct MeFeature {
     @Dependency(\.openURL) var openURL
     @Dependency(\.locale) var locale
     @Dependency(\.continuousClock) var clock
+    @Dependency(\.database) var database
+    @Dependency(\.date) var date
     @Dependency(\.analytics) var analytics
 
     private let log = Log.scoped("MeFeature")
@@ -148,10 +156,14 @@ struct MeFeature {
                 // on the first one. A pushed calendar sits outside the tab's
                 // own task, so the resume wake-up is forwarded — it re-anchors
                 // "hoje" and refreshes the feed.
-                let effects = [observeMirror()]
+                let effects = [observeMirror(), checkRetrospectiveWindow()]
                     + (state.overview == nil ? [loadProfile()] : [])
                     + wakeCalendar(in: state)
                 return .merge(effects)
+
+            case let .retrospectiveWindowChecked(semester):
+                state.retrospectiveSemester = semester
+                return .none
 
             case let .overviewUpdated(cached):
                 state.overview = cached.overview
@@ -178,6 +190,17 @@ struct MeFeature {
                     state.path.append(.paradoxo(ParadoxoFeature.State()))
                 case .materials:
                     state.path.append(.materials(MaterialsFeature.State()))
+                case .retrospective:
+                    // DEBUG builds surface the shortcut even outside the
+                    // window; fall back to the newest mirrored semester code.
+                    #if DEBUG
+                    let semesterCode = state.retrospectiveSemester ?? "20261"
+                    #else
+                    guard let semesterCode = state.retrospectiveSemester else { return .none }
+                    #endif
+                    state.path.append(.retrospective(RetrospectiveFeature.State(
+                        semesterCode: semesterCode
+                    )))
                 }
                 return .none
 
@@ -415,6 +438,15 @@ struct MeFeature {
         }
     }
 
+    /// Auto-detects which semester's Retrospectiva window is open — gates
+    /// the shortcut without any per-semester flag.
+    private func checkRetrospectiveWindow() -> Effect<Action> {
+        .run { send in
+            let mirror = MirrorStore(writer: database)
+            await send(.retrospectiveWindowChecked(try? await mirror.retrospectiveWindowCode(now: date.now)))
+        }
+    }
+
     private func observeMirror() -> Effect<Action> {
         .run { send in
             for await cached in meRepository.observe() {
@@ -467,6 +499,7 @@ extension MeShortcut {
         case .history: "academic_history"
         case .paradoxo: "paradoxo"
         case .materials: "materials"
+        case .retrospective: "retrospective"
         }
     }
 }

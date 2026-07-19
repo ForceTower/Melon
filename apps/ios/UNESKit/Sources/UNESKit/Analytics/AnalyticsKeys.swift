@@ -34,6 +34,7 @@ enum Screens {
     static let materialsDetail = "materials_detail"
     static let materialsSaved = "materials_saved"
 
+    static let retrospective = "retrospective"
     static let paradoxo = "paradoxo"
     static let paradoxoDiscipline = "paradoxo_discipline"
     static let paradoxoTeacher = "paradoxo_teacher"

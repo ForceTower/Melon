@@ -38,6 +38,8 @@ struct MeView: View {
                 EnrollmentSuccessView(store: store)
             case let .paradoxo(store):
                 ParadoxoView(store: store)
+            case let .retrospective(store):
+                RetrospectiveView(store: store)
             case let .paradoxoExplore(store):
                 ParadoxoExploreView(store: store)
             case let .paradoxoDiscipline(store):
