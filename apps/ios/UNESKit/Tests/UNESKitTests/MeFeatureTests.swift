@@ -251,13 +251,14 @@ struct MeFeatureTests {
             // other suites nor writes into UserDefaults.standard.
             $0.defaultAppStorage = UserDefaults(suiteName: "shortcutGridFollowsTheFeatureFlags")!
         } operation: {
-            let state = MeFeature.State()
+            var state = MeFeature.State()
 
             state.$isEnrollmentEnabled.withLock { $0 = false }
             state.$isCertificateEnabled.withLock { $0 = false }
             state.$isHistoryEnabled.withLock { $0 = false }
             state.$isParadoxoEnabled.withLock { $0 = false }
             state.$isMaterialsEnabled.withLock { $0 = false }
+            state.$isRetrospectiveEnabled.withLock { $0 = false }
             // `shortcuts` returns allCases in DEBUG, so assert the gating on
             // `gatedShortcuts`, which always applies the flag filter.
             #expect(state.gatedShortcuts == [.calendar, .countdown])
@@ -267,6 +268,11 @@ struct MeFeatureTests {
             state.$isHistoryEnabled.withLock { $0 = true }
             state.$isParadoxoEnabled.withLock { $0 = true }
             state.$isMaterialsEnabled.withLock { $0 = true }
+            state.$isRetrospectiveEnabled.withLock { $0 = true }
+            // Retrospectiva also needs an open window, not just the flag.
+            #expect(!state.gatedShortcuts.contains(.retrospective))
+
+            state.retrospectiveSemester = "20261"
             #expect(state.gatedShortcuts == MeShortcut.allCases)
         }
     }

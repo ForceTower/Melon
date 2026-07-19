@@ -156,7 +156,7 @@ struct MeFeature {
                 // on the first one. A pushed calendar sits outside the tab's
                 // own task, so the resume wake-up is forwarded — it re-anchors
                 // "hoje" and refreshes the feed.
-                let effects = [observeMirror(), checkRetrospectiveWindow()]
+                let effects = [observeMirror(), checkRetrospectiveWindow(state)]
                     + (state.overview == nil ? [loadProfile()] : [])
                     + wakeCalendar(in: state)
                 return .merge(effects)
@@ -440,8 +440,9 @@ struct MeFeature {
 
     /// Auto-detects which semester's Retrospectiva window is open — gates
     /// the shortcut without any per-semester flag.
-    private func checkRetrospectiveWindow() -> Effect<Action> {
-        .run { send in
+    private func checkRetrospectiveWindow(_ state: State) -> Effect<Action> {
+        guard state.isRetrospectiveEnabled else { return .none }
+        return .run { send in
             let mirror = MirrorStore(writer: database)
             await send(.retrospectiveWindowChecked(try? await mirror.retrospectiveWindowCode(now: date.now)))
         }
