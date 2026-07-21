@@ -8,11 +8,11 @@ experience.
 This repository holds the **client applications** — Android, iOS, and the marketing
 site. The backend service they talk to is a separate, closed-source project.
 
-Its history runs continuously from the original single-app Android project (2018) through
-the current multi-platform rewrite, so the whole lineage is browsable here even though the
-current tree is the v2 clients. The very first version of the app predates even that
-history: [Pineapple](https://github.com/ForceTower/Pineapple), the original UNES Android
-app this project grew out of.
+Its history runs continuously from the 2018 restart of the single-app Android project
+through the current multi-platform rewrite, so the whole lineage is browsable here even
+though the current tree is the v2 clients. The project itself is older: UNES began in
+November 2017 as [Pineapple](https://github.com/ForceTower/Pineapple), the original
+Android app this repository grew out of.
 
 ## Apps & packages
 
