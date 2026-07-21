@@ -10,7 +10,9 @@ site. The backend service they talk to is a separate, closed-source project.
 
 Its history runs continuously from the original single-app Android project (2018) through
 the current multi-platform rewrite, so the whole lineage is browsable here even though the
-current tree is the v2 clients.
+current tree is the v2 clients. The very first version of the app predates even that
+history: [Pineapple](https://github.com/ForceTower/Pineapple), the original UNES Android
+app this project grew out of.
 
 ## Apps & packages
 
