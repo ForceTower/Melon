@@ -278,6 +278,7 @@ struct AppFeatureTests {
             $0.messagesRepository.observe = { .finished }
             $0.meRepository.observe = { .finished }
             $0.evaluationReminders.reconcile = {}
+            $0.push.reconcile = {}
         }
         // Each tab's own hydration flow is covered by its feature tests; here
         // only the resume broadcast and the schedule replay matter.

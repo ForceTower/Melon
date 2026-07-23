@@ -1,6 +1,5 @@
 package dev.forcetower.unes.firebase
 
-import android.annotation.SuppressLint
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import dagger.hilt.android.AndroidEntryPoint
@@ -11,27 +10,23 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 // Mirrors the iOS `MessagingDelegate` half of `AppDelegate.swift`: FCM hands
-// us the Firebase Installation ID via onRegistered (enabled by the manifest
-// meta-data; FCM retired registration-token targeting). The FID is cached,
-// then the registrar pushes it to the backend. Without a session it skips —
-// `SyncViewModel` reconciles right after login.
-//
-// The lint check predates FID registration: this app observes onRegistered,
-// so the onNewToken it demands would be dead code.
-@SuppressLint("MissingFirebaseInstanceTokenRefresh")
+// us the registration token via onNewToken; the registrar caches it and
+// pushes it to the backend. Without a session it skips — `SyncViewModel`
+// reconciles right after login.
 @AndroidEntryPoint
 internal class MelonFirebaseMessagingService : FirebaseMessagingService() {
 
-    @Inject lateinit var identifierStore: PushIdentifierStore
     @Inject lateinit var pushRegistrar: PushRegistrar
     @Inject @ApplicationScope lateinit var applicationScope: CoroutineScope
 
-    override fun onRegistered(installationId: String) {
-        Timber.tag(TAG).i("FID received length=%d", installationId.length)
+    // Deprecated in favor of FID targeting, but FID-targeted sends stopped
+    // reaching some devices — the clients are fully back on registration
+    // tokens until FID push matures.
+    @Suppress("OVERRIDE_DEPRECATION")
+    override fun onNewToken(token: String) {
+        Timber.tag(TAG).i("FCM token received length=%d", token.length)
         applicationScope.launch {
-            runCatching { identifierStore.setFid(installationId) }
-                .onFailure { Timber.tag(TAG).w(it, "fid persist failed") }
-            pushRegistrar.reconcile()
+            pushRegistrar.tokenReceived(token)
         }
     }
 

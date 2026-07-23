@@ -245,6 +245,9 @@ struct AppFeature {
                     // "ahead", and the mirror observation won't re-emit
                     // without a write — reconcile explicitly.
                     .run { _ in await evaluationReminders.reconcile() },
+                    // Every app open re-sends the push registration, so the
+                    // backend always holds this device's current identifier.
+                    .run { _ in await push.reconcile() },
                     .concatenate(
                         .send(.home(.task)),
                         .send(.schedule(.task)),

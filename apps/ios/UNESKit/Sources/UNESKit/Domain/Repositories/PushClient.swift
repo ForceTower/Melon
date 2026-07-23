@@ -1,20 +1,22 @@
 import ComposableArchitecture
 
-/// Device-side push plumbing: the system permission prompt, the Firebase
-/// Installation ID (FID) registration against apps/api, and the fan-out of
-/// data notifications to reducers. The FID and notifications are delivered by
+/// Device-side push plumbing: the system permission prompt, the FCM
+/// registration-token registration against apps/api, and the fan-out of data
+/// notifications to reducers. The token and notifications are delivered by
 /// Firebase/iOS to the app delegate, which hands them over through
 /// `PushTokens`/`PushEvents`.
 @DependencyClient
 struct PushClient: Sendable {
     /// Idempotent — iOS only ever shows the prompt once.
     var requestAuthorization: @Sendable () async -> Void
-    /// App-delegate hand-off: persist the FID and register it right away when
-    /// a session already exists (fresh installs are registered by the
-    /// onboarding sync step instead).
-    var fidReceived: @Sendable (_ installationId: String) async -> Void
-    /// Post-login: register the FID FCM minted before the session existed and
-    /// delete any stale identifier row still on the backend.
+    /// App-delegate hand-off: persist the FCM registration token — refreshed
+    /// by Firebase on every launch — and reconcile right away when a session
+    /// already exists (fresh installs are registered by the onboarding sync
+    /// step instead).
+    var fcmTokenReceived: @Sendable (_ token: String) async -> Void
+    /// Register the token and delete any stale identifier row still on the
+    /// backend. Runs post-login, on token hand-offs, and on every return to
+    /// the foreground.
     var reconcile: @Sendable () async -> Void
     /// Logout teardown: unmap every identifier this device registered, then
     /// drop the local caches. Must run while the session bearer is valid.
@@ -40,7 +42,7 @@ extension PushClient: TestDependencyKey {
 
     static let previewValue = PushClient(
         requestAuthorization: {},
-        fidReceived: { _ in },
+        fcmTokenReceived: { _ in },
         reconcile: {},
         unregister: {},
         dataNotificationReceived: { _ in },

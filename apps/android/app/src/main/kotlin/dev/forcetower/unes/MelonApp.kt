@@ -15,6 +15,7 @@ import dev.forcetower.melon.core.session.domain.SessionStore
 import dev.forcetower.melon.core.session.domain.model.AuthState
 import dev.forcetower.unes.di.ApplicationScope
 import dev.forcetower.unes.firebase.FeatureFlags
+import dev.forcetower.unes.firebase.PushRegistrar
 import dev.forcetower.unes.reminders.EvaluationReminderScheduler
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
@@ -42,6 +43,9 @@ internal class MelonApp : Application() {
 
     @Inject
     lateinit var evaluationReminders: EvaluationReminderScheduler
+
+    @Inject
+    lateinit var pushRegistrar: PushRegistrar
 
     @Inject
     @ApplicationScope
@@ -104,9 +108,12 @@ internal class MelonApp : Application() {
         evaluationReminders.start()
         // Process-wide (not per-Activity) so time-derived KMP flows recompute
         // "today" the instant the app resumes, mirroring iOS `.sceneActivated`.
+        // Every app open also re-sends the push registration, so the backend
+        // always holds this device's current identifier.
         ProcessLifecycleOwner.get().lifecycle.addObserver(object : DefaultLifecycleObserver {
             override fun onStart(owner: LifecycleOwner) {
                 foregroundSignal.pulse()
+                applicationScope.launch { pushRegistrar.reconcile() }
             }
         })
     }

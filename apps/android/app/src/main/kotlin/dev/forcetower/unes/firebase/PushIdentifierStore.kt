@@ -12,11 +12,11 @@ import kotlinx.coroutines.flow.first
 
 private val Context.fcmDataStore by preferencesDataStore(name = "fcm_preferences")
 
-// Caches the Firebase Installation ID (onRegistered) plus the identifiers
-// whose backend DELETE hasn't succeeded yet. `registration_token` is the
-// legacy FCM-token cache left behind by the former FcmTokenStore (same
-// DataStore file) — it's only read so the token row a previous app version
-// registered can be deleted, then cleared for good.
+// Caches the FCM registration token (onNewToken / getToken) plus the
+// identifiers whose backend DELETE hasn't succeeded yet. `installation_id` is
+// the Firebase Installation ID cache left behind by the retired FID-targeting
+// builds (same DataStore file) — it's only read so the FID row a previous app
+// version registered can be deleted, then cleared for good.
 @Singleton
 internal class PushIdentifierStore @Inject constructor(
     @ApplicationContext context: Context,
@@ -25,14 +25,14 @@ internal class PushIdentifierStore @Inject constructor(
 
     suspend fun token(): String? = dataStore.data.first()[tokenKey]
 
-    suspend fun clearToken() {
-        dataStore.edit { preferences -> preferences.remove(tokenKey) }
+    suspend fun setToken(token: String) {
+        dataStore.edit { preferences -> preferences[tokenKey] = token }
     }
 
     suspend fun fid(): String? = dataStore.data.first()[fidKey]
 
-    suspend fun setFid(fid: String) {
-        dataStore.edit { preferences -> preferences[fidKey] = fid }
+    suspend fun clearFid() {
+        dataStore.edit { preferences -> preferences.remove(fidKey) }
     }
 
     suspend fun pendingDeletes(): Set<String> = dataStore.data.first()[pendingDeletesKey].orEmpty()

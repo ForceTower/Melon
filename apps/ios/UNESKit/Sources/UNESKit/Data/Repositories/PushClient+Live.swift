@@ -19,8 +19,8 @@ extension PushClient: DependencyKey {
                 log.warn("requestAuthorization failed", error: error)
             }
         },
-        fidReceived: { installationId in
-            await registrar.fidReceived(installationId)
+        fcmTokenReceived: { token in
+            await registrar.fcmTokenReceived(token)
         },
         reconcile: {
             await registrar.reconcile()
@@ -42,38 +42,31 @@ extension PushClient: DependencyKey {
 
 private let registrar = PushRegistrar()
 
-/// Owns the device's push registration: the Firebase Installation ID is
-/// registered with apps/api, and any row left behind by the retired FCM-token
-/// path is deleted. The backend dedups rows by identifier value, so the token
-/// row a previous app version registered stays live next to the FID row — and
-/// every push would arrive twice — until the delete lands; failed deletes are
-/// queued and retried on later reconciles.
+/// Owns the device's push registration: the FCM registration token is
+/// registered with apps/api on every app open, and any Firebase Installation
+/// ID row left behind by the retired FID-targeting builds is deleted
+/// (FID-targeted sends stopped reaching some devices, so the clients are
+/// fully back on tokens until FID push matures). The backend dedups rows by
+/// identifier value, so a stale identifier's row stays live next to the token
+/// row — and every push would arrive twice — until the delete lands; failed
+/// deletes are queued and retried on later reconciles.
 private actor PushRegistrar {
-    private static let fidKey = "messaging_installation_id"
-    /// Written by app versions that registered FCM tokens; read once so the
-    /// stale token row can be deleted, then cleared for good.
-    private static let legacyTokenKey = "messaging_notification_token"
+    /// Written by the retired FID-targeting builds; read once so the FID row
+    /// a previous app version registered can be deleted, then cleared for
+    /// good.
+    private static let legacyFidKey = "messaging_installation_id"
+    /// Same key the pre-FID builds wrote, so upgraded installs already have a
+    /// token cached; Firebase re-delivers it on every launch either way.
+    private static let tokenKey = "messaging_notification_token"
     private static let pendingDeletesKey = "messaging_pending_deletes"
 
-    /// A real FID is a short opaque id (~22 chars); anything token-shaped is
-    /// the legacy FCM registration token leaking through the SDK's FID
-    /// delegate — registering it as a FID strands the device once FCM stops
-    /// honoring token sends.
-    private static func isFidShaped(_ value: String) -> Bool {
-        value.count <= 50 && !value.contains(":")
-    }
-
-    func fidReceived(_ installationId: String) async {
-        guard Self.isFidShaped(installationId) else {
-            log.error("rejected mis-shaped fid length=\(installationId.count)")
-            return
-        }
-        let previous = UserDefaults.standard.string(forKey: Self.fidKey)
-        UserDefaults.standard.set(installationId, forKey: Self.fidKey)
-        log.debug("fid stored length=\(installationId.count)")
-        if let previous, previous != installationId {
-            // FID rotation, or a legacy token an earlier build mis-registered
-            // as the FID: retire that row once the new one is registered.
+    /// Token rotation: retire the previous token's row once the new one is
+    /// registered, never before — deleting first would leave a push gap.
+    func fcmTokenReceived(_ token: String) async {
+        let previous = UserDefaults.standard.string(forKey: Self.tokenKey)
+        UserDefaults.standard.set(token, forKey: Self.tokenKey)
+        log.debug("fcm token stored length=\(token.count)")
+        if let previous, previous != token {
             addPendingDelete(previous)
         }
         await reconcile()
@@ -85,16 +78,20 @@ private actor PushRegistrar {
             log.debug("reconcile deferred: no session")
             return
         }
-        guard let fid = UserDefaults.standard.string(forKey: Self.fidKey) else {
+        guard let token = UserDefaults.standard.string(forKey: Self.tokenKey) else {
+            log.debug("reconcile: no fcm token available yet")
             await flushPendingDeletes()
             return
         }
-        guard await register(fid) else { return }
-        // Queue the legacy token's delete only after the FID is registered —
+        guard await register(token) else { return }
+        // The FID builds queued this token's delete when they took over —
+        // it's canonical again, so the queued delete would strand the device.
+        removePendingDelete(token)
+        // Queue the FID row's delete only after the token is registered —
         // deleting first would leave a push gap.
-        if let legacyToken = UserDefaults.standard.string(forKey: Self.legacyTokenKey), legacyToken != fid {
-            addPendingDelete(legacyToken)
-            UserDefaults.standard.removeObject(forKey: Self.legacyTokenKey)
+        if let fid = UserDefaults.standard.string(forKey: Self.legacyFidKey), fid != token {
+            addPendingDelete(fid)
+            UserDefaults.standard.removeObject(forKey: Self.legacyFidKey)
         }
         await flushPendingDeletes()
     }
@@ -104,7 +101,7 @@ private actor PushRegistrar {
     /// misses.
     func unregister() async {
         var identifiers = Set(pendingDeletes())
-        for key in [Self.fidKey, Self.legacyTokenKey] {
+        for key in [Self.legacyFidKey, Self.tokenKey] {
             if let value = UserDefaults.standard.string(forKey: key) {
                 identifiers.insert(value)
             }
@@ -115,14 +112,15 @@ private actor PushRegistrar {
                 log.warn("logout unregister failed for a push identifier")
             }
         }
-        for key in [Self.fidKey, Self.legacyTokenKey, Self.pendingDeletesKey] {
+        for key in [Self.legacyFidKey, Self.tokenKey, Self.pendingDeletesKey] {
             UserDefaults.standard.removeObject(forKey: key)
         }
     }
 
-    /// Best-effort: FCM re-delivers the FID on every launch, so a failed
-    /// registration heals on the next one.
-    private func register(_ fid: String) async -> Bool {
+    /// Best-effort: Firebase re-delivers the token on every launch and
+    /// reconcile re-runs on every foreground, so a failed registration heals
+    /// on the next one.
+    private func register(_ token: String) async -> Bool {
         @Dependency(\.apiClient) var apiClient
         #if canImport(UIKit) && !os(watchOS)
         let deviceName: String? = await UIDevice.current.name
@@ -130,14 +128,14 @@ private actor PushRegistrar {
         let deviceName: String? = nil
         #endif
         let body = RegisterTokenBody(
-            token: fid,
-            identifierType: "fid",
+            token: token,
+            identifierType: "fcm_token",
             platform: "ios",
             deviceName: deviceName,
             appVersion: Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String,
             locale: Locale.current.identifier
         )
-        log.debug("register start fidLength=\(fid.count)")
+        log.debug("register start length=\(token.count)")
         do {
             try await apiClient.post(to: "api/notifications/token", body: body)
             log.info("register ok")
@@ -223,8 +221,8 @@ private struct PushEventHub: Sendable {
     }
 }
 
-/// `token` carries the Firebase Installation ID; `identifierType` tells the
-/// backend it's a FID and not a legacy FCM registration token.
+/// `token` carries whichever push identifier is canonical; `identifierType`
+/// ("fcm_token" | "fid") tells the backend which one it is.
 private struct RegisterTokenBody: Encodable {
     let token: String
     let identifierType: String

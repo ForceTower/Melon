@@ -1,6 +1,5 @@
 import FirebaseCore
 import FirebaseCrashlytics
-import FirebaseInstallations
 import FirebaseMessaging
 import FirebaseRemoteConfig
 import PostHog
@@ -126,21 +125,12 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
 }
 
 extension AppDelegate: MessagingDelegate, UNUserNotificationCenterDelegate {
-    /// The callback is only a "registration is ready" signal — on installs
-    /// upgraded from the FCM-token era the SDK passes its cached keychain
-    /// value here, which is the old 142-char registration token rather than
-    /// the FID. FirebaseInstallations is the authoritative source.
-    nonisolated func messaging(_ messaging: Messaging, didReceiveRegistration installationId: String?) {
-        let log = Log.scoped("AppDelegate")
-        log.info("registration ready callbackLength=\(installationId?.count ?? 0) -> resolving FID")
-        Task {
-            do {
-                let fid = try await Installations.installations().installationID()
-                await PushTokens.registrationReceived(fid)
-            } catch {
-                log.warn("FID fetch failed", error: error)
-            }
-        }
+    /// Fires on every launch once the APNS token is set, so each app open
+    /// refreshes the token cache before the registrar re-sends it.
+    nonisolated func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
+        guard let fcmToken else { return }
+        Log.scoped("AppDelegate").info("fcm token received length=\(fcmToken.count)")
+        Task { await PushTokens.fcmTokenReceived(fcmToken) }
     }
 
     nonisolated func userNotificationCenter(
