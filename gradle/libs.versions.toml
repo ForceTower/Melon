@@ -12,7 +12,7 @@ kotlinx-datetime = "0.8.0"
 kermit = "2.1.0"
 
 # Android
-agp = "9.2.1"
+agp = "9.3.0"
 android-compile-sdk = "37"
 android-target-sdk = "37"
 android-min-sdk = "28"
