@@ -5,21 +5,21 @@ import SwiftUI
 extension ParadoxoTier {
     var tone: Color {
         switch self {
-        case .angel: UNESColor.successGreen
+        case .generous: UNESColor.successGreen
         case .fair: UNESColor.teal
         case .balanced: UNESColor.tangerine
         case .demanding: UNESColor.caution
-        case .relentless: UNESColor.coral
+        case .strict: UNESColor.coral
         }
     }
 
     var label: LocalizedStringResource {
         switch self {
-        case .angel: .paradoxoTierAngel
+        case .generous: .paradoxoTierGenerous
         case .fair: .paradoxoTierFair
         case .balanced: .paradoxoTierBalanced
         case .demanding: .paradoxoTierDemanding
-        case .relentless: .paradoxoTierRelentless
+        case .strict: .paradoxoTierStrict
         }
     }
 }

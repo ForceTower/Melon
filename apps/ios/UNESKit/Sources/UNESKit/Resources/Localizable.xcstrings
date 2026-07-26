@@ -18363,13 +18363,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Most brutal"
+            "value" : "Strictest"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mais brutais"
+            "value" : "Mais rigorosos"
           }
         }
       }
@@ -18431,13 +18431,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kindest"
+            "value" : "Most generous"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mais gentis"
+            "value" : "Mais generosos"
           }
         }
       }
@@ -18516,13 +18516,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A %@-point spread between the toughest and the kindest teacher"
+            "value" : "A %@-point spread between the toughest and the most generous teacher"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Disparidade de %@ pontos entre o professor mais duro e o mais gentil"
+            "value" : "Disparidade de %@ pontos entre o professor mais rigoroso e o mais generoso"
           }
         }
       }
@@ -18618,13 +18618,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Most brutal right now"
+            "value" : "Strictest right now"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mais brutal agora"
+            "value" : "Mais rigoroso agora"
           }
         }
       }
@@ -18669,13 +18669,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kindest right now"
+            "value" : "Most generous right now"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mais gentil agora"
+            "value" : "Mais generoso agora"
           }
         }
       }
@@ -19156,23 +19156,6 @@
         }
       }
     },
-    "paradoxo.tier.angel" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "angel"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "anjo"
-          }
-        }
-      }
-    },
     "paradoxo.tier.balanced" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -19224,19 +19207,36 @@
         }
       }
     },
-    "paradoxo.tier.relentless" : {
+    "paradoxo.tier.generous" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "relentless"
+            "value" : "generous"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "implacável"
+            "value" : "generoso"
+          }
+        }
+      }
+    },
+    "paradoxo.tier.strict" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "strict"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "rigoroso"
           }
         }
       }

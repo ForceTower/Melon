@@ -1128,8 +1128,8 @@
     <!-- endregion -->
 
     <!-- region Paradoxo · Pulse hero -->
-    <string name="paradoxo_pulse_brutal">Most brutal right now</string>
-    <string name="paradoxo_pulse_kind">Most forgiving right now</string>
+    <string name="paradoxo_pulse_brutal">Most strict right now</string>
+    <string name="paradoxo_pulse_kind">Most generous right now</string>
     <string name="paradoxo_pulse_trend">In free fall</string>
     <string name="paradoxo_pulse_gap">Biggest gap</string>
     <string name="paradoxo_pulse_rising">On the rise</string>
@@ -1139,9 +1139,9 @@
     <!-- endregion -->
 
     <!-- region Paradoxo · Explore rankings -->
-    <string name="paradoxo_explore_brutal_title">Most brutal</string>
+    <string name="paradoxo_explore_brutal_title">Most strict</string>
     <string name="paradoxo_explore_brutal_sub">lowest averages</string>
-    <string name="paradoxo_explore_kind_title">Most forgiving</string>
+    <string name="paradoxo_explore_kind_title">Most generous</string>
     <string name="paradoxo_explore_kind_sub">highest averages</string>
     <string name="paradoxo_explore_rising_title">On the rise</string>
     <string name="paradoxo_explore_rising_sub">climbing for years</string>
@@ -1158,11 +1158,11 @@
     <!-- endregion -->
 
     <!-- region Paradoxo · Tiers, shapes & outcomes -->
-    <string name="paradoxo_tier_angel">angel</string>
+    <string name="paradoxo_tier_generous">generous</string>
     <string name="paradoxo_tier_fair">fair</string>
     <string name="paradoxo_tier_balanced">balanced</string>
     <string name="paradoxo_tier_demanding">demanding</string>
-    <string name="paradoxo_tier_relentless">relentless</string>
+    <string name="paradoxo_tier_strict">strict</string>
     <string name="paradoxo_shape_bimodal">bimodal</string>
     <string name="paradoxo_shape_strict">strict</string>
     <string name="paradoxo_shape_lenient">lenient</string>
@@ -1188,7 +1188,7 @@
     <string name="paradoxo_insights_title">Fun facts</string>
     <string name="paradoxo_insight_peak_format">Best moment in %1$s — average reached %2$s</string>
     <string name="paradoxo_insight_trough_format">Worst semester was %1$s, with an average of %2$s</string>
-    <string name="paradoxo_insight_gap_format">Gap of %1$s points between the toughest and most forgiving teacher</string>
+    <string name="paradoxo_insight_gap_format">Gap of %1$s points between the strictest and most generous teacher</string>
     <string name="paradoxo_teachers_title">Teachers</string>
     <string name="paradoxo_teachers_note">Each one\'s average in this course</string>
     <string name="paradoxo_teacher_meta_format">%1$s averages · %2$s</string>

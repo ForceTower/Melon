@@ -45,21 +45,21 @@ import dev.forcetower.unes.ui.feature.paradoxo.ParadoxoFormat
 // Grade-severity tone, shared by tiles, charts and chips.
 @Composable
 internal fun paradoxoTone(mean: Double): Color = when (ParadoxoTier.of(mean)) {
-    ParadoxoTier.Angel -> MaterialTheme.melon.status.ok
+    ParadoxoTier.Generous -> MaterialTheme.melon.status.ok
     ParadoxoTier.Fair -> MaterialTheme.melon.palette.teal
     ParadoxoTier.Balanced -> MaterialTheme.melon.palette.orange
     ParadoxoTier.Demanding -> MaterialTheme.melon.status.warn
-    ParadoxoTier.Relentless -> MaterialTheme.melon.status.bad
+    ParadoxoTier.Strict -> MaterialTheme.melon.status.bad
 }
 
 @Composable
 internal fun paradoxoTierLabel(tier: ParadoxoTier): String = stringResource(
     when (tier) {
-        ParadoxoTier.Angel -> R.string.paradoxo_tier_angel
+        ParadoxoTier.Generous -> R.string.paradoxo_tier_generous
         ParadoxoTier.Fair -> R.string.paradoxo_tier_fair
         ParadoxoTier.Balanced -> R.string.paradoxo_tier_balanced
         ParadoxoTier.Demanding -> R.string.paradoxo_tier_demanding
-        ParadoxoTier.Relentless -> R.string.paradoxo_tier_relentless
+        ParadoxoTier.Strict -> R.string.paradoxo_tier_strict
     },
 )
 

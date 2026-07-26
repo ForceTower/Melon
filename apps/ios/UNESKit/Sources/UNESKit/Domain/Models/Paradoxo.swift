@@ -15,15 +15,15 @@ struct ParadoxoEntityRef: Equatable, Hashable, Sendable {
 /// The five grading-severity bands, keyed by overall mean. Display labels
 /// and tones live with the feature.
 enum ParadoxoTier: Equatable, Sendable {
-    case relentless, demanding, balanced, fair, angel
+    case strict, demanding, balanced, fair, generous
 
     init(mean: Double) {
         self = switch mean {
-        case 8.5...: .angel
+        case 8.5...: .generous
         case 7.0..<8.5: .fair
         case 5.5..<7.0: .balanced
         case 3.5..<5.5: .demanding
-        default: .relentless
+        default: .strict
         }
     }
 }

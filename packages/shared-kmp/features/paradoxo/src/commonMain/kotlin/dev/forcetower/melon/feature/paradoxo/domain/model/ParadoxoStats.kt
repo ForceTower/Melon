@@ -4,23 +4,23 @@ import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
 // Grade-severity band keyed by a 0–10 mean. Thresholds mirror iOS
-// `ParadoxoTier(mean:)` — the labels (anjo/justo/equilibrado/exigente/
-// implacável) and tones live on the presentation side.
+// `ParadoxoTier(mean:)` — the labels (generoso/justo/equilibrado/exigente/
+// rigoroso) and tones live on the presentation side.
 enum class ParadoxoTier {
-    Angel,
+    Generous,
     Fair,
     Balanced,
     Demanding,
-    Relentless,
+    Strict,
     ;
 
     companion object {
         fun of(mean: Double): ParadoxoTier = when {
-            mean >= 8.5 -> Angel
+            mean >= 8.5 -> Generous
             mean >= 7.0 -> Fair
             mean >= 5.5 -> Balanced
             mean >= 3.5 -> Demanding
-            else -> Relentless
+            else -> Strict
         }
     }
 }
