@@ -108,6 +108,8 @@ licensee {
     allowUrl("https://developer.android.com/studio/terms.html")
     // ML Kit (document scanner) ships under Google's ML Kit terms, URL-only.
     allowUrl("https://developers.google.com/ml-kit/terms")
+    // Play Core (in-app updates) declares the Play Core SDK ToS URL-only.
+    allowUrl("https://developer.android.com/guide/playcore/license")
     // slf4j declares MIT by URL form rather than SPDX id.
     allowUrl("https://opensource.org/license/mit")
 }
@@ -178,6 +180,9 @@ dependencies {
     implementation(libs.androidx.work.runtime.ktx)
 
     implementation(libs.play.services.mlkit.document.scanner)
+
+    // Play In-App Updates — flexible/immediate update flows (docs/in-app-update.md).
+    implementation(libs.play.app.update.ktx)
 
     // Firebase BoM pins all SDK versions in lockstep — Analytics for usage
     // tracking, Crashlytics for crash reporting, Messaging for FCM push,

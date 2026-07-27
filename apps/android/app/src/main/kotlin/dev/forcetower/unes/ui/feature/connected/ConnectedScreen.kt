@@ -1,10 +1,16 @@
 package dev.forcetower.unes.ui.feature.connected
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -27,6 +33,7 @@ import androidx.navigation3.runtime.rememberDecoratedNavEntries
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import dev.forcetower.unes.designsystem.foundation.RevealWindowHost
+import dev.forcetower.unes.designsystem.theme.MelonMotion
 import dev.forcetower.unes.designsystem.theme.MelonTheme
 import dev.forcetower.unes.designsystem.theme.melon
 import dev.forcetower.unes.ui.feature.campusevent.CampusEventActivityScreen
@@ -125,6 +132,8 @@ fun ConnectedScreen(
     // icons flip light — the Android analogue of iOS `WelcomeChrome`.
     val campusEventVm: CampusEventViewModel = hiltViewModel()
     val campusEventState by campusEventVm.state.collectAsStateWithLifecycle()
+    // A flexible in-app update finished downloading — offer the restart.
+    val updateDownloaded by vm.updateDownloaded.collectAsStateWithLifecycle()
     val unreadBadges = mapOf(
         ConnectedTab.Messages to messagesState.rawItems.count { it.isUnread },
     ).filterValues { it > 0 }
@@ -505,6 +514,19 @@ fun ConnectedScreen(
                     transitionSpec = connectedPushTransition,
                     popTransitionSpec = connectedPopTransition,
                     predictivePopTransitionSpec = connectedPredictivePopTransition,
+                )
+            }
+            AnimatedVisibility(
+                visible = updateDownloaded && !welcomeOwnsScreen,
+                enter = expandVertically(animationSpec = tween(280, easing = MelonMotion.EmphasizedEasing)) +
+                    fadeIn(animationSpec = tween(280, easing = MelonMotion.EmphasizedEasing)),
+                exit = shrinkVertically(animationSpec = tween(220, easing = MelonMotion.EmphasizedEasing)) +
+                    fadeOut(animationSpec = tween(220, easing = MelonMotion.EmphasizedEasing)),
+            ) {
+                UpdateReadyBanner(
+                    onRestart = { vm.completeUpdate() },
+                    onDismiss = { vm.dismissUpdateBanner() },
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                 )
             }
             AnimatedVisibility(visible = !welcomeOwnsScreen) {

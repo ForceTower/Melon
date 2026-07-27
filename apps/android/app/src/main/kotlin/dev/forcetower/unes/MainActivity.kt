@@ -10,18 +10,22 @@ import android.view.View
 import android.view.animation.AccelerateInterpolator
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.collectAsState
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
 import dev.forcetower.unes.designsystem.theme.MelonTheme
 import dev.forcetower.unes.theme.ThemeMode
 import dev.forcetower.unes.theme.ThemePreferenceStore
 import dev.forcetower.unes.ui.feature.connected.DeepLinkHandler
 import dev.forcetower.unes.ui.navigation.AppNavHost
+import dev.forcetower.unes.update.InAppUpdater
 import javax.inject.Inject
+import kotlinx.coroutines.launch
 
 // FragmentActivity (vs the leaner ComponentActivity) is required so the
 // settings credential card can host an `androidx.biometric.BiometricPrompt` —
@@ -35,12 +39,25 @@ class MainActivity : FragmentActivity() {
     @Inject
     internal lateinit var deepLinks: DeepLinkHandler
 
+    @Inject
+    internal lateinit var appUpdater: InAppUpdater
+
+    private val updateFlowLauncher = registerForActivityResult(
+        ActivityResultContracts.StartIntentSenderForResult(),
+    ) { result ->
+        lifecycleScope.launch { appUpdater.onUpdateFlowResult(result.resultCode) }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
         // Only on a genuinely fresh launch — after a config change the same
         // intent is re-delivered and must not re-navigate.
         if (savedInstanceState == null) offerDeepLink(intent)
+        // Unconditional (no savedInstanceState gate): `InAppUpdater` dedupes
+        // per process, which keeps the downloaded-while-dead recovery alive
+        // across process-death restores.
+        lifecycleScope.launch { appUpdater.checkOnLaunch(updateFlowLauncher) }
         // Dissolve the OS splash into the in-app Compose splash instead of
         // cutting: both share the same dark base color, so fading the OS layer
         // out (with the icon lifting slightly) reads as one continuous handoff.
@@ -72,6 +89,11 @@ class MainActivity : FragmentActivity() {
                 AppNavHost()
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        lifecycleScope.launch { appUpdater.resumeIfStalled(updateFlowLauncher) }
     }
 
     override fun onNewIntent(intent: Intent) {

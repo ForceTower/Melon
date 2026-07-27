@@ -11,6 +11,7 @@ import dev.forcetower.melon.core.common.Outcome
 import dev.forcetower.melon.feature.sync.domain.usecase.BackfillMirrorUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.PingActivityUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.RefreshSessionUseCase
+import dev.forcetower.unes.update.InAppUpdater
 import dev.forcetower.unes.widgets.WidgetSnapshotPublisher
 import javax.inject.Inject
 import kotlinx.coroutines.launch
@@ -33,12 +34,21 @@ internal class ConnectedViewModel @Inject constructor(
     private val widgetSnapshotPublisher: WidgetSnapshotPublisher,
     private val analytics: Analytics,
     deepLinkHandler: DeepLinkHandler,
+    private val inAppUpdater: InAppUpdater,
     logger: Logger,
 ) : ViewModel() {
     // Deeplink targets buffered since the notification tap (or VIEW intent).
     // Surfaces here because the screen already holds this VM — the handler
     // itself stays an activity-agnostic singleton.
     val deepLinks = deepLinkHandler.targets
+
+    // Same surfacing trick as deeplinks: a flexible in-app update finished
+    // downloading and the shell should offer the restart banner.
+    val updateDownloaded = inAppUpdater.updateDownloaded
+
+    fun completeUpdate() = inAppUpdater.completeUpdate()
+
+    fun dismissUpdateBanner() = inAppUpdater.dismissUpdateBanner()
 
     private val log = logger.withTag("ConnectedViewModel")
     private val refreshMutex = Mutex()

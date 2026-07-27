@@ -206,6 +206,13 @@
     <string name="connected_tab_me">Eu</string>
     <!-- endregion -->
 
+    <!-- region Connected · Atualização do app -->
+    <string name="update_ready_title">Atualização pronta</string>
+    <string name="update_ready_body">Uma nova versão do UNES já foi baixada.</string>
+    <string name="update_ready_action">Reiniciar</string>
+    <string name="update_ready_dismiss">Dispensar</string>
+    <!-- endregion -->
+
     <!-- region Overview · Header -->
     <string name="overview_greeting_morning">Bom dia</string>
     <string name="overview_greeting_afternoon">Boa tarde</string>

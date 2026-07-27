@@ -29,6 +29,7 @@ android-credentials = "1.6.0"
 android-biometric = "1.2.0-alpha05"
 android-glance = "1.1.1"
 android-work = "2.11.2"
+play-app-update = "2.1.0"
 timber = "5.0.1"
 kotlinx-coroutines-android = "1.11.0"
 licensee = "1.14.1"
@@ -122,6 +123,9 @@ androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version
 
 # ML Kit document scanner (Play-services-delivered camera digitization for Materiais uploads)
 play-services-mlkit-document-scanner = { module = "com.google.android.gms:play-services-mlkit-document-scanner", version = "16.0.0-beta1" }
+
+# Play In-App Updates (flexible/immediate update flows — see docs/in-app-update.md)
+play-app-update-ktx = { module = "com.google.android.play:app-update-ktx", version.ref = "play-app-update" }
 
 # Timber (Android logging tree backing core/logging)
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
