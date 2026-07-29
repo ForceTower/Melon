@@ -20,6 +20,9 @@ struct UNESWatchApp: App {
         guard environment["XCODE_RUNNING_FOR_PREVIEWS"] != "1",
               environment["XCODE_RUNNING_FOR_PLAYGROUNDS"] != "1"
         else { return }
+        // Before launch completes, so a notification tap that cold-starts
+        // the app still routes.
+        WatchNotifications.install()
         FirebaseApp.configure()
         #if DEBUG
         Crashlytics.crashlytics().setCrashlyticsCollectionEnabled(false)

@@ -20,3 +20,17 @@ Evolve by addition only — never repurpose an existing URI.
 | `unes://messages/{messageId}` | Message detail |
 | `unes://materials/{materialId}` | Material detail |
 | `unes://materials/discipline/{disciplineId}` | Materials shelf of one discipline |
+
+## watchOS
+
+The watch app consumes the same URIs via mirrored notification taps (parser
+shared with iOS; table in `UNESKit/Sources/UNESKit/Watch/WatchDeeplinkResolver.swift`),
+projected onto the watch's smaller destination set:
+
+| URI | Watch destination |
+| --- | --- |
+| `unes://schedule` | Week view |
+| `unes://classes` + push `data.disciplineCode` | That discipline's grades screen (grade pushes carry the code in push data, not the URL; no match → Hoje) |
+| `unes://messages` | Inbox |
+| `unes://messages/{messageId}` | Message detail when mirrored; otherwise inbox + a phone-wake refresh that upgrades to the detail if the message arrives in time |
+| everything else | Hoje (plain open) |

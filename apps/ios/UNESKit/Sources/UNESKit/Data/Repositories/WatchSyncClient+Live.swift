@@ -66,6 +66,19 @@ extension WatchSyncClient: DependencyKey {
                     log.info("secret icons unlocked from watch \(icons.map(\.rawValue))")
                     @Shared(.unlockedSecretIcons) var unlockedSecretIcons
                     $unlockedSecretIcons.withLock { $0.formUnion(icons) }
+                },
+                onSnapshotRequest: {
+                    // A tapped message push mirrored to the watch while this
+                    // phone was locked — the sendMessage wake is our chance
+                    // to catch the mirror up; the write re-pushes the context.
+                    log.info("snapshot request received from watch")
+                    Task {
+                        do {
+                            try await messagesRepository.refresh(now())
+                        } catch {
+                            log.warn("snapshot request refresh failed", error: error)
+                        }
+                    }
                 }
             )
             WCSession.default.delegate = bridge
@@ -92,15 +105,18 @@ private final class WatchSessionBridge: NSObject, WCSessionDelegate, Sendable {
     private let onSessionReady: @Sendable () -> Void
     private let onReadReceipts: @Sendable ([String]) -> Void
     private let onSecretIconUnlocks: @Sendable ([String]) -> Void
+    private let onSnapshotRequest: @Sendable () -> Void
 
     init(
         onSessionReady: @escaping @Sendable () -> Void,
         onReadReceipts: @escaping @Sendable ([String]) -> Void,
-        onSecretIconUnlocks: @escaping @Sendable ([String]) -> Void
+        onSecretIconUnlocks: @escaping @Sendable ([String]) -> Void,
+        onSnapshotRequest: @escaping @Sendable () -> Void
     ) {
         self.onSessionReady = onSessionReady
         self.onReadReceipts = onReadReceipts
         self.onSecretIconUnlocks = onSecretIconUnlocks
+        self.onSnapshotRequest = onSnapshotRequest
     }
 
     func session(
@@ -144,6 +160,9 @@ private final class WatchSessionBridge: NSObject, WCSessionDelegate, Sendable {
         }
         if let raws = payload["unlockedAppIcons"] as? [String], !raws.isEmpty {
             onSecretIconUnlocks(raws)
+        }
+        if payload["requestSnapshot"] as? Bool == true {
+            onSnapshotRequest()
         }
     }
 }

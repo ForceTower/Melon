@@ -9,6 +9,10 @@ enum IntentRoute: Equatable, Sendable {
     case message(id: String)
     case material(id: String)
     case materialsDiscipline(disciplineId: String)
+    /// `unes://classes` refined by the grade push's `data.disciplineCode` —
+    /// the code rides push data, not the URL, so the URL grammar is untouched.
+    /// Posted only by the watch tap entry today.
+    case classesDiscipline(code: String)
 
     /// Log label — never carries ids or names (remote log).
     var kindLabel: String {
@@ -18,6 +22,7 @@ enum IntentRoute: Equatable, Sendable {
         case .message: "message"
         case .material: "material"
         case .materialsDiscipline: "materialsDiscipline"
+        case .classesDiscipline: "classesDiscipline"
         }
     }
 }

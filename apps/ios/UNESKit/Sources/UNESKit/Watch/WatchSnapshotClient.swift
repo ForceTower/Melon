@@ -46,6 +46,9 @@ struct WatchRepository: Sendable {
     /// Entering Space Impact is the NowShip icon's discovery path — reported
     /// to the phone once, which unlocks it in the phone's Settings.
     var reportSpaceImpactOpened: @Sendable () -> Void
+    /// Wakes the phone to refresh the messages mirror and re-push the
+    /// snapshot — a tapped message push always outruns a locked phone.
+    var requestSnapshot: @Sendable () -> Void
 }
 
 extension WatchRepository: DependencyKey {
@@ -87,6 +90,9 @@ extension WatchRepository: DependencyKey {
         },
         reportSpaceImpactOpened: {
             WatchSessionReceiver.shared.reportSpaceImpactOpened()
+        },
+        requestSnapshot: {
+            WatchSessionReceiver.shared.requestSnapshot()
         }
     )
 
@@ -96,7 +102,8 @@ extension WatchRepository: DependencyKey {
         activate: {},
         observe: { AsyncStream { $0.yield(.preview()) } },
         markMessageRead: { _ in },
-        reportSpaceImpactOpened: {}
+        reportSpaceImpactOpened: {},
+        requestSnapshot: {}
     )
 }
 
@@ -141,6 +148,28 @@ private final class WatchSessionReceiver: NSObject, WCSessionDelegate, Sendable 
             session.transferUserInfo(payload)
         }
         log.debug("reportRead sent count=\(ids.count)")
+    }
+
+    /// Live-first like `reportRead`; delivering `sendMessage` from the active
+    /// watch app launches the iOS counterpart in the background — the wake the
+    /// phone needs to refresh a mirror its locked screen never updated.
+    func requestSnapshot() {
+        let session = WCSession.default
+        guard session.activationState == .activated else {
+            log.warn("requestSnapshot skipped reason=inactive")
+            return
+        }
+        let payload: [String: Any] = ["requestSnapshot": true]
+        guard session.isReachable else {
+            session.transferUserInfo(payload)
+            log.debug("requestSnapshot queued")
+            return
+        }
+        session.sendMessage(payload, replyHandler: nil) { error in
+            log.warn("requestSnapshot send failed, queueing", error: error)
+            session.transferUserInfo(payload)
+        }
+        log.debug("requestSnapshot sent")
     }
 
     private static let spaceImpactReportedKey = "spaceImpactDiscoveryReported"

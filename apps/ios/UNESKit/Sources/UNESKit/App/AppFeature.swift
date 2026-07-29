@@ -102,6 +102,10 @@ struct AppFeature {
                                 await send(.intentOpenMaterial(id: id))
                             case let .materialsDiscipline(disciplineId):
                                 await send(.intentOpenMaterialsDiscipline(disciplineId: disciplineId))
+                            case .classesDiscipline:
+                                // Watch-only refinement; on the phone it
+                                // degrades to the tab the URL names.
+                                await send(.intentRoute(.classes))
                             }
                         }
                     }

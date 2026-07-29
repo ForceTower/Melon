@@ -14,6 +14,10 @@ public enum Deeplinks {
         post(url.absoluteString)
     }
 
+    /// The watch tap entry (`WatchNotifications.tapped`) deliberately bypasses
+    /// this: the keychain-backed `sessionStore` is always nil on the watch, so
+    /// the signed-out gate below would drop every route. Watch gating happens
+    /// at route consumption instead — don't "de-duplicate" the two paths.
     static func post(_ url: String) {
         @Dependency(\.sessionStore) var sessionStore
         @Dependency(\.intentRouter) var intentRouter
