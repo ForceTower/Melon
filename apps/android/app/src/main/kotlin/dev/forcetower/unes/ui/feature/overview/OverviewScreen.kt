@@ -32,6 +32,7 @@ import dev.forcetower.unes.designsystem.foundation.fadeInOnAppear
 import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
 import dev.forcetower.unes.designsystem.foundation.scaleInOnAppear
 import dev.forcetower.unes.ui.feature.campusevent.CampusEventHomeCard
+import dev.forcetower.unes.ui.feature.disciplines.formatSemesterCode
 import dev.forcetower.unes.ui.feature.overview.components.FinalStretchCard
 import dev.forcetower.unes.ui.feature.overview.components.HeroCard
 import dev.forcetower.unes.ui.feature.overview.components.MessagesPreview
@@ -250,7 +251,11 @@ private fun mapHeroClass(raw: KmpOverviewNowClass): OverviewHeroClass = Overview
 )
 
 // The exam variant wins whenever an evaluation is on the horizon; otherwise
-// fall back to the semester-end countdown.
+// fall back to the semester-end countdown — but only once the semester really
+// is in its final stretch, so a freshly started semester doesn't advertise 130+
+// days as "Reta final".
+private const val FINAL_STRETCH_WINDOW_DAYS = 30
+
 private fun deriveFinalStretch(state: OverviewUiState): OverviewFinalStretch? {
     val exam = state.nextTestTileRaw
     if (exam != null) {
@@ -261,8 +266,8 @@ private fun deriveFinalStretch(state: OverviewUiState): OverviewFinalStretch? {
             dateLabel = formatExamDate(exam.date),
         )
     }
-    val daysLeft = state.semesterDaysLeft ?: return null
-    val semesterLabel = state.semesterCode ?: return null
+    val daysLeft = state.semesterDaysLeft?.takeIf { it <= FINAL_STRETCH_WINDOW_DAYS } ?: return null
+    val semesterLabel = state.semesterCode?.let(::formatSemesterCode) ?: return null
     return OverviewFinalStretch.Semester(daysLeft = daysLeft, semesterLabel = semesterLabel)
 }
 
