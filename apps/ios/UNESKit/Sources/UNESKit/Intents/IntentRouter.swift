@@ -13,6 +13,9 @@ enum IntentRoute: Equatable, Sendable {
     /// the code rides push data, not the URL, so the URL grammar is untouched.
     /// Posted only by the watch tap entry today.
     case classesDiscipline(code: String)
+    /// `unes://reauth` — the credentials-invalid push. Lands on Hoje and opens
+    /// the portal-password sheet directly.
+    case reauth
 
     /// Log label — never carries ids or names (remote log).
     var kindLabel: String {
@@ -23,6 +26,7 @@ enum IntentRoute: Equatable, Sendable {
         case .material: "material"
         case .materialsDiscipline: "materialsDiscipline"
         case .classesDiscipline: "classesDiscipline"
+        case .reauth: "reauth"
         }
     }
 }

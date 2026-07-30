@@ -22,6 +22,17 @@ interface SessionStore : AuthTokenSource {
     val sessionInvalid: StateFlow<Boolean>
 
     /**
+     * True once the server reports the stored SAGRES password no longer works.
+     * Deliberately separate from [sessionInvalid]: the Melon session and the
+     * upstream credential fail independently and the user fixes them in
+     * different ways. Persisted so the banner renders on a cold start offline.
+     */
+    val credentialsInvalid: StateFlow<Boolean>
+
+    /** SAGRES username from `api/me/status`; the re-auth sheet shows it read-only. */
+    val upstreamUsername: StateFlow<String?>
+
+    /**
      * Resolves the auth state by reading persisted state directly, bypassing
      * the [authState] StateFlow's startup race. The flow seeds with
      * [AuthState.Unauthenticated] so `.first()` on a cold start can hand back
@@ -59,6 +70,10 @@ interface SessionStore : AuthTokenSource {
     suspend fun replaceTokens(accessToken: String, refreshToken: String)
 
     suspend fun setSessionInvalid(invalid: Boolean)
+
+    suspend fun setCredentialsInvalid(invalid: Boolean)
+
+    suspend fun setUpstreamUsername(username: String)
 
     suspend fun getCredentials(): UserCredentials?
     fun observeCredentials(): Flow<UserCredentials?>

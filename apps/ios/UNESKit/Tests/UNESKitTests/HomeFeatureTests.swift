@@ -22,6 +22,8 @@ struct HomeFeatureTests {
         let store = TestStore(initialState: HomeFeature.State()) {
             HomeFeature()
         } withDependencies: {
+            $0.credentialStatusRepository.current = { CredentialHealth(status: .ok, username: nil) }
+            $0.credentialInvalidation.apply = { _ in }
             $0.date = .constant(Self.referenceDate)
             $0.homeRepository.observe = { updates }
             $0.homeRepository.refresh = { now in
@@ -56,6 +58,8 @@ struct HomeFeatureTests {
         let store = TestStore(initialState: HomeFeature.State()) {
             HomeFeature()
         } withDependencies: {
+            $0.credentialStatusRepository.current = { CredentialHealth(status: .ok, username: nil) }
+            $0.credentialInvalidation.apply = { _ in }
             $0.date = .constant(Self.referenceDate)
             $0.homeRepository.observe = { updates }
             $0.homeRepository.refresh = { now in
@@ -91,6 +95,8 @@ struct HomeFeatureTests {
         let store = TestStore(initialState: HomeFeature.State(isLoading: true)) {
             HomeFeature()
         } withDependencies: {
+            $0.credentialStatusRepository.current = { CredentialHealth(status: .ok, username: nil) }
+            $0.credentialInvalidation.apply = { _ in }
             $0.date = .constant(Self.referenceDate)
             $0.homeRepository.observe = { updates }
             $0.homeRepository.refresh = { now in
@@ -114,6 +120,8 @@ struct HomeFeatureTests {
         let store = TestStore(initialState: HomeFeature.State()) {
             HomeFeature()
         } withDependencies: {
+            $0.credentialStatusRepository.current = { CredentialHealth(status: .ok, username: nil) }
+            $0.credentialInvalidation.apply = { _ in }
             $0.date = .constant(Self.referenceDate)
             $0.homeRepository.observe = { .finished }
             $0.homeRepository.cached = { _ in nil }
@@ -140,6 +148,8 @@ struct HomeFeatureTests {
         let store = TestStore(initialState: HomeFeature.State()) {
             HomeFeature()
         } withDependencies: {
+            $0.credentialStatusRepository.current = { CredentialHealth(status: .ok, username: nil) }
+            $0.credentialInvalidation.apply = { _ in }
             $0.date = .constant(Self.referenceDate)
             $0.homeRepository.observe = { updates }
             $0.homeRepository.cached = { _ in cached }
@@ -178,6 +188,8 @@ struct HomeFeatureTests {
         let store = TestStore(initialState: HomeFeature.State()) {
             HomeFeature()
         } withDependencies: {
+            $0.credentialStatusRepository.current = { CredentialHealth(status: .ok, username: nil) }
+            $0.credentialInvalidation.apply = { _ in }
             $0.date = .constant(Self.referenceDate)
             $0.continuousClock = clock
             $0.homeRepository.observe = { updates }
@@ -226,6 +238,8 @@ struct HomeFeatureTests {
         let store = TestStore(initialState: HomeFeature.State()) {
             HomeFeature()
         } withDependencies: {
+            $0.credentialStatusRepository.current = { CredentialHealth(status: .ok, username: nil) }
+            $0.credentialInvalidation.apply = { _ in }
             $0.date = .constant(Self.referenceDate)
             $0.continuousClock = clock
             $0.homeRepository.observe = { updates }
@@ -323,6 +337,8 @@ struct HomeFeatureTests {
         ) {
             HomeFeature()
         } withDependencies: {
+            $0.credentialStatusRepository.current = { CredentialHealth(status: .ok, username: nil) }
+            $0.credentialInvalidation.apply = { _ in }
             $0.date = .constant(Self.referenceDate)
             $0.homeRepository.observe = { updates }
             $0.homeRepository.refresh = { now in

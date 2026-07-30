@@ -13,6 +13,10 @@
 //                                    → force 401 on every authenticated route
 //   curl localhost:8787/debug/refresh-mode/rotate|reject|unavailable
 //                                    → what api/auth/token/refresh answers
+//   curl localhost:8787/debug/credentials/ok|invalid|none
+//                                    → what api/me/status reports
+//   curl localhost:8787/debug/reauth-mode/accept|reject|unavailable
+//                                    → what api/me/credentials answers
 //
 // Pointing a client at it:
 //   Android  ./gradlew :apps:android:app:assembleDebug -Pmelon.apiBaseUrl=http://127.0.0.1:8787
@@ -402,6 +406,23 @@ function isRefreshMode(value: string): value is RefreshMode {
   return value === "rotate" || value === "reject" || value === "unavailable";
 }
 
+// ── portal-credential re-auth rehearsal ──
+// `credentialsStatus` is what GET /api/me/status reports; `reauthMode` decides
+// how POST /api/me/credentials answers. Accepting a password flips the status
+// back to ok, so the banner clears the way it will in production.
+type CredentialsStatus = "ok" | "invalid" | "none";
+type ReauthMode = "accept" | "reject" | "unavailable";
+let credentialsStatus: CredentialsStatus = "ok";
+let reauthMode: ReauthMode = "accept";
+const UPSTREAM_USERNAME = "20191234";
+
+function isCredentialsStatus(v: string): v is CredentialsStatus {
+  return v === "ok" || v === "invalid" || v === "none";
+}
+function isReauthMode(v: string): v is ReauthMode {
+  return v === "accept" || v === "reject" || v === "unavailable";
+}
+
 async function passthrough(req: Request, url: URL): Promise<Response> {
   const headers = new Headers(req.headers);
   headers.delete("host");
@@ -427,6 +448,42 @@ Bun.serve({
   async fetch(req) {
     const url = new URL(req.url);
     const tag = `${req.method} ${url.pathname}`;
+
+    if (url.pathname === "/api/me/status") {
+      console.log(`[mock] ${tag} → credentials=${credentialsStatus}`);
+      return ok({
+        credentials: {
+          status: credentialsStatus,
+          username: credentialsStatus === "none" ? null : UPSTREAM_USERNAME,
+        },
+      });
+    }
+    if (url.pathname === "/api/me/credentials" && req.method === "POST") {
+      console.log(`[mock] ${tag} → ${reauthMode}`);
+      if (reauthMode === "reject") {
+        return Response.json(
+          { ok: false, message: "Senha incorreta", data: null, errorCode: "UPSTREAM_CREDENTIALS_INVALID" },
+          { status: 400 },
+        );
+      }
+      if (reauthMode === "unavailable") {
+        return Response.json({ ok: false, message: "Upstream unavailable", data: null }, { status: 503 });
+      }
+      credentialsStatus = "ok";
+      return ok({ status: "ok" });
+    }
+    const credsMatch = url.pathname.match(/^\/debug\/credentials\/([a-z]+)$/);
+    if (credsMatch && isCredentialsStatus(credsMatch[1])) {
+      credentialsStatus = credsMatch[1];
+      console.log(`[mock] credentials status → ${credentialsStatus}`);
+      return ok({ status: credentialsStatus });
+    }
+    const reauthMatch = url.pathname.match(/^\/debug\/reauth-mode\/([a-z]+)$/);
+    if (reauthMatch && isReauthMode(reauthMatch[1])) {
+      reauthMode = reauthMatch[1];
+      console.log(`[mock] reauth mode → ${reauthMode}`);
+      return ok({ mode: reauthMode });
+    }
 
     if (url.pathname === "/api/auth/token/refresh" && req.method === "POST") {
       rotations += 1;

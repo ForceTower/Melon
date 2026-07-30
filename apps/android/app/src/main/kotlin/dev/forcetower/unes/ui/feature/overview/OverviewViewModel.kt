@@ -4,12 +4,17 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.forcetower.melon.core.analytics.Analytics
 import dev.forcetower.melon.core.analytics.ContentTypes
+import androidx.annotation.StringRes
 import dev.forcetower.melon.core.common.ForegroundSignal
+import dev.forcetower.melon.core.common.Outcome
+import dev.forcetower.melon.feature.me.domain.model.ReauthError
 import dev.forcetower.melon.core.session.domain.SessionStore
 import dev.forcetower.melon.feature.campusevent.domain.model.CampusEvent
 import dev.forcetower.melon.feature.campusevent.domain.usecase.ObserveCampusEventUseCase
 import dev.forcetower.melon.feature.campusevent.domain.usecase.RefreshCampusEventUseCase
 import dev.forcetower.melon.feature.me.domain.usecase.ObserveMeProfileUseCase
+import dev.forcetower.melon.feature.me.domain.usecase.ReauthenticateUpstreamUseCase
+import dev.forcetower.melon.feature.me.domain.usecase.RefreshCredentialStatusUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveNextTestTileUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveNowClassUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveOverviewHeaderUseCase
@@ -20,6 +25,7 @@ import dev.forcetower.unes.mvi.MviViewModel
 import dev.forcetower.unes.mvi.UiEffect
 import dev.forcetower.unes.mvi.UiIntent
 import dev.forcetower.unes.mvi.UiState
+import dev.forcetower.unes.R
 import dev.forcetower.unes.firebase.FeatureFlags
 import java.time.LocalDate
 import java.time.ZoneId
@@ -60,6 +66,11 @@ internal data class OverviewUiState(
     val campusEventEnabled: Boolean = false,
     /** Set once the refresh token is spent — nothing syncs until a new login. */
     val sessionInvalid: Boolean = false,
+    /** Set when the server reports the stored portal password stopped working. */
+    val credentialsInvalid: Boolean = false,
+    val upstreamUsername: String? = null,
+    val reauthLoading: Boolean = false,
+    @StringRes val reauthErrorRes: Int? = null,
     val clock: Instant = Clock.System.now(),
 ) : UiState {
     // Both gates must open, exactly like iOS: the Remote Config flag AND a
@@ -116,10 +127,15 @@ internal data class OverviewUiState(
 
 internal sealed interface OverviewIntent : UiIntent {
     data object ReloginTapped : OverviewIntent
+    data object ReauthTapped : OverviewIntent
+    data class ReauthSubmitted(val password: String) : OverviewIntent
+    data object ReauthDismissed : OverviewIntent
 }
 
 internal sealed interface OverviewEffect : UiEffect {
     data object ShowRelogin : OverviewEffect
+    data object ShowReauth : OverviewEffect
+    data object ReauthSucceeded : OverviewEffect
 }
 
 @HiltViewModel
@@ -136,6 +152,8 @@ internal class OverviewViewModel @Inject constructor(
     featureFlags: FeatureFlags,
     foregroundSignal: ForegroundSignal,
     sessionStore: SessionStore,
+    private val refreshCredentialStatus: RefreshCredentialStatusUseCase,
+    private val reauthenticateUpstream: ReauthenticateUpstreamUseCase,
     private val analytics: Analytics,
 ) : MviViewModel<OverviewUiState, OverviewIntent, OverviewEffect>(OverviewUiState()) {
 
@@ -194,6 +212,18 @@ internal class OverviewViewModel @Inject constructor(
         viewModelScope.launch {
             sessionStore.sessionInvalid.collect { invalid -> setState { copy(sessionInvalid = invalid) } }
         }
+        viewModelScope.launch {
+            sessionStore.credentialsInvalid.collect { invalid -> setState { copy(credentialsInvalid = invalid) } }
+        }
+        viewModelScope.launch {
+            sessionStore.upstreamUsername.collect { name -> setState { copy(upstreamUsername = name) } }
+        }
+        // Polled on the same foreground pulse as the campus-event refresh, so
+        // the banner clears on its own when the password is fixed elsewhere.
+        viewModelScope.launch { refreshCredentialStatus() }
+        viewModelScope.launch {
+            foregroundSignal.pulses.collect { refreshCredentialStatus() }
+        }
         // Clock ticker — refreshes greeting/eyebrow/countdown labels without
         // forcing KMP flows to re-emit. Mirrors iOS `runClockTicker`.
         viewModelScope.launch {
@@ -209,6 +239,31 @@ internal class OverviewViewModel @Inject constructor(
             OverviewIntent.ReloginTapped -> {
                 analytics.selectContent(contentType = ContentTypes.CTA, itemId = "session_expired")
                 emitEffect(OverviewEffect.ShowRelogin)
+            }
+            OverviewIntent.ReauthTapped -> {
+                analytics.selectContent(contentType = ContentTypes.CTA, itemId = "credentials_invalid")
+                setState { copy(reauthErrorRes = null) }
+                emitEffect(OverviewEffect.ShowReauth)
+            }
+            OverviewIntent.ReauthDismissed -> setState { copy(reauthErrorRes = null, reauthLoading = false) }
+            is OverviewIntent.ReauthSubmitted -> submitReauth(intent.password)
+        }
+    }
+
+    private fun submitReauth(password: String) {
+        if (currentState.reauthLoading) return
+        setState { copy(reauthLoading = true, reauthErrorRes = null) }
+        viewModelScope.launch {
+            when (val outcome = reauthenticateUpstream(password)) {
+                is Outcome.Ok -> {
+                    // The use case already cleared the flag, which drops the
+                    // banner; the server brought the sync forward.
+                    setState { copy(reauthLoading = false) }
+                    emitEffect(OverviewEffect.ReauthSucceeded)
+                }
+                is Outcome.Err -> setState {
+                    copy(reauthLoading = false, reauthErrorRes = outcome.error.toMessageRes())
+                }
             }
         }
     }
@@ -261,3 +316,10 @@ private fun formatWeekday(date: LocalDate): String =
     DateTimeFormatter.ofPattern("EEEE", Locale.getDefault())
         .format(date)
         .replaceFirstChar { it.titlecase(Locale.getDefault()) }
+
+private fun ReauthError.toMessageRes(): Int = when (this) {
+    ReauthError.InvalidPassword -> R.string.reauth_error_invalid
+    ReauthError.Unavailable -> R.string.reauth_error_unavailable
+    ReauthError.NoConnection -> R.string.reauth_error_network
+    is ReauthError.Server -> R.string.reauth_error_unavailable
+}

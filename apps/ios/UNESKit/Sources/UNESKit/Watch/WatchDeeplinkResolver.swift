@@ -32,7 +32,7 @@ enum WatchDeeplinkResolver {
     static func needsSnapshot(_ route: IntentRoute) -> Bool {
         switch route {
         case .message, .classesDiscipline: true
-        case .tab, .discipline, .material, .materialsDiscipline: false
+        case .tab, .discipline, .material, .materialsDiscipline, .reauth: false
         }
     }
 
@@ -53,8 +53,10 @@ enum WatchDeeplinkResolver {
             snapshot?.disciplines.first(where: { $0.code == code })
                 .map { .discipline(id: $0.id) } ?? .root
         // No materials surface on the watch; `.discipline` is never parsed
-        // from a URL and has no Spotlight/App Intents source here.
-        case .discipline, .material, .materialsDiscipline: .root
+        // from a URL and has no Spotlight/App Intents source here. Re-auth
+        // needs a password field the watch doesn't have — open Hoje and let
+        // the phone carry it.
+        case .discipline, .material, .materialsDiscipline, .reauth: .root
         }
     }
 }

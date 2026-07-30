@@ -74,7 +74,17 @@ struct WatchDeeplinkResolverTests {
     func payloadsWithoutARouteAreDropped() {
         #expect(WatchDeeplinkResolver.route(for: [:]) == nil)
         #expect(WatchDeeplinkResolver.route(for: ["kind": "lecture_added", "disciplineCode": "CALC"]) == nil)
-        #expect(WatchDeeplinkResolver.route(for: ["url": "unes://reauth"]) == nil)
+        #expect(WatchDeeplinkResolver.route(for: ["url": "unes://nope"]) == nil)
+    }
+
+    @Test
+    func reauthParsesButHasNowhereToGoOnTheWatch() {
+        // The credentials push routes everywhere, but only the phone has a
+        // password field — the watch just opens Hoje.
+        let route = WatchDeeplinkResolver.route(for: ["url": "unes://reauth"])
+        #expect(route == .reauth)
+        #expect(WatchDeeplinkResolver.needsSnapshot(.reauth) == false)
+        #expect(WatchDeeplinkResolver.resolve(.reauth, snapshot: nil) == .root)
     }
 
     @Test

@@ -34,6 +34,7 @@ struct AppFeature {
         case sceneActivated
         case pushDataReceived(PushDataEvent)
         case intentRoute(Tab)
+        case intentOpenReauth
         case intentOpenDiscipline(semesterId: String, disciplineId: String)
         case intentOpenMessage(id: String)
         case intentOpenMaterial(id: String)
@@ -106,6 +107,8 @@ struct AppFeature {
                                 // Watch-only refinement; on the phone it
                                 // degrades to the tab the URL names.
                                 await send(.intentRoute(.classes))
+                            case .reauth:
+                                await send(.intentOpenReauth)
                             }
                         }
                     }
@@ -129,6 +132,14 @@ struct AppFeature {
                 reportTabScreen(tab, previous: state.tab)
                 state.tab = tab
                 return .none
+
+            case .intentOpenReauth:
+                // The credentials-invalid push lands here: switch to Hoje and
+                // open the password sheet straight away, skipping the banner.
+                log.info("intent route consumed kind=reauth")
+                reportTabScreen(.home, previous: state.tab)
+                state.tab = .home
+                return .send(.home(.credentialsBannerTapped))
 
             case let .intentOpenDiscipline(semesterId, disciplineId):
                 // Consume-time resolution: the mirror is readable before any

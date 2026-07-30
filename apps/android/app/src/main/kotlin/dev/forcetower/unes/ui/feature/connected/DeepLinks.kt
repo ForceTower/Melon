@@ -16,6 +16,10 @@ internal sealed interface DeepLinkTarget {
     data class Message(val id: String) : DeepLinkTarget
     data class MaterialsDiscipline(val disciplineId: String) : DeepLinkTarget
     data class MaterialDetail(val materialId: String) : DeepLinkTarget
+
+    /** `unes://reauth` — the credentials-invalid push. Lands on Hoje, which
+     *  opens the portal-password sheet. */
+    data object Reauth : DeepLinkTarget
 }
 
 // Hand-rolled instead of `android.net.Uri` so it stays a pure JVM function
@@ -30,6 +34,7 @@ internal fun parseDeepLink(url: String): DeepLinkTarget? {
     val host = segments.firstOrNull()?.lowercase() ?: return null
     val rest = segments.drop(1)
     return when {
+        host == "reauth" && rest.isEmpty() -> DeepLinkTarget.Reauth
         rest.isEmpty() -> tabFor(host)?.let(DeepLinkTarget::Tab)
         host == "messages" && rest.size == 1 -> DeepLinkTarget.Message(rest[0])
         host == "materials" && rest.size == 2 && rest[0].equals("discipline", ignoreCase = true) ->
@@ -55,6 +60,9 @@ private fun tabFor(host: String): ConnectedTab? = when (host) {
 internal fun ConnectedNavigator.open(target: DeepLinkTarget) {
     when (target) {
         is DeepLinkTarget.Tab -> selectTab(target.tab)
+        // Hoje watches the same persisted flag the banner does and opens the
+        // sheet from there, so landing on the tab is the whole job here.
+        DeepLinkTarget.Reauth -> selectTab(ConnectedTab.Overview)
         is DeepLinkTarget.Message -> setStack(
             ConnectedTab.Messages,
             listOf(ConnectedRoute.MessagesList, ConnectedRoute.MessageDetail(target.id)),

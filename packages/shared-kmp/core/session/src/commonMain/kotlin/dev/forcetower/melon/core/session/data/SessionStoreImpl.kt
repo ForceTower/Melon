@@ -37,6 +37,8 @@ import kotlin.time.Clock
 internal const val ACCESS_TOKEN_KEY = "melon.access_token"
 internal const val REFRESH_TOKEN_KEY = "melon.refresh_token"
 internal const val SESSION_INVALID_KEY = "melon.session_invalid"
+internal const val CREDENTIALS_INVALID_KEY = "melon.credentials_invalid"
+internal const val UPSTREAM_USERNAME_KEY = "melon.upstream_username"
 
 @Inject
 @SingleIn(AppScope::class)
@@ -60,6 +62,8 @@ internal class SessionStoreImpl(
     private val log = logger.withTag("SessionStoreImpl")
     private val tokenPresent = MutableStateFlow(false)
     private val sessionInvalidState = MutableStateFlow(false)
+    private val credentialsInvalidState = MutableStateFlow(false)
+    private val upstreamUsernameState = MutableStateFlow<String?>(null)
 
     override val authState: StateFlow<AuthState> =
         combine(tokenPresent, userDao.observeCurrent()) { hasToken, entity ->
@@ -69,13 +73,22 @@ internal class SessionStoreImpl(
 
     override val sessionInvalid: StateFlow<Boolean> = sessionInvalidState
 
+    override val credentialsInvalid: StateFlow<Boolean> = credentialsInvalidState
+
+    override val upstreamUsername: StateFlow<String?> = upstreamUsernameState
+
     init {
         scope.launch {
             val present = storage.get(ACCESS_TOKEN_KEY) != null
             tokenPresent.value = present
             // Persisted so the banner renders on a cold start while offline.
             sessionInvalidState.value = storage.get(SESSION_INVALID_KEY) == "true"
-            log.i { "session bootstrapped tokenPresent=$present invalid=${sessionInvalidState.value}" }
+            credentialsInvalidState.value = storage.get(CREDENTIALS_INVALID_KEY) == "true"
+            upstreamUsernameState.value = storage.get(UPSTREAM_USERNAME_KEY)
+            log.i {
+                "session bootstrapped tokenPresent=$present invalid=${sessionInvalidState.value} " +
+                    "credentialsInvalid=${credentialsInvalidState.value}"
+            }
         }
     }
 
@@ -94,6 +107,19 @@ internal class SessionStoreImpl(
         storage.put(SESSION_INVALID_KEY, invalid.toString())
         sessionInvalidState.value = invalid
         log.i { "sessionInvalid=$invalid" }
+    }
+
+    override suspend fun setCredentialsInvalid(invalid: Boolean) {
+        if (credentialsInvalidState.value == invalid) return
+        storage.put(CREDENTIALS_INVALID_KEY, invalid.toString())
+        credentialsInvalidState.value = invalid
+        log.i { "credentialsInvalid=$invalid" }
+    }
+
+    override suspend fun setUpstreamUsername(username: String) {
+        if (upstreamUsernameState.value == username) return
+        storage.put(UPSTREAM_USERNAME_KEY, username)
+        upstreamUsernameState.value = username
     }
 
     override suspend fun currentAuthState(): AuthState {
@@ -180,6 +206,7 @@ internal class SessionStoreImpl(
         userDao.clear()
         tokenPresent.value = false
         setSessionInvalid(false)
+        setCredentialsInvalid(false)
         log.i { "logout complete: local data wiped" }
     }
 }

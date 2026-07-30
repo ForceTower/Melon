@@ -208,6 +208,13 @@ extension APIClient {
             }
 
             let (data, http, _) = attempt
+            // 412 is the sync family's "no valid upstream credential" gate —
+            // raise the banner now rather than waiting for the next poll.
+            if http.statusCode == 412, apiRequest.authorization == .session {
+                @Dependency(\.credentialInvalidation) var credentialInvalidation
+                log.warn("precondition failed path=\(apiRequest.path): upstream credentials need re-auth")
+                credentialInvalidation.markInvalid()
+            }
             guard 200..<300 ~= http.statusCode else {
                 let message = try? JSONDecoder().decode(ErrorBody.self, from: data).message
                 log.warn("request failed method=\(apiRequest.method) path=\(apiRequest.path) status=\(http.statusCode)")

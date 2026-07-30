@@ -133,6 +133,20 @@ private class RecordingSessionStore : SessionStore, AuthTokenSource {
         _sessionInvalid.value = invalid
     }
 
+    private val _credentialsInvalid = MutableStateFlow(false)
+    override val credentialsInvalid: StateFlow<Boolean> = _credentialsInvalid
+
+    private val _upstreamUsername = MutableStateFlow<String?>(null)
+    override val upstreamUsername: StateFlow<String?> = _upstreamUsername
+
+    override suspend fun setCredentialsInvalid(invalid: Boolean) {
+        _credentialsInvalid.value = invalid
+    }
+
+    override suspend fun setUpstreamUsername(username: String) {
+        _upstreamUsername.value = username
+    }
+
     override suspend fun currentAuthState(): AuthState = _authState.value
 
     override suspend fun persist(

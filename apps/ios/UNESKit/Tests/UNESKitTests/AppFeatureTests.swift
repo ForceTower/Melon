@@ -46,6 +46,8 @@ struct AppFeatureTests {
         let store = TestStore(initialState: AppFeature.State()) {
             AppFeature()
         } withDependencies: {
+            $0.credentialStatusRepository.current = { CredentialHealth(status: .ok, username: nil) }
+            $0.credentialInvalidation.apply = { _ in }
             $0.push.requestAuthorization = {}
             $0.push.dataEvents = { .finished }
             $0.syncRepository.ping = {}
@@ -78,6 +80,8 @@ struct AppFeatureTests {
         let store = TestStore(initialState: AppFeature.State()) {
             AppFeature()
         } withDependencies: {
+            $0.credentialStatusRepository.current = { CredentialHealth(status: .ok, username: nil) }
+            $0.credentialInvalidation.apply = { _ in }
             $0.date = .constant(Self.referenceDate)
             $0.disciplinesRepository.cached = { _ in overview }
         }
@@ -97,6 +101,8 @@ struct AppFeatureTests {
         let store = TestStore(initialState: AppFeature.State()) {
             AppFeature()
         } withDependencies: {
+            $0.credentialStatusRepository.current = { CredentialHealth(status: .ok, username: nil) }
+            $0.credentialInvalidation.apply = { _ in }
             $0.date = .constant(Self.referenceDate)
             $0.disciplinesRepository.cached = { _ in nil }
         }
@@ -117,6 +123,8 @@ struct AppFeatureTests {
         let store = TestStore(initialState: AppFeature.State()) {
             AppFeature()
         } withDependencies: {
+            $0.credentialStatusRepository.current = { CredentialHealth(status: .ok, username: nil) }
+            $0.credentialInvalidation.apply = { _ in }
             $0.date = .constant(Self.referenceDate)
             $0.messagesRepository.cached = { _ in MessagesOverview(messages: [message]) }
             $0.messagesRepository.markRead = { _, _ in }
@@ -139,6 +147,8 @@ struct AppFeatureTests {
         let store = TestStore(initialState: AppFeature.State()) {
             AppFeature()
         } withDependencies: {
+            $0.credentialStatusRepository.current = { CredentialHealth(status: .ok, username: nil) }
+            $0.credentialInvalidation.apply = { _ in }
             $0.date = .constant(Self.referenceDate)
             $0.messagesRepository.cached = { _ in nil }
             $0.messagesRepository.refresh = { _ in }
@@ -162,6 +172,8 @@ struct AppFeatureTests {
         let store = TestStore(initialState: AppFeature.State()) {
             AppFeature()
         } withDependencies: {
+            $0.credentialStatusRepository.current = { CredentialHealth(status: .ok, username: nil) }
+            $0.credentialInvalidation.apply = { _ in }
             $0.date = .constant(Self.referenceDate)
             $0.messagesRepository.cached = { _ in
                 synced.value ? MessagesOverview(messages: [message]) : nil
@@ -184,6 +196,8 @@ struct AppFeatureTests {
         let store = TestStore(initialState: AppFeature.State()) {
             AppFeature()
         } withDependencies: {
+            $0.credentialStatusRepository.current = { CredentialHealth(status: .ok, username: nil) }
+            $0.credentialInvalidation.apply = { _ in }
             $0.materialsRepository.material = { _ in material }
         }
 
@@ -202,6 +216,8 @@ struct AppFeatureTests {
         let store = TestStore(initialState: AppFeature.State()) {
             AppFeature()
         } withDependencies: {
+            $0.credentialStatusRepository.current = { CredentialHealth(status: .ok, username: nil) }
+            $0.credentialInvalidation.apply = { _ in }
             $0.materialsRepository.material = { _ in throw APIError.emptyEnvelope }
         }
 
@@ -221,6 +237,8 @@ struct AppFeatureTests {
         let store = TestStore(initialState: AppFeature.State()) {
             AppFeature()
         } withDependencies: {
+            $0.credentialStatusRepository.current = { CredentialHealth(status: .ok, username: nil) }
+            $0.credentialInvalidation.apply = { _ in }
             $0.materialsRepository.overview = { overview }
         }
 
@@ -265,6 +283,8 @@ struct AppFeatureTests {
         let store = TestStore(initialState: initial) {
             AppFeature()
         } withDependencies: {
+            $0.credentialStatusRepository.current = { CredentialHealth(status: .ok, username: nil) }
+            $0.credentialInvalidation.apply = { _ in }
             $0.date = .constant(Self.referenceDate)
             $0.syncRepository.ping = {}
             $0.homeRepository.observe = { .finished }
@@ -322,6 +342,8 @@ struct AppFeatureTests {
         let store = TestStore(initialState: initialState) {
             AppFeature()
         } withDependencies: {
+            $0.credentialStatusRepository.current = { CredentialHealth(status: .ok, username: nil) }
+            $0.credentialInvalidation.apply = { _ in }
             $0.settingsRepository.update = { change in
                 patched.withValue { $0.append(change) }
                 var settings = UserSettings()
@@ -355,6 +377,8 @@ struct AppFeatureTests {
         let store = TestStore(initialState: initialState) {
             AppFeature()
         } withDependencies: {
+            $0.credentialStatusRepository.current = { CredentialHealth(status: .ok, username: nil) }
+            $0.credentialInvalidation.apply = { _ in }
             $0.appIconClient.set = { icon in applied.withValue { $0.append(icon) } }
         }
 

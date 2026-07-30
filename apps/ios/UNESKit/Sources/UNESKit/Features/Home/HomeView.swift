@@ -23,11 +23,17 @@ struct HomeView: View {
             // empty mirror lands on the spinner or the error state, which is
             // exactly when the notice matters most.
             .safeAreaInset(edge: .top) {
-                if store.isSessionInvalid {
-                    sessionExpiredBanner
-                        .padding(.horizontal, 16)
-                        .padding(.bottom, 10)
+                VStack(spacing: 8) {
+                    if store.isSessionInvalid {
+                        sessionExpiredBanner
+                    } else if store.areCredentialsInvalid {
+                        // Only one at a time: a dead Melon session is the more
+                        // fundamental problem, and fixing it re-polls status.
+                        credentialsBanner
+                    }
                 }
+                .padding(.horizontal, 16)
+                .padding(.bottom, store.isSessionInvalid || store.areCredentialsInvalid ? 10 : 0)
             }
             .navigationTitle(Text(.commonToday))
             .toolbar {
@@ -37,6 +43,9 @@ struct HomeView: View {
             }
             .sheet(item: $store.scope(state: \.relogin, action: \.relogin)) { reloginStore in
                 SessionExpiredSheet(store: reloginStore)
+            }
+            .sheet(item: $store.scope(state: \.reauth, action: \.reauth)) { reauthStore in
+                ReauthSheet(store: reauthStore)
             }
         } destination: { store in
             switch store.case {
@@ -75,6 +84,17 @@ struct HomeView: View {
             onAction: { store.send(.sessionExpiredTapped) }
         ) {
             Text(.sessionExpiredBannerBody)
+        }
+    }
+
+    private var credentialsBanner: some View {
+        UNESBanner(
+            tone: .warn,
+            title: .localized(.credentialsBannerTitle),
+            action: .localized(.credentialsBannerAction),
+            onAction: { store.send(.credentialsBannerTapped) }
+        ) {
+            Text(.credentialsBannerBody)
         }
     }
 

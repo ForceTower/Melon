@@ -225,6 +225,21 @@
     <string name="session_expired_sheet_cancel">Agora não</string>
     <!-- endregion -->
 
+    <!-- region Session · Credenciais do portal -->
+    <string name="credentials_banner_title">Sincronização pausada</string>
+    <string name="credentials_banner_body">Atualize sua senha do portal para retomar a sincronização.</string>
+    <string name="reauth_sheet_title">Atualizar senha</string>
+    <string name="reauth_sheet_description">Sua senha do portal mudou. Informe a nova para voltarmos a sincronizar.</string>
+    <string name="reauth_sheet_username">Usuário</string>
+    <string name="reauth_sheet_password">Nova senha</string>
+    <string name="reauth_sheet_confirm">Confirmar</string>
+    <string name="reauth_sheet_cancel">Agora não</string>
+    <string name="reauth_error_invalid">Senha incorreta. Verifique e tente novamente.</string>
+    <string name="reauth_error_unavailable">O portal não respondeu. Tente novamente em instantes.</string>
+    <string name="reauth_error_network">Sem conexão. Verifique sua internet e tente de novo.</string>
+    <string name="reauth_success_toast">Senha atualizada — sincronizando seus dados</string>
+    <!-- endregion -->
+
     <!-- region Overview · Header -->
     <string name="overview_greeting_morning">Bom dia</string>
     <string name="overview_greeting_afternoon">Boa tarde</string>

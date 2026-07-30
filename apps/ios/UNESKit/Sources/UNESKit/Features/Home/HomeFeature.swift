@@ -13,11 +13,19 @@ struct HomeFeature {
         var campusEvent: CampusEvent?
         var path = StackState<Path.State>()
         @Presents var relogin: LoginFeature.State?
+        @Presents var reauth: ReauthFeature.State?
 
         @ObservationStateIgnored
         /// Raised by the token refresher when the refresh token is spent — the
         /// mirror stays readable, but nothing syncs until the user signs in.
         @Shared(.appStorage(SessionInvalidation.storageKey)) var isSessionInvalid = false
+        /// Raised when the server reports the stored portal password stopped
+        /// working. Independent of the session flag — different fix, different
+        /// sheet.
+        @Shared(.appStorage(CredentialInvalidation.storageKey)) var areCredentialsInvalid = false
+        /// Server-reported SAGRES username, persisted so the sheet can show it
+        /// on a cold start with no network.
+        @Shared(.appStorage(CredentialInvalidation.usernameKey)) var upstreamUsername = ""
         @Shared(.appStorage(FeatureFlags.campusEventEnabledKey)) var isCampusEventEnabled = false
         @Shared(.appStorage(FeatureFlags.retrospectiveEnabledKey)) var isRetrospectiveEnabled = false
         @Shared(.appStorage(RetrospectiveFeature.seenSemesterKey)) var retrospectiveSeenSemester = ""
@@ -69,7 +77,9 @@ struct HomeFeature {
         case messagesWidgetTapped
         case avatarTapped
         case sessionExpiredTapped
+        case credentialsBannerTapped
         case relogin(PresentationAction<LoginFeature.Action>)
+        case reauth(PresentationAction<ReauthFeature.Action>)
         case path(StackActionOf<Path>)
         case delegate(Delegate)
 
@@ -85,6 +95,8 @@ struct HomeFeature {
     @Dependency(\.homeRepository) var homeRepository
     @Dependency(\.profileRepository) var profileRepository
     @Dependency(\.campusEventRepository) var campusEventRepository
+    @Dependency(\.credentialStatusRepository) var credentialStatusRepository
+    @Dependency(\.credentialInvalidation) var credentialInvalidation
     @Dependency(\.database) var database
     @Dependency(\.date.now) var now
     @Dependency(\.continuousClock) var clock
@@ -105,7 +117,7 @@ struct HomeFeature {
                 guard state.overview == nil else {
                     return .merge(
                         observeMirror(), observeCampusEvent(state), refreshCampusEvent(state),
-                        checkRetrospective(state)
+                        checkRetrospective(state), pollCredentialStatus()
                     )
                 }
                 state.isLoading = true
@@ -113,7 +125,7 @@ struct HomeFeature {
                 return .merge(
                     observeMirror(), refresh(), loadProfile(),
                     observeCampusEvent(state), refreshCampusEvent(state),
-                    checkRetrospective(state)
+                    checkRetrospective(state), pollCredentialStatus()
                 )
 
             case .refreshPulled:
@@ -122,7 +134,7 @@ struct HomeFeature {
                     state.isLoading = true
                     state.errorMessage = nil
                 }
-                return .merge(refresh(), refreshCampusEvent(state))
+                return .merge(refresh(), refreshCampusEvent(state), pollCredentialStatus())
 
             case let .mirrorUpdated(cached):
                 state.isLoading = false
@@ -219,6 +231,24 @@ struct HomeFeature {
                 state.relogin = LoginFeature.State(analyticsScreen: Screens.sessionExpired)
                 return .none
 
+            case .credentialsBannerTapped:
+                analytics.selectContent(contentType: ContentTypes.cta, itemId: "credentials_invalid")
+                state.reauth = ReauthFeature.State(username: state.upstreamUsername.isEmpty ? nil : state.upstreamUsername)
+                return .none
+
+            case .reauth(.presented(.delegate(.succeeded))):
+                log.info("portal password updated, server sync brought forward")
+                state.reauth = nil
+                // The server made the student due immediately; give it a beat
+                // before pulling so the refill lands in one go.
+                return .run { send in
+                    try await clock.sleep(for: .seconds(2))
+                    await send(.refreshPulled)
+                }
+
+            case .reauth:
+                return .none
+
             case .relogin(.presented(.delegate(.loggedIn))):
                 log.info("session recovered in place, resuming sync")
                 state.relogin = nil
@@ -243,6 +273,7 @@ struct HomeFeature {
             }
         }
         .ifLet(\.$relogin, action: \.relogin) { LoginFeature() }
+        .ifLet(\.$reauth, action: \.reauth) { ReauthFeature() }
         .forEach(\.path, action: \.path)
     }
 
@@ -284,6 +315,17 @@ struct HomeFeature {
             break
         }
         return .none
+    }
+
+    /// Rides the same pulse as the overview refresh — `.task` fires on every
+    /// tab appearance and on foreground, so the banner clears on its own when
+    /// the password is fixed on another device. A failure here is silent: the
+    /// flag is persisted, so the last known answer stands.
+    private func pollCredentialStatus() -> Effect<Action> {
+        .run { _ in
+            guard let health = try? await credentialStatusRepository.current() else { return }
+            credentialInvalidation.apply(health)
+        }
     }
 
     /// The reactive backbone: every mirror write (sync refresh, message

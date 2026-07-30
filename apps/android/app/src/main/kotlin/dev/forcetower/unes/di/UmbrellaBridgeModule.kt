@@ -44,6 +44,8 @@ import dev.forcetower.melon.feature.materials.domain.usecase.SubmitMaterialUseCa
 import dev.forcetower.melon.feature.me.domain.usecase.FetchAcademicDocumentUseCase
 import dev.forcetower.melon.feature.me.domain.usecase.ObserveCurrentCredentialsUseCase
 import dev.forcetower.melon.feature.me.domain.usecase.ObserveMeProfileUseCase
+import dev.forcetower.melon.feature.me.domain.usecase.ReauthenticateUpstreamUseCase
+import dev.forcetower.melon.feature.me.domain.usecase.RefreshCredentialStatusUseCase
 import dev.forcetower.melon.feature.messages.domain.usecase.MarkAllMessagesAsReadUseCase
 import dev.forcetower.melon.feature.messages.domain.usecase.MarkMessageAsReadUseCase
 import dev.forcetower.melon.feature.messages.domain.usecase.ObserveMessageDetailUseCase
@@ -207,6 +209,12 @@ object UmbrellaBridgeModule {
     // CR/hours rollup, and the closest upcoming evaluation. Lifetime CR (the
     // value rendered in the hero stat rail) comes from a separate use case
     // shared with the Overview grade tile.
+    @Provides fun provideRefreshCredentialStatusUseCase(graph: UmbrellaGraph): RefreshCredentialStatusUseCase =
+        graph.refreshCredentialStatusUseCase
+
+    @Provides fun provideReauthenticateUpstreamUseCase(graph: UmbrellaGraph): ReauthenticateUpstreamUseCase =
+        graph.reauthenticateUpstreamUseCase
+
     @Provides fun provideObserveMeProfileUseCase(graph: UmbrellaGraph): ObserveMeProfileUseCase =
         graph.observeMeProfileUseCase
     @Provides fun provideCalculateOverallScoreUseCase(graph: UmbrellaGraph): CalculateOverallScoreUseCase =

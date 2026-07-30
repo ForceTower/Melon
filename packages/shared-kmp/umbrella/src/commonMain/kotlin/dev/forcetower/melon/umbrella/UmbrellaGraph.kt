@@ -42,6 +42,8 @@ import dev.forcetower.melon.feature.materials.domain.usecase.SubmitMaterialUseCa
 import dev.forcetower.melon.feature.me.domain.usecase.FetchAcademicDocumentUseCase
 import dev.forcetower.melon.feature.me.domain.usecase.ObserveCurrentCredentialsUseCase
 import dev.forcetower.melon.feature.me.domain.usecase.ObserveMeProfileUseCase
+import dev.forcetower.melon.feature.me.domain.usecase.ReauthenticateUpstreamUseCase
+import dev.forcetower.melon.feature.me.domain.usecase.RefreshCredentialStatusUseCase
 import dev.forcetower.melon.feature.messages.domain.usecase.MarkAllMessagesAsReadUseCase
 import dev.forcetower.melon.feature.messages.domain.usecase.MarkMessageAsReadUseCase
 import dev.forcetower.melon.feature.messages.domain.usecase.ObserveMessageDetailUseCase
@@ -176,6 +178,8 @@ interface UmbrellaGraph {
     // Eu (Me) reactive surface — emits the hero identity, semester strip data,
     // CR/hours rollup, and the closest upcoming evaluation as one snapshot.
     val observeMeProfileUseCase: ObserveMeProfileUseCase
+    val refreshCredentialStatusUseCase: RefreshCredentialStatusUseCase
+    val reauthenticateUpstreamUseCase: ReauthenticateUpstreamUseCase
 
     // Eu (Me) document requests — Comprovante/Histórico PDFs pulled through
     // the backend, optionally carrying a solved reCAPTCHA token.

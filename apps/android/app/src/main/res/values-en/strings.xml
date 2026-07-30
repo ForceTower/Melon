@@ -201,6 +201,21 @@
     <string name="session_expired_sheet_cancel">Not now</string>
     <!-- endregion -->
 
+    <!-- region Session · Credenciais do portal -->
+    <string name="credentials_banner_title">Sync paused</string>
+    <string name="credentials_banner_body">Update your portal password to resume syncing.</string>
+    <string name="reauth_sheet_title">Update password</string>
+    <string name="reauth_sheet_description">Your portal password changed. Enter the new one so we can resume syncing.</string>
+    <string name="reauth_sheet_username">Username</string>
+    <string name="reauth_sheet_password">New password</string>
+    <string name="reauth_sheet_confirm">Confirm</string>
+    <string name="reauth_sheet_cancel">Not now</string>
+    <string name="reauth_error_invalid">Wrong password. Check it and try again.</string>
+    <string name="reauth_error_unavailable">The portal didn\'t respond. Try again in a moment.</string>
+    <string name="reauth_error_network">No connection. Check your internet and try again.</string>
+    <string name="reauth_success_toast">Password updated — syncing your data</string>
+    <!-- endregion -->
+
     <!-- region Overview · Header -->
     <string name="overview_greeting_morning">Good morning</string>
     <string name="overview_greeting_afternoon">Good afternoon</string>

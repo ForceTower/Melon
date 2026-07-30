@@ -22,6 +22,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import android.widget.Toast
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
@@ -33,6 +35,7 @@ import dev.forcetower.unes.designsystem.components.MelonBanner
 import dev.forcetower.unes.designsystem.foundation.PinnedHeaderHairline
 import dev.forcetower.unes.designsystem.theme.melon
 import dev.forcetower.unes.mvi.collectAsEffect
+import dev.forcetower.unes.ui.feature.overview.components.ReauthSheet
 import dev.forcetower.unes.ui.feature.overview.components.SessionExpiredSheet
 import dev.forcetower.unes.designsystem.foundation.fadeInOnAppear
 import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
@@ -93,10 +96,29 @@ internal fun OverviewScreen(
     val scrolled by remember { derivedStateOf { scrollState.value > 0 } }
 
     var showReloginSheet by remember { mutableStateOf(false) }
+    var showReauthSheet by remember { mutableStateOf(false) }
+    val context = LocalContext.current
     vm.effects.collectAsEffect { effect ->
         when (effect) {
             OverviewEffect.ShowRelogin -> showReloginSheet = true
+            OverviewEffect.ShowReauth -> showReauthSheet = true
+            OverviewEffect.ReauthSucceeded -> {
+                showReauthSheet = false
+                Toast.makeText(context, R.string.reauth_success_toast, Toast.LENGTH_LONG).show()
+            }
         }
+    }
+    if (showReauthSheet) {
+        ReauthSheet(
+            username = state.upstreamUsername,
+            isLoading = state.reauthLoading,
+            errorRes = state.reauthErrorRes,
+            onSubmit = { vm.onIntent(OverviewIntent.ReauthSubmitted(it)) },
+            onDismiss = {
+                showReauthSheet = false
+                vm.onIntent(OverviewIntent.ReauthDismissed)
+            },
+        )
     }
     if (showReloginSheet) {
         SessionExpiredSheet(
@@ -147,6 +169,16 @@ internal fun OverviewScreen(
                     detail = stringResource(R.string.session_expired_banner_body),
                     tone = MaterialTheme.melon.status.bad,
                     onClick = { vm.onIntent(OverviewIntent.ReloginTapped) },
+                )
+                Spacer(Modifier.height(22.dp))
+            } else if (state.credentialsInvalid) {
+                // One at a time: a dead Melon session is the more fundamental
+                // problem, and fixing it re-polls the credential status.
+                MelonBanner(
+                    title = stringResource(R.string.credentials_banner_title),
+                    detail = stringResource(R.string.credentials_banner_body),
+                    tone = MaterialTheme.melon.status.warn,
+                    onClick = { vm.onIntent(OverviewIntent.ReauthTapped) },
                 )
                 Spacer(Modifier.height(22.dp))
             }
