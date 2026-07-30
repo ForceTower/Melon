@@ -213,6 +213,18 @@
     <string name="update_ready_dismiss">Dispensar</string>
     <!-- endregion -->
 
+    <!-- region Session · Expirada -->
+    <string name="session_expired_banner_title">Sessão expirada</string>
+    <string name="session_expired_banner_body">Entre novamente para retomar a sincronização.</string>
+    <string name="session_expired_sheet_title">Sessão expirada</string>
+    <string name="session_expired_sheet_description">Seus dados continuam aqui. Entre novamente para voltar a sincronizar.</string>
+    <string name="session_expired_sheet_username">Usuário</string>
+    <string name="session_expired_sheet_password">Senha</string>
+    <string name="session_expired_sheet_confirm">Entrar</string>
+    <string name="session_expired_sheet_passkey">Entrar com passkey</string>
+    <string name="session_expired_sheet_cancel">Agora não</string>
+    <!-- endregion -->
+
     <!-- region Overview · Header -->
     <string name="overview_greeting_morning">Bom dia</string>
     <string name="overview_greeting_afternoon">Boa tarde</string>

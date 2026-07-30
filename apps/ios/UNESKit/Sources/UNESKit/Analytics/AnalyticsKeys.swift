@@ -28,6 +28,7 @@ enum Screens {
     static let calendar = "calendar"
     static let finalCountdown = "final_countdown"
     static let licenses = "licenses"
+    static let sessionExpired = "session_expired"
 
     static let materials = "materials"
     static let materialsDiscipline = "materials_discipline"

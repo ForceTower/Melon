@@ -34,6 +34,11 @@ data class LoginUiState(
 }
 
 sealed interface LoginIntent : UiIntent {
+    /**
+     * Reported by the host so the re-auth sheet, which reuses this ViewModel,
+     * can't skew the onboarding sign-up funnel.
+     */
+    data class Started(val screen: String) : LoginIntent
     data class UsernameChanged(val value: String) : LoginIntent
     data class PasswordChanged(val value: String) : LoginIntent
     data object TogglePasswordVisibility : LoginIntent
@@ -55,12 +60,9 @@ class LoginViewModel @Inject constructor(
     private val analytics: Analytics,
 ) : MviViewModel<LoginUiState, LoginIntent, LoginEffect>(LoginUiState()) {
 
-    init {
-        analytics.screen(Screens.LOGIN)
-    }
-
     override fun onIntent(intent: LoginIntent) {
         when (intent) {
+            is LoginIntent.Started -> analytics.screen(intent.screen)
             is LoginIntent.UsernameChanged -> setState { copy(username = intent.value, errorRes = null, errorArg = null) }
             is LoginIntent.PasswordChanged -> setState { copy(password = intent.value, errorRes = null, errorArg = null) }
             LoginIntent.TogglePasswordVisibility -> setState { copy(showPassword = !showPassword) }

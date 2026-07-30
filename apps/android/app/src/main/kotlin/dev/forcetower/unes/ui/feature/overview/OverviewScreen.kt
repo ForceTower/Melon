@@ -19,7 +19,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
@@ -27,7 +29,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.forcetower.unes.R
+import dev.forcetower.unes.designsystem.components.MelonBanner
 import dev.forcetower.unes.designsystem.foundation.PinnedHeaderHairline
+import dev.forcetower.unes.designsystem.theme.melon
+import dev.forcetower.unes.mvi.collectAsEffect
+import dev.forcetower.unes.ui.feature.overview.components.SessionExpiredSheet
 import dev.forcetower.unes.designsystem.foundation.fadeInOnAppear
 import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
 import dev.forcetower.unes.designsystem.foundation.scaleInOnAppear
@@ -86,6 +92,21 @@ internal fun OverviewScreen(
     val scrollState = rememberScrollState()
     val scrolled by remember { derivedStateOf { scrollState.value > 0 } }
 
+    var showReloginSheet by remember { mutableStateOf(false) }
+    vm.effects.collectAsEffect { effect ->
+        when (effect) {
+            OverviewEffect.ShowRelogin -> showReloginSheet = true
+        }
+    }
+    if (showReloginSheet) {
+        SessionExpiredSheet(
+            onDismiss = { showReloginSheet = false },
+            // The refresher already cleared the flag when the new session
+            // landed, so the banner drops on its own.
+            onSignedIn = { showReloginSheet = false },
+        )
+    }
+
     // The greeting header stays pinned; the hero and the cards below scroll
     // beneath it.
     Column(
@@ -117,6 +138,18 @@ internal fun OverviewScreen(
                 .padding(horizontal = 20.dp),
         ) {
             Spacer(Modifier.height(8.dp))
+
+            // Sync is dead until the user signs in again, but everything below
+            // keeps working off the local mirror.
+            if (state.sessionInvalid) {
+                MelonBanner(
+                    title = stringResource(R.string.session_expired_banner_title),
+                    detail = stringResource(R.string.session_expired_banner_body),
+                    tone = MaterialTheme.melon.status.bad,
+                    onClick = { vm.onIntent(OverviewIntent.ReloginTapped) },
+                )
+                Spacer(Modifier.height(22.dp))
+            }
 
             // Featured campus event — sits above the class hero while the
             // server features one and the `enable_campus_event` flag is on,

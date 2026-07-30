@@ -29,6 +29,21 @@ extension LoginResponseDTO {
     }
 }
 
+// MARK: - api/auth/token/refresh
+
+/// The endpoint validates the expired access token's signature to recover the
+/// subject, so both halves of the pair have to be sent.
+struct RefreshRequestDTO: Encodable {
+    let accessToken: String
+    let refreshToken: String
+}
+
+/// The refresh response carries no `user` — the caller keeps the one it has.
+struct RefreshResponseDTO: Decodable {
+    let accessToken: String
+    let refreshToken: String
+}
+
 // MARK: - api/passkey/authenticate
 
 struct PasskeyOptionsRequestDTO: Encodable {

@@ -12,8 +12,12 @@ struct HomeFeature {
         var lastRefreshed: Date?
         var campusEvent: CampusEvent?
         var path = StackState<Path.State>()
+        @Presents var relogin: LoginFeature.State?
 
         @ObservationStateIgnored
+        /// Raised by the token refresher when the refresh token is spent — the
+        /// mirror stays readable, but nothing syncs until the user signs in.
+        @Shared(.appStorage(SessionInvalidation.storageKey)) var isSessionInvalid = false
         @Shared(.appStorage(FeatureFlags.campusEventEnabledKey)) var isCampusEventEnabled = false
         @Shared(.appStorage(FeatureFlags.retrospectiveEnabledKey)) var isRetrospectiveEnabled = false
         @Shared(.appStorage(RetrospectiveFeature.seenSemesterKey)) var retrospectiveSeenSemester = ""
@@ -64,6 +68,8 @@ struct HomeFeature {
         case seeAllClassesTapped
         case messagesWidgetTapped
         case avatarTapped
+        case sessionExpiredTapped
+        case relogin(PresentationAction<LoginFeature.Action>)
         case path(StackActionOf<Path>)
         case delegate(Delegate)
 
@@ -208,6 +214,21 @@ struct HomeFeature {
             case .avatarTapped:
                 return .send(.delegate(.openMe))
 
+            case .sessionExpiredTapped:
+                analytics.selectContent(contentType: ContentTypes.cta, itemId: "session_expired")
+                state.relogin = LoginFeature.State(analyticsScreen: Screens.sessionExpired)
+                return .none
+
+            case .relogin(.presented(.delegate(.loggedIn))):
+                log.info("session recovered in place, resuming sync")
+                state.relogin = nil
+                // The refresher already cleared the flag when the new session
+                // landed; pull immediately so the stale mirror catches up.
+                return .merge(refresh(), loadProfile())
+
+            case .relogin:
+                return .none
+
             case let .path(.element(id: _, action: pathAction)):
                 return .merge(
                     routeCampusEvent(pathAction, state: &state),
@@ -221,6 +242,7 @@ struct HomeFeature {
                 return .none
             }
         }
+        .ifLet(\.$relogin, action: \.relogin) { LoginFeature() }
         .forEach(\.path, action: \.path)
     }
 

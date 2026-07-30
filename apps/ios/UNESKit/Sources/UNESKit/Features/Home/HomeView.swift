@@ -19,11 +19,24 @@ struct HomeView: View {
                         .frame(maxHeight: .infinity)
                 }
             }
+            // Pinned rather than placed in `loaded`: an expired session with an
+            // empty mirror lands on the spinner or the error state, which is
+            // exactly when the notice matters most.
+            .safeAreaInset(edge: .top) {
+                if store.isSessionInvalid {
+                    sessionExpiredBanner
+                        .padding(.horizontal, 16)
+                        .padding(.bottom, 10)
+                }
+            }
             .navigationTitle(Text(.commonToday))
             .toolbar {
                 ToolbarItem(placement: .trailingCompat) {
                     avatarButton
                 }
+            }
+            .sheet(item: $store.scope(state: \.relogin, action: \.relogin)) { reloginStore in
+                SessionExpiredSheet(store: reloginStore)
             }
         } destination: { store in
             switch store.case {
@@ -50,6 +63,19 @@ struct HomeView: View {
             }
         }
         .task { await store.send(.task).finish() }
+    }
+
+    // MARK: Session
+
+    private var sessionExpiredBanner: some View {
+        UNESBanner(
+            tone: .danger,
+            title: .localized(.sessionExpiredBannerTitle),
+            action: .localized(.sessionExpiredBannerAction),
+            onAction: { store.send(.sessionExpiredTapped) }
+        ) {
+            Text(.sessionExpiredBannerBody)
+        }
     }
 
     // MARK: Content

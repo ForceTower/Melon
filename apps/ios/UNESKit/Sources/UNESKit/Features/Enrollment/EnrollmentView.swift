@@ -198,7 +198,7 @@ struct EnrollmentView: View {
 
     private func errorState(_ message: String) -> some View {
         VStack(spacing: 14) {
-            EnrollmentBanner(tone: .danger, title: String.localized(.enrollmentEntryLoadFailTitle)) {
+            UNESBanner(tone: .danger, title: String.localized(.enrollmentEntryLoadFailTitle)) {
                 Text(message)
             }
             Button {

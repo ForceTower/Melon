@@ -12,6 +12,9 @@ struct LoginFeature {
         var showPassword = false
         var isLoading = false
         var errorMessage: String?
+        /// Onboarding by default; the re-auth sheet reuses this reducer and
+        /// reports itself separately so it can't skew the sign-up funnel.
+        var analyticsScreen = Screens.login
 
         var canSubmit: Bool {
             !username.isEmpty && !password.isEmpty && !isLoading
@@ -25,6 +28,7 @@ struct LoginFeature {
         case forgotPasswordTapped
         case submitTapped
         case passkeyTapped
+        case closeTapped
         case loginResponse(Result<Session, AuthError>)
         case passkeyResponse(Result<Session, AuthError>)
         case delegate(Delegate)
@@ -39,6 +43,7 @@ struct LoginFeature {
     @Dependency(\.passkeyClient) var passkeyClient
     @Dependency(\.openURL) var openURL
     @Dependency(\.analytics) var analytics
+    @Dependency(\.dismiss) var dismiss
 
     private let log = Log.scoped("LoginFeature")
 
@@ -48,11 +53,14 @@ struct LoginFeature {
         Reduce { state, action in
             switch action {
             case .task:
-                analytics.screen(Screens.login)
+                analytics.screen(state.analyticsScreen)
                 return .none
 
             case .binding:
                 return .none
+
+            case .closeTapped:
+                return .run { _ in await dismiss() }
 
             case .toggleShowPassword:
                 state.showPassword.toggle()

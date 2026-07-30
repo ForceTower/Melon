@@ -8,6 +8,7 @@ extension AuthRepository: DependencyKey {
         login: { username, password in
             @Dependency(\.apiClient) var apiClient
             @Dependency(\.sessionStore) var sessionStore
+            @Dependency(\.sessionInvalidation) var sessionInvalidation
 
             log.info("login attempt username=\(username)")
             do {
@@ -18,6 +19,7 @@ extension AuthRepository: DependencyKey {
                 )
                 let session = dto.domain
                 try sessionStore.save(session)
+                sessionInvalidation.clear()
                 log.info("login ok userId=\(session.user.id)")
                 return session
             } catch {
@@ -44,6 +46,7 @@ extension AuthRepository: DependencyKey {
         completePasskeyLogin: { sessionId, assertion in
             @Dependency(\.apiClient) var apiClient
             @Dependency(\.sessionStore) var sessionStore
+            @Dependency(\.sessionInvalidation) var sessionInvalidation
 
             log.info("completePasskeyLogin attempt sessionId=\(sessionId)")
             do {
@@ -54,6 +57,7 @@ extension AuthRepository: DependencyKey {
                 )
                 let session = dto.domain
                 try sessionStore.save(session)
+                sessionInvalidation.clear()
                 log.info("completePasskeyLogin ok userId=\(session.user.id)")
                 return session
             } catch {

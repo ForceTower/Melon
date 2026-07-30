@@ -29,6 +29,7 @@ object Screens {
     const val CALENDAR = "calendar"
     const val FINAL_COUNTDOWN = "final_countdown"
     const val LICENSES = "licenses"
+    const val SESSION_EXPIRED = "session_expired"
 
     const val MATERIALS = "materials"
     const val MATERIALS_DISCIPLINE = "materials_discipline"

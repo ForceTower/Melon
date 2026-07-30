@@ -294,4 +294,48 @@ struct HomeFeatureTests {
         await store.send(.messagesWidgetTapped)
         await store.receive(.delegate(.openMessages))
     }
+
+    @Test
+    func theExpiredSessionBannerOpensTheReloginSheet() async {
+        let store = TestStore(initialState: HomeFeature.State()) {
+            HomeFeature()
+        }
+
+        await store.send(.sessionExpiredTapped) {
+            // Reported separately so the re-auth sheet can't skew the
+            // onboarding sign-up funnel.
+            $0.relogin = LoginFeature.State(analyticsScreen: Screens.sessionExpired)
+        }
+    }
+
+    @Test
+    func signingBackInDismissesTheSheetAndResumesSyncing() async {
+        let overview = Self.heroless()
+        let (updates, mirror) = AsyncStream.makeStream(of: CachedHomeOverview.self)
+        let session = Session(
+            accessToken: "rotated",
+            refreshToken: "next",
+            user: SessionUser(id: "u1", name: "Mariana", imageUrl: nil)
+        )
+
+        let store = TestStore(
+            initialState: HomeFeature.State(relogin: LoginFeature.State())
+        ) {
+            HomeFeature()
+        } withDependencies: {
+            $0.date = .constant(Self.referenceDate)
+            $0.homeRepository.observe = { updates }
+            $0.homeRepository.refresh = { now in
+                mirror.yield(CachedHomeOverview(overview: overview, syncedAt: now))
+                mirror.finish()
+            }
+            $0.profileRepository.current = { throw APIError.emptyEnvelope }
+        }
+        // The follow-up refresh/profile effects are covered elsewhere.
+        store.exhaustivity = .off
+
+        await store.send(.relogin(.presented(.delegate(.loggedIn(username: "2019", session: session))))) {
+            $0.relogin = nil
+        }
+    }
 }

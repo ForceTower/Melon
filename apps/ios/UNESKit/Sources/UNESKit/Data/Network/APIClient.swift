@@ -158,37 +158,56 @@ extension APIClient {
         baseURL: URL = MelonAPI.baseURL,
         session: URLSession = .shared
     ) -> APIClient {
-        APIClient(send: { apiRequest in
+        let refresher = TokenRefresher(baseURL: baseURL, session: session)
+        return APIClient(send: { apiRequest in
             @Dependency(\.sessionStore) var sessionStore
 
             var url = baseURL.appending(path: apiRequest.path)
             if !apiRequest.query.isEmpty {
                 url.append(queryItems: apiRequest.query)
             }
-            var request = URLRequest(url: url)
-            request.httpMethod = apiRequest.method
-            request.setValue(MachineIdentity.id, forHTTPHeaderField: "X-Machine-Id")
-            if let body = apiRequest.body {
-                request.httpBody = body
-                request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            }
-            switch apiRequest.authorization {
-            case .session:
-                if let token = sessionStore.current()?.accessToken {
-                    request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+
+            /// Builds and fires the request from scratch so the retry below
+            /// picks up whatever token the refresh just persisted.
+            func fire() async throws -> (data: Data, http: HTTPURLResponse, sentToken: String?) {
+                var request = URLRequest(url: url)
+                request.httpMethod = apiRequest.method
+                request.setValue(MachineIdentity.id, forHTTPHeaderField: "X-Machine-Id")
+                if let body = apiRequest.body {
+                    request.httpBody = body
+                    request.setValue("application/json", forHTTPHeaderField: "Content-Type")
                 }
-            case .unauthenticated:
-                break
-            case let .bearer(token):
-                request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+                let sentToken: String? = switch apiRequest.authorization {
+                case .session: sessionStore.current()?.accessToken
+                case .unauthenticated: nil
+                case let .bearer(token): token
+                }
+                if let sentToken {
+                    request.setValue("Bearer \(sentToken)", forHTTPHeaderField: "Authorization")
+                }
+
+                let (data, response) = try await session.data(for: request)
+                guard let http = response as? HTTPURLResponse else {
+                    log.warn("request failed method=\(apiRequest.method) path=\(apiRequest.path): invalid response")
+                    throw APIError.invalidResponse
+                }
+                return (data, http, sentToken)
             }
 
             log.debug("request start method=\(apiRequest.method) path=\(apiRequest.path)")
-            let (data, response) = try await session.data(for: request)
-            guard let http = response as? HTTPURLResponse else {
-                log.warn("request failed method=\(apiRequest.method) path=\(apiRequest.path): invalid response")
-                throw APIError.invalidResponse
+            var attempt = try await fire()
+
+            // The API answers 401 for an expired token and an invalid one
+            // alike, so trying the refresh is the only way to tell them apart.
+            if attempt.http.statusCode == 401,
+               apiRequest.authorization == .session,
+               let stale = attempt.sentToken,
+               await refresher.refresh(stale: stale) {
+                log.info("retrying with a refreshed token method=\(apiRequest.method) path=\(apiRequest.path)")
+                attempt = try await fire()
             }
+
+            let (data, http, _) = attempt
             guard 200..<300 ~= http.statusCode else {
                 let message = try? JSONDecoder().decode(ErrorBody.self, from: data).message
                 log.warn("request failed method=\(apiRequest.method) path=\(apiRequest.path) status=\(http.statusCode)")
@@ -197,6 +216,104 @@ extension APIClient {
             log.debug("request ok method=\(apiRequest.method) path=\(apiRequest.path) status=\(http.statusCode)")
             return data
         })
+    }
+}
+
+/// Serializes token rotation against `api/auth/token/refresh`. The endpoint
+/// burns the refresh token on first use and hands back a new pair, so two
+/// concurrent refreshes would rotate past each other and strand the session.
+private actor TokenRefresher {
+    private let baseURL: URL
+    private let session: URLSession
+    private var inFlight: Task<Bool, Never>?
+    /// Access token whose pair the server already rejected. Without this latch
+    /// a structurally dead session re-attempts the refresh on every request.
+    private var burnedAccessToken: String?
+
+    init(baseURL: URL, session: URLSession) {
+        self.baseURL = baseURL
+        self.session = session
+    }
+
+    /// Returns true when a usable access token is waiting in the session store.
+    func refresh(stale: String) async -> Bool {
+        @Dependency(\.sessionStore) var sessionStore
+
+        guard let current = sessionStore.current() else { return false }
+        // Another caller rotated the pair while this request sat on its 401.
+        guard current.accessToken == stale else { return true }
+        guard burnedAccessToken != stale else { return false }
+
+        if let inFlight { return await inFlight.value }
+        let task = Task { await rotate(from: current) }
+        inFlight = task
+        let rotated = await task.value
+        inFlight = nil
+        return rotated
+    }
+
+    private func rotate(from current: Session) async -> Bool {
+        @Dependency(\.sessionStore) var sessionStore
+        @Dependency(\.sessionInvalidation) var sessionInvalidation
+
+        // Sessions adopted from the legacy app can carry an empty refresh token.
+        guard !current.refreshToken.isEmpty else {
+            log.warn("refresh skipped: session has no refresh token")
+            burn(current.accessToken, using: sessionInvalidation)
+            return false
+        }
+
+        var request = URLRequest(url: baseURL.appending(path: "api/auth/token/refresh"))
+        request.httpMethod = "POST"
+        request.setValue(MachineIdentity.id, forHTTPHeaderField: "X-Machine-Id")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = try? JSONEncoder().encode(RefreshRequestDTO(
+            accessToken: current.accessToken,
+            refreshToken: current.refreshToken
+        ))
+
+        do {
+            let (data, response) = try await session.data(for: request)
+            guard let http = response as? HTTPURLResponse else { return false }
+            guard 200..<300 ~= http.statusCode else {
+                // 400 covers a spent, revoked or foreign refresh token — the
+                // pair is gone and only a fresh login recovers it. A 5xx is
+                // the server's problem, so leave the pair retryable.
+                if 400..<500 ~= http.statusCode {
+                    log.warn("refresh rejected status=\(http.statusCode): session needs a new login")
+                    burn(current.accessToken, using: sessionInvalidation)
+                } else {
+                    log.warn("refresh failed status=\(http.statusCode), staying retryable")
+                }
+                return false
+            }
+
+            let envelope = try JSONDecoder().decode(APIEnvelope<RefreshResponseDTO>.self, from: data)
+            guard envelope.ok, let rotated = envelope.data else {
+                log.warn("refresh returned an empty envelope, staying retryable")
+                return false
+            }
+            try sessionStore.save(Session(
+                accessToken: rotated.accessToken,
+                refreshToken: rotated.refreshToken,
+                user: current.user
+            ))
+            sessionInvalidation.clear()
+            log.info("token refreshed userId=\(current.user.id)")
+            return true
+        } catch is CancellationError {
+            return false
+        } catch {
+            // Transport or decode failure — deliberately not burned so the next
+            // 401 tries again.
+            log.warn("refresh failed, staying retryable", error: error)
+            return false
+        }
+    }
+
+    private func burn(_ accessToken: String, using invalidation: SessionInvalidation) {
+        burnedAccessToken = accessToken
+        invalidation.markInvalid()
     }
 }
 

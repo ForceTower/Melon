@@ -3,11 +3,11 @@ import SwiftUI
 // Shared primitives of the matrícula screens: the card chrome, code chips,
 // pill badges, banners, seat meters and schedule lines every step reuses.
 
-/// Status tones of the flow — dark-readable like the discipline palette.
+/// Status tones of the flow — the shared banner palette under a local name.
 enum EnrollmentTone {
-    static let danger = UNESColor.readable(0xE85D4E)
-    static let warn = UNESColor.readable(0xD9852E)
-    static let ok = UNESColor.readable(0x2F9E5E)
+    static let danger = UNESBannerTone.danger
+    static let warn = UNESBannerTone.warn
+    static let ok = UNESBannerTone.ok
 }
 
 extension EnrollmentDiscipline {
@@ -172,88 +172,6 @@ struct EnrollmentBadge: View {
     }
 }
 
-// MARK: - Banner
-
-struct EnrollmentBanner<Content: View>: View {
-    enum Tone {
-        case danger, warn, info, neutral
-    }
-
-    var tone: Tone
-    var title: String?
-    var action: String?
-    var onAction: (() -> Void)?
-    @ViewBuilder var content: Content
-
-    var body: some View {
-        HStack(alignment: .top, spacing: 11) {
-            Image(systemName: icon)
-                .font(.system(size: 10.5, weight: .bold))
-                .foregroundStyle(.white)
-                .frame(width: 22, height: 22)
-                .background(color, in: Circle())
-                .padding(.top, 1)
-
-            VStack(alignment: .leading, spacing: 2) {
-                if let title {
-                    Text(title)
-                        .font(.system(size: 13.5, weight: .semibold))
-                        .tracking(-0.13)
-                        .foregroundStyle(UNESColor.ink)
-                }
-                content
-                    .font(.system(size: 12.5, weight: .medium))
-                    .lineSpacing(3)
-                    .foregroundStyle(UNESColor.ink2)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                if let action {
-                    Button {
-                        onAction?()
-                    } label: {
-                        Text(verbatim: "\(action) →")
-                            .font(.system(size: 12.5, weight: .semibold))
-                            .foregroundStyle(color)
-                    }
-                    .buttonStyle(.plain)
-                    .padding(.top, 5)
-                }
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(EdgeInsets(top: 12, leading: 14, bottom: 12, trailing: 14))
-        .background(fill, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
-        .overlay {
-            RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .strokeBorder(border)
-        }
-    }
-
-    private var color: Color {
-        switch tone {
-        case .danger: EnrollmentTone.danger
-        case .warn: EnrollmentTone.warn
-        case .info: EnrollmentTone.ok
-        case .neutral: UNESColor.ink3
-        }
-    }
-
-    private var icon: String {
-        switch tone {
-        case .danger, .warn: "exclamationmark.triangle.fill"
-        case .info: "checkmark"
-        case .neutral: "info"
-        }
-    }
-
-    private var fill: Color {
-        tone == .neutral ? UNESColor.surface2 : color.opacity(0.12)
-    }
-
-    private var border: Color {
-        tone == .neutral ? UNESColor.line : color.opacity(0.26)
-    }
-}
-
 // MARK: - Seat meter
 
 struct EnrollmentSeatMeter: View {
@@ -351,13 +269,13 @@ struct EnrollmentScheduleLines: View {
                 EnrollmentBadge(kind: .waitlist, text: .localized(.enrollmentWaitlistPosition(7)))
                 EnrollmentBadge(kind: .selected, text: "T01")
             }
-            EnrollmentBanner(tone: .danger, title: .localized(.enrollmentConflictTitle)) {
+            UNESBanner(tone: .danger, title: .localized(.enrollmentConflictTitle)) {
                 Text(verbatim: "Choca com TEC502 T01 na segunda. Troque uma das turmas.")
             }
-            EnrollmentBanner(tone: .warn, title: .localized(.enrollmentClassFullTitle)) {
+            UNESBanner(tone: .warn, title: .localized(.enrollmentClassFullTitle)) {
                 Text(verbatim: "Entre na fila de espera — 6 na frente.")
             }
-            EnrollmentBanner(tone: .info, title: .localized(.enrollmentNoConflictsTitle)) {
+            UNESBanner(tone: .info, title: .localized(.enrollmentNoConflictsTitle)) {
                 Text(.enrollmentTimetableNoConflictBody(4))
             }
             HStack(spacing: 20) {

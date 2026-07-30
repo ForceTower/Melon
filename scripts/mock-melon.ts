@@ -9,6 +9,10 @@
 //   curl localhost:8787/debug/reset  → re-open the window after a submit
 //   curl localhost:8787/debug/campus-phase/upcoming|live|ended
 //                                    → re-pin the campus event around now
+//   curl localhost:8787/debug/session/expire|restore
+//                                    → force 401 on every authenticated route
+//   curl localhost:8787/debug/refresh-mode/rotate|reject|unavailable
+//                                    → what api/auth/token/refresh answers
 //
 // Pointing a client at it:
 //   Android  ./gradlew :apps:android:app:assembleDebug -Pmelon.apiBaseUrl=http://127.0.0.1:8787
@@ -384,6 +388,20 @@ function ok(data: unknown) {
   return Response.json({ ok: true, message: null, data });
 }
 
+// ── token-refresh rehearsal ──
+// `expired` makes every session-bearing route answer 401 so the clients are
+// forced down the refresh path; `refreshMode` decides what
+// `api/auth/token/refresh` answers — a rotated pair (recovers silently), 400
+// (terminal → "Sessão expirada" banner) or 503 (stays retryable).
+type RefreshMode = "rotate" | "reject" | "unavailable";
+let sessionExpired = false;
+let refreshMode: RefreshMode = "rotate";
+let rotations = 0;
+
+function isRefreshMode(value: string): value is RefreshMode {
+  return value === "rotate" || value === "reject" || value === "unavailable";
+}
+
 async function passthrough(req: Request, url: URL): Promise<Response> {
   const headers = new Headers(req.headers);
   headers.delete("host");
@@ -409,6 +427,48 @@ Bun.serve({
   async fetch(req) {
     const url = new URL(req.url);
     const tag = `${req.method} ${url.pathname}`;
+
+    if (url.pathname === "/api/auth/token/refresh" && req.method === "POST") {
+      rotations += 1;
+      console.log(`[mock] ${tag} → ${refreshMode} (call #${rotations})`);
+      if (refreshMode === "reject") {
+        return Response.json({ ok: false, message: "Invalid refresh token", data: null }, { status: 400 });
+      }
+      if (refreshMode === "unavailable") {
+        return Response.json({ ok: false, message: "Service Unavailable", data: null }, { status: 503 });
+      }
+      // A successful rotation ends the forced-401 state so the retry goes
+      // through. The access token is echoed back rather than invented: every
+      // other route proxies to prod, which would reject a made-up one, so
+      // handing the client its own real token keeps the retry serving real
+      // data. Only the refresh half is a fresh value.
+      const refreshBody = (await req.json().catch(() => null)) as { accessToken?: string } | null;
+      sessionExpired = false;
+      return ok({
+        accessToken: refreshBody?.accessToken ?? `rotated-access-${rotations}`,
+        refreshToken: `rotated-refresh-${rotations}`,
+      });
+    }
+    const sessionMatch = url.pathname.match(/^\/debug\/session\/(expire|restore)$/);
+    if (sessionMatch) {
+      sessionExpired = sessionMatch[1] === "expire";
+      console.log(`[mock] session expired → ${sessionExpired}`);
+      return ok({ expired: sessionExpired });
+    }
+    const refreshMatch = url.pathname.match(/^\/debug\/refresh-mode\/([a-z]+)$/);
+    if (refreshMatch && isRefreshMode(refreshMatch[1])) {
+      refreshMode = refreshMatch[1];
+      rotations = 0;
+      console.log(`[mock] refresh mode → ${refreshMode}`);
+      return ok({ mode: refreshMode });
+    }
+    if (sessionExpired && req.headers.get("authorization")) {
+      console.log(`[mock] ${tag} → 401 (forced)`);
+      return Response.json(
+        { ok: false, message: "Invalid or expired access token", data: null },
+        { status: 401 },
+      );
+    }
 
     if (url.pathname === "/api/enrollment/window") {
       console.log(`[mock] ${tag} → ${submitted ? "CLOSED" : "OPEN"}`);

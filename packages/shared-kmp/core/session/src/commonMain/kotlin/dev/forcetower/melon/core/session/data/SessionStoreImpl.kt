@@ -36,6 +36,7 @@ import kotlin.time.Clock
 
 internal const val ACCESS_TOKEN_KEY = "melon.access_token"
 internal const val REFRESH_TOKEN_KEY = "melon.refresh_token"
+internal const val SESSION_INVALID_KEY = "melon.session_invalid"
 
 @Inject
 @SingleIn(AppScope::class)
@@ -58,6 +59,7 @@ internal class SessionStoreImpl(
 
     private val log = logger.withTag("SessionStoreImpl")
     private val tokenPresent = MutableStateFlow(false)
+    private val sessionInvalidState = MutableStateFlow(false)
 
     override val authState: StateFlow<AuthState> =
         combine(tokenPresent, userDao.observeCurrent()) { hasToken, entity ->
@@ -65,15 +67,34 @@ internal class SessionStoreImpl(
             else AuthState.Unauthenticated
         }.stateIn(scope, SharingStarted.Eagerly, AuthState.Unauthenticated)
 
+    override val sessionInvalid: StateFlow<Boolean> = sessionInvalidState
+
     init {
         scope.launch {
             val present = storage.get(ACCESS_TOKEN_KEY) != null
             tokenPresent.value = present
-            log.i { "session bootstrapped tokenPresent=$present" }
+            // Persisted so the banner renders on a cold start while offline.
+            sessionInvalidState.value = storage.get(SESSION_INVALID_KEY) == "true"
+            log.i { "session bootstrapped tokenPresent=$present invalid=${sessionInvalidState.value}" }
         }
     }
 
     override suspend fun getAccessToken(): String? = storage.get(ACCESS_TOKEN_KEY)
+
+    override suspend fun getRefreshToken(): String? = storage.get(REFRESH_TOKEN_KEY)
+
+    override suspend fun replaceTokens(accessToken: String, refreshToken: String) {
+        storage.put(ACCESS_TOKEN_KEY, accessToken)
+        storage.put(REFRESH_TOKEN_KEY, refreshToken)
+        log.i { "token pair rotated" }
+    }
+
+    override suspend fun setSessionInvalid(invalid: Boolean) {
+        if (sessionInvalidState.value == invalid) return
+        storage.put(SESSION_INVALID_KEY, invalid.toString())
+        sessionInvalidState.value = invalid
+        log.i { "sessionInvalid=$invalid" }
+    }
 
     override suspend fun currentAuthState(): AuthState {
         val token = storage.get(ACCESS_TOKEN_KEY)
@@ -106,6 +127,7 @@ internal class SessionStoreImpl(
             )
         }
         tokenPresent.value = true
+        setSessionInvalid(false)
         log.i { "session persisted userId=${user.id} hasUpstreamCreds=${username != null && password != null}" }
     }
 
@@ -157,6 +179,7 @@ internal class SessionStoreImpl(
         syncStateDao.clear()
         userDao.clear()
         tokenPresent.value = false
+        setSessionInvalid(false)
         log.i { "logout complete: local data wiped" }
     }
 }

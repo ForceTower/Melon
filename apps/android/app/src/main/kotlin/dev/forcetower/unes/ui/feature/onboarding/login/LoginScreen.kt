@@ -39,7 +39,9 @@ import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import dev.forcetower.melon.core.analytics.Screens
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -90,6 +92,8 @@ fun LoginScreen(
     vm: LoginViewModel = hiltViewModel(),
 ) {
     val state by vm.state.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) { vm.onIntent(LoginIntent.Started(Screens.LOGIN)) }
 
     vm.effects.collectAsEffect { effect ->
         when (effect) {

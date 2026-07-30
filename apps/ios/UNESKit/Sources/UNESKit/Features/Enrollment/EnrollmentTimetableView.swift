@@ -98,7 +98,7 @@ struct EnrollmentTimetableView: View {
     private var summaryBanner: some View {
         let conflicts = store.session.conflicts
         if !conflicts.isEmpty {
-            EnrollmentBanner(tone: .danger, title: String.localized(.enrollmentTimetableConflictsTitle(conflicts.count))) {
+            UNESBanner(tone: .danger, title: String.localized(.enrollmentTimetableConflictsTitle(conflicts.count))) {
                 VStack(alignment: .leading, spacing: 2) {
                     ForEach(Array(conflicts.enumerated()), id: \.offset) { _, conflict in
                         Text(verbatim: "\(conflict.aCode) \(conflict.aLabel) × \(conflict.bCode) \(conflict.bLabel) · \(EnrollmentFormat.dayFull(conflict.day))")
@@ -106,11 +106,11 @@ struct EnrollmentTimetableView: View {
                 }
             }
         } else if store.session.picks.isEmpty {
-            EnrollmentBanner(tone: .neutral, title: String.localized(.enrollmentTimetableEmptyTitle)) {
+            UNESBanner(tone: .neutral, title: String.localized(.enrollmentTimetableEmptyTitle)) {
                 Text(.enrollmentTimetableEmptyBody)
             }
         } else {
-            EnrollmentBanner(tone: .info, title: String.localized(.enrollmentNoConflictsTitle)) {
+            UNESBanner(tone: .info, title: String.localized(.enrollmentNoConflictsTitle)) {
                 // Counts every pick — "suas 0 turmas" would read nonsense when
                 // everything picked is still "a definir".
                 Text(.enrollmentTimetableNoConflictBody(store.session.resolvedPicks.count))

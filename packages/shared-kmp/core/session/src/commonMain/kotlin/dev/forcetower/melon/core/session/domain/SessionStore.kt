@@ -11,6 +11,17 @@ interface SessionStore : AuthTokenSource {
     val authState: StateFlow<AuthState>
 
     /**
+     * True once `api/auth/token/refresh` has terminally rejected the stored
+     * pair — the session cannot be recovered without a fresh login.
+     *
+     * Deliberately separate from [authState]: an expired token is still a
+     * token on disk, so the user stays `Authenticated` and keeps reading the
+     * local mirror. Splash routing and analytics identity are unaffected;
+     * only the "Sessão expirada" banner keys off this.
+     */
+    val sessionInvalid: StateFlow<Boolean>
+
+    /**
      * Resolves the auth state by reading persisted state directly, bypassing
      * the [authState] StateFlow's startup race. The flow seeds with
      * [AuthState.Unauthenticated] so `.first()` on a cold start can hand back
@@ -37,6 +48,18 @@ interface SessionStore : AuthTokenSource {
         username: String? = null,
         password: String? = null,
     )
+    suspend fun getRefreshToken(): String?
+
+    /**
+     * Swaps both halves of the token pair in place, leaving the user row,
+     * cached upstream credentials and the whole local mirror untouched.
+     * `api/auth/token/refresh` returns no user, so [persist] would have
+     * nothing to write there.
+     */
+    suspend fun replaceTokens(accessToken: String, refreshToken: String)
+
+    suspend fun setSessionInvalid(invalid: Boolean)
+
     suspend fun getCredentials(): UserCredentials?
     fun observeCredentials(): Flow<UserCredentials?>
 

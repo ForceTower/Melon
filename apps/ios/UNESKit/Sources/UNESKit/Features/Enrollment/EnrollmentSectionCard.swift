@@ -26,13 +26,13 @@ struct EnrollmentSectionCard: View {
                     .padding(.top, 11)
 
                 if isBlocked, let clash {
-                    EnrollmentBanner(tone: .danger, title: String.localized(.enrollmentConflictTitle)) {
+                    UNESBanner(tone: .danger, title: String.localized(.enrollmentConflictTitle)) {
                         Text(clashLine(clash))
                     }
                     .padding(.top, 12)
                 }
                 if section.seats.isFull, !isBlocked {
-                    EnrollmentBanner(tone: .warn, title: String.localized(.enrollmentClassFullTitle)) {
+                    UNESBanner(tone: .warn, title: String.localized(.enrollmentClassFullTitle)) {
                         Text(fullLine)
                     }
                     .padding(.top, 12)

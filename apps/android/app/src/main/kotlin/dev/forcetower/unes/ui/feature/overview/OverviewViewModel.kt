@@ -5,6 +5,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.forcetower.melon.core.analytics.Analytics
 import dev.forcetower.melon.core.analytics.ContentTypes
 import dev.forcetower.melon.core.common.ForegroundSignal
+import dev.forcetower.melon.core.session.domain.SessionStore
 import dev.forcetower.melon.feature.campusevent.domain.model.CampusEvent
 import dev.forcetower.melon.feature.campusevent.domain.usecase.ObserveCampusEventUseCase
 import dev.forcetower.melon.feature.campusevent.domain.usecase.RefreshCampusEventUseCase
@@ -57,6 +58,8 @@ internal data class OverviewUiState(
     val nextTestTileRaw: KmpOverviewNextTestTile? = null,
     val campusEventRaw: CampusEvent? = null,
     val campusEventEnabled: Boolean = false,
+    /** Set once the refresh token is spent — nothing syncs until a new login. */
+    val sessionInvalid: Boolean = false,
     val clock: Instant = Clock.System.now(),
 ) : UiState {
     // Both gates must open, exactly like iOS: the Remote Config flag AND a
@@ -111,8 +114,13 @@ internal data class OverviewUiState(
         }
 }
 
-internal sealed interface OverviewIntent : UiIntent
-internal sealed interface OverviewEffect : UiEffect
+internal sealed interface OverviewIntent : UiIntent {
+    data object ReloginTapped : OverviewIntent
+}
+
+internal sealed interface OverviewEffect : UiEffect {
+    data object ShowRelogin : OverviewEffect
+}
 
 @HiltViewModel
 internal class OverviewViewModel @Inject constructor(
@@ -127,6 +135,7 @@ internal class OverviewViewModel @Inject constructor(
     refreshCampusEvent: RefreshCampusEventUseCase,
     featureFlags: FeatureFlags,
     foregroundSignal: ForegroundSignal,
+    sessionStore: SessionStore,
     private val analytics: Analytics,
 ) : MviViewModel<OverviewUiState, OverviewIntent, OverviewEffect>(OverviewUiState()) {
 
@@ -182,6 +191,9 @@ internal class OverviewViewModel @Inject constructor(
                 if (currentState.campusEventEnabled) refreshCampusEvent()
             }
         }
+        viewModelScope.launch {
+            sessionStore.sessionInvalid.collect { invalid -> setState { copy(sessionInvalid = invalid) } }
+        }
         // Clock ticker — refreshes greeting/eyebrow/countdown labels without
         // forcing KMP flows to re-emit. Mirrors iOS `runClockTicker`.
         viewModelScope.launch {
@@ -192,7 +204,14 @@ internal class OverviewViewModel @Inject constructor(
         }
     }
 
-    override fun onIntent(intent: OverviewIntent) = Unit
+    override fun onIntent(intent: OverviewIntent) {
+        when (intent) {
+            OverviewIntent.ReloginTapped -> {
+                analytics.selectContent(contentType = ContentTypes.CTA, itemId = "session_expired")
+                emitEffect(OverviewEffect.ShowRelogin)
+            }
+        }
+    }
 
     fun trackNowClassTap(offerId: String?) {
         analytics.selectContent(

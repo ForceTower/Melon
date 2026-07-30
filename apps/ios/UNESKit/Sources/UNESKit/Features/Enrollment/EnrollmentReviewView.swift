@@ -47,7 +47,7 @@ struct EnrollmentReviewView: View {
 
                 VStack(spacing: 0) {
                     if store.isReadonly {
-                        EnrollmentBanner(tone: .info, title: String.localized(.enrollmentProposalSent)) {
+                        UNESBanner(tone: .info, title: String.localized(.enrollmentProposalSent)) {
                             Text(.enrollmentReviewReadonlyBody)
                         }
                         .fadeUp(delay: 0.06)
@@ -121,7 +121,7 @@ struct EnrollmentReviewView: View {
         if !session.picks.isEmpty {
             VStack(spacing: 8) {
                 if !session.conflicts.isEmpty {
-                    EnrollmentBanner(
+                    UNESBanner(
                         tone: .danger,
                         title: String.localized(.enrollmentReviewConflictsTitle),
                         action: String.localized(.enrollmentReviewSeeInGrid),
@@ -135,18 +135,18 @@ struct EnrollmentReviewView: View {
                     }
                 }
                 if let window = session.window, session.totalHours < window.minHours {
-                    EnrollmentBanner(tone: .warn, title: String.localized(.enrollmentReviewUnderMinTitle)) {
+                    UNESBanner(tone: .warn, title: String.localized(.enrollmentReviewUnderMinTitle)) {
                         Text(.enrollmentReviewUnderMinBody(window.minHours - session.totalHours, window.minHours))
                     }
                 }
                 if let window = session.window, session.totalHours > window.maxHours {
-                    EnrollmentBanner(tone: .danger, title: String.localized(.enrollmentReviewOverMaxTitle)) {
+                    UNESBanner(tone: .danger, title: String.localized(.enrollmentReviewOverMaxTitle)) {
                         Text(.enrollmentReviewOverMaxBody(session.totalHours - window.maxHours, window.maxHours))
                     }
                 }
                 if !unmet.isEmpty {
                     let codes = unmet.map(\.discipline.code).joined(separator: ", ")
-                    EnrollmentBanner(tone: .warn, title: String.localized(.enrollmentReviewPrereqPendingTitle)) {
+                    UNESBanner(tone: .warn, title: String.localized(.enrollmentReviewPrereqPendingTitle)) {
                         Text(unmet.count > 1
                             ? .enrollmentReviewPrereqPendingBodyMany(codes)
                             : .enrollmentReviewPrereqPendingBodyOne(codes))

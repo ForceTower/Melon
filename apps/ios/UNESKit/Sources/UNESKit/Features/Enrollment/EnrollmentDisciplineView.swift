@@ -119,7 +119,7 @@ struct EnrollmentDisciplineView: View {
 
     private func prereqBanner(_ discipline: EnrollmentDiscipline) -> some View {
         let unmet = discipline.hasUnmetPrereq
-        return EnrollmentBanner(
+        return UNESBanner(
             tone: unmet ? .danger : .info,
             title: String.localized(unmet ? .enrollmentPrereqUnmetTitle : .enrollmentPrereqMetTitle)
         ) {

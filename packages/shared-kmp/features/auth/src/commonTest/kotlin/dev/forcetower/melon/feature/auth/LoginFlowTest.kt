@@ -117,7 +117,21 @@ private class RecordingSessionStore : SessionStore, AuthTokenSource {
     private val _authState = MutableStateFlow<AuthState>(AuthState.Unauthenticated)
     override val authState: StateFlow<AuthState> = _authState
 
+    private val _sessionInvalid = MutableStateFlow(false)
+    override val sessionInvalid: StateFlow<Boolean> = _sessionInvalid
+
     override suspend fun getAccessToken(): String? = lastAccessToken
+
+    override suspend fun getRefreshToken(): String? = lastRefreshToken
+
+    override suspend fun replaceTokens(accessToken: String, refreshToken: String) {
+        lastAccessToken = accessToken
+        lastRefreshToken = refreshToken
+    }
+
+    override suspend fun setSessionInvalid(invalid: Boolean) {
+        _sessionInvalid.value = invalid
+    }
 
     override suspend fun currentAuthState(): AuthState = _authState.value
 
