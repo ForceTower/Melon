@@ -22,13 +22,15 @@ fun gitOutput(vararg args: String): String? {
     }
 }
 
+// Scoped to `android-*` so tags for the other clients (`ios-*`) never leak into
+// the Android version name, whatever order the release tags were created in.
 val gitVersionName =
     gitOutput(
         "for-each-ref",
         "--sort=-creatordate",
         "--count=1",
         "--format=%(refname:short)",
-        "refs/tags/",
+        "refs/tags/android-*",
     ) ?: "0.1.0"
 
 val gitVersionCode = gitOutput("rev-list", "--count", "main")?.toIntOrNull() ?: 1
@@ -39,7 +41,7 @@ android {
     defaultConfig {
         applicationId = "com.forcetower.uefs"
         versionCode = 2130000 + gitVersionCode
-        versionName = gitVersionName.replaceFirst("android-", "")
+        versionName = gitVersionName.removePrefix("android-")
 
         // API origin the UmbrellaGraph is built with. Override for a local
         // mock/proxy via `-Pmelon.apiBaseUrl=http://127.0.0.1:8787` (pair
