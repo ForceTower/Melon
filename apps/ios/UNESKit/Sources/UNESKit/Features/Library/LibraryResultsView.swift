@@ -491,7 +491,9 @@ struct LibraryResultRow: View {
             store: Store(initialState: LibraryResultsFeature.State(query: "cálculo", scope: .all)) {
                 LibraryResultsFeature()
             } withDependencies: {
-                $0.libraryRepository.checkAvailability = { _ in .unavailable }
+                $0.libraryRepository.checkAvailability = { _ in
+                    LibraryAvailabilitySnapshot(reading: .unavailable, copies: [])
+                }
             }
         )
     }

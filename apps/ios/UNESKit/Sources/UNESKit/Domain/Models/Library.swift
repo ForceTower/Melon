@@ -15,55 +15,56 @@ enum LibraryWorkType: String, Equatable, Sendable, CaseIterable {
     case periodical = "periodico"
 }
 
-/// The campus libraries. A fixed registry for the mocked catalogue — the
-/// backend will own this list later.
-enum LibraryBranch: String, Equatable, Sendable, CaseIterable {
-    case central = "bcjc"
-    case health = "saude"
-    case lencois
-    case santoAntonio = "saj"
-
-    var sigla: String {
-        switch self {
-        case .central: "BCJC"
-        case .health: "BSS"
-        case .lencois: "BAL"
-        case .santoAntonio: "BSAJ"
-        }
-    }
-
-    var name: String {
-        switch self {
-        case .central: "Biblioteca Central Julieta Carteado"
-        case .health: "Biblioteca Setorial de Saúde"
-        case .lencois: "Biblioteca do Campus Avançado"
-        case .santoAntonio: "Biblioteca do Campus Avançado"
-        }
-    }
-
-    var campus: String {
-        switch self {
-        case .central: "Feira de Santana"
-        case .health: "Feira de Santana"
-        case .lencois: "Lençóis"
-        case .santoAntonio: "Santo Antônio de Jesus"
-        }
-    }
-
+/// A campus library. The backend maps upstream branches to the known slugs
+/// where it can; anything it cannot map still arrives with its code and name,
+/// so this is a struct rather than a closed enum.
+struct LibraryBranch: Equatable, Hashable, Sendable {
+    /// Stable identity — the app slug when known, else the upstream code.
+    var id: String
+    var sigla: String
+    var name: String
+    var campus: String?
     /// On the student's own campus — an available copy here means "walk over
     /// and pick it up today".
-    var isNear: Bool {
-        switch self {
-        case .central, .health: true
-        case .lencois, .santoAntonio: false
-        }
-    }
+    var isNear: Bool
+
+    /// Compact label for refine rows.
+    var shortName: String { Self.shortNames[id] ?? name }
+
+    static let central = LibraryBranch(
+        id: "bcjc", sigla: "BCJC", name: "Biblioteca Central Julieta Carteado",
+        campus: "Feira de Santana", isNear: true
+    )
+    static let health = LibraryBranch(
+        id: "saude", sigla: "BSS", name: "Biblioteca Setorial de Saúde",
+        campus: "Feira de Santana", isNear: true
+    )
+    static let lencois = LibraryBranch(
+        id: "lencois", sigla: "BAL", name: "Biblioteca do Campus Avançado",
+        campus: "Lençóis", isNear: false
+    )
+    static let santoAntonio = LibraryBranch(
+        id: "saj", sigla: "BSAJ", name: "Biblioteca do Campus Avançado",
+        campus: "Santo Antônio de Jesus", isNear: false
+    )
+
+    /// The mapped campus libraries, in display order.
+    static let known: [LibraryBranch] = [.central, .health, .lencois, .santoAntonio]
+
+    private static let shortNames: [String: String] = [
+        "bcjc": "Central Julieta Carteado",
+        "saude": "Setorial de Saúde",
+        "lencois": "Campus de Lençóis",
+        "saj": "Campus de Sto. Antônio de Jesus",
+    ]
 }
 
 /// One physical copy's circulation status.
 enum LibraryCopyStatus: Equatable, Sendable {
     case available
-    case onLoan(due: Date)
+    /// `due` is nil when the loan record carries no credible return date —
+    /// the backend nulls decades-old dues rather than forecasting the past.
+    case onLoan(due: Date?)
     /// In the catalogue but not on the shelf — excluded from every count.
     case missing
     /// Reference-only material that never leaves the building.
@@ -266,8 +267,10 @@ extension LibraryWork {
     func availability(now: Date) -> LibraryAvailability {
         var available = 0, onLoan = 0, missing = 0, localUse = 0
         var nextDue: Date?
+        var order: [LibraryBranch] = []
         var byBranch: [LibraryBranch: LibraryAvailability.Branch] = [:]
         for copy in copies {
+            if byBranch[copy.branch] == nil { order.append(copy.branch) }
             var branch = byBranch[copy.branch] ?? LibraryAvailability.Branch(
                 branch: copy.branch, available: 0, onLoan: 0, missing: 0,
                 localUse: 0, total: 0, areas: []
@@ -281,7 +284,7 @@ extension LibraryWork {
                 onLoan += 1
                 branch.onLoan += 1
                 branch.total += 1
-                if due > now, nextDue.map({ due < $0 }) ?? true {
+                if let due, due > now, nextDue.map({ due < $0 }) ?? true {
                     nextDue = due
                 }
             case .missing:
@@ -297,7 +300,7 @@ extension LibraryWork {
             }
             byBranch[copy.branch] = branch
         }
-        let branches = LibraryBranch.allCases.compactMap { byBranch[$0] }
+        let branches = order.compactMap { byBranch[$0] }
         return LibraryAvailability(
             available: available,
             onLoan: onLoan,
@@ -406,7 +409,7 @@ extension LibraryWork {
     func facetKeys(for group: LibraryFacetGroup) -> [String] {
         switch group {
         case .type: [type.rawValue]
-        case .branch: branches.map(\.rawValue)
+        case .branch: branches.map(\.id)
         case .subject: subjects
         case .author: authors
         case .language: language.map { [$0] } ?? []

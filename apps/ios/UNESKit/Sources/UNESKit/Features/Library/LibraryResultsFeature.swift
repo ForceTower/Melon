@@ -89,11 +89,26 @@ struct LibraryResultsFeature {
                     }
                 }
             case .branch:
-                return LibraryBranch.allCases.compactMap { branch in
-                    counts[branch.rawValue].map {
-                        LibraryFacetValue(key: branch.rawValue, label: branch.shortName, count: $0)
+                // The registry order for the known campus libraries, then any
+                // unmapped branch the backend surfaced, by name.
+                var byId: [String: LibraryBranch] = [:]
+                for work in works {
+                    for branch in work.branches where byId[branch.id] == nil {
+                        byId[branch.id] = branch
                     }
                 }
+                let knownIds = LibraryBranch.known.map(\.id)
+                return byId.values
+                    .sorted { lhs, rhs in
+                        let li = knownIds.firstIndex(of: lhs.id) ?? knownIds.count
+                        let ri = knownIds.firstIndex(of: rhs.id) ?? knownIds.count
+                        return li != ri ? li < ri : lhs.name < rhs.name
+                    }
+                    .compactMap { branch in
+                        counts[branch.id].map {
+                            LibraryFacetValue(key: branch.id, label: branch.shortName, count: $0)
+                        }
+                    }
             case .year:
                 return LibraryYearBucket.allCases.compactMap { bucket in
                     counts[bucket.rawValue].map {
@@ -125,7 +140,7 @@ struct LibraryResultsFeature {
     enum Action: Equatable, BindableAction {
         case task
         case worksLoaded([LibraryWork])
-        case readingLoaded(id: String, LibraryReading)
+        case readingLoaded(id: String, LibraryAvailabilitySnapshot)
         case refreshTapped
         case facetToggled(LibraryFacetGroup, String)
         case clearFacetsTapped
@@ -169,8 +184,14 @@ struct LibraryResultsFeature {
                 state.readings = [:]
                 return checkReadings(for: works)
 
-            case let .readingLoaded(id, reading):
-                state.readings[id] = reading
+            case let .readingLoaded(id, snapshot):
+                state.readings[id] = snapshot.reading
+                // A live reading also carries the copies — fold them into the
+                // work so counts and the detail push reflect what was read.
+                if snapshot.reading != .unavailable, !snapshot.copies.isEmpty,
+                   let index = state.works.firstIndex(where: { $0.id == id }) {
+                    state.works[index].copies = snapshot.copies
+                }
                 return .none
 
             case .refreshTapped:
@@ -227,8 +248,8 @@ struct LibraryResultsFeature {
     private func checkReadings(for works: [LibraryWork]) -> Effect<Action> {
         .run { send in
             for work in works {
-                let reading = await libraryRepository.checkAvailability(work.id)
-                await send(.readingLoaded(id: work.id, reading))
+                let snapshot = await libraryRepository.checkAvailability(work.id)
+                await send(.readingLoaded(id: work.id, snapshot))
             }
         }
         .cancellable(id: CancelID.readings, cancelInFlight: true)
@@ -240,18 +261,6 @@ extension LibraryWork {
     fileprivate var sortYear: Int {
         if case let .year(text) = year, let value = Int(text) { return value }
         return 0
-    }
-}
-
-extension LibraryBranch {
-    /// Compact label for refine rows.
-    var shortName: String {
-        switch self {
-        case .central: "Central Julieta Carteado"
-        case .health: "Setorial de Saúde"
-        case .lencois: "Campus de Lençóis"
-        case .santoAntonio: "Campus de Sto. Antônio de Jesus"
-        }
     }
 }
 

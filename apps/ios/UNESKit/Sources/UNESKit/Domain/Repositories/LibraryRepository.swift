@@ -1,26 +1,35 @@
 import ComposableArchitecture
 import Foundation
 
-/// The library catalogue (Pergamum). Two-phase by design: the catalogue
-/// search answers fast and is reliable; the per-title availability reading
-/// is a separate, slower consultation that can degrade or fail — screens
-/// render the catalogue immediately and fill circulation in as it lands.
+/// One circulation consultation for a title: the freshness verdict plus the
+/// copies it carried. `copies` is empty when the reading is `.unavailable`.
+struct LibraryAvailabilitySnapshot: Equatable, Sendable {
+    var reading: LibraryReading
+    var copies: [LibraryCopy]
+}
+
+/// The library catalogue (Pergamum, via `api/library/*`). Two-phase by
+/// design: the catalogue search answers fast and is reliable; the per-title
+/// availability reading is a separate, slower consultation that can degrade
+/// or fail — screens render the catalogue immediately and fill circulation
+/// in as it lands.
 @DependencyClient
 struct LibraryRepository: Sendable {
     var overview: @Sendable () async throws -> LibraryOverview
     var search: @Sendable (_ query: String, _ scope: LibrarySearchScope) async throws -> [LibraryWork]
     /// Consults circulation for one title. Never throws — degradation is a
     /// state the UI narrates, not an error.
-    var checkAvailability: @Sendable (_ workId: String) async -> LibraryReading = { _ in .unavailable }
+    var checkAvailability: @Sendable (_ workId: String) async -> LibraryAvailabilitySnapshot = { _ in
+        LibraryAvailabilitySnapshot(reading: .unavailable, copies: [])
+    }
+    var clearRecents: @Sendable () async throws -> Void
 }
 
-// The whole feature runs on this mock until the backend endpoint lands, so
-// the mock IS the live value for now.
-extension LibraryRepository: DependencyKey {
-    static let liveValue = LibraryRepository.mock()
-    static let previewValue = LibraryRepository.mock(instant: true)
+extension LibraryRepository: TestDependencyKey {
     static let testValue = LibraryRepository()
+    static let previewValue = LibraryRepository.mock(instant: true)
 
+    /// Fixture-backed implementation for previews and offline development.
     static func mock(instant: Bool = false) -> LibraryRepository {
         LibraryRepository(
             overview: {
@@ -55,8 +64,10 @@ extension LibraryRepository: DependencyKey {
                     let jitter = (workId.hashValue % 5 + 5) * 60
                     try? await Task.sleep(for: .milliseconds(200 + jitter))
                 }
-                return .fresh(checkedAt: Date())
-            }
+                let copies = LibraryFixtures.all(now: Date()).first { $0.id == workId }?.copies ?? []
+                return LibraryAvailabilitySnapshot(reading: .fresh(checkedAt: Date()), copies: copies)
+            },
+            clearRecents: {}
         )
     }
 

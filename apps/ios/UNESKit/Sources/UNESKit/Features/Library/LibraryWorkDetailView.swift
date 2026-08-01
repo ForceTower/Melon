@@ -228,7 +228,8 @@ struct LibraryWorkDetailView: View {
             if availability.hasNearAvailable {
                 return .localized(.libraryDetailNearHint)
             }
-            let campus = availability.branches.first { $0.available > 0 }?.branch.campus ?? ""
+            let withFree = availability.branches.first { $0.available > 0 }?.branch
+            let campus = withFree?.campus ?? withFree?.name ?? ""
             return .localized(.libraryDetailFarHint(campus))
         case .localUseOnly:
             return .localized(.libraryDetailLocalHint)
@@ -297,7 +298,7 @@ struct LibraryWorkDetailView: View {
     }
 
     private func branchLine(_ branch: LibraryBranch) -> String {
-        let base = "\(branch.name) · \(branch.campus)"
+        let base = branch.campus.map { "\(branch.name) · \($0)" } ?? branch.name
         return branch.isNear ? base : "\(base) \(String.localized(.libraryDetailOtherCampus))"
     }
 
@@ -340,7 +341,7 @@ struct LibraryWorkDetailView: View {
         var order: [String] = []
         var groups: [String: LibraryCopyGroup] = [:]
         for copy in work.copies {
-            let key = "\(copy.branch.rawValue)|\(copy.callNumber)|\(copy.area)"
+            let key = "\(copy.branch.id)|\(copy.callNumber)|\(copy.area)"
             if groups[key] == nil {
                 order.append(key)
                 groups[key] = LibraryCopyGroup(
@@ -575,9 +576,14 @@ struct LibraryCopyGroup {
     var available = 0
     var missing = 0
     var futureDues: [Date] = []
-    var staleDues: [Date] = []
+    /// Loans with no credible return: a nil due (the backend already dropped
+    /// a decades-old date) or one that lapsed while cached.
+    var staleLoans = 0
+    /// Earliest lapsed due still on record, when any survived — feeds the
+    /// "vencido desde" sub-line.
+    var staleSince: Date?
     var localUseNotes: [String] = []
-    private var pendingLoans: [Date] = []
+    private var pendingLoans: [Date?] = []
 
     mutating func add(_ status: LibraryCopyStatus) {
         switch status {
@@ -591,12 +597,13 @@ struct LibraryCopyGroup {
     /// Splits loans into "coming back" and "record never closed" — a due
     /// date years in the past is a stale record, not a forecast.
     mutating func settle(now: Date) {
-        futureDues = pendingLoans.filter { $0 > now }.sorted()
-        staleDues = pendingLoans.filter { $0 <= now }.sorted()
+        futureDues = pendingLoans.compactMap { $0 }.filter { $0 > now }.sorted()
+        staleLoans = pendingLoans.count - futureDues.count
+        staleSince = pendingLoans.compactMap { $0 }.filter { $0 <= now }.min()
         pendingLoans = []
     }
 
-    var total: Int { available + futureDues.count + staleDues.count + localUseNotes.count }
+    var total: Int { available + futureDues.count + staleLoans + localUseNotes.count }
 }
 
 struct LibraryVolumeCard: View {
@@ -625,11 +632,11 @@ struct LibraryVolumeCard: View {
                             .foregroundStyle(UNESColor.ink3)
                             .padding(EdgeInsets(top: 2.5, leading: 7, bottom: 2.5, trailing: 7))
                             .background(UNESColor.surface2, in: RoundedRectangle(cornerRadius: 7, style: .continuous))
-                        if !group.branch.isNear {
+                        if !group.branch.isNear, let campus = group.branch.campus {
                             HStack(spacing: 3) {
                                 Image(systemName: "mappin.and.ellipse")
                                     .font(.system(size: 9.5, weight: .bold))
-                                Text(group.branch.campus)
+                                Text(campus)
                                     .font(.system(size: 10.5, weight: .bold))
                             }
                             .foregroundStyle(LibraryTone.loan)
@@ -698,12 +705,12 @@ struct LibraryVolumeCard: View {
                 }
             )
         }
-        if !group.staleDues.isEmpty {
+        if group.staleLoans > 0 {
             statusRow(
                 icon: "hourglass",
                 tone: UNESColor.ink3,
-                label: .localized(.libraryDetailCopyStale(group.staleDues.count)),
-                sub: group.staleDues.first.map {
+                label: .localized(.libraryDetailCopyStale(group.staleLoans)),
+                sub: group.staleSince.map {
                     .localized(.libraryDetailCopyStaleSince(LibraryFormat.year($0)))
                 },
                 faded: true
@@ -714,7 +721,7 @@ struct LibraryVolumeCard: View {
                 icon: "info.circle",
                 tone: LibraryTone.localUse,
                 label: .localized(.libraryDetailCopyLocal(group.localUseNotes.count)),
-                sub: group.localUseNotes.first
+                sub: group.localUseNotes.first { !$0.isEmpty }
             )
         }
         if group.missing > 0 {
@@ -814,7 +821,9 @@ struct LibraryVolumeCard: View {
             ) {
                 LibraryWorkDetailFeature()
             } withDependencies: {
-                $0.libraryRepository.checkAvailability = { _ in .unavailable }
+                $0.libraryRepository.checkAvailability = { _ in
+                    LibraryAvailabilitySnapshot(reading: .unavailable, copies: [])
+                }
             }
         )
     }

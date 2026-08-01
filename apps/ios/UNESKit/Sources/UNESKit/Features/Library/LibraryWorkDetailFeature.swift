@@ -29,7 +29,7 @@ struct LibraryWorkDetailFeature {
 
     enum Action: Equatable {
         case task
-        case readingLoaded(LibraryReading)
+        case readingLoaded(LibraryAvailabilitySnapshot)
         case refreshTapped
         case recordToggled
         case copyCallNumberTapped
@@ -65,8 +65,13 @@ struct LibraryWorkDetailFeature {
                 guard state.reading == nil else { return .none }
                 return checkReading(state)
 
-            case let .readingLoaded(reading):
-                state.reading = reading
+            case let .readingLoaded(snapshot):
+                state.reading = snapshot.reading
+                // A live reading carries the copies — replace the last-known
+                // set so every count on screen reflects what was just read.
+                if snapshot.reading != .unavailable, !snapshot.copies.isEmpty {
+                    state.work.copies = snapshot.copies
+                }
                 return .none
 
             case .refreshTapped:
@@ -118,7 +123,7 @@ struct LibraryWorkDetailFeature {
 
     private func checkReading(_ state: State) -> Effect<Action> {
         .run { [id = state.work.id] send in
-            await send(.readingLoaded(libraryRepository.checkAvailability(id)))
+            await send(.readingLoaded(await libraryRepository.checkAvailability(id)))
         }
         .cancellable(id: CancelID.reading, cancelInFlight: true)
     }

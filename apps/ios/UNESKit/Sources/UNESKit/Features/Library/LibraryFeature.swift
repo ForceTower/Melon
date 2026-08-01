@@ -14,7 +14,7 @@ struct LibraryFeature {
         var isLoading = false
         var loadFailed = false
         var isAdvancedPresented = false
-        /// Session-local until the backend owns search history.
+        /// Optimistic hide — the server delete rides behind it.
         var recentsCleared = false
 
         var recents: [LibraryRecentSearch] {
@@ -98,7 +98,15 @@ struct LibraryFeature {
 
             case .clearRecentsTapped:
                 state.recentsCleared = true
-                return .none
+                return .run { [log] _ in
+                    do {
+                        try await libraryRepository.clearRecents()
+                    } catch {
+                        // The hub already hid them; the worst case is the row
+                        // resurfacing on the next visit.
+                        log.warn("clear recents failed", error: error)
+                    }
+                }
 
             case let .newAcquisitionTapped(work):
                 analytics.selectContent(contentType: ContentTypes.libraryWork, itemId: work.id)

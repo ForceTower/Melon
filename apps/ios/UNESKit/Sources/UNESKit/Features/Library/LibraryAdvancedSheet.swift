@@ -193,7 +193,7 @@ struct LibraryAdvancedSheet: View {
 
             VStack(alignment: .leading, spacing: 9) {
                 chipStrip {
-                    ForEach(LibraryBranch.allCases, id: \.self) { option in
+                    ForEach(LibraryBranch.known, id: \.id) { option in
                         LibraryChip(isActive: branch == option, onTap: {
                             branch = branch == option ? nil : option
                         }) {
@@ -259,7 +259,7 @@ struct LibraryAdvancedSheet: View {
         let terms = filled
         guard !terms.isEmpty else { return }
         var facets: LibraryFacetSelection = [:]
-        if let branch { facets[.branch] = [branch.rawValue] }
+        if let branch { facets[.branch] = [branch.id] }
         if let type { facets[.type] = [type.rawValue] }
         onSearch(
             terms.map { $0.term.trimmingCharacters(in: .whitespaces) }.joined(separator: " "),
