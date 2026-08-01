@@ -17,6 +17,12 @@ struct CalendarEvent: Equatable, Identifiable, Sendable {
     let closed: Bool
     let scope: AcademicEvent.Scope
     let origin: AcademicEvent.Origin
+    /// The student's own entry behind this row — nil for the institutional
+    /// feed. Set means the row is editable and carries the personal extras
+    /// (class tag, reminder, notes).
+    let personal: PersonalEvent?
+
+    var isPersonal: Bool { personal != nil }
 
     var endOrStart: Date { end ?? start }
 
@@ -26,11 +32,21 @@ struct CalendarEvent: Equatable, Identifiable, Sendable {
     }
 
     var category: CalendarCategory {
+        if let personal { return personal.category.calendarCategory }
         if closed { return .holiday }
         switch origin {
         case .evaluation, .finalExam, .secondCall, .secondEpoch: return .exam
         case .manual, .unknown: return .deadline
         }
+    }
+
+    /// What follows the category on a row: the linked class code when there
+    /// is one, "meu" for the student's own entries, the âmbito otherwise.
+    var provenanceLabel: String {
+        if let personal {
+            return personal.discipline?.code ?? .localized(.calendarPersonalBadge)
+        }
+        return scope.label
     }
 
     init(
@@ -41,7 +57,8 @@ struct CalendarEvent: Equatable, Identifiable, Sendable {
         fixed: Bool = false,
         closed: Bool = false,
         scope: AcademicEvent.Scope = .general,
-        origin: AcademicEvent.Origin = .manual
+        origin: AcademicEvent.Origin = .manual,
+        personal: PersonalEvent? = nil
     ) {
         self.id = id
         self.title = title
@@ -51,6 +68,7 @@ struct CalendarEvent: Equatable, Identifiable, Sendable {
         self.closed = closed
         self.scope = scope
         self.origin = origin
+        self.personal = personal
     }
 
     init?(_ event: AcademicEvent, calendar: Calendar = .current) {
@@ -66,17 +84,85 @@ struct CalendarEvent: Equatable, Identifiable, Sendable {
             origin: event.origin
         )
     }
+
+    /// Personal entries join the same timeline. They carry no scope of their
+    /// own — the scope filter routes them through its "Meus" segment.
+    init?(_ event: PersonalEvent, calendar: Calendar = .current) {
+        guard let start = CalendarFormat.parse(event.start, calendar: calendar) else { return nil }
+        self.init(
+            id: event.id,
+            title: event.title,
+            start: start,
+            end: event.end.flatMap { CalendarFormat.parse($0, calendar: calendar) },
+            personal: event
+        )
+    }
 }
 
-/// Visual category behind the tone tiles, dots and filter segments.
-enum CalendarCategory: CaseIterable, Equatable, Sendable {
-    case deadline, exam, holiday
+extension PersonalEvent.Category {
+    var calendarCategory: CalendarCategory {
+        switch self {
+        case .task: .task
+        case .exam: .exam
+        case .study: .study
+        case .life: .life
+        }
+    }
+
+    var label: String {
+        switch self {
+        case .task: .localized(.calendarPersonalCategoryTask)
+        case .exam: .localized(.calendarPersonalCategoryExam)
+        case .study: .localized(.calendarPersonalCategoryStudy)
+        case .life: .localized(.calendarPersonalCategoryLife)
+        }
+    }
+}
+
+extension PersonalEvent.Reminder {
+    /// Segment copy — "1 dia", short enough for four equal segments.
+    var label: String {
+        switch self {
+        case .none: .localized(.calendarPersonalReminderNone)
+        case .dayBefore: .localized(.calendarPersonalReminderDay)
+        case .threeDays: .localized(.calendarPersonalReminderThreeDays)
+        case .week: .localized(.calendarPersonalReminderWeek)
+        }
+    }
+
+    /// Detail-sheet copy — "1 dia antes".
+    var detailLabel: String {
+        switch self {
+        case .none: .localized(.calendarPersonalReminderNone)
+        case .dayBefore: .localized(.calendarPersonalReminderDayLong)
+        case .threeDays: .localized(.calendarPersonalReminderThreeDaysLong)
+        case .week: .localized(.calendarPersonalReminderWeekLong)
+        }
+    }
+}
+
+/// One entry of the composer's class picker: the tag that gets stored plus
+/// the palette slot the discipline already uses elsewhere in the app.
+struct PersonalEventDisciplineOption: Equatable, Identifiable, Sendable {
+    let tag: PersonalEvent.DisciplineTag
+    let colorIndex: Int
+
+    var id: String { tag.id }
+}
+
+/// Visual category behind the tone tiles, dots and filter segments. The last
+/// three only ever come from the student's own entries.
+enum CalendarCategory: CaseIterable, Hashable, Sendable {
+    case deadline, exam, holiday, task, study, life
 
     var label: String {
         switch self {
         case .deadline: .localized(.calendarCategoryDeadline)
         case .exam: .localized(.calendarCategoryExam)
         case .holiday: .localized(.calendarCategoryHoliday)
+        case .task: .localized(.calendarPersonalCategoryTask)
+        case .study: .localized(.calendarPersonalCategoryStudy)
+        case .life: .localized(.calendarPersonalCategoryLife)
         }
     }
 
@@ -85,6 +171,9 @@ enum CalendarCategory: CaseIterable, Equatable, Sendable {
         case .deadline: "clock"
         case .exam: "doc.text"
         case .holiday: "sun.max"
+        case .task: "checkmark.square"
+        case .study: "book"
+        case .life: "star"
         }
     }
 
@@ -95,23 +184,30 @@ enum CalendarCategory: CaseIterable, Equatable, Sendable {
         case .deadline: "deadline"
         case .exam: "exam"
         case .holiday: "holiday"
+        case .task: "task"
+        case .study: "study"
+        case .life: "life"
         }
     }
 
-    /// coral / violet / tangerine, lifted for dark surfaces.
+    /// coral / violet / tangerine, then magenta / teal / moss for the
+    /// student's own kinds — all lifted for dark surfaces.
     var color: Color {
         switch self {
         case .deadline: UNESColor.readable(0xE85D4E)
         case .exam: UNESColor.readable(0x7A5AD0)
         case .holiday: UNESColor.readable(0xE8894E)
+        case .task: UNESColor.readable(0xB23A7A)
+        case .study: UNESColor.readable(0x3B9EAE)
+        case .life: UNESColor.readable(0x5C8C3E)
         }
     }
 
     /// Mesh behind the hero when this category headlines it.
     var mesh: MeshView.Variant {
         switch self {
-        case .deadline: .rose
-        case .exam: .cool
+        case .deadline, .task, .life: .rose
+        case .exam, .study: .cool
         case .holiday: .warm
         }
     }
@@ -119,6 +215,13 @@ enum CalendarCategory: CaseIterable, Equatable, Sendable {
 
 enum CalendarStatus: Equatable, Sendable {
     case past, active, future
+}
+
+/// One decoration dot under a day in the month grid — filled for the
+/// institutional feed, a ring for the student's own entries.
+struct CalendarDayDot: Hashable, Sendable {
+    let category: CalendarCategory
+    let isPersonal: Bool
 }
 
 /// The agenda-row countdown, pre-split so the hero and detail sheet can
@@ -222,14 +325,18 @@ enum CalendarMath {
 
 // MARK: - Filters
 
+/// The segmented row. "Pessoal" entries have no segment of their own — they
+/// live under "Tudo" and under the scope row's "Meus".
 enum CalendarCategoryFilter: String, CaseIterable, Equatable, Sendable {
-    case all, deadline, exam, holiday
+    case all, deadline, exam, task, study, holiday
 
     var label: String {
         switch self {
         case .all: .localized(.calendarFilterAll)
         case .deadline: .localized(.calendarFilterDeadlines)
         case .exam: .localized(.calendarFilterExams)
+        case .task: .localized(.calendarFilterTasks)
+        case .study: .localized(.calendarFilterStudy)
         case .holiday: .localized(.calendarFilterHolidays)
         }
     }
@@ -240,6 +347,8 @@ enum CalendarCategoryFilter: String, CaseIterable, Equatable, Sendable {
         case .all: nil
         case .deadline: .deadline
         case .exam: .exam
+        case .task: .task
+        case .study: .study
         case .holiday: .holiday
         }
     }
@@ -250,11 +359,12 @@ enum CalendarCategoryFilter: String, CaseIterable, Equatable, Sendable {
 }
 
 enum CalendarScopeFilter: String, CaseIterable, Equatable, Sendable {
-    case all, general, faculty, course, classScope
+    case all, personal, general, faculty, course, classScope
 
     var label: String {
         switch self {
         case .all: .localized(.calendarScopeAll)
+        case .personal: .localized(.calendarScopePersonal)
         case .general: .localized(.calendarScopeGeneral)
         case .faculty: .localized(.calendarScopeFaculty)
         case .course: .localized(.calendarScopeCourse)
@@ -264,7 +374,7 @@ enum CalendarScopeFilter: String, CaseIterable, Equatable, Sendable {
 
     var scope: AcademicEvent.Scope? {
         switch self {
-        case .all: nil
+        case .all, .personal: nil
         case .general: .general
         case .faculty: .faculty
         case .course: .course
@@ -272,8 +382,14 @@ enum CalendarScopeFilter: String, CaseIterable, Equatable, Sendable {
         }
     }
 
+    /// Personal entries carry a placeholder scope, so the institutional
+    /// segments have to exclude them explicitly.
     func matches(_ event: CalendarEvent) -> Bool {
-        scope.map { event.scope == $0 } ?? true
+        switch self {
+        case .all: true
+        case .personal: event.isPersonal
+        default: !event.isPersonal && event.scope == scope
+        }
     }
 }
 
@@ -322,7 +438,28 @@ extension [CalendarEvent] {
 // MARK: - Fixtures
 
 extension [CalendarEvent] {
+    /// The institutional feed and the student's own entries on one timeline —
+    /// the same merge the screen renders.
     static func preview(today: Date = .now) -> [CalendarEvent] {
-        [AcademicEvent].preview(now: today).compactMap { CalendarEvent($0) }
+        let institutional = [AcademicEvent].preview(now: today).compactMap { CalendarEvent($0) }
+        let personal = [PersonalEvent].preview(now: today).compactMap { CalendarEvent($0) }
+        return (institutional + personal).sorted { ($0.start, $0.title) < ($1.start, $1.title) }
     }
+}
+
+extension [PersonalEventDisciplineOption] {
+    static let preview: [PersonalEventDisciplineOption] = [
+        PersonalEventDisciplineOption(
+            tag: PersonalEvent.DisciplineTag(id: "d1", code: "EXA805", name: "Algoritmos e Programação II"),
+            colorIndex: 0
+        ),
+        PersonalEventDisciplineOption(
+            tag: PersonalEvent.DisciplineTag(id: "d2", code: "EXA704", name: "Cálculo Diferencial II"),
+            colorIndex: 1
+        ),
+        PersonalEventDisciplineOption(
+            tag: PersonalEvent.DisciplineTag(id: "d3", code: "EXA412", name: "Física II"),
+            colorIndex: 3
+        ),
+    ]
 }

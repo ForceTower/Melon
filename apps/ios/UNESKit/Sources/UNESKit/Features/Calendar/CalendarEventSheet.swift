@@ -11,6 +11,8 @@ struct CalendarEventSheet: View {
     let today: Date
     var onClose: () -> Void
     var onAddToCalendar: () -> Void = {}
+    var onEdit: (PersonalEvent) -> Void = { _ in }
+    var onDelete: (PersonalEvent) -> Void = { _ in }
 
     @State private var isCalendarEditPresented = false
 
@@ -27,11 +29,19 @@ struct CalendarEventSheet: View {
                     .padding(.top, 16)
                 metaGrid
                     .padding(.top, 10)
+                if let notes = event.personal?.notes, !notes.isEmpty {
+                    notesCard(notes)
+                        .padding(.top, 10)
+                }
+                if let discipline = event.personal?.discipline {
+                    disciplineCard(discipline)
+                        .padding(.top, 10)
+                }
                 if event.fixed {
                     fixedChip
                         .padding(.top, 10)
                 }
-                addToCalendarButton
+                actions
                     .padding(.top, 18)
             }
             .padding(EdgeInsets(top: 24, leading: 18, bottom: 24, trailing: 18))
@@ -39,7 +49,6 @@ struct CalendarEventSheet: View {
         .presentationBackground(UNESColor.surface)
         .presentationDetents([.medium, .large])
         .presentationDragIndicator(.visible)
-        .presentationCornerRadiusCompat(30)
         #if canImport(EventKitUI)
         .sheet(isPresented: $isCalendarEditPresented) {
             CalendarEventEditor(event: event) {
@@ -60,7 +69,7 @@ struct CalendarEventSheet: View {
                 .shadow(color: category.color.opacity(0.33), radius: 7, y: 6)
 
             VStack(alignment: .leading, spacing: 2) {
-                Text(verbatim: "\(category.label) · \(event.scope.label)")
+                Text(verbatim: "\(category.label) · \(event.provenanceLabel)")
                     .font(.system(size: 12, weight: .semibold))
                     .foregroundStyle(category.color)
                 Text(event.title)
@@ -111,13 +120,54 @@ struct CalendarEventSheet: View {
         }
     }
 
+    /// The last two cells swap for the student's own entries: the class tag
+    /// and reminder say more there than âmbito and situação.
     private var metaGrid: some View {
         LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 2), spacing: 8) {
             metaCell(label: .localized(.calendarMetaWhen), value: range)
             metaCell(label: .localized(.calendarMetaDuration), value: CalendarFormat.duration(days: event.spanDays))
-            metaCell(label: .localized(.calendarMetaScope), value: event.scope.label)
-            metaCell(label: .localized(.calendarMetaStatus), value: situation)
+            if let personal = event.personal {
+                metaCell(
+                    label: .localized(.calendarPersonalMetaDiscipline),
+                    value: personal.discipline?.code ?? .localized(.calendarPersonalDisciplineNone)
+                )
+                metaCell(label: .localized(.calendarPersonalMetaReminder), value: personal.reminder.detailLabel)
+            } else {
+                metaCell(label: .localized(.calendarMetaScope), value: event.scope.label)
+                metaCell(label: .localized(.calendarMetaStatus), value: situation)
+            }
         }
+    }
+
+    private func notesCard(_ notes: String) -> some View {
+        HStack(alignment: .top, spacing: 10) {
+            Image(systemName: "text.alignleft")
+                .font(.system(size: 12, weight: .medium))
+                .foregroundStyle(UNESColor.ink4)
+                .padding(.top, 2)
+            Text(notes)
+                .font(.system(size: 13.5, weight: .medium))
+                .lineSpacing(2)
+                .foregroundStyle(UNESColor.ink2)
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .padding(EdgeInsets(top: 12, leading: 14, bottom: 12, trailing: 14))
+        .background(UNESColor.surface2, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+    }
+
+    private func disciplineCard(_ discipline: PersonalEvent.DisciplineTag) -> some View {
+        HStack(spacing: 10) {
+            Circle()
+                .fill(category.color)
+                .frame(width: 9, height: 9)
+            Text(discipline.name)
+                .font(.system(size: 13.5, weight: .semibold))
+                .tracking(-0.14)
+                .foregroundStyle(UNESColor.ink2)
+            Spacer(minLength: 0)
+        }
+        .padding(EdgeInsets(top: 12, leading: 14, bottom: 12, trailing: 14))
+        .background(UNESColor.surface2, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
     }
 
     private var situation: String {
@@ -156,6 +206,41 @@ struct CalendarEventSheet: View {
         .background(UNESColor.surface2, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
     }
 
+    /// The student's own entries get edit + delete where the institutional
+    /// ones get the system-calendar handoff.
+    @ViewBuilder
+    private var actions: some View {
+        if let personal = event.personal {
+            HStack(spacing: 8) {
+                Button {
+                    onEdit(personal)
+                } label: {
+                    filledLabel(icon: "pencil", text: .calendarPersonalEditAction)
+                }
+                .buttonStyle(TilePressStyle())
+
+                Button {
+                    onDelete(personal)
+                } label: {
+                    Image(systemName: "trash")
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundStyle(UNESColor.alertRed)
+                        .frame(width: 52)
+                        .frame(maxHeight: .infinity)
+                        .background(UNESColor.surface2, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+                        .overlay {
+                            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                                .strokeBorder(UNESColor.cardLine)
+                        }
+                }
+                .buttonStyle(TilePressStyle())
+            }
+            .fixedSize(horizontal: false, vertical: true)
+        } else {
+            addToCalendarButton
+        }
+    }
+
     @ViewBuilder
     private var addToCalendarButton: some View {
         #if canImport(EventKitUI)
@@ -163,21 +248,25 @@ struct CalendarEventSheet: View {
             onAddToCalendar()
             isCalendarEditPresented = true
         } label: {
-            HStack(spacing: 7) {
-                Image(systemName: "calendar.badge.plus")
-                    .font(.system(size: 14, weight: .semibold))
-                Text(.calendarEventAddToCalendar)
-                    .font(.system(size: 14, weight: .semibold))
-                    .tracking(-0.14)
-            }
-            .foregroundStyle(.white)
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 13)
-            .background(category.color, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
-            .shadow(color: category.color.opacity(0.27), radius: 12, y: 8)
+            filledLabel(icon: "calendar.badge.plus", text: .calendarEventAddToCalendar)
         }
         .buttonStyle(TilePressStyle())
         #endif
+    }
+
+    private func filledLabel(icon: String, text: LocalizedStringResource) -> some View {
+        HStack(spacing: 7) {
+            Image(systemName: icon)
+                .font(.system(size: 14, weight: .semibold))
+            Text(text)
+                .font(.system(size: 14, weight: .semibold))
+                .tracking(-0.14)
+        }
+        .foregroundStyle(.white)
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 13)
+        .background(category.color, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .shadow(color: category.color.opacity(0.27), radius: 12, y: 8)
     }
 }
 

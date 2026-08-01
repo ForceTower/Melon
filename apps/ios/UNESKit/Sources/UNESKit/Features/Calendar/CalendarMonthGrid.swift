@@ -11,7 +11,7 @@ struct CalendarMonthGridSection: View {
     let selectedDay: Date
     let today: Date
     var onSelectDay: (Date) -> Void
-    var onOpen: (CalendarEvent) -> Void
+    var actions: CalendarRowActions
 
     private var selectedDayEvents: [CalendarEvent] {
         CalendarMath.events(on: selectedDay, in: events)
@@ -39,10 +39,10 @@ struct CalendarMonthGridSection: View {
             .padding(EdgeInsets(top: 2, leading: 6, bottom: 12, trailing: 6))
 
             if selectedDayEvents.isEmpty {
-                emptyDayCard
+                addOnDayCard
             } else {
                 ForEach(selectedDayEvents) { event in
-                    CalendarEventRow(event: event, today: today, onOpen: onOpen)
+                    CalendarEventRow(event: event, today: today, actions: actions)
                         .padding(.bottom, 9)
                 }
             }
@@ -62,18 +62,29 @@ struct CalendarMonthGridSection: View {
             .shadow(color: Color(hex: 0x141020, opacity: 0.05), radius: 9, y: 6)
     }
 
-    private var emptyDayCard: some View {
-        Text(.calendarGridEmptyDay)
-            .font(.system(size: 13, weight: .medium))
+    /// An empty day is the cheapest place to start an entry — the card is the
+    /// button rather than a dead-end caption.
+    private var addOnDayCard: some View {
+        Button {
+            actions.onAdd(selectedDay)
+        } label: {
+            HStack(spacing: 8) {
+                Image(systemName: "plus")
+                    .font(.system(size: 13, weight: .semibold))
+                Text(.calendarPersonalAddOnDay)
+                    .font(.system(size: 13.5, weight: .semibold))
+            }
             .foregroundStyle(UNESColor.ink4)
             .frame(maxWidth: .infinity)
-            .padding(20)
+            .padding(18)
             .background(UNESColor.card)
             .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
             .overlay {
                 RoundedRectangle(cornerRadius: 18, style: .continuous)
-                    .strokeBorder(UNESColor.cardLine)
+                    .strokeBorder(UNESColor.cardLine, style: StrokeStyle(lineWidth: 1, dash: [5, 4]))
             }
+        }
+        .buttonStyle(.pressableCard)
     }
 }
 
@@ -99,7 +110,7 @@ private struct CalendarMonthView: UIViewRepresentable {
         selection.setSelected(dayComponents(of: selectedDay), animated: false)
         view.visibleDateComponents = dayComponents(of: selectedDay)
 
-        context.coordinator.categoriesByDay = Self.categoriesByDay(for: events)
+        context.coordinator.dotsByDay = Self.dotsByDay(for: events)
         return view
     }
 
@@ -115,10 +126,10 @@ private struct CalendarMonthView: UIViewRepresentable {
             }
         }
 
-        let fresh = Self.categoriesByDay(for: events)
-        guard fresh != coordinator.categoriesByDay else { return }
-        let stale = Set(coordinator.categoriesByDay.keys).union(fresh.keys)
-        coordinator.categoriesByDay = fresh
+        let fresh = Self.dotsByDay(for: events)
+        guard fresh != coordinator.dotsByDay else { return }
+        let stale = Set(coordinator.dotsByDay.keys).union(fresh.keys)
+        coordinator.dotsByDay = fresh
         view.reloadDecorations(forDateComponents: Array(stale), animated: true)
     }
 
@@ -140,16 +151,19 @@ private struct CalendarMonthView: UIViewRepresentable {
         Calendar.current.dateComponents([.year, .month, .day], from: date)
     }
 
-    /// Distinct categories per day, insertion-ordered, capped at three dots.
-    static func categoriesByDay(for events: [CalendarEvent]) -> [DateComponents: [CalendarCategory]] {
+    /// Distinct dots per day, insertion-ordered, capped at three. The
+    /// student's own entries read as rings so a day tells you at a glance
+    /// whether the load is theirs or the university's.
+    static func dotsByDay(for events: [CalendarEvent]) -> [DateComponents: [CalendarDayDot]] {
         let calendar = Calendar.current
-        var result: [DateComponents: [CalendarCategory]] = [:]
+        var result: [DateComponents: [CalendarDayDot]] = [:]
         for event in events {
+            let dot = CalendarDayDot(category: event.category, isPersonal: event.isPersonal)
             var day = event.start
             while day <= event.endOrStart {
                 let key = calendar.dateComponents([.year, .month, .day], from: day)
-                if result[key, default: []].contains(event.category) == false, result[key, default: []].count < 3 {
-                    result[key, default: []].append(event.category)
+                if result[key, default: []].contains(dot) == false, result[key, default: []].count < 3 {
+                    result[key, default: []].append(dot)
                 }
                 guard let next = calendar.date(byAdding: .day, value: 1, to: day) else { break }
                 day = next
@@ -159,7 +173,7 @@ private struct CalendarMonthView: UIViewRepresentable {
     }
 
     final class Coordinator: NSObject, UICalendarViewDelegate, UICalendarSelectionSingleDateDelegate {
-        var categoriesByDay: [DateComponents: [CalendarCategory]] = [:]
+        var dotsByDay: [DateComponents: [CalendarDayDot]] = [:]
         var onSelectDay: (Date) -> Void
 
         init(onSelectDay: @escaping (Date) -> Void) {
@@ -175,20 +189,27 @@ private struct CalendarMonthView: UIViewRepresentable {
                 month: dateComponents.month,
                 day: dateComponents.day
             )
-            guard let categories = categoriesByDay[key], !categories.isEmpty else { return nil }
+            guard let dots = dotsByDay[key], !dots.isEmpty else { return nil }
             return .customView {
                 let stack = UIStackView()
                 stack.axis = .horizontal
                 stack.spacing = 2.5
                 stack.alignment = .center
-                for category in categories {
-                    let dot = UIView()
-                    dot.backgroundColor = UIColor(category.color)
-                    dot.layer.cornerRadius = 2.5
-                    dot.translatesAutoresizingMaskIntoConstraints = false
-                    dot.widthAnchor.constraint(equalToConstant: 5).isActive = true
-                    dot.heightAnchor.constraint(equalToConstant: 5).isActive = true
-                    stack.addArrangedSubview(dot)
+                for dot in dots {
+                    let view = UIView()
+                    let color = UIColor(dot.category.color)
+                    if dot.isPersonal {
+                        view.backgroundColor = .clear
+                        view.layer.borderWidth = 1.5
+                        view.layer.borderColor = color.cgColor
+                    } else {
+                        view.backgroundColor = color
+                    }
+                    view.layer.cornerRadius = 2.5
+                    view.translatesAutoresizingMaskIntoConstraints = false
+                    view.widthAnchor.constraint(equalToConstant: 5).isActive = true
+                    view.heightAnchor.constraint(equalToConstant: 5).isActive = true
+                    stack.addArrangedSubview(view)
                 }
                 return stack
             }
@@ -224,7 +245,7 @@ private struct CalendarMonthView: View {
             selectedDay: .now,
             today: .now,
             onSelectDay: { _ in },
-            onOpen: { _ in }
+            actions: CalendarRowActions(onOpen: { _ in })
         )
         .padding(.vertical, 16)
     }

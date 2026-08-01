@@ -125,6 +125,9 @@ struct MirrorStore: Sendable {
                 try MessageAttachmentRecord.deleteAll(db)
                 try MessageStateRecord.deleteAll(db)
                 try CampusEventRecord.deleteAll(db)
+                // The student's own entries go too: the next account to sign
+                // in on this device must not inherit them.
+                try PersonalEventRecord.deleteAll(db)
                 try SyncStateRecord.deleteAll(db)
             }
             log.info("mirror wiped")

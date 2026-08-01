@@ -17,6 +17,7 @@ Evolve by addition only — never repurpose an existing URI.
 | `unes://classes` | Disciplinas / Turmas tab |
 | `unes://messages` | Mensagens tab (inbox) |
 | `unes://me` | Eu tab |
+| `unes://calendar` | Calendário, pushed on the Eu tab (iOS only — Android degrades to a plain open) |
 | `unes://messages/{messageId}` | Message detail |
 | `unes://materials/{materialId}` | Material detail |
 | `unes://materials/discipline/{disciplineId}` | Materials shelf of one discipline |

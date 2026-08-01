@@ -15,6 +15,12 @@ struct DeeplinksTests {
     }
 
     @Test
+    func calendarResolvesToTheCalendarRoute() {
+        #expect(Deeplinks.parse("unes://calendar") == .calendar)
+        #expect(Deeplinks.parse("UNES://Calendar") == .calendar)
+    }
+
+    @Test
     func schemeAndHostAreCaseInsensitiveIdsAreNot() {
         #expect(Deeplinks.parse("UNES://Messages") == .tab(.messages))
         #expect(Deeplinks.parse("unes://messages/AbC") == .message(id: "AbC"))

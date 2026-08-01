@@ -109,6 +109,9 @@ struct AppFeature {
                                 await send(.intentRoute(.classes))
                             case .reauth:
                                 await send(.intentOpenReauth)
+                            case .calendar:
+                                await send(.intentRoute(.me))
+                                await send(.me(.deeplinkOpened(.calendar)))
                             }
                         }
                     }

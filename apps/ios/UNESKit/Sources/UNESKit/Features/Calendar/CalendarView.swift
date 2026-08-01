@@ -23,18 +23,38 @@ struct CalendarView: View {
                     .offset(y: (1 - titleProgress) * 6)
             }
             ToolbarItem(placement: .trailingCompat) {
-                viewModeButton
+                HStack(spacing: 14) {
+                    viewModeButton
+                    addButton
+                }
             }
         }
         .inlineNavigationBar()
         .task { await store.send(.task).finish() }
         .sheet(item: detailBinding) { event in
-            CalendarEventSheet(event: event, today: store.today) {
-                store.send(.detailDismissed)
-            } onAddToCalendar: {
-                store.send(.addToCalendarTapped(event))
-            }
+            CalendarEventSheet(
+                event: event,
+                today: store.today,
+                onClose: { store.send(.detailDismissed) },
+                onAddToCalendar: { store.send(.addToCalendarTapped(event)) },
+                onEdit: { store.send(.editTapped($0)) },
+                onDelete: { store.send(.deleteTapped($0)) }
+            )
         }
+        .sheet(item: $store.scope(state: \.composer, action: \.composer)) { composerStore in
+            CalendarPersonalEventSheet(store: composerStore)
+        }
+        .confirmationDialog($store.scope(state: \.confirmDelete, action: \.confirmDelete))
+    }
+
+    private var rowActions: CalendarRowActions {
+        CalendarRowActions(
+            onOpen: { store.send(.eventTapped($0)) },
+            onEdit: { store.send(.editTapped($0)) },
+            onDelete: { store.send(.deleteTapped($0)) },
+            onAdd: { store.send(.addTapped(day: $0)) },
+            isPersonalScope: store.scopeFilter == .personal
+        )
     }
 
     // MARK: Content
@@ -88,13 +108,18 @@ struct CalendarView: View {
                 .font(.system(size: 40, weight: .bold))
                 .tracking(-1.6)
                 .foregroundStyle(UNESColor.ink)
-            Text(.calendarSubtitle)
+            Text(subtitle)
                 .font(.system(size: 14, weight: .medium))
                 .tracking(-0.14)
                 .foregroundStyle(UNESColor.ink3)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(EdgeInsets(top: 2, leading: 20, bottom: 16, trailing: 20))
+    }
+
+    private var subtitle: LocalizedStringResource {
+        let count = store.upcomingPersonalCount
+        return count > 0 ? .calendarSubtitleWithPersonal(count) : .calendarSubtitle
     }
 
     @ViewBuilder
@@ -105,17 +130,15 @@ struct CalendarView: View {
         } else {
             switch store.viewMode {
             case .agenda:
-                CalendarAgendaList(groups: store.agendaGroups, today: store.today) {
-                    store.send(.eventTapped($0))
-                }
-                .transition(.opacity)
+                CalendarAgendaList(groups: store.agendaGroups, today: store.today, actions: rowActions)
+                    .transition(.opacity)
             case .grid:
                 CalendarMonthGridSection(
                     events: store.filtered,
                     selectedDay: store.selectedDay,
                     today: store.today,
                     onSelectDay: { store.send(.daySelected($0)) },
-                    onOpen: { store.send(.eventTapped($0)) }
+                    actions: rowActions
                 )
                 .transition(.opacity)
             }
@@ -147,6 +170,19 @@ struct CalendarView: View {
                 .contentTransition(.symbolEffect(.replace))
         }
         .accessibilityLabel(store.viewMode == .agenda ? Text(.calendarActionViewMonth) : Text(.calendarActionViewAgenda))
+    }
+
+    private var addButton: some View {
+        Button {
+            store.send(.addTapped(day: store.viewMode == .grid ? store.selectedDay : nil))
+        } label: {
+            Image(systemName: "plus")
+                .font(.system(size: 14, weight: .bold))
+                .foregroundStyle(.white)
+                .frame(width: 30, height: 30)
+                .background(UNESColor.accent, in: Circle())
+        }
+        .accessibilityLabel(Text(.calendarPersonalNewTitle))
     }
 
     /// Faint rose mesh washing down from behind the large title.

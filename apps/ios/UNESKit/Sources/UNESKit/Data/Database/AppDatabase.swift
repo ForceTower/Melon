@@ -230,6 +230,25 @@ private func migrator() -> DatabaseMigrator {
             t.column("syncedAt", .text).notNull()
         }
     }
+    // Personal calendar entries. The only table nothing upstream writes: the
+    // student owns every row, so it has no `semesterId` scope and a re-sync
+    // never touches it. The discipline columns are denormalized on purpose
+    // (see `PersonalEvent.discipline`).
+    migrator.registerMigration("v7") { db in
+        try db.create(table: "personalEvents") { t in
+            t.primaryKey("id", .text)
+            t.column("title", .text).notNull()
+            t.column("start", .text).notNull().indexed()
+            t.column("end", .text)
+            t.column("category", .text).notNull()
+            t.column("disciplineId", .text)
+            t.column("disciplineCode", .text)
+            t.column("disciplineName", .text)
+            t.column("reminderDays", .integer).notNull()
+            t.column("notes", .text).notNull()
+            t.column("createdAt", .text).notNull()
+        }
+    }
     return migrator
 }
 

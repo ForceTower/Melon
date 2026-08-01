@@ -99,22 +99,29 @@ struct MeFeatureTests {
             $0.sessionStore = .inMemory(initial: .preview)
             $0.meRepository.observe = { .finished }
             $0.eventsRepository.calendar = { _ in [] }
+            $0.disciplinesRepository.cached = { _ in nil }
+            $0.personalEventsRepository.observe = { .finished }
+            $0.personalEventsRepository.reconcileReminders = {}
         }
 
+        // The woken screen fans out over concurrent effects, so assert where
+        // they land rather than the order they land in.
+        store.exhaustivity = .off(showSkippedAssertions: false)
         await store.send(.task)
-        await store.receive(.path(.element(id: 0, action: .calendar(.task)))) {
-            var woken = CalendarFeature.State()
-            woken.today = today
-            woken.selectedDay = today
-            $0.path[id: 0] = .calendar(woken)
+        await store.receive(.path(.element(id: 0, action: .calendar(.task))))
+        await store.receive(.path(.element(id: 0, action: .calendar(.eventsLoaded([])))))
+        await store.finish()
+        await store.skipReceivedActions(strict: false)
+
+        // Field-wise rather than whole-state: `CalendarFeature.State` carries
+        // the `@Shared` view mode, which other suites write in parallel.
+        guard case let .calendar(woken)? = store.state.path[id: 0] else {
+            Issue.record("the calendar should still be pushed")
+            return
         }
-        await store.receive(.path(.element(id: 0, action: .calendar(.eventsLoaded([]))))) {
-            var refreshed = CalendarFeature.State()
-            refreshed.today = today
-            refreshed.selectedDay = today
-            refreshed.fetchedAt = Self.referenceDate
-            $0.path[id: 0] = .calendar(refreshed)
-        }
+        #expect(woken.today == today)
+        #expect(woken.selectedDay == today)
+        #expect(woken.fetchedAt == Self.referenceDate)
     }
 
     @Test

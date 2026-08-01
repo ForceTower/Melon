@@ -120,6 +120,7 @@ struct MeFeature {
         /// A `unes://` landing resolved by `AppFeature` — the hub is the
         /// fallback floor when the target can't be fetched.
         enum Deeplink: Equatable {
+            case calendar
             case materialsHub
             case material(Material)
             case materialsDiscipline(MaterialsDiscipline)
@@ -210,13 +211,16 @@ struct MeFeature {
                 // notification tap lands in a predictable place even when
                 // the tab already had depth.
                 var path = StackState<Path.State>()
-                path.append(.materials(MaterialsFeature.State()))
                 switch deeplink {
+                case .calendar:
+                    path.append(.calendar(CalendarFeature.State()))
                 case .materialsHub:
-                    break
+                    path.append(.materials(MaterialsFeature.State()))
                 case let .material(material):
+                    path.append(.materials(MaterialsFeature.State()))
                     path.append(.materialsDetail(MaterialsDetailFeature.State(material: material)))
                 case let .materialsDiscipline(discipline):
+                    path.append(.materials(MaterialsFeature.State()))
                     path.append(.materialsList(MaterialsListFeature.State(discipline: discipline)))
                 }
                 state.path = path

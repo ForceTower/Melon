@@ -74,6 +74,7 @@ public enum Deeplinks {
         case "messages": .tab(.messages)
         case "me": .tab(.me)
         case "reauth": .reauth
+        case "calendar": .calendar
         default: nil
         }
     }

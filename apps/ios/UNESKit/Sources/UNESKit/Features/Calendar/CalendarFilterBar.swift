@@ -1,19 +1,23 @@
 import SwiftUI
 
-/// The HIG segmented control over categories — equal-width pills on the
-/// translucent gray track, each led by its category dot.
+/// The HIG segmented control over categories — pills on the translucent gray
+/// track, each led by its category dot. The track scrolls: the personal kinds
+/// push it past what fits at once.
 struct CalendarCategorySegments: View {
     var selected: CalendarCategoryFilter
     var onSelect: (CalendarCategoryFilter) -> Void
 
     var body: some View {
-        HStack(spacing: 3) {
-            ForEach(CalendarCategoryFilter.allCases, id: \.self) { filter in
-                segment(filter)
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 3) {
+                ForEach(CalendarCategoryFilter.allCases, id: \.self) { filter in
+                    segment(filter)
+                }
             }
+            .padding(3)
         }
-        .padding(3)
         .background(Color(hex: 0x787880, opacity: 0.16), in: RoundedRectangle(cornerRadius: 13, style: .continuous))
+        .clipShape(RoundedRectangle(cornerRadius: 13, style: .continuous))
     }
 
     private func segment(_ filter: CalendarCategoryFilter) -> some View {
@@ -36,7 +40,7 @@ struct CalendarCategorySegments: View {
                     .lineLimit(1)
             }
             .padding(.vertical, 7)
-            .frame(maxWidth: .infinity)
+            .padding(.horizontal, 13)
             .background {
                 if active {
                     RoundedRectangle(cornerRadius: 10, style: .continuous)

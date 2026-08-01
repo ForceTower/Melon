@@ -16,6 +16,8 @@ enum IntentRoute: Equatable, Sendable {
     /// `unes://reauth` — the credentials-invalid push. Lands on Hoje and opens
     /// the portal-password sheet directly.
     case reauth
+    /// `unes://calendar` — Calendário, pushed on the Eu tab.
+    case calendar
 
     /// Log label — never carries ids or names (remote log).
     var kindLabel: String {
@@ -27,6 +29,7 @@ enum IntentRoute: Equatable, Sendable {
         case .materialsDiscipline: "materialsDiscipline"
         case .classesDiscipline: "classesDiscipline"
         case .reauth: "reauth"
+        case .calendar: "calendar"
         }
     }
 }

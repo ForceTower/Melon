@@ -32,7 +32,7 @@ enum WatchDeeplinkResolver {
     static func needsSnapshot(_ route: IntentRoute) -> Bool {
         switch route {
         case .message, .classesDiscipline: true
-        case .tab, .discipline, .material, .materialsDiscipline, .reauth: false
+        case .tab, .discipline, .material, .materialsDiscipline, .reauth, .calendar: false
         }
     }
 
@@ -56,7 +56,7 @@ enum WatchDeeplinkResolver {
         // from a URL and has no Spotlight/App Intents source here. Re-auth
         // needs a password field the watch doesn't have — open Hoje and let
         // the phone carry it.
-        case .discipline, .material, .materialsDiscipline, .reauth: .root
+        case .discipline, .material, .materialsDiscipline, .reauth, .calendar: .root
         }
     }
 }
