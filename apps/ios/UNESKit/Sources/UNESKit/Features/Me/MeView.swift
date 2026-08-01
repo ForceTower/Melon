@@ -54,6 +54,12 @@ struct MeView: View {
                 MaterialsDetailView(store: store)
             case let .materialsSaved(store):
                 MaterialsSavedView(store: store)
+            case let .library(store):
+                LibraryView(store: store)
+            case let .libraryResults(store):
+                LibraryResultsView(store: store)
+            case let .libraryWork(store):
+                LibraryWorkDetailView(store: store)
             }
         }
         .task { await store.send(.task).finish() }

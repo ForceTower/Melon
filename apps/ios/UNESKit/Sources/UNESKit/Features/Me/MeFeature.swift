@@ -4,7 +4,7 @@ import Foundation
 /// The pinned shortcuts — most push their flow; the document ones
 /// (comprovante / histórico) open the request sheet instead.
 enum MeShortcut: String, Equatable, Sendable, Identifiable, CaseIterable {
-    case enrollment, calendar, countdown, certificate, history, paradoxo, materials, retrospective
+    case enrollment, calendar, countdown, certificate, history, paradoxo, materials, library, retrospective
 
     var id: String { rawValue }
 }
@@ -36,6 +36,7 @@ struct MeFeature {
         @Shared(.appStorage(FeatureFlags.historyEnabledKey)) var isHistoryEnabled = false
         @Shared(.appStorage(FeatureFlags.paradoxoEnabledKey)) var isParadoxoEnabled = false
         @Shared(.appStorage(FeatureFlags.materialsEnabledKey)) var isMaterialsEnabled = false
+        @Shared(.appStorage(FeatureFlags.libraryEnabledKey)) var isLibraryEnabled = false
         @Shared(.appStorage(FeatureFlags.retrospectiveEnabledKey)) var isRetrospectiveEnabled = false
         /// The semester whose Retrospectiva window the mirror says is open.
         var retrospectiveSemester: String?
@@ -53,6 +54,7 @@ struct MeFeature {
                 case .history: isHistoryEnabled
                 case .paradoxo: isParadoxoEnabled
                 case .materials: isMaterialsEnabled
+                case .library: isLibraryEnabled
                 case .retrospective: isRetrospectiveEnabled && retrospectiveSemester != nil
                 case .calendar, .countdown: true
                 }
@@ -92,6 +94,9 @@ struct MeFeature {
         case materialsList(MaterialsListFeature)
         case materialsDetail(MaterialsDetailFeature)
         case materialsSaved(MaterialsSavedFeature)
+        case library(LibraryFeature)
+        case libraryResults(LibraryResultsFeature)
+        case libraryWork(LibraryWorkDetailFeature)
     }
 
     enum Action: Equatable {
@@ -191,6 +196,8 @@ struct MeFeature {
                     state.path.append(.paradoxo(ParadoxoFeature.State()))
                 case .materials:
                     state.path.append(.materials(MaterialsFeature.State()))
+                case .library:
+                    state.path.append(.library(LibraryFeature.State()))
                 case .retrospective:
                     // DEBUG builds surface the shortcut even outside the
                     // window; fall back to the newest mirrored semester code.
@@ -312,7 +319,8 @@ struct MeFeature {
                     routeSettings(pathAction, state: &state),
                     routeEnrollment(pathAction, state: &state),
                     routeParadoxo(pathAction, state: &state),
-                    routeMaterials(pathAction, state: &state)
+                    routeMaterials(pathAction, state: &state),
+                    routeLibrary(pathAction, state: &state)
                 )
 
             case .document, .path, .delegate:
@@ -435,6 +443,28 @@ struct MeFeature {
         return .none
     }
 
+    /// Biblioteca screens all push onto the host stack: search entry →
+    /// results → work, plus subject/author taps opening fresh result pushes.
+    private func routeLibrary(_ action: Path.Action, state: inout State) -> Effect<Action> {
+        switch action {
+        case let .library(.delegate(.openResults(query, scope, facets))):
+            state.path.append(.libraryResults(LibraryResultsFeature.State(
+                query: query, scope: scope, facets: facets
+            )))
+
+        case let .library(.delegate(.openWork(work))),
+             let .libraryResults(.delegate(.openWork(work))):
+            state.path.append(.libraryWork(LibraryWorkDetailFeature.State(work: work)))
+
+        case let .libraryWork(.delegate(.search(query, scope))):
+            state.path.append(.libraryResults(LibraryResultsFeature.State(query: query, scope: scope)))
+
+        default:
+            break
+        }
+        return .none
+    }
+
     private func wakeCalendar(in state: State) -> [Effect<Action>] {
         state.path.ids.compactMap { id in
             guard case .calendar = state.path[id: id] else { return nil }
@@ -504,6 +534,7 @@ extension MeShortcut {
         case .history: "academic_history"
         case .paradoxo: "paradoxo"
         case .materials: "materials"
+        case .library: "library"
         case .retrospective: "retrospective"
         }
     }

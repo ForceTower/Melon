@@ -16,6 +16,8 @@ public enum FeatureFlags {
     public static let paradoxoEnabledKey = "flag_enable_paradoxo"
     /// Gates the "Materiais" hub entry — the `enable_materials` key.
     public static let materialsEnabledKey = "flag_enable_materials"
+    /// Gates the "Biblioteca" hub entry — the `enable_library` key.
+    public static let libraryEnabledKey = "flag_enable_library"
     /// Gates the featured campus-event card on Home — the
     /// `enable_campus_event` key.
     public static let campusEventEnabledKey = "flag_enable_campus_event"
@@ -42,6 +44,7 @@ public enum FeatureFlags {
         historyEnabled: Bool,
         paradoxoEnabled: Bool,
         materialsEnabled: Bool,
+        libraryEnabled: Bool,
         campusEventEnabled: Bool,
         evaluationRemindersEnabled: Bool,
         retrospectiveEnabled: Bool,
@@ -54,6 +57,7 @@ public enum FeatureFlags {
         defaults.set(historyEnabled, forKey: historyEnabledKey)
         defaults.set(paradoxoEnabled, forKey: paradoxoEnabledKey)
         defaults.set(materialsEnabled, forKey: materialsEnabledKey)
+        defaults.set(libraryEnabled, forKey: libraryEnabledKey)
         defaults.set(campusEventEnabled, forKey: campusEventEnabledKey)
         defaults.set(evaluationRemindersEnabled, forKey: evaluationRemindersEnabledKey)
         defaults.set(retrospectiveEnabled, forKey: retrospectiveEnabledKey)
@@ -63,6 +67,7 @@ public enum FeatureFlags {
         feature flags updated enrollment=\(enrollmentEnabled) \
         certificate=\(certificateEnabled) history=\(historyEnabled) \
         paradoxo=\(paradoxoEnabled) materials=\(materialsEnabled) \
+        library=\(libraryEnabled) \
         campusEvent=\(campusEventEnabled) \
         evaluationReminders=\(evaluationRemindersEnabled) \
         retrospective=\(retrospectiveEnabled) \

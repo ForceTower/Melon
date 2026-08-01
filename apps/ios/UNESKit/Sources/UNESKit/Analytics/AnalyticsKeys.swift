@@ -36,6 +36,10 @@ enum Screens {
     static let materialsDetail = "materials_detail"
     static let materialsSaved = "materials_saved"
 
+    static let library = "library"
+    static let libraryResults = "library_results"
+    static let libraryWork = "library_work"
+
     static let retrospective = "retrospective"
     static let paradoxo = "paradoxo"
     static let paradoxoDiscipline = "paradoxo_discipline"
@@ -71,6 +75,7 @@ enum ContentTypes {
     static let activity = "activity"
 
     static let material = "material"
+    static let libraryWork = "library_work"
     static let paradoxoEntity = "paradoxo_entity"
     static let paradoxoExplore = "paradoxo_explore"
     static let offer = "offer"

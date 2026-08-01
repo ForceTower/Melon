@@ -107,6 +107,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
             historyEnabled: remoteConfig.configValue(forKey: "enable_academic_history").boolValue,
             paradoxoEnabled: remoteConfig.configValue(forKey: "enable_paradoxo").boolValue,
             materialsEnabled: remoteConfig.configValue(forKey: "enable_materials").boolValue,
+            libraryEnabled: remoteConfig.configValue(forKey: "enable_library").boolValue,
             campusEventEnabled: remoteConfig.configValue(forKey: "enable_campus_event").boolValue,
             evaluationRemindersEnabled: remoteConfig.configValue(forKey: "enable_evaluation_reminders").boolValue,
             retrospectiveEnabled: remoteConfig.configValue(forKey: "enable_retrospective").boolValue,
