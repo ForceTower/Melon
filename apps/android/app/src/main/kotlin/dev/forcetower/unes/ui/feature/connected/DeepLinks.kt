@@ -20,6 +20,10 @@ internal sealed interface DeepLinkTarget {
     /** `unes://reauth` — the credentials-invalid push. Lands on Hoje, which
      *  opens the portal-password sheet. */
     data object Reauth : DeepLinkTarget
+
+    /** `unes://calendar` — Calendário, pushed on the Eu tab. Carried by the
+     *  personal-event reminder notifications. */
+    data object Calendar : DeepLinkTarget
 }
 
 // Hand-rolled instead of `android.net.Uri` so it stays a pure JVM function
@@ -35,6 +39,7 @@ internal fun parseDeepLink(url: String): DeepLinkTarget? {
     val rest = segments.drop(1)
     return when {
         host == "reauth" && rest.isEmpty() -> DeepLinkTarget.Reauth
+        host == "calendar" && rest.isEmpty() -> DeepLinkTarget.Calendar
         rest.isEmpty() -> tabFor(host)?.let(DeepLinkTarget::Tab)
         host == "messages" && rest.size == 1 -> DeepLinkTarget.Message(rest[0])
         host == "materials" && rest.size == 2 && rest[0].equals("discipline", ignoreCase = true) ->
@@ -63,6 +68,10 @@ internal fun ConnectedNavigator.open(target: DeepLinkTarget) {
         // Hoje watches the same persisted flag the banner does and opens the
         // sheet from there, so landing on the tab is the whole job here.
         DeepLinkTarget.Reauth -> selectTab(ConnectedTab.Overview)
+        DeepLinkTarget.Calendar -> setStack(
+            ConnectedTab.Me,
+            listOf(ConnectedRoute.Me, ConnectedRoute.Calendar),
+        )
         is DeepLinkTarget.Message -> setStack(
             ConnectedTab.Messages,
             listOf(ConnectedRoute.MessagesList, ConnectedRoute.MessageDetail(target.id)),

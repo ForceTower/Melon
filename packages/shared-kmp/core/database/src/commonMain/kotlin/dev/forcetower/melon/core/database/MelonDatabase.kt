@@ -1,5 +1,6 @@
 package dev.forcetower.melon.core.database
 
+import androidx.room.AutoMigration
 import androidx.room.ConstructedBy
 import androidx.room.Database
 import androidx.room.RoomDatabase
@@ -9,6 +10,7 @@ import dev.forcetower.melon.core.database.dao.CalendarEventDao
 import dev.forcetower.melon.core.database.dao.CredentialsDao
 import dev.forcetower.melon.core.database.dao.MessageDao
 import dev.forcetower.melon.core.database.dao.PendingMutationDao
+import dev.forcetower.melon.core.database.dao.PersonalEventDao
 import dev.forcetower.melon.core.database.dao.SemesterDao
 import dev.forcetower.melon.core.database.dao.SettingsDao
 import dev.forcetower.melon.core.database.dao.StudentDao
@@ -32,6 +34,7 @@ import dev.forcetower.melon.core.database.entity.MessageEntity
 import dev.forcetower.melon.core.database.entity.MessageScopeEntity
 import dev.forcetower.melon.core.database.entity.MessageStateEntity
 import dev.forcetower.melon.core.database.entity.PendingMutationEntity
+import dev.forcetower.melon.core.database.entity.PersonalEventEntity
 import dev.forcetower.melon.core.database.entity.SemesterEntity
 import dev.forcetower.melon.core.database.entity.SettingsEntity
 import dev.forcetower.melon.core.database.entity.StudentClassEntity
@@ -70,8 +73,13 @@ import dev.forcetower.melon.core.database.entity.UserSettingsEntity
         SyncStateEntity::class,
         PendingMutationEntity::class,
         AcademicCalendarEventEntity::class,
+        PersonalEventEntity::class,
     ],
-    version = 8,
+    version = 9,
+    // Adding `PersonalEvent` is purely additive, so Room can generate the
+    // migration from the exported schemas — the student's own entries survive
+    // the upgrade instead of falling through to the destructive fallback.
+    autoMigrations = [AutoMigration(from = 8, to = 9)],
 )
 @ConstructedBy(MelonDatabaseConstructor::class)
 abstract class MelonDatabase : RoomDatabase() {
@@ -80,6 +88,7 @@ abstract class MelonDatabase : RoomDatabase() {
     abstract fun semesterDao(): SemesterDao
     abstract fun academicDao(): AcademicDao
     abstract fun calendarEventDao(): CalendarEventDao
+    abstract fun personalEventDao(): PersonalEventDao
     abstract fun messageDao(): MessageDao
     abstract fun settingsDao(): SettingsDao
     abstract fun userSettingsDao(): UserSettingsDao

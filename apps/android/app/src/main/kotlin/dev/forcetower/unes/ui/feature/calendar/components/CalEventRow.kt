@@ -2,6 +2,8 @@ package dev.forcetower.unes.ui.feature.calendar.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,12 +15,21 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -37,6 +48,7 @@ import dev.forcetower.unes.ui.feature.calendar.CalendarEvent
 import dev.forcetower.unes.ui.feature.calendar.CalendarFormat
 import dev.forcetower.unes.ui.feature.calendar.CalendarMath
 import dev.forcetower.unes.ui.feature.calendar.CalendarStatus
+import dev.forcetower.unes.ui.feature.calendar.PersonalEntry
 import dev.forcetower.unes.ui.feature.calendar.color
 import dev.forcetower.unes.ui.feature.calendar.icon
 import java.util.Locale
@@ -45,12 +57,15 @@ import java.util.Locale
 // list: date gutter (agenda only) + filled category tile + eyebrow / title /
 // countdown + trailing chevron. Tapping opens the event sheet. Mirrors
 // `mkEvent` rows in the dc `CalendarScreen`.
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 internal fun CalEventRow(
     event: CalendarEvent,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     showDate: Boolean = true,
+    onEdit: (PersonalEntry) -> Unit = {},
+    onDelete: (PersonalEntry) -> Unit = {},
 ) {
     val category = remember(event) { CalendarMath.categorize(event) }
     val status = remember(event) { CalendarMath.status(event) }
@@ -58,12 +73,22 @@ internal fun CalEventRow(
     val ink = MaterialTheme.colorScheme.onBackground
     val ink3 = MaterialTheme.colorScheme.onSurfaceVariant
     val ink4 = MaterialTheme.colorScheme.outlineVariant
+    val personal = event.personal
+    var menuOpen by remember(event.id) { mutableStateOf(false) }
 
     Surface(
-        onClick = onClick,
         modifier = modifier
             .fillMaxWidth()
-            .alpha(if (status == CalendarStatus.Past) 0.5f else 1f),
+            .alpha(if (status == CalendarStatus.Past) 0.5f else 1f)
+            .clip(RoundedCornerShape(20.dp))
+            .combinedClickable(
+                onClick = onClick,
+                onLongClick = if (personal != null) {
+                    { menuOpen = true }
+                } else {
+                    null
+                },
+            ),
         shape = RoundedCornerShape(20.dp),
         color = MaterialTheme.melon.surface.card,
         border = BorderStroke(1.dp, MaterialTheme.melon.surface.line),
@@ -91,11 +116,31 @@ internal fun CalEventRow(
                         ),
                         color = accent,
                     )
-                    Text(
-                        text = "· " + stringResource(event.scope.labelRes),
-                        style = MaterialTheme.typography.labelSmall.copy(fontSize = 11.sp),
-                        color = ink4,
-                    )
+                    val discipline = personal?.discipline
+                    when {
+                        discipline != null -> Text(
+                            text = discipline.code,
+                            style = MaterialTheme.typography.labelSmall.copy(
+                                fontSize = 10.5.sp,
+                                fontWeight = FontWeight.Bold,
+                            ),
+                            color = accent,
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(6.dp))
+                                .background(accent.copy(alpha = 0.14f))
+                                .padding(horizontal = 6.dp, vertical = 2.dp),
+                        )
+                        personal != null -> Text(
+                            text = "· " + stringResource(R.string.calendar_personal_badge),
+                            style = MaterialTheme.typography.labelSmall.copy(fontSize = 11.sp),
+                            color = ink4,
+                        )
+                        else -> Text(
+                            text = "· " + stringResource(event.scope.labelRes),
+                            style = MaterialTheme.typography.labelSmall.copy(fontSize = 11.sp),
+                            color = ink4,
+                        )
+                    }
                 }
                 Text(
                     text = event.displayDescription,
@@ -117,12 +162,28 @@ internal fun CalEventRow(
                     modifier = Modifier.padding(top = 3.dp),
                 )
             }
-            Icon(
-                imageVector = Icons.Filled.ChevronRight,
-                contentDescription = null,
-                tint = ink4,
-                modifier = Modifier.size(18.dp),
-            )
+            Box {
+                Icon(
+                    imageVector = if (personal != null) Icons.Filled.Edit else Icons.Filled.ChevronRight,
+                    contentDescription = null,
+                    tint = ink4,
+                    modifier = Modifier.size(18.dp),
+                )
+                if (personal != null) {
+                    DropdownMenu(expanded = menuOpen, onDismissRequest = { menuOpen = false }) {
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.calendar_personal_edit_action)) },
+                            leadingIcon = { Icon(Icons.Filled.Edit, contentDescription = null) },
+                            onClick = { menuOpen = false; onEdit(personal) },
+                        )
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.calendar_personal_delete_action)) },
+                            leadingIcon = { Icon(Icons.Filled.Delete, contentDescription = null) },
+                            onClick = { menuOpen = false; onDelete(personal) },
+                        )
+                    }
+                }
+            }
         }
     }
 }
@@ -179,18 +240,31 @@ internal fun CategoryTile(
     val category = remember(event) { CalendarMath.categorize(event) }
     val accent = category.color()
     val shape = RoundedCornerShape(cornerRadius)
+    // The student's own entries wear a tinted tile so a glance separates what
+    // they added from what the university did.
+    val tinted = event.isPersonal
     Box(
         modifier = modifier
             .size(size)
-            .shadow(elevation = 4.dp, shape = shape, ambientColor = accent, spotColor = accent)
-            .clip(shape)
-            .background(accent),
+            .then(
+                if (tinted) {
+                    Modifier
+                        .clip(shape)
+                        .background(accent.copy(alpha = 0.14f))
+                        .border(1.dp, accent.copy(alpha = 0.35f), shape)
+                } else {
+                    Modifier
+                        .shadow(elevation = 4.dp, shape = shape, ambientColor = accent, spotColor = accent)
+                        .clip(shape)
+                        .background(accent)
+                },
+            ),
         contentAlignment = Alignment.Center,
     ) {
         Icon(
             imageVector = category.icon(),
             contentDescription = null,
-            tint = MaterialTheme.melon.fixed.onHero,
+            tint = if (tinted) accent else MaterialTheme.melon.fixed.onHero,
             modifier = Modifier.size(iconSize),
         )
     }

@@ -17,6 +17,7 @@ import dev.forcetower.unes.di.ApplicationScope
 import dev.forcetower.unes.firebase.FeatureFlags
 import dev.forcetower.unes.firebase.PushRegistrar
 import dev.forcetower.unes.reminders.EvaluationReminderScheduler
+import dev.forcetower.unes.reminders.PersonalEventReminderScheduler
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -43,6 +44,9 @@ internal class MelonApp : Application() {
 
     @Inject
     lateinit var evaluationReminders: EvaluationReminderScheduler
+
+    @Inject
+    lateinit var personalEventReminders: PersonalEventReminderScheduler
 
     @Inject
     lateinit var pushRegistrar: PushRegistrar
@@ -106,6 +110,7 @@ internal class MelonApp : Application() {
         // App-lifetime like the analytics collector: also runs when a boot
         // broadcast spins the process up, so alarms re-anchor to fresh data.
         evaluationReminders.start()
+        personalEventReminders.start()
         // Process-wide (not per-Activity) so time-derived KMP flows recompute
         // "today" the instant the app resumes, mirroring iOS `.sceneActivated`.
         // Every app open also re-sends the push registration, so the backend

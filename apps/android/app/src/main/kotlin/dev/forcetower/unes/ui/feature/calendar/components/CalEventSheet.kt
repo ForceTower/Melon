@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Event
 import androidx.compose.material.icons.filled.PushPin
@@ -48,6 +50,7 @@ import dev.forcetower.unes.ui.feature.calendar.CalendarFormat
 import dev.forcetower.unes.ui.feature.calendar.CalendarMath
 import dev.forcetower.unes.ui.feature.calendar.CalendarStatus
 import dev.forcetower.unes.ui.feature.calendar.CountdownToken
+import dev.forcetower.unes.ui.feature.calendar.PersonalEntry
 import dev.forcetower.unes.ui.feature.calendar.color
 import java.time.ZoneId
 import java.util.Locale
@@ -62,6 +65,8 @@ internal fun CalEventSheet(
     event: CalendarEvent,
     onDismiss: () -> Unit,
     onAddToCalendar: (CalendarEvent) -> Unit = {},
+    onEdit: (PersonalEntry) -> Unit = {},
+    onDelete: (PersonalEntry) -> Unit = {},
 ) {
     val category = remember(event) { CalendarMath.categorize(event) }
     val accent = category.color()
@@ -78,12 +83,32 @@ internal fun CalEventSheet(
             CountdownCard(event = event)
             Spacer(modifier = Modifier.height(10.dp))
             MetaGrid(event = event)
+            val personal = event.personal
+            if (personal != null && personal.notes.isNotBlank()) {
+                Spacer(modifier = Modifier.height(10.dp))
+                NotesCard(notes = personal.notes)
+            }
+            if (personal?.discipline != null) {
+                Spacer(modifier = Modifier.height(10.dp))
+                DisciplineCard(name = personal.discipline.name, accent = accent)
+            }
             if (event.fixed) {
                 Spacer(modifier = Modifier.height(10.dp))
                 FixedBadge()
             }
             Spacer(modifier = Modifier.height(18.dp))
-            AddToCalendarButton(event = event, accent = accent, onAddToCalendar = onAddToCalendar)
+            // The student's own entries get edit + delete where the
+            // institutional ones get the system-calendar handoff.
+            if (personal != null) {
+                PersonalActions(
+                    entry = personal,
+                    accent = accent,
+                    onEdit = onEdit,
+                    onDelete = onDelete,
+                )
+            } else {
+                AddToCalendarButton(event = event, accent = accent, onAddToCalendar = onAddToCalendar)
+            }
         }
     }
 }
@@ -206,12 +231,23 @@ private fun MetaGrid(event: CalendarEvent) {
         CalendarStatus.Future -> eventCountdownLabel(event)
             .replaceFirstChar { it.titlecase(Locale.ROOT) }
     }
+    val personal = event.personal
     val cells = listOf(
         stringResource(R.string.calendar_sheet_when) to CalendarFormat.dateRange(event.start, event.end),
         stringResource(R.string.calendar_sheet_duration) to duration,
-        stringResource(R.string.calendar_sheet_scope) to stringResource(event.scope.labelRes),
-        stringResource(R.string.calendar_sheet_status) to situation,
-    )
+    ) + if (personal != null) {
+        // The class tag and reminder say more here than âmbito and situação.
+        listOf(
+            stringResource(R.string.calendar_personal_meta_discipline) to
+                (personal.discipline?.code ?: stringResource(R.string.calendar_personal_discipline_none)),
+            stringResource(R.string.calendar_personal_meta_reminder) to stringResource(personal.reminder.labelRes),
+        )
+    } else {
+        listOf(
+            stringResource(R.string.calendar_sheet_scope) to stringResource(event.scope.labelRes),
+            stringResource(R.string.calendar_sheet_status) to situation,
+        )
+    }
     Column(verticalArrangement = Arrangement.spacedBy(9.dp)) {
         cells.chunked(2).forEach { rowCells ->
             Row(horizontalArrangement = Arrangement.spacedBy(9.dp)) {
@@ -321,5 +357,103 @@ private fun AddToCalendarButton(
                 fontWeight = FontWeight.Bold,
             ),
         )
+    }
+}
+
+@Composable
+private fun NotesCard(notes: String) {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(14.dp),
+        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+    ) {
+        Text(
+            text = notes,
+            style = MaterialTheme.typography.bodyMedium.copy(fontSize = 13.5.sp, lineHeight = 19.sp),
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
+        )
+    }
+}
+
+@Composable
+private fun DisciplineCard(name: String, accent: androidx.compose.ui.graphics.Color) {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(14.dp),
+        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(9.dp)
+                    .clip(CircleShape)
+                    .background(accent),
+            )
+            Text(
+                text = name,
+                style = MaterialTheme.typography.titleSmall.copy(fontSize = 13.5.sp),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    }
+}
+
+@Composable
+private fun PersonalActions(
+    entry: PersonalEntry,
+    accent: androidx.compose.ui.graphics.Color,
+    onEdit: (PersonalEntry) -> Unit,
+    onDelete: (PersonalEntry) -> Unit,
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Surface(
+            onClick = { onEdit(entry) },
+            modifier = Modifier.weight(1f),
+            shape = RoundedCornerShape(16.dp),
+            color = accent,
+        ) {
+            Row(
+                modifier = Modifier.padding(vertical = 13.dp),
+                horizontalArrangement = Arrangement.spacedBy(7.dp, Alignment.CenterHorizontally),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Edit,
+                    contentDescription = null,
+                    tint = MaterialTheme.melon.fixed.onHero,
+                    modifier = Modifier.size(18.dp),
+                )
+                Text(
+                    text = stringResource(R.string.calendar_personal_edit_action),
+                    style = MaterialTheme.typography.titleSmall.copy(fontSize = 14.sp),
+                    color = MaterialTheme.melon.fixed.onHero,
+                )
+            }
+        }
+        Surface(
+            onClick = { onDelete(entry) },
+            shape = RoundedCornerShape(16.dp),
+            color = MaterialTheme.colorScheme.surfaceContainerHigh,
+        ) {
+            Box(
+                modifier = Modifier.padding(horizontal = 18.dp, vertical = 13.dp),
+                contentAlignment = Alignment.Center,
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Delete,
+                    contentDescription = stringResource(R.string.calendar_personal_delete_action),
+                    tint = MaterialTheme.melon.status.bad,
+                    modifier = Modifier.size(20.dp),
+                )
+            }
+        }
     }
 }

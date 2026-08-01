@@ -19,7 +19,11 @@ import dev.forcetower.melon.feature.auth.domain.usecase.LoginUseCase
 import dev.forcetower.melon.feature.auth.domain.usecase.RegisterPasskeyUseCase
 import dev.forcetower.melon.feature.auth.domain.usecase.RenamePasskeyUseCase
 import dev.forcetower.melon.feature.calendar.domain.usecase.ObserveActiveSemesterCodeUseCase
+import dev.forcetower.melon.feature.calendar.domain.usecase.DeletePersonalEventUseCase
 import dev.forcetower.melon.feature.calendar.domain.usecase.ObserveCalendarEventsUseCase
+import dev.forcetower.melon.feature.calendar.domain.usecase.ObservePersonalEventsUseCase
+import dev.forcetower.melon.feature.calendar.domain.usecase.ReadPersonalEventsUseCase
+import dev.forcetower.melon.feature.calendar.domain.usecase.SavePersonalEventUseCase
 import dev.forcetower.melon.feature.campusevent.domain.usecase.ClearCampusEventUseCase
 import dev.forcetower.melon.feature.campusevent.domain.usecase.ObserveCampusEventUseCase
 import dev.forcetower.melon.feature.campusevent.domain.usecase.RefreshCampusEventUseCase
@@ -174,6 +178,13 @@ interface UmbrellaGraph {
     // agenda, plus the active-semester code that powers the eyebrow label.
     val observeCalendarEventsUseCase: ObserveCalendarEventsUseCase
     val observeActiveSemesterCodeUseCase: ObserveActiveSemesterCodeUseCase
+
+    // The student's own entries, which share that timeline. Android-only
+    // today: iOS keeps its copy in GRDB.
+    val observePersonalEventsUseCase: ObservePersonalEventsUseCase
+    val readPersonalEventsUseCase: ReadPersonalEventsUseCase
+    val savePersonalEventUseCase: SavePersonalEventUseCase
+    val deletePersonalEventUseCase: DeletePersonalEventUseCase
 
     // Eu (Me) reactive surface — emits the hero identity, semester strip data,
     // CR/hours rollup, and the closest upcoming evaluation as one snapshot.

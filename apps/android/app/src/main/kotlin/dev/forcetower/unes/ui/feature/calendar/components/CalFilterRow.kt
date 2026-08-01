@@ -23,37 +23,77 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.forcetower.unes.designsystem.components.MelonSegmentedRow
+import androidx.compose.foundation.clickable
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import dev.forcetower.unes.designsystem.theme.melon
 import dev.forcetower.unes.ui.feature.calendar.CalendarCategory
 import dev.forcetower.unes.ui.feature.calendar.CalendarCategoryFilter
 import dev.forcetower.unes.ui.feature.calendar.CalendarScopeFilter
 import dev.forcetower.unes.ui.feature.calendar.color
 
-// Full-width segmented control for the category filter — the shared design
-// system track/thumb recipe, each category option carrying its color dot.
-// Mirrors the dc segmented row.
+// Segmented control for the category filter, each option carrying its color
+// dot. Same track/thumb recipe as `MelonSegmentedRow`, but content-sized and
+// horizontally scrolling: the student's own kinds push the row past what fits
+// at equal widths on a phone.
 @Composable
 internal fun CalCategorySegmented(
     active: CalendarCategoryFilter,
     onChange: (CalendarCategoryFilter) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val options = CalendarCategoryFilter.entries.toList()
-    val labels = options.associateWith { stringResource(it.labelRes) }
     val dots = mapOf(
         CalendarCategoryFilter.Deadline to CalendarCategory.Deadline.color(),
         CalendarCategoryFilter.Exam to CalendarCategory.Exam.color(),
+        CalendarCategoryFilter.Task to CalendarCategory.Task.color(),
+        CalendarCategoryFilter.Study to CalendarCategory.Study.color(),
         CalendarCategoryFilter.Holiday to CalendarCategory.Holiday.color(),
     )
-    MelonSegmentedRow(
-        options = options,
-        selected = active,
-        onSelect = onChange,
-        label = { filter -> labels.getValue(filter) },
-        dot = { filter, _ -> dots[filter] },
-        modifier = modifier,
-    )
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(14.dp))
+            .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+            .horizontalScroll(rememberScrollState())
+            .padding(3.dp),
+        horizontalArrangement = Arrangement.spacedBy(3.dp),
+    ) {
+        CalendarCategoryFilter.entries.forEach { filter ->
+            val isActive = active == filter
+            val shape = RoundedCornerShape(11.dp)
+            Row(
+                modifier = Modifier
+                    .then(if (isActive) Modifier.shadow(1.dp, shape) else Modifier)
+                    .clip(shape)
+                    .background(if (isActive) MaterialTheme.melon.surface.card else Color.Transparent)
+                    .clickable { onChange(filter) }
+                    .padding(horizontal = 13.dp, vertical = 7.dp),
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                dots[filter]?.let { dot ->
+                    Box(
+                        modifier = Modifier
+                            .size(8.dp)
+                            .clip(CircleShape)
+                            .background(dot),
+                    )
+                }
+                Text(
+                    text = stringResource(filter.labelRes),
+                    style = MaterialTheme.typography.labelMedium.copy(
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.SemiBold,
+                    ),
+                    color = if (isActive) {
+                        MaterialTheme.colorScheme.onBackground
+                    } else {
+                        MaterialTheme.colorScheme.onSurfaceVariant
+                    },
+                )
+            }
+        }
+    }
 }
 
 // Horizontally-scrolling scope pills: active = filled ink, inactive = outlined

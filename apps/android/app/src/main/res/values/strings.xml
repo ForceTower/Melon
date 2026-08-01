@@ -1814,4 +1814,58 @@
     <string name="enrollment_success_allows">aceitam troca</string>
     <string name="enrollment_success_done">Concluir</string>
     <!-- endregion -->
+
+    <!-- region Calendar · Personal events -->
+    <string name="calendar_personal_category_task">Entrega</string>
+    <string name="calendar_personal_category_exam">Prova</string>
+    <string name="calendar_personal_category_study">Estudo</string>
+    <string name="calendar_personal_category_life">Pessoal</string>
+    <string name="calendar_filter_category_tasks">Entregas</string>
+    <string name="calendar_filter_category_study">Estudo</string>
+    <string name="calendar_filter_scope_personal">Meus</string>
+    <string name="calendar_personal_badge">meu</string>
+    <string name="calendar_personal_new_title">Novo evento</string>
+    <string name="calendar_personal_edit_title">Editar evento</string>
+    <string name="calendar_personal_add_action">Adicionar</string>
+    <string name="calendar_personal_add_label">Novo evento</string>
+    <string name="calendar_personal_save_action">Salvar</string>
+    <string name="calendar_personal_cancel_action">Cancelar</string>
+    <string name="calendar_personal_edit_action">Editar</string>
+    <string name="calendar_personal_delete_action">Excluir</string>
+    <string name="calendar_personal_title_placeholder">Entrega do relatório de Física</string>
+    <string name="calendar_personal_section_when">Quando</string>
+    <string name="calendar_personal_row_date">Data</string>
+    <string name="calendar_personal_row_period">Período</string>
+    <string name="calendar_personal_row_ends">Termina</string>
+    <string name="calendar_personal_section_discipline">Vincular a uma turma</string>
+    <string name="calendar_personal_discipline_none">Nenhuma</string>
+    <string name="calendar_personal_discipline_hint">A turma vira uma etiqueta no evento.</string>
+    <string name="calendar_personal_discipline_empty">Nenhuma turma sincronizada neste semestre.</string>
+    <string name="calendar_personal_section_reminder">Lembrete</string>
+    <string name="calendar_personal_reminder_none">Nenhum</string>
+    <string name="calendar_personal_reminder_day">1 dia</string>
+    <string name="calendar_personal_reminder_three_days">3 dias</string>
+    <string name="calendar_personal_reminder_week">1 semana</string>
+    <string name="calendar_personal_reminder_day_long">1 dia antes</string>
+    <string name="calendar_personal_reminder_three_days_long">3 dias antes</string>
+    <string name="calendar_personal_reminder_week_long">1 semana antes</string>
+    <string name="calendar_personal_section_notes">Observações</string>
+    <string name="calendar_personal_notes_placeholder">Sala, link, o que levar…</string>
+    <string name="calendar_personal_delete_event">Excluir evento</string>
+    <string name="calendar_personal_delete_confirm_title">Excluir evento?</string>
+    <string name="calendar_personal_privacy_note">Eventos criados por você ficam só neste aparelho.</string>
+    <string name="calendar_personal_meta_discipline">Turma</string>
+    <string name="calendar_personal_meta_reminder">Lembrete</string>
+    <string name="calendar_personal_empty_title">Nenhum evento seu</string>
+    <string name="calendar_personal_empty_subtitle">Adicione entregas, sessões de estudo e compromissos — eles entram na mesma linha do tempo da UEFS.</string>
+    <string name="calendar_personal_empty_action">Criar evento</string>
+    <string name="calendar_personal_add_on_day">Adicionar evento neste dia</string>
+    <plurals name="calendar_header_subtitle_personal">
+        <item quantity="one">Prazos da UEFS + %1$d evento seu</item>
+        <item quantity="other">Prazos da UEFS + %1$d eventos seus</item>
+    </plurals>
+    <string name="notif_personal_event_channel">Lembretes de eventos</string>
+    <string name="notif_personal_event_title">Seu evento está chegando</string>
+    <!-- endregion -->
+
 </resources>

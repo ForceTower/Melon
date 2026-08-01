@@ -21,6 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.ViewAgenda
 import androidx.compose.material.icons.outlined.CalendarMonth
@@ -64,6 +65,7 @@ import dev.forcetower.unes.ui.feature.calendar.components.CalEventRow
 import dev.forcetower.unes.ui.feature.calendar.components.CalEventSheet
 import dev.forcetower.unes.ui.feature.calendar.components.CalHeroCard
 import dev.forcetower.unes.ui.feature.calendar.components.CalMonthGrid
+import dev.forcetower.unes.ui.feature.calendar.components.CalPersonalEventSheet
 import dev.forcetower.unes.ui.feature.calendar.components.CalScopeChips
 import java.time.LocalDate
 import java.time.YearMonth
@@ -83,10 +85,14 @@ internal fun CalendarScreen(
     val vm: CalendarViewModel = hiltViewModel()
     val state by vm.state.collectAsStateWithLifecycle()
     CalendarContent(
-        events = state.events,
+        events = state.allEvents,
+        disciplines = state.disciplines,
+        personalCount = state.personal.size,
         onBack = onBack,
         onOpenEvent = vm::trackOpenEvent,
         onAddToCalendar = vm::trackAddToCalendar,
+        onSavePersonal = vm::savePersonal,
+        onDeletePersonal = vm::deletePersonal,
         modifier = modifier,
         bottomInset = bottomInset,
     )
@@ -97,14 +103,20 @@ private fun CalendarContent(
     events: List<CalendarEvent>,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
+    disciplines: List<PersonalDisciplineOption> = emptyList(),
+    personalCount: Int = 0,
     onOpenEvent: (CalendarEvent) -> Unit = {},
     onAddToCalendar: (CalendarEvent) -> Unit = {},
+    onSavePersonal: (PersonalEntry, Boolean) -> Unit = { _, _ -> },
+    onDeletePersonal: (PersonalEntry) -> Unit = {},
     bottomInset: Dp = 0.dp,
 ) {
     var category by rememberSaveable { mutableStateOf(CalendarCategoryFilter.All) }
     var scope by rememberSaveable { mutableStateOf(CalendarScopeFilter.All) }
     var viewMode by rememberSaveable { mutableStateOf(CalendarViewMode.Agenda) }
     var openEventId by rememberSaveable { mutableStateOf<String?>(null) }
+    // Non-null while the composer is up; the entry inside is null for a new one.
+    var composer by remember { mutableStateOf<ComposerRequest?>(null) }
 
     val today = remember { CalendarMath.today }
     // YearMonth isn't Saveable — persist the grid cursor as a proleptic-month
@@ -144,6 +156,12 @@ private fun CalendarContent(
             viewMode = viewMode,
             onBack = onBack,
             onViewModeChange = { viewMode = it },
+            onAdd = {
+                composer = ComposerRequest(
+                    entry = null,
+                    seedDay = if (viewMode == CalendarViewMode.Grid) selected else today,
+                )
+            },
             modifier = Modifier.fadeInOnAppear(delayMs = 20),
         )
         PinnedHeaderHairline(scrolled = scrolled)
@@ -153,7 +171,7 @@ private fun CalendarContent(
                 .verticalScroll(scrollState)
                 .padding(bottom = bottomInset + 32.dp),
         ) {
-            Headline(modifier = Modifier.fadeInOnAppear(delayMs = 40))
+            Headline(personalCount = personalCount, modifier = Modifier.fadeInOnAppear(delayMs = 40))
 
             if (hero != null) {
                 CalHeroCard(
@@ -183,7 +201,11 @@ private fun CalendarContent(
             when (viewMode) {
                 CalendarViewMode.Agenda -> AgendaBody(
                     monthGroups = monthGroups,
+                    isPersonalScope = scope == CalendarScopeFilter.Personal,
                     onOpen = { ev -> onOpenEvent(ev); openEventId = ev.id },
+                    onEdit = { composer = ComposerRequest(entry = it, seedDay = it.start) },
+                    onDelete = onDeletePersonal,
+                    onAdd = { composer = ComposerRequest(entry = null, seedDay = today) },
                 )
                 CalendarViewMode.Grid -> GridBody(
                     month = gridMonth,
@@ -193,6 +215,9 @@ private fun CalendarContent(
                     onSelect = { selectedEpochDay = it.toEpochDay() },
                     onMonthShift = { gridMonthIndex += it },
                     onOpen = { ev -> onOpenEvent(ev); openEventId = ev.id },
+                    onEdit = { composer = ComposerRequest(entry = it, seedDay = it.start) },
+                    onDelete = onDeletePersonal,
+                    onAdd = { composer = ComposerRequest(entry = null, seedDay = selected) },
                 )
             }
 
@@ -205,15 +230,39 @@ private fun CalendarContent(
             event = openEvent,
             onDismiss = { openEventId = null },
             onAddToCalendar = onAddToCalendar,
+            onEdit = { entry ->
+                openEventId = null
+                composer = ComposerRequest(entry = entry, seedDay = entry.start)
+            },
+            onDelete = { entry ->
+                openEventId = null
+                onDeletePersonal(entry)
+            },
+        )
+    }
+
+    composer?.let { request ->
+        CalPersonalEventSheet(
+            editing = request.entry,
+            seedDay = request.seedDay,
+            disciplines = disciplines,
+            onDismiss = { composer = null },
+            onSave = onSavePersonal,
+            onDelete = onDeletePersonal,
         )
     }
 }
+
+// What the composer was opened with: an entry to edit, or the day a new one
+// should start on.
+private data class ComposerRequest(val entry: PersonalEntry?, val seedDay: LocalDate)
 
 @Composable
 private fun AppBar(
     viewMode: CalendarViewMode,
     onBack: () -> Unit,
     onViewModeChange: (CalendarViewMode) -> Unit,
+    onAdd: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -245,6 +294,19 @@ private fun AppBar(
             label = stringResource(R.string.calendar_view_grid_label),
             onClick = { onViewModeChange(CalendarViewMode.Grid) },
         )
+        IconButton(
+            onClick = onAdd,
+            colors = IconButtonDefaults.iconButtonColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+            ),
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Add,
+                contentDescription = stringResource(R.string.calendar_personal_add_label),
+                modifier = Modifier.size(20.dp),
+            )
+        }
     }
 }
 
@@ -280,7 +342,7 @@ private fun ViewToggleButton(
 }
 
 @Composable
-private fun Headline(modifier: Modifier = Modifier) {
+private fun Headline(personalCount: Int, modifier: Modifier = Modifier) {
     Column(modifier = modifier.padding(horizontal = 20.dp)) {
         Text(
             text = stringResource(R.string.calendar_title),
@@ -292,7 +354,15 @@ private fun Headline(modifier: Modifier = Modifier) {
             color = MaterialTheme.colorScheme.onBackground,
         )
         Text(
-            text = stringResource(R.string.calendar_header_subtitle),
+            text = if (personalCount > 0) {
+                pluralStringResource(
+                    R.plurals.calendar_header_subtitle_personal,
+                    personalCount,
+                    personalCount,
+                )
+            } else {
+                stringResource(R.string.calendar_header_subtitle)
+            },
             style = MaterialTheme.typography.bodyMedium.copy(fontSize = 13.sp),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(top = 7.dp),
@@ -303,10 +373,14 @@ private fun Headline(modifier: Modifier = Modifier) {
 @Composable
 private fun AgendaBody(
     monthGroups: List<CalendarMonthGroup>,
+    isPersonalScope: Boolean,
     onOpen: (CalendarEvent) -> Unit,
+    onEdit: (PersonalEntry) -> Unit,
+    onDelete: (PersonalEntry) -> Unit,
+    onAdd: () -> Unit,
 ) {
     if (monthGroups.isEmpty()) {
-        EmptyState()
+        EmptyState(isPersonalScope = isPersonalScope, onAdd = onAdd)
         return
     }
     Column(
@@ -316,14 +390,19 @@ private fun AgendaBody(
     ) {
         monthGroups.forEach { group ->
             key(group.id) {
-                MonthSection(group = group, onOpen = onOpen)
+                MonthSection(group = group, onOpen = onOpen, onEdit = onEdit, onDelete = onDelete)
             }
         }
     }
 }
 
 @Composable
-private fun MonthSection(group: CalendarMonthGroup, onOpen: (CalendarEvent) -> Unit) {
+private fun MonthSection(
+    group: CalendarMonthGroup,
+    onOpen: (CalendarEvent) -> Unit,
+    onEdit: (PersonalEntry) -> Unit,
+    onDelete: (PersonalEntry) -> Unit,
+) {
     val today = remember { CalendarMath.today }
     val isCurrent = today.year == group.year && today.monthValue == group.month
     val monthName = CalendarFormat.monthsLong[group.month - 1]
@@ -359,7 +438,12 @@ private fun MonthSection(group: CalendarMonthGroup, onOpen: (CalendarEvent) -> U
         Column(verticalArrangement = Arrangement.spacedBy(9.dp)) {
             group.events.forEach { event ->
                 key(event.id) {
-                    CalEventRow(event = event, onClick = { onOpen(event) })
+                    CalEventRow(
+                        event = event,
+                        onClick = { onOpen(event) },
+                        onEdit = onEdit,
+                        onDelete = onDelete,
+                    )
                 }
             }
         }
@@ -375,6 +459,9 @@ private fun GridBody(
     onSelect: (LocalDate) -> Unit,
     onMonthShift: (Long) -> Unit,
     onOpen: (CalendarEvent) -> Unit,
+    onEdit: (PersonalEntry) -> Unit,
+    onDelete: (PersonalEntry) -> Unit,
+    onAdd: () -> Unit,
 ) {
     val selectedEvents = remember(events, selected) {
         events.filter { CalendarMath.occursOn(it, selected) }.sortedBy { it.start }
@@ -425,21 +512,35 @@ private fun GridBody(
         }
 
         if (selectedEvents.isEmpty()) {
+            // An empty day is the cheapest place to start an entry, so the card
+            // is the button rather than a dead-end caption.
             Surface(
+                onClick = onAdd,
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(18.dp),
                 color = MaterialTheme.melon.surface.card,
                 border = BorderStroke(1.dp, MaterialTheme.melon.surface.line),
             ) {
-                Text(
-                    text = stringResource(R.string.calendar_grid_empty),
-                    style = MaterialTheme.typography.bodyMedium.copy(fontSize = 13.sp),
-                    color = MaterialTheme.colorScheme.outlineVariant,
-                    textAlign = TextAlign.Center,
+                Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(20.dp),
-                )
+                        .padding(18.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Add,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.outlineVariant,
+                        modifier = Modifier.size(18.dp),
+                    )
+                    Text(
+                        text = stringResource(R.string.calendar_personal_add_on_day),
+                        style = MaterialTheme.typography.bodyMedium.copy(fontSize = 13.5.sp),
+                        color = MaterialTheme.colorScheme.outlineVariant,
+                        textAlign = TextAlign.Center,
+                    )
+                }
             }
         } else {
             Column(verticalArrangement = Arrangement.spacedBy(9.dp)) {
@@ -449,6 +550,8 @@ private fun GridBody(
                             event = event,
                             onClick = { onOpen(event) },
                             showDate = false,
+                            onEdit = onEdit,
+                            onDelete = onDelete,
                         )
                     }
                 }
@@ -470,17 +573,55 @@ private fun SyncFooter(modifier: Modifier = Modifier) {
     )
 }
 
+// Nothing matches the filters. Under "Meus" it turns into the invitation to
+// create the first entry.
 @Composable
-private fun EmptyState() {
-    Text(
-        text = stringResource(R.string.calendar_empty_state),
-        style = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp),
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
+private fun EmptyState(isPersonalScope: Boolean, onAdd: () -> Unit) {
+    if (!isPersonalScope) {
+        Text(
+            text = stringResource(R.string.calendar_empty_state),
+            style = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp),
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 40.dp, vertical = 80.dp),
+            textAlign = TextAlign.Center,
+        )
+        return
+    }
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 40.dp, vertical = 80.dp),
-        textAlign = TextAlign.Center,
-    )
+            .padding(horizontal = 32.dp, vertical = 56.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(
+            text = stringResource(R.string.calendar_personal_empty_title),
+            style = MaterialTheme.typography.titleMedium.copy(fontSize = 16.sp),
+            color = MaterialTheme.colorScheme.onBackground,
+            textAlign = TextAlign.Center,
+        )
+        Text(
+            text = stringResource(R.string.calendar_personal_empty_subtitle),
+            style = MaterialTheme.typography.bodyMedium.copy(fontSize = 13.sp),
+            color = MaterialTheme.colorScheme.outlineVariant,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(top = 6.dp),
+        )
+        Surface(
+            onClick = onAdd,
+            modifier = Modifier.padding(top = 18.dp),
+            shape = RoundedCornerShape(16.dp),
+            color = MaterialTheme.colorScheme.primary,
+        ) {
+            Text(
+                text = stringResource(R.string.calendar_personal_empty_action),
+                style = MaterialTheme.typography.titleSmall.copy(fontSize = 14.5.sp),
+                color = MaterialTheme.colorScheme.onPrimary,
+                modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp),
+            )
+        }
+    }
 }
 
 @Preview

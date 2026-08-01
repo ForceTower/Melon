@@ -1,8 +1,11 @@
 package dev.forcetower.unes.ui.feature.calendar
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckBox
 import androidx.compose.material.icons.filled.Description
+import androidx.compose.material.icons.automirrored.filled.MenuBook
 import androidx.compose.material.icons.filled.Schedule
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -17,12 +20,19 @@ import dev.forcetower.unes.designsystem.theme.melon
 //   - Deadline → status.bad    (#D64A3C light / lifted red dark)
 //   - Exam     → palette.violet (#7C4DD6 light / #B08CF0 dark)
 //   - Holiday  → status.warn   (#C77F16 light / brand amber dark)
+// The student's own kinds reuse the discipline palette, which already carries
+// the dc values: Entrega → magenta (#B23A7A), Estudo → teal (#3B9EAE).
+// Pessoal takes `palette.green`; the dc olive has no token and reads as the
+// same "not academic" green.
 @Composable
 @ReadOnlyComposable
 internal fun CalendarCategory.color(): Color = when (this) {
     CalendarCategory.Holiday -> MaterialTheme.melon.status.warn
     CalendarCategory.Exam -> MaterialTheme.melon.palette.violet
     CalendarCategory.Deadline -> MaterialTheme.melon.status.bad
+    CalendarCategory.Task -> MaterialTheme.melon.palette.magenta
+    CalendarCategory.Study -> MaterialTheme.melon.palette.teal
+    CalendarCategory.Life -> MaterialTheme.melon.palette.green
 }
 
 // Filled glyph rendered inside the category tiles (agenda rows, hero chip,
@@ -31,4 +41,7 @@ internal fun CalendarCategory.icon(): ImageVector = when (this) {
     CalendarCategory.Holiday -> Icons.Filled.WbSunny
     CalendarCategory.Exam -> Icons.Filled.Description
     CalendarCategory.Deadline -> Icons.Filled.Schedule
+    CalendarCategory.Task -> Icons.Filled.CheckBox
+    CalendarCategory.Study -> Icons.AutoMirrored.Filled.MenuBook
+    CalendarCategory.Life -> Icons.Filled.Star
 }

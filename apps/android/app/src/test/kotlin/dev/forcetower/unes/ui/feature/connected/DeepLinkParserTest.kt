@@ -66,6 +66,13 @@ fun `reauth resolves to the credentials sheet target`() {
     }
 
     @Test
+    fun `calendar resolves to the calendar target`() {
+        assertEquals(DeepLinkTarget.Calendar, parseDeepLink("unes://calendar"))
+        assertEquals(DeepLinkTarget.Calendar, parseDeepLink("UNES://Calendar"))
+        assertEquals(DeepLinkTarget.Calendar, parseDeepLink("unes://calendar?src=reminder"))
+    }
+
+    @Test
         fun `unknown shapes are dropped`() {
         assertNull(parseDeepLink("unes://materials"))
         assertNull(parseDeepLink("unes://settings"))

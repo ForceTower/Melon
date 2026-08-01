@@ -21,11 +21,15 @@ internal enum class CalendarOrigin {
     Manual, Evaluation, FinalExam, SecondCall, SecondEpoch,
 }
 
-// Visual category derived from `closed` + `origin`.
+// Visual category derived from `closed` + `origin`, or straight from the
+// student's own kind. The last three only ever come from personal entries.
 internal enum class CalendarCategory(@StringRes val labelRes: Int) {
     Holiday(R.string.calendar_category_holiday),
     Exam(R.string.calendar_category_exam),
     Deadline(R.string.calendar_category_deadline),
+    Task(R.string.calendar_personal_category_task),
+    Study(R.string.calendar_personal_category_study),
+    Life(R.string.calendar_personal_category_life),
 }
 
 internal enum class CalendarStatus { Past, Active, Future }
@@ -46,7 +50,12 @@ internal data class CalendarEvent(
     val closed: Boolean,
     val scope: CalendarScope,
     val origin: CalendarOrigin,
+    // Set when the row came from the student's own entries — it's editable
+    // then, and carries the extras (class tag, reminder, notes).
+    val personal: PersonalEntry? = null,
 ) {
+    val isPersonal: Boolean get() = personal != null
+
     val endOrStart: LocalDate get() = end ?: start
 
     // Drop the `" — Estudante"` suffix the SAGRES feed appends to scope-specific
@@ -70,6 +79,7 @@ internal object CalendarMath {
         ChronoUnit.DAYS.between(a, b).toInt()
 
     fun categorize(ev: CalendarEvent): CalendarCategory {
+        ev.personal?.let { return it.category.category }
         if (ev.closed) return CalendarCategory.Holiday
         return when (ev.origin) {
             CalendarOrigin.Evaluation,
@@ -142,22 +152,34 @@ internal object CalendarMath {
     }
 }
 
+// "Pessoal" entries get no segment of their own — they live under "Tudo" and
+// under the scope row's "Meus".
 internal enum class CalendarCategoryFilter(@StringRes val labelRes: Int) {
     All(R.string.calendar_filter_category_all),
     Deadline(R.string.calendar_filter_category_deadlines),
     Exam(R.string.calendar_filter_category_exams),
+    Task(R.string.calendar_filter_category_tasks),
+    Study(R.string.calendar_filter_category_study),
     Holiday(R.string.calendar_filter_category_holidays);
 
-    fun matches(ev: CalendarEvent): Boolean = when (this) {
-        All -> true
-        Deadline -> CalendarMath.categorize(ev) == CalendarCategory.Deadline
-        Exam -> CalendarMath.categorize(ev) == CalendarCategory.Exam
-        Holiday -> CalendarMath.categorize(ev) == CalendarCategory.Holiday
+    fun matches(ev: CalendarEvent): Boolean {
+        val category = CalendarMath.categorize(ev)
+        return when (this) {
+            All -> true
+            Deadline -> category == CalendarCategory.Deadline
+            Exam -> category == CalendarCategory.Exam
+            Task -> category == CalendarCategory.Task
+            Study -> category == CalendarCategory.Study
+            Holiday -> category == CalendarCategory.Holiday
+        }
     }
 }
 
+// Personal entries carry a placeholder scope, so the institutional segments
+// have to exclude them explicitly.
 internal enum class CalendarScopeFilter(@StringRes val labelRes: Int) {
     All(R.string.calendar_filter_scope_all),
+    Personal(R.string.calendar_filter_scope_personal),
     General(R.string.calendar_scope_general),
     Faculty(R.string.calendar_scope_faculty),
     Course(R.string.calendar_scope_course),
@@ -165,10 +187,11 @@ internal enum class CalendarScopeFilter(@StringRes val labelRes: Int) {
 
     fun matches(ev: CalendarEvent): Boolean = when (this) {
         All -> true
-        General -> ev.scope == CalendarScope.General
-        Faculty -> ev.scope == CalendarScope.Faculty
-        Course -> ev.scope == CalendarScope.Course
-        ClassScope -> ev.scope == CalendarScope.ClassScope
+        Personal -> ev.isPersonal
+        General -> !ev.isPersonal && ev.scope == CalendarScope.General
+        Faculty -> !ev.isPersonal && ev.scope == CalendarScope.Faculty
+        Course -> !ev.isPersonal && ev.scope == CalendarScope.Course
+        ClassScope -> !ev.isPersonal && ev.scope == CalendarScope.ClassScope
     }
 }
 

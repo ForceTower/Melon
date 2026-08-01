@@ -4,6 +4,7 @@ import co.touchlab.kermit.Logger
 import dev.forcetower.melon.core.database.dao.AcademicDao
 import dev.forcetower.melon.core.database.dao.CredentialsDao
 import dev.forcetower.melon.core.database.dao.MessageDao
+import dev.forcetower.melon.core.database.dao.PersonalEventDao
 import dev.forcetower.melon.core.database.dao.SemesterDao
 import dev.forcetower.melon.core.database.dao.SettingsDao
 import dev.forcetower.melon.core.database.dao.StudentDao
@@ -55,6 +56,7 @@ internal class SessionStoreImpl(
     private val userSettingsDao: UserSettingsDao,
     private val credentialsDao: CredentialsDao,
     private val syncStateDao: SyncStateDao,
+    private val personalEventDao: PersonalEventDao,
     private val scope: CoroutineScope,
     logger: Logger,
 ) : SessionStore {
@@ -203,6 +205,9 @@ internal class SessionStoreImpl(
         userSettingsDao.clear()
         credentialsDao.clear()
         syncStateDao.clear()
+        // The student's own calendar entries go too: the next account on this
+        // device must not inherit them.
+        personalEventDao.clear()
         userDao.clear()
         tokenPresent.value = false
         setSessionInvalid(false)

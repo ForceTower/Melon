@@ -2,6 +2,7 @@ package dev.forcetower.unes.ui.feature.calendar.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -34,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.theme.melon
+import dev.forcetower.unes.ui.feature.calendar.CalendarCategory
 import dev.forcetower.unes.ui.feature.calendar.CalendarEvent
 import dev.forcetower.unes.ui.feature.calendar.CalendarFormat
 import dev.forcetower.unes.ui.feature.calendar.CalendarMath
@@ -200,9 +202,11 @@ private fun DayCell(
 ) {
     val isSelected = date == selected
     val isToday = date == today
-    val categories = remember(events, date) {
+    // The student's own entries read as rings so a day tells you at a glance
+    // whether the load is theirs or the university's.
+    val dots = remember(events, date) {
         events.filter { CalendarMath.occursOn(it, date) }
-            .map { CalendarMath.categorize(it) }
+            .map { DayDot(CalendarMath.categorize(it), it.isPersonal) }
             .distinct()
             .take(3)
     }
@@ -246,16 +250,25 @@ private fun DayCell(
             horizontalArrangement = Arrangement.spacedBy(2.5.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            categories.forEach { category ->
+            dots.forEach { dot ->
+                val tint = if (isSelected) MaterialTheme.melon.fixed.onHero else dot.category.color()
                 Box(
                     modifier = Modifier
                         .size(5.dp)
                         .clip(CircleShape)
-                        .background(
-                            if (isSelected) MaterialTheme.melon.fixed.onHero else category.color(),
+                        .then(
+                            if (dot.isPersonal) {
+                                Modifier.border(1.5.dp, tint, CircleShape)
+                            } else {
+                                Modifier.background(tint)
+                            },
                         ),
                 )
             }
         }
     }
 }
+
+// One decoration dot under a day: filled for the academic feed, a ring for the
+// student's own entries.
+private data class DayDot(val category: CalendarCategory, val isPersonal: Boolean)

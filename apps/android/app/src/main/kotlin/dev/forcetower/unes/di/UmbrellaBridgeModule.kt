@@ -21,7 +21,11 @@ import dev.forcetower.melon.feature.auth.domain.usecase.LoginUseCase
 import dev.forcetower.melon.feature.auth.domain.usecase.RegisterPasskeyUseCase
 import dev.forcetower.melon.feature.auth.domain.usecase.RenamePasskeyUseCase
 import dev.forcetower.melon.feature.calendar.domain.usecase.ObserveActiveSemesterCodeUseCase
+import dev.forcetower.melon.feature.calendar.domain.usecase.DeletePersonalEventUseCase
 import dev.forcetower.melon.feature.calendar.domain.usecase.ObserveCalendarEventsUseCase
+import dev.forcetower.melon.feature.calendar.domain.usecase.ObservePersonalEventsUseCase
+import dev.forcetower.melon.feature.calendar.domain.usecase.ReadPersonalEventsUseCase
+import dev.forcetower.melon.feature.calendar.domain.usecase.SavePersonalEventUseCase
 import dev.forcetower.melon.feature.campusevent.domain.usecase.ClearCampusEventUseCase
 import dev.forcetower.melon.feature.campusevent.domain.usecase.ObserveCampusEventUseCase
 import dev.forcetower.melon.feature.campusevent.domain.usecase.RefreshCampusEventUseCase
@@ -324,4 +328,15 @@ object UmbrellaBridgeModule {
         graph.observeCalendarEventsUseCase
     @Provides fun provideObserveActiveSemesterCodeUseCase(graph: UmbrellaGraph): ObserveActiveSemesterCodeUseCase =
         graph.observeActiveSemesterCodeUseCase
+
+    // The student's own calendar entries — observe for the screen, read for
+    // the reminder snapshot, save/delete for the composer.
+    @Provides fun provideObservePersonalEventsUseCase(graph: UmbrellaGraph): ObservePersonalEventsUseCase =
+        graph.observePersonalEventsUseCase
+    @Provides fun provideReadPersonalEventsUseCase(graph: UmbrellaGraph): ReadPersonalEventsUseCase =
+        graph.readPersonalEventsUseCase
+    @Provides fun provideSavePersonalEventUseCase(graph: UmbrellaGraph): SavePersonalEventUseCase =
+        graph.savePersonalEventUseCase
+    @Provides fun provideDeletePersonalEventUseCase(graph: UmbrellaGraph): DeletePersonalEventUseCase =
+        graph.deletePersonalEventUseCase
 }

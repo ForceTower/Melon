@@ -1761,4 +1761,58 @@
     <string name="enrollment_success_done">Done</string>
     <!-- endregion -->
 
+
+    <!-- region Calendar · Personal events -->
+    <string name="calendar_personal_category_task">Task</string>
+    <string name="calendar_personal_category_exam">Test</string>
+    <string name="calendar_personal_category_study">Study</string>
+    <string name="calendar_personal_category_life">Personal</string>
+    <string name="calendar_filter_category_tasks">Tasks</string>
+    <string name="calendar_filter_category_study">Study</string>
+    <string name="calendar_filter_scope_personal">Mine</string>
+    <string name="calendar_personal_badge">mine</string>
+    <string name="calendar_personal_new_title">New event</string>
+    <string name="calendar_personal_edit_title">Edit event</string>
+    <string name="calendar_personal_add_action">Add</string>
+    <string name="calendar_personal_add_label">New event</string>
+    <string name="calendar_personal_save_action">Save</string>
+    <string name="calendar_personal_cancel_action">Cancel</string>
+    <string name="calendar_personal_edit_action">Edit</string>
+    <string name="calendar_personal_delete_action">Delete</string>
+    <string name="calendar_personal_title_placeholder">Physics lab report</string>
+    <string name="calendar_personal_section_when">When</string>
+    <string name="calendar_personal_row_date">Date</string>
+    <string name="calendar_personal_row_period">Range</string>
+    <string name="calendar_personal_row_ends">Ends</string>
+    <string name="calendar_personal_section_discipline">Link to a class</string>
+    <string name="calendar_personal_discipline_none">None</string>
+    <string name="calendar_personal_discipline_hint">The class becomes a tag on the event.</string>
+    <string name="calendar_personal_discipline_empty">No classes synced this semester.</string>
+    <string name="calendar_personal_section_reminder">Reminder</string>
+    <string name="calendar_personal_reminder_none">None</string>
+    <string name="calendar_personal_reminder_day">1 day</string>
+    <string name="calendar_personal_reminder_three_days">3 days</string>
+    <string name="calendar_personal_reminder_week">1 week</string>
+    <string name="calendar_personal_reminder_day_long">1 day before</string>
+    <string name="calendar_personal_reminder_three_days_long">3 days before</string>
+    <string name="calendar_personal_reminder_week_long">1 week before</string>
+    <string name="calendar_personal_section_notes">Notes</string>
+    <string name="calendar_personal_notes_placeholder">Room, link, what to bring…</string>
+    <string name="calendar_personal_delete_event">Delete event</string>
+    <string name="calendar_personal_delete_confirm_title">Delete event?</string>
+    <string name="calendar_personal_privacy_note">Events you create stay on this device.</string>
+    <string name="calendar_personal_meta_discipline">Class</string>
+    <string name="calendar_personal_meta_reminder">Reminder</string>
+    <string name="calendar_personal_empty_title">No events of yours</string>
+    <string name="calendar_personal_empty_subtitle">Add tasks, study sessions and appointments — they join the same UEFS timeline.</string>
+    <string name="calendar_personal_empty_action">Create event</string>
+    <string name="calendar_personal_add_on_day">Add an event on this day</string>
+    <plurals name="calendar_header_subtitle_personal">
+        <item quantity="one">UEFS deadlines + %1$d event of yours</item>
+        <item quantity="other">UEFS deadlines + %1$d events of yours</item>
+    </plurals>
+    <string name="notif_personal_event_channel">Event reminders</string>
+    <string name="notif_personal_event_title">Your event is coming up</string>
+    <!-- endregion -->
+
 </resources>
