@@ -11,7 +11,7 @@ struct ParadoxoView: View {
             content
         }
         .navigationTitle(Text(.paradoxoTitle))
-        .navigationBarTitleDisplayMode(.large)
+        .largeNavigationBar()
         .searchable(
             text: $store.searchQuery,
             placement: Self.searchPlacement,
@@ -20,13 +20,13 @@ struct ParadoxoView: View {
         .task { await store.send(.task).finish() }
     }
 
-    /// The pinned drawer placement doesn't exist on watchOS, where this
-    /// screen is never mounted anyway.
+    /// The pinned drawer placement is iOS-only; the other platforms never
+    /// mount this screen anyway.
     private static var searchPlacement: SearchFieldPlacement {
-        #if os(watchOS)
-        .automatic
-        #else
+        #if os(iOS)
         .navigationBarDrawer(displayMode: .always)
+        #else
+        .automatic
         #endif
     }
 

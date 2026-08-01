@@ -21,7 +21,7 @@ struct MaterialsDetailView: View {
                 publicDetail
             }
         }
-        .navigationBarTitleDisplayMode(.inline)
+        .inlineNavigationBar()
         .task { await store.send(.task).finish() }
         .toolbar {
             if !store.showsModerationStatus {

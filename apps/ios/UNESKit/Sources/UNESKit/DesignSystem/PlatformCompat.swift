@@ -141,14 +141,14 @@ extension View {
         #endif
     }
 
-    /// The iOS grouped-list look; `.insetGrouped`/`.grouped` are unavailable
-    /// outside iOS/macOS.
+    /// The iOS grouped-list look. `.insetGrouped` is iOS-only and macOS no
+    /// longer offers `.grouped`, so the host build settles for `.inset`.
     @ViewBuilder
     func insetGroupedListStyle() -> some View {
         #if os(iOS)
         listStyle(.insetGrouped)
         #elseif os(macOS)
-        listStyle(.grouped)
+        listStyle(.inset)
         #else
         self
         #endif

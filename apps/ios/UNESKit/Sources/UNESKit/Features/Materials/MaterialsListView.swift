@@ -13,7 +13,7 @@ struct MaterialsListView: View {
             content
         }
         .navigationTitle(store.discipline.code)
-        .navigationBarTitleDisplayMode(.inline)
+        .inlineNavigationBar()
         .task { await store.send(.task).finish() }
         .sheet(item: $store.scope(state: \.upload, action: \.upload)) { uploadStore in
             MaterialsUploadSheet(store: uploadStore)
@@ -75,10 +75,10 @@ struct MaterialsListView: View {
     }
 
     private static var searchPlacement: SearchFieldPlacement {
-        #if os(watchOS)
-        .automatic
-        #else
+        #if os(iOS)
         .navigationBarDrawer(displayMode: .automatic)
+        #else
+        .automatic
         #endif
     }
 

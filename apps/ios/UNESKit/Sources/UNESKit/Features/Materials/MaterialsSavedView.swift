@@ -10,7 +10,7 @@ struct MaterialsSavedView: View {
             content
         }
         .navigationTitle(Text(.materialsSavedTitle))
-        .navigationBarTitleDisplayMode(.large)
+        .largeNavigationBar()
         .task { await store.send(.task).finish() }
     }
 

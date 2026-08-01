@@ -67,7 +67,7 @@ struct MaterialsUploadSheet: View {
             .scrollIndicators(.hidden)
             .background(UNESColor.surface)
             .navigationBarBackButtonHidden(true)
-            .toolbar(.hidden, for: .navigationBar)
+            .hiddenNavigationBar()
         }
     }
 
@@ -95,7 +95,7 @@ struct MaterialsUploadSheet: View {
             }
         }
         .background(UNESColor.surface)
-        .navigationBarTitleDisplayMode(.inline)
+        .inlineNavigationBar()
         .toolbar {
             ToolbarItem(placement: .principalCompat) {
                 VStack(spacing: 1) {

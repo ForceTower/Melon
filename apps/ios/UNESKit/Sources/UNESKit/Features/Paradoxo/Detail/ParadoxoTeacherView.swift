@@ -13,7 +13,7 @@ struct ParadoxoTeacherView: View {
             content
         }
         .navigationTitle(store.details?.name ?? store.name ?? "")
-        .navigationBarTitleDisplayMode(.inline)
+        .inlineNavigationBar()
         .task { await store.send(.task).finish() }
     }
 

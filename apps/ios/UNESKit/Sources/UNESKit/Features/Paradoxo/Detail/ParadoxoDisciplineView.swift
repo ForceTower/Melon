@@ -13,7 +13,7 @@ struct ParadoxoDisciplineView: View {
             content
         }
         .navigationTitle(store.details?.code ?? store.name ?? "")
-        .navigationBarTitleDisplayMode(.inline)
+        .inlineNavigationBar()
         .task { await store.send(.task).finish() }
     }
 

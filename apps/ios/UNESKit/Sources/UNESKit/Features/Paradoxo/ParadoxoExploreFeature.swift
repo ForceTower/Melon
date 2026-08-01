@@ -86,7 +86,7 @@ struct ParadoxoExploreView: View {
             .scrollIndicators(.hidden)
         }
         .navigationTitle(Text(store.ranking.kind.title))
-        .navigationBarTitleDisplayMode(.large)
+        .largeNavigationBar()
         .task { await store.send(.task).finish() }
     }
 }

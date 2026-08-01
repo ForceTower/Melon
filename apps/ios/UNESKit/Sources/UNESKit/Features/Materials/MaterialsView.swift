@@ -11,7 +11,7 @@ struct MaterialsView: View {
             content
         }
         .navigationTitle(Text(.materialsTitle))
-        .navigationBarTitleDisplayMode(.large)
+        .largeNavigationBar()
         .task { await store.send(.task).finish() }
         .sheet(item: $store.scope(state: \.upload, action: \.upload)) { uploadStore in
             MaterialsUploadSheet(store: uploadStore)

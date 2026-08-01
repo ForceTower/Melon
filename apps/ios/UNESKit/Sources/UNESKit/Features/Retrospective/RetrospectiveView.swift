@@ -31,7 +31,7 @@ struct RetrospectiveView: View {
         }
         .animation(UNESMotion.ease(0.5), value: store.index)
         .environment(\.colorScheme, .dark)
-        #if !os(watchOS)
+        #if os(iOS)
         .toolbar(.hidden, for: .navigationBar)
         .toolbar(.hidden, for: .tabBar)
         #endif
