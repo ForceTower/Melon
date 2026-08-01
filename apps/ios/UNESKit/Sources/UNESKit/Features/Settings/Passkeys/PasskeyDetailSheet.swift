@@ -50,7 +50,6 @@ struct PasskeyDetailSheet: View {
         .presentationBackground(UNESColor.card)
         .presentationDetents([.height(height)])
         .presentationDragIndicator(.visible)
-        .presentationCornerRadiusCompat(30)
     }
 
     private var identity: some View {
