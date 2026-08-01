@@ -8,8 +8,8 @@ import Foundation
 struct LibraryResultsFeature {
     @ObservableState
     struct State: Equatable {
-        var query: String
-        var searchScope: LibrarySearchScope
+        /// The boolean terms this screen answers; a plain search is one term.
+        var terms: [LibrarySearchTerm]
         var facets: LibraryFacetSelection
         var works: [LibraryWork] = []
         var readings: [String: LibraryReading] = [:]
@@ -21,16 +21,32 @@ struct LibraryResultsFeature {
         /// Anchor for "due in N days" math, refreshed with the readings.
         var now = Date.distantPast
 
-        init(query: String, scope: LibrarySearchScope, facets: LibraryFacetSelection = [:]) {
-            self.query = query
-            self.searchScope = scope
+        init(terms: [LibrarySearchTerm], facets: LibraryFacetSelection = [:]) {
+            self.terms = terms
             self.facets = facets
+        }
+
+        init(query: String, scope: LibrarySearchScope, facets: LibraryFacetSelection = [:]) {
+            self.init(terms: [LibrarySearchTerm(query: query, scope: scope)], facets: facets)
+        }
+
+        /// One-line rendering for the title and the empty state.
+        var query: String { terms.display }
+
+        var searchScope: LibrarySearchScope { terms.first?.scope ?? .all }
+
+        /// The "search every field" suggestion only makes sense for a plain
+        /// single-term search that was scoped down.
+        var canBroadenScope: Bool {
+            terms.count == 1 && searchScope != .all
         }
 
         /// Pergamum gives up on queries this short — mirror that upstream
         /// limitation instead of pretending the whole catalogue is scannable.
+        /// A multi-term search is a narrowing by construction.
         var isTooBroad: Bool {
-            query.trimmingCharacters(in: .whitespaces).count <= 2
+            terms.count == 1
+                && (terms.first?.query.trimmingCharacters(in: .whitespaces).count ?? 0) <= 2
         }
 
         var isEmpty: Bool {
@@ -219,7 +235,8 @@ struct LibraryResultsFeature {
                 return .send(.delegate(.openWork(work)))
 
             case .broadenScopeTapped:
-                state.searchScope = .all
+                guard !state.terms.isEmpty else { return .none }
+                state.terms[0].scope = .all
                 state.isLoading = true
                 return search(state)
 
@@ -233,9 +250,9 @@ struct LibraryResultsFeature {
     }
 
     private func search(_ state: State) -> Effect<Action> {
-        .run { [query = state.query, scope = state.searchScope] send in
+        .run { [terms = state.terms] send in
             do {
-                let works = try await libraryRepository.search(query, scope)
+                let works = try await libraryRepository.search(terms)
                 await send(.worksLoaded(works))
             } catch {
                 await send(.worksLoaded([]))

@@ -447,10 +447,8 @@ struct MeFeature {
     /// results → work, plus subject/author taps opening fresh result pushes.
     private func routeLibrary(_ action: Path.Action, state: inout State) -> Effect<Action> {
         switch action {
-        case let .library(.delegate(.openResults(query, scope, facets))):
-            state.path.append(.libraryResults(LibraryResultsFeature.State(
-                query: query, scope: scope, facets: facets
-            )))
+        case let .library(.delegate(.openResults(terms, facets))):
+            state.path.append(.libraryResults(LibraryResultsFeature.State(terms: terms, facets: facets)))
 
         case let .library(.delegate(.openWork(work))),
              let .libraryResults(.delegate(.openWork(work))):

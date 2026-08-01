@@ -18,19 +18,26 @@ extension LibraryRepository: DependencyKey {
                 throw error
             }
         },
-        search: { query, scope in
+        search: { terms in
             @Dependency(\.apiClient) var apiClient
-            log.debug("search start scope=\(scope.rawValue)")
+            guard let first = terms.first else { return [] }
+            log.debug("search start terms=\(terms.count) scope=\(first.scope.rawValue)")
             do {
-                let dto: LibrarySearchDTO = try await apiClient.get(
-                    from: "api/library/search",
-                    query: [
-                        URLQueryItem(name: "q", value: query),
-                        URLQueryItem(name: "scope", value: scope.rawValue),
-                    ]
-                )
+                // Terms two and three ride as q2/scope2/op2 and q3/scope3/op3
+                // triplets, mirroring upstream's E / OU / NÃO.
+                var query = [
+                    URLQueryItem(name: "q", value: first.query),
+                    URLQueryItem(name: "scope", value: first.scope.rawValue),
+                ]
+                for (index, term) in terms.dropFirst().prefix(2).enumerated() {
+                    let slot = index + 2
+                    query.append(URLQueryItem(name: "q\(slot)", value: term.query))
+                    query.append(URLQueryItem(name: "scope\(slot)", value: term.scope.rawValue))
+                    query.append(URLQueryItem(name: "op\(slot)", value: term.op.rawValue))
+                }
+                let dto: LibrarySearchDTO = try await apiClient.get(from: "api/library/search", query: query)
                 log.info("""
-                search ok scope=\(scope.rawValue) works=\(dto.works.count) \
+                search ok terms=\(terms.count) works=\(dto.works.count) \
                 servedFrom=\(dto.servedFrom ?? "?") upstream=\(dto.upstreamAvailable ?? true)
                 """)
                 return dto.works.map(\.domain)
@@ -91,7 +98,7 @@ private func parseInstant(_ raw: String?) -> Date? {
     return (try? Date(raw, strategy: fractionalISO8601)) ?? (try? Date(raw, strategy: .iso8601))
 }
 
-// MARK: - DTOs (`api/library/*`, mirrored from `@melon/shared-types` library.ts)
+// MARK: - DTOs (`api/library/*`)
 
 private struct LibraryBranchDTO: Decodable {
     var code: String? = nil

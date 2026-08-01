@@ -34,12 +34,12 @@ struct LibraryFeature {
         case clearRecentsTapped
         case newAcquisitionTapped(LibraryWork)
         case advancedTapped
-        case advancedSubmitted(query: String, scope: LibrarySearchScope, facets: LibraryFacetSelection)
+        case advancedSubmitted(terms: [LibrarySearchTerm], facets: LibraryFacetSelection)
         case binding(BindingAction<State>)
         case delegate(Delegate)
 
         enum Delegate: Equatable {
-            case openResults(query: String, scope: LibrarySearchScope, facets: LibraryFacetSelection)
+            case openResults(terms: [LibrarySearchTerm], facets: LibraryFacetSelection)
             case openWork(LibraryWork)
         }
     }
@@ -90,11 +90,17 @@ struct LibraryFeature {
                 let query = state.query.trimmingCharacters(in: .whitespaces)
                 guard !query.isEmpty else { return .none }
                 log.info("search scope=\(state.searchScope.rawValue)")
-                return .send(.delegate(.openResults(query: query, scope: state.searchScope, facets: [:])))
+                return .send(.delegate(.openResults(
+                    terms: [LibrarySearchTerm(query: query, scope: state.searchScope)],
+                    facets: [:]
+                )))
 
             case let .recentTapped(recent):
                 log.info("recent search scope=\(recent.scope.rawValue)")
-                return .send(.delegate(.openResults(query: recent.query, scope: recent.scope, facets: [:])))
+                return .send(.delegate(.openResults(
+                    terms: [LibrarySearchTerm(query: recent.query, scope: recent.scope)],
+                    facets: [:]
+                )))
 
             case .clearRecentsTapped:
                 state.recentsCleared = true
@@ -116,10 +122,10 @@ struct LibraryFeature {
                 state.isAdvancedPresented = true
                 return .none
 
-            case let .advancedSubmitted(query, scope, facets):
+            case let .advancedSubmitted(terms, facets):
                 state.isAdvancedPresented = false
-                log.info("advanced search terms scope=\(scope.rawValue)")
-                return .send(.delegate(.openResults(query: query, scope: scope, facets: facets)))
+                log.info("advanced search terms=\(terms.count)")
+                return .send(.delegate(.openResults(terms: terms, facets: facets)))
 
             case .binding, .delegate:
                 return .none

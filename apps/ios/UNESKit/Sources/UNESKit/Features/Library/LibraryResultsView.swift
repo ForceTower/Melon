@@ -346,7 +346,7 @@ struct LibraryResultsView: View {
             title: Text(.libraryResultsEmptyTitle(store.query)),
             body_: Text(.libraryResultsEmptyBody)
         ) {
-            if store.searchScope != .all {
+            if store.canBroadenScope {
                 LibrarySuggestionRow(
                     icon: "square.grid.2x2",
                     label: .libraryResultsSuggestAllFields,

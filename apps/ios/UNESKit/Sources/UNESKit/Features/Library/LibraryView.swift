@@ -14,8 +14,8 @@ struct LibraryView: View {
         .largeNavigationBar()
         .task { await store.send(.task).finish() }
         .sheet(isPresented: $store.isAdvancedPresented) {
-            LibraryAdvancedSheet { query, scope, facets in
-                store.send(.advancedSubmitted(query: query, scope: scope, facets: facets))
+            LibraryAdvancedSheet { terms, facets in
+                store.send(.advancedSubmitted(terms: terms, facets: facets))
             }
         }
     }

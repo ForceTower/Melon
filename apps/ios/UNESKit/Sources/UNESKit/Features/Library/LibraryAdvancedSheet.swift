@@ -4,26 +4,14 @@ import SwiftUI
 /// plus up-front restrictions — broad queries expire upstream, so narrowing
 /// before searching avoids the 30 s wait.
 struct LibraryAdvancedSheet: View {
-    var onSearch: (String, LibrarySearchScope, LibraryFacetSelection) -> Void
+    var onSearch: ([LibrarySearchTerm], LibraryFacetSelection) -> Void
 
     @Environment(\.dismiss) private var dismiss
 
     private struct TermRow: Equatable {
         var scope: LibrarySearchScope
         var term = ""
-        var op: Operator = .and
-    }
-
-    private enum Operator: Equatable, CaseIterable {
-        case and, or, not
-
-        var label: LocalizedStringResource {
-            switch self {
-            case .and: .libraryAdvancedOpAnd
-            case .or: .libraryAdvancedOpOr
-            case .not: .libraryAdvancedOpNot
-            }
-        }
+        var op: LibrarySearchOperator = .and
     }
 
     @State private var rows: [TermRow] = [
@@ -44,7 +32,7 @@ struct LibraryAdvancedSheet: View {
                     ForEach(rows.indices, id: \.self) { index in
                         if index > 0 {
                             Picker(selection: $rows[index].op) {
-                                ForEach(Operator.allCases, id: \.self) { op in
+                                ForEach(LibrarySearchOperator.allCases, id: \.self) { op in
                                     Text(op.label).tag(op)
                                 }
                             } label: {
@@ -256,22 +244,37 @@ struct LibraryAdvancedSheet: View {
     }
 
     private func submit() {
-        let terms = filled
-        guard !terms.isEmpty else { return }
+        let rows = filled
+        guard !rows.isEmpty else { return }
         var facets: LibraryFacetSelection = [:]
         if let branch { facets[.branch] = [branch.id] }
         if let type { facets[.type] = [type.rawValue] }
         onSearch(
-            terms.map { $0.term.trimmingCharacters(in: .whitespaces) }.joined(separator: " "),
-            terms[0].scope,
+            rows.map { row in
+                LibrarySearchTerm(
+                    query: row.term.trimmingCharacters(in: .whitespaces),
+                    scope: row.scope,
+                    op: row.op
+                )
+            },
             facets
         )
+    }
+}
+
+extension LibrarySearchOperator {
+    var label: LocalizedStringResource {
+        switch self {
+        case .and: .libraryAdvancedOpAnd
+        case .or: .libraryAdvancedOpOr
+        case .not: .libraryAdvancedOpNot
+        }
     }
 }
 
 #Preview("Busca avançada") {
     Color.clear
         .sheet(isPresented: .constant(true)) {
-            LibraryAdvancedSheet { _, _, _ in }
+            LibraryAdvancedSheet { _, _ in }
         }
 }

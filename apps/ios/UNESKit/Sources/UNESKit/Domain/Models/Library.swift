@@ -337,6 +337,36 @@ enum LibrarySearchScope: String, Equatable, Sendable, CaseIterable {
     case callNumber = "chamada"
 }
 
+/// How an advanced-search term joins the one before it — E / OU / NÃO.
+/// Raw values are the wire contract.
+enum LibrarySearchOperator: String, Equatable, Sendable, CaseIterable {
+    case and, or, not
+}
+
+/// One term of a (possibly boolean) catalogue search. A plain search is a
+/// single term; the advanced sheet sends up to three.
+struct LibrarySearchTerm: Equatable, Sendable {
+    var query: String
+    var scope: LibrarySearchScope
+    /// Ignored on the first term.
+    var op: LibrarySearchOperator = .and
+}
+
+extension [LibrarySearchTerm] {
+    /// Compact one-line rendering — "cálculo + guidorizzi − geometria".
+    var display: String {
+        guard let first else { return "" }
+        return dropFirst().reduce(first.query) { text, term in
+            let joiner = switch term.op {
+            case .and: " + "
+            case .or: " / "
+            case .not: " − "
+            }
+            return text + joiner + term.query
+        }
+    }
+}
+
 enum LibrarySort: String, Equatable, Sendable, CaseIterable {
     case relevance
     case newest
