@@ -265,6 +265,7 @@ struct MeFeatureTests {
             state.$isHistoryEnabled.withLock { $0 = false }
             state.$isParadoxoEnabled.withLock { $0 = false }
             state.$isMaterialsEnabled.withLock { $0 = false }
+            state.$isLibraryEnabled.withLock { $0 = false }
             state.$isRetrospectiveEnabled.withLock { $0 = false }
             // `shortcuts` returns allCases in DEBUG, so assert the gating on
             // `gatedShortcuts`, which always applies the flag filter.
@@ -275,6 +276,7 @@ struct MeFeatureTests {
             state.$isHistoryEnabled.withLock { $0 = true }
             state.$isParadoxoEnabled.withLock { $0 = true }
             state.$isMaterialsEnabled.withLock { $0 = true }
+            state.$isLibraryEnabled.withLock { $0 = true }
             state.$isRetrospectiveEnabled.withLock { $0 = true }
             // Retrospectiva also needs an open window, not just the flag.
             #expect(!state.gatedShortcuts.contains(.retrospective))
