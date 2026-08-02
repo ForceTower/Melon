@@ -34,6 +34,10 @@ import dev.forcetower.melon.feature.disciplines.domain.usecase.ObserveDiscipline
 import dev.forcetower.melon.feature.enrollment.domain.usecase.GetEnrollmentOffersUseCase
 import dev.forcetower.melon.feature.enrollment.domain.usecase.GetEnrollmentWindowUseCase
 import dev.forcetower.melon.feature.enrollment.domain.usecase.SubmitEnrollmentUseCase
+import dev.forcetower.melon.feature.library.domain.usecase.CheckLibraryAvailabilityUseCase
+import dev.forcetower.melon.feature.library.domain.usecase.ClearLibraryRecentsUseCase
+import dev.forcetower.melon.feature.library.domain.usecase.GetLibraryOverviewUseCase
+import dev.forcetower.melon.feature.library.domain.usecase.SearchLibraryUseCase
 import dev.forcetower.melon.feature.materials.domain.usecase.GetMaterialUseCase
 import dev.forcetower.melon.feature.materials.domain.usecase.GetMaterialsDisciplineUseCase
 import dev.forcetower.melon.feature.materials.domain.usecase.GetMaterialsOverviewUseCase
@@ -203,6 +207,15 @@ interface UmbrellaGraph {
     val getParadoxoIndexUseCase: GetParadoxoIndexUseCase
     val getParadoxoDisciplineUseCase: GetParadoxoDisciplineUseCase
     val getParadoxoTeacherUseCase: GetParadoxoTeacherUseCase
+
+    // Biblioteca — the Pergamum catalogue, all live/uncached. Two-phase by
+    // design: search answers fast from the catalogue mirror; the per-work
+    // circulation consultation is slower, runs lazily as rows become visible,
+    // and degrades to a narrated state instead of failing.
+    val getLibraryOverviewUseCase: GetLibraryOverviewUseCase
+    val searchLibraryUseCase: SearchLibraryUseCase
+    val checkLibraryAvailabilityUseCase: CheckLibraryAvailabilityUseCase
+    val clearLibraryRecentsUseCase: ClearLibraryRecentsUseCase
 
     // Materiais — collaborative study-materials shelf, all live/uncached
     // (online-only by design; "Salvar" is a server bookmark). Reads feed the

@@ -37,6 +37,10 @@ object Screens {
     const val MATERIALS_DETAIL = "materials_detail"
     const val MATERIALS_SAVED = "materials_saved"
 
+    const val LIBRARY = "library"
+    const val LIBRARY_RESULTS = "library_results"
+    const val LIBRARY_WORK = "library_work"
+
     const val PARADOXO = "paradoxo"
     const val PARADOXO_DISCIPLINE = "paradoxo_discipline"
     const val PARADOXO_TEACHER = "paradoxo_teacher"
@@ -71,6 +75,7 @@ object ContentTypes {
     const val ACTIVITY = "activity"
 
     const val MATERIAL = "material"
+    const val LIBRARY_WORK = "library_work"
     const val PARADOXO_ENTITY = "paradoxo_entity"
     const val PARADOXO_EXPLORE = "paradoxo_explore"
     const val OFFER = "offer"
