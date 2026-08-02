@@ -25,6 +25,7 @@ android-navigation3 = "1.1.4"
 android-hilt = "2.60.1"
 android-hilt-navigation-compose = "1.4.0"
 android-datastore = "1.2.1"
+android-paging = "3.4.0"
 android-credentials = "1.6.0"
 android-biometric = "1.2.0-alpha05"
 android-glance = "1.1.1"
@@ -103,6 +104,10 @@ hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "andro
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "android-hilt" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "android-hilt-navigation-compose" }
 androidx-hilt-lifecycle-viewmodel-compose = { module = "androidx.hilt:hilt-lifecycle-viewmodel-compose", version.ref = "android-hilt-navigation-compose" }
+
+# Paging (library search results)
+androidx-paging-runtime = { module = "androidx.paging:paging-runtime-ktx", version.ref = "android-paging" }
+androidx-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "android-paging" }
 
 # DataStore (Android key/value persistence backing core/storage)
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "android-datastore" }

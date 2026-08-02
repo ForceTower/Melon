@@ -66,6 +66,9 @@ import dev.forcetower.unes.ui.feature.enrollment.EnrollmentScreen
 import dev.forcetower.unes.ui.feature.enrollment.EnrollmentSuccessScreen
 import dev.forcetower.unes.ui.feature.enrollment.EnrollmentTimetableScreen
 import dev.forcetower.unes.ui.feature.finalcountdown.FinalCountdownScreen
+import dev.forcetower.unes.ui.feature.library.results.LibraryResultsScreen
+import dev.forcetower.unes.ui.feature.library.search.LibraryScreen
+import dev.forcetower.unes.ui.feature.library.work.LibraryWorkScreen
 import dev.forcetower.unes.ui.feature.licenses.LicensesScreen
 import dev.forcetower.unes.ui.feature.materials.MaterialsDetailIntent
 import dev.forcetower.unes.ui.feature.materials.MaterialsDetailScreen
@@ -324,6 +327,47 @@ fun ConnectedScreen(
                         onBack = { navigator.goBack() },
                         onOpenDiscipline = { id, name ->
                             navigator.navigate(ConnectedRoute.ParadoxoDiscipline(id, name))
+                        },
+                        bottomInset = bottomInset,
+                    )
+                }
+                entry<ConnectedRoute.Library> {
+                    LibraryScreen(
+                        onBack = { navigator.goBack() },
+                        onOpenResults = { query, scope, sessionId ->
+                            navigator.navigate(
+                                ConnectedRoute.LibraryResults(query, scope, sessionId),
+                            )
+                        },
+                        onOpenWork = { workId, title ->
+                            navigator.navigate(ConnectedRoute.LibraryWork(workId, title))
+                        },
+                        bottomInset = bottomInset,
+                    )
+                }
+                entry<ConnectedRoute.LibraryResults> { route ->
+                    LibraryResultsScreen(
+                        query = route.query,
+                        scopeWire = route.scope,
+                        sessionId = route.sessionId,
+                        onBack = { navigator.goBack() },
+                        onOpenWork = { workId, title ->
+                            navigator.navigate(ConnectedRoute.LibraryWork(workId, title))
+                        },
+                        bottomInset = bottomInset,
+                    )
+                }
+                entry<ConnectedRoute.LibraryWork> { route ->
+                    LibraryWorkScreen(
+                        workId = route.workId,
+                        seedTitle = route.title,
+                        onBack = { navigator.goBack() },
+                        // Author/subject taps start a fresh search on the
+                        // shared ViewModel and push a sibling results screen.
+                        onOpenResults = { query, scope, sessionId ->
+                            navigator.navigate(
+                                ConnectedRoute.LibraryResults(query, scope, sessionId),
+                            )
                         },
                         bottomInset = bottomInset,
                     )

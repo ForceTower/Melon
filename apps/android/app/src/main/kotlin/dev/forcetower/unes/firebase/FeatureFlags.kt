@@ -26,6 +26,7 @@ internal data class FeatureGates(
     val academicHistory: Boolean = false,
     val paradoxo: Boolean = false,
     val materials: Boolean = false,
+    val library: Boolean = false,
     val campusEvent: Boolean = false,
     val evaluationReminders: Boolean = false,
     val documentCaptchaSiteKey: String = "",
@@ -84,6 +85,7 @@ internal class FeatureFlags @Inject constructor() {
                 academicHistory = true,
                 paradoxo = true,
                 materials = true,
+                library = true,
                 campusEvent = true,
                 evaluationReminders = true,
                 documentCaptchaSiteKey = captchaSiteKey,
@@ -96,6 +98,7 @@ internal class FeatureFlags @Inject constructor() {
             academicHistory = remoteConfig.getBoolean(KEY_ACADEMIC_HISTORY),
             paradoxo = remoteConfig.getBoolean(KEY_PARADOXO),
             materials = remoteConfig.getBoolean(KEY_MATERIALS),
+            library = remoteConfig.getBoolean(KEY_LIBRARY),
             campusEvent = remoteConfig.getBoolean(KEY_CAMPUS_EVENT),
             evaluationReminders = remoteConfig.getBoolean(KEY_EVALUATION_REMINDERS),
             documentCaptchaSiteKey = captchaSiteKey,
@@ -109,6 +112,7 @@ internal class FeatureFlags @Inject constructor() {
         const val KEY_ACADEMIC_HISTORY = "enable_academic_history"
         const val KEY_PARADOXO = "enable_paradoxo"
         const val KEY_MATERIALS = "enable_materials"
+        const val KEY_LIBRARY = "enable_library"
         const val KEY_CAMPUS_EVENT = "enable_campus_event"
         const val KEY_EVALUATION_REMINDERS = "enable_evaluation_reminders"
         const val KEY_DOCUMENT_CAPTCHA_SITE_KEY = "document_captcha_site_key"

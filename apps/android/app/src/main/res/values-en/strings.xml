@@ -1814,4 +1814,234 @@
     <string name="notif_personal_event_title">Your event is coming up</string>
     <!-- endregion -->
 
+    <!-- region Biblioteca -->
+    <string name="me_shortcut_library_label">Library</string>
+    <string name="me_shortcut_library_hint">catalogue and availability</string>
+
+    <string name="library_title">Library</string>
+    <string name="library_eyebrow">UEFS collection · Pergamum</string>
+    <string name="library_subtitle">Find the book, check for a free copy and grab the shelf number before leaving home.</string>
+    <string name="library_back">Back</string>
+    <string name="library_search_placeholder">Title, author, subject, ISBN…</string>
+    <string name="library_search_clear">Clear search</string>
+    <string name="library_author_unknown">Author not recorded</string>
+    <string name="library_error_title">Couldn’t load</string>
+    <string name="library_error_subtitle">Check your connection and try again.</string>
+    <string name="library_error_retry">Try again</string>
+
+    <string name="library_scope_all">All</string>
+    <string name="library_scope_title">Title</string>
+    <string name="library_scope_author">Author</string>
+    <string name="library_scope_subject">Subject</string>
+    <string name="library_scope_isbn">ISBN</string>
+    <string name="library_scope_call">Call number</string>
+
+    <string name="library_type_book">Book</string>
+    <string name="library_type_book_plural">Books</string>
+    <string name="library_type_pamphlet">Pamphlet</string>
+    <string name="library_type_pamphlet_plural">Pamphlets</string>
+    <string name="library_type_cordel">Cordel</string>
+    <string name="library_type_cordel_plural">Cordels</string>
+    <string name="library_type_product">Educational product</string>
+    <string name="library_type_product_plural">Educational products</string>
+    <string name="library_type_dissertation">Dissertation</string>
+    <string name="library_type_dissertation_plural">Dissertations</string>
+    <string name="library_type_thesis">Thesis</string>
+    <string name="library_type_thesis_plural">Theses</string>
+    <string name="library_type_article">Article</string>
+    <string name="library_type_article_plural">Articles</string>
+    <string name="library_type_periodical">Periodical</string>
+    <string name="library_type_periodical_plural">Periodicals</string>
+
+    <string name="library_sort_relevance">Relevance</string>
+    <string name="library_sort_newest">Newest first</string>
+    <string name="library_sort_oldest">Oldest first</string>
+    <string name="library_sort_title">Title A–Z</string>
+
+    <string name="library_advanced_entry_title">Advanced search</string>
+    <string name="library_advanced_entry_hint">Up to 3 terms with AND / OR / NOT</string>
+    <string name="library_recents_label">Recent searches</string>
+    <string name="library_recents_clear">Clear</string>
+    <string name="library_recents_scope_format">in %1$s</string>
+    <string name="library_new_label">New in the collection</string>
+    <string name="library_new_availability">Check availability</string>
+    <string name="library_new_note">The new-acquisitions listing carries fewer fields: no copy counts and no citation. Availability is consulted when you open the work.</string>
+    <string name="library_covers_note">Pergamum provides no covers or summaries. Records carry authorship, subject, year and location — that is what search runs on.</string>
+
+    <string name="library_ago_now">just now</string>
+    <string name="library_ago_minutes">%1$d min ago</string>
+    <string name="library_ago_hours">%1$d h ago</string>
+    <string name="library_ago_yesterday">yesterday, %1$s</string>
+
+    <string name="library_fresh_checking">Consulting Pergamum…</string>
+    <string name="library_fresh_down">Pergamum didn’t answer</string>
+    <string name="library_fresh_stale">Last known reading · %1$s</string>
+    <string name="library_fresh_checked">Checked %1$s</string>
+    <string name="library_fresh_refresh">Refresh</string>
+    <string name="library_banner_down">The library system is down. The list below comes from the catalogue; copy counts couldn’t be read — confirm at the desk before going.</string>
+    <string name="library_banner_stale">No answer from Pergamum right now. Showing the last known reading — it may have changed.</string>
+
+    <plurals name="library_availability_some">
+        <item quantity="one">%1$d of %2$d available</item>
+        <item quantity="other">%1$d of %2$d available</item>
+    </plurals>
+    <string name="library_availability_none">None available</string>
+    <string name="library_availability_local">In-library use only</string>
+    <string name="library_availability_down">Availability unavailable</string>
+    <string name="library_availability_stale_tail">· last reading %1$s</string>
+    <string name="library_availability_lib_tail">· %1$s</string>
+    <plurals name="library_availability_libs_tail">
+        <item quantity="one">· %1$d library</item>
+        <item quantity="other">· %1$d libraries</item>
+    </plurals>
+    <string name="library_availability_next_return">Next return %1$s</string>
+
+    <string name="library_results_edit">Edit search</string>
+    <plurals name="library_results_works_for">
+        <item quantity="one">work for “%1$s”</item>
+        <item quantity="other">works for “%1$s”</item>
+    </plurals>
+    <plurals name="library_results_works_filtered">
+        <item quantity="one">work after filters</item>
+        <item quantity="other">works after filters</item>
+    </plurals>
+    <string name="library_year_illegible">illegible year</string>
+    <string name="library_filters_clear">Clear filters</string>
+    <string name="library_facet_remove">Remove filter</string>
+    <string name="library_results_loaded_format" tools:ignore="PluralsCandidate">%1$s of %2$s loaded</string>
+    <plurals name="library_results_end">
+        <item quantity="one">End of results · %1$s work</item>
+        <item quantity="other">End of results · %1$s works</item>
+    </plurals>
+    <string name="library_results_append_retry">Loading more failed — tap to try again</string>
+    <string name="library_results_filtered_empty">No work passes the active filters.</string>
+
+    <string name="library_broad_title">Search too broad</string>
+    <string name="library_broad_subtitle">Pergamum gives up after 30 s. It can’t sweep the whole collection — narrow it down and it answers instantly.</string>
+    <string name="library_broad_author">Add an author</string>
+    <string name="library_broad_author_hint">E.g.: calculus + guidorizzi</string>
+    <string name="library_broad_central">Only at the Central Julieta Carteado</string>
+    <string name="library_broad_central_hint">Most of the collection is there</string>
+    <string name="library_broad_books">Books only</string>
+    <string name="library_broad_books_hint">Drops cordels, articles and theses</string>
+
+    <string name="library_empty_title">Nothing for “%1$s”</string>
+    <string name="library_empty_subtitle">The collection is catalogued in Portuguese with no summaries — search only finds what is in the title, author or subject.</string>
+    <string name="library_empty_all_fields">Search all fields</string>
+    <string name="library_empty_all_fields_hint">Instead of a single field</string>
+    <string name="library_empty_edit">Adjust the search</string>
+    <string name="library_empty_edit_hint">Catalogue terms, not loose words</string>
+
+    <string name="library_refine_title">Refine</string>
+    <string name="library_refine_sort_label">Sort by</string>
+    <string name="library_refine_only_available">Only with a free copy</string>
+    <string name="library_refine_only_available_hint">Filters what has been consulted — disappears if Pergamum is down</string>
+    <string name="library_refine_group">Group by type</string>
+    <string name="library_refine_group_hint">Splits cordels, theses and articles from books</string>
+    <string name="library_refine_show_all">Show all %1$d</string>
+    <string name="library_refine_counts_note">Counts come from Pergamum itself and add past the total: a work can carry several subjects and live in more than one library.</string>
+    <plurals name="library_refine_apply">
+        <item quantity="one">Show %1$s work</item>
+        <item quantity="other">Show %1$s works</item>
+    </plurals>
+    <string name="library_refine_apply_fallback">Apply</string>
+
+    <string name="library_facet_type">Work type</string>
+    <string name="library_facet_branch">Library</string>
+    <string name="library_facet_subject">Subject</string>
+    <string name="library_facet_author">Author</string>
+    <string name="library_facet_language">Language</string>
+    <string name="library_facet_year">Publication year</string>
+    <string name="library_year_from2020">2020 onwards</string>
+    <string name="library_year_2010">2010 — 2019</string>
+    <string name="library_year_2000">2000 — 2009</string>
+    <string name="library_year_1990">1990 — 1999</string>
+    <string name="library_year_old">Before 1990</string>
+    <string name="library_year_none">No date</string>
+
+    <string name="library_advanced_clear">Clear</string>
+    <string name="library_advanced_term_placeholder">Type the term</string>
+    <string name="library_advanced_remove_term">Remove term</string>
+    <string name="library_advanced_op_and">AND</string>
+    <string name="library_advanced_op_or">OR</string>
+    <string name="library_advanced_op_not">NOT</string>
+    <string name="library_advanced_add_second">Add a term</string>
+    <string name="library_advanced_add_third">Third term</string>
+    <string name="library_advanced_restrict_label">Narrow upfront</string>
+    <string name="library_advanced_restrict_note">Overly broad searches time out on Pergamum. Narrowing here avoids the 30 s wait.</string>
+    <string name="library_advanced_submit_empty">Search</string>
+    <plurals name="library_advanced_submit">
+        <item quantity="one">Search %1$d term</item>
+        <item quantity="other">Search %1$d terms</item>
+    </plurals>
+
+    <string name="library_language_portuguese">Portuguese</string>
+    <string name="library_detail_meta_year_invalid">year recorded as “%1$s”</string>
+    <string name="library_detail_no_meta">No publication metadata</string>
+    <string name="library_detail_answer_down_title">Couldn’t verify</string>
+    <string name="library_detail_answer_down_body">Pergamum didn’t answer. The catalogue below is reliable — the copy count is not. Ask at the desk before counting on a copy.</string>
+    <plurals name="library_detail_free">
+        <item quantity="one">%1$d of %2$d free</item>
+        <item quantity="other">%1$d of %2$d free</item>
+    </plurals>
+    <string name="library_detail_near">You can pick it up today at your library — call number below.</string>
+    <string name="library_detail_far">Free copies only in %1$s.</string>
+    <string name="library_detail_local_body">It can’t leave the library. You can consult and photocopy it on site.</string>
+    <string name="library_detail_all_loaned_next">All on loan. The next expected return is %1$s.</string>
+    <string name="library_detail_all_loaned_never">All on loan with no expected return.</string>
+    <string name="library_detail_stale_note">This is the last known reading, from %1$s. Pergamum didn’t answer just now.</string>
+    <string name="library_detail_where_label">Where it is</string>
+    <string name="library_detail_call_label">Call number</string>
+    <string name="library_detail_general_area">General collection</string>
+    <string name="library_detail_place">%1$s · %2$s</string>
+    <string name="library_detail_place_far">%1$s · %2$s — another campus</string>
+    <string name="library_detail_copies_label">Copies</string>
+    <string name="library_detail_copies_count" tools:ignore="PluralsCandidate">%1$d that count</string>
+    <string name="library_detail_copies_registered" tools:ignore="PluralsCandidate">%1$d registered</string>
+    <string name="library_detail_copies_of">of %1$d</string>
+    <plurals name="library_detail_copy_available">
+        <item quantity="one">%1$d on the shelf now</item>
+        <item quantity="other">%1$d on the shelf now</item>
+    </plurals>
+    <plurals name="library_detail_copy_loaned">
+        <item quantity="one">%1$d on loan</item>
+        <item quantity="other">%1$d on loan</item>
+    </plurals>
+    <plurals name="library_detail_copy_stale">
+        <item quantity="one">%1$d with no recorded return</item>
+        <item quantity="other">%1$d with no recorded return</item>
+    </plurals>
+    <string name="library_detail_copy_stale_sub">Loan overdue since %1$d — record never closed</string>
+    <plurals name="library_detail_copy_local">
+        <item quantity="one">%1$d for in-library use</item>
+        <item quantity="other">%1$d for in-library use</item>
+    </plurals>
+    <plurals name="library_detail_copy_missing">
+        <item quantity="one">%1$d missing</item>
+        <item quantity="other">%1$d missing</item>
+    </plurals>
+    <string name="library_detail_copy_missing_sub">In the catalogue, not on the shelf — outside the count above</string>
+    <string name="library_detail_missing_note" tools:ignore="PluralsCandidate">The catalogue lists %1$d copies, but %2$d are registered as missing. The honest count is %3$d of %4$d.</string>
+    <string name="library_detail_ficha_label">Catalogue record</string>
+    <string name="library_detail_ficha_show">Show</string>
+    <string name="library_detail_ficha_hide">Hide</string>
+    <string name="library_detail_subjects_label">Subjects</string>
+    <string name="library_detail_reference_label">Reference</string>
+    <string name="library_detail_reference_copy">Copy ABNT</string>
+    <string name="library_detail_reference_missing">This record carries no ready-made citation — only Pergamum’s full listings do. Build the citation from the record above.</string>
+    <string name="library_detail_id_isbn">ISBN</string>
+    <string name="library_detail_id_isbn10">ISBN-10</string>
+    <string name="library_detail_id_registro">Record</string>
+    <string name="library_detail_id_acervo">Catalogue id</string>
+    <string name="library_detail_raw_note">The collection provides no cover, summary or page count in this query. Title recorded as “%1$s”.</string>
+    <string name="library_detail_raw_note_junk">\u0020The trailing “%1$s” is catalogue noise.</string>
+    <string name="library_detail_missing_record_title">Record not loaded</string>
+    <string name="library_detail_missing_record_body">Go back to the search and open the work again.</string>
+    <string name="library_toast_call_copied">Call number copied</string>
+    <string name="library_toast_reference_copied">ABNT reference copied</string>
+    <string name="library_toast_isbn_copied">ISBN copied</string>
+    <string name="library_toast_acervo_copied">Catalogue id copied</string>
+    <string name="library_toast_registro_copied">Record copied</string>
+    <!-- endregion -->
+
 </resources>

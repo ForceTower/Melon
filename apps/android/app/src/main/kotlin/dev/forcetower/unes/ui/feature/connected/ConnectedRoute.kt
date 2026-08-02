@@ -78,6 +78,23 @@ internal sealed interface ConnectedRoute : NavKey {
     @Serializable data class MaterialsDetail(val materialId: String) : ConnectedRoute
     // "Salvos" — the server-side bookmark shelf, from the hub hero counter.
     @Serializable data object MaterialsSaved : ConnectedRoute
+    // Biblioteca — the Pergamum catalogue search, pushed from the "Biblioteca"
+    // shortcut on the Me hub (remote-config gated behind `enable_library`).
+    // `Library` is the search entry; `LibraryResults` carries only the primary
+    // term for restoration (the full term/facet set is handed off in-memory
+    // through the shared activity-scoped `LibraryViewModel`); `LibraryWork`
+    // carries the work id plus an optional seed title so the header renders
+    // before the shared ViewModel hands the full record over.
+    @Serializable data object Library : ConnectedRoute
+    @Serializable data class LibraryResults(
+        val query: String,
+        val scope: String? = null,
+        val sessionId: Int = 0,
+    ) : ConnectedRoute
+    @Serializable data class LibraryWork(
+        val workId: String,
+        val title: String? = null,
+    ) : ConnectedRoute
     // Matrícula — the enrollment flow, pushed from the Me shortcut grid.
     // `Enrollment` is the status hub; the intermediate steps (offers →
     // discipline → timetable → review) are sibling pushes sharing the

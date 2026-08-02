@@ -1867,4 +1867,234 @@
     <string name="notif_personal_event_title">Seu evento está chegando</string>
     <!-- endregion -->
 
+    <!-- region Biblioteca -->
+    <string name="me_shortcut_library_label">Biblioteca</string>
+    <string name="me_shortcut_library_hint">acervo e disponibilidade</string>
+
+    <string name="library_title">Biblioteca</string>
+    <string name="library_eyebrow">Acervo UEFS · Pergamum</string>
+    <string name="library_subtitle">Ache o livro, veja se tem exemplar livre e o número da estante antes de sair de casa.</string>
+    <string name="library_back">Voltar</string>
+    <string name="library_search_placeholder">Título, autor, assunto, ISBN…</string>
+    <string name="library_search_clear">Limpar busca</string>
+    <string name="library_author_unknown">Autoria não informada</string>
+    <string name="library_error_title">Não deu para carregar</string>
+    <string name="library_error_subtitle">Verifique a conexão e tente de novo.</string>
+    <string name="library_error_retry">Tentar de novo</string>
+
+    <string name="library_scope_all">Tudo</string>
+    <string name="library_scope_title">Título</string>
+    <string name="library_scope_author">Autor</string>
+    <string name="library_scope_subject">Assunto</string>
+    <string name="library_scope_isbn">ISBN</string>
+    <string name="library_scope_call">Chamada</string>
+
+    <string name="library_type_book">Livro</string>
+    <string name="library_type_book_plural">Livros</string>
+    <string name="library_type_pamphlet">Folheto</string>
+    <string name="library_type_pamphlet_plural">Folhetos</string>
+    <string name="library_type_cordel">Cordel</string>
+    <string name="library_type_cordel_plural">Cordéis</string>
+    <string name="library_type_product">Produto educacional</string>
+    <string name="library_type_product_plural">Produtos educacionais</string>
+    <string name="library_type_dissertation">Dissertação</string>
+    <string name="library_type_dissertation_plural">Dissertações</string>
+    <string name="library_type_thesis">Tese</string>
+    <string name="library_type_thesis_plural">Teses</string>
+    <string name="library_type_article">Artigo</string>
+    <string name="library_type_article_plural">Artigos</string>
+    <string name="library_type_periodical">Periódico</string>
+    <string name="library_type_periodical_plural">Periódicos</string>
+
+    <string name="library_sort_relevance">Relevância</string>
+    <string name="library_sort_newest">Mais recentes</string>
+    <string name="library_sort_oldest">Mais antigos</string>
+    <string name="library_sort_title">Título A–Z</string>
+
+    <string name="library_advanced_entry_title">Busca avançada</string>
+    <string name="library_advanced_entry_hint">Até 3 termos com E / OU / NÃO</string>
+    <string name="library_recents_label">Buscas recentes</string>
+    <string name="library_recents_clear">Limpar</string>
+    <string name="library_recents_scope_format">em %1$s</string>
+    <string name="library_new_label">Novas no acervo</string>
+    <string name="library_new_availability">Ver disponibilidade</string>
+    <string name="library_new_note">A listagem de novidades vem com menos campos: sem contagem de exemplares e sem referência. A disponibilidade é consultada quando você abre a obra.</string>
+    <string name="library_covers_note">O Pergamum não fornece capas nem resumos. As fichas mostram autoria, assunto, ano e localização — é por elas que a busca funciona.</string>
+
+    <string name="library_ago_now">agora mesmo</string>
+    <string name="library_ago_minutes">há %1$d min</string>
+    <string name="library_ago_hours">há %1$d h</string>
+    <string name="library_ago_yesterday">ontem, %1$s</string>
+
+    <string name="library_fresh_checking">Consultando o Pergamum…</string>
+    <string name="library_fresh_down">Pergamum não respondeu</string>
+    <string name="library_fresh_stale">Última leitura conhecida · %1$s</string>
+    <string name="library_fresh_checked">Verificado %1$s</string>
+    <string name="library_fresh_refresh">Atualizar</string>
+    <string name="library_banner_down">O sistema da biblioteca está fora do ar. A lista abaixo é do catálogo; a contagem de exemplares não pôde ser lida — confirme no balcão antes de ir.</string>
+    <string name="library_banner_stale">Sem resposta do Pergamum agora. Mostrando a última leitura conhecida — pode ter mudado.</string>
+
+    <plurals name="library_availability_some">
+        <item quantity="one">%1$d de %2$d disponível</item>
+        <item quantity="other">%1$d de %2$d disponíveis</item>
+    </plurals>
+    <string name="library_availability_none">Nenhum disponível</string>
+    <string name="library_availability_local">Só consulta local</string>
+    <string name="library_availability_down">Disponibilidade indisponível</string>
+    <string name="library_availability_stale_tail">· última leitura %1$s</string>
+    <string name="library_availability_lib_tail">· %1$s</string>
+    <plurals name="library_availability_libs_tail">
+        <item quantity="one">· %1$d biblioteca</item>
+        <item quantity="other">· %1$d bibliotecas</item>
+    </plurals>
+    <string name="library_availability_next_return">Próxima devolução %1$s</string>
+
+    <string name="library_results_edit">Editar busca</string>
+    <plurals name="library_results_works_for">
+        <item quantity="one">obra para “%1$s”</item>
+        <item quantity="other">obras para “%1$s”</item>
+    </plurals>
+    <plurals name="library_results_works_filtered">
+        <item quantity="one">obra após filtros</item>
+        <item quantity="other">obras após filtros</item>
+    </plurals>
+    <string name="library_year_illegible">ano ilegível</string>
+    <string name="library_filters_clear">Limpar filtros</string>
+    <string name="library_facet_remove">Remover filtro</string>
+    <string name="library_results_loaded_format" tools:ignore="PluralsCandidate">%1$s de %2$s carregadas</string>
+    <plurals name="library_results_end">
+        <item quantity="one">Fim dos resultados · %1$s obra</item>
+        <item quantity="other">Fim dos resultados · %1$s obras</item>
+    </plurals>
+    <string name="library_results_append_retry">Carregar mais não funcionou — toque para tentar de novo</string>
+    <string name="library_results_filtered_empty">Nenhuma obra passa pelos filtros ativos.</string>
+
+    <string name="library_broad_title">Busca muito ampla</string>
+    <string name="library_broad_subtitle">O Pergamum desiste depois de 30 s. Ele não consegue varrer o acervo inteiro — dá um recorte e ele responde na hora.</string>
+    <string name="library_broad_author">Somar um autor</string>
+    <string name="library_broad_author_hint">Ex.: cálculo + guidorizzi</string>
+    <string name="library_broad_central">Só na Central Julieta Carteado</string>
+    <string name="library_broad_central_hint">A maior parte do acervo está lá</string>
+    <string name="library_broad_books">Só livros</string>
+    <string name="library_broad_books_hint">Descarta cordéis, artigos e teses</string>
+
+    <string name="library_empty_title">Nada com “%1$s”</string>
+    <string name="library_empty_subtitle">O acervo é catalogado em português e sem resumo — a busca só acha o que está no título, no autor ou no assunto.</string>
+    <string name="library_empty_all_fields">Buscar em todos os campos</string>
+    <string name="library_empty_all_fields_hint">Em vez de um campo só</string>
+    <string name="library_empty_edit">Ajustar a busca</string>
+    <string name="library_empty_edit_hint">Termos do catálogo, não palavras soltas</string>
+
+    <string name="library_refine_title">Refinar</string>
+    <string name="library_refine_sort_label">Ordenar por</string>
+    <string name="library_refine_only_available">Só com exemplar livre</string>
+    <string name="library_refine_only_available_hint">Filtra o que já foi consultado — some se o Pergamum estiver fora</string>
+    <string name="library_refine_group">Agrupar por tipo</string>
+    <string name="library_refine_group_hint">Separa cordéis, teses e artigos dos livros</string>
+    <string name="library_refine_show_all">Ver todos os %1$d</string>
+    <string name="library_refine_counts_note">As contagens vêm do próprio Pergamum e somam mais que o total: uma obra pode ter vários assuntos e estar em mais de uma biblioteca.</string>
+    <plurals name="library_refine_apply">
+        <item quantity="one">Ver %1$s obra</item>
+        <item quantity="other">Ver %1$s obras</item>
+    </plurals>
+    <string name="library_refine_apply_fallback">Aplicar</string>
+
+    <string name="library_facet_type">Tipo de obra</string>
+    <string name="library_facet_branch">Biblioteca</string>
+    <string name="library_facet_subject">Assunto</string>
+    <string name="library_facet_author">Autor</string>
+    <string name="library_facet_language">Idioma</string>
+    <string name="library_facet_year">Ano de publicação</string>
+    <string name="library_year_from2020">2020 em diante</string>
+    <string name="library_year_2010">2010 — 2019</string>
+    <string name="library_year_2000">2000 — 2009</string>
+    <string name="library_year_1990">1990 — 1999</string>
+    <string name="library_year_old">Antes de 1990</string>
+    <string name="library_year_none">Sem data</string>
+
+    <string name="library_advanced_clear">Limpar</string>
+    <string name="library_advanced_term_placeholder">Digite o termo</string>
+    <string name="library_advanced_remove_term">Remover termo</string>
+    <string name="library_advanced_op_and">E</string>
+    <string name="library_advanced_op_or">OU</string>
+    <string name="library_advanced_op_not">NÃO</string>
+    <string name="library_advanced_add_second">Somar termo</string>
+    <string name="library_advanced_add_third">Terceiro termo</string>
+    <string name="library_advanced_restrict_label">Restringir de saída</string>
+    <string name="library_advanced_restrict_note">Buscas muito amplas expiram no Pergamum. Restringir aqui evita a espera de 30 s.</string>
+    <string name="library_advanced_submit_empty">Buscar</string>
+    <plurals name="library_advanced_submit">
+        <item quantity="one">Buscar %1$d termo</item>
+        <item quantity="other">Buscar %1$d termos</item>
+    </plurals>
+
+    <string name="library_language_portuguese">Português</string>
+    <string name="library_detail_meta_year_invalid">ano registrado como “%1$s”</string>
+    <string name="library_detail_no_meta">Sem metadados de publicação</string>
+    <string name="library_detail_answer_down_title">Não deu para verificar</string>
+    <string name="library_detail_answer_down_body">O Pergamum não respondeu. O catálogo abaixo é confiável — a contagem de exemplares, não. Pergunte no balcão antes de contar com o exemplar.</string>
+    <plurals name="library_detail_free">
+        <item quantity="one">%1$d de %2$d livre</item>
+        <item quantity="other">%1$d de %2$d livres</item>
+    </plurals>
+    <string name="library_detail_near">Dá para pegar hoje na sua biblioteca — número de chamada abaixo.</string>
+    <string name="library_detail_far">Só há exemplar livre em %1$s.</string>
+    <string name="library_detail_local_body">Não pode sair da biblioteca. Dá para consultar e fotocopiar no local.</string>
+    <string name="library_detail_all_loaned_next">Todos emprestados. A próxima devolução prevista é %1$s.</string>
+    <string name="library_detail_all_loaned_never">Todos emprestados e sem devolução prevista.</string>
+    <string name="library_detail_stale_note">Esta é a última leitura conhecida, de %1$s. O Pergamum não respondeu agora.</string>
+    <string name="library_detail_where_label">Onde está</string>
+    <string name="library_detail_call_label">Número de chamada</string>
+    <string name="library_detail_general_area">Coleção Geral</string>
+    <string name="library_detail_place">%1$s · %2$s</string>
+    <string name="library_detail_place_far">%1$s · %2$s — outro campus</string>
+    <string name="library_detail_copies_label">Exemplares</string>
+    <string name="library_detail_copies_count" tools:ignore="PluralsCandidate">%1$d na conta</string>
+    <string name="library_detail_copies_registered" tools:ignore="PluralsCandidate">%1$d registrados</string>
+    <string name="library_detail_copies_of">de %1$d</string>
+    <plurals name="library_detail_copy_available">
+        <item quantity="one">%1$d na estante agora</item>
+        <item quantity="other">%1$d na estante agora</item>
+    </plurals>
+    <plurals name="library_detail_copy_loaned">
+        <item quantity="one">%1$d emprestado</item>
+        <item quantity="other">%1$d emprestados</item>
+    </plurals>
+    <plurals name="library_detail_copy_stale">
+        <item quantity="one">%1$d sem devolução registrada</item>
+        <item quantity="other">%1$d sem devolução registrada</item>
+    </plurals>
+    <string name="library_detail_copy_stale_sub">Empréstimo vencido desde %1$d — registro nunca fechado</string>
+    <plurals name="library_detail_copy_local">
+        <item quantity="one">%1$d de consulta local</item>
+        <item quantity="other">%1$d de consulta local</item>
+    </plurals>
+    <plurals name="library_detail_copy_missing">
+        <item quantity="one">%1$d desaparecido</item>
+        <item quantity="other">%1$d desaparecidos</item>
+    </plurals>
+    <string name="library_detail_copy_missing_sub">Consta no catálogo, não está na estante — fora da conta acima</string>
+    <string name="library_detail_missing_note" tools:ignore="PluralsCandidate">O catálogo lista %1$d exemplares, mas %2$d estão registrados como desaparecidos. A conta honesta é %3$d de %4$d.</string>
+    <string name="library_detail_ficha_label">Ficha do catálogo</string>
+    <string name="library_detail_ficha_show">Mostrar</string>
+    <string name="library_detail_ficha_hide">Ocultar</string>
+    <string name="library_detail_subjects_label">Assuntos</string>
+    <string name="library_detail_reference_label">Referência</string>
+    <string name="library_detail_reference_copy">Copiar ABNT</string>
+    <string name="library_detail_reference_missing">Este registro não traz referência pronta — só as listagens completas do Pergamum trazem. Monte a citação a partir da ficha acima.</string>
+    <string name="library_detail_id_isbn">ISBN</string>
+    <string name="library_detail_id_isbn10">ISBN-10</string>
+    <string name="library_detail_id_registro">Registro</string>
+    <string name="library_detail_id_acervo">Acervo</string>
+    <string name="library_detail_raw_note">O acervo não fornece capa, resumo nem número de páginas nesta consulta. Título registrado como “%1$s”.</string>
+    <string name="library_detail_raw_note_junk">\u0020O “%1$s” no fim é ruído do catálogo.</string>
+    <string name="library_detail_missing_record_title">Registro não carregado</string>
+    <string name="library_detail_missing_record_body">Volte para a busca e abra a obra de novo.</string>
+    <string name="library_toast_call_copied">Número de chamada copiado</string>
+    <string name="library_toast_reference_copied">Referência ABNT copiada</string>
+    <string name="library_toast_isbn_copied">ISBN copiado</string>
+    <string name="library_toast_acervo_copied">Código do acervo copiado</string>
+    <string name="library_toast_registro_copied">Registro copiado</string>
+    <!-- endregion -->
+
 </resources>

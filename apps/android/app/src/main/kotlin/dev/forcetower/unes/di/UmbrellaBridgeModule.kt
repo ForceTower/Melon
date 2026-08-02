@@ -37,6 +37,10 @@ import dev.forcetower.melon.feature.enrollment.domain.usecase.GetEnrollmentOffer
 import dev.forcetower.melon.feature.enrollment.domain.usecase.GetEnrollmentWindowUseCase
 import dev.forcetower.melon.feature.enrollment.domain.usecase.SubmitEnrollmentUseCase
 import dev.forcetower.melon.feature.materials.domain.usecase.GetMaterialUseCase
+import dev.forcetower.melon.feature.library.domain.usecase.CheckLibraryAvailabilityUseCase
+import dev.forcetower.melon.feature.library.domain.usecase.ClearLibraryRecentsUseCase
+import dev.forcetower.melon.feature.library.domain.usecase.GetLibraryOverviewUseCase
+import dev.forcetower.melon.feature.library.domain.usecase.SearchLibraryUseCase
 import dev.forcetower.melon.feature.materials.domain.usecase.GetMaterialsDisciplineUseCase
 import dev.forcetower.melon.feature.materials.domain.usecase.GetMaterialsOverviewUseCase
 import dev.forcetower.melon.feature.materials.domain.usecase.GetSavedMaterialsUseCase
@@ -281,6 +285,18 @@ object UmbrellaBridgeModule {
         graph.getParadoxoDisciplineUseCase
     @Provides fun provideGetParadoxoTeacherUseCase(graph: UmbrellaGraph): GetParadoxoTeacherUseCase =
         graph.getParadoxoTeacherUseCase
+
+    // Biblioteca — the Pergamum catalogue (online-only). Search is paginated
+    // server-side; the per-work availability consultation runs lazily as rows
+    // become visible and degrades to a narrated state instead of failing.
+    @Provides fun provideGetLibraryOverviewUseCase(graph: UmbrellaGraph): GetLibraryOverviewUseCase =
+        graph.getLibraryOverviewUseCase
+    @Provides fun provideSearchLibraryUseCase(graph: UmbrellaGraph): SearchLibraryUseCase =
+        graph.searchLibraryUseCase
+    @Provides fun provideCheckLibraryAvailabilityUseCase(graph: UmbrellaGraph): CheckLibraryAvailabilityUseCase =
+        graph.checkLibraryAvailabilityUseCase
+    @Provides fun provideClearLibraryRecentsUseCase(graph: UmbrellaGraph): ClearLibraryRecentsUseCase =
+        graph.clearLibraryRecentsUseCase
 
     // Materiais — collaborative study-materials shelf (online-only). Reads
     // feed the hub/list/saved screens; the toggles back optimistic UI on the
