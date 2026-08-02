@@ -1105,7 +1105,6 @@
     <string name="calendar_grid_next_month">Próximo mês</string>
     <string name="calendar_grid_selected_today">Hoje</string>
     <string name="calendar_grid_selected_day_format">%1$d de %2$s</string>
-    <string name="calendar_grid_empty">Sem eventos neste dia.</string>
     <!-- endregion -->
 
     <!-- region Calendar · Event sheet -->
