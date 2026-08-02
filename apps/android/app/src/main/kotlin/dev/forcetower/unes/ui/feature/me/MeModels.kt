@@ -47,6 +47,7 @@ internal enum class ShortcutKind {
     Certificate,
     History,
     Paradoxo,
+    Library,
     Materials,
 }
 

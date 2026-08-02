@@ -18,8 +18,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -36,7 +34,6 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -50,7 +47,7 @@ import dev.forcetower.unes.ui.feature.me.Shortcut
 import dev.forcetower.unes.ui.feature.me.ShortcutKind
 import dev.forcetower.unes.ui.feature.me.hue
 
-// Two-column grid of tonal shortcut cards — dc `EuScreen` "Atalhos". Each
+// Three-column grid of tonal shortcut cards — dc `EuScreen` "Atalhos". Each
 // card follows the `DisciplineCard` tonal recipe (8% plate, 20% border, 20%
 // icon container, full-hue icon); pressing scales to 0.97.
 @Composable
@@ -63,7 +60,7 @@ internal fun ShortcutGrid(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        shortcuts.chunked(2).forEach { rowItems ->
+        shortcuts.chunked(3).forEach { rowItems ->
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -79,73 +76,11 @@ internal fun ShortcutGrid(
                             .fillMaxHeight(),
                     )
                 }
-                if (rowItems.size == 1) {
+                repeat(3 - rowItems.size) {
                     Spacer(modifier = Modifier.weight(1f))
                 }
             }
         }
-    }
-}
-
-// Full-width shortcut row under the grid — the dc design promotes Materiais
-// into this wide card.
-@Composable
-internal fun WideShortcutCard(
-    shortcut: Shortcut,
-    onOpen: (ShortcutKind) -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    val hue = shortcut.tone.hue()
-    val label = stringResource(shortcut.labelRes)
-    val interaction = remember { MutableInteractionSource() }
-    val pressed by interaction.collectIsPressedAsState()
-    val scale by animateFloatAsState(
-        targetValue = if (pressed) 0.98f else 1f,
-        animationSpec = MelonMotion.pop(),
-        label = "wide-shortcut-scale",
-    )
-    val shape = RoundedCornerShape(22.dp)
-
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .scale(scale)
-            .clip(shape)
-            .background(tonalPlate(hue))
-            .border(1.dp, hue.copy(alpha = 0.20f), shape)
-            .clickable(
-                interactionSource = interaction,
-                indication = null,
-                role = Role.Button,
-                onClickLabel = label,
-                onClick = { onOpen(shortcut.id) },
-            )
-            .padding(horizontal = 16.dp, vertical = 14.dp),
-        horizontalArrangement = Arrangement.spacedBy(14.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        IconContainer(shortcut = shortcut, hue = hue, size = 46.dp, iconSize = 25.dp)
-        Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = label,
-                style = MaterialTheme.typography.titleSmall.copy(fontSize = 15.sp),
-                color = MaterialTheme.colorScheme.onBackground,
-            )
-            Spacer(Modifier.height(2.dp))
-            Text(
-                text = stringResource(shortcut.hintRes),
-                style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
-                color = MaterialTheme.colorScheme.outline,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
-        }
-        Icon(
-            imageVector = Icons.Filled.ChevronRight,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.outlineVariant,
-            modifier = Modifier.size(22.dp),
-        )
     }
 }
 
@@ -164,7 +99,7 @@ private fun ShortcutCard(
         animationSpec = MelonMotion.pop(),
         label = "shortcut-scale",
     )
-    val shape = RoundedCornerShape(22.dp)
+    val shape = RoundedCornerShape(18.dp)
 
     Column(
         modifier = modifier
@@ -179,32 +114,32 @@ private fun ShortcutCard(
                 onClickLabel = label,
                 onClick = onOpen,
             )
-            .padding(start = 16.dp, end = 16.dp, top = 15.dp, bottom = 17.dp),
+            .padding(start = 12.dp, end = 12.dp, top = 12.dp, bottom = 14.dp),
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            IconContainer(shortcut = shortcut, hue = hue, size = 44.dp, iconSize = 24.dp)
+            IconContainer(shortcut = shortcut, hue = hue, size = 38.dp, iconSize = 21.dp)
             if (shortcut.beta) {
                 BetaBadge()
             }
         }
-        Spacer(Modifier.height(14.dp))
+        Spacer(Modifier.height(12.dp))
         Text(
             text = label,
             style = MaterialTheme.typography.titleSmall.copy(
-                fontSize = 15.sp,
-                lineHeight = 17.sp,
+                fontSize = 13.sp,
+                lineHeight = 16.sp,
             ),
             color = MaterialTheme.colorScheme.onBackground,
         )
-        Spacer(Modifier.height(3.dp))
+        Spacer(Modifier.height(2.dp))
         Text(
             text = stringResource(shortcut.hintRes),
             style = MaterialTheme.typography.bodySmall.copy(
-                fontSize = 12.sp,
-                lineHeight = 16.sp,
+                fontSize = 11.sp,
+                lineHeight = 14.sp,
             ),
             color = MaterialTheme.colorScheme.outline,
         )
@@ -216,7 +151,7 @@ private fun IconContainer(shortcut: Shortcut, hue: Color, size: androidx.compose
     Box(
         modifier = Modifier
             .size(size)
-            .clip(RoundedCornerShape(14.dp))
+            .clip(RoundedCornerShape(12.dp))
             .background(hue.copy(alpha = 0.20f)),
         contentAlignment = Alignment.Center,
     ) {
@@ -264,13 +199,12 @@ private fun ShortcutGridPreview() {
                         enrollmentCertificate = true,
                         academicHistory = true,
                         paradoxo = true,
+                        library = true,
                         materials = true,
                     ),
                 ),
                 onOpen = {},
             )
-            Spacer(Modifier.height(12.dp))
-            WideShortcutCard(shortcut = MeFixtures.materials, onOpen = {})
         }
     }
 }

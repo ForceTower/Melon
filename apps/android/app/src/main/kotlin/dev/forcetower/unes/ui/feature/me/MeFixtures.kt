@@ -11,6 +11,7 @@ import androidx.compose.material.icons.filled.EditNote
 import androidx.compose.material.icons.filled.HourglassTop
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Insights
+import androidx.compose.material.icons.filled.LocalLibrary
 import androidx.compose.material.icons.filled.Settings
 import dev.forcetower.unes.R
 import dev.forcetower.unes.firebase.FeatureGates
@@ -43,8 +44,9 @@ internal object MeFixtures {
         semesterEnd = "8 jul",
     )
 
-    // Grid tiles in dc/iOS order. Enrollment, Certificate, History, and
-    // Paradoxo are remote-config gated; Calendar and Countdown always show.
+    // Grid tiles in dc/iOS order. Enrollment, Certificate, History, Paradoxo,
+    // Library, and Materials are remote-config gated; Calendar and Countdown
+    // always show.
     private val gridLibrary = listOf(
         Shortcut(
             id = ShortcutKind.Enrollment,
@@ -89,15 +91,20 @@ internal object MeFixtures {
             tone = ShortcutTone.Amber,
             icon = Icons.Filled.Insights,
         ),
-    )
-
-    // Materiais renders as the wide card under the grid.
-    val materials = Shortcut(
-        id = ShortcutKind.Materials,
-        labelRes = R.string.me_shortcut_materials_label,
-        hintRes = R.string.me_shortcut_materials_hint,
-        tone = ShortcutTone.Green,
-        icon = Icons.AutoMirrored.Filled.MenuBook,
+        Shortcut(
+            id = ShortcutKind.Library,
+            labelRes = R.string.me_shortcut_library_label,
+            hintRes = R.string.me_shortcut_library_hint,
+            tone = ShortcutTone.Teal,
+            icon = Icons.Filled.LocalLibrary,
+        ),
+        Shortcut(
+            id = ShortcutKind.Materials,
+            labelRes = R.string.me_shortcut_materials_label,
+            hintRes = R.string.me_shortcut_materials_hint,
+            tone = ShortcutTone.Green,
+            icon = Icons.AutoMirrored.Filled.MenuBook,
+        ),
     )
 
     fun gridShortcuts(gates: FeatureGates): List<Shortcut> = gridLibrary.filter {
@@ -106,6 +113,8 @@ internal object MeFixtures {
             ShortcutKind.Certificate -> gates.enrollmentCertificate
             ShortcutKind.History -> gates.academicHistory
             ShortcutKind.Paradoxo -> gates.paradoxo
+            ShortcutKind.Library -> gates.library
+            ShortcutKind.Materials -> gates.materials
             else -> true
         }
     }

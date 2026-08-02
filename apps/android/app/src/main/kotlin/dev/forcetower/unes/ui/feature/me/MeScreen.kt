@@ -59,14 +59,13 @@ import dev.forcetower.unes.ui.feature.me.components.MeSignOutButton
 import dev.forcetower.unes.ui.feature.me.components.SemesterProgressCard
 import dev.forcetower.unes.ui.feature.me.components.SettingsCard
 import dev.forcetower.unes.ui.feature.me.components.ShortcutGrid
-import dev.forcetower.unes.ui.feature.me.components.WideShortcutCard
 import dev.forcetower.unes.ui.feature.me.components.rememberAppInfo
 import dev.forcetower.unes.ui.feature.me.documents.MeDocumentSheet
 
 // "Eu" tab — 2026 redesign (dc project `UNES Eu - Android`). Stack from top
 // to bottom: M3 large header, identity mesh card with the
 // Score · Frequência · Semestre stats, semester linear-progress card, tonal
-// shortcut grid (+ the wide Materiais card), the Definições list, the
+// shortcut grid, the Definições list, the
 // sign-out pill, and the version footer. Shortcut visibility mirrors the iOS
 // remote-config gates. The screen owns three modal surfaces (about / logout
 // confirmation / logout flash) and a fullscreen `LoggedOutView` swap-in once
@@ -125,6 +124,10 @@ internal fun MeScreen(
                 vm.trackShortcutOpen("paradoxo")
                 connectedNavigator.navigate(ConnectedRoute.Paradoxo)
             }
+            ShortcutKind.Library -> {
+                vm.trackShortcutOpen("library")
+                connectedNavigator.navigate(ConnectedRoute.Library)
+            }
         }
     }
 
@@ -168,11 +171,6 @@ internal fun MeScreen(
             Column(modifier = Modifier.fadeUpOnAppear(delayMs = 280)) {
                 MeSectionLabel(label = stringResource(R.string.me_section_shortcuts))
                 ShortcutGrid(shortcuts = state.shortcuts, onOpen = openShortcut)
-                val materials = state.materialsShortcut
-                if (materials != null) {
-                    Spacer(Modifier.height(12.dp))
-                    WideShortcutCard(shortcut = materials, onOpen = openShortcut)
-                }
             }
             Spacer(Modifier.height(26.dp))
 

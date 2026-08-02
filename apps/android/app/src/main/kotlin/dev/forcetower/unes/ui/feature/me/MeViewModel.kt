@@ -114,7 +114,6 @@ internal data class MeUiState(
     // is preview-only.
     val identity: ProfileIdentity? = profileRaw?.let { mapIdentity(it, scoreRaw) }
     val shortcuts: List<Shortcut> = MeFixtures.gridShortcuts(gates)
-    val materialsShortcut: Shortcut? = MeFixtures.materials.takeIf { gates.materials }
 }
 
 @HiltViewModel

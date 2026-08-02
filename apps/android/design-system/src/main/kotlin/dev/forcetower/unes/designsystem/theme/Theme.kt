@@ -33,7 +33,7 @@ private val MelonLightColors = lightColorScheme(
 
     surfaceContainerLowest = CardLight,
     surfaceContainerLow = SurfaceLight,
-    surfaceContainer = Surface2Light,
+    surfaceContainer = SurfaceContainerLight,
     surfaceContainerHigh = Surface3Light,
     surfaceContainerHighest = Surface3Light,
 
