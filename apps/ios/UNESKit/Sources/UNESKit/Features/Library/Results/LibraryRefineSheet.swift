@@ -195,9 +195,9 @@ struct LibraryRefineSheet: View {
         Button {
             store.send(.binding(.set(\.isRefinePresented, false)))
         } label: {
-            Text(store.filtered.count == 1
-                ? .libraryRefineApplyOne(store.filtered.count)
-                : .libraryRefineApplyOther(store.filtered.count))
+            Text(store.displayCount == 1
+                ? .libraryRefineApplyOne(store.displayCount)
+                : .libraryRefineApplyOther(store.displayCount))
                 .tracking(-0.17)
         }
         .buttonStyle(.unesAccent)
@@ -226,7 +226,10 @@ extension LibraryFacetGroup {
                 store: Store(
                     initialState: {
                         var state = LibraryResultsFeature.State(query: "cálculo", scope: .all)
-                        state.works = LibraryFixtures.works(now: Date())
+                        let works = LibraryFixtures.works(now: Date())
+                        state.works = works
+                        state.total = works.count
+                        state.serverFacets = LibrarySearchPage.facetValues(over: works)
                         state.isLoading = false
                         return state
                     }()

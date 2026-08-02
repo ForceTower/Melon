@@ -117,6 +117,9 @@ struct LibraryWork: Equatable, Sendable, Identifiable {
     var copies: [LibraryCopy]
     /// Came from the "novas aquisições" listing — the degraded record shape.
     var isNewAcquisition = false
+    /// The backend's decomposition of `rawTitle`, parsed once at scrape time.
+    /// Nil only for fixture data, which falls back to the local parser.
+    var serverTitle: LibraryWorkTitle? = nil
 }
 
 // MARK: - Dirty-string parsing
@@ -148,7 +151,7 @@ struct LibraryISBN: Equatable, Sendable {
 }
 
 extension LibraryWork {
-    var parsedTitle: LibraryWorkTitle { Self.parseTitle(rawTitle) }
+    var parsedTitle: LibraryWorkTitle { serverTitle ?? Self.parseTitle(rawTitle) }
 
     var year: LibraryYear {
         guard let rawYear, !rawYear.isEmpty else { return .none }
@@ -372,6 +375,30 @@ enum LibrarySort: String, Equatable, Sendable, CaseIterable {
     case newest
     case oldest
     case titleAZ
+
+    /// The backend's `sort` parameter value.
+    var wireValue: String {
+        self == .titleAZ ? "title" : rawValue
+    }
+}
+
+/// One page of a search response. Sorting, faceting and pagination run
+/// server-side over the full result set; `facets` counts the unfaceted set
+/// and is identical on every page of the same query.
+struct LibrarySearchPage: Equatable, Sendable {
+    var works: [LibraryWork]
+    var total: Int
+    var offset: Int
+    var facets: [LibraryFacetGroup: [LibraryFacetValue]]
+}
+
+/// One search call: the terms plus the server-side page/sort/facet options.
+struct LibrarySearchRequest: Equatable, Sendable {
+    var terms: [LibrarySearchTerm]
+    var sort: LibrarySort = .relevance
+    var facets: LibraryFacetSelection = [:]
+    var offset = 0
+    var limit = 25
 }
 
 struct LibraryRecentSearch: Equatable, Sendable, Identifiable {
@@ -451,5 +478,92 @@ extension LibraryWork {
         selection.allSatisfy { group, keys in
             keys.isEmpty || !Set(facetKeys(for: group)).isDisjoint(with: keys)
         }
+    }
+
+    /// Numeric year for sorting; unparseable years read as 0.
+    var sortYear: Int {
+        if case let .year(text) = year, let value = Int(text) { return value }
+        return 0
+    }
+}
+
+// MARK: - Mock search pipeline
+
+/// The server's search pipeline mirrored over in-memory works — the mock
+/// repository and previews stand in for the real backend with this.
+extension LibrarySearchPage {
+    static func compute(
+        over works: [LibraryWork],
+        facets selection: LibraryFacetSelection = [:],
+        sort: LibrarySort = .relevance,
+        offset: Int = 0,
+        limit: Int = 25
+    ) -> LibrarySearchPage {
+        let filtered = works.filter { $0.matches(selection) }
+        let sorted: [LibraryWork] = switch sort {
+        case .relevance: filtered
+        case .newest: filtered.sorted { $0.sortYear > $1.sortYear }
+        case .oldest: filtered.sorted { $0.sortYear < $1.sortYear }
+        case .titleAZ: filtered.sorted {
+            $0.parsedTitle.title.localizedStandardCompare($1.parsedTitle.title) == .orderedAscending
+        }
+        }
+        return LibrarySearchPage(
+            works: Array(sorted.dropFirst(offset).prefix(limit)),
+            total: filtered.count,
+            offset: offset,
+            facets: facetValues(over: works)
+        )
+    }
+
+    /// Counts over the unfaceted set; a work can carry several subjects and
+    /// live in more than one branch, so counts sum past the total. Labels are
+    /// the wire fallbacks — display localization happens at the screen.
+    static func facetValues(over works: [LibraryWork]) -> [LibraryFacetGroup: [LibraryFacetValue]] {
+        var out: [LibraryFacetGroup: [LibraryFacetValue]] = [:]
+        for group in LibraryFacetGroup.allCases {
+            var counts: [String: Int] = [:]
+            for work in works {
+                for key in work.facetKeys(for: group) where !key.isEmpty {
+                    counts[key, default: 0] += 1
+                }
+            }
+            switch group {
+            case .type:
+                out[group] = LibraryWorkType.allCases.compactMap { type in
+                    counts[type.rawValue].map {
+                        LibraryFacetValue(key: type.rawValue, label: type.rawValue, count: $0)
+                    }
+                }
+            case .branch:
+                var names: [String: String] = [:]
+                for work in works {
+                    for branch in work.branches where names[branch.id] == nil {
+                        names[branch.id] = branch.name
+                    }
+                }
+                let knownIds = LibraryBranch.known.map(\.id)
+                let known = knownIds.filter { counts[$0] != nil }
+                let rest = counts.keys
+                    .filter { !knownIds.contains($0) }
+                    .sorted { (names[$0] ?? $0) < (names[$1] ?? $1) }
+                out[group] = (known + rest).map {
+                    LibraryFacetValue(key: $0, label: names[$0] ?? $0, count: counts[$0] ?? 0)
+                }
+            case .year:
+                out[group] = LibraryYearBucket.allCases.compactMap { bucket in
+                    counts[bucket.rawValue].map {
+                        LibraryFacetValue(key: bucket.rawValue, label: bucket.rawValue, count: $0)
+                    }
+                }
+            case .subject, .author, .language:
+                out[group] = counts
+                    .map { LibraryFacetValue(key: $0.key, label: $0.key, count: $0.value) }
+                    .sorted { lhs, rhs in
+                        lhs.count != rhs.count ? lhs.count > rhs.count : lhs.label < rhs.label
+                    }
+            }
+        }
+        return out
     }
 }

@@ -18,10 +18,12 @@ extension LibraryRepository: DependencyKey {
                 throw error
             }
         },
-        search: { terms in
+        search: { request in
             @Dependency(\.apiClient) var apiClient
-            guard let first = terms.first else { return [] }
-            log.debug("search start terms=\(terms.count) scope=\(first.scope.rawValue)")
+            guard let first = request.terms.first else {
+                return LibrarySearchPage(works: [], total: 0, offset: 0, facets: [:])
+            }
+            log.debug("search start terms=\(request.terms.count) scope=\(first.scope.rawValue) offset=\(request.offset)")
             do {
                 // Terms two and three ride as q2/scope2/op2 and q3/scope3/op3
                 // triplets, mirroring upstream's E / OU / NÃO.
@@ -29,18 +31,28 @@ extension LibraryRepository: DependencyKey {
                     URLQueryItem(name: "q", value: first.query),
                     URLQueryItem(name: "scope", value: first.scope.rawValue),
                 ]
-                for (index, term) in terms.dropFirst().prefix(2).enumerated() {
+                for (index, term) in request.terms.dropFirst().prefix(2).enumerated() {
                     let slot = index + 2
                     query.append(URLQueryItem(name: "q\(slot)", value: term.query))
                     query.append(URLQueryItem(name: "scope\(slot)", value: term.scope.rawValue))
                     query.append(URLQueryItem(name: "op\(slot)", value: term.op.rawValue))
                 }
+                query.append(URLQueryItem(name: "sort", value: request.sort.wireValue))
+                query.append(URLQueryItem(name: "offset", value: String(request.offset)))
+                query.append(URLQueryItem(name: "limit", value: String(request.limit)))
+                // Facet keys are free text, so each group rides as its own
+                // pipe-separated parameter.
+                for group in LibraryFacetGroup.allCases {
+                    let keys = request.facets[group] ?? []
+                    guard !keys.isEmpty else { continue }
+                    query.append(URLQueryItem(name: "f\(group.rawValue)", value: keys.sorted().joined(separator: "|")))
+                }
                 let dto: LibrarySearchDTO = try await apiClient.get(from: "api/library/search", query: query)
                 log.info("""
-                search ok terms=\(terms.count) works=\(dto.works.count) \
-                servedFrom=\(dto.servedFrom ?? "?") upstream=\(dto.upstreamAvailable ?? true)
+                search ok terms=\(request.terms.count) page=\(dto.works.count) total=\(dto.total) \
+                offset=\(dto.offset) servedFrom=\(dto.servedFrom ?? "?") upstream=\(dto.upstreamAvailable ?? true)
                 """)
-                return dto.works.map(\.domain)
+                return dto.domain
             } catch {
                 logFailure("search", error: error)
                 throw error
@@ -164,9 +176,21 @@ private struct LibraryRecordFieldDTO: Decodable {
     var value: String
 }
 
+private struct LibraryParsedTitleDTO: Decodable {
+    var title: String
+    var subtitle: String? = nil
+    var edition: String? = nil
+    var junkYear: String? = nil
+
+    var domain: LibraryWorkTitle {
+        LibraryWorkTitle(title: title, subtitle: subtitle, edition: edition, junkYear: junkYear)
+    }
+}
+
 private struct LibraryWorkDTO: Decodable {
     var id: String
     var title: String
+    var parsedTitle: LibraryParsedTitleDTO? = nil
     var callNumber: String? = nil
     var type: String? = nil
     var year: String? = nil
@@ -205,7 +229,8 @@ private struct LibraryWorkDTO: Decodable {
             reference: reference,
             record: (record ?? []).map { LibraryRecordField(label: $0.label, value: $0.value) },
             copies: (copies ?? []).map { $0.domain(workCallNumber: callNumber) },
-            isNewAcquisition: isNewAcquisition ?? false
+            isNewAcquisition: isNewAcquisition ?? false,
+            serverTitle: parsedTitle?.domain
         )
     }
 }
@@ -234,10 +259,33 @@ private struct LibraryOverviewDTO: Decodable {
     }
 }
 
+private struct LibraryFacetValueDTO: Decodable {
+    var key: String
+    var label: String
+    var count: Int
+}
+
 private struct LibrarySearchDTO: Decodable {
     var works: [LibraryWorkDTO]
+    var total: Int
+    var offset: Int
+    var facets: [String: [LibraryFacetValueDTO]]? = nil
     var servedFrom: String? = nil
     var upstreamAvailable: Bool? = nil
+
+    var domain: LibrarySearchPage {
+        var mapped: [LibraryFacetGroup: [LibraryFacetValue]] = [:]
+        for (raw, values) in facets ?? [:] {
+            guard let group = LibraryFacetGroup(rawValue: raw) else { continue }
+            mapped[group] = values.map { LibraryFacetValue(key: $0.key, label: $0.label, count: $0.count) }
+        }
+        return LibrarySearchPage(
+            works: works.map(\.domain),
+            total: total,
+            offset: offset,
+            facets: mapped
+        )
+    }
 }
 
 private struct LibraryAvailabilityDTO: Decodable {

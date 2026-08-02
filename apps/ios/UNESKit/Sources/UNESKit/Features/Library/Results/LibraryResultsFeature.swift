@@ -1,19 +1,30 @@
 import ComposableArchitecture
 import Foundation
 
-/// Search results over the catalogue. The catalogue rows render as soon as
-/// the search answers; each row's availability is a second, per-title
-/// consultation that fills in (or degrades) afterwards.
+/// Search results over the catalogue. The server sorts, facets and paginates;
+/// the screen accumulates pages as the student scrolls. Each row's
+/// availability is a second, per-title consultation that fires when the row
+/// becomes visible and fills in (or degrades) afterwards.
 @Reducer
 struct LibraryResultsFeature {
+    static let pageSize = 25
+
     @ObservableState
     struct State: Equatable {
         /// The boolean terms this screen answers; a plain search is one term.
         var terms: [LibrarySearchTerm]
         var facets: LibraryFacetSelection
+        /// The pages loaded so far, in server order.
         var works: [LibraryWork] = []
+        /// Result count after facet filtering — the server's, not the loaded rows'.
+        var total = 0
+        /// Refine options with counts over the whole result set.
+        var serverFacets: [LibraryFacetGroup: [LibraryFacetValue]] = [:]
         var readings: [String: LibraryReading] = [:]
+        /// Work ids with an availability consultation in flight.
+        var checking: Set<String> = []
         var isLoading = true
+        var isLoadingMore = false
         var sort: LibrarySort = .relevance
         var groupByType = false
         var onlyAvailable = false
@@ -49,35 +60,30 @@ struct LibraryResultsFeature {
                 && (terms.first?.query.trimmingCharacters(in: .whitespaces).count ?? 0) <= 2
         }
 
+        /// The full-screen "nothing for this query" state. Zero rows under
+        /// active facets is the refine dead-end instead, cleared in place.
         var isEmpty: Bool {
-            !isLoading && !isTooBroad && works.isEmpty
+            !isLoading && !isTooBroad && works.isEmpty && activeFacetCount == 0
         }
 
         var activeFacetCount: Int {
             facets.values.reduce(0) { $0 + $1.count }
         }
 
-        /// The rows after refine filters and sorting.
+        /// The loaded rows after the one filter still applied on-device:
+        /// availability is consulted lazily, so the server cannot narrow by it.
         var filtered: [LibraryWork] {
-            var rows = works.filter { $0.matches(facets) }
-            if onlyAvailable {
-                rows = rows.filter { $0.availability(now: now).available > 0 }
-            }
-            switch sort {
-            case .relevance:
-                break
-            case .newest, .oldest:
-                rows.sort { lhs, rhs in
-                    let l = lhs.sortYear, r = rhs.sortYear
-                    return sort == .newest ? l > r : l < r
-                }
-            case .titleAZ:
-                rows.sort {
-                    $0.parsedTitle.title.localizedStandardCompare($1.parsedTitle.title) == .orderedAscending
-                }
-            }
-            return rows
+            guard onlyAvailable else { return works }
+            return works.filter { $0.availability(now: now).available > 0 }
         }
+
+        /// The count the header and end line narrate — server truth unless
+        /// the local availability toggle is narrowing the loaded rows.
+        var displayCount: Int {
+            onlyAvailable ? filtered.count : total
+        }
+
+        var hasMore: Bool { works.count < total }
 
         var groups: [(type: LibraryWorkType?, works: [LibraryWork])] {
             guard groupByType else { return [(nil, filtered)] }
@@ -87,75 +93,45 @@ struct LibraryResultsFeature {
             }
         }
 
-        /// Refine counts over the unfiltered result set — a work can carry
-        /// several subjects and live in more than one branch, so the counts
-        /// sum to more than the total.
+        /// Refine options for one group — the server's counts with the keys
+        /// the client knows how to say resolved to display labels.
         func facetValues(for group: LibraryFacetGroup) -> [LibraryFacetValue] {
-            var counts: [String: Int] = [:]
-            for work in works {
-                for key in work.facetKeys(for: group) {
-                    counts[key, default: 0] += 1
-                }
-            }
-            switch group {
-            case .type:
-                return LibraryWorkType.allCases.compactMap { type in
-                    counts[type.rawValue].map {
-                        LibraryFacetValue(key: type.rawValue, label: .localized(type.pluralLabel), count: $0)
-                    }
-                }
-            case .branch:
-                // The registry order for the known campus libraries, then any
-                // unmapped branch the backend surfaced, by name.
-                var byId: [String: LibraryBranch] = [:]
-                for work in works {
-                    for branch in work.branches where byId[branch.id] == nil {
-                        byId[branch.id] = branch
-                    }
-                }
-                let knownIds = LibraryBranch.known.map(\.id)
-                return byId.values
-                    .sorted { lhs, rhs in
-                        let li = knownIds.firstIndex(of: lhs.id) ?? knownIds.count
-                        let ri = knownIds.firstIndex(of: rhs.id) ?? knownIds.count
-                        return li != ri ? li < ri : lhs.name < rhs.name
-                    }
-                    .compactMap { branch in
-                        counts[branch.id].map {
-                            LibraryFacetValue(key: branch.id, label: branch.shortName, count: $0)
-                        }
-                    }
-            case .year:
-                return LibraryYearBucket.allCases.compactMap { bucket in
-                    counts[bucket.rawValue].map {
-                        LibraryFacetValue(key: bucket.rawValue, label: .localized(bucket.label), count: $0)
-                    }
-                }
-            case .subject, .author, .language:
-                return counts
-                    .map { LibraryFacetValue(key: $0.key, label: $0.key, count: $0.value) }
-                    .sorted { lhs, rhs in
-                        lhs.count != rhs.count ? lhs.count > rhs.count : lhs.label < rhs.label
-                    }
+            (serverFacets[group] ?? []).map { value in
+                LibraryFacetValue(key: value.key, label: displayLabel(group, value), count: value.count)
             }
         }
 
-        /// The screen-level reading: down or stale as soon as any row is,
-        /// fresh only once every row resolved.
+        private func displayLabel(_ group: LibraryFacetGroup, _ value: LibraryFacetValue) -> String {
+            switch group {
+            case .type:
+                LibraryWorkType(rawValue: value.key).map { .localized($0.pluralLabel) } ?? value.label
+            case .year:
+                LibraryYearBucket(rawValue: value.key).map { .localized($0.label) } ?? value.label
+            case .branch:
+                LibraryBranch.known.first { $0.id == value.key }?.shortName ?? value.label
+            case .subject, .author, .language:
+                value.label
+            }
+        }
+
+        /// The screen-level reading over the rows consulted so far: down or
+        /// stale as soon as any checked row is, fresh once one answered live.
         var aggregatedReading: LibraryReading? {
             let displayed = filtered.compactMap { readings[$0.id] }
             if displayed.contains(.unavailable) { return .unavailable }
             for reading in displayed {
                 if case .stale = reading { return reading }
             }
-            guard displayed.count == filtered.count, let first = displayed.first else { return nil }
-            return first
+            return displayed.first
         }
     }
 
     enum Action: Equatable, BindableAction {
         case task
-        case worksLoaded([LibraryWork])
+        case pageLoaded(LibrarySearchPage, reset: Bool)
+        case searchFailed(reset: Bool)
+        case loadMoreReached
+        case rowAppeared(String)
         case readingLoaded(id: String, LibraryAvailabilitySnapshot)
         case refreshTapped
         case facetToggled(LibraryFacetGroup, String)
@@ -192,15 +168,48 @@ struct LibraryResultsFeature {
                     return .none
                 }
                 guard state.works.isEmpty else { return .none }
-                return search(state)
+                return search(state, reset: true)
 
-            case let .worksLoaded(works):
-                state.works = works
+            case let .pageLoaded(page, reset):
                 state.isLoading = false
-                state.readings = [:]
-                return checkReadings(for: works)
+                state.isLoadingMore = false
+                state.total = page.total
+                state.serverFacets = page.facets
+                if reset {
+                    state.works = page.works
+                } else {
+                    // The set can shift between page fetches (cache refresh);
+                    // an id that comes again must not render twice.
+                    let known = Set(state.works.map(\.id))
+                    state.works += page.works.filter { !known.contains($0.id) }
+                }
+                return .none
+
+            case let .searchFailed(reset):
+                state.isLoading = false
+                state.isLoadingMore = false
+                if reset {
+                    state.works = []
+                    state.total = 0
+                    state.serverFacets = [:]
+                }
+                return .none
+
+            case .loadMoreReached:
+                guard !state.isLoading, !state.isLoadingMore, state.hasMore else { return .none }
+                state.isLoadingMore = true
+                return search(state, reset: false)
+
+            case let .rowAppeared(id):
+                guard state.readings[id] == nil, !state.checking.contains(id) else { return .none }
+                state.checking.insert(id)
+                return .run { send in
+                    let snapshot = await libraryRepository.checkAvailability(id)
+                    await send(.readingLoaded(id: id, snapshot))
+                }
 
             case let .readingLoaded(id, snapshot):
+                state.checking.remove(id)
                 state.readings[id] = snapshot.reading
                 // A live reading also carries the copies — fold them into the
                 // work so counts and the detail push reflect what was read.
@@ -213,8 +222,18 @@ struct LibraryResultsFeature {
             case .refreshTapped:
                 log.info("refresh availability")
                 state.now = date.now
+                // Only rows the student has actually seen hold readings —
+                // re-consult those; the rest re-checks as it scrolls in.
+                let ids = state.filtered.map(\.id).filter { state.readings[$0] != nil }
                 state.readings = [:]
-                return checkReadings(for: state.works)
+                state.checking.formUnion(ids)
+                return .run { send in
+                    for id in ids {
+                        let snapshot = await libraryRepository.checkAvailability(id)
+                        await send(.readingLoaded(id: id, snapshot))
+                    }
+                }
+                .cancellable(id: CancelID.readings, cancelInFlight: true)
 
             case let .facetToggled(group, key):
                 var keys = state.facets[group] ?? []
@@ -224,11 +243,12 @@ struct LibraryResultsFeature {
                 } else {
                     state.facets[group] = keys
                 }
-                return .none
+                return search(state, reset: true)
 
             case .clearFacetsTapped:
+                guard state.activeFacetCount > 0 else { return .none }
                 state.facets = [:]
-                return .none
+                return search(state, reset: true)
 
             case let .workTapped(work):
                 analytics.selectContent(contentType: ContentTypes.libraryWork, itemId: work.id)
@@ -238,10 +258,15 @@ struct LibraryResultsFeature {
                 guard !state.terms.isEmpty else { return .none }
                 state.terms[0].scope = .all
                 state.isLoading = true
-                return search(state)
+                state.works = []
+                state.total = 0
+                return search(state, reset: true)
 
             case .editQueryTapped:
                 return .run { _ in await dismiss() }
+
+            case .binding(\.sort):
+                return search(state, reset: true)
 
             case .binding, .delegate:
                 return .none
@@ -249,35 +274,23 @@ struct LibraryResultsFeature {
         }
     }
 
-    private func search(_ state: State) -> Effect<Action> {
-        .run { [terms = state.terms] send in
+    private func search(_ state: State, reset: Bool) -> Effect<Action> {
+        let request = LibrarySearchRequest(
+            terms: state.terms,
+            sort: state.sort,
+            facets: state.facets,
+            offset: reset ? 0 : state.works.count,
+            limit: Self.pageSize
+        )
+        return .run { send in
             do {
-                let works = try await libraryRepository.search(terms)
-                await send(.worksLoaded(works))
+                let page = try await libraryRepository.search(request)
+                await send(.pageLoaded(page, reset: reset))
             } catch {
-                await send(.worksLoaded([]))
+                await send(.searchFailed(reset: reset))
             }
         }
         .cancellable(id: CancelID.search, cancelInFlight: true)
-    }
-
-    /// Consults circulation title by title so rows resolve as answers land.
-    private func checkReadings(for works: [LibraryWork]) -> Effect<Action> {
-        .run { send in
-            for work in works {
-                let snapshot = await libraryRepository.checkAvailability(work.id)
-                await send(.readingLoaded(id: work.id, snapshot))
-            }
-        }
-        .cancellable(id: CancelID.readings, cancelInFlight: true)
-    }
-}
-
-extension LibraryWork {
-    /// Numeric year for sorting; unparseable years sink to the bottom.
-    fileprivate var sortYear: Int {
-        if case let .year(text) = year, let value = Int(text) { return value }
-        return 0
     }
 }
 

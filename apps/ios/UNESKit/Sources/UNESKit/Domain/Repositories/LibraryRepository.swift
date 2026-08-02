@@ -16,8 +16,9 @@ struct LibraryAvailabilitySnapshot: Equatable, Sendable {
 @DependencyClient
 struct LibraryRepository: Sendable {
     var overview: @Sendable () async throws -> LibraryOverview
-    /// Up to three boolean terms; a plain search is a single term.
-    var search: @Sendable (_ terms: [LibrarySearchTerm]) async throws -> [LibraryWork]
+    /// Up to three boolean terms; a plain search is a single term. Sorting,
+    /// faceting and pagination happen server-side — one call, one page.
+    var search: @Sendable (_ request: LibrarySearchRequest) async throws -> LibrarySearchPage
     /// Consults circulation for one title. Never throws — degradation is a
     /// state the UI narrates, not an error.
     var checkAvailability: @Sendable (_ workId: String) async -> LibraryAvailabilitySnapshot = { _ in
@@ -54,11 +55,13 @@ extension LibraryRepository: TestDependencyKey {
                     newAcquisitions: LibraryFixtures.newAcquisitions(now: now)
                 )
             },
-            search: { terms in
+            search: { request in
                 if !instant { try await Task.sleep(for: .milliseconds(550)) }
-                guard let first = terms.first else { return [] }
-                return LibraryFixtures.all(now: Date()).filter { work in
-                    terms.dropFirst().reduce(matches(work, query: first.query, scope: first.scope)) { held, term in
+                guard let first = request.terms.first else {
+                    return LibrarySearchPage.compute(over: [])
+                }
+                let hits = LibraryFixtures.all(now: Date()).filter { work in
+                    request.terms.dropFirst().reduce(matches(work, query: first.query, scope: first.scope)) { held, term in
                         let matched = matches(work, query: term.query, scope: term.scope)
                         return switch term.op {
                         case .and: held && matched
@@ -67,6 +70,13 @@ extension LibraryRepository: TestDependencyKey {
                         }
                     }
                 }
+                return LibrarySearchPage.compute(
+                    over: hits,
+                    facets: request.facets,
+                    sort: request.sort,
+                    offset: request.offset,
+                    limit: request.limit
+                )
             },
             checkAvailability: { workId in
                 if !instant {

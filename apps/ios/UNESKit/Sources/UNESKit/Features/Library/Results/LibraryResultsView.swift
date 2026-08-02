@@ -62,9 +62,12 @@ struct LibraryResultsView: View {
 
     // MARK: Results
 
+    /// Rows are individual lazy items — the card chrome is painted per row so
+    /// a hundred-work result set only materializes what is on screen, and each
+    /// row's appearance is what triggers its availability consultation.
     private var results: some View {
         ScrollView {
-            VStack(spacing: 0) {
+            LazyVStack(spacing: 0) {
                 header
                     .fadeUp(delay: 0.02)
                     .padding(.bottom, 12)
@@ -83,17 +86,13 @@ struct LibraryResultsView: View {
                     filteredEmpty
                         .fadeUp(delay: 0.12)
                 } else {
-                    groupsList
-                        .fadeUp(delay: 0.12)
+                    groupRows
 
-                    Text(store.filtered.count == 1
-                        ? .libraryResultsEndOne(store.filtered.count)
-                        : .libraryResultsEndOther(store.filtered.count))
-                        .font(.system(size: 12, weight: .medium))
-                        .monospacedDigit()
-                        .foregroundStyle(UNESColor.ink4)
-                        .frame(maxWidth: .infinity)
-                        .padding(.top, 16)
+                    if store.hasMore {
+                        loadMoreRow
+                    } else {
+                        endLine
+                    }
                 }
             }
             .padding(EdgeInsets(top: 8, leading: 16, bottom: 32, trailing: 16))
@@ -101,10 +100,69 @@ struct LibraryResultsView: View {
         .scrollIndicators(.hidden)
     }
 
+    @ViewBuilder
+    private var groupRows: some View {
+        ForEach(Array(store.groups.enumerated()), id: \.offset) { groupIndex, group in
+            if let type = group.type {
+                groupHeader(type: type, count: group.works.count)
+                    .padding(.top, groupIndex == 0 ? 0 : 18)
+            }
+            ForEach(Array(group.works.enumerated()), id: \.element.id) { index, work in
+                LibraryResultRow(
+                    work: work,
+                    reading: store.readings[work.id],
+                    now: store.now
+                ) {
+                    store.send(.workTapped(work))
+                }
+                .cardSegment(isFirst: index == 0, isLast: index == group.works.count - 1)
+                .onAppear { store.send(.rowAppeared(work.id)) }
+            }
+        }
+    }
+
+    private func groupHeader(type: LibraryWorkType, count: Int) -> some View {
+        HStack(spacing: 8) {
+            Text(type.pluralLabel)
+                .textCase(.uppercase)
+                .font(.system(size: 13, weight: .bold))
+                .tracking(0.26)
+                .foregroundStyle(UNESColor.ink3)
+            Text(String(count))
+                .font(.system(size: 12.5, weight: .medium))
+                .monospacedDigit()
+                .foregroundStyle(UNESColor.ink4)
+            Rectangle()
+                .fill(UNESColor.line)
+                .frame(height: 0.5)
+        }
+        .padding(EdgeInsets(top: 0, leading: 2, bottom: 8, trailing: 0))
+    }
+
+    /// The next-page sentinel: materializing it is the "reached the bottom"
+    /// signal.
+    private var loadMoreRow: some View {
+        ProgressView()
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 20)
+            .onAppear { store.send(.loadMoreReached) }
+    }
+
+    private var endLine: some View {
+        Text(store.displayCount == 1
+            ? .libraryResultsEndOne(store.displayCount)
+            : .libraryResultsEndOther(store.displayCount))
+            .font(.system(size: 12, weight: .medium))
+            .monospacedDigit()
+            .foregroundStyle(UNESColor.ink4)
+            .frame(maxWidth: .infinity)
+            .padding(.top, 16)
+    }
+
     private var header: some View {
         VStack(alignment: .leading, spacing: 9) {
             HStack(alignment: .firstTextBaseline, spacing: 8) {
-                Text(LibraryFormat.count(store.filtered.count))
+                Text(LibraryFormat.count(store.displayCount))
                     .font(.system(size: 26, weight: .bold))
                     .tracking(-1.04)
                     .monospacedDigit()
@@ -124,7 +182,7 @@ struct LibraryResultsView: View {
     }
 
     private var headerSuffix: String {
-        let works = String.localized(store.filtered.count == 1 ? .libraryResultsWorkOne : .libraryResultsWorkOther)
+        let works = String.localized(store.displayCount == 1 ? .libraryResultsWorkOne : .libraryResultsWorkOther)
         let context = String.localized(store.activeFacetCount > 0
             ? .libraryResultsSuffixFiltered
             : .libraryResultsSuffixQuery(store.query))
@@ -246,51 +304,6 @@ struct LibraryResultsView: View {
         }
     }
 
-    // MARK: Rows
-
-    private var groupsList: some View {
-        VStack(spacing: 18) {
-            ForEach(Array(store.groups.enumerated()), id: \.offset) { _, group in
-                VStack(spacing: 0) {
-                    if let type = group.type {
-                        HStack(spacing: 8) {
-                            Text(type.pluralLabel)
-                                .textCase(.uppercase)
-                                .font(.system(size: 13, weight: .bold))
-                                .tracking(0.26)
-                                .foregroundStyle(UNESColor.ink3)
-                            Text(String(group.works.count))
-                                .font(.system(size: 12.5, weight: .medium))
-                                .monospacedDigit()
-                                .foregroundStyle(UNESColor.ink4)
-                            Rectangle()
-                                .fill(UNESColor.line)
-                                .frame(height: 0.5)
-                        }
-                        .padding(EdgeInsets(top: 0, leading: 2, bottom: 8, trailing: 0))
-                    }
-                    VStack(spacing: 0) {
-                        ForEach(Array(group.works.enumerated()), id: \.element.id) { index, work in
-                            if index > 0 {
-                                Divider()
-                                    .overlay(UNESColor.line)
-                                    .padding(.leading, 82)
-                            }
-                            LibraryResultRow(
-                                work: work,
-                                reading: store.readings[work.id],
-                                now: store.now
-                            ) {
-                                store.send(.workTapped(work))
-                            }
-                        }
-                    }
-                    .materialsCard()
-                }
-            }
-        }
-    }
-
     private var filteredEmpty: some View {
         VStack(spacing: 10) {
             Text(.libraryResultsFilteredEmpty)
@@ -374,6 +387,89 @@ extension LibrarySort {
         case .oldest: .librarySortOldest
         case .titleAZ: .librarySortTitleAZ
         }
+    }
+}
+
+// MARK: - Card segments
+
+extension View {
+    /// One row of a results card. The card chrome (fill, hairline, corners)
+    /// is painted per row so rows can be independent lazy items instead of
+    /// children of one giant card view.
+    func cardSegment(isFirst: Bool, isLast: Bool) -> some View {
+        background(UNESColor.card)
+            .clipShape(CardSegmentShape(isFirst: isFirst, isLast: isLast))
+            .overlay(alignment: .top) {
+                if !isFirst {
+                    Divider()
+                        .overlay(UNESColor.line)
+                        .padding(.leading, 82)
+                }
+            }
+            .overlay {
+                CardSegmentBorder(isFirst: isFirst, isLast: isLast)
+                    .stroke(UNESColor.cardLine, lineWidth: 1)
+            }
+    }
+}
+
+private let cardSegmentRadius: CGFloat = 20
+
+/// The slice of the card a single row owns — corners only on the outer rows.
+private struct CardSegmentShape: Shape {
+    var isFirst: Bool
+    var isLast: Bool
+
+    func path(in rect: CGRect) -> Path {
+        UnevenRoundedRectangle(
+            cornerRadii: RectangleCornerRadii(
+                topLeading: isFirst ? cardSegmentRadius : 0,
+                bottomLeading: isLast ? cardSegmentRadius : 0,
+                bottomTrailing: isLast ? cardSegmentRadius : 0,
+                topTrailing: isFirst ? cardSegmentRadius : 0
+            ),
+            style: .continuous
+        ).path(in: rect)
+    }
+}
+
+/// The card hairline as one row sees it: the sides, plus the rounded top or
+/// bottom cap on the outer rows — never a line where two rows meet.
+private struct CardSegmentBorder: Shape {
+    var isFirst: Bool
+    var isLast: Bool
+
+    func path(in rect: CGRect) -> Path {
+        let radius = cardSegmentRadius
+        var path = Path()
+        path.move(to: CGPoint(x: rect.minX, y: rect.minY + (isFirst ? radius : 0)))
+        path.addLine(to: CGPoint(x: rect.minX, y: rect.maxY - (isLast ? radius : 0)))
+        if isLast {
+            path.addQuadCurve(
+                to: CGPoint(x: rect.minX + radius, y: rect.maxY),
+                control: CGPoint(x: rect.minX, y: rect.maxY)
+            )
+            path.addLine(to: CGPoint(x: rect.maxX - radius, y: rect.maxY))
+            path.addQuadCurve(
+                to: CGPoint(x: rect.maxX, y: rect.maxY - radius),
+                control: CGPoint(x: rect.maxX, y: rect.maxY)
+            )
+        } else {
+            path.move(to: CGPoint(x: rect.maxX, y: rect.maxY))
+        }
+        path.addLine(to: CGPoint(x: rect.maxX, y: rect.minY + (isFirst ? radius : 0)))
+        if isFirst {
+            path.addQuadCurve(
+                to: CGPoint(x: rect.maxX - radius, y: rect.minY),
+                control: CGPoint(x: rect.maxX, y: rect.minY)
+            )
+            path.addLine(to: CGPoint(x: rect.minX + radius, y: rect.minY))
+            path.addQuadCurve(
+                to: CGPoint(x: rect.minX, y: rect.minY + radius),
+                control: CGPoint(x: rect.minX, y: rect.minY)
+            )
+        }
+        return path
     }
 }
 
