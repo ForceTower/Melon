@@ -164,7 +164,6 @@ private fun EnrollmentStatusContent(
                         EnrollmentHero(
                             window = window,
                             nowMillis = state.referenceNowMillis,
-                            modifier = Modifier.fadeUpOnAppear(delayMs = 80),
                         )
 
                         if (state.offersFailed) {

@@ -31,7 +31,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -41,6 +40,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.foundation.Mesh
+import dev.forcetower.unes.designsystem.foundation.RevealShadow
+import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
 import dev.forcetower.unes.designsystem.foundation.MeshVariant
 import dev.forcetower.unes.designsystem.theme.MelonMotion
 import dev.forcetower.unes.designsystem.theme.melon
@@ -61,6 +62,7 @@ internal fun CalHeroCard(
     event: CalendarEvent,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    revealDelayMs: Int = 100,
 ) {
     val category = remember(event) { CalendarMath.categorize(event) }
     val isActive = remember(event) { CalendarMath.status(event) == CalendarStatus.Active }
@@ -74,7 +76,13 @@ internal fun CalHeroCard(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .shadow(elevation = 14.dp, shape = shape)
+            // Elevation rides the reveal layer — inside it, the fade would
+            // clip the shadow to the card's own bounds. See `RevealShadow`.
+            .fadeUpOnAppear(
+                delayMs = revealDelayMs,
+                fromOffset = 20.dp,
+                shadow = RevealShadow(elevation = 14.dp, shape = shape),
+            )
             .clip(shape)
             .background(plate)
             .clickable(role = Role.Button, onClick = onClick),

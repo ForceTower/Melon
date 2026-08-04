@@ -147,9 +147,7 @@ private fun FinalCountdownContent(
                     verdict = verdict,
                     style = style,
                     weighted = state.weighted,
-                    modifier = Modifier
-                        .padding(top = 14.dp)
-                        .fadeUpOnAppear(delayMs = 140),
+                    modifier = Modifier.padding(top = 14.dp),
                 )
 
                 FCComposition(

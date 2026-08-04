@@ -23,7 +23,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -37,6 +36,8 @@ import dev.forcetower.melon.feature.enrollment.domain.model.EnrollmentWindow
 import dev.forcetower.melon.feature.enrollment.domain.model.EnrollmentWindowState
 import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.foundation.Mesh
+import dev.forcetower.unes.designsystem.foundation.RevealShadow
+import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
 import dev.forcetower.unes.designsystem.foundation.MeshVariant
 import dev.forcetower.unes.designsystem.theme.melon
 import dev.forcetower.unes.ui.feature.enrollment.EnrollmentFormat
@@ -45,7 +46,12 @@ import dev.forcetower.unes.ui.feature.enrollment.EnrollmentFormat
 // warm brand field, state eyebrow with the pulsing live dot, the deadline
 // headline, the days-left ring and the abertura/encerramento strip.
 @Composable
-internal fun EnrollmentHero(window: EnrollmentWindow, nowMillis: Long, modifier: Modifier = Modifier) {
+internal fun EnrollmentHero(
+    window: EnrollmentWindow,
+    nowMillis: Long,
+    modifier: Modifier = Modifier,
+    revealDelayMs: Int = 80,
+) {
     val fixed = MaterialTheme.melon.fixed
     val onHero = fixed.onHero
     val shape = RoundedCornerShape(28.dp)
@@ -55,7 +61,17 @@ internal fun EnrollmentHero(window: EnrollmentWindow, nowMillis: Long, modifier:
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .shadow(14.dp, shape, spotColor = fixed.heroNight, ambientColor = fixed.heroNight)
+            // Elevation rides the reveal layer — inside it, the fade would
+            // clip the shadow to the card's own bounds. See `RevealShadow`.
+            .fadeUpOnAppear(
+                delayMs = revealDelayMs,
+                shadow = RevealShadow(
+                    elevation = 14.dp,
+                    shape = shape,
+                    spotColor = fixed.heroNight,
+                    ambientColor = fixed.heroNight,
+                ),
+            )
             .clip(shape)
             .background(fixed.heroNight),
     ) {

@@ -80,7 +80,6 @@ import dev.forcetower.melon.feature.paradoxo.domain.model.ParadoxoTier
 import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.foundation.PinnedHeaderHairline
 import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
-import dev.forcetower.unes.designsystem.foundation.scaleInOnAppear
 import dev.forcetower.unes.designsystem.theme.MelonTheme
 import dev.forcetower.unes.designsystem.theme.melon
 import dev.forcetower.unes.ui.feature.paradoxo.components.ParadoxoCard
@@ -259,9 +258,7 @@ private fun ParadoxoHomeContent(
                     overview != null -> ParadoxoPulseHero(
                         facts = overview.pulse,
                         onOpen = { ref -> onOpen(ref, "") },
-                        modifier = Modifier
-                            .padding(top = 18.dp)
-                            .scaleInOnAppear(delayMs = 120, fromScale = 0.97f),
+                        modifier = Modifier.padding(top = 18.dp),
                     )
                     state.failed -> ParadoxoFailure(onRetry = onRetry)
                     else -> ParadoxoLoading()

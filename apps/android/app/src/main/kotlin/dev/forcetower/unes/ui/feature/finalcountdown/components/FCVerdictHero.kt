@@ -24,7 +24,6 @@ import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
@@ -37,6 +36,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.foundation.Mesh
+import dev.forcetower.unes.designsystem.foundation.RevealShadow
+import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
 import dev.forcetower.unes.designsystem.theme.MelonMotion
 import dev.forcetower.unes.designsystem.theme.melon
 import dev.forcetower.unes.ui.feature.finalcountdown.FCVerdict
@@ -53,6 +54,7 @@ internal fun FCVerdictHero(
     style: FCVerdictStyle,
     weighted: Boolean,
     modifier: Modifier = Modifier,
+    revealDelayMs: Int = 140,
 ) {
     val tokens = MaterialTheme.melon.verdict
     val palette = when (style.family) {
@@ -68,7 +70,17 @@ internal fun FCVerdictHero(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .shadow(14.dp, shape, spotColor = tokens.night, ambientColor = tokens.night)
+            // Elevation rides the reveal layer — inside it, the fade would
+            // clip the shadow to the card's own bounds. See `RevealShadow`.
+            .fadeUpOnAppear(
+                delayMs = revealDelayMs,
+                shadow = RevealShadow(
+                    elevation = 14.dp,
+                    shape = shape,
+                    spotColor = tokens.night,
+                    ambientColor = tokens.night,
+                ),
+            )
             .clip(shape)
             .background(tokens.night),
     ) {

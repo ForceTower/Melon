@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,6 +28,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.forcetower.unes.R
+import dev.forcetower.unes.designsystem.foundation.RevealShadow
+import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
 import dev.forcetower.unes.designsystem.theme.MelonTheme
 import dev.forcetower.unes.designsystem.theme.melon
 import dev.forcetower.unes.ui.feature.overview.OverviewFixtures
@@ -38,9 +41,14 @@ internal fun MessagesPreview(
     data: OverviewMessagePreview,
     onOpenMessages: () -> Unit,
     modifier: Modifier = Modifier,
+    revealDelayMs: Int = 920,
 ) {
+    // Header and card reveal separately on the same delay: a single reveal
+    // around both would put the card's elevation inside the fading layer,
+    // which clips it to the card's own bounds. See `RevealShadow`.
     Column(modifier = modifier.fillMaxWidth()) {
         Row(
+            modifier = Modifier.fadeUpOnAppear(delayMs = revealDelayMs),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
@@ -67,7 +75,14 @@ internal fun MessagesPreview(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .cardSurface(cornerRadius = 24.dp)
+                .fadeUpOnAppear(
+                    delayMs = revealDelayMs,
+                    shadow = RevealShadow(
+                        elevation = CardSurfaceElevation,
+                        shape = RoundedCornerShape(24.dp),
+                    ),
+                )
+                .cardSurface(cornerRadius = 24.dp, shadow = false)
                 .clickable(onClick = onOpenMessages)
                 .padding(horizontal = 16.dp, vertical = 14.dp),
             verticalAlignment = Alignment.CenterVertically,

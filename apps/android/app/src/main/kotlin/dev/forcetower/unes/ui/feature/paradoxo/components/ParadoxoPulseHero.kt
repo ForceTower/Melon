@@ -35,7 +35,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.res.stringResource
@@ -47,6 +46,8 @@ import dev.forcetower.melon.feature.paradoxo.domain.model.ParadoxoPulseFact
 import dev.forcetower.melon.feature.paradoxo.domain.model.ParadoxoRef
 import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.foundation.Mesh
+import dev.forcetower.unes.designsystem.foundation.RevealShadow
+import dev.forcetower.unes.designsystem.foundation.scaleInOnAppear
 import dev.forcetower.unes.designsystem.theme.MelonMotion
 import dev.forcetower.unes.designsystem.theme.melon
 import dev.forcetower.unes.ui.feature.paradoxo.ParadoxoFormat
@@ -63,6 +64,7 @@ internal fun ParadoxoPulseHero(
     facts: List<ParadoxoPulseFact>,
     onOpen: (ParadoxoRef) -> Unit,
     modifier: Modifier = Modifier,
+    revealDelayMs: Int = 120,
 ) {
     if (facts.isEmpty()) return
     var index by rememberSaveable(facts.size) { mutableIntStateOf(0) }
@@ -82,7 +84,18 @@ internal fun ParadoxoPulseHero(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .shadow(14.dp, shape, spotColor = night, ambientColor = night)
+            // Elevation rides the reveal layer — inside it, the fade would
+            // clip the shadow to the card's own bounds. See `RevealShadow`.
+            .scaleInOnAppear(
+                delayMs = revealDelayMs,
+                fromScale = 0.97f,
+                shadow = RevealShadow(
+                    elevation = 14.dp,
+                    shape = shape,
+                    spotColor = night,
+                    ambientColor = night,
+                ),
+            )
             .clip(shape)
             .background(night)
             .clickable { onOpen(fact.ref) },

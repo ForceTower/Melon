@@ -169,13 +169,20 @@ private fun StretchEyebrow(label: String) {
     }
 }
 
+/** Elevation of the standard card plate — see [cardSurface]. */
+internal val CardSurfaceElevation = 2.dp
+
 // White (card token) plate with hairline border + soft shadow — the design's
-// standard elevated card treatment.
+// standard elevated card treatment. Pass `shadow = false` when a reveal
+// modifier already carries the elevation as a `RevealShadow`, which keeps it
+// out of the fading layer.
 @Composable
-internal fun Modifier.cardSurface(cornerRadius: Dp): Modifier {
+internal fun Modifier.cardSurface(cornerRadius: Dp, shadow: Boolean = true): Modifier {
     val shape = RoundedCornerShape(cornerRadius)
     return this
-        .shadow(elevation = 2.dp, shape = shape, clip = false)
+        .then(
+            if (shadow) Modifier.shadow(CardSurfaceElevation, shape, clip = false) else Modifier,
+        )
         .clip(shape)
         .background(MaterialTheme.melon.surface.card)
         .border(1.dp, MaterialTheme.melon.surface.line, shape)

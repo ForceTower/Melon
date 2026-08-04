@@ -177,9 +177,7 @@ private fun CalendarContent(
                 CalHeroCard(
                     event = hero,
                     onClick = { onOpenEvent(hero); openEventId = hero.id },
-                    modifier = Modifier
-                        .padding(start = 20.dp, end = 20.dp, top = 14.dp)
-                        .fadeUpOnAppear(delayMs = 100, fromOffset = 20.dp),
+                    modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 14.dp),
                 )
             }
 

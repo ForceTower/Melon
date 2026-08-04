@@ -40,6 +40,8 @@ import androidx.compose.ui.unit.sp
 import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.foundation.Mesh
 import dev.forcetower.unes.designsystem.foundation.MeshVariant
+import dev.forcetower.unes.designsystem.foundation.RevealShadow
+import dev.forcetower.unes.designsystem.foundation.scaleInOnAppear
 import dev.forcetower.unes.designsystem.theme.MelonTheme
 import dev.forcetower.unes.designsystem.theme.melon
 import dev.forcetower.unes.ui.feature.disciplines.formatGrade
@@ -52,14 +54,25 @@ import kotlin.math.abs
 // live dot, name/course, the "UEFS · Módulo" chip, and the
 // Score · Frequência · Semestre stat row below a hairline divider.
 @Composable
-internal fun IdentityCard(identity: ProfileIdentity, modifier: Modifier = Modifier) {
+internal fun IdentityCard(
+    identity: ProfileIdentity,
+    modifier: Modifier = Modifier,
+    revealDelayMs: Int = 120,
+) {
     val fixed = MaterialTheme.melon.fixed
     val shape = RoundedCornerShape(28.dp)
 
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .shadow(elevation = 12.dp, shape = shape)
+            // Reveal and shadow travel together: handing the elevation to the
+            // reveal keeps it out of the fading layer, which would clip it to
+            // the card's own bounds for the length of the animation.
+            .scaleInOnAppear(
+                delayMs = revealDelayMs,
+                fromScale = 0.97f,
+                shadow = RevealShadow(elevation = 12.dp, shape = shape),
+            )
             .clip(shape)
             .background(fixed.heroNight),
     ) {

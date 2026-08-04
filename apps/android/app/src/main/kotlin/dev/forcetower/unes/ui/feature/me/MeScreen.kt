@@ -44,7 +44,6 @@ import dev.forcetower.melon.feature.me.domain.model.AcademicDocument
 import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.foundation.PinnedHeaderHairline
 import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
-import dev.forcetower.unes.designsystem.foundation.scaleInOnAppear
 import dev.forcetower.unes.designsystem.theme.melon
 import dev.forcetower.unes.ui.feature.connected.ConnectedRoute
 import dev.forcetower.unes.ui.feature.connected.LocalConnectedNavigator
@@ -154,10 +153,7 @@ internal fun MeScreen(
                 .padding(horizontal = 20.dp),
         ) {
             if (identity != null) {
-                IdentityCard(
-                    identity = identity,
-                    modifier = Modifier.scaleInOnAppear(delayMs = 120, fromScale = 0.97f),
-                )
+                IdentityCard(identity = identity)
                 if (identity.semesterTotalWeeks > 0) {
                     Spacer(Modifier.height(14.dp))
                     SemesterProgressCard(

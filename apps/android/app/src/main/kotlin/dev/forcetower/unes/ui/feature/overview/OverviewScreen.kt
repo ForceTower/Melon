@@ -256,7 +256,6 @@ internal fun OverviewScreen(
                         vm.trackMessagesTileTap()
                         onOpenMessages()
                     },
-                    modifier = Modifier.fadeUpOnAppear(delayMs = 920),
                 )
             }
 
