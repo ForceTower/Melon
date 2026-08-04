@@ -134,15 +134,17 @@ private fun ShortcutCard(
             ),
             color = MaterialTheme.colorScheme.onBackground,
         )
-        Spacer(Modifier.height(2.dp))
-        Text(
-            text = stringResource(shortcut.hintRes),
-            style = MaterialTheme.typography.bodySmall.copy(
-                fontSize = 11.sp,
-                lineHeight = 14.sp,
-            ),
-            color = MaterialTheme.colorScheme.outline,
-        )
+        shortcut.hintRes?.let { hintRes ->
+            Spacer(Modifier.height(2.dp))
+            Text(
+                text = stringResource(hintRes),
+                style = MaterialTheme.typography.bodySmall.copy(
+                    fontSize = 11.sp,
+                    lineHeight = 14.sp,
+                ),
+                color = MaterialTheme.colorScheme.outline,
+            )
+        }
     }
 }
 

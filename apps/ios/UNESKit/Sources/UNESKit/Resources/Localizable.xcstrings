@@ -16068,30 +16068,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Certificate"
+            "value" : "Enrollment certificate"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Comprovante"
-          }
-        }
-      }
-    },
-    "me.shortcut.certificateHint" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "active enrollment"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "matrícula ativa"
+            "value" : "Comprovante de matrícula"
           }
         }
       }
@@ -16153,30 +16136,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Transcript"
+            "value" : "Academic transcript"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Histórico"
-          }
-        }
-      }
-    },
-    "me.shortcut.historyHint" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "grades and credits"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "notas e créditos"
+            "value" : "Histórico escolar"
           }
         }
       }

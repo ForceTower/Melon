@@ -54,7 +54,8 @@ internal enum class ShortcutKind {
 internal data class Shortcut(
     val id: ShortcutKind,
     val labelRes: Int,
-    val hintRes: Int,
+    // Null renders a label-only tile.
+    val hintRes: Int? = null,
     val tone: ShortcutTone,
     val icon: ImageVector,
     val beta: Boolean = false,

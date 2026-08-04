@@ -66,21 +66,18 @@ internal object MeFixtures {
         Shortcut(
             id = ShortcutKind.Countdown,
             labelRes = R.string.me_shortcut_countdown_label,
-            hintRes = R.string.me_shortcut_countdown_hint,
             tone = ShortcutTone.Magenta,
             icon = Icons.Filled.HourglassTop,
         ),
         Shortcut(
             id = ShortcutKind.Certificate,
             labelRes = R.string.me_shortcut_certificate_label,
-            hintRes = R.string.me_shortcut_certificate_hint,
             tone = ShortcutTone.Indigo,
             icon = Icons.Filled.Description,
         ),
         Shortcut(
             id = ShortcutKind.History,
             labelRes = R.string.me_shortcut_history_label,
-            hintRes = R.string.me_shortcut_history_hint,
             tone = ShortcutTone.Violet,
             icon = Icons.AutoMirrored.Filled.ReceiptLong,
         ),
@@ -97,6 +94,7 @@ internal object MeFixtures {
             hintRes = R.string.me_shortcut_library_hint,
             tone = ShortcutTone.Teal,
             icon = Icons.Filled.LocalLibrary,
+            beta = true,
         ),
         Shortcut(
             id = ShortcutKind.Materials,

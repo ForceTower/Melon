@@ -663,11 +663,8 @@
     <string name="me_shortcut_calendar_label">Calendário</string>
     <string name="me_shortcut_calendar_hint">datas acadêmicas</string>
     <string name="me_shortcut_countdown_label">Final Countdown</string>
-    <string name="me_shortcut_countdown_hint">contagem do fim</string>
-    <string name="me_shortcut_certificate_label">Comprovante</string>
-    <string name="me_shortcut_certificate_hint">matrícula ativa</string>
-    <string name="me_shortcut_history_label">Histórico</string>
-    <string name="me_shortcut_history_hint">notas e créditos</string>
+    <string name="me_shortcut_certificate_label">Comprovante de matrícula</string>
+    <string name="me_shortcut_history_label">Histórico escolar</string>
     <string name="me_shortcut_paradoxo_label">Paradoxo</string>
     <string name="me_shortcut_paradoxo_hint">médias da universidade</string>
     <string name="me_shortcut_materials_label">Materiais</string>

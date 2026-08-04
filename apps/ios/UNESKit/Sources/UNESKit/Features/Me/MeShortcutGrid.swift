@@ -97,8 +97,8 @@ extension MeShortcut {
         case .enrollment: .localized(.meShortcutEnrollmentHint)
         case .calendar: .localized(.meShortcutCalendarHint)
         case .countdown: nil
-        case .certificate: .localized(.meShortcutCertificateHint)
-        case .history: .localized(.meShortcutHistoryHint)
+        case .certificate: nil
+        case .history: nil
         case .paradoxo: .localized(.meShortcutParadoxoHint)
         case .materials: .localized(.meShortcutMaterialsHint)
         case .library: .localized(.meShortcutLibraryHint)
@@ -121,7 +121,10 @@ extension MeShortcut {
     }
 
     var isBeta: Bool {
-        self == .enrollment
+        switch self {
+        case .enrollment, .library: true
+        default: false
+        }
     }
 
     var tone: Color {

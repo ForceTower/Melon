@@ -628,11 +628,8 @@
     <string name="me_shortcut_calendar_label">Calendar</string>
     <string name="me_shortcut_calendar_hint">academic dates</string>
     <string name="me_shortcut_countdown_label">Final Countdown</string>
-    <string name="me_shortcut_countdown_hint">countdown to the end</string>
-    <string name="me_shortcut_certificate_label">Certificate</string>
-    <string name="me_shortcut_certificate_hint">active enrollment</string>
-    <string name="me_shortcut_history_label">Transcript</string>
-    <string name="me_shortcut_history_hint">grades and credits</string>
+    <string name="me_shortcut_certificate_label">Enrollment certificate</string>
+    <string name="me_shortcut_history_label">Academic transcript</string>
     <string name="me_shortcut_paradoxo_label">Paradoxo</string>
     <string name="me_shortcut_paradoxo_hint">university averages</string>
     <string name="me_shortcut_materials_label">Materials</string>
