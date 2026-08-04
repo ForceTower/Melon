@@ -18,14 +18,8 @@ extension DisciplinesRepository: DependencyKey {
 
             log.debug("refresh start")
             do {
-                let list: SemesterListDTO = try await apiClient.get(from: "api/sync/semesters")
-                var snapshot: SemesterSnapshot?
-                if let active = list.semesters.map(\.domain).active(today: now.dayStamp) {
-                    let payload: SemesterPayloadDTO = try await apiClient.get(from: "api/sync/semesters/\(active.id)")
-                    snapshot = payload.snapshot
-                }
-                try await mirror.apply(semesters: list.semesters.map(\.record), snapshot: snapshot, syncedAt: now)
-                log.info("refresh ok semesters=\(list.semesters.count) activeSnapshot=\(snapshot != nil)")
+                let summary = try await SemesterRefresh.run(apiClient: apiClient, mirror: mirror, now: now)
+                log.info("refresh ok semesters=\(summary.semesterCount) scopes=\(summary.scopeCount)")
             } catch {
                 switch error {
                 case APIError.server(401, _):

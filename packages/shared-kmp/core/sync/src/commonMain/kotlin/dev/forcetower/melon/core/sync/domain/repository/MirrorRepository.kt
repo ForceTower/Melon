@@ -13,6 +13,12 @@ interface MirrorRepository {
     suspend fun syncSemesterList(): Outcome<List<SemesterSummary>, SyncError>
     suspend fun syncSemester(semesterId: String): Outcome<Unit, SyncError>
 
+    // Local read, no network: already-mirrored semesters whose server
+    // `dirtyAt` (as recorded by the last syncSemesterList) moved past the
+    // one their last syncSemester applied. Refresh re-pulls these so a
+    // result posted after a semester ends still reaches the mirror.
+    suspend fun listStaleMirroredSemesterIds(): List<String>
+
     // Polled by SyncView's retry gates while the server's backfill worker
     // catches up. Pure read; no local writes.
     suspend fun fetchOnboardingStatus(): Outcome<OnboardingStatus, SyncError>

@@ -66,9 +66,10 @@ struct CoefficientHistoryTests {
     }
 
     @Test
-    func missingResultScoresZeroOnceTheStudentMovesOn() throws {
+    func explicitFailureWithoutPostedMeanScoresZero() throws {
         let closed = StudentClassRecord(id: "sc1", semesterId: "sem1", classId: "c1", finalGrade: "8.0")
-        let abandoned = StudentClassRecord(id: "sc2", semesterId: "sem1", classId: "c2")
+        // Reprovado por falta: upstream posts the verdict but no mean.
+        let abandoned = StudentClassRecord(id: "sc2", semesterId: "sem1", classId: "c2", approved: false)
         let later = StudentClassRecord(id: "sc3", semesterId: "sem2", classId: "c3", finalGrade: "9.0")
         let history = CoefficientHistory(
             semesters: [
@@ -99,6 +100,51 @@ struct CoefficientHistoryTests {
         #expect(summary.spark == [6.0, 7.0])
         #expect(summary.value == 7.0)
         #expect(summary.delta == 1.0)
+    }
+
+    @Test
+    func missingResultWithoutVerdictNeverScoresZero() throws {
+        // A past semester whose mirror never caught the posted grades (the
+        // staleness bug) — or an exemption, which passes with no mean. Either
+        // way the discipline stays out of the CR instead of dragging it to 0.
+        let history = CoefficientHistory(
+            semesters: [
+                semester("sem1", code: "20251", start: "2025-02-01", end: "2025-06-30"),
+                semester("sem2", code: "20252", start: "2025-08-01", end: "2025-12-15"),
+            ],
+            disciplines: [
+                DisciplineRecord(id: "d1", semesterId: "sem1", code: "ALGI", name: "Algoritmos I", hours: 60),
+                DisciplineRecord(id: "d2", semesterId: "sem1", code: "CALC", name: "Cálculo II", hours: 20),
+                DisciplineRecord(id: "d3", semesterId: "sem1", code: "FIS1", name: "Física I", hours: 40),
+                DisciplineRecord(id: "d4", semesterId: "sem2", code: "LPOO", name: "POO", hours: 40),
+            ],
+            disciplineOffers: [
+                DisciplineOfferRecord(id: "o1", semesterId: "sem1", disciplineId: "d1"),
+                DisciplineOfferRecord(id: "o2", semesterId: "sem1", disciplineId: "d2"),
+                DisciplineOfferRecord(id: "o3", semesterId: "sem1", disciplineId: "d3"),
+                DisciplineOfferRecord(id: "o4", semesterId: "sem2", disciplineId: "d4"),
+            ],
+            classes: [
+                ClassRecord(id: "c1", semesterId: "sem1", offerId: "o1", hours: 60),
+                ClassRecord(id: "c2", semesterId: "sem1", offerId: "o2", hours: 20),
+                ClassRecord(id: "c3", semesterId: "sem1", offerId: "o3", hours: 40),
+                ClassRecord(id: "c4", semesterId: "sem2", offerId: "o4", hours: 40),
+            ],
+            studentClasses: [
+                StudentClassRecord(id: "sc1", semesterId: "sem1", classId: "c1", finalGrade: "8.0"),
+                // No grade, no verdict — a stale mirror, never a 0.
+                StudentClassRecord(id: "sc2", semesterId: "sem1", classId: "c2"),
+                // Exemption: passed with no mean — also never a 0.
+                StudentClassRecord(id: "sc3", semesterId: "sem1", classId: "c3", approved: true),
+                StudentClassRecord(id: "sc4", semesterId: "sem2", classId: "c4", finalGrade: "9.0"),
+            ]
+        )
+
+        let summary = try #require(history.summary())
+        // sem1: only ALGI counts — 8.0
+        // sem2: (8×60 + 9×40) / 100 = 8.4
+        #expect(summary.spark == [8.0, 8.4])
+        #expect(summary.value == 8.4)
     }
 
     @Test

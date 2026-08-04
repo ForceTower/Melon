@@ -128,6 +128,54 @@ struct MirrorStoreTests {
     }
 
     @Test
+    func staleMirroredSemesterIdsTracksDirtyMovement() async throws {
+        let database = try inMemoryDatabase()
+        let store = MirrorStore(writer: database)
+        let snapshot = MirrorFixtures.payload().snapshot
+        var listed = snapshot.semester
+        listed.dirtyAt = "2026-07-22T21:14:00.000Z"
+
+        // Listed but never downloaded: not stale — it stays behind the
+        // opt-in download card.
+        try await store.apply(semesters: [listed], snapshots: [], syncedAt: .now)
+        #expect(try await store.staleMirroredSemesterIds(in: [listed]).isEmpty)
+
+        // Mirroring the payload stamps the applied dirtyAt.
+        try await store.apply(semesters: [], snapshots: [snapshot], syncedAt: .now)
+        #expect(try await store.staleMirroredSemesterIds(in: [listed]).isEmpty)
+
+        // The worker applies new upstream data for the semester server-side.
+        var moved = listed
+        moved.dirtyAt = "2026-07-23T09:00:00.000Z"
+        #expect(try await store.staleMirroredSemesterIds(in: [moved]) == ["sem1"])
+
+        // A list-only apply records the new dirtyAt but keeps the applied
+        // stamp — the semester stays stale until its payload lands.
+        try await store.apply(semesters: [moved], snapshots: [], syncedAt: .now)
+        let afterList = try await database.read { try SemesterRecord.fetchOne($0, key: "sem1") }
+        #expect(afterList?.dirtyAt == "2026-07-23T09:00:00.000Z")
+        #expect(afterList?.appliedDirtyAt == "2026-07-22T21:14:00.000Z")
+        #expect(try await store.staleMirroredSemesterIds(in: [moved]) == ["sem1"])
+
+        // Re-applying the payload settles it.
+        try await store.apply(semesters: [], snapshots: [snapshot], syncedAt: .now)
+        #expect(try await store.staleMirroredSemesterIds(in: [moved]).isEmpty)
+    }
+
+    @Test
+    func semestersMirroredBeforeTheStampExistedCountAsStale() async throws {
+        let store = MirrorStore(writer: try inMemoryDatabase())
+        let snapshot = MirrorFixtures.payload().snapshot
+        // Downloaded back when the list carried no dirtyAt (or before the
+        // client stored it) — the first list that does carry one re-pulls.
+        try await store.apply(semesters: [snapshot.semester], snapshots: [snapshot], syncedAt: .now)
+
+        var listed = snapshot.semester
+        listed.dirtyAt = "2026-07-22T21:14:00.000Z"
+        #expect(try await store.staleMirroredSemesterIds(in: [listed]) == ["sem1"])
+    }
+
+    @Test
     func messageUpsertsAccumulateIntoTheSummary() async throws {
         let store = MirrorStore(writer: try inMemoryDatabase())
         try await store.upsertMessages(

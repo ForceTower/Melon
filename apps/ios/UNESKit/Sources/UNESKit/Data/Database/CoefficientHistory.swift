@@ -31,11 +31,6 @@ struct CoefficientHistory {
     func checkpoints() -> [CoefficientCheckpoint] {
         let ordered = semesters.sorted { ($0.startDate, $0.code) < ($1.startDate, $1.code) }
         let takenBySemester = takenBySemester()
-        // The newest semester with enrollments is still open: a missing
-        // result there is a class in progress. In every earlier semester the
-        // student has already moved on, so a missing result is an
-        // abandonment — it scores 0 over the discipline's full hours.
-        let openSemesterId = ordered.last { !(takenBySemester[$0.id] ?? []).isEmpty }?.id
 
         var gradeHours = 0.0
         var totalHours = 0.0
@@ -43,8 +38,21 @@ struct CoefficientHistory {
         for semester in ordered {
             var closedAny = false
             for taken in takenBySemester[semester.id] ?? [] where taken.hours > 0 {
-                if taken.finalGrade == nil, semester.id == openSemesterId { continue }
-                let grade = taken.finalGrade ?? 0
+                // Only an explicit result closes a discipline. A missing
+                // final grade with no posted verdict is a class still in
+                // progress, an exemption, or mirror data the sync hasn't
+                // caught up with — none of those may read as a 0, which
+                // would drag the whole CR down. An explicit failure without
+                // a posted mean (e.g. reprovado por falta) still scores 0
+                // over the discipline's full hours.
+                let grade: Double
+                if let finalGrade = taken.finalGrade {
+                    grade = finalGrade
+                } else if taken.approved == false {
+                    grade = 0
+                } else {
+                    continue
+                }
                 gradeHours += grade * Double(taken.hours)
                 totalHours += Double(taken.hours)
                 closedAny = true
@@ -63,6 +71,7 @@ struct CoefficientHistory {
 
     private struct TakenDiscipline {
         var finalGrade: Double?
+        var approved: Bool?
         var hours: Int
     }
 
@@ -101,6 +110,7 @@ struct CoefficientHistory {
             taken[semesterId, default: []].append(
                 TakenDiscipline(
                     finalGrade: ordered.firstNonNil(\.row.finalGrade).flatMap(parseDecimal),
+                    approved: ordered.firstNonNil(\.row.approved),
                     hours: hours
                 )
             )

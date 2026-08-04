@@ -57,13 +57,23 @@ class RefreshSessionUseCase internal constructor(
         // one. Lex compare of yyyy-MM-dd matches calendar order.
         val today = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date.toString()
         val inRange = summaries.filter { it.startDate <= today && today <= it.endDate }
-        val targets = inRange.ifEmpty { listOfNotNull(summaries.maxByOrNull { it.startDate }) }
-        log.i { "refresh semesters total=${summaries.size} targets=${targets.size}" }
+        val active = inRange.ifEmpty { listOfNotNull(summaries.maxByOrNull { it.startDate }) }
 
-        for (summary in targets) {
-            when (val result = mirror.syncSemester(summary.id)) {
+        // Plus every already-mirrored semester the worker touched since its
+        // payload was last applied — results posted after a semester ends
+        // (dirtyAt moved) would otherwise never reach the mirror. Bounded:
+        // the worker only bumps dirty_at for semesters it actually applies.
+        val stale = mirror.listStaleMirroredSemesterIds()
+        val targets = buildList {
+            active.forEach { add(it.id) }
+            stale.forEach { if (it !in this) add(it) }
+        }
+        log.i { "refresh semesters total=${summaries.size} active=${active.size} stale=${stale.size}" }
+
+        for (semesterId in targets) {
+            when (val result = mirror.syncSemester(semesterId)) {
                 is Outcome.Err -> {
-                    log.w { "refresh failed on semester id=${summary.id} err=${result.error}" }
+                    log.w { "refresh failed on semester id=$semesterId err=${result.error}" }
                     return result
                 }
                 is Outcome.Ok -> Unit

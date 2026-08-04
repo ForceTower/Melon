@@ -89,6 +89,9 @@ abstract class AcademicDao {
     @Query("DELETE FROM DisciplineOffer WHERE semesterId = :semesterId")
     protected abstract suspend fun wipeSemesterSubtree(semesterId: String)
 
+    @Query("SELECT * FROM Semester WHERE id = :id")
+    protected abstract suspend fun getSemester(id: String): SemesterEntity?
+
     @Transaction
     open suspend fun applySemesterPayload(
         semesterId: String,
@@ -111,8 +114,12 @@ abstract class AcademicDao {
         upsertDisciplines(disciplines)
         upsertTeachers(teachers)
         upsertSpaces(spaces)
-        // Scoped (re)inserts. Order matches FK topology.
-        upsertSemester(semester)
+        // Scoped (re)inserts. Order matches FK topology. The payload's
+        // semester row carries no dirtyAt — keep the one the semester list
+        // wrote, and stamp it as applied: this scope now reflects the server
+        // state that dirtyAt described.
+        val listed = getSemester(semesterId)
+        upsertSemester(semester.copy(dirtyAt = listed?.dirtyAt, appliedDirtyAt = listed?.dirtyAt))
         upsertDisciplineOffers(offers)
         upsertClasses(classes)
         upsertClassTeachers(classTeachers)

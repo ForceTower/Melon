@@ -15,6 +15,14 @@ struct SemesterRecord: Codable, Equatable, Sendable, FetchableRecord, Persistabl
     /// semester" cards before the payload is mirrored. Only the semester
     /// list carries it.
     var disciplineCount: Int? = nil
+    /// Last time the worker applied this student's semester subtree
+    /// server-side. Only the semester list carries it.
+    var dirtyAt: String? = nil
+    /// The `dirtyAt` in effect when this semester's payload was last
+    /// mirrored. Only the client writes it — a mirrored semester whose
+    /// server `dirtyAt` moved past this is stale and re-downloads on the
+    /// next refresh.
+    var appliedDirtyAt: String? = nil
 }
 
 extension SemesterRecord {

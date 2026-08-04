@@ -79,6 +79,68 @@ struct HomeRepositoryTests {
     }
 
     @Test
+    func refreshRedownloadsMirroredSemestersWhoseDirtyAtMoved() async throws {
+        let database = try inMemoryDatabase()
+        let repository = HomeRepository.liveValue
+        let requested = LockIsolated<[String]>([])
+        let respondFromSecondEra: @Sendable (APIRequest) throws -> Data = { request in
+            requested.withValue { $0.append(request.path) }
+            switch request.path {
+            case "api/sync/semesters": return Wire.twoSemesterList
+            case "api/sync/semesters/sem1": return Wire.sem1PayloadGraded
+            case "api/sync/semesters/sem2": return Wire.sem2Payload
+            case "api/sync/messages": return Wire.messages
+            default: throw APIError.invalidResponse
+            }
+        }
+
+        // 2026.1 mirrored while it was the active semester, before its
+        // grades landed upstream.
+        let april = date(day: 16, hour: 9, minute: 41)
+        try await withDependencies {
+            $0.database = database
+            $0.apiClient.send = { request in
+                switch request.path {
+                case "api/sync/semesters": Wire.oneSemesterList
+                case "api/sync/semesters/sem1": Wire.sem1PayloadUngraded
+                case "api/sync/messages": Wire.messages
+                default: throw APIError.invalidResponse
+                }
+            }
+        } operation: {
+            try await repository.refresh(now: april)
+        }
+
+        // 2026.2 has started and the worker has since applied 2026.1's
+        // grades (its dirtyAt moved): the refresh pulls the active semester
+        // AND re-pulls the stale one, and the CR follows.
+        let september = calendar.date(from: DateComponents(year: 2026, month: 9, day: 1, hour: 10))!
+        try await withDependencies {
+            $0.database = database
+            $0.apiClient.send = respondFromSecondEra
+        } operation: {
+            try await repository.refresh(now: september)
+            let paths = requested.value
+            #expect(paths.contains("api/sync/semesters/sem2"))
+            #expect(paths.contains("api/sync/semesters/sem1"))
+            let cached = try await repository.cached(now: september)
+            #expect(cached?.overview.coefficient?.value == 9.0)
+        }
+
+        // Nothing moved since — the past semester is not fetched again.
+        requested.setValue([])
+        try await withDependencies {
+            $0.database = database
+            $0.apiClient.send = respondFromSecondEra
+        } operation: {
+            try await repository.refresh(now: september)
+        }
+        let paths = requested.value
+        #expect(paths.contains("api/sync/semesters/sem2"))
+        #expect(!paths.contains("api/sync/semesters/sem1"))
+    }
+
+    @Test
     func mirrorKeepsServingWhenTheNetworkIsDown() async throws {
         let database = try inMemoryDatabase()
         let now = date(day: 16, hour: 9, minute: 41)
@@ -132,6 +194,66 @@ private enum Wire {
                         "nameShort":"P1","ordinal":1,"weight":null,"value":"8.5","date":"2026-04-01"}],
       "lectures":[{"id":"l1","classId":"c1","ordinal":1,"situation":null,"date":"2026-04-09","subject":"Introdução"}],
       "lectureMaterials":[]
+    }}
+    """.utf8)
+
+    // Staleness fixtures: 2026.1 alone and active, then 2026.2 active with
+    // 2026.1's dirtyAt moved past the first list's value.
+    static let oneSemesterList = Data("""
+    {"ok":true,"data":{"semesters":[
+      {"id":"sem1","platformId":1000,"code":"20261","description":"Semestre 2026.1",
+       "startDate":"2026-01-01","endDate":"2026-06-30","track":null,"dirtyAt":"2026-04-10T00:00:00.000Z"}
+    ]}}
+    """.utf8)
+
+    static let twoSemesterList = Data("""
+    {"ok":true,"data":{"semesters":[
+      {"id":"sem2","platformId":1001,"code":"20262","description":"Semestre 2026.2",
+       "startDate":"2026-08-01","endDate":"2026-12-31","track":null,"dirtyAt":"2026-08-30T00:00:00.000Z"},
+      {"id":"sem1","platformId":1000,"code":"20261","description":"Semestre 2026.1",
+       "startDate":"2026-01-01","endDate":"2026-06-30","track":null,"dirtyAt":"2026-07-22T21:14:00.000Z"}
+    ]}}
+    """.utf8)
+
+    static let sem1PayloadUngraded = Data("""
+    {"ok":true,"data":{
+      "semester":{"id":"sem1","platformId":1000,"code":"20261","description":"Semestre 2026.1",
+                  "startDate":"2026-01-01","endDate":"2026-06-30","track":null},
+      "disciplines":[{"id":"d1","code":"ALGI","platformId":null,"name":"Algoritmos I","hours":60,"department":null,"program":null}],
+      "disciplineOffers":[{"id":"o1","disciplineId":"d1","semesterId":"sem1","platformId":null,"hours":60,"program":null}],
+      "classes":[{"id":"c1","offerId":"o1","platformId":null,"groupName":"T01","type":"T","hours":60,"program":null}],
+      "teachers":[],"classTeachers":[],"spaces":[],"allocations":[],
+      "studentClasses":[{"id":"sc1","classId":"c1","finalGrade":null,"missedClasses":0,"resultDescription":null,
+                         "approved":null,"underRevision":null,"wentToFinals":null,"resultSyncedAt":null}],
+      "evaluations":[],"studentGrades":[],"lectures":[],"lectureMaterials":[]
+    }}
+    """.utf8)
+
+    static let sem1PayloadGraded = Data("""
+    {"ok":true,"data":{
+      "semester":{"id":"sem1","platformId":1000,"code":"20261","description":"Semestre 2026.1",
+                  "startDate":"2026-01-01","endDate":"2026-06-30","track":null},
+      "disciplines":[{"id":"d1","code":"ALGI","platformId":null,"name":"Algoritmos I","hours":60,"department":null,"program":null}],
+      "disciplineOffers":[{"id":"o1","disciplineId":"d1","semesterId":"sem1","platformId":null,"hours":60,"program":null}],
+      "classes":[{"id":"c1","offerId":"o1","platformId":null,"groupName":"T01","type":"T","hours":60,"program":null}],
+      "teachers":[],"classTeachers":[],"spaces":[],"allocations":[],
+      "studentClasses":[{"id":"sc1","classId":"c1","finalGrade":"9.0","missedClasses":0,"resultDescription":null,
+                         "approved":true,"underRevision":null,"wentToFinals":null,"resultSyncedAt":null}],
+      "evaluations":[],"studentGrades":[],"lectures":[],"lectureMaterials":[]
+    }}
+    """.utf8)
+
+    static let sem2Payload = Data("""
+    {"ok":true,"data":{
+      "semester":{"id":"sem2","platformId":1001,"code":"20262","description":"Semestre 2026.2",
+                  "startDate":"2026-08-01","endDate":"2026-12-31","track":null},
+      "disciplines":[{"id":"d2","code":"CALC","platformId":null,"name":"Cálculo II","hours":60,"department":null,"program":null}],
+      "disciplineOffers":[{"id":"o2","disciplineId":"d2","semesterId":"sem2","platformId":null,"hours":60,"program":null}],
+      "classes":[{"id":"c2","offerId":"o2","platformId":null,"groupName":"T01","type":"T","hours":60,"program":null}],
+      "teachers":[],"classTeachers":[],"spaces":[],"allocations":[],
+      "studentClasses":[{"id":"sc2","classId":"c2","finalGrade":null,"missedClasses":0,"resultDescription":null,
+                         "approved":null,"underRevision":null,"wentToFinals":null,"resultSyncedAt":null}],
+      "evaluations":[],"studentGrades":[],"lectures":[],"lectureMaterials":[]
     }}
     """.utf8)
 

@@ -48,6 +48,7 @@ internal fun SemesterListItemDto.toEntity(): SemesterEntity =
         startDate = startDate,
         endDate = endDate,
         track = track,
+        dirtyAt = dirtyAt,
     )
 
 internal fun DisciplineDto.toEntity(): DisciplineEntity =

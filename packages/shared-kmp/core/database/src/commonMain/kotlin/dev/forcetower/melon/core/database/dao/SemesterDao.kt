@@ -17,6 +17,20 @@ interface SemesterDao {
     @Query("SELECT * FROM Semester WHERE id = :id")
     suspend fun get(id: String): SemesterEntity?
 
+    // Already-mirrored semesters (their offer subtree exists locally) whose
+    // server `dirtyAt` moved past the one last applied — including rows
+    // mirrored before the stamp existed. Never-synced semesters are excluded:
+    // the backfill owns those.
+    @Query(
+        """
+        SELECT s.id FROM Semester s
+         WHERE s.dirtyAt IS NOT NULL
+           AND (s.appliedDirtyAt IS NULL OR s.appliedDirtyAt != s.dirtyAt)
+           AND EXISTS (SELECT 1 FROM DisciplineOffer o WHERE o.semesterId = s.id)
+        """,
+    )
+    suspend fun listStaleMirroredIds(): List<String>
+
     @Upsert
     suspend fun upsert(semester: SemesterEntity)
 

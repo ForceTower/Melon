@@ -81,8 +81,11 @@ internal class MirrorRepositoryImpl(
                 val items = mapped.value.semesters
                 // Upsert the semester rows so the client has the list even
                 // before fetching full payloads. Scoped subtree (disciplines,
-                // classes, grades) lands on each per-semester fetch.
-                semesterDao.upsertAll(items.map { it.toEntity() })
+                // classes, grades) lands on each per-semester fetch. The list
+                // never carries `appliedDirtyAt` — keep the stamp the last
+                // payload apply wrote.
+                val appliedById = semesterDao.listAll().associate { it.id to it.appliedDirtyAt }
+                semesterDao.upsertAll(items.map { it.toEntity().copy(appliedDirtyAt = appliedById[it.id]) })
                 semesterDao.deleteMissing(items.map { it.id })
                 log.i { "syncSemesterList ok count=${items.size}" }
                 Outcome.Ok(
@@ -101,6 +104,8 @@ internal class MirrorRepositoryImpl(
             }
         }
     }
+
+    override suspend fun listStaleMirroredSemesterIds(): List<String> = semesterDao.listStaleMirroredIds()
 
     override suspend fun syncSemester(semesterId: String): Outcome<Unit, SyncError> = callNetwork("syncSemester") {
         log.d { "syncSemester start id=$semesterId" }

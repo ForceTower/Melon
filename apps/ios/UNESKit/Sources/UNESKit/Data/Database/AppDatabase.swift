@@ -249,6 +249,15 @@ private func migrator() -> DatabaseMigrator {
             t.column("createdAt", .text).notNull()
         }
     }
+    // Semester staleness: the server's `dirtyAt` from the list plus the one
+    // the client last applied, so refreshes can re-pull a mirrored semester
+    // whose data moved server-side after it was downloaded.
+    migrator.registerMigration("v8") { db in
+        try db.alter(table: "semesters") { t in
+            t.add(column: "dirtyAt", .text)
+            t.add(column: "appliedDirtyAt", .text)
+        }
+    }
     return migrator
 }
 

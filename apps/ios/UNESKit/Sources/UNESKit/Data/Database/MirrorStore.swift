@@ -12,25 +12,59 @@ struct MirrorStore: Sendable {
 
     // MARK: Write path
 
-    /// Applies one successful refresh atomically: upserts the semester list,
-    /// replaces the fetched semester's whole scope (so rows deleted upstream
-    /// disappear locally), and stamps `lastSyncedAt`.
-    func apply(semesters: [SemesterRecord], snapshot: SemesterSnapshot?, syncedAt: Date) async throws {
+    /// Applies one successful refresh: upserts the semester list and stamps
+    /// `lastSyncedAt` in one transaction, then replaces each fetched
+    /// semester's whole scope (so rows deleted upstream disappear locally)
+    /// in its own transaction — a mid-run failure leaves whole semesters
+    /// behind, never a partially written one.
+    func apply(semesters: [SemesterRecord], snapshots: [SemesterSnapshot], syncedAt: Date) async throws {
         do {
             try await writer.write { db in
                 for semester in semesters {
-                    try semester.upsert(db)
-                }
-                if let snapshot {
-                    try Self.replaceScope(with: snapshot, db: db)
+                    // The list never carries `appliedDirtyAt` — keep the
+                    // stamp the last payload apply wrote.
+                    var record = semester
+                    record.appliedDirtyAt = try SemesterRecord.fetchOne(db, key: semester.id)?.appliedDirtyAt
+                    try record.upsert(db)
                 }
                 let stamp = syncedAt.formatted(Self.timestampFormat)
                 try SyncStateRecord(key: Self.lastSyncedAtKey, value: stamp).upsert(db)
             }
-            log.info("upsert semesters count=\(semesters.count)")
+            for snapshot in snapshots {
+                try await writer.write { db in
+                    try Self.replaceScope(with: snapshot, db: db)
+                }
+            }
+            log.info("upsert semesters count=\(semesters.count) scopes=\(snapshots.count)")
         } catch {
             log.error("apply sync failed semesters=\(semesters.count)", error: error)
             throw error
+        }
+    }
+
+    func apply(semesters: [SemesterRecord], snapshot: SemesterSnapshot?, syncedAt: Date) async throws {
+        try await apply(semesters: semesters, snapshots: snapshot.map { [$0] } ?? [], syncedAt: syncedAt)
+    }
+
+    /// Ids of already-mirrored semesters (local enrollment rows exist) whose
+    /// server `dirtyAt` in `semesters` — the just-fetched list — differs from
+    /// the one last applied. Never-downloaded semesters are excluded on
+    /// purpose: they stay behind the opt-in download card.
+    func staleMirroredSemesterIds(in semesters: [SemesterRecord]) async throws -> [String] {
+        try await writer.read { db in
+            let downloadedIds = try Set(
+                String.fetchAll(db, StudentClassRecord.select(Column("semesterId"), as: String.self).distinct())
+            )
+            let appliedById = try Dictionary(
+                SemesterRecord.fetchAll(db).map { ($0.id, $0.appliedDirtyAt) },
+                uniquingKeysWith: { first, _ in first }
+            )
+            return semesters
+                .filter { semester in
+                    guard let dirtyAt = semester.dirtyAt, downloadedIds.contains(semester.id) else { return false }
+                    return appliedById[semester.id, default: nil] != dirtyAt
+                }
+                .map(\.id)
         }
     }
 
@@ -251,12 +285,17 @@ struct MirrorStore: Sendable {
     // MARK: Queries
 
     private static func replaceScope(with snapshot: SemesterSnapshot, db: Database) throws {
-        // The payload's semester row carries no disciplineCount — keep the
-        // one the semester list wrote instead of nulling it.
+        // The payload's semester row carries neither disciplineCount nor
+        // dirtyAt — keep the ones the semester list wrote instead of nulling
+        // them. Applying this payload also freshens the staleness stamp: the
+        // scope now reflects the server state the list's dirtyAt described.
         var semester = snapshot.semester
+        let listed = try SemesterRecord.fetchOne(db, key: semester.id)
         if semester.disciplineCount == nil {
-            semester.disciplineCount = try SemesterRecord.fetchOne(db, key: semester.id)?.disciplineCount
+            semester.disciplineCount = listed?.disciplineCount
         }
+        semester.dirtyAt = listed?.dirtyAt
+        semester.appliedDirtyAt = listed?.dirtyAt
         try semester.upsert(db)
 
         let scope = Column("semesterId") == snapshot.semester.id

@@ -91,7 +91,8 @@ extension SemesterListDTO.ItemDTO {
             description: description,
             startDate: startDate,
             endDate: endDate,
-            disciplineCount: disciplineCount
+            disciplineCount: disciplineCount,
+            dirtyAt: dirtyAt
         )
     }
 }
