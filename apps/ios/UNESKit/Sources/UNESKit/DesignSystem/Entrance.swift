@@ -18,16 +18,11 @@ private struct Entrance: ViewModifier {
             .opacity(shown ? 1 : 0)
             .offset(x: shown ? 0 : offsetX, y: shown ? 0 : offsetY)
             .scaleEffect(shown ? 1 : scale)
-            .onAppear {
-                guard !shown else { return }
-                if reduceMotion {
-                    shown = true
-                } else {
-                    withAnimation(UNESMotion.ease(duration, overshoot: overshoot).delay(delay)) {
-                        shown = true
-                    }
-                }
-            }
+            .animation(
+                reduceMotion ? nil : UNESMotion.ease(duration, overshoot: overshoot).delay(delay),
+                value: shown
+            )
+            .onAppear { shown = true }
     }
 }
 

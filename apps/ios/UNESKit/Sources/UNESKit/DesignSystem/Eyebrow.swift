@@ -34,13 +34,12 @@ struct LiveDot: View {
                 Circle()
                     .fill(color.opacity(pulsing ? 0 : 0.35))
                     .scaleEffect(pulsing ? 2.4 : 1)
+                    .animation(
+                        reduceMotion ? nil : .easeInOut(duration: 0.9).repeatForever(autoreverses: true),
+                        value: pulsing
+                    )
             }
-            .onAppear {
-                guard !reduceMotion else { return }
-                withAnimation(.easeInOut(duration: 0.9).repeatForever(autoreverses: true)) {
-                    pulsing = true
-                }
-            }
+            .onAppear { pulsing = true }
     }
 }
 
