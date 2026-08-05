@@ -22,8 +22,9 @@ internal class SchedulePreferenceStore @Inject constructor(
 ) {
     private val dataStore = context.scheduleDataStore
 
+    // The week grid is the default rendering; the day timeline is the opt-in.
     val gridEnabled: Flow<Boolean> = dataStore.data.map { preferences ->
-        preferences[gridKey] ?: false
+        preferences[gridKey] ?: true
     }
 
     suspend fun setGridEnabled(enabled: Boolean) {

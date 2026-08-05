@@ -83,11 +83,15 @@ internal fun ScheduleGridWeek(
     val gridHeight = HourHeight * (endHour - startHour)
     val line = MaterialTheme.melon.surface.line
 
+    // The reveal sits before the padding so its offscreen buffer (alpha < 1
+    // during the fade) spans the padded box too — the hour labels overhang
+    // the rail by up to 6dp on both ends and would clip mid-animation
+    // otherwise.
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(start = 12.dp, end = 12.dp, top = 6.dp, bottom = 20.dp)
-            .fadeInOnAppear(delayMs = 200, durationMs = 400),
+            .fadeInOnAppear(delayMs = 200, durationMs = 400)
+            .padding(start = 12.dp, end = 12.dp, top = 6.dp, bottom = 20.dp),
     ) {
         HourRail(
             startHour = startHour,
@@ -156,9 +160,11 @@ private fun HourRail(startHour: Int, endHour: Int, modifier: Modifier = Modifier
                 color = MaterialTheme.colorScheme.outlineVariant,
                 textAlign = TextAlign.End,
                 maxLines = 1,
+                // -6dp, like the dc mock — also exactly the grid's top
+                // padding, so the first label stays inside the reveal buffer.
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .offset(x = (-8).dp, y = HourHeight * (hour - startHour) - 8.dp),
+                    .offset(x = (-8).dp, y = HourHeight * (hour - startHour) - 6.dp),
             )
         }
     }

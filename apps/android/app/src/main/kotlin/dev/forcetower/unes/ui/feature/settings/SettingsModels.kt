@@ -34,8 +34,8 @@ internal data class SettingsUiState(
     val passkeyCount: Int? = null,
     val themeMode: ThemeMode = ThemeMode.System,
     // Device-local Horário rendering choice (DataStore, never syncs):
-    // week grid instead of the day timeline.
-    val scheduleGridEnabled: Boolean = false,
+    // week grid (the default) or the day timeline.
+    val scheduleGridEnabled: Boolean = true,
     val spoiler: SpoilerMode = SpoilerMode.Comment,
     val notifMsgBroadcast: Boolean = true,
     val notifMsgClass: Boolean = true,
