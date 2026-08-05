@@ -33,6 +33,9 @@ internal data class SettingsUiState(
     // until the first fetch resolves (or if it fails) so the row can stay quiet.
     val passkeyCount: Int? = null,
     val themeMode: ThemeMode = ThemeMode.System,
+    // Device-local Horário rendering choice (DataStore, never syncs):
+    // week grid instead of the day timeline.
+    val scheduleGridEnabled: Boolean = false,
     val spoiler: SpoilerMode = SpoilerMode.Comment,
     val notifMsgBroadcast: Boolean = true,
     val notifMsgClass: Boolean = true,

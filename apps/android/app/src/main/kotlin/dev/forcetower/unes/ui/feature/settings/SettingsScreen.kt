@@ -25,6 +25,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.MenuBook
 import androidx.compose.material.icons.filled.Alarm
 import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.CalendarViewWeek
 import androidx.compose.material.icons.filled.Campaign
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Event
@@ -34,6 +35,7 @@ import androidx.compose.material.icons.filled.Mail
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.Sell
 import androidx.compose.material.icons.filled.Shield
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -67,6 +69,7 @@ import dev.forcetower.unes.ui.feature.settings.components.NotificationPreview
 import dev.forcetower.unes.ui.feature.settings.components.NotificationToggleRow
 import dev.forcetower.unes.ui.feature.settings.components.SettingsFooter
 import dev.forcetower.unes.ui.feature.settings.components.SettingsOptionCard
+import dev.forcetower.unes.ui.feature.settings.components.SettingsOptionHeader
 import dev.forcetower.unes.ui.feature.settings.components.SettingsSectionLabel
 import dev.forcetower.unes.ui.feature.settings.components.SettingsSegmentedRow
 import dev.forcetower.unes.ui.feature.settings.components.VaultCard
@@ -156,19 +159,7 @@ internal fun SettingsScreen(
                         label = stringResource(R.string.settings_section_appearance),
                     )
                     Spacer(Modifier.height(12.dp))
-                    SettingsOptionCard(
-                        icon = Icons.Filled.Palette,
-                        iconTint = MaterialTheme.melon.status.warn,
-                        title = stringResource(R.string.settings_theme_title),
-                        subtitle = stringResource(R.string.settings_theme_subtitle),
-                    ) {
-                        SettingsSegmentedRow(
-                            options = ThemeModeOptions,
-                            selected = state.themeMode,
-                            optionLabel = { stringResource(it.labelRes()) },
-                            onSelect = { vm.onIntent(SettingsIntent.SetTheme(it)) },
-                        )
-                    }
+                    AppearanceCard(state = state, onIntent = vm::onIntent)
                 }
 
                 // ── Notas · privacidade ──
@@ -386,6 +377,74 @@ private fun ClassesGroup(state: SettingsUiState, onToggle: (SettingsIntent) -> U
     }
 }
 
+// Single Aparência card holding the Tema and "Visão do horário" groups,
+// separated by a full-bleed divider (dc `SettingsScreen` Aparência card).
+// The Visão subtitle mirrors the current selection; the choice is
+// device-local (DataStore) and swaps the Horário tab rendering via
+// `ScheduleRoute`.
+@Composable
+private fun AppearanceCard(state: SettingsUiState, onIntent: (SettingsIntent) -> Unit) {
+    val shape = RoundedCornerShape(24.dp)
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(shape)
+            .background(MaterialTheme.melon.surface.card)
+            .border(1.dp, MaterialTheme.melon.surface.line, shape)
+            .padding(top = 16.dp, bottom = 18.dp),
+    ) {
+        Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+            SettingsOptionHeader(
+                icon = Icons.Filled.Palette,
+                iconTint = MaterialTheme.melon.status.warn,
+                title = stringResource(R.string.settings_theme_title),
+                subtitle = stringResource(R.string.settings_theme_subtitle),
+            )
+            Spacer(Modifier.height(16.dp))
+            SettingsSegmentedRow(
+                options = ThemeModeOptions,
+                selected = state.themeMode,
+                optionLabel = { stringResource(it.labelRes()) },
+                onSelect = { onIntent(SettingsIntent.SetTheme(it)) },
+            )
+        }
+        HorizontalDivider(
+            modifier = Modifier.padding(vertical = 18.dp),
+            thickness = 1.dp,
+            color = MaterialTheme.melon.surface.line,
+        )
+        Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+            SettingsOptionHeader(
+                icon = Icons.Filled.CalendarViewWeek,
+                iconTint = MaterialTheme.melon.palette.teal,
+                title = stringResource(R.string.settings_schedule_view_title),
+                subtitle = stringResource(
+                    if (state.scheduleGridEnabled) {
+                        R.string.settings_schedule_view_grid_hint
+                    } else {
+                        R.string.settings_schedule_view_list_hint
+                    },
+                ),
+            )
+            Spacer(Modifier.height(16.dp))
+            SettingsSegmentedRow(
+                options = ScheduleViewOptions,
+                selected = state.scheduleGridEnabled,
+                optionLabel = { grid ->
+                    stringResource(
+                        if (grid) {
+                            R.string.settings_schedule_view_grid
+                        } else {
+                            R.string.settings_schedule_view_list
+                        },
+                    )
+                },
+                onSelect = { onIntent(SettingsIntent.SetScheduleGrid(it)) },
+            )
+        }
+    }
+}
+
 // Device-local evening-before reminder — a single-row card without the
 // server groups' header counter, because it schedules on this device and
 // never PATCHes `user_settings`.
@@ -413,6 +472,9 @@ private fun EvaluationReminderCard(state: SettingsUiState, onToggle: (SettingsIn
 
 // Claro / Sistema / Escuro, in dc order.
 private val ThemeModeOptions = listOf(ThemeMode.Light, ThemeMode.System, ThemeMode.Dark)
+
+// Grade da semana / Lista do dia, in dc order — `true` = week grid.
+private val ScheduleViewOptions = listOf(true, false)
 
 private fun ThemeMode.labelRes(): Int = when (this) {
     ThemeMode.Light -> R.string.settings_theme_light

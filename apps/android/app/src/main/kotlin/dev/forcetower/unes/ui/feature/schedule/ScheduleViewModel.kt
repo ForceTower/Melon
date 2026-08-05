@@ -15,6 +15,10 @@ import dev.forcetower.melon.feature.schedule.domain.model.ScheduleWeek as KmpSch
 
 internal data class ScheduleUiState(
     val raw: KmpScheduleWeek? = null,
+    // Which Horário rendering the user picked in Configurações. Null until the
+    // DataStore emits, so `ScheduleRoute` can hold a blank frame instead of
+    // mounting the wrong screen and swapping it out.
+    val gridEnabled: Boolean? = null,
 ) : UiState {
     val todayIdx: Int
         get() = raw?.todayDayIndex ?: -1
@@ -57,12 +61,18 @@ internal sealed interface ScheduleEffect : UiEffect
 @HiltViewModel
 internal class ScheduleViewModel @Inject constructor(
     observeScheduleWeek: ObserveScheduleWeekUseCase,
+    schedulePreferences: SchedulePreferenceStore,
     private val analytics: Analytics,
 ) : MviViewModel<ScheduleUiState, ScheduleIntent, ScheduleEffect>(ScheduleUiState()) {
 
     init {
         viewModelScope.launch {
             observeScheduleWeek().collect { value -> setState { copy(raw = value) } }
+        }
+        viewModelScope.launch {
+            schedulePreferences.gridEnabled.collect { enabled ->
+                setState { copy(gridEnabled = enabled) }
+            }
         }
     }
 

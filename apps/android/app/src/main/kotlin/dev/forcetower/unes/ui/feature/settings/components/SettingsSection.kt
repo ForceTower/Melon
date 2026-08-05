@@ -70,6 +70,54 @@ internal fun SettingsSectionLabel(
     }
 }
 
+// Tinted icon chip + title/subtitle header shared by the option cards (dc
+// "Tema", "Visão do horário", and "Privacidade das notas" groups).
+@Composable
+internal fun SettingsOptionHeader(
+    icon: ImageVector,
+    iconTint: Color,
+    title: String,
+    subtitle: String,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(14.dp),
+    ) {
+        Box(
+            modifier = Modifier
+                .size(40.dp)
+                .clip(RoundedCornerShape(12.dp))
+                .background(iconTint.copy(alpha = 0.16f)),
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = iconTint,
+                modifier = Modifier.size(21.dp),
+            )
+        }
+        Column {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleSmall.copy(
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Bold,
+                ),
+                color = MaterialTheme.colorScheme.onBackground,
+            )
+            Spacer(Modifier.height(2.dp))
+            Text(
+                text = subtitle,
+                style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
+                color = MaterialTheme.colorScheme.outline,
+            )
+        }
+    }
+}
+
 // Card with the tinted icon chip + title/subtitle header and a free-form
 // body (dc "Tema" and "Privacidade das notas" cards).
 @Composable
@@ -90,41 +138,7 @@ internal fun SettingsOptionCard(
             .border(1.dp, MaterialTheme.melon.surface.line, shape)
             .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 18.dp),
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(14.dp),
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(40.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(iconTint.copy(alpha = 0.16f)),
-                contentAlignment = Alignment.Center,
-            ) {
-                Icon(
-                    imageVector = icon,
-                    contentDescription = null,
-                    tint = iconTint,
-                    modifier = Modifier.size(21.dp),
-                )
-            }
-            Column {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.titleSmall.copy(
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight.Bold,
-                    ),
-                    color = MaterialTheme.colorScheme.onBackground,
-                )
-                Spacer(Modifier.height(2.dp))
-                Text(
-                    text = subtitle,
-                    style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
-                    color = MaterialTheme.colorScheme.outline,
-                )
-            }
-        }
+        SettingsOptionHeader(icon = icon, iconTint = iconTint, title = title, subtitle = subtitle)
         Spacer(Modifier.height(16.dp))
         content()
     }

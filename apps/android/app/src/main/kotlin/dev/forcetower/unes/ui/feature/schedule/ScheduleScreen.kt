@@ -23,7 +23,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -34,21 +33,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.foundation.PinnedHeaderHairline
 import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
-import dev.forcetower.unes.designsystem.theme.MelonPaletteColors
 import dev.forcetower.unes.designsystem.theme.MelonTheme
 import dev.forcetower.unes.designsystem.theme.melon
-import dev.forcetower.unes.ui.feature.overview.ColorFor
 import dev.forcetower.unes.ui.feature.schedule.components.ScheduleDayHeader
 import dev.forcetower.unes.ui.feature.schedule.components.ScheduleEmptyDay
 import dev.forcetower.unes.ui.feature.schedule.components.ScheduleHeader
 import dev.forcetower.unes.ui.feature.schedule.components.ScheduleTimeline
 import dev.forcetower.unes.ui.feature.schedule.components.ScheduleWeekRail
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.util.Locale
-import dev.forcetower.melon.feature.schedule.domain.model.ScheduleClass as KmpScheduleClass
-import dev.forcetower.melon.feature.schedule.domain.model.ScheduleDay as KmpScheduleDay
-import dev.forcetower.melon.feature.schedule.domain.model.ScheduleWeek as KmpScheduleWeek
 
 // "Horário" tab inside `ConnectedScreen` — 2026 redesign (dc project `UNES
 // Horário - Android`): M3 large-style app bar with the week eyebrow, the
@@ -173,44 +164,6 @@ private fun ScheduleContent(
     }
 }
 
-// ───────── KMP → UI projection ─────────
-
-private fun mapWeek(
-    raw: KmpScheduleWeek?,
-    palette: MelonPaletteColors,
-): List<List<ScheduleClass>> {
-    val days = raw?.days
-    if (days.isNullOrEmpty()) return List(7) { emptyList() }
-    val bucket = MutableList(7) { emptyList<ScheduleClass>() }
-    for (day in days) {
-        val idx = day.dayIndex
-        if (idx in 0..6) bucket[idx] = mapDay(day, palette)
-    }
-    return bucket
-}
-
-private fun mapDay(day: KmpScheduleDay, palette: MelonPaletteColors): List<ScheduleClass> =
-    day.classes.map { mapClass(it, palette) }
-
-private fun mapClass(raw: KmpScheduleClass, palette: MelonPaletteColors): ScheduleClass =
-    ScheduleClass(
-        start = trimTime(raw.startTime),
-        end = raw.endTime?.let(::trimTime).orEmpty(),
-        code = raw.code,
-        title = raw.title,
-        prof = raw.teacherName.orEmpty(),
-        color = ColorFor.discipline(palette, raw.code),
-        modulo = raw.modulo,
-        room = raw.room,
-        campus = raw.campus,
-        topic = raw.topic,
-        offerId = raw.offerId,
-    )
-
-// Upstream ships HH:mm or HH:mm:ss — trim to five chars so the time rail
-// renders minutes only, matching iOS `ScheduleFocusedViewModel.trimTime`.
-private fun trimTime(value: String): String = value.take(5)
-
 // ───────── formatting helpers ─────────
 
 @Composable
@@ -223,60 +176,6 @@ private fun dayMeta(classes: List<ScheduleClass>): String {
         classes.last().end,
     )
 }
-
-// "Terça-feira" — full weekday from the device locale, title-cased. Same
-// derivation Overview uses (no manual weekday-string surgery).
-private fun formatDayName(iso: String?): String {
-    if (iso == null) return ""
-    val date = runCatching { LocalDate.parse(iso) }.getOrNull() ?: return ""
-    return DateTimeFormatter.ofPattern("EEEE", Locale.getDefault())
-        .format(date)
-        .replaceFirstChar { it.titlecase(Locale.getDefault()) }
-}
-
-@Composable
-private fun formatDayDate(iso: String?): String {
-    if (iso == null) return ""
-    val date = runCatching { LocalDate.parse(iso) }.getOrNull() ?: return ""
-    return stringResource(
-        R.string.schedule_day_date_format,
-        date.dayOfMonth,
-        DateTimeFormatter.ofPattern("MMMM", LocalConfiguration.current.locales[0]).format(date),
-    )
-}
-
-@Composable
-private fun formatWeekRange(firstIso: String?, lastIso: String?): String {
-    if (firstIso == null || lastIso == null) return ""
-    val first = runCatching { LocalDate.parse(firstIso) }.getOrNull() ?: return ""
-    val last = runCatching { LocalDate.parse(lastIso) }.getOrNull() ?: return ""
-    val firstMonth = formatShortMonth(first)
-    val lastMonth = formatShortMonth(last)
-    return if (first.monthValue == last.monthValue && first.year == last.year) {
-        stringResource(
-            R.string.schedule_week_range_same_month_format,
-            first.dayOfMonth,
-            last.dayOfMonth,
-            firstMonth,
-        )
-    } else {
-        stringResource(
-            R.string.schedule_week_range_spanning_format,
-            first.dayOfMonth,
-            firstMonth,
-            last.dayOfMonth,
-            lastMonth,
-        )
-    }
-}
-
-// Mirrors `OverviewScreen.formatShortDate` post-processing — strip the
-// trailing dot some locales emit for `MMM`. Rendered uppercase by the header
-// anyway.
-private fun formatShortMonth(date: LocalDate): String =
-    DateTimeFormatter.ofPattern("MMM", Locale.getDefault())
-        .format(date)
-        .replace(".", "")
 
 @Preview
 @Composable

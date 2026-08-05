@@ -56,7 +56,7 @@ import dev.forcetower.unes.ui.feature.messages.MessagesViewModel
 import dev.forcetower.unes.ui.feature.onboarding.components.SystemBarIconsEffect
 import dev.forcetower.unes.ui.feature.overview.ColorFor
 import dev.forcetower.unes.ui.feature.overview.OverviewScreen
-import dev.forcetower.unes.ui.feature.schedule.ScheduleScreen
+import dev.forcetower.unes.ui.feature.schedule.ScheduleRoute
 import dev.forcetower.unes.ui.feature.calendar.CalendarScreen
 import dev.forcetower.melon.feature.paradoxo.domain.model.ParadoxoExploreKind
 import dev.forcetower.unes.ui.feature.enrollment.EnrollmentDisciplineScreen
@@ -191,10 +191,10 @@ fun ConnectedScreen(
                     )
                 }
                 entry<ConnectedRoute.Schedule>(metadata = TabRootMetadata) {
-                    ScheduleScreen(
+                    ScheduleRoute(
                         bottomInset = bottomInset,
                         onOpenDiscipline = { c ->
-                            val offerId = c.offerId ?: return@ScheduleScreen
+                            val offerId = c.offerId ?: return@ScheduleRoute
                             disciplinesVm.onIntent(
                                 DisciplinesIntent.OpenDiscipline(
                                     seedDiscipline(

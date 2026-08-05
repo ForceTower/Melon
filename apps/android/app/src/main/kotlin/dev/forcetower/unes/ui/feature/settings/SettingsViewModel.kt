@@ -17,6 +17,7 @@ import dev.forcetower.unes.mvi.UiIntent
 import dev.forcetower.unes.reminders.EvaluationReminderPreferenceStore
 import dev.forcetower.unes.theme.ThemeMode
 import dev.forcetower.unes.theme.ThemePreferenceStore
+import dev.forcetower.unes.ui.feature.schedule.SchedulePreferenceStore
 import javax.inject.Inject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -33,6 +34,7 @@ import kotlin.time.Clock
 // goes to DataStore instead.
 internal sealed interface SettingsIntent : UiIntent {
     data class SetTheme(val value: ThemeMode) : SettingsIntent
+    data class SetScheduleGrid(val value: Boolean) : SettingsIntent
     data class SetSpoiler(val value: SpoilerMode) : SettingsIntent
     data class SetToggle(val toggle: NotifToggle, val value: Boolean) : SettingsIntent
     data class SetEvaluationReminders(val value: Boolean) : SettingsIntent
@@ -48,6 +50,7 @@ internal class SettingsViewModel @Inject constructor(
     private val updateSettings: UpdateSettingsUseCase,
     private val listPasskeys: ListPasskeysUseCase,
     private val themePreferences: ThemePreferenceStore,
+    private val schedulePreferences: SchedulePreferenceStore,
     private val reminderPreferences: EvaluationReminderPreferenceStore,
     featureFlags: FeatureFlags,
     private val analytics: Analytics,
@@ -74,6 +77,11 @@ internal class SettingsViewModel @Inject constructor(
         }
         viewModelScope.launch {
             themePreferences.mode.collect { mode -> setState { copy(themeMode = mode) } }
+        }
+        viewModelScope.launch {
+            schedulePreferences.gridEnabled.collect { enabled ->
+                setState { copy(scheduleGridEnabled = enabled) }
+            }
         }
         viewModelScope.launch {
             reminderPreferences.enabled.collect { enabled ->
@@ -103,6 +111,7 @@ internal class SettingsViewModel @Inject constructor(
     override fun onIntent(intent: SettingsIntent) {
         when (intent) {
             is SettingsIntent.SetTheme -> setTheme(intent.value)
+            is SettingsIntent.SetScheduleGrid -> setScheduleGrid(intent.value)
             is SettingsIntent.SetSpoiler -> setSpoiler(intent.value)
             is SettingsIntent.SetToggle -> setToggle(intent.toggle, intent.value)
             is SettingsIntent.SetEvaluationReminders -> setEvaluationReminders(intent.value)
@@ -131,6 +140,18 @@ internal class SettingsViewModel @Inject constructor(
         )
         setState { copy(themeMode = value) }
         viewModelScope.launch { themePreferences.set(value) }
+    }
+
+    // Device-local, no PATCH — `ScheduleRoute` collects the same store and
+    // swaps the Horário tab's rendering as soon as the write lands.
+    private fun setScheduleGrid(value: Boolean) {
+        analytics.selectContent(
+            ContentTypes.SETTING,
+            "schedule_grid",
+            mapOf("action" to "toggle", "value" to value),
+        )
+        setState { copy(scheduleGridEnabled = value) }
+        viewModelScope.launch { schedulePreferences.setGridEnabled(value) }
     }
 
     // Device-local, no PATCH — the app-scope scheduler collects this store
