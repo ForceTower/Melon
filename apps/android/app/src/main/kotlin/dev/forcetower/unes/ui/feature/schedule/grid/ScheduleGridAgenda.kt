@@ -126,10 +126,10 @@ private fun AgendaRow(
 ) {
     val dark = LocalMelonDarkTheme.current
     val shape = RoundedCornerShape(20.dp)
-    val subtitle = listOfNotNull(
-        listOfNotNull(cls.modulo, cls.room, cls.campus).joinToString(" · ").ifEmpty { null },
-        cls.prof.ifEmpty { null },
-    ).joinToString(" · ")
+    // Location and teacher get a line each — real locations ("Módulo 3 ·
+    // PAT36 · UEFS") plus a full teacher name never fit one row. Same call
+    // the timeline's `FooterRow` makes.
+    val location = listOfNotNull(cls.modulo, cls.room, cls.campus).joinToString(" · ")
 
     Row(
         modifier = modifier
@@ -185,14 +185,24 @@ private fun AgendaRow(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
-            if (subtitle.isNotEmpty()) {
+            if (location.isNotEmpty()) {
                 Text(
-                    text = subtitle,
+                    text = location,
                     style = MaterialTheme.typography.bodySmall.copy(fontSize = 13.sp),
                     color = MaterialTheme.colorScheme.outline,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.padding(top = 2.dp),
+                )
+            }
+            if (cls.prof.isNotEmpty()) {
+                Text(
+                    text = cls.prof,
+                    style = MaterialTheme.typography.bodySmall.copy(fontSize = 13.sp),
+                    color = MaterialTheme.colorScheme.outline,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding(top = 1.dp),
                 )
             }
         }

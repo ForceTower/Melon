@@ -295,13 +295,17 @@ private fun GridClassBlock(
                 val x = 1.5.dp.toPx()
                 drawLine(insetBar, Offset(x, 0f), Offset(x, size.height), 3.dp.toPx())
             }
-            .padding(start = 9.dp, top = 6.dp, end = 6.dp, bottom = 6.dp),
+            .padding(start = 7.dp, top = 5.dp, end = 5.dp, bottom = 5.dp),
     ) {
+        // dc sixday sizing, adopted for every width — labelSmall's default
+        // tracking plus 11sp ExtraBold overflowed six-character codes on
+        // real-world column widths.
         Text(
             text = cls.code,
             style = MaterialTheme.typography.labelSmall.copy(
-                fontSize = 11.sp,
-                lineHeight = 13.sp,
+                fontSize = 10.sp,
+                lineHeight = 12.sp,
+                letterSpacing = 0.1.sp,
                 fontWeight = FontWeight.ExtraBold,
             ),
             color = foreground,
@@ -313,8 +317,9 @@ private fun GridClassBlock(
             Text(
                 text = room,
                 style = MaterialTheme.typography.labelSmall.copy(
-                    fontSize = 10.sp,
-                    lineHeight = 12.sp,
+                    fontSize = 9.sp,
+                    lineHeight = 11.sp,
+                    letterSpacing = 0.1.sp,
                     fontWeight = FontWeight.SemiBold,
                 ),
                 color = foreground.copy(alpha = foreground.alpha * if (isNow) 0.9f else 0.8f),
@@ -329,8 +334,9 @@ private fun GridClassBlock(
                     Text(
                         text = time,
                         style = MaterialTheme.typography.labelSmall.copy(
-                            fontSize = 10.sp,
-                            lineHeight = 12.5.sp,
+                            fontSize = 9.sp,
+                            lineHeight = 11.5.sp,
+                            letterSpacing = 0.1.sp,
                             fontWeight = FontWeight.SemiBold,
                         ),
                         color = foreground.copy(alpha = foreground.alpha * if (isNow) 0.8f else 0.55f),
