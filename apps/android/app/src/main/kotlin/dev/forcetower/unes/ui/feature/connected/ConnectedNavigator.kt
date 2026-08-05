@@ -31,8 +31,13 @@ internal class ConnectedNavigator(
         activeStack.add(route)
     }
 
+    // Never pops the tab root. `NavDisplay` requires a non-empty entry list and
+    // its own back handler is disabled at the root, but the in-app chevrons pop
+    // directly: two of them in the same frame (double tap while the outgoing
+    // screen is still composed during the pop transition, or a tap racing the
+    // system back gesture) would drain the stack and crash on the next frame.
     fun goBack() {
-        activeStack.removeLastOrNull()
+        if (activeStack.size > 1) activeStack.removeAt(activeStack.lastIndex)
     }
 
     // Deeplinks: atomically replace one tab's stack with a synthesized path

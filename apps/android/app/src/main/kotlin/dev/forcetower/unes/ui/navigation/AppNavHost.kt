@@ -31,6 +31,13 @@ fun AppNavHost() {
         backStack.add(route)
     }
 
+    // Same root floor as `ConnectedNavigator.goBack` — `NavDisplay` requires a
+    // non-empty stack, and the screens' own back chevrons pop without the
+    // guard the system back handler has.
+    fun goBack() {
+        if (backStack.size > 1) backStack.removeAt(backStack.lastIndex)
+    }
+
     // Splash/Welcome/Sync are always-dark — force light status-bar icons
     // while one of them is on top, theme-following icons everywhere else.
     val top = backStack.lastOrNull()
@@ -40,7 +47,7 @@ fun AppNavHost() {
 
     NavDisplay(
         backStack = backStack,
-        onBack = { backStack.removeLastOrNull() },
+        onBack = { goBack() },
         // Scope ViewModels to each NavEntry (cleared on pop/replace). Without
         // this, hiltViewModel() falls back to the Activity store and a second
         // login reuses the finished SyncViewModel, wedging onboarding at 100%.
@@ -67,13 +74,13 @@ fun AppNavHost() {
             entry<AppRoute.Intro> {
                 IntroCarouselScreen(
                     onDone = { backStack.add(AppRoute.Login) },
-                    onBack = { backStack.removeLastOrNull() },
+                    onBack = { goBack() },
                 )
             }
             entry<AppRoute.Login> {
                 LoginScreen(
                     onSubmit = { firstName -> replace(AppRoute.Sync(firstName = firstName)) },
-                    onBack = { backStack.removeLastOrNull() },
+                    onBack = { goBack() },
                 )
             }
             entry<AppRoute.Sync> { route ->
@@ -99,7 +106,7 @@ fun AppNavHost() {
                 )
             }
             entry<AppRoute.FolioRunner> {
-                FolioRunnerScreen(onClose = { backStack.removeLastOrNull() })
+                FolioRunnerScreen(onClose = { goBack() })
             }
         },
     )
