@@ -188,10 +188,11 @@ private fun AgendaRow(
             if (location.isNotEmpty()) {
                 Text(
                     text = location,
-                    style = MaterialTheme.typography.bodySmall.copy(fontSize = 13.sp),
+                    style = MaterialTheme.typography.bodySmall.copy(
+                        fontSize = 13.sp,
+                        lineHeight = 17.sp,
+                    ),
                     color = MaterialTheme.colorScheme.outline,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.padding(top = 2.dp),
                 )
             }
