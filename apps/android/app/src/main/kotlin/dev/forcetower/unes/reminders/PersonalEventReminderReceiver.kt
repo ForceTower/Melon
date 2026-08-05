@@ -53,7 +53,8 @@ internal class PersonalEventReminderReceiver : BroadcastReceiver() {
         )
         due.forEach { entry ->
             val notification = NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_launcher_monochrome)
+                .setSmallIcon(R.drawable.ic_stat_unes)
+                .setColor(ContextCompat.getColor(context, R.color.notification_accent))
                 .setContentTitle(context.getString(R.string.notif_personal_event_title))
                 .setContentText(entry.title)
                 .setContentIntent(contentIntent(context, entry.id))

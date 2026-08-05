@@ -69,6 +69,19 @@
             </intent-filter>
         </service>
 
+        <!-- `notification`-payload pushes are drawn by the FCM SDK itself, not
+             by MelonFirebaseMessagingService. Without these it falls back to
+             `android:icon` for the small icon — and since the launcher icon is
+             fully opaque, the platform's alpha-only tint turns it into a solid
+             blob, which OEM skins then stack the launcher badge on top of.
+             A payload-level `icon` still overrides both. -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_stat_unes" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/notification_accent" />
+
         <!-- "Próxima aula" home-screen widget. The receiver runs in the host
              app process; Glance handles the actual RemoteViews rendering.
              `TIME_SET` / `TIMEZONE_CHANGED` keep the countdown honest when the

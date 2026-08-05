@@ -4,4 +4,9 @@
          SplashScreen paints as its base, so the OS cold-start splash hands off
          to the first Compose frame with no color flash. -->
     <color name="splash_background">#12100E</color>
+
+    <!-- Tint the system applies to the notification small icon and app name.
+         Mirrors the design-system BrandMagenta, which is the one brand color
+         that keeps contrast against both a light and a dark shade. -->
+    <color name="notification_accent">#B23A7A</color>
 </resources>

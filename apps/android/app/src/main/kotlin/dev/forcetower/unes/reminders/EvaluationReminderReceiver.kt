@@ -54,7 +54,8 @@ internal class EvaluationReminderReceiver : BroadcastReceiver() {
         )
         due.forEach { entry ->
             val notification = NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_launcher_monochrome)
+                .setSmallIcon(R.drawable.ic_stat_unes)
+                .setColor(ContextCompat.getColor(context, R.color.notification_accent))
                 .setContentTitle(context.getString(R.string.notif_evaluation_reminder_title))
                 .setContentText(
                     context.getString(
