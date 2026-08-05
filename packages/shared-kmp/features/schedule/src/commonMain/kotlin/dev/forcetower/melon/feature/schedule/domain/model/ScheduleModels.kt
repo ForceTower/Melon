@@ -40,11 +40,13 @@ data class NextClassDay(
 
 // A single allocation rendered on the day column. `topic` is resolved from
 // ClassLecture for the matching (classId, dateIso); null when no lecture has
-// been synced for that date yet.
+// been synced for that date yet. `disciplineId` is the catalog id (not the
+// per-semester offer), which is what the Materiais shelf is keyed by.
 data class ScheduleClass(
     val allocationId: String,
     val classId: String,
     val offerId: String,
+    val disciplineId: String,
     val code: String,
     val title: String,
     val startTime: String,

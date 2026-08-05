@@ -580,6 +580,7 @@ abstract class AcademicDao {
             SELECT a.id AS allocationId,
                    c.id AS classId,
                    o.id AS offerId,
+                   d.id AS disciplineId,
                    d.code AS disciplineCode,
                    d.name AS disciplineName,
                    a.day AS day,

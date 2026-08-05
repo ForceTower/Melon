@@ -96,6 +96,7 @@ private fun SemesterAllocationRow.toScheduleClass(): ScheduleClass = ScheduleCla
     allocationId = allocationId,
     classId = classId,
     offerId = offerId,
+    disciplineId = disciplineId,
     code = disciplineCode,
     title = disciplineName,
     startTime = startTime.orEmpty(),

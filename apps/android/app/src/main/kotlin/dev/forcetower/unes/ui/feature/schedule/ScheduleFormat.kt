@@ -47,6 +47,7 @@ private fun mapClass(raw: KmpScheduleClass, palette: MelonPaletteColors): Schedu
         campus = raw.campus,
         topic = raw.topic,
         offerId = raw.offerId,
+        disciplineId = raw.disciplineId,
     )
 
 // Upstream ships HH:mm or HH:mm:ss — trim to five chars so the time rail

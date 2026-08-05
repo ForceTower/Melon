@@ -19,6 +19,7 @@ data class SemesterAllocationRow(
     val allocationId: String,
     val classId: String,
     val offerId: String,
+    val disciplineId: String,
     val disciplineCode: String,
     val disciplineName: String,
     val day: Int?,

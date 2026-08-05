@@ -75,6 +75,7 @@ internal object ScheduleFixtures {
         allocationId = allocationId,
         classId = allocationId,
         offerId = allocationId,
+        disciplineId = allocationId,
         code = code,
         title = title,
         startTime = start,

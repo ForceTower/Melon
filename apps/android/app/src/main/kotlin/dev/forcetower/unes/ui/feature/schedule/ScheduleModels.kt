@@ -21,6 +21,10 @@ internal data class ScheduleClass(
     // fixture rows leave it null so the Turma quick action renders
     // non-tappable (mirrors iOS `DayColumn.detailSeed`).
     val offerId: String? = null,
+    // Catalog Discipline id — what the Materiais shelf is keyed by. Same
+    // nullability story as `offerId`: fixture / pre-sync rows leave it null and
+    // the Materiais quick action renders non-tappable.
+    val disciplineId: String? = null,
 )
 
 internal val ScheduleClass.startMin: Int get() = scheduleToMin(start)

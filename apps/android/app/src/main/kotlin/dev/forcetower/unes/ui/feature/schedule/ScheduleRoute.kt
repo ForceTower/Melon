@@ -24,6 +24,7 @@ internal fun ScheduleRoute(
     modifier: Modifier = Modifier,
     bottomInset: Dp = 0.dp,
     onOpenDiscipline: (ScheduleClass) -> Unit = {},
+    onOpenMaterials: (ScheduleClass) -> Unit = {},
     onOpenFolioRunner: () -> Unit = {},
 ) {
     val vm: ScheduleViewModel = hiltViewModel()
@@ -36,10 +37,13 @@ internal fun ScheduleRoute(
             onOpenDiscipline = onOpenDiscipline,
             onOpenFolioRunner = onOpenFolioRunner,
         )
+        // The grid rendering surfaces its actions through the detail sheet,
+        // which carries no Materiais entry — only the timeline needs it.
         false -> ScheduleScreen(
             modifier = modifier,
             bottomInset = bottomInset,
             onOpenDiscipline = onOpenDiscipline,
+            onOpenMaterials = onOpenMaterials,
             onOpenFolioRunner = onOpenFolioRunner,
         )
         // Preference not read yet — hold a blank background for the frame or

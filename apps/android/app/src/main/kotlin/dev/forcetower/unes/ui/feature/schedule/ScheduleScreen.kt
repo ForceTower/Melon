@@ -54,6 +54,7 @@ internal fun ScheduleScreen(
     modifier: Modifier = Modifier,
     bottomInset: Dp = 0.dp,
     onOpenDiscipline: (ScheduleClass) -> Unit = {},
+    onOpenMaterials: (ScheduleClass) -> Unit = {},
     onOpenFolioRunner: () -> Unit = {},
 ) {
     val vm: ScheduleViewModel = hiltViewModel()
@@ -65,6 +66,9 @@ internal fun ScheduleScreen(
         state = state,
         week = week,
         onOpenDiscipline = { cls -> vm.trackOpenDiscipline(cls); onOpenDiscipline(cls) },
+        onOpenMaterials = if (state.materialsEnabled) {
+            { cls -> vm.trackOpenMaterials(cls); onOpenMaterials(cls) }
+        } else null,
         onDaySelect = vm::trackDaySelect,
         onOpenFolioRunner = onOpenFolioRunner,
         modifier = modifier,
@@ -79,6 +83,7 @@ private fun ScheduleContent(
     modifier: Modifier = Modifier,
     bottomInset: Dp = 0.dp,
     onOpenDiscipline: (ScheduleClass) -> Unit = {},
+    onOpenMaterials: ((ScheduleClass) -> Unit)? = null,
     onDaySelect: (String?, Int) -> Unit = { _, _ -> },
     onOpenFolioRunner: () -> Unit = {},
 ) {
@@ -157,6 +162,7 @@ private fun ScheduleContent(
                         expandedId = expandedId.ifEmpty { null },
                         onToggle = { id -> expandedId = if (expandedId == id) "" else id },
                         onOpenDiscipline = onOpenDiscipline,
+                        onOpenMaterials = onOpenMaterials,
                     )
                 }
             }

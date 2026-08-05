@@ -5,6 +5,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.forcetower.melon.core.analytics.Analytics
 import dev.forcetower.melon.core.analytics.ContentTypes
 import dev.forcetower.melon.feature.schedule.domain.usecase.ObserveScheduleWeekUseCase
+import dev.forcetower.unes.firebase.FeatureFlags
 import dev.forcetower.unes.mvi.MviViewModel
 import dev.forcetower.unes.mvi.UiEffect
 import dev.forcetower.unes.mvi.UiIntent
@@ -19,6 +20,9 @@ internal data class ScheduleUiState(
     // DataStore emits, so `ScheduleRoute` can hold a blank frame instead of
     // mounting the wrong screen and swapping it out.
     val gridEnabled: Boolean? = null,
+    // `enable_materials` — gates the Materiais card quick action, same remote
+    // flag the Eu shortcut and the discipline Colaborativo banner ride on.
+    val materialsEnabled: Boolean = false,
 ) : UiState {
     val todayIdx: Int
         get() = raw?.todayDayIndex ?: -1
@@ -62,6 +66,7 @@ internal sealed interface ScheduleEffect : UiEffect
 internal class ScheduleViewModel @Inject constructor(
     observeScheduleWeek: ObserveScheduleWeekUseCase,
     schedulePreferences: SchedulePreferenceStore,
+    featureFlags: FeatureFlags,
     private val analytics: Analytics,
 ) : MviViewModel<ScheduleUiState, ScheduleIntent, ScheduleEffect>(ScheduleUiState()) {
 
@@ -74,6 +79,11 @@ internal class ScheduleViewModel @Inject constructor(
                 setState { copy(gridEnabled = enabled) }
             }
         }
+        viewModelScope.launch {
+            featureFlags.gates.collect { gates ->
+                setState { copy(materialsEnabled = gates.materials) }
+            }
+        }
     }
 
     override fun onIntent(intent: ScheduleIntent) = Unit
@@ -83,6 +93,15 @@ internal class ScheduleViewModel @Inject constructor(
         analytics.selectContent(
             contentType = ContentTypes.DISCIPLINE,
             itemId = offerId,
+            properties = mapOf("code" to cls.code),
+        )
+    }
+
+    fun trackOpenMaterials(cls: ScheduleClass) {
+        val disciplineId = cls.disciplineId ?: return
+        analytics.selectContent(
+            contentType = ContentTypes.MATERIAL,
+            itemId = disciplineId,
             properties = mapOf("code" to cls.code),
         )
     }

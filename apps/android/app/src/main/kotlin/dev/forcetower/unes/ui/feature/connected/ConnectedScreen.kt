@@ -208,6 +208,16 @@ fun ConnectedScreen(
                             )
                             navigator.navigate(ConnectedRoute.DisciplineDetail(offerId))
                         },
+                        onOpenMaterials = { c ->
+                            val disciplineId = c.disciplineId ?: return@ScheduleRoute
+                            navigator.navigate(
+                                ConnectedRoute.MaterialsDiscipline(
+                                    disciplineId = disciplineId,
+                                    code = c.code,
+                                    name = c.title,
+                                ),
+                            )
+                        },
                         onOpenFolioRunner = onOpenFolioRunner,
                     )
                 }

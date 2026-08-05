@@ -69,6 +69,9 @@ internal fun ScheduleTimeline(
     expandedId: String?,
     onToggle: (String) -> Unit,
     onOpenDiscipline: (ScheduleClass) -> Unit,
+    // Null while the Materiais feature is gated off — the action then renders
+    // non-tappable instead of disappearing, keeping the two-up action row.
+    onOpenMaterials: ((ScheduleClass) -> Unit)?,
     modifier: Modifier = Modifier,
 ) {
     Box(
@@ -112,6 +115,7 @@ internal fun ScheduleTimeline(
                     expanded = expandedId == id,
                     onToggle = { onToggle(id) },
                     onOpenDiscipline = onOpenDiscipline,
+                    onOpenMaterials = onOpenMaterials,
                     modifier = Modifier.fadeUpOnAppear(
                         delayMs = rowDelayMs,
                         durationMs = 400,
@@ -200,6 +204,7 @@ private fun ClassRow(
     expanded: Boolean,
     onToggle: () -> Unit,
     onOpenDiscipline: (ScheduleClass) -> Unit,
+    onOpenMaterials: ((ScheduleClass) -> Unit)?,
     modifier: Modifier = Modifier,
 ) {
     val ink = MaterialTheme.colorScheme.onBackground
@@ -250,6 +255,7 @@ private fun ClassRow(
             expanded = expanded,
             onToggle = onToggle,
             onOpenDiscipline = onOpenDiscipline,
+            onOpenMaterials = onOpenMaterials,
             modifier = Modifier
                 .weight(1f)
                 .padding(start = 6.dp),
@@ -263,6 +269,7 @@ private fun ClassCard(
     expanded: Boolean,
     onToggle: () -> Unit,
     onOpenDiscipline: (ScheduleClass) -> Unit,
+    onOpenMaterials: ((ScheduleClass) -> Unit)?,
     modifier: Modifier = Modifier,
 ) {
     val card = MaterialTheme.melon.surface.card
@@ -343,13 +350,13 @@ private fun ClassCard(
                         } else null,
                         modifier = Modifier.weight(1f),
                     )
-                    // Materiais renders per the dc spec but stays inert until
-                    // the Android Materiais feature lands.
                     QuickAction(
                         icon = Icons.Outlined.FolderOpen,
                         label = stringResource(R.string.schedule_action_materials),
                         color = cls.color,
-                        onClick = null,
+                        onClick = if (cls.disciplineId != null && onOpenMaterials != null) {
+                            { onOpenMaterials(cls) }
+                        } else null,
                         modifier = Modifier.weight(1f),
                     )
                 }
