@@ -28,6 +28,8 @@ internal object MeFixtures {
     val identity = ProfileIdentity(
         name = "Mariana Nogueira",
         firstName = "Mariana",
+        officialName = "Mariana Nogueira dos Santos",
+        avatarUrl = null,
         course = "Engenharia de Computação",
         campusLabel = "UEFS · Módulo 5",
         enrollment = "26111463",

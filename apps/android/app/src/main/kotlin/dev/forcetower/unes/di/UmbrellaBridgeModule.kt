@@ -54,6 +54,7 @@ import dev.forcetower.melon.feature.me.domain.usecase.ObserveCurrentCredentialsU
 import dev.forcetower.melon.feature.me.domain.usecase.ObserveMeProfileUseCase
 import dev.forcetower.melon.feature.me.domain.usecase.ReauthenticateUpstreamUseCase
 import dev.forcetower.melon.feature.me.domain.usecase.RefreshCredentialStatusUseCase
+import dev.forcetower.melon.feature.me.domain.usecase.UpdateProfileUseCase
 import dev.forcetower.melon.feature.messages.domain.usecase.MarkAllMessagesAsReadUseCase
 import dev.forcetower.melon.feature.messages.domain.usecase.MarkMessageAsReadUseCase
 import dev.forcetower.melon.feature.messages.domain.usecase.ObserveMessageDetailUseCase
@@ -229,6 +230,8 @@ object UmbrellaBridgeModule {
         graph.calculateOverallScoreUseCase
     @Provides fun provideFetchAcademicDocumentUseCase(graph: UmbrellaGraph): FetchAcademicDocumentUseCase =
         graph.fetchAcademicDocumentUseCase
+    @Provides fun provideUpdateProfileUseCase(graph: UmbrellaGraph): UpdateProfileUseCase =
+        graph.updateProfileUseCase
 
     // Disciplinas tab — list (current + past + pending semesters) and per-offer
     // detail. Pair with `SyncSemesterUseCase` (already provided above) for the

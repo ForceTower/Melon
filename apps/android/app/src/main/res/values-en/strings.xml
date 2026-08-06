@@ -706,6 +706,36 @@
     <string name="me_feedback_body_format">UNES %1$s(%2$s) - %3$s %4$s\nid: %5$s\nThe data above helps me find the bug, please don\'t delete it if you can help it :)</string>
     <!-- endregion -->
 
+    <!-- region Me · Profile edit sheet -->
+    <string name="me_edit_profile_action">Edit profile</string>
+    <string name="me_edit_sheet_title">Edit profile</string>
+    <string name="me_edit_sheet_subtitle">what UNES calls you</string>
+    <string name="me_edit_sheet_close">Close</string>
+    <string name="me_edit_photo_change">Change profile picture</string>
+    <string name="me_edit_photo_remove">Remove picture</string>
+    <string name="me_edit_name_label">Display name</string>
+    <string name="me_edit_name_placeholder">What should we call you</string>
+    <string name="me_edit_name_clear">Clear name</string>
+    <string name="me_edit_restore_official">Back to the portal name</string>
+    <string name="me_edit_lock_note_format">Only applies inside UNES. Documents and everything issued by the university keep your portal name — %1$s.</string>
+    <string name="me_edit_error">Couldn\'t save. Check your connection and try again.</string>
+    <string name="me_edit_cancel">Cancel</string>
+    <string name="me_edit_save">Save</string>
+    <string name="me_edit_source_title">Profile picture</string>
+    <string name="me_edit_source_gallery">Choose from the gallery</string>
+    <string name="me_edit_source_gallery_hint">photos on this device</string>
+    <string name="me_edit_source_camera">Take a photo</string>
+    <string name="me_edit_source_camera_hint">opens the camera</string>
+    <string name="me_crop_title">Adjust photo</string>
+    <string name="me_crop_cancel">Cancel</string>
+    <string name="me_crop_hint">pinch to zoom · drag to position</string>
+    <string name="me_crop_done">Done</string>
+    <string name="me_toast_name_saved_format">UNES now calls you %1$s</string>
+    <string name="me_toast_name_restored">Portal name restored</string>
+    <string name="me_toast_photo_saved">Profile picture updated</string>
+    <string name="me_toast_photo_removed">Profile picture removed</string>
+    <!-- endregion -->
+
     <!-- region Me · Logout confirmation sheet -->
     <string name="me_logout_sheet_title">Sign out?</string>
     <string name="me_logout_sheet_session_format">Session · %1$s</string>

@@ -751,6 +751,40 @@
     <string name="me_feedback_body_format">UNES %1$s(%2$s) - %3$s %4$s\nid: %5$s\nOs dados acima me ajudam a encontrar o erro, não apaga se puder :)</string>
     <!-- endregion -->
 
+    <!-- region Me · Profile edit sheet (dc "Editar perfil") -->
+    <!-- Accessibility label on the identity-card tap target. -->
+    <string name="me_edit_profile_action">Editar perfil</string>
+    <string name="me_edit_sheet_title">Editar perfil</string>
+    <string name="me_edit_sheet_subtitle">como o UNES te chama</string>
+    <string name="me_edit_sheet_close">Fechar</string>
+    <string name="me_edit_photo_change">Alterar foto de perfil</string>
+    <string name="me_edit_photo_remove">Remover foto</string>
+    <!-- Uppercased at render. -->
+    <string name="me_edit_name_label">Nome de exibição</string>
+    <string name="me_edit_name_placeholder">Como quer ser chamado</string>
+    <string name="me_edit_name_clear">Limpar nome</string>
+    <string name="me_edit_restore_official">Voltar ao nome do portal</string>
+    <!-- The argument is the registry (portal) name, bolded at render. -->
+    <string name="me_edit_lock_note_format">Vale só dentro do UNES. Documentos e tudo que vem da universidade continuam com o seu nome do portal — %1$s.</string>
+    <string name="me_edit_error">Não foi possível salvar. Verifique a conexão e tente de novo.</string>
+    <string name="me_edit_cancel">Cancelar</string>
+    <string name="me_edit_save">Salvar</string>
+    <string name="me_edit_source_title">Foto de perfil</string>
+    <string name="me_edit_source_gallery">Escolher da galeria</string>
+    <string name="me_edit_source_gallery_hint">fotos do aparelho</string>
+    <string name="me_edit_source_camera">Tirar uma foto</string>
+    <string name="me_edit_source_camera_hint">abre a câmera</string>
+    <string name="me_crop_title">Ajustar foto</string>
+    <string name="me_crop_cancel">Cancelar</string>
+    <string name="me_crop_hint">belisque para aproximar · arraste para posicionar</string>
+    <string name="me_crop_done">Concluir</string>
+    <!-- The argument is the first word of the saved display name. -->
+    <string name="me_toast_name_saved_format">Agora o UNES te chama de %1$s</string>
+    <string name="me_toast_name_restored">Nome do portal restaurado</string>
+    <string name="me_toast_photo_saved">Foto de perfil atualizada</string>
+    <string name="me_toast_photo_removed">Foto de perfil removida</string>
+    <!-- endregion -->
+
     <!-- region Me · Logout confirmation sheet -->
     <string name="me_logout_sheet_title">Sair da conta?</string>
     <!-- "Sessão · Nome do Estudante" — the argument is the profile name. -->

@@ -6,8 +6,17 @@ import androidx.compose.ui.graphics.vector.ImageVector
 // card and the semester progress card render comes from a single value of
 // this type. Mirrors the dc `EuScreen` identity card + progress card fields.
 internal data class ProfileIdentity(
+    // Display name — the profile-customization alternate name when set, the
+    // registry name otherwise.
     val name: String,
     val firstName: String,
+    // Upstream registry name. University-issued surfaces (documents) render
+    // this one regardless of customization; the edit sheet shows it in the
+    // "vale só dentro do UNES" note.
+    val officialName: String,
+    // Public URL of the custom profile picture; null renders the gradient
+    // initial avatar.
+    val avatarUrl: String?,
     val course: String,
     // "UEFS · Módulo 5" — modal campus/módulo of the semester's allocations.
     // Null while no space data is synced; the card falls back to a static

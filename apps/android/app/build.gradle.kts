@@ -166,6 +166,10 @@ dependencies {
 
     implementation(libs.timber)
 
+    // Coil — remote avatar rendering (profile picture on the Eu hero card).
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
+
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
     implementation(libs.androidx.hilt.navigation.compose)

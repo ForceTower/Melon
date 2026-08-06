@@ -14,6 +14,8 @@ import dev.forcetower.melon.feature.me.domain.model.DocumentFetchError
 import dev.forcetower.melon.feature.me.domain.model.MeProfile
 import dev.forcetower.melon.feature.me.domain.usecase.FetchAcademicDocumentUseCase
 import dev.forcetower.melon.feature.me.domain.usecase.ObserveMeProfileUseCase
+import dev.forcetower.melon.feature.me.domain.usecase.UpdateProfileUseCase
+import dev.forcetower.melon.feature.sync.domain.usecase.SyncProfileUseCase
 import dev.forcetower.unes.firebase.FeatureFlags
 import dev.forcetower.unes.firebase.FeatureGates
 import dev.forcetower.unes.firebase.PushRegistrar
@@ -29,6 +31,8 @@ import java.time.format.DateTimeFormatter
 import java.util.Locale
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -51,6 +55,14 @@ internal sealed interface MeIntent : UiIntent {
     data object RequestDocument : MeIntent
     data class CaptchaSolved(val token: String) : MeIntent
     data object CaptchaCanceled : MeIntent
+    // ── profile customization (dc `EuScreen` "Editar perfil" sheet) ──
+    data object OpenEditProfile : MeIntent
+    data object CloseEditProfile : MeIntent
+    data class EditNameChanged(val value: String) : MeIntent
+    // JPEG bytes produced by the circular crop step.
+    data class EditPhotoPicked(val bytes: ByteArray) : MeIntent
+    data object EditPhotoRemoved : MeIntent
+    data object SaveProfile : MeIntent
     data object BeginLogout : MeIntent
     data object CancelLogout : MeIntent
     data object ConfirmLogout : MeIntent
@@ -99,11 +111,42 @@ internal data class DocumentSheetState(
     val stored: StoredAcademicDocument? = null,
 )
 
+// What happens to the profile picture when the edit sheet is saved. `Keep`
+// leaves the server photo alone; `Remove` deletes it; `Replace` uploads the
+// freshly cropped bytes.
+internal enum class PendingPhotoAction { Keep, Remove, Replace }
+
+internal data class ProfileEditState(
+    // Alternate-name draft — empty means "portal name in charge".
+    val pendingName: String,
+    val photoAction: PendingPhotoAction = PendingPhotoAction.Keep,
+    // Cropped JPEG bytes staged for upload when `photoAction == Replace`.
+    val pendingPhoto: ByteArray? = null,
+    val saving: Boolean = false,
+    val failed: Boolean = false,
+)
+
+// Transient confirmation pill after a successful save — same message split as
+// the dc sheet's snackbar: photo-only changes narrate the photo, otherwise the
+// name outcome wins.
+internal sealed interface MeProfileToast {
+    data class NameSaved(val firstName: String) : MeProfileToast
+    data object NameRestored : MeProfileToast
+    data object PhotoSaved : MeProfileToast
+    data object PhotoRemoved : MeProfileToast
+}
+
+// dc `EuScreen` caps the field at 24 chars (the API allows 60) — enforced on
+// both the TextField and the intent so paste can't sneak past it.
+internal const val ProfileNameMaxLength = 24
+
 internal data class MeUiState(
     val profileRaw: MeProfile? = null,
     val scoreRaw: OverallScoreSummary? = null,
     val gates: FeatureGates = FeatureGates(),
     val documentSheet: DocumentSheetState? = null,
+    val editProfile: ProfileEditState? = null,
+    val profileToast: MeProfileToast? = null,
     val logoutStep: LogoutStep = LogoutStep.Idle,
     // Captured at the start of the flash so the goodbye screen reads the
     // right name even after the profile flow has been wiped by `logout()`.
@@ -122,6 +165,8 @@ internal class MeViewModel @Inject constructor(
     overallScore: CalculateOverallScoreUseCase,
     featureFlags: FeatureFlags,
     private val fetchDocument: FetchAcademicDocumentUseCase,
+    private val updateProfile: UpdateProfileUseCase,
+    private val syncProfile: SyncProfileUseCase,
     private val localDocuments: LocalDocumentStore,
     private val sessionStore: SessionStore,
     private val clearCampusEvent: ClearCampusEventUseCase,
@@ -150,6 +195,18 @@ internal class MeViewModel @Inject constructor(
             MeIntent.CaptchaCanceled -> updateDocumentSheet { sheet ->
                 sheet.copy(stage = if (sheet.stored == null) DocumentStage.Intro else DocumentStage.Saved)
             }
+            MeIntent.OpenEditProfile -> openEditProfile()
+            MeIntent.CloseEditProfile -> setState { copy(editProfile = null) }
+            is MeIntent.EditNameChanged -> updateEditProfile {
+                it.copy(pendingName = intent.value.take(ProfileNameMaxLength), failed = false)
+            }
+            is MeIntent.EditPhotoPicked -> updateEditProfile {
+                it.copy(photoAction = PendingPhotoAction.Replace, pendingPhoto = intent.bytes, failed = false)
+            }
+            MeIntent.EditPhotoRemoved -> updateEditProfile {
+                it.copy(photoAction = PendingPhotoAction.Remove, pendingPhoto = null, failed = false)
+            }
+            MeIntent.SaveProfile -> saveProfile()
             MeIntent.BeginLogout -> setState { copy(logoutStep = LogoutStep.Confirming) }
             MeIntent.CancelLogout -> setState { copy(logoutStep = LogoutStep.Idle) }
             MeIntent.ConfirmLogout -> performLogout()
@@ -163,6 +220,89 @@ internal class MeViewModel @Inject constructor(
     // lambda (no ViewModel handler of their own to piggyback on).
     fun trackShortcutOpen(itemId: String) {
         analytics.selectContent(ContentTypes.SHORTCUT, itemId)
+    }
+
+    // ───────── Profile customization (Editar perfil) ─────────
+
+    private var toastJob: Job? = null
+
+    private fun openEditProfile() {
+        val identity = currentState.identity ?: return
+        analytics.selectContent(ContentTypes.SETTING, "edit_profile")
+        // The field drafts the *alternate* name only — when the display name
+        // is the portal name the field opens empty, matching the dc sheet.
+        val nickname = identity.name.takeIf { it != identity.officialName }.orEmpty()
+        setState { copy(editProfile = ProfileEditState(pendingName = nickname)) }
+    }
+
+    private fun saveProfile() {
+        val sheet = currentState.editProfile ?: return
+        if (sheet.saving) return
+        val identity = currentState.identity ?: return
+
+        val trimmed = sheet.pendingName.trim()
+        val currentNickname = identity.name.takeIf { it != identity.officialName }.orEmpty()
+        val nameChanged = trimmed != currentNickname
+        val photoBytes = sheet.pendingPhoto
+        val uploadsPhoto = sheet.photoAction == PendingPhotoAction.Replace && photoBytes != null
+        // Removing when no server photo exists is a visual no-op — skip the call.
+        val removesPhoto = sheet.photoAction == PendingPhotoAction.Remove && identity.avatarUrl != null
+
+        if (!nameChanged && !uploadsPhoto && !removesPhoto) {
+            setState { copy(editProfile = null) }
+            return
+        }
+
+        setState { copy(editProfile = sheet.copy(saving = true, failed = false)) }
+        viewModelScope.launch {
+            val nameOk = !nameChanged ||
+                updateProfile.updateName(trimmed.ifEmpty { null }) is Outcome.Ok
+            val photoOk = when {
+                !nameOk -> false
+                uploadsPhoto -> updateProfile.updatePicture(photoBytes, "image/jpeg") is Outcome.Ok
+                removesPhoto -> updateProfile.removePicture() is Outcome.Ok
+                else -> true
+            }
+            if (!nameOk || !photoOk) {
+                updateEditProfile { it.copy(saving = false, failed = true) }
+                return@launch
+            }
+            analytics.selectContent(ContentTypes.SETTING, "edit_profile", mapOf("action" to "save"))
+            // Re-pull the profile so the mirrored User row picks up what the
+            // server actually stored (it normalizes a re-typed portal name to
+            // null, and mints a fresh picture URL). The Room-backed flow then
+            // re-emits and the hero — plus every other screen rendering the
+            // name — updates on its own. A failed sync here is tolerable: the
+            // server already saved, and the next sync tick converges.
+            syncProfile()
+            showToast(
+                when {
+                    !nameChanged -> {
+                        if (removesPhoto) MeProfileToast.PhotoRemoved else MeProfileToast.PhotoSaved
+                    }
+                    trimmed.isNotEmpty() -> MeProfileToast.NameSaved(trimmed.substringBefore(' '))
+                    else -> MeProfileToast.NameRestored
+                },
+            )
+        }
+    }
+
+    private fun showToast(toast: MeProfileToast) {
+        setState { copy(editProfile = null, profileToast = toast) }
+        toastJob?.cancel()
+        toastJob = viewModelScope.launch {
+            delay(ToastLifetimeMs)
+            setState { copy(profileToast = null) }
+        }
+    }
+
+    // Applies `transform` only while the edit sheet is open — a stale save
+    // result must not resurrect a sheet the user already dismissed.
+    private fun updateEditProfile(transform: (ProfileEditState) -> ProfileEditState) {
+        setState {
+            val sheet = editProfile
+            if (sheet == null) this else copy(editProfile = transform(sheet))
+        }
     }
 
     // ───────── Document sheet (Comprovante / Histórico) ─────────
@@ -263,6 +403,8 @@ internal class MeViewModel @Inject constructor(
 
     private companion object {
         const val LogoutFlashMs = 900L
+        // dc snackbar lifetime (2.6s).
+        const val ToastLifetimeMs = 2600L
     }
 }
 
@@ -287,6 +429,8 @@ private fun mapIdentity(raw: MeProfile, score: OverallScoreSummary?): ProfileIde
     return ProfileIdentity(
         name = canonical,
         firstName = first,
+        officialName = raw.identity.officialName.ifBlank { canonical },
+        avatarUrl = raw.identity.avatarUrl?.takeIf { it.isNotBlank() },
         course = raw.identity.courseName.orEmpty(),
         campusLabel = raw.campus,
         enrollment = raw.identity.enrollmentNumber,

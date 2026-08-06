@@ -172,15 +172,17 @@ private fun BetaBadge() {
     Text(
         text = stringResource(R.string.me_shortcut_beta).uppercase(LocalConfiguration.current.locales[0]),
         style = MaterialTheme.typography.labelSmall.copy(
-            fontSize = 9.sp,
+            fontSize = 8.sp,
             fontWeight = FontWeight.ExtraBold,
-            letterSpacing = 0.9.sp,
+            letterSpacing = 0.8.sp,
         ),
         color = accent,
+        maxLines = 1,
+        softWrap = false,
         modifier = Modifier
             .clip(RoundedCornerShape(50))
             .background(accent.copy(alpha = 0.16f))
-            .padding(horizontal = 7.dp, vertical = 3.dp),
+            .padding(horizontal = 6.dp, vertical = 2.dp),
     )
 }
 

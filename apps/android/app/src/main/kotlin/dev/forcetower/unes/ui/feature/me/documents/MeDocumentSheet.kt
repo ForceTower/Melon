@@ -191,7 +191,9 @@ private fun SummaryRows(document: AcademicDocument, identity: ProfileIdentity?, 
             .clip(RoundedCornerShape(20.dp))
             .background(MaterialTheme.colorScheme.surfaceContainer),
     ) {
-        SummaryRow(label = stringResource(R.string.me_document_row_student), value = identity?.name, hue = hue)
+        // Documents are issued by the university — always the registry name,
+        // never the customized display name.
+        SummaryRow(label = stringResource(R.string.me_document_row_student), value = identity?.officialName, hue = hue)
         RowDivider()
         SummaryRow(label = stringResource(R.string.me_document_row_course), value = identity?.course, hue = hue)
         RowDivider()

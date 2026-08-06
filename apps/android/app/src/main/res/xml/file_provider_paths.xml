@@ -8,4 +8,8 @@
     <cache-path
         name="materials"
         path="materials/" />
+    <!-- Camera capture slot for the profile-photo flow. -->
+    <cache-path
+        name="camera"
+        path="camera/" />
 </paths>

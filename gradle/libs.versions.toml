@@ -38,6 +38,7 @@ google-services = "4.5.0"
 firebase-bom = "34.16.0"
 firebase-crashlytics-gradle = "3.0.7"
 posthog-android = "3.53.7"
+coil = "3.5.0"
 
 [libraries]
 # Gradle plugin artifacts used by the build-logic convention project
@@ -148,6 +149,11 @@ firebase-messaging = { module = "com.google.firebase:firebase-messaging" }
 
 # PostHog (product analytics — sent to our first-party proxy at a.forcetower.dev)
 posthog-android = { module = "com.posthog:posthog-android", version.ref = "posthog-android" }
+
+# Coil (Android-only — remote avatar rendering; the OkHttp artifact registers
+# the network fetcher on the singleton loader via its service-loader hook)
+coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
+coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coil" }
 
 [plugins]
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }

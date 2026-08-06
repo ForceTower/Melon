@@ -3,6 +3,7 @@ package dev.forcetower.unes.ui.feature.me
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -26,6 +27,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -53,8 +55,10 @@ import dev.forcetower.unes.ui.feature.me.components.LoggedOutView
 import dev.forcetower.unes.ui.feature.me.components.LogoutFlash
 import dev.forcetower.unes.ui.feature.me.components.LogoutSheet
 import dev.forcetower.unes.ui.feature.me.components.MeHeader
+import dev.forcetower.unes.ui.feature.me.components.MeProfileToastOverlay
 import dev.forcetower.unes.ui.feature.me.components.MeSectionLabel
 import dev.forcetower.unes.ui.feature.me.components.MeSignOutButton
+import dev.forcetower.unes.ui.feature.me.components.ProfileEditSheet
 import dev.forcetower.unes.ui.feature.me.components.SemesterProgressCard
 import dev.forcetower.unes.ui.feature.me.components.SettingsCard
 import dev.forcetower.unes.ui.feature.me.components.ShortcutGrid
@@ -134,76 +138,89 @@ internal fun MeScreen(
     val scrolled by remember { derivedStateOf { scrollState.value > 0 } }
 
     // The "Eu" header stays pinned; the identity card and everything below
-    // scroll beneath it.
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
-            .windowInsetsPadding(WindowInsets.statusBars),
-    ) {
-        MeHeader(modifier = Modifier.fadeUpOnAppear(delayMs = 20, fromOffset = (-10).dp))
-        PinnedHeaderHairline(scrolled = scrolled)
-
+    // scroll beneath it. The outer Box hosts the save-confirmation toast.
+    Box(modifier = modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(scrollState)
-                .padding(bottom = bottomInset)
-                .padding(horizontal = 20.dp),
+                .background(MaterialTheme.colorScheme.background)
+                .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
+                .windowInsetsPadding(WindowInsets.statusBars),
         ) {
-            if (identity != null) {
-                IdentityCard(identity = identity)
-                if (identity.semesterTotalWeeks > 0) {
-                    Spacer(Modifier.height(14.dp))
-                    SemesterProgressCard(
+            MeHeader(modifier = Modifier.fadeUpOnAppear(delayMs = 20, fromOffset = (-10).dp))
+            PinnedHeaderHairline(scrolled = scrolled)
+
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(scrollState)
+                    .padding(bottom = bottomInset)
+                    .padding(horizontal = 20.dp),
+            ) {
+                if (identity != null) {
+                    IdentityCard(
                         identity = identity,
-                        modifier = Modifier.fadeUpOnAppear(delayMs = 200),
+                        onEditProfile = { vm.onIntent(MeIntent.OpenEditProfile) },
                     )
+                    if (identity.semesterTotalWeeks > 0) {
+                        Spacer(Modifier.height(14.dp))
+                        SemesterProgressCard(
+                            identity = identity,
+                            modifier = Modifier.fadeUpOnAppear(delayMs = 200),
+                        )
+                    }
+                    Spacer(Modifier.height(26.dp))
+                }
+
+                Column(modifier = Modifier.fadeUpOnAppear(delayMs = 280)) {
+                    MeSectionLabel(label = stringResource(R.string.me_section_shortcuts))
+                    ShortcutGrid(shortcuts = state.shortcuts, onOpen = openShortcut)
                 }
                 Spacer(Modifier.height(26.dp))
-            }
 
-            Column(modifier = Modifier.fadeUpOnAppear(delayMs = 280)) {
-                MeSectionLabel(label = stringResource(R.string.me_section_shortcuts))
-                ShortcutGrid(shortcuts = state.shortcuts, onOpen = openShortcut)
-            }
-            Spacer(Modifier.height(26.dp))
-
-            Column(modifier = Modifier.fadeUpOnAppear(delayMs = 380)) {
-                MeSectionLabel(label = stringResource(R.string.me_section_settings))
-                SettingsCard(
-                    rows = settingsRows,
-                    onSelect = { id ->
-                        when (id) {
-                            SettingsRowKind.Settings -> {
-                                vm.trackShortcutOpen("settings")
-                                connectedNavigator.navigate(ConnectedRoute.Settings)
+                Column(modifier = Modifier.fadeUpOnAppear(delayMs = 380)) {
+                    MeSectionLabel(label = stringResource(R.string.me_section_settings))
+                    SettingsCard(
+                        rows = settingsRows,
+                        onSelect = { id ->
+                            when (id) {
+                                SettingsRowKind.Settings -> {
+                                    vm.trackShortcutOpen("settings")
+                                    connectedNavigator.navigate(ConnectedRoute.Settings)
+                                }
+                                SettingsRowKind.About -> aboutOpen = true
+                                SettingsRowKind.Feedback -> launchFeedbackEmail(
+                                    context = context,
+                                    recipient = feedbackRecipient,
+                                    body = feedbackBody,
+                                )
+                                SettingsRowKind.Licenses -> connectedNavigator.navigate(ConnectedRoute.Licenses)
                             }
-                            SettingsRowKind.About -> aboutOpen = true
-                            SettingsRowKind.Feedback -> launchFeedbackEmail(
-                                context = context,
-                                recipient = feedbackRecipient,
-                                body = feedbackBody,
-                            )
-                            SettingsRowKind.Licenses -> connectedNavigator.navigate(ConnectedRoute.Licenses)
-                        }
-                    },
+                        },
+                    )
+                }
+                Spacer(Modifier.height(16.dp))
+
+                MeSignOutButton(
+                    onClick = { vm.onIntent(MeIntent.BeginLogout) },
+                    modifier = Modifier.fadeUpOnAppear(delayMs = 460),
+                )
+
+                Footer(
+                    version = appInfo.version,
+                    build = appInfo.build,
+                    modifier = Modifier.fadeUpOnAppear(delayMs = 540),
                 )
             }
-            Spacer(Modifier.height(16.dp))
-
-            MeSignOutButton(
-                onClick = { vm.onIntent(MeIntent.BeginLogout) },
-                modifier = Modifier.fadeUpOnAppear(delayMs = 460),
-            )
-
-            Footer(
-                version = appInfo.version,
-                build = appInfo.build,
-                modifier = Modifier.fadeUpOnAppear(delayMs = 540),
-            )
         }
+
+        MeProfileToastOverlay(
+            toast = state.profileToast,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(horizontal = 16.dp)
+                .padding(bottom = bottomInset + 16.dp),
+        )
     }
 
     val documentSheet = state.documentSheet
@@ -217,6 +234,15 @@ internal fun MeScreen(
             onCaptchaSolved = { token -> vm.onIntent(MeIntent.CaptchaSolved(token)) },
             onCaptchaCanceled = { vm.onIntent(MeIntent.CaptchaCanceled) },
             onDismiss = { vm.onIntent(MeIntent.CloseDocument) },
+        )
+    }
+
+    val editProfile = state.editProfile
+    if (editProfile != null && identity != null) {
+        ProfileEditSheet(
+            state = editProfile,
+            identity = identity,
+            onIntent = vm::onIntent,
         )
     }
 

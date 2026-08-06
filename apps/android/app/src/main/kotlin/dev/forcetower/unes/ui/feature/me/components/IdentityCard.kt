@@ -1,6 +1,7 @@
 package dev.forcetower.unes.ui.feature.me.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDownward
 import androidx.compose.material.icons.filled.ArrowUpward
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.School
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -32,11 +34,14 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil3.compose.AsyncImage
+import androidx.compose.ui.layout.ContentScale
 import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.foundation.Mesh
 import dev.forcetower.unes.designsystem.foundation.MeshVariant
@@ -51,13 +56,15 @@ import kotlin.math.abs
 
 // Identity mesh card — dc `EuScreen` hero. Always-dark `heroNight` plate with
 // the warm brand mesh drifting behind a legibility scrim; avatar with the
-// live dot, name/course, the "UEFS · Módulo" chip, and the
-// Score · Frequência · Semestre stat row below a hairline divider.
+// edit badge, name/course, the "UEFS · Módulo" chip, and the
+// Score · Frequência · Semestre stat row below a hairline divider. Tapping
+// the identity row opens the profile-customization sheet.
 @Composable
 internal fun IdentityCard(
     identity: ProfileIdentity,
     modifier: Modifier = Modifier,
     revealDelayMs: Int = 120,
+    onEditProfile: (() -> Unit)? = null,
 ) {
     val fixed = MaterialTheme.melon.fixed
     val shape = RoundedCornerShape(28.dp)
@@ -95,7 +102,7 @@ internal fun IdentityCard(
         )
 
         Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 22.dp)) {
-            IdentityRow(identity)
+            IdentityRow(identity, onEditProfile = onEditProfile)
             Spacer(Modifier.height(18.dp))
             Box(
                 modifier = Modifier
@@ -110,13 +117,28 @@ internal fun IdentityCard(
 }
 
 @Composable
-private fun IdentityRow(identity: ProfileIdentity) {
+private fun IdentityRow(identity: ProfileIdentity, onEditProfile: (() -> Unit)?) {
     val onHero = MaterialTheme.melon.fixed.onHero
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(16.dp),
+        modifier = if (onEditProfile == null) {
+            Modifier
+        } else {
+            Modifier
+                .clip(RoundedCornerShape(20.dp))
+                .clickable(
+                    role = Role.Button,
+                    onClickLabel = stringResource(R.string.me_edit_profile_action),
+                    onClick = onEditProfile,
+                )
+        },
     ) {
-        Avatar(initial = identity.avatarInitial)
+        Avatar(
+            initial = identity.avatarInitial,
+            avatarUrl = identity.avatarUrl,
+            showEditBadge = onEditProfile != null,
+        )
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = identity.name,
@@ -176,7 +198,7 @@ private fun CampusChip(label: String) {
 }
 
 @Composable
-private fun Avatar(initial: String) {
+private fun Avatar(initial: String, avatarUrl: String?, showEditBadge: Boolean) {
     val brand = MaterialTheme.melon.brand
     val fixed = MaterialTheme.melon.fixed
     Box(modifier = Modifier.size(66.dp)) {
@@ -199,6 +221,8 @@ private fun Avatar(initial: String) {
                 ),
             contentAlignment = Alignment.Center,
         ) {
+            // The gradient initial stays underneath as the loading/error
+            // fallback — the photo simply paints over it once it arrives.
             Text(
                 text = initial,
                 style = MaterialTheme.typography.headlineMedium.copy(
@@ -207,21 +231,38 @@ private fun Avatar(initial: String) {
                 ),
                 color = fixed.onHero,
             )
+            if (avatarUrl != null) {
+                AsyncImage(
+                    model = avatarUrl,
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.matchParentSize(),
+                )
+            }
         }
-        // Live dot on the avatar's bottom-right perimeter — the outer circle
-        // paints the heroNight ring the dc border renders, the inset one the
-        // live green fill.
-        Box(
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .offset(x = (-2).dp, y = (-2).dp)
-                .size(15.dp)
-                .clip(CircleShape)
-                .background(fixed.heroNight)
-                .padding(3.dp)
-                .clip(CircleShape)
-                .background(fixed.live),
-        )
+        // Edit badge on the avatar's bottom-right perimeter — dc renders a
+        // pencil in a heroNight pastille with a faint onHero ring.
+        if (showEditBadge) {
+            Box(
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .offset(x = 2.dp, y = 2.dp)
+                    .size(26.dp)
+                    .clip(CircleShape)
+                    .background(fixed.onHero.copy(alpha = 0.22f))
+                    .padding(2.dp)
+                    .clip(CircleShape)
+                    .background(fixed.heroNight),
+                contentAlignment = Alignment.Center,
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Edit,
+                    contentDescription = null,
+                    tint = fixed.onHero.copy(alpha = 0.9f),
+                    modifier = Modifier.size(13.dp),
+                )
+            }
+        }
     }
 }
 
