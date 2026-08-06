@@ -1,6 +1,7 @@
 package dev.forcetower.melon.core.database
 
 import androidx.room.Room
+import androidx.room.RoomDatabase
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import dev.forcetower.melon.core.common.ApplicationContext
 import dev.zacsweers.metro.AppScope
@@ -22,6 +23,10 @@ interface AndroidDatabaseGraph {
                 name = dbFile.absolutePath,
             )
                 .setDriver(BundledSQLiteDriver())
+                // AUTOMATIC downgrades low-RAM (Android Go) devices to TRUNCATE, where the
+                // reader connection and the sync writer lock each other out (SQLITE_BUSY
+                // crashes on Moto E20-class hardware). WAL has no reader/writer contention.
+                .setJournalMode(RoomDatabase.JournalMode.WRITE_AHEAD_LOGGING)
                 .setQueryCoroutineContext(Dispatchers.IO)
                 .fallbackToDestructiveMigration(true)
                 .build()
