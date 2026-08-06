@@ -12,6 +12,12 @@ class ObserveOverviewHeaderUseCase internal constructor(
 ) {
     operator fun invoke(): Flow<OverviewHeader?> =
         userDao.observeCurrent().map { user ->
-            user?.let { OverviewHeader(userName = it.name, avatarUrl = it.imageUrl) }
+            user?.let {
+                OverviewHeader(
+                    // Greet with the customized display name when one is set.
+                    userName = it.alternateName?.takeIf(String::isNotBlank) ?: it.name,
+                    avatarUrl = it.imageUrl,
+                )
+            }
         }
 }

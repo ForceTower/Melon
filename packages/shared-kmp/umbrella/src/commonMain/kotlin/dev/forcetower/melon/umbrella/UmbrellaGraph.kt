@@ -52,6 +52,7 @@ import dev.forcetower.melon.feature.me.domain.usecase.ObserveCurrentCredentialsU
 import dev.forcetower.melon.feature.me.domain.usecase.ObserveMeProfileUseCase
 import dev.forcetower.melon.feature.me.domain.usecase.ReauthenticateUpstreamUseCase
 import dev.forcetower.melon.feature.me.domain.usecase.RefreshCredentialStatusUseCase
+import dev.forcetower.melon.feature.me.domain.usecase.UpdateProfileUseCase
 import dev.forcetower.melon.feature.messages.domain.usecase.MarkAllMessagesAsReadUseCase
 import dev.forcetower.melon.feature.messages.domain.usecase.MarkMessageAsReadUseCase
 import dev.forcetower.melon.feature.messages.domain.usecase.ObserveMessageDetailUseCase
@@ -195,6 +196,11 @@ interface UmbrellaGraph {
     val observeMeProfileUseCase: ObserveMeProfileUseCase
     val refreshCredentialStatusUseCase: RefreshCredentialStatusUseCase
     val reauthenticateUpstreamUseCase: ReauthenticateUpstreamUseCase
+
+    // Eu (Me) profile customization — display name + picture pushed to the
+    // API; callers follow up with `syncProfileUseCase` so the mirrored row
+    // (and every reactive screen reading it) refreshes.
+    val updateProfileUseCase: UpdateProfileUseCase
 
     // Eu (Me) document requests — Comprovante/Histórico PDFs pulled through
     // the backend, optionally carrying a solved reCAPTCHA token.

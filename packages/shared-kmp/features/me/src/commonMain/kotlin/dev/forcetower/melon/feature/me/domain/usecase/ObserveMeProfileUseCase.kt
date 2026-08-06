@@ -174,12 +174,16 @@ class ObserveMeProfileUseCase internal constructor(
         student: StudentEntity?,
         courseName: String?,
     ): MeIdentity {
-        val canonicalName = user?.name?.takeIf { it.isNotBlank() }
+        val officialName = user?.name?.takeIf { it.isNotBlank() }
             ?: student?.name.orEmpty()
-        val first = canonicalName.substringBefore(' ').ifBlank { canonicalName }
+        // The customized display name wins wherever UNES addresses the user;
+        // `officialName` stays available for university-issued surfaces.
+        val displayName = user?.alternateName?.takeIf { it.isNotBlank() } ?: officialName
+        val first = displayName.substringBefore(' ').ifBlank { displayName }
         return MeIdentity(
-            userName = canonicalName,
+            userName = displayName,
             firstName = first,
+            officialName = officialName,
             courseName = courseName,
             enrollmentNumber = student?.platformId?.toString().orEmpty(),
             // Filled in by the outer combine over `credentialsDao.observeCurrent()`.

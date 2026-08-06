@@ -10,7 +10,7 @@ import dev.forcetower.melon.core.sync.data.dto.StudentDto
 import dev.forcetower.melon.core.sync.data.dto.UserDto
 
 internal fun UserDto.toEntity(): UserEntity =
-    UserEntity(id = id, name = name, imageUrl = imageUrl, email = email)
+    UserEntity(id = id, name = name, imageUrl = imageUrl, email = email, alternateName = alternateName)
 
 internal fun StudentDto.toEntity(lastSyncCompletedAt: String? = null): StudentEntity =
     StudentEntity(

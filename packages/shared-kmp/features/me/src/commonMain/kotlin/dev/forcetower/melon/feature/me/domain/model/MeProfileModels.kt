@@ -26,6 +26,11 @@ data class MeProfile(
 // Student-facing profile fields. `campus` is intentionally absent: every
 // upstream today is UEFS, so the iOS mapping hardcodes it.
 //
+// `userName` is the display name — the profile-customization alternate name
+// when one is set, the upstream registry name otherwise. `officialName` is
+// always the registry name; documents and everything issued by the university
+// keep rendering it.
+//
 // `username` is the typed login string from the credentials row; nullable for
 // the brief window between the user upserting and the credentials flow
 // catching up (and for the legacy v4 → v5 destructive migration where the
@@ -33,6 +38,7 @@ data class MeProfile(
 data class MeIdentity(
     val userName: String,
     val firstName: String,
+    val officialName: String,
     val courseName: String?,
     val enrollmentNumber: String,
     val username: String?,

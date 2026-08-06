@@ -38,6 +38,9 @@ internal data class UserDto(
     val name: String,
     val email: String?,
     val imageUrl: String?,
+    // Profile-customization display name; defaulted so the client keeps
+    // parsing an older API that doesn't ship the field yet.
+    val alternateName: String? = null,
 )
 
 @Serializable
