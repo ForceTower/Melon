@@ -37,6 +37,15 @@ struct RootFeature {
     private let log = Log.scoped("RootFeature")
 
     var body: some ReducerOf<Self> {
+        // Gated: RootView crossfades between shells, so the departing shell's
+        // view tree stays alive for the fade and can still emit view actions
+        // (a re-fired `.task`, a navigation write). Those stragglers arrive
+        // after the case has flipped and would trip ifCaseLet's mismatch
+        // warning, so the gate drops them before the child reducers run.
+        ShellGate(base: core)
+    }
+
+    private var core: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
             case .task:
@@ -104,5 +113,27 @@ struct RootFeature {
         .ifCaseLet(\.onboarding, action: \.onboarding) { OnboardingFeature() }
         .ifCaseLet(\.connected, action: \.connected) { AppFeature() }
         .ifCaseLet(\.farewell, action: \.farewell) { FarewellFeature() }
+    }
+}
+
+/// Forwards only actions that belong to the shell currently on screen; shell
+/// actions for a case the root has already left are teardown stragglers from
+/// the crossfade and are dropped silently.
+private struct ShellGate<Base: Reducer<RootFeature.State, RootFeature.Action>>: Reducer {
+    let base: Base
+
+    func reduce(
+        into state: inout RootFeature.State,
+        action: RootFeature.Action
+    ) -> Effect<RootFeature.Action> {
+        switch (state, action) {
+        case (_, .task), (_, .legacyMigration),
+             (.onboarding, .onboarding), (.connected, .connected), (.farewell, .farewell):
+            // The non-deprecated dispatch entry point — the same one TCA's
+            // own combinators (Reduce.init(some Reducer)) call through.
+            base._reduce(into: &state, action: action)
+        default:
+            .none
+        }
     }
 }
