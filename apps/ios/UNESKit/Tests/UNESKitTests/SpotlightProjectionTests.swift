@@ -286,8 +286,15 @@ struct SpotlightProjectionTests {
 
         let snapshot = MirrorFixtures.payload().snapshot
         try await store.apply(semesters: [snapshot.semester], snapshot: snapshot, syncedAt: .now)
-        let synced = try await updates.next()
-        #expect((synced ?? nil) != nil)
+        // `apply` stamps the semester list and writes the scope in separate
+        // transactions; when GRDB doesn't coalesce them, an intermediate
+        // snapshot (synced but discipline-less) precedes the full one. Drain
+        // until the scope lands so the wipe's nil is the next emission.
+        var synced = try await updates.next() ?? nil
+        while let current = synced, current.disciplines.isEmpty {
+            synced = try await updates.next() ?? nil
+        }
+        #expect(synced != nil)
 
         try await store.wipe()
         let wiped = try await updates.next()

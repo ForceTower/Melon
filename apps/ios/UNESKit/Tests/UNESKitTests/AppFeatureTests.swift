@@ -271,10 +271,11 @@ struct AppFeatureTests {
         let freshWeek = ScheduleOverview.preview(now: Self.referenceDate.addingTimeInterval(7 * 86_400))
 
         // Every tab already hydrated, so re-sent .task actions only restart
-        // the mirror observations.
+        // the mirror observations. Horário is the default grid variant, so
+        // the grid state is the one carrying the stale week.
         var initial = AppFeature.State()
         initial.home.overview = .empty
-        initial.schedule.overview = staleWeek
+        initial.scheduleGrid.overview = staleWeek
         initial.disciplines.overview = DisciplinesOverview()
         initial.messages.overview = .preview(now: Self.referenceDate)
         initial.me.overview = .empty
@@ -311,12 +312,62 @@ struct AppFeatureTests {
             $0.wasBackgrounded = false
         }
         await store.receive(.home(.task))
-        await store.receive(.schedule(.task))
+        await store.receive(.scheduleGrid(.task))
         await store.receive(.disciplines(.task))
         await store.receive(.messages(.task))
         await store.receive(.me(.task))
         // The restarted observation replays the mirror recomputed with the
         // current date — the stale week gives way to the fresh one.
+        await store.receive(.scheduleGrid(.overviewUpdated(freshWeek))) {
+            $0.scheduleGrid.overview = freshWeek
+        }
+    }
+
+    @Test
+    func resumingInListModeRestartsTheLegacyHorario() async {
+        let staleWeek = ScheduleOverview.preview(now: Self.referenceDate)
+        let freshWeek = ScheduleOverview.preview(now: Self.referenceDate.addingTimeInterval(7 * 86_400))
+
+        // With the list variant selected, only the legacy ScheduleFeature is
+        // mounted — the resume broadcast must not start the hidden grid.
+        var initial = AppFeature.State()
+        initial.$scheduleView.withLock { $0 = .list }
+        initial.home.overview = .empty
+        initial.schedule.overview = staleWeek
+        initial.disciplines.overview = DisciplinesOverview()
+        initial.messages.overview = .preview(now: Self.referenceDate)
+        initial.me.overview = .empty
+        initial.me.userName = "Ana"
+
+        let store = TestStore(initialState: initial) {
+            AppFeature()
+        } withDependencies: {
+            $0.credentialStatusRepository.current = { CredentialHealth(status: .ok, username: nil) }
+            $0.credentialInvalidation.apply = { _ in }
+            $0.date = .constant(Self.referenceDate)
+            $0.syncRepository.ping = {}
+            $0.homeRepository.observe = { .finished }
+            $0.scheduleRepository.observe = {
+                AsyncStream { continuation in
+                    continuation.yield(freshWeek)
+                    continuation.finish()
+                }
+            }
+            $0.disciplinesRepository.observe = { .finished }
+            $0.messagesRepository.observe = { .finished }
+            $0.meRepository.observe = { .finished }
+            $0.evaluationReminders.reconcile = {}
+            $0.push.reconcile = {}
+        }
+        store.exhaustivity = .off
+
+        await store.send(.sceneBackgrounded) {
+            $0.wasBackgrounded = true
+        }
+        await store.send(.sceneActivated) {
+            $0.wasBackgrounded = false
+        }
+        await store.receive(.schedule(.task))
         await store.receive(.schedule(.overviewUpdated(freshWeek))) {
             $0.schedule.overview = freshWeek
         }
