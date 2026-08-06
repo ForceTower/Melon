@@ -22,6 +22,7 @@ struct SettingsFeature {
         /// Icons being celebrated by the unlock sheet right now.
         var unlockSheetIcons: [AppIcon]?
         @Shared(.appStorage("theme")) var theme: AppTheme = .system
+        @Shared(.appStorage("scheduleView")) var scheduleView: ScheduleViewMode = .grid
         @Shared(.appStorage(EvaluationReminderPreference.key)) var evaluationRemindersEnabled = true
         @Shared(.appStorage(FeatureFlags.evaluationRemindersEnabledKey)) var isEvaluationRemindersFlagOn = false
         @Shared(.unlockedSecretIcons) var unlockedSecretIcons
@@ -55,6 +56,7 @@ struct SettingsFeature {
         case accountLoaded(SettingsAccount)
         case credentialsLoaded(AccountCredentials?)
         case themeSelected(AppTheme)
+        case scheduleViewSelected(ScheduleViewMode)
         case spoilerSelected(GradeSpoiler)
         case notificationToggled(NotificationToggle)
         case evaluationRemindersToggled(Bool)
@@ -145,6 +147,16 @@ struct SettingsFeature {
                     properties: ["action": "select", "value": theme.rawValue]
                 )
                 state.$theme.withLock { $0 = theme }
+                return .none
+
+            case let .scheduleViewSelected(mode):
+                analytics.selectContent(
+                    contentType: ContentTypes.setting,
+                    itemId: "schedule_view",
+                    properties: ["action": "select", "value": mode.rawValue]
+                )
+                state.$scheduleView.withLock { $0 = mode }
+                log.info("set schedule view \(mode.rawValue)")
                 return .none
 
             case let .spoilerSelected(spoiler):

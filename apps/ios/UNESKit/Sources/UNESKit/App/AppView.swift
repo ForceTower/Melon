@@ -27,7 +27,11 @@ struct AppView: View {
                 HomeView(store: store.scope(state: \.home, action: \.home))
             }
             Tab(String.localized(.navSchedule), systemImage: "square.grid.2x2", value: AppFeature.Tab.schedule) {
-                ScheduleView(store: store.scope(state: \.schedule, action: \.schedule))
+                if store.scheduleView == .grid {
+                    ScheduleGridView(store: store.scope(state: \.scheduleGrid, action: \.scheduleGrid))
+                } else {
+                    ScheduleView(store: store.scope(state: \.schedule, action: \.schedule))
+                }
             }
             Tab(String.localized(.navClasses), systemImage: "square.stack.3d.up", value: AppFeature.Tab.classes) {
                 DisciplinesView(store: store.scope(state: \.disciplines, action: \.disciplines))

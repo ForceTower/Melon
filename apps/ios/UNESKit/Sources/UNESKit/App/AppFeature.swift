@@ -8,6 +8,7 @@ struct AppFeature {
         var tab: Tab = .home
         var home = HomeFeature.State()
         var schedule = ScheduleFeature.State()
+        var scheduleGrid = ScheduleGridFeature.State()
         var disciplines = DisciplinesFeature.State()
         var messages = MessagesFeature.State()
         var me = MeFeature.State()
@@ -19,6 +20,7 @@ struct AppFeature {
         /// watch) being celebrated with the app-level unlock sheet.
         var iconCelebration: [AppIcon]?
         @Shared(.appStorage("theme")) var theme: AppTheme = .system
+        @Shared(.appStorage("scheduleView")) var scheduleView: ScheduleViewMode = .grid
         @Shared(.unlockedSecretIcons) var unlockedSecretIcons
         @Shared(.announcedSecretIcons) var announcedSecretIcons
     }
@@ -44,6 +46,7 @@ struct AppFeature {
         case iconCelebrationUsed(AppIcon)
         case home(HomeFeature.Action)
         case schedule(ScheduleFeature.Action)
+        case scheduleGrid(ScheduleGridFeature.Action)
         case disciplines(DisciplinesFeature.Action)
         case messages(MessagesFeature.Action)
         case me(MeFeature.Action)
@@ -69,6 +72,7 @@ struct AppFeature {
     var body: some ReducerOf<Self> {
         Scope(state: \.home, action: \.home) { HomeFeature() }
         Scope(state: \.schedule, action: \.schedule) { ScheduleFeature() }
+        Scope(state: \.scheduleGrid, action: \.scheduleGrid) { ScheduleGridFeature() }
         Scope(state: \.disciplines, action: \.disciplines) { DisciplinesFeature() }
         Scope(state: \.messages, action: \.messages) { MessagesFeature() }
         Scope(state: \.me, action: \.me) { MeFeature() }
@@ -268,7 +272,12 @@ struct AppFeature {
                     .run { _ in await push.reconcile() },
                     .concatenate(
                         .send(.home(.task)),
-                        .send(.schedule(.task)),
+                        // Only the Horário variant that's actually mounted —
+                        // .task on the hidden one would leave an untracked
+                        // mirror observation running with no view to cancel it.
+                        state.scheduleView == .grid
+                            ? .send(.scheduleGrid(.task))
+                            : .send(.schedule(.task)),
                         .send(.disciplines(.task)),
                         .send(.messages(.task)),
                         .send(.me(.task))
@@ -310,7 +319,7 @@ struct AppFeature {
                 state.unreadMessages = count
                 return .none
 
-            case .home, .schedule, .disciplines, .messages, .me:
+            case .home, .schedule, .scheduleGrid, .disciplines, .messages, .me:
                 return .none
             }
         }

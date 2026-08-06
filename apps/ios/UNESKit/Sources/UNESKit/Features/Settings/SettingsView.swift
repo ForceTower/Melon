@@ -81,6 +81,9 @@ struct SettingsView: View {
                                 onSelect: { store.send(.appIconSelected($0)) },
                                 onLockedTap: { store.send(.lockedIconTapped($0)) }
                             )
+                            SettingsScheduleViewCard(mode: store.scheduleView) {
+                                store.send(.scheduleViewSelected($0))
+                            }
                         }
                     }
                     .fadeUp(delay: 0.2)
