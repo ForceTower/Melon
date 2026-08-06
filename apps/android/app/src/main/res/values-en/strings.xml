@@ -585,6 +585,21 @@
     <string name="schedule_empty_subtitle">Make the most of your free day to review or rest.</string>
     <!-- endregion -->
 
+    <!-- region Schedule · Week grid -->
+    <!-- "7:00" — hour-rail label. -->
+    <string name="schedule_grid_hour_format">%1$d:00</string>
+    <!-- Rendered uppercase on the live class's agenda-row badge and sheet caption. -->
+    <string name="schedule_grid_now_badge">Now</string>
+    <string name="schedule_grid_sheet_time_label">Time</string>
+    <!-- "07:30–09:30 · 2h" — start · end · duration label. -->
+    <string name="schedule_grid_sheet_time_format">%1$s–%2$s · %3$s</string>
+    <string name="schedule_grid_sheet_location_label">Location</string>
+    <string name="schedule_grid_sheet_teacher_label">Professor</string>
+    <string name="schedule_grid_sheet_topic_label">Content</string>
+    <string name="schedule_grid_sheet_open_discipline">View course</string>
+    <string name="schedule_grid_sheet_close">Close</string>
+    <!-- endregion -->
+
     <!-- region Folio runner · Easter egg game -->
     <string name="folio_runner_title">Folio</string>
     <string name="folio_runner_hint">tap to jump · swipe down to duck</string>
@@ -739,6 +754,11 @@
     <string name="settings_theme_light">Light</string>
     <string name="settings_theme_system">System</string>
     <string name="settings_theme_dark">Dark</string>
+    <string name="settings_schedule_view_title">Schedule view</string>
+    <string name="settings_schedule_view_grid_hint">The whole week in hour columns</string>
+    <string name="settings_schedule_view_list_hint">One day at a time, as a timeline</string>
+    <string name="settings_schedule_view_grid">Week grid</string>
+    <string name="settings_schedule_view_list">Day list</string>
     <!-- endregion -->
 
     <!-- region Settings · Notas / privacidade -->

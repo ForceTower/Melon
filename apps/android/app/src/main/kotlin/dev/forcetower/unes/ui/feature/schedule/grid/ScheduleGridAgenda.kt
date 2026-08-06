@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.compositeOver
+import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -34,7 +35,6 @@ import dev.forcetower.unes.designsystem.theme.melon
 import dev.forcetower.unes.ui.feature.schedule.ScheduleClass
 import dev.forcetower.unes.ui.feature.schedule.formatShortDayMonth
 import dev.forcetower.unes.ui.feature.schedule.formatShortDayName
-import java.util.Locale
 
 // The week's agenda in list form, under the grid (dc `ScheduleGridScreen`):
 // one section per day with class, each row a tonal card with the time column,
@@ -93,7 +93,7 @@ private fun AgendaDayHeader(
         verticalAlignment = Alignment.Bottom,
     ) {
         Text(
-            text = name.uppercase(Locale.getDefault()),
+            text = name.uppercase(LocalLocale.current.platformLocale),
             style = MaterialTheme.typography.labelMedium.copy(
                 fontSize = 13.sp,
                 fontWeight = FontWeight.ExtraBold,
@@ -216,7 +216,7 @@ private fun AgendaRow(
             ) {
                 Text(
                     text = stringResource(R.string.schedule_grid_now_badge)
-                        .uppercase(Locale.getDefault()),
+                        .uppercase(LocalLocale.current.platformLocale),
                     style = MaterialTheme.typography.labelSmall.copy(
                         fontSize = 10.sp,
                         fontWeight = FontWeight.ExtraBold,

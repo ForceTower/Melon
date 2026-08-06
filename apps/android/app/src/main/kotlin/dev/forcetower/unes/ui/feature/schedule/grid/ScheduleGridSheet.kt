@@ -30,6 +30,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -43,7 +44,6 @@ import dev.forcetower.unes.ui.feature.schedule.components.formatHourLabel
 import dev.forcetower.unes.ui.feature.schedule.durationMin
 import dev.forcetower.unes.ui.feature.schedule.formatShortDayMonth
 import dev.forcetower.unes.ui.feature.schedule.formatShortDayName
-import java.util.Locale
 
 // M3 detail sheet for a grid block / agenda row tap (dc `ScheduleGridScreen`
 // sheet): code chip + weekday caption, the discipline name, a tonal list of
@@ -91,7 +91,7 @@ internal fun ScheduleGridSheet(
                 if (state == GridClassState.Now) {
                     Text(
                         text = stringResource(R.string.schedule_grid_now_badge)
-                            .uppercase(Locale.getDefault()),
+                            .uppercase(LocalLocale.current.platformLocale),
                         style = MaterialTheme.typography.labelSmall.copy(
                             fontSize = 11.sp,
                             fontWeight = FontWeight.ExtraBold,
@@ -239,7 +239,7 @@ private fun DetailRow(
         )
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = label.uppercase(Locale.getDefault()),
+                text = label.uppercase(LocalLocale.current.platformLocale),
                 style = MaterialTheme.typography.labelSmall.copy(
                     fontSize = 11.sp,
                     fontWeight = FontWeight.Bold,
