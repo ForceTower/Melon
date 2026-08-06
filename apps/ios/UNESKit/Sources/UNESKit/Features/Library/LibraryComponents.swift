@@ -288,9 +288,7 @@ struct LibraryFreshnessStamp: View {
     private var icon: some View {
         switch reading {
         case nil:
-            ProgressView()
-                .controlSize(.mini)
-                .tint(UNESColor.ink4)
+            SpinnerRing(size: 12, color: UNESColor.ink4, trackColor: UNESColor.surface3)
         case .unavailable:
             Image(systemName: "wifi.slash")
                 .font(.system(size: 11, weight: .medium))

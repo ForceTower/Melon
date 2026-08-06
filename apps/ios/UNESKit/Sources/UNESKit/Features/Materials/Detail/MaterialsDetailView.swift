@@ -307,8 +307,7 @@ struct MaterialsDetailView: View {
         } label: {
             HStack(spacing: 8) {
                 if store.isOpening {
-                    ProgressView()
-                        .tint(.white)
+                    SpinnerRing(size: 16, color: .white, trackColor: .white.opacity(0.4))
                 } else {
                     Image(systemName: "arrow.up.forward.square")
                         .font(.system(size: 15, weight: .semibold))

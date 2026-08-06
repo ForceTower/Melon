@@ -27,7 +27,8 @@ struct LibraryView: View {
         } else if store.loadFailed {
             MaterialsFailureView { store.send(.retryTapped) }
         } else {
-            MaterialsLoadingView()
+            SpinnerRing(size: 28, color: UNESColor.accent, trackColor: UNESColor.surface3)
+                .frame(maxHeight: .infinity)
         }
     }
 

@@ -333,9 +333,7 @@ struct MaterialMineRow: View {
 
 struct MaterialsLoadingView: View {
     var body: some View {
-        ProgressView()
-            .controlSize(.large)
-            .tint(UNESColor.ink3)
+        SpinnerRing(size: 28, color: UNESColor.accent, trackColor: UNESColor.surface3)
             .frame(maxWidth: .infinity)
             .padding(.vertical, 80)
     }

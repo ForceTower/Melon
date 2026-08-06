@@ -667,8 +667,7 @@ struct MaterialsUploadSheet: View {
             } label: {
                 HStack(spacing: 8) {
                     if store.isSubmitting {
-                        ProgressView()
-                            .tint(.white)
+                        SpinnerRing(size: 16, color: .white, trackColor: .white.opacity(0.4))
                     }
                     Text(footerLabel(for: step))
                         .tracking(-0.17)

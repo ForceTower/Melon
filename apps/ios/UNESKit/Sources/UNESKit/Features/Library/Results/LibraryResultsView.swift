@@ -30,7 +30,8 @@ struct LibraryResultsView: View {
             ScrollView { broadState.padding(16) }
                 .scrollIndicators(.hidden)
         } else if store.isLoading {
-            MaterialsLoadingView()
+            SpinnerRing(size: 28, color: UNESColor.accent, trackColor: UNESColor.surface3)
+                .frame(maxHeight: .infinity)
         } else if store.isEmpty {
             ScrollView { emptyState.padding(16) }
                 .scrollIndicators(.hidden)
@@ -142,7 +143,7 @@ struct LibraryResultsView: View {
     /// The next-page sentinel: materializing it is the "reached the bottom"
     /// signal.
     private var loadMoreRow: some View {
-        ProgressView()
+        SpinnerRing(size: 16, color: UNESColor.ink3, trackColor: UNESColor.surface3)
             .frame(maxWidth: .infinity)
             .padding(.vertical, 20)
             .onAppear { store.send(.loadMoreReached) }
