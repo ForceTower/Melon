@@ -251,23 +251,19 @@ struct EnrollmentView: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
 
-            if let initial = store.profile?.name.first.map(String.init) {
-                Text(initial)
-                    .font(.system(size: 16, weight: .semibold))
-                    .foregroundStyle(.white)
-                    .frame(width: 40, height: 40)
-                    .background(
-                        LinearGradient.css(
-                            stops: [
-                                .init(color: UNESColor.teal, location: 0),
-                                .init(color: Color(hex: 0x5B3B8C), location: 1),
-                            ],
-                            angle: 135
-                        ),
-                        in: Circle()
-                    )
-                    .shadow(color: UNESColor.teal.opacity(0.3), radius: 6, y: 4)
-                    .padding(.top, 6)
+            if let profile = store.profile {
+                UNESAvatar(
+                    name: profile.displayName,
+                    imageUrl: profile.imageUrl,
+                    size: 40,
+                    fontSize: 16,
+                    stops: [
+                        .init(color: UNESColor.teal, location: 0),
+                        .init(color: Color(hex: 0x5B3B8C), location: 1),
+                    ]
+                )
+                .shadow(color: UNESColor.teal.opacity(0.3), radius: 6, y: 4)
+                .padding(.top, 6)
             }
         }
         .padding(EdgeInsets(top: 2, leading: 20, bottom: 16, trailing: 20))
