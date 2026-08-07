@@ -34,6 +34,7 @@ internal data class ParadoxoUiState(
     val index: List<ParadoxoIndexItem> = emptyList(),
     val query: String = "",
     val avatarInitial: String? = null,
+    val avatarUrl: String? = null,
     val disciplines: Map<String, ParadoxoDetail<ParadoxoDisciplineDetail>> = emptyMap(),
     val teachers: Map<String, ParadoxoDetail<ParadoxoTeacherDetail>> = emptyMap(),
 ) : UiState

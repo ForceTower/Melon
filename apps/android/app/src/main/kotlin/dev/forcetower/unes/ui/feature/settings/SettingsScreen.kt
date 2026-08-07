@@ -140,6 +140,7 @@ internal fun SettingsScreen(
                             ?: stringResource(R.string.settings_vault_account_fallback),
                     ),
                     avatarInitial = state.avatarInitial,
+                    avatarUrl = state.avatarUrl,
                     username = state.username.orEmpty(),
                     password = state.password.orEmpty(),
                     revealed = revealed,

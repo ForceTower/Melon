@@ -55,6 +55,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.AnnotatedString
@@ -69,6 +70,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil3.compose.AsyncImage
 import dev.forcetower.melon.feature.paradoxo.domain.model.ParadoxoExploreKind
 import dev.forcetower.melon.feature.paradoxo.domain.model.ParadoxoIndexEntry
 import dev.forcetower.melon.feature.paradoxo.domain.model.ParadoxoMyDiscipline
@@ -173,6 +175,7 @@ private fun ParadoxoHomeContent(
         ParadoxoHomeBar(
             onBack = onBack,
             avatarInitial = state.avatarInitial,
+            avatarUrl = state.avatarUrl,
             modifier = Modifier
                 .windowInsetsPadding(WindowInsets.statusBars)
                 .fadeUpOnAppear(delayMs = 20),
@@ -349,6 +352,7 @@ private fun ParadoxoHomeContent(
 private fun ParadoxoHomeBar(
     onBack: () -> Unit,
     avatarInitial: String?,
+    avatarUrl: String? = null,
     modifier: Modifier = Modifier,
 ) {
     val backLabel = stringResource(R.string.paradoxo_back)
@@ -398,6 +402,16 @@ private fun ParadoxoHomeBar(
                     ),
                     color = MaterialTheme.melon.fixed.onHero,
                 )
+                // The monogram stays underneath as the loading/error
+                // fallback — the photo simply paints over it once it arrives.
+                if (avatarUrl != null) {
+                    AsyncImage(
+                        model = avatarUrl,
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.matchParentSize(),
+                    )
+                }
             }
         }
     }

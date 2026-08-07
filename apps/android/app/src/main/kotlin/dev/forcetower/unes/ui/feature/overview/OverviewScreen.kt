@@ -144,6 +144,7 @@ internal fun OverviewScreen(
             greeting = greeting,
             courseLine = state.courseName,
             avatarInitials = state.avatarInitials ?: "?",
+            avatarUrl = state.avatarUrl,
             onOpenProfile = onOpenProfile,
             modifier = Modifier
                 .padding(horizontal = 20.dp)

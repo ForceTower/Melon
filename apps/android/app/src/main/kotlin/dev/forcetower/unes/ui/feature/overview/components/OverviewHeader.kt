@@ -17,22 +17,25 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.theme.MelonTheme
 import dev.forcetower.unes.ui.feature.overview.OverviewFixtures
 
 // App bar of the "Hoje" screen — date eyebrow, greeting, course line on the
-// left; monogram avatar on the right.
+// left; monogram avatar (or the profile picture) on the right.
 @Composable
 internal fun OverviewHeader(
     dateEyebrow: String,
     greeting: String,
     courseLine: String?,
     avatarInitials: String,
+    avatarUrl: String? = null,
     onOpenProfile: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -79,6 +82,16 @@ internal fun OverviewHeader(
                 style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
                 color = MaterialTheme.colorScheme.primary,
             )
+            // The monogram stays underneath as the loading/error fallback —
+            // the photo simply paints over it once it arrives.
+            if (avatarUrl != null) {
+                AsyncImage(
+                    model = avatarUrl,
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.matchParentSize(),
+                )
+            }
         }
     }
 }

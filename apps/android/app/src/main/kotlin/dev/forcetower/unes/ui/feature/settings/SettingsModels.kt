@@ -25,6 +25,7 @@ internal enum class SpoilerMode(val serverInt: Int) {
 internal data class SettingsUiState(
     val displayName: String = "",
     val avatarInitial: String = "?",
+    val avatarUrl: String? = null,
     val campusLabel: String? = null,
     val username: String? = null,
     val password: String? = null,

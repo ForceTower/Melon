@@ -54,6 +54,7 @@ internal enum class GreetingKind { Morning, Afternoon, Evening }
 
 internal data class OverviewUiState(
     val userName: String? = null,
+    val avatarUrl: String? = null,
     val courseName: String? = null,
     val nowRaw: KmpOverviewNowClass? = null,
     val todayRaw: List<KmpOverviewTodayItem> = emptyList(),
@@ -159,7 +160,9 @@ internal class OverviewViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            observeHeader().collect { header -> setState { copy(userName = header?.userName) } }
+            observeHeader().collect { header ->
+                setState { copy(userName = header?.userName, avatarUrl = header?.avatarUrl) }
+            }
         }
         viewModelScope.launch {
             observeMeProfile().collect { profile ->

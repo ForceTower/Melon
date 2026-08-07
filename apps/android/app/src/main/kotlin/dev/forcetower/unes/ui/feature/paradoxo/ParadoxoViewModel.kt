@@ -39,7 +39,12 @@ internal class ParadoxoViewModel @Inject constructor(
         viewModelScope.launch {
             observeMeProfile().collect { profile ->
                 val first = profile.identity.firstName.ifBlank { profile.identity.userName }
-                setState { copy(avatarInitial = first.firstOrNull()?.uppercaseChar()?.toString()) }
+                setState {
+                    copy(
+                        avatarInitial = first.firstOrNull()?.uppercaseChar()?.toString(),
+                        avatarUrl = profile.identity.avatarUrl,
+                    )
+                }
             }
         }
     }

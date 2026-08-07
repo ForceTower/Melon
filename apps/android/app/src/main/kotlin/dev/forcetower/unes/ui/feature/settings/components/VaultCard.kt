@@ -48,6 +48,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -57,6 +58,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
+import coil3.compose.AsyncImage
 import androidx.fragment.app.FragmentActivity
 import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.foundation.Mesh
@@ -76,6 +78,7 @@ internal fun VaultCard(
     displayName: String,
     accountLabel: String,
     avatarInitial: String,
+    avatarUrl: String?,
     username: String,
     password: String,
     revealed: Boolean,
@@ -121,6 +124,7 @@ internal fun VaultCard(
                 displayName = displayName,
                 accountLabel = accountLabel,
                 avatarInitial = avatarInitial,
+                avatarUrl = avatarUrl,
                 revealed = revealed,
                 onToggleReveal = {
                     if (revealed) {
@@ -276,6 +280,7 @@ private fun IdentityRow(
     displayName: String,
     accountLabel: String,
     avatarInitial: String,
+    avatarUrl: String?,
     revealed: Boolean,
     onToggleReveal: () -> Unit,
 ) {
@@ -310,6 +315,16 @@ private fun IdentityRow(
                 ),
                 color = onHero,
             )
+            // The monogram stays underneath as the loading/error fallback —
+            // the photo simply paints over it once it arrives.
+            if (avatarUrl != null) {
+                AsyncImage(
+                    model = avatarUrl,
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.matchParentSize(),
+                )
+            }
         }
         Column(modifier = Modifier.weight(1f)) {
             Text(

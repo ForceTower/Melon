@@ -70,6 +70,7 @@ internal class SettingsViewModel @Inject constructor(
                     copy(
                         displayName = name,
                         avatarInitial = first.firstOrNull()?.uppercaseChar()?.toString() ?: "?",
+                        avatarUrl = profile.identity.avatarUrl,
                         campusLabel = profile.campus,
                     )
                 }
