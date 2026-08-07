@@ -41,14 +41,16 @@ enum UNESColor {
     static let ink3 = Color(light: Color(hex: 0x6B5E70), dark: Color(hex: 0x9F9386))
     static let ink4 = Color(light: Color(hex: 0x9C8FA0), dark: Color(hex: 0x6B6156))
 
-    static let surface = Color(light: Color(hex: 0xFBF7F2), dark: Color(hex: 0x15101A))
-    static let surface2 = Color(light: Color(hex: 0xF3EDE4), dark: Color(hex: 0x1E1824))
-    static let surface3 = Color(light: Color(hex: 0xE9E0D2), dark: Color(hex: 0x2A2232))
+    static let surface = Color(light: Color(hex: 0xFFFFFF), dark: Color(hex: 0x15101A))
+    static let surface2 = Color(light: Color(hex: 0xF7F5F8), dark: Color(hex: 0x1E1824))
+    static let surface3 = Color(light: Color(hex: 0xF0EDF2), dark: Color(hex: 0x2A2232))
 
     static let line = Color(light: Color(hex: 0x1A1420, opacity: 0.08), dark: Color(hex: 0xF5EFE6, opacity: 0.09))
     static let card = Color(light: .white, dark: Color(hex: 0x1C1624))
-    static let cardLine = Color(light: Color(hex: 0x1A1420, opacity: 0.05), dark: Color(hex: 0xF5EFE6, opacity: 0.06))
-    static let pageBg = Color(light: Color(hex: 0xEDE7DD), dark: Color(hex: 0x0C0810))
+    /// 9% in light mode, not 5%: on a white page the hairline is the only thing
+    /// separating a white card from its background.
+    static let cardLine = Color(light: Color(hex: 0x1A1420, opacity: 0.09), dark: Color(hex: 0xF5EFE6, opacity: 0.06))
+    static let pageBg = Color(light: Color(hex: 0xFFFFFF), dark: Color(hex: 0x0C0810))
 
     /// Coral in light mode, amber in dark mode.
     static let accent = Color(light: Color(hex: 0xE85D4E), dark: Color(hex: 0xF4A23C))
