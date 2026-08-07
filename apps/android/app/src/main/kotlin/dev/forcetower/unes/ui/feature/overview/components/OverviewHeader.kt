@@ -35,9 +35,9 @@ internal fun OverviewHeader(
     greeting: String,
     courseLine: String?,
     avatarInitials: String,
-    avatarUrl: String? = null,
     onOpenProfile: () -> Unit,
     modifier: Modifier = Modifier,
+    avatarUrl: String? = null,
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),

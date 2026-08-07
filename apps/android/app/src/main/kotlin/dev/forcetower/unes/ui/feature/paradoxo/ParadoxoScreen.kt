@@ -352,8 +352,8 @@ private fun ParadoxoHomeContent(
 private fun ParadoxoHomeBar(
     onBack: () -> Unit,
     avatarInitial: String?,
-    avatarUrl: String? = null,
     modifier: Modifier = Modifier,
+    avatarUrl: String? = null,
 ) {
     val backLabel = stringResource(R.string.paradoxo_back)
     Row(
