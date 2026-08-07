@@ -1,11 +1,13 @@
 import ComposableArchitecture
+import PhotosUI
 import SwiftUI
 
 /// The "Editar perfil" sheet — native form chrome: grouped sections, a
-/// confirmation dialog for the photo source, and the system picker's square
-/// crop behind it.
+/// confirmation dialog for the photo source, then the circular crop step
+/// over whatever the camera or library hands back.
 struct ProfileEditSheet: View {
     @Bindable var store: StoreOf<ProfileEditFeature>
+    @State private var libraryItem: PhotosPickerItem?
 
     var body: some View {
         NavigationStack {
@@ -40,8 +42,21 @@ struct ProfileEditSheet: View {
         }
         .interactiveDismissDisabled(store.isSaving)
         .presentationDetents([.medium, .large])
-        .fullScreenCoverCompat(isPresented: pickerBinding) {
-            picker
+        .photosPicker(isPresented: $store.isLibraryPresented, selection: $libraryItem, matching: .images)
+        .onChange(of: libraryItem) { _, item in
+            guard let item else { return }
+            libraryItem = nil
+            Task {
+                if let data = try? await item.loadTransferable(type: Data.self) {
+                    store.send(.photoCaptured(data))
+                }
+            }
+        }
+        .fullScreenCoverCompat(isPresented: $store.isCameraPresented) {
+            camera
+        }
+        .fullScreenCoverCompat(isPresented: cropBinding) {
+            crop
         }
     }
 
@@ -185,16 +200,16 @@ struct ProfileEditSheet: View {
     @ViewBuilder
     private var sourceDialogActions: some View {
         #if os(iOS)
-        if AvatarImagePicker.isCameraAvailable {
+        if AvatarCameraPicker.isCameraAvailable {
             Button {
-                store.send(.photoSourcePicked(.camera))
+                store.send(.takePhotoTapped)
             } label: {
                 Text(.meEditTakePhoto)
             }
         }
         #endif
         Button {
-            store.send(.photoSourcePicked(.library))
+            store.send(.chooseFromLibraryTapped)
         } label: {
             Text(.meEditChooseFromLibrary)
         }
@@ -207,28 +222,39 @@ struct ProfileEditSheet: View {
         }
     }
 
-    /// Only reports a dismissal while state still shows the picker: SwiftUI
+    /// Only reports a dismissal while state still shows the crop: SwiftUI
     /// re-writes the binding when the dismiss animation completes, by which
-    /// point a pick may have already cleared it.
-    private var pickerBinding: Binding<Bool> {
+    /// point a confirm may have already cleared it.
+    private var cropBinding: Binding<Bool> {
         Binding(
-            get: { store.pickerSource != nil },
+            get: { store.cropSource != nil },
             set: { value in
-                if !value, store.pickerSource != nil { store.send(.pickerCanceled) }
+                if !value, store.cropSource != nil { store.send(.cropCanceled) }
             }
         )
     }
 
     @ViewBuilder
-    private var picker: some View {
+    private var camera: some View {
         #if os(iOS)
-        if let source = store.pickerSource {
-            AvatarImagePicker(source: source) { data in
-                store.send(.photoPicked(data))
-            } onCancel: {
-                store.send(.pickerCanceled)
+        AvatarCameraPicker { data in
+            store.send(.photoCaptured(data))
+        } onCancel: {
+            store.send(.binding(.set(\.isCameraPresented, false)))
+        }
+        .ignoresSafeArea()
+        #endif
+    }
+
+    @ViewBuilder
+    private var crop: some View {
+        #if os(iOS)
+        if let source = store.cropSource {
+            AvatarCropView(sourceData: source) {
+                store.send(.cropCanceled)
+            } onDone: { data in
+                store.send(.cropConfirmed(data))
             }
-            .ignoresSafeArea()
         }
         #endif
     }

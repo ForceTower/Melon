@@ -7,11 +7,6 @@ import Foundation
 /// the portal name stores null, a fresh picture mints a new URL).
 @Reducer
 struct ProfileEditFeature {
-    /// Where a replacement avatar comes from.
-    enum PickerSource: Equatable, Sendable {
-        case camera, library
-    }
-
     /// What happens to the picture on save. `keep` leaves the server photo
     /// alone; `remove` deletes it; `replace` uploads the freshly cropped
     /// bytes.
@@ -38,7 +33,11 @@ struct ProfileEditFeature {
         var isSaving = false
         var saveFailed = false
         var isSourceDialogPresented = false
-        var pickerSource: PickerSource?
+        var isCameraPresented = false
+        var isLibraryPresented = false
+        /// A freshly captured/picked image awaiting the circular crop step,
+        /// presented full screen while non-nil.
+        var cropSource: Data?
 
         init(profile: Profile) {
             portalName = profile.name
@@ -76,10 +75,14 @@ struct ProfileEditFeature {
     enum Action: BindableAction, Equatable {
         case binding(BindingAction<State>)
         case changePhotoTapped
-        case photoSourcePicked(PickerSource)
+        case takePhotoTapped
+        case chooseFromLibraryTapped
         case removePhotoTapped
-        case photoPicked(Data)
-        case pickerCanceled
+        /// Raw image bytes off the camera or library — the crop comes next.
+        case photoCaptured(Data)
+        /// The crop step's square JPEG, staged for upload on save.
+        case cropConfirmed(Data)
+        case cropCanceled
         case restoreNameTapped
         case cancelTapped
         case saveTapped
@@ -112,9 +115,14 @@ struct ProfileEditFeature {
                 state.isSourceDialogPresented = true
                 return .none
 
-            case let .photoSourcePicked(source):
+            case .takePhotoTapped:
                 state.isSourceDialogPresented = false
-                state.pickerSource = source
+                state.isCameraPresented = true
+                return .none
+
+            case .chooseFromLibraryTapped:
+                state.isSourceDialogPresented = false
+                state.isLibraryPresented = true
                 return .none
 
             case .removePhotoTapped:
@@ -124,15 +132,21 @@ struct ProfileEditFeature {
                 state.saveFailed = false
                 return .none
 
-            case let .photoPicked(data):
-                state.pickerSource = nil
+            case let .photoCaptured(data):
+                state.isCameraPresented = false
+                state.isLibraryPresented = false
+                state.cropSource = data
+                return .none
+
+            case let .cropConfirmed(data):
+                state.cropSource = nil
                 state.photoAction = .replace
                 state.draftPhoto = data
                 state.saveFailed = false
                 return .none
 
-            case .pickerCanceled:
-                state.pickerSource = nil
+            case .cropCanceled:
+                state.cropSource = nil
                 return .none
 
             case .restoreNameTapped:
