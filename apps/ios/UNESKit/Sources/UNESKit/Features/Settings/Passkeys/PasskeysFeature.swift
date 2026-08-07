@@ -15,6 +15,7 @@ struct PasskeysFeature {
     struct State: Equatable {
         /// Seeded from the host so the add sheet's account card isn't empty.
         var accountName: String?
+        var accountImageUrl: String?
         var credentials: [PasskeyCredential] = []
         /// Distinguishes "still loading" from "loaded, and empty".
         var hasLoaded = false

@@ -193,26 +193,18 @@ struct HomeView: View {
         Button {
             store.send(.avatarTapped)
         } label: {
-            Text(avatarInitial)
-                .font(.system(size: 14, weight: .semibold))
-                .foregroundStyle(.white)
-                .frame(width: 32, height: 32)
-                .background(
-                    LinearGradient.css(
-                        stops: [
-                            .init(color: UNESColor.coral, location: 0),
-                            .init(color: UNESColor.amber, location: 1),
-                        ],
-                        angle: 135
-                    ),
-                    in: Circle()
-                )
+            UNESAvatar(
+                name: store.userName,
+                imageUrl: store.userImageUrl,
+                size: 32,
+                fontSize: 14,
+                stops: [
+                    .init(color: UNESColor.coral, location: 0),
+                    .init(color: UNESColor.amber, location: 1),
+                ]
+            )
         }
         .buttonStyle(.plain)
-    }
-
-    private var avatarInitial: String {
-        store.userName.flatMap { $0.first.map { String($0).uppercased() } } ?? "•"
     }
 
     private var footer: some View {

@@ -7,6 +7,7 @@ struct HomeFeature {
     struct State: Equatable {
         var overview: HomeOverview?
         var userName: String?
+        var userImageUrl: String?
         var isLoading = false
         var errorMessage: String?
         var lastRefreshed: Date?
@@ -160,6 +161,7 @@ struct HomeFeature {
 
             case let .profileLoaded(profile):
                 state.userName = profile.displayName
+                state.userImageUrl = profile.imageUrl
                 return .none
 
             case let .campusEventLoaded(event):

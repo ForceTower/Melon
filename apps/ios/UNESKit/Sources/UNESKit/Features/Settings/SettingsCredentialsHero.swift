@@ -5,6 +5,7 @@ import SwiftUI
 struct SettingsCredentialsHero: View {
     var name: String
     var email: String?
+    var imageUrl: String?
     var credentials: AccountCredentials?
     var isRevealed: Bool
     var copied: SettingsFeature.CredentialField?
@@ -77,27 +78,8 @@ struct SettingsCredentialsHero: View {
     }
 
     private var avatar: some View {
-        Text(initial)
-            .font(.system(size: 24, weight: .bold))
-            .tracking(-0.72)
-            .foregroundStyle(.white)
-            .frame(width: 52, height: 52)
-            .background(
-                LinearGradient.css(
-                    stops: [
-                        .init(color: UNESColor.amber, location: 0),
-                        .init(color: UNESColor.coral, location: 0.55),
-                        .init(color: UNESColor.magenta, location: 1),
-                    ],
-                    angle: 135
-                ),
-                in: Circle()
-            )
+        UNESAvatar(name: name, imageUrl: imageUrl, size: 52, fontSize: 24)
             .shadow(color: UNESColor.coral.opacity(0.4), radius: 11, y: 8)
-    }
-
-    private var initial: String {
-        name.first.map { String($0).uppercased() } ?? "•"
     }
 
     private var revealButton: some View {

@@ -51,6 +51,7 @@ struct SettingsView: View {
                     SettingsCredentialsHero(
                         name: store.displayName ?? String.localized(.settingsDefaultName),
                         email: store.profile?.email,
+                        imageUrl: store.profile?.imageUrl,
                         credentials: store.credentials,
                         isRevealed: store.isPasswordRevealed,
                         copied: store.copied,

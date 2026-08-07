@@ -377,7 +377,10 @@ struct MeFeature {
     /// Settings pushes the passkeys manager onto the host stack.
     private func routeSettings(_ action: Path.Action, state: inout State) -> Effect<Action> {
         if case .settings(.delegate(.openPasskeys)) = action {
-            state.path.append(.passkeys(PasskeysFeature.State(accountName: state.displayName)))
+            state.path.append(.passkeys(PasskeysFeature.State(
+                accountName: state.displayName,
+                accountImageUrl: state.profile?.imageUrl
+            )))
         }
         return .none
     }

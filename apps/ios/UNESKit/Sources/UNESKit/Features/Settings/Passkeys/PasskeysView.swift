@@ -37,6 +37,7 @@ struct PasskeysView: View {
             PasskeyAddSheet(
                 accountName: store.accountName ?? String.localized(.settingsDefaultName),
                 avatarInitial: store.avatarInitial,
+                avatarImageUrl: store.accountImageUrl,
                 target: store.addTarget,
                 step: store.addStep,
                 isCreating: store.isCreating,

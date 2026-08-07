@@ -6,6 +6,7 @@ import SwiftUI
 struct PasskeyAddSheet: View {
     var accountName: String
     var avatarInitial: String
+    var avatarImageUrl: String?
     var target: PasskeyTarget
     var step: PasskeysFeature.AddStep
     var isCreating: Bool
@@ -38,21 +39,7 @@ struct PasskeyAddSheet: View {
 
     private var accountCard: some View {
         HStack(spacing: 12) {
-            Text(avatarInitial)
-                .font(.system(size: 18, weight: .bold))
-                .foregroundStyle(.white)
-                .frame(width: 40, height: 40)
-                .background(
-                    LinearGradient.css(
-                        stops: [
-                            .init(color: UNESColor.amber, location: 0),
-                            .init(color: UNESColor.coral, location: 0.55),
-                            .init(color: UNESColor.magenta, location: 1),
-                        ],
-                        angle: 135
-                    ),
-                    in: Circle()
-                )
+            UNESAvatar(name: avatarInitial, imageUrl: avatarImageUrl, size: 40, fontSize: 18)
             Text(accountName)
                 .font(.system(size: 15, weight: .semibold))
                 .tracking(-0.15)
