@@ -10,6 +10,8 @@ struct ProfileDTO: Decodable {
         let name: String
         let email: String?
         let imageUrl: String?
+        /// Profile-customization display name; absent on an older API.
+        let alternateName: String?
     }
 
     struct CourseDTO: Decodable {
@@ -25,7 +27,9 @@ extension ProfileDTO {
             id: user.id,
             name: user.name,
             email: user.email,
-            course: course?.name
+            course: course?.name,
+            alternateName: user.alternateName,
+            imageUrl: user.imageUrl
         )
     }
 }

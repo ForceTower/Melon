@@ -28,7 +28,7 @@ struct SettingsFeature {
         @Shared(.unlockedSecretIcons) var unlockedSecretIcons
         @Shared(.announcedSecretIcons) var announcedSecretIcons
 
-        var displayName: String? { profile?.name ?? userName }
+        var displayName: String? { profile?.displayName ?? userName }
 
         /// The device-local reminder row appears only while its flag is on.
         var showsEvaluationReminders: Bool {

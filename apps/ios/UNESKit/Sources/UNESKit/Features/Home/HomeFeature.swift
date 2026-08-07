@@ -159,7 +159,7 @@ struct HomeFeature {
                 return .none
 
             case let .profileLoaded(profile):
-                state.userName = profile.name
+                state.userName = profile.displayName
                 return .none
 
             case let .campusEventLoaded(event):

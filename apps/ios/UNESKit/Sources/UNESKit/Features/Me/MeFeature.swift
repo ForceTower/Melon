@@ -30,6 +30,10 @@ struct MeFeature {
         var isLogoutPromptPresented = false
         var path = StackState<Path.State>()
         @Presents var document: MeDocumentFeature.State?
+        @Presents var editProfile: ProfileEditFeature.State?
+        /// Bumped on every profile-customization save — the view's success
+        /// haptic triggers off it.
+        var profileSaveCount = 0
         @Shared(.appStorage("theme")) var theme: AppTheme = .system
         @Shared(.appStorage(FeatureFlags.enrollmentEnabledKey)) var isEnrollmentEnabled = false
         @Shared(.appStorage(FeatureFlags.certificateEnabledKey)) var isCertificateEnabled = false
@@ -41,7 +45,7 @@ struct MeFeature {
         /// The semester whose Retrospectiva window the mirror says is open.
         var retrospectiveSemester: String?
 
-        var displayName: String? { profile?.name ?? userName }
+        var displayName: String? { profile?.displayName ?? userName }
 
         /// The flag-gated tile set — the gated shortcuts appear only while
         /// their flag is on. Always applies the filter, independent of build
@@ -105,6 +109,8 @@ struct MeFeature {
         case overviewUpdated(CachedMeOverview)
         case profileLoaded(Profile)
         case shortcutTapped(MeShortcut)
+        case editProfileTapped
+        case editProfile(PresentationAction<ProfileEditFeature.Action>)
         case deeplinkOpened(Deeplink)
         case settingsRowTapped(MeSettingsRow)
         case aboutInfoResolved(AppInfo)
@@ -210,6 +216,26 @@ struct MeFeature {
                         semesterCode: semesterCode
                     )))
                 }
+                return .none
+
+            case .editProfileTapped:
+                // The sheet needs the fetched profile — the portal name and
+                // server customizations seed it.
+                guard let profile = state.profile else { return .none }
+                analytics.selectContent(contentType: ContentTypes.setting, itemId: "edit_profile")
+                state.editProfile = ProfileEditFeature.State(profile: profile)
+                return .none
+
+            case .editProfile(.presented(.delegate(.saved))):
+                analytics.selectContent(contentType: ContentTypes.setting, itemId: "edit_profile", properties: ["action": "save"])
+                state.profileSaveCount += 1
+                // Re-pull the profile so state picks up what the server
+                // actually stored (it normalizes a re-typed portal name to
+                // null, and mints a fresh picture URL) — the hero re-renders
+                // from the updated state on its own.
+                return loadProfile()
+
+            case .editProfile:
                 return .none
 
             case let .deeplinkOpened(deeplink):
@@ -330,13 +356,18 @@ struct MeFeature {
         .ifLet(\.$document, action: \.document) {
             MeDocumentFeature()
         }
+        .ifLet(\.$editProfile, action: \.editProfile) {
+            ProfileEditFeature()
+        }
         .forEach(\.path, action: \.path)
     }
 
     private func documentState(_ document: AcademicDocument, from state: State) -> MeDocumentFeature.State {
         MeDocumentFeature.State(
             document: document,
-            studentName: state.displayName,
+            // The registry name, never the display customization — documents
+            // are university-issued.
+            studentName: state.profile?.name ?? state.userName,
             course: state.profile?.course,
             score: state.overview?.coefficient?.value,
             stored: localDocuments.load(document)

@@ -80,6 +80,10 @@ struct MeView: View {
         .sheet(item: $store.scope(state: \.document, action: \.document)) { documentStore in
             MeDocumentSheet(store: documentStore)
         }
+        .sheet(item: $store.scope(state: \.editProfile, action: \.editProfile)) { editStore in
+            ProfileEditSheet(store: editStore)
+        }
+        .sensoryFeedback(.success, trigger: store.profileSaveCount)
     }
 
     private var content: some View {
@@ -89,9 +93,11 @@ struct MeView: View {
                     name: store.displayName ?? String.localized(.meDefaultName),
                     course: store.profile?.course,
                     campus: store.overview?.campus,
+                    imageUrl: store.profile?.imageUrl,
                     coefficient: store.overview?.coefficient,
                     attendancePercent: store.overview?.attendancePercent,
-                    progress: store.overview?.progress
+                    progress: store.overview?.progress,
+                    onEditProfile: { store.send(.editProfileTapped) }
                 )
                 .scaleIn(delay: 0.1, duration: 0.62)
                 .padding(.bottom, 20)

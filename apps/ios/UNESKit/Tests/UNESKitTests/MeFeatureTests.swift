@@ -304,4 +304,91 @@ struct MeFeatureTests {
             )
         }
     }
+
+    @Test
+    func profileEditSavePushesTheNameAndRefetchesTheProfile() async {
+        let savedName = LockIsolated<String??>(nil)
+        var updated = Profile.preview
+        updated.alternateName = "Mari"
+
+        var initialState = MeFeature.State()
+        initialState.profile = .preview
+
+        let store = TestStore(initialState: initialState) {
+            MeFeature()
+        } withDependencies: { [updated] in
+            $0.profileRepository.current = { updated }
+            $0.profileRepository.updateName = { savedName.setValue($0) }
+        }
+
+        await store.send(.editProfileTapped) {
+            $0.editProfile = ProfileEditFeature.State(profile: .preview)
+        }
+        await store.send(.editProfile(.presented(.binding(.set(\.draftName, "Mari"))))) {
+            $0.editProfile?.draftName = "Mari"
+        }
+        await store.send(.editProfile(.presented(.saveTapped))) {
+            $0.editProfile?.isSaving = true
+        }
+        await store.receive(.editProfile(.presented(.saveCompleted(true)))) {
+            $0.editProfile?.isSaving = false
+        }
+        await store.receive(.editProfile(.presented(.delegate(.saved)))) {
+            $0.profileSaveCount = 1
+        }
+        await store.receive(.editProfile(.dismiss)) {
+            $0.editProfile = nil
+        }
+        // The re-pull lands the server-normalized profile back in state, so
+        // the hero re-renders the new name reactively.
+        await store.receive(.profileLoaded(updated)) {
+            $0.profile = updated
+        }
+        #expect(savedName.value == "Mari")
+    }
+
+    @Test
+    func profileEditFailedSaveKeepsTheSheetWithTheErrorCopy() async {
+        var initialState = MeFeature.State()
+        initialState.profile = .preview
+
+        let store = TestStore(initialState: initialState) {
+            MeFeature()
+        } withDependencies: {
+            $0.profileRepository.updateName = { _ in throw APIError.emptyEnvelope }
+        }
+
+        await store.send(.editProfileTapped) {
+            $0.editProfile = ProfileEditFeature.State(profile: .preview)
+        }
+        await store.send(.editProfile(.presented(.binding(.set(\.draftName, "Mari"))))) {
+            $0.editProfile?.draftName = "Mari"
+        }
+        await store.send(.editProfile(.presented(.saveTapped))) {
+            $0.editProfile?.isSaving = true
+        }
+        await store.receive(.editProfile(.presented(.saveCompleted(false)))) {
+            $0.editProfile?.isSaving = false
+            $0.editProfile?.saveFailed = true
+        }
+    }
+
+    @Test
+    func profileEditNoOpSaveJustDismisses() async {
+        var initialState = MeFeature.State()
+        initialState.profile = .preview
+
+        let store = TestStore(initialState: initialState) {
+            MeFeature()
+        }
+
+        await store.send(.editProfileTapped) {
+            $0.editProfile = ProfileEditFeature.State(profile: .preview)
+        }
+        // Nothing changed — no network call, no refetch, just the dismissal.
+        await store.send(.editProfile(.presented(.saveTapped)))
+        await store.receive(.editProfile(.dismiss)) {
+            $0.editProfile = nil
+        }
+    }
 }

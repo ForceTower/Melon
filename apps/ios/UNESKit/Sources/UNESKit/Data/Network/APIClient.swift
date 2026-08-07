@@ -25,6 +25,9 @@ struct APIRequest: Sendable {
     var path: String
     var query: [URLQueryItem] = []
     var body: Data?
+    /// Content-Type sent alongside `body`; JSON unless a caller (multipart
+    /// upload) says otherwise.
+    var contentType = "application/json"
     var authorization: APIAuthorization = .session
 }
 
@@ -175,7 +178,7 @@ extension APIClient {
                 request.setValue(MachineIdentity.id, forHTTPHeaderField: "X-Machine-Id")
                 if let body = apiRequest.body {
                     request.httpBody = body
-                    request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+                    request.setValue(apiRequest.contentType, forHTTPHeaderField: "Content-Type")
                 }
                 let sentToken: String? = switch apiRequest.authorization {
                 case .session: sessionStore.current()?.accessToken

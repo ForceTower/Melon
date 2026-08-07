@@ -1,14 +1,17 @@
 import SwiftUI
 
 /// The identity card: avatar, name, course, and the three-stat row over a
-/// drifting rose mesh.
+/// drifting rose mesh. Tapping the identity row opens the
+/// profile-customization sheet.
 struct MeIdentityHero: View {
     var name: String
     var course: String?
     var campus: String?
+    var imageUrl: String?
     var coefficient: CoefficientSummary?
     var attendancePercent: Int?
     var progress: SemesterProgress?
+    var onEditProfile: (() -> Void)?
 
     /// The mesh backdrop, matching the design's `#160E1F`.
     private static let backdrop = Color(hex: 0x160E1F)
@@ -43,7 +46,21 @@ struct MeIdentityHero: View {
         .shadow(color: Color(hex: 0x141020, opacity: 0.28), radius: 20, y: 18)
     }
 
+    @ViewBuilder
     private var identityRow: some View {
+        if let onEditProfile {
+            Button(action: onEditProfile) {
+                identityRowContent
+                    .contentShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(Text(.meEditTitle))
+        } else {
+            identityRowContent
+        }
+    }
+
+    private var identityRowContent: some View {
         HStack(spacing: 15) {
             avatar
             VStack(alignment: .leading, spacing: 3) {
@@ -87,14 +104,48 @@ struct MeIdentityHero: View {
                 ),
                 in: Circle()
             )
+            .overlay {
+                // The gradient initial stays underneath as the loading/error
+                // fallback — the photo simply paints over it once it arrives.
+                if let url = imageUrl.flatMap(URL.init(string:)) {
+                    AsyncImage(url: url) { image in
+                        image
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 62, height: 62)
+                            .clipShape(Circle())
+                    } placeholder: {
+                        EmptyView()
+                    }
+                }
+            }
             .shadow(color: UNESColor.coral.opacity(0.4), radius: 11, y: 8)
             .overlay(alignment: .bottomTrailing) {
-                Circle()
-                    .fill(UNESColor.liveGreen)
-                    .stroke(Self.backdrop, lineWidth: 2.5)
-                    .frame(width: 14, height: 14)
-                    .offset(x: -1, y: -1)
+                if onEditProfile != nil {
+                    editBadge
+                } else {
+                    Circle()
+                        .fill(UNESColor.liveGreen)
+                        .stroke(Self.backdrop, lineWidth: 2.5)
+                        .frame(width: 14, height: 14)
+                        .offset(x: -1, y: -1)
+                }
             }
+    }
+
+    /// Edit affordance on the avatar's bottom-right perimeter — a pencil in
+    /// a backdrop pastille with a faint white ring, mirroring Android.
+    private var editBadge: some View {
+        Image(systemName: "pencil")
+            .font(.system(size: 11, weight: .bold))
+            .foregroundStyle(.white.opacity(0.9))
+            .frame(width: 22, height: 22)
+            .background(Self.backdrop, in: Circle())
+            .overlay {
+                Circle()
+                    .strokeBorder(.white.opacity(0.22), lineWidth: 2)
+            }
+            .offset(x: 2, y: 2)
     }
 
     private var initial: String {
@@ -166,7 +217,8 @@ struct MeIdentityHero: View {
         campus: "UEFS · Módulo 5",
         coefficient: MeOverview.preview.coefficient,
         attendancePercent: 96,
-        progress: MeOverview.preview.progress
+        progress: MeOverview.preview.progress,
+        onEditProfile: {}
     )
     .padding(16)
     .frame(maxHeight: .infinity)
