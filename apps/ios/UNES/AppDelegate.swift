@@ -1,3 +1,4 @@
+import FirebaseAnalytics
 import FirebaseCore
 import FirebaseCrashlytics
 import FirebaseMessaging
@@ -35,6 +36,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         log.info("firebase configured")
         #if DEBUG
         Crashlytics.crashlytics().setCrashlyticsCollectionEnabled(false)
+        Analytics.setAnalyticsCollectionEnabled(false)
         #endif
         Crashlytics.crashlytics().setUserID(MachineIdentity.id)
 
