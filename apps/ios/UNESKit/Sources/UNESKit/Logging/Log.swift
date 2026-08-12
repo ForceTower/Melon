@@ -59,9 +59,21 @@ struct LogPipeline: Sendable {
     let remoteFloor: LogLevel
 
     func emit(_ level: LogLevel, tag: String, message: String, error: (any Error)?) {
+        let level = isCancellation(error) ? min(level, .info) : level
         local.write(level, tag: tag, message: message, error: error)
         if level >= remoteFloor, let remote {
             remote.enqueue(level, tag: tag, message: message, error: error)
+        }
+    }
+
+    /// Cancellation is expected lifecycle noise (task superseded, app
+    /// backgrounded), not a failure — cap it at `info` so it stays out of
+    /// error/warn health checks without touching call sites.
+    private func isCancellation(_ error: (any Error)?) -> Bool {
+        switch error {
+        case is CancellationError: true
+        case let urlError as URLError: urlError.code == .cancelled
+        default: false
         }
     }
 
