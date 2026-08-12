@@ -125,6 +125,28 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         log.info("APNS token registered bytes=\(deviceToken.count)")
         Messaging.messaging().apnsToken = deviceToken
     }
+
+    /// Background wake for content-available pushes (spec 0008): the backend
+    /// wake-marks mirror-visible changes so the app pulls the mirror before
+    /// the user opens it. In foreground the same alert also hits
+    /// `willPresent` — hand off to that debounced path and report no data so
+    /// the two doors can't double-refresh.
+    func application(
+        _ application: UIApplication,
+        didReceiveRemoteNotification userInfo: [AnyHashable: Any]
+    ) async -> UIBackgroundFetchResult {
+        let data = Self.stringPayload(of: userInfo)
+        guard !data.isEmpty else { return .noData }
+        if application.applicationState == .active {
+            await PushEvents.received(data)
+            return .noData
+        }
+        switch await PushEvents.backgroundSync(data) {
+        case .newData: return .newData
+        case .noData: return .noData
+        case .failed: return .failed
+        }
+    }
 }
 
 extension AppDelegate: MessagingDelegate, UNUserNotificationCenterDelegate {
@@ -161,13 +183,16 @@ extension AppDelegate: MessagingDelegate, UNUserNotificationCenterDelegate {
         completionHandler()
     }
 
+    private nonisolated static func stringPayload(of notification: UNNotification) -> [String: String] {
+        stringPayload(of: notification.request.content.userInfo)
+    }
+
     /// FCM data payloads ride along as string entries in userInfo; the
     /// non-string values ("aps" & friends) are system metadata.
-    private nonisolated static func stringPayload(of notification: UNNotification) -> [String: String] {
-        notification.request.content.userInfo
-            .reduce(into: [String: String]()) { payload, entry in
-                guard let key = entry.key as? String, let value = entry.value as? String else { return }
-                payload[key] = value
-            }
+    private nonisolated static func stringPayload(of userInfo: [AnyHashable: Any]) -> [String: String] {
+        userInfo.reduce(into: [String: String]()) { payload, entry in
+            guard let key = entry.key as? String, let value = entry.value as? String else { return }
+            payload[key] = value
+        }
     }
 }

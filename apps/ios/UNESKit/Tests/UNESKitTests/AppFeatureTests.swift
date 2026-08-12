@@ -269,6 +269,7 @@ struct AppFeatureTests {
         // exact shape of a suspension that crossed into a new week.
         let staleWeek = ScheduleOverview.preview(now: Self.referenceDate)
         let freshWeek = ScheduleOverview.preview(now: Self.referenceDate.addingTimeInterval(7 * 86_400))
+        let refreshes = LockIsolated(0)
 
         // Every tab already hydrated, so re-sent .task actions only restart
         // the mirror observations. Horário is the default grid variant, so
@@ -289,6 +290,7 @@ struct AppFeatureTests {
             $0.date = .constant(Self.referenceDate)
             $0.syncRepository.ping = {}
             $0.homeRepository.observe = { .finished }
+            $0.homeRepository.refresh = { _ in refreshes.withValue { $0 += 1 } }
             $0.scheduleRepository.observe = {
                 AsyncStream { continuation in
                     continuation.yield(freshWeek)
@@ -321,6 +323,9 @@ struct AppFeatureTests {
         await store.receive(.scheduleGrid(.overviewUpdated(freshWeek))) {
             $0.scheduleGrid.overview = freshWeek
         }
+        await store.finish()
+        // A warm resume pulls the mirror unconditionally.
+        #expect(refreshes.value == 1)
     }
 
     @Test
@@ -347,6 +352,7 @@ struct AppFeatureTests {
             $0.date = .constant(Self.referenceDate)
             $0.syncRepository.ping = {}
             $0.homeRepository.observe = { .finished }
+            $0.homeRepository.refresh = { _ in }
             $0.scheduleRepository.observe = {
                 AsyncStream { continuation in
                     continuation.yield(freshWeek)

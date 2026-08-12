@@ -263,6 +263,13 @@ struct AppFeature {
                 // and its initial replay recomputes with the current date.
                 return .merge(
                     pingEffect(),
+                    // Every return from background pulls the mirror, so a
+                    // warm open's freshness doesn't depend on every wake push
+                    // having landed. Shares the push-refresh cancel ID so a
+                    // burst arriving right after resume collapses into that
+                    // debounced refresh instead of racing this one.
+                    .run { _ in try? await homeRepository.refresh(now: date.now) }
+                        .cancellable(id: CancelID.pushRefresh, cancelInFlight: true),
                     // A crossed midnight also moves which reminders are still
                     // "ahead", and the mirror observation won't re-emit
                     // without a write — reconcile explicitly.
