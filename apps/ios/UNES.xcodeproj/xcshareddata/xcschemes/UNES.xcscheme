@@ -75,5 +75,23 @@
    <ArchiveAction
       buildConfiguration = "Release"
       revealArchiveInOrganizer = "YES">
+      <PostActions>
+         <ExecutionAction
+            ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
+            <ActionContent
+               title = "Generate dSYMs for binary frameworks"
+               scriptText = "# Firebase ships FirebaseAnalytics/GoogleAppMeasurement as precompiled dynamic&#10;# frameworks without dSYMs; synthesize UUID-matching ones so App Store symbol&#10;# upload stops warning.&#10;set -e&#10;if [ -z &quot;${ARCHIVE_DSYMS_PATH}&quot; ] || [ -z &quot;${ARCHIVE_PRODUCTS_PATH}&quot; ]; then exit 0; fi&#10;find &quot;${ARCHIVE_PRODUCTS_PATH}&quot; -type d -name &quot;*.framework&quot; | while read -r FRAMEWORK; do&#10;  NAME=$(basename &quot;${FRAMEWORK}&quot; .framework)&#10;  BINARY=&quot;${FRAMEWORK}/${NAME}&quot;&#10;  DSYM=&quot;${ARCHIVE_DSYMS_PATH}/${NAME}.framework.dSYM&quot;&#10;  if [ -f &quot;${BINARY}&quot; ] &amp;&amp; [ ! -d &quot;${DSYM}&quot; ]; then&#10;    xcrun dsymutil &quot;${BINARY}&quot; -o &quot;${DSYM}&quot; || true&#10;  fi&#10;done&#10;">
+               <EnvironmentBuildable>
+                  <BuildableReference
+                     BuildableIdentifier = "primary"
+                     BlueprintIdentifier = "6CF5E0FA2FF5A43F00953BC4"
+                     BuildableName = "UNES.app"
+                     BlueprintName = "UNES"
+                     ReferencedContainer = "container:UNES.xcodeproj">
+                  </BuildableReference>
+               </EnvironmentBuildable>
+            </ActionContent>
+         </ExecutionAction>
+      </PostActions>
    </ArchiveAction>
 </Scheme>
