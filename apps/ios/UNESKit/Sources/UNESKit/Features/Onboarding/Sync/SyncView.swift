@@ -111,15 +111,16 @@ struct SyncView: View {
         @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
         var body: some View {
+            // Scoped so the repeatForever can only animate rotation, never layout position.
             Circle()
                 .stroke(.white.opacity(0.1), style: StrokeStyle(lineWidth: 1, dash: [2, 5]))
                 .frame(width: 128, height: 128)
-                .rotationEffect(.degrees(spinning ? 360 : 0))
+                .animation(.linear(duration: 9).repeatForever(autoreverses: false)) { ring in
+                    ring.rotationEffect(.degrees(spinning ? 360 : 0))
+                }
                 .onAppear {
                     guard !reduceMotion else { return }
-                    withAnimation(.linear(duration: 9).repeatForever(autoreverses: false)) {
-                        spinning = true
-                    }
+                    spinning = true
                 }
         }
     }

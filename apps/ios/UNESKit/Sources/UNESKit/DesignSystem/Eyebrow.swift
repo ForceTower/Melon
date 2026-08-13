@@ -31,13 +31,18 @@ struct LiveDot: View {
             .fill(color)
             .frame(width: size, height: size)
             .background {
+                // Scoped animation: the repeatForever must only drive opacity/scale —
+                // attached to the whole view it also captures any in-flight layout
+                // position, leaving the ring bobbing off-center forever.
                 Circle()
-                    .fill(color.opacity(pulsing ? 0 : 0.35))
-                    .scaleEffect(pulsing ? 2.4 : 1)
+                    .fill(color)
                     .animation(
-                        reduceMotion ? nil : .easeInOut(duration: 0.9).repeatForever(autoreverses: true),
-                        value: pulsing
-                    )
+                        reduceMotion ? nil : .easeInOut(duration: 0.9).repeatForever(autoreverses: true)
+                    ) { ring in
+                        ring
+                            .opacity(pulsing ? 0 : 0.35)
+                            .scaleEffect(pulsing ? 2.4 : 1)
+                    }
             }
             .onAppear { pulsing = true }
     }

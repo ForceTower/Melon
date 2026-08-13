@@ -112,20 +112,24 @@ struct ScheduleIllustration: View {
                 }
                 .stroke(UNESColor.coral, style: StrokeStyle(lineWidth: 1.5, dash: [3, 2], dashPhase: dashPhase))
 
+                // Scoped so the repeatForever can only animate scale, never layout position.
                 Circle()
                     .fill(UNESColor.coral)
                     .frame(width: 6, height: 6)
-                    .scaleEffect(pulsing ? 5 / 3 : 1)
+                    .animation(.easeInOut(duration: 0.8).repeatForever(autoreverses: true)) { dot in
+                        dot.scaleEffect(pulsing ? 5 / 3 : 1)
+                    }
                     .position(x: 20, y: 110)
             }
+            // Isolates the dash march from outside geometry changes; dashPhase lives
+            // inside StrokeStyle so it can't be confined with a scoped animation.
+            .geometryGroup()
             .onAppear {
                 guard !reduceMotion else { return }
                 withAnimation(.linear(duration: 1).repeatForever(autoreverses: false)) {
                     dashPhase = -10
                 }
-                withAnimation(.easeInOut(duration: 0.8).repeatForever(autoreverses: true)) {
-                    pulsing = true
-                }
+                pulsing = true
             }
         }
     }
@@ -316,16 +320,16 @@ struct MessagesIllustration: View {
         @State private var pulsing = false
 
         var body: some View {
+            // Scoped so the repeatForever can only animate opacity/scale, never layout position.
             Circle()
                 .fill(UNESColor.accent)
                 .frame(width: 8, height: 8)
-                .opacity(pulsing ? 0.6 : 1)
-                .scaleEffect(pulsing ? 0.95 : 1)
-                .onAppear {
-                    withAnimation(.easeInOut(duration: 1).repeatForever(autoreverses: true)) {
-                        pulsing = true
-                    }
+                .animation(.easeInOut(duration: 1).repeatForever(autoreverses: true)) { dot in
+                    dot
+                        .opacity(pulsing ? 0.6 : 1)
+                        .scaleEffect(pulsing ? 0.95 : 1)
                 }
+                .onAppear { pulsing = true }
         }
     }
 

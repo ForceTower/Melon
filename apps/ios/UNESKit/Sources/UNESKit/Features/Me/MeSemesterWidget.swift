@@ -53,9 +53,7 @@ struct MeSemesterWidget: View {
         }
         .onAppear {
             guard !reduceMotion else { return }
-            withAnimation(.easeInOut(duration: 0.9).repeatForever(autoreverses: true)) {
-                pulsing = true
-            }
+            pulsing = true
         }
     }
 
@@ -69,10 +67,13 @@ struct MeSemesterWidget: View {
             .frame(height: 22)
             .overlay {
                 if current {
+                    // Scoped so the repeatForever can only animate opacity, never layout position.
                     RoundedRectangle(cornerRadius: 8, style: .continuous)
                         .strokeBorder(UNESColor.accent, lineWidth: 1.5)
                         .padding(-3)
-                        .opacity(pulsing ? 0.15 : 0.5)
+                        .animation(.easeInOut(duration: 0.9).repeatForever(autoreverses: true)) { ring in
+                            ring.opacity(pulsing ? 0.15 : 0.5)
+                        }
                 }
             }
     }

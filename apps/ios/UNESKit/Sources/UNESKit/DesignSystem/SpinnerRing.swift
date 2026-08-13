@@ -19,12 +19,11 @@ struct SpinnerRing: View {
                 .stroke(color, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
         }
         .frame(width: size, height: size)
-        .rotationEffect(.degrees(spinning ? 270 : -90))
-        .onAppear {
-            withAnimation(.linear(duration: speed).repeatForever(autoreverses: false)) {
-                spinning = true
-            }
+        // Scoped so the repeatForever can only animate rotation, never layout position.
+        .animation(.linear(duration: speed).repeatForever(autoreverses: false)) { ring in
+            ring.rotationEffect(.degrees(spinning ? 270 : -90))
         }
+        .onAppear { spinning = true }
     }
 }
 

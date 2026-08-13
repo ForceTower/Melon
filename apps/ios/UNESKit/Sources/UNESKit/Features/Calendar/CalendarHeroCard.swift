@@ -177,13 +177,14 @@ struct CalendarPulse: ViewModifier {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     func body(content: Content) -> some View {
+        // Scoped so the repeatForever can only animate opacity, never layout position.
         content
-            .opacity(dimmed ? 0.35 : 1)
+            .animation(.easeInOut(duration: duration / 2).repeatForever(autoreverses: true)) { view in
+                view.opacity(dimmed ? 0.35 : 1)
+            }
             .onAppear {
                 guard active, !reduceMotion else { return }
-                withAnimation(.easeInOut(duration: duration / 2).repeatForever(autoreverses: true)) {
-                    dimmed = true
-                }
+                dimmed = true
             }
     }
 }

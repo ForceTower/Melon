@@ -106,11 +106,15 @@ struct RetroScoreChart: View {
                     .scaleEffect(drawn ? 1 : 0)
                     .animation(UNESMotion.ease(0.5, overshoot: 1.4).delay(1), value: drawn)
                     .position(last)
+                // Scoped so the repeatForever can only animate scale/opacity, never layout position.
                 Circle()
                     .strokeBorder(line.opacity(0.5), lineWidth: 2)
                     .frame(width: 13, height: 13)
-                    .scaleEffect(pinging ? 2.4 : 1)
-                    .opacity(pinging ? 0 : 0.6)
+                    .animation(.easeOut(duration: 2).delay(1.2).repeatForever(autoreverses: false)) { ring in
+                        ring
+                            .scaleEffect(pinging ? 2.4 : 1)
+                            .opacity(pinging ? 0 : 0.6)
+                    }
                     .position(last)
             }
         }
@@ -120,9 +124,7 @@ struct RetroScoreChart: View {
             withAnimation(nil) { drawn = reduceMotion }
             if !reduceMotion {
                 drawn = true
-                withAnimation(.easeOut(duration: 2).delay(1.2).repeatForever(autoreverses: false)) {
-                    pinging = true
-                }
+                pinging = true
             }
         }
     }
