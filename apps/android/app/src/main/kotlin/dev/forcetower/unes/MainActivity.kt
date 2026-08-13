@@ -21,6 +21,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import dev.forcetower.unes.designsystem.theme.MelonTheme
 import dev.forcetower.unes.theme.ThemeMode
 import dev.forcetower.unes.theme.ThemePreferenceStore
+import dev.forcetower.unes.firebase.PushSyncCoordinator
 import dev.forcetower.unes.ui.feature.connected.DeepLinkHandler
 import dev.forcetower.unes.ui.navigation.AppNavHost
 import dev.forcetower.unes.update.InAppUpdater
@@ -40,6 +41,9 @@ class MainActivity : FragmentActivity() {
     internal lateinit var deepLinks: DeepLinkHandler
 
     @Inject
+    internal lateinit var pushSync: PushSyncCoordinator
+
+    @Inject
     internal lateinit var appUpdater: InAppUpdater
 
     private val updateFlowLauncher = registerForActivityResult(
@@ -52,8 +56,8 @@ class MainActivity : FragmentActivity() {
         val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
         // Only on a genuinely fresh launch — after a config change the same
-        // intent is re-delivered and must not re-navigate.
-        if (savedInstanceState == null) offerDeepLink(intent)
+        // intent is re-delivered and must not re-navigate or re-refresh.
+        if (savedInstanceState == null) consumeLaunchIntent(intent)
         // Unconditional (no savedInstanceState gate): `InAppUpdater` dedupes
         // per process, which keeps the downloaded-while-dead recovery alive
         // across process-death restores.
@@ -98,7 +102,17 @@ class MainActivity : FragmentActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
+        consumeLaunchIntent(intent)
+    }
+
+    private fun consumeLaunchIntent(intent: Intent?) {
         offerDeepLink(intent)
+        // A tap on a mirror-relevant FCM notification lands the push's `kind`
+        // in the extras (spec 0008) — fresh evidence the mirror moved. The
+        // ON_START refresh already covers most tap-opens; this catches a tap
+        // delivered to the already-resumed activity (shade pulled down over
+        // the open app), where onNewIntent fires without an ON_START.
+        if (intent?.getStringExtra("kind") != null) pushSync.request()
     }
 
     // Two carriers: a real VIEW intent puts the URL in `data` (links, adb),

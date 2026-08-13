@@ -207,4 +207,5 @@ dependencies {
     implementation(libs.posthog.android)
 
     testImplementation(kotlin("test-junit"))
+    testImplementation(libs.kotlinx.coroutines.test)
 }

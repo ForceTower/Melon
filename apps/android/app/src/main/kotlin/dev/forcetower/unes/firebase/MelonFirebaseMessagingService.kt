@@ -17,6 +17,7 @@ import timber.log.Timber
 internal class MelonFirebaseMessagingService : FirebaseMessagingService() {
 
     @Inject lateinit var pushRegistrar: PushRegistrar
+    @Inject lateinit var pushSyncCoordinator: PushSyncCoordinator
     @Inject @ApplicationScope lateinit var applicationScope: CoroutineScope
 
     // Deprecated in favor of FID targeting, but FID-targeted sends stopped
@@ -35,6 +36,13 @@ internal class MelonFirebaseMessagingService : FirebaseMessagingService() {
         // by the system before this callback fires. Only data-only messages
         // land here in the background; any payload lands here in foreground.
         Timber.tag(TAG).i("remote message from=%s data=%s", message.from, message.data.keys)
+        // Foreground receipt of a mirror-relevant push (spec 0008): `kind`
+        // certifies upstream data changed, so pull it now — no ON_START will
+        // fire while the app stays open. Same guard as iOS `PushClient`:
+        // no `kind`, no refresh.
+        if (message.data["kind"] != null) {
+            pushSyncCoordinator.request()
+        }
     }
 
     private companion object {
