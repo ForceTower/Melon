@@ -123,8 +123,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/ForceTower/lever-swift.git",
       "state" : {
-        "revision" : "f2d9f3bced78c70eb47892925cc1d3e399204f5f",
-        "version" : "0.1.0"
+        "revision" : "95773f78df31c8b18587b494d37bfe4c95b4f450",
+        "version" : "0.1.1"
       }
     },
     {

@@ -128,8 +128,9 @@ licensee {
     allowUrl("https://developer.android.com/guide/playcore/license")
     // slf4j declares MIT by URL form rather than SPDX id.
     allowUrl("https://opensource.org/license/mit")
-    // lever-android is MIT, declared with its own repository's LICENSE URL,
-    // which Licensee cannot resolve to the SPDX entry.
+    // lever-android's POM declares the SPDX id `MIT` alongside its own
+    // repository's LICENSE URL, and Licensee still resolves it by URL — so the
+    // id on its own is not enough to satisfy `allow("MIT")` above.
     allowUrl("https://github.com/ForceTower/lever-android/blob/main/LICENSE")
 }
 

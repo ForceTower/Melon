@@ -12,12 +12,6 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        // lever tracks main between releases; the SDK's presence read (`lookup`)
-        // that `CompositeRemoteSettings` is built on lands in 0.2.0. Scoped to
-        // snapshots so nothing else can silently resolve from here.
-        maven("https://central.sonatype.com/repository/maven-snapshots/") {
-            mavenContent { snapshotsOnly() }
-        }
     }
 }
 
