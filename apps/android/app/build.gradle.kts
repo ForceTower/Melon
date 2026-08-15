@@ -61,10 +61,13 @@ android {
         buildConfigField("String", "POSTHOG_HOST", "\"https://a.forcetower.dev\"")
 
         // lever — our self-hosted remote config, the layer in front of Firebase
-        // Remote Config. The `pk_` key is a public client identifier by design:
-        // it authorizes reading one environment's resolved values, which every
-        // user of the app can see anyway. Never put a secret in a config value.
-        buildConfigField("String", "LEVER_BASE_URL", "\"https://rc.forcetower.dev\"")
+        // Remote Config. This is the API origin; the dashboard is a separate
+        // deployment at rc.forcetower.dev and is not what clients talk to.
+        //
+        // The `pk_` key is a public client identifier by design: it authorizes
+        // reading one environment's resolved values, which every user of the
+        // app can see anyway. Never put a secret in a config value.
+        buildConfigField("String", "LEVER_BASE_URL", "\"https://rc-api.forcetower.dev\"")
         buildConfigField(
             "String",
             "LEVER_CLIENT_KEY",

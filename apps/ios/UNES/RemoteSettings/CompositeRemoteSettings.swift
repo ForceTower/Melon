@@ -34,13 +34,16 @@ nonisolated struct CompositeRemoteSettings: RemoteSettings {
 }
 
 extension CompositeRemoteSettings {
-    /// The production stack. The `pk_` key is a public client identifier by
-    /// design: it authorizes reading one environment's resolved values, which
-    /// every user of the app can see anyway. Never put a secret in a config
-    /// value.
+    /// The production stack. The base URL is lever's API origin; the dashboard
+    /// is a separate deployment at rc.forcetower.dev and is not what clients
+    /// talk to.
+    ///
+    /// The `pk_` key is a public client identifier by design: it authorizes
+    /// reading one environment's resolved values, which every user of the app
+    /// can see anyway. Never put a secret in a config value.
     static func live() -> CompositeRemoteSettings {
         var configuration = LeverConfiguration(
-            baseURL: URL(string: "https://rc.forcetower.dev")!,
+            baseURL: URL(string: "https://rc-api.forcetower.dev")!,
             clientKey: "pk_kwXERv2Rt6NjY6pd52A2gMG0SHJLJrlu",
             // Feeds the server's targeting rules — `platform` is filled in by
             // the SDK, so a parameter can be split ios-vs-android or rolled out
