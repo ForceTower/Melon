@@ -38,6 +38,7 @@ google-services = "4.5.0"
 firebase-bom = "34.16.0"
 firebase-crashlytics-gradle = "3.0.7"
 posthog-android = "3.53.7"
+lever = "0.2.0-SNAPSHOT"
 coil = "3.5.0"
 
 [libraries]
@@ -149,6 +150,9 @@ firebase-messaging = { module = "com.google.firebase:firebase-messaging" }
 
 # PostHog (product analytics — sent to our first-party proxy at a.forcetower.dev)
 posthog-android = { module = "com.posthog:posthog-android", version.ref = "posthog-android" }
+
+# lever (our self-hosted remote config — github.com/ForceTower/lever-android)
+lever-android = { module = "dev.forcetower.lever:lever-android", version.ref = "lever" }
 
 # Coil (Android-only — remote avatar rendering; the OkHttp artifact registers
 # the network fetcher on the singleton loader via its service-loader hook)

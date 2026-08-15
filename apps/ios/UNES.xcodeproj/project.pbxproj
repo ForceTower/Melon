@@ -23,6 +23,7 @@
 		CAFEFB0000000000000000AC /* FirebaseAnalyticsCore in Frameworks */ = {isa = PBXBuildFile; productRef = CAFEFB0000000000000000AB /* FirebaseAnalyticsCore */; };
 		CAFEFB0000000000000000B2 /* PostHog in Frameworks */ = {isa = PBXBuildFile; productRef = CAFEFB0000000000000000B1 /* PostHog */; };
 		CAFEFB0000000000000000C2 /* FirebaseInstallations in Frameworks */ = {isa = PBXBuildFile; productRef = CAFEFB0000000000000000C1 /* FirebaseInstallations */; };
+		CAFEFB0000000000000000D2 /* Lever in Frameworks */ = {isa = PBXBuildFile; productRef = CAFEFB0000000000000000D1 /* Lever */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -179,6 +180,7 @@
 				CAFEFB0000000000000000A6 /* FirebaseMessaging in Frameworks */,
 				CAFEFB0000000000000000AA /* FirebaseRemoteConfig in Frameworks */,
 				CAFEFB0000000000000000B2 /* PostHog in Frameworks */,
+				CAFEFB0000000000000000D2 /* Lever in Frameworks */,
 				CAFECAFE0000000000000003 /* UNESKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -268,6 +270,7 @@
 				CAFEFB0000000000000000A5 /* FirebaseMessaging */,
 				CAFEFB0000000000000000A9 /* FirebaseRemoteConfig */,
 				CAFEFB0000000000000000B1 /* PostHog */,
+				CAFEFB0000000000000000D1 /* Lever */,
 			);
 			productName = UNES;
 			productReference = 6CF5E0FB2FF5A43F00953BC4 /* UNES.app */;
@@ -376,6 +379,7 @@
 				CAFECAFE0000000000000001 /* XCLocalSwiftPackageReference "UNESKit" */,
 				CAFEFB0000000000000000A0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				CAFEFB0000000000000000B0 /* XCRemoteSwiftPackageReference "posthog-ios" */,
+				CAFEFB0000000000000000D0 /* XCRemoteSwiftPackageReference "lever-swift" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 6CF5E0FC2FF5A43F00953BC4 /* Products */;
@@ -983,6 +987,14 @@
 				minimumVersion = 3.66.1;
 			};
 		};
+		CAFEFB0000000000000000D0 /* XCRemoteSwiftPackageReference "lever-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ForceTower/lever-swift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.1.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1046,6 +1058,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = CAFEFB0000000000000000A0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseInstallations;
+		};
+		CAFEFB0000000000000000D1 /* Lever */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CAFEFB0000000000000000D0 /* XCRemoteSwiftPackageReference "lever-swift" */;
+			productName = Lever;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -59,6 +59,17 @@ android {
             "\"phc_uhYjeNJg9RpdEknMM8mNxdRqeiEtr4jqEm6zsv9TETqu\"",
         )
         buildConfigField("String", "POSTHOG_HOST", "\"https://a.forcetower.dev\"")
+
+        // lever — our self-hosted remote config, the layer in front of Firebase
+        // Remote Config. The `pk_` key is a public client identifier by design:
+        // it authorizes reading one environment's resolved values, which every
+        // user of the app can see anyway. Never put a secret in a config value.
+        buildConfigField("String", "LEVER_BASE_URL", "\"https://rc.forcetower.dev\"")
+        buildConfigField(
+            "String",
+            "LEVER_CLIENT_KEY",
+            "\"pk_kwXERv2Rt6NjY6pd52A2gMG0SHJLJrlu\"",
+        )
     }
 
     signingConfigs {
@@ -114,6 +125,9 @@ licensee {
     allowUrl("https://developer.android.com/guide/playcore/license")
     // slf4j declares MIT by URL form rather than SPDX id.
     allowUrl("https://opensource.org/license/mit")
+    // lever-android is MIT, declared with its own repository's LICENSE URL,
+    // which Licensee cannot resolve to the SPDX entry.
+    allowUrl("https://github.com/ForceTower/lever-android/blob/main/LICENSE")
 }
 
 // Bundle the per-variant `artifacts.json` into the APK as an asset. AGP picks
@@ -192,9 +206,14 @@ dependencies {
     // Play In-App Updates — flexible/immediate update flows (docs/in-app-update.md).
     implementation(libs.play.app.update.ktx)
 
+    // lever — our own remote config (github.com/ForceTower/lever), the first
+    // layer of `CompositeRemoteSettings` in front of Firebase Remote Config.
+    implementation(libs.lever.android)
+
     // Firebase BoM pins all SDK versions in lockstep — Analytics for usage
     // tracking, Crashlytics for crash reporting, Messaging for FCM push,
-    // Remote Config for feature gates (same parameter keys as iOS).
+    // Remote Config as the fallback layer under lever (same parameter keys as
+    // iOS).
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.config)

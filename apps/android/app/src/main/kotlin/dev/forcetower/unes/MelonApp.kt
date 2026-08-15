@@ -14,7 +14,7 @@ import dev.forcetower.melon.core.network.MachineIdSource
 import dev.forcetower.melon.core.session.domain.SessionStore
 import dev.forcetower.melon.core.session.domain.model.AuthState
 import dev.forcetower.unes.di.ApplicationScope
-import dev.forcetower.unes.firebase.FeatureFlags
+import dev.forcetower.unes.remote.FeatureFlags
 import dev.forcetower.unes.firebase.PushRegistrar
 import dev.forcetower.unes.reminders.EvaluationReminderScheduler
 import dev.forcetower.unes.reminders.PersonalEventReminderScheduler

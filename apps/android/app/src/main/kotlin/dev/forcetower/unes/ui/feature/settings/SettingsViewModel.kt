@@ -10,7 +10,7 @@ import dev.forcetower.melon.feature.me.domain.usecase.ObserveCurrentCredentialsU
 import dev.forcetower.melon.feature.me.domain.usecase.ObserveMeProfileUseCase
 import dev.forcetower.melon.feature.settings.domain.usecase.ObserveSettingsUseCase
 import dev.forcetower.melon.feature.settings.domain.usecase.UpdateSettingsUseCase
-import dev.forcetower.unes.firebase.FeatureFlags
+import dev.forcetower.unes.remote.FeatureFlags
 import dev.forcetower.unes.mvi.MviViewModel
 import dev.forcetower.unes.mvi.UiEffect
 import dev.forcetower.unes.mvi.UiIntent

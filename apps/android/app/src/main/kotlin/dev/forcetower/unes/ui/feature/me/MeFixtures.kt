@@ -14,7 +14,7 @@ import androidx.compose.material.icons.filled.Insights
 import androidx.compose.material.icons.filled.LocalLibrary
 import androidx.compose.material.icons.filled.Settings
 import dev.forcetower.unes.R
-import dev.forcetower.unes.firebase.FeatureGates
+import dev.forcetower.unes.remote.FeatureGates
 
 // Catalogue of everything the screen renders that isn't user data: the
 // shortcut tiles (icon + label + tone + hint) and the settings rows. Mirrors

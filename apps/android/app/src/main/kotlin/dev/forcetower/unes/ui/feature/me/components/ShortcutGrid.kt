@@ -41,7 +41,7 @@ import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.theme.MelonMotion
 import dev.forcetower.unes.designsystem.theme.MelonTheme
 import dev.forcetower.unes.designsystem.theme.melon
-import dev.forcetower.unes.firebase.FeatureGates
+import dev.forcetower.unes.remote.FeatureGates
 import dev.forcetower.unes.ui.feature.me.MeFixtures
 import dev.forcetower.unes.ui.feature.me.Shortcut
 import dev.forcetower.unes.ui.feature.me.ShortcutKind

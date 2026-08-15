@@ -5,7 +5,7 @@ import co.touchlab.kermit.Logger
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveEvaluationRemindersUseCase
 import dev.forcetower.unes.di.ApplicationScope
-import dev.forcetower.unes.firebase.FeatureFlags
+import dev.forcetower.unes.remote.FeatureFlags
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineScope

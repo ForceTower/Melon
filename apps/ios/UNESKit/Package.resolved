@@ -1,5 +1,5 @@
 {
-  "originHash" : "3a949b16ff6c234066c72c9dedb6bb641eddc0063aac41d1dbd96b0032954634",
+  "originHash" : "7520610a0c96e6c8ae26c630ac1f171658f4808f700d473878fd866cb3a331d2",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -116,6 +116,15 @@
       "state" : {
         "revision" : "a0bc79961d7be727d258d33d5a6b2f1023270ba1",
         "version" : "1.22.5"
+      }
+    },
+    {
+      "identity" : "lever-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ForceTower/lever-swift.git",
+      "state" : {
+        "revision" : "f2d9f3bced78c70eb47892925cc1d3e399204f5f",
+        "version" : "0.1.0"
       }
     },
     {

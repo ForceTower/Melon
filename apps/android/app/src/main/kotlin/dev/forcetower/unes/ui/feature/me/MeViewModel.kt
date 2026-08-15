@@ -16,8 +16,8 @@ import dev.forcetower.melon.feature.me.domain.usecase.FetchAcademicDocumentUseCa
 import dev.forcetower.melon.feature.me.domain.usecase.ObserveMeProfileUseCase
 import dev.forcetower.melon.feature.me.domain.usecase.UpdateProfileUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.SyncProfileUseCase
-import dev.forcetower.unes.firebase.FeatureFlags
-import dev.forcetower.unes.firebase.FeatureGates
+import dev.forcetower.unes.remote.FeatureFlags
+import dev.forcetower.unes.remote.FeatureGates
 import dev.forcetower.unes.firebase.PushRegistrar
 import dev.forcetower.unes.mvi.MviViewModel
 import dev.forcetower.unes.mvi.UiEffect

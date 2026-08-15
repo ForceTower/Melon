@@ -26,7 +26,7 @@ import dev.forcetower.unes.mvi.UiEffect
 import dev.forcetower.unes.mvi.UiIntent
 import dev.forcetower.unes.mvi.UiState
 import dev.forcetower.unes.R
-import dev.forcetower.unes.firebase.FeatureFlags
+import dev.forcetower.unes.remote.FeatureFlags
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter

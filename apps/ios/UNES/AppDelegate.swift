@@ -2,7 +2,6 @@ import FirebaseAnalytics
 import FirebaseCore
 import FirebaseCrashlytics
 import FirebaseMessaging
-import FirebaseRemoteConfig
 import PostHog
 import UIKit
 import UNESKit
@@ -44,7 +43,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         Messaging.messaging().delegate = self
         application.registerForRemoteNotifications()
 
-        configureRemoteConfig()
+        configureRemoteSettings()
         configurePostHog()
         log.info("app launch finished")
         return true
@@ -71,50 +70,32 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         sink.register(properties: ["machine_id": MachineIdentity.id])
     }
 
-    /// Launch fetch for the baseline, then the real-time stream so console
-    /// publishes land while the app is running.
-    private func configureRemoteConfig() {
-        let remoteConfig = RemoteConfig.remoteConfig()
-        #if DEBUG
-        // No 12h fetch cache while developing — flag flips apply right away.
-        let settings = RemoteConfigSettings()
-        settings.minimumFetchInterval = 0
-        remoteConfig.configSettings = settings
-        #endif
-
-        Task { [log] in
-            _ = try? await remoteConfig.fetchAndActivate()
-            log.debug("remote config baseline fetch+activate completed")
-            Self.publishFlags()
-        }
-
-        _ = remoteConfig.addOnConfigUpdateListener { [log] update, error in
-            if let error {
-                log.warn("remote config update stream error", error: error)
-            }
-            guard update != nil, error == nil else { return }
-            log.debug("remote config update received -> republishing flags")
-            RemoteConfig.remoteConfig().activate { _, _ in
-                Self.publishFlags()
-            }
-        }
+    /// Publish once from whatever both layers already have on disk, then again
+    /// on every change either of them reports.
+    ///
+    /// The composite outlives this call by being captured in the change
+    /// callback — which is also what keeps lever's client, and its stream,
+    /// alive for the process.
+    private func configureRemoteSettings() {
+        let settings = CompositeRemoteSettings.live()
+        Self.publishFlags(from: settings)
+        settings.start { Self.publishFlags(from: settings) }
     }
 
-    /// Off the main actor — the update stream calls back on a Firebase queue.
-    private nonisolated static func publishFlags() {
-        let remoteConfig = RemoteConfig.remoteConfig()
+    /// Off the main actor — both layers call back on their own queues.
+    private nonisolated static func publishFlags(from settings: some RemoteSettings) {
         FeatureFlags.update(
-            enrollmentEnabled: remoteConfig.configValue(forKey: "enable_enrollment").boolValue,
-            certificateEnabled: remoteConfig.configValue(forKey: "enable_enrollment_certificate").boolValue,
-            historyEnabled: remoteConfig.configValue(forKey: "enable_academic_history").boolValue,
-            paradoxoEnabled: remoteConfig.configValue(forKey: "enable_paradoxo").boolValue,
-            materialsEnabled: remoteConfig.configValue(forKey: "enable_materials").boolValue,
-            libraryEnabled: remoteConfig.configValue(forKey: "enable_library").boolValue,
-            campusEventEnabled: remoteConfig.configValue(forKey: "enable_campus_event").boolValue,
-            evaluationRemindersEnabled: remoteConfig.configValue(forKey: "enable_evaluation_reminders").boolValue,
-            retrospectiveEnabled: remoteConfig.configValue(forKey: "enable_retrospective").boolValue,
-            documentCaptchaSiteKey: remoteConfig.configValue(forKey: "document_captcha_site_key").stringValue,
-            documentCaptchaBaseURL: remoteConfig.configValue(forKey: "document_captcha_base_url").stringValue
+            enrollmentEnabled: settings.bool(.enrollment),
+            certificateEnabled: settings.bool(.enrollmentCertificate),
+            historyEnabled: settings.bool(.academicHistory),
+            paradoxoEnabled: settings.bool(.paradoxo),
+            materialsEnabled: settings.bool(.materials),
+            libraryEnabled: settings.bool(.library),
+            campusEventEnabled: settings.bool(.campusEvent),
+            evaluationRemindersEnabled: settings.bool(.evaluationReminders),
+            retrospectiveEnabled: settings.bool(.retrospective),
+            documentCaptchaSiteKey: settings.string(.documentCaptchaSiteKey),
+            documentCaptchaBaseURL: settings.string(.documentCaptchaBaseURL)
         )
     }
 
