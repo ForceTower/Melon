@@ -2,10 +2,15 @@ import Foundation
 
 // MARK: - Mirror records → cross-semester CoefficientSummary
 
-/// The coefficient (CR) across every mirrored semester: the mean of all
-/// disciplines taken, each weighted by its class-hours, walked
-/// chronologically so the sparkline plots the CR as it stood after each
-/// semester.
+/// The coefficient (CR) of one program: the mean of every discipline taken
+/// in it, weighted by class-hours, walked chronologically so the sparkline
+/// plots the CR as it stood after each of its semesters.
+///
+/// A program is a semester track — nil is the regular undergrad calendar,
+/// anything else a program that runs its own (a mestrado, an EAD course).
+/// The CR is never taken across programs: a student who finished a
+/// graduação and started a mestrado has two, and their mean describes
+/// neither degree (issue #55).
 struct CoefficientHistory {
     var semesters: [SemesterRecord]
     var disciplines: [DisciplineRecord]
@@ -13,10 +18,20 @@ struct CoefficientHistory {
     var classes: [ClassRecord]
     var studentClasses: [StudentClassRecord]
 
+    /// The CR to show where there is room for exactly one number: the newest
+    /// program that has closed anything. A program the student just started
+    /// has no CR of its own yet, so it falls through to the previous one
+    /// rather than leaving the surface blank.
+    ///
     /// Nil until some discipline has a closed result — callers keep the
     /// active snapshot's partial mean as the stand-in until then.
     func summary() -> CoefficientSummary? {
-        let spark = checkpoints().map(\.value)
+        tracksByRecency().lazy.compactMap { summary(track: $0) }.first
+    }
+
+    /// One program's CR, or nil when none of its disciplines has closed.
+    func summary(track: String?) -> CoefficientSummary? {
+        let spark = checkpoints(track: track).map(\.value)
         guard let value = spark.last else { return nil }
         return CoefficientSummary(
             value: value,
@@ -25,11 +40,24 @@ struct CoefficientHistory {
         )
     }
 
-    /// The CR as it stood after each semester that closed anything, in
-    /// chronological order — the sparkline with its semesters attached, so
-    /// the Retrospectiva can read the before/after around one semester.
-    func checkpoints() -> [CoefficientCheckpoint] {
-        let ordered = semesters.sorted { ($0.startDate, $0.code) < ($1.startDate, $1.code) }
+    /// The programs the student has semesters in, newest first.
+    private func tracksByRecency() -> [String?] {
+        var tracks: [String?] = []
+        for semester in semesters.sorted(by: { ($0.startDate, $0.code) > ($1.startDate, $1.code) })
+        where !tracks.contains(semester.track) {
+            tracks.append(semester.track)
+        }
+        return tracks
+    }
+
+    /// The CR as it stood after each semester of one program that closed
+    /// anything, in chronological order — the sparkline with its semesters
+    /// attached, so the Retrospectiva can read the before/after around one
+    /// semester.
+    func checkpoints(track: String?) -> [CoefficientCheckpoint] {
+        let ordered = semesters
+            .filter { $0.track == track }
+            .sorted { ($0.startDate, $0.code) < ($1.startDate, $1.code) }
         let takenBySemester = takenBySemester()
 
         var gradeHours = 0.0

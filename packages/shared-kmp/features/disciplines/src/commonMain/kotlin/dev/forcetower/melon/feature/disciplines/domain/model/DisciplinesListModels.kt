@@ -13,6 +13,10 @@ data class DisciplinesListState(
 data class SemesterDisciplines(
     val semesterId: String,
     val semesterCode: String,
+    // Program this semester belongs to; null is the undergrad calendar. See
+    // `ProgramScore`. The Histórico filters by it so a mestrado's semesters
+    // don't sit interleaved with the graduação's.
+    val track: String?,
     val disciplines: List<DisciplineListItem>,
 )
 
@@ -89,4 +93,5 @@ enum class DisciplineStatusKind {
 data class PendingSemester(
     val semesterId: String,
     val semesterCode: String,
+    val track: String?,
 )

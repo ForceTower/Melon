@@ -87,37 +87,22 @@ class ReadyViewModel @Inject constructor(
 
     private suspend fun loadStats() {
         val disciplines = observeDisciplinesList().first()
-        val summary = calculateOverallScore.summary().first()
-        val score = summary.value ?: currentPartialMean(disciplines)
+        // The CR of the program the student is in — a mestrado's grades never
+        // belong in the graduação's number, and vice versa.
+        val program = calculateOverallScore().first().current
+        val score = program?.value ?: currentPartialMean(disciplines)
         setState {
             copy(
                 score = score,
                 attendancePercent = attendancePercent(disciplines),
             )
         }
-        // Sparkline second — each point re-runs the CR query with a cap, so
-        // the cards render before this finishes.
-        if (summary.value != null) {
-            val spark = scoreHistory(disciplines)
-            setState { copy(scoreSpark = spark) }
+        // Sparkline second — it walks the whole program, so the cards render
+        // before this finishes.
+        if (program != null) {
+            val spark = calculateOverallScore.checkpoints(program.track).first()
+            setState { copy(scoreSpark = spark.takeIf { it.size >= 2 }.orEmpty()) }
         }
-    }
-
-    // Cumulative CR after each semester, oldest first. `capSemesterId` clips
-    // to semesters strictly before the cap, so the point that includes
-    // semester i uses semester i+1 as the cap; the newest point is uncapped.
-    private suspend fun scoreHistory(state: DisciplinesListState): List<Double> {
-        val ordered = (state.past + listOfNotNull(state.current))
-            .distinctBy { it.semesterId }
-            .sortedBy { it.semesterCode }
-        if (ordered.size < 2) return emptyList()
-        val points = mutableListOf<Double>()
-        for (i in 1 until ordered.size) {
-            calculateOverallScore(capSemesterId = ordered[i].semesterId).first()
-                ?.let { points += it }
-        }
-        calculateOverallScore().first()?.let { points += it }
-        return if (points.size >= 2) points else emptyList()
     }
 
     // Freshman fallback — no semester has closed grades yet, so surface the

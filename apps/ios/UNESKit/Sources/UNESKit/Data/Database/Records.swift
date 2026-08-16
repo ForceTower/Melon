@@ -11,6 +11,10 @@ struct SemesterRecord: Codable, Equatable, Sendable, FetchableRecord, Persistabl
     /// yyyy-MM-dd, compared lexicographically.
     var startDate: String
     var endDate: String
+    /// Program calendar this semester belongs to — nil is the regular
+    /// undergrad one. Upstream stamps it on the semester code (22.1RUE →
+    /// "RUE"); it is what separates one degree's CR from another's.
+    var track: String? = nil
     /// Enrolled disciplines as counted upstream — sizes the "download this
     /// semester" cards before the payload is mirrored. Only the semester
     /// list carries it.
