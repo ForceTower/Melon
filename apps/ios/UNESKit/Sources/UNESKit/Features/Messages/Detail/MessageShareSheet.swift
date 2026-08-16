@@ -75,7 +75,7 @@ struct MessageShareSheet: View {
         switch format {
         case .image:
             MessageShareCard(message: message, width: 248, scheme: colorScheme)
-                .shadow(color: Color(hex: 0x141020, opacity: 0.22), radius: 18, y: 10)
+                .shadow(color: UNESColor.shareCardShadow, radius: 18, y: 10)
                 .padding(.vertical, 6)
 
         case .text:

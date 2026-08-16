@@ -1,40 +1,5 @@
 import SwiftUI
 
-// MARK: - Palette
-
-/// Baked into the export, so it follows the sender's appearance rather than
-/// the recipient's.
-struct MessageSharePalette {
-    var background: Color
-    var ink: Color
-    var ink2: Color
-    var ink3: Color
-    var ink4: Color
-    var line: Color
-
-    static let light = MessageSharePalette(
-        background: Color(hex: 0xFBF7F2),
-        ink: Color(hex: 0x1A1420),
-        ink2: Color(hex: 0x3A2F42),
-        ink3: Color(hex: 0x6B5E70),
-        ink4: Color(hex: 0x9C8FA0),
-        line: Color(hex: 0x1A1420, opacity: 0.10)
-    )
-
-    static let dark = MessageSharePalette(
-        background: Color(hex: 0x15101A),
-        ink: Color(hex: 0xF5EFE6),
-        ink2: Color(hex: 0xD6CEC2),
-        ink3: Color(hex: 0x9F9386),
-        ink4: Color(hex: 0x7B7066),
-        line: Color(hex: 0xF5EFE6, opacity: 0.12)
-    )
-
-    static func of(_ scheme: ColorScheme) -> MessageSharePalette {
-        scheme == .dark ? .dark : .light
-    }
-}
-
 // MARK: - Card
 
 /// Fixed width, height growing with the message so the whole body ships
@@ -49,7 +14,6 @@ struct MessageShareCard: View {
     /// 1080px wide once rendered at 3×.
     static let exportWidth: CGFloat = 360
 
-    private var palette: MessageSharePalette { .of(scheme) }
     private func px(_ value: CGFloat) -> CGFloat { value * (width / 1080) }
 
     var body: some View {
@@ -61,7 +25,7 @@ struct MessageShareCard: View {
             content(accent: message.accentColor)
         }
         .frame(width: width)
-        .background(palette.background)
+        .background(UNESColor.surface)
         .clipShape(RoundedRectangle(cornerRadius: rounded ? px(40) : 0, style: .continuous))
         .environment(\.colorScheme, scheme)
     }
@@ -78,20 +42,20 @@ struct MessageShareCard: View {
                 Text(subject)
                     .font(.system(size: px(54), weight: .bold))
                     .tracking(px(-54 * 0.035))
-                    .foregroundStyle(palette.ink)
+                    .foregroundStyle(UNESColor.ink)
                     .padding(.bottom, px(18))
             }
 
             Text(MessagesFormat.fullTimestamp(for: message.receivedAt))
                 .font(.system(size: px(24), weight: .semibold))
                 .monospacedDigit()
-                .foregroundStyle(palette.ink4)
+                .foregroundStyle(UNESColor.ink4)
                 .padding(.bottom, px(34))
 
             Text(message.body.trimmingCharacters(in: .whitespacesAndNewlines))
                 .font(.system(size: px(31)))
                 .lineSpacing(px(31 * 0.42))
-                .foregroundStyle(palette.ink2)
+                .foregroundStyle(UNESColor.ink2)
 
             footer
                 .padding(.top, px(48))
@@ -108,7 +72,7 @@ struct MessageShareCard: View {
             Text(verbatim: "unes")
                 .font(.system(size: px(34), weight: .heavy))
                 .tracking(px(-34 * 0.05))
-                .foregroundStyle(palette.ink)
+                .foregroundStyle(UNESColor.ink)
             Circle()
                 .fill(
                     LinearGradient(
@@ -133,10 +97,10 @@ struct MessageShareCard: View {
                 Text(message.senderName)
                     .font(.system(size: px(36), weight: .bold))
                     .tracking(px(-36 * 0.025))
-                    .foregroundStyle(palette.ink)
+                    .foregroundStyle(UNESColor.ink)
                 Text(MessagesFormat.roleLine(message))
                     .font(.system(size: px(25), weight: .medium))
-                    .foregroundStyle(palette.ink3)
+                    .foregroundStyle(UNESColor.ink3)
             }
         }
     }
@@ -144,17 +108,17 @@ struct MessageShareCard: View {
     private var footer: some View {
         VStack(alignment: .leading, spacing: 0) {
             Rectangle()
-                .fill(palette.line)
+                .fill(UNESColor.line)
                 .frame(height: max(1, px(1.5)))
                 .padding(.bottom, px(26))
 
             HStack(spacing: px(7)) {
                 Text(.messagesShareReceivedIn)
                     .font(.system(size: px(21), weight: .medium))
-                    .foregroundStyle(palette.ink4)
+                    .foregroundStyle(UNESColor.ink4)
                 Text(verbatim: "UNES")
                     .font(.system(size: px(21), weight: .bold))
-                    .foregroundStyle(palette.ink3)
+                    .foregroundStyle(UNESColor.ink3)
             }
         }
     }

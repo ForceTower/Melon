@@ -56,6 +56,11 @@ enum UNESColor {
     static let accent = Color(light: Color(hex: 0xE85D4E), dark: Color(hex: 0xF4A23C))
     static let accentPress = Color(light: Color(hex: 0xC94538), dark: Color(hex: 0xE88A1D))
 
+    /// Drop shadow under the message-share card preview. Fixed rather than
+    /// adaptive: `ink` flips to cream in dark mode, which would light the
+    /// shadow instead of casting it.
+    static let shareCardShadow = Color(hex: 0x141020, opacity: 0.22)
+
     // MARK: Fixed brand palette
 
     static let plum = Color(hex: 0x2D1B4E)
