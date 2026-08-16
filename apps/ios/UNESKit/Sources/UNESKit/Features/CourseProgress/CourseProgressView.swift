@@ -231,7 +231,7 @@ struct CourseProgressOverallCard: View {
                 }
                 Spacer(minLength: 0)
                 VStack(alignment: .trailing, spacing: 3) {
-                    Text(unknown
+                    Text(verbatim: unknown
                         ? "—"
                         : "\(CourseProgressFormat.count(summary.completedHours)) / \(CourseProgressFormat.hours(summary.requiredHours ?? 0))")
                         .font(.system(size: 14, weight: .semibold))
