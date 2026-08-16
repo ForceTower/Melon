@@ -1,10 +1,7 @@
 import SwiftUI
 
-/// Pick a format, see exactly what will leave the app, hand it to the system.
-///
-/// Everything past "Compartilhar" — choosing a recipient, saving to Photos,
-/// copying — is the share sheet's job, so this screen stops at the handoff
-/// instead of growing its own save/copy buttons.
+/// Pick a format, preview it, hand it to the system share sheet — which
+/// already owns saving and copying, so neither is duplicated here.
 struct MessageShareSheet: View {
     var message: MessageItem
 
@@ -67,8 +64,7 @@ struct MessageShareSheet: View {
         }
         .presentationDetents([.large])
         .presentationDragIndicator(.hidden)
-        // Re-render when the sender flips appearance while the sheet is open:
-        // the palette is baked into the export, not resolved by the recipient.
+        // The palette is baked in, so an appearance flip needs a re-render.
         .task(id: colorScheme) { render() }
     }
 
@@ -113,8 +109,7 @@ struct MessageShareSheet: View {
                         shareLabel
                     }
                 } else {
-                    // The card is still rendering; the bar keeps its height so
-                    // the button doesn't shove the preview around when it lands.
+                    // Holds the button's height so the preview doesn't shift.
                     ProgressView()
                         .frame(maxWidth: .infinity)
                         .frame(height: 54)

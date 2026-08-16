@@ -60,8 +60,8 @@ struct MessageDetailView: View {
                 .padding(EdgeInsets(top: 8, leading: 16, bottom: 24, trailing: 16))
             }
         }
-        // Two plain trailing items: the system groups them into one Liquid
-        // Glass capsule and animates the share hand-off for us.
+        // Plain trailing items: the system groups them into one Liquid Glass
+        // capsule and animates the share hand-off.
         .toolbar {
             ToolbarItem(placement: .trailingCompat) {
                 Button {

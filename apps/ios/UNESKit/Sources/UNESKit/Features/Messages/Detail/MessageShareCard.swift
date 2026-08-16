@@ -2,9 +2,8 @@ import SwiftUI
 
 // MARK: - Palette
 
-/// The palette baked into an exported card. Locked on purpose: the image
-/// leaves the app, so it must not follow the *recipient's* appearance — only
-/// the theme the sender was looking at when they shared.
+/// Baked into the export, so it follows the sender's appearance rather than
+/// the recipient's.
 struct MessageSharePalette {
     var background: Color
     var ink: Color
@@ -38,18 +37,16 @@ struct MessageSharePalette {
 
 // MARK: - Card
 
-/// The render that leaves the app: fixed width, height growing with the
-/// message so the whole body ships inside the image, never truncated.
-///
-/// Laid out on the design's 1080-unit grid and scaled by `width`, so the same
-/// view backs both the in-sheet preview and the 3× export.
+/// Fixed width, height growing with the message so the whole body ships
+/// inside the image. Laid out on the design's 1080-unit grid and scaled by
+/// `width`, so one view backs both the sheet preview and the export.
 struct MessageShareCard: View {
     var message: MessageItem
     var width: CGFloat = MessageShareCard.exportWidth
     var scheme: ColorScheme
     var rounded = true
 
-    /// Rendered at 3×, this is a 1080pt-wide image — the design's grid.
+    /// 1080px wide once rendered at 3×.
     static let exportWidth: CGFloat = 360
 
     private var palette: MessageSharePalette { .of(scheme) }
@@ -106,10 +103,6 @@ struct MessageShareCard: View {
 
     // MARK: Blocks
 
-    /// Wordmark only. The design also carried the origin kind here, but the
-    /// sender block below already names it — and the `.direct` label reads
-    /// "para você", which is addressed to the wrong person once the card is
-    /// out of the app.
     private var header: some View {
         HStack(alignment: .firstTextBaseline, spacing: px(6)) {
             Text(verbatim: "unes")
@@ -166,12 +159,8 @@ struct MessageShareCard: View {
         }
     }
 
-    /// The origin accent bleeding out of the top-left corner, under the header.
-    ///
-    /// Elliptical, not radial: the radii have to scale with the frame on both
-    /// axes, or the wash is still opaque when the frame clips it and the card
-    /// gets a hard horizontal seam. It reaches clear ~180 units down, well
-    /// inside the 290 it is given.
+    /// Elliptical so the falloff scales with the frame on both axes — a
+    /// width-derived radius is still opaque where the frame clips it.
     private func wash(_ accent: Color) -> some View {
         EllipticalGradient(
             stops: [
@@ -188,8 +177,8 @@ struct MessageShareCard: View {
 
 // MARK: - Text form
 
-/// The plain-text form of a message — what a recipient without the app can
-/// read, search and quote. Same content as the card, no chrome.
+/// Same content as the card, for recipients who need to read, search and
+/// quote it.
 enum MessageShareText {
     static func build(for message: MessageItem) -> String {
         var lines = ["\(message.senderName) — \(MessagesFormat.roleLine(message))"]
