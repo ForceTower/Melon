@@ -407,6 +407,9 @@
     <string name="disciplines_status_pending">No grades</string>
     <!-- endregion -->
 
+    <!-- Name of the regular undergrad program. Every other program is
+         labelled by the code upstream stamps on its semesters (RUE, PGM). -->
+    <string name="program_undergrad">Undergraduate</string>
     <!-- region Disciplinas · Histórico -->
     <string name="disciplines_history_performance">Cumulative performance</string>
     <string name="disciplines_history_overall_mean">overall average</string>
@@ -621,6 +624,7 @@
     <string name="me_identity_campus_fallback">UEFS</string>
     <string name="me_stat_score">Score</string>
     <string name="me_stat_score_caption">overall</string>
+    <string name="me_stat_score_cycle">Show the other program\'s coefficient</string>
     <string name="me_stat_attendance">Attendance</string>
     <string name="me_stat_attendance_caption">present</string>
     <string name="me_stat_semester">Semester</string>

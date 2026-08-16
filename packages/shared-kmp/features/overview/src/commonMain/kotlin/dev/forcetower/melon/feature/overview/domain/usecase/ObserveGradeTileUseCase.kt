@@ -21,6 +21,10 @@ import kotlinx.datetime.toLocalDateTime
 // active one. The math mirrors CalculateOverallScoreUseCase; the helper is
 // duplicated here on purpose (cross-feature `internal` doesn't carry, and
 // the codebase already prefers small local copies over a shared module).
+//
+// Everything is scoped to the active semester's program (its track), so a
+// student in a mestrado is not shown it averaged with the graduação they
+// already finished.
 @Inject
 class ObserveGradeTileUseCase internal constructor(
     private val semesterDao: SemesterDao,
@@ -42,11 +46,13 @@ private fun buildTile(
     enrollments: List<EnrolledDisciplineRow>,
     todayIso: String,
 ): OverviewGradeTile? {
-    val overall = overallScore(semesters, enrollments, capSemesterId = null) ?: return null
     val active = pickActiveSemester(semesters, todayIso)
-    val before = active?.let { overallScore(semesters, enrollments, capSemesterId = it.id) }
+    val track = currentTrack(semesters, enrollments, active)
+    val program = semesters.filter { it.track == track }
+    val overall = overallScore(program, enrollments, capSemesterId = null) ?: return null
+    val before = active?.let { overallScore(program, enrollments, capSemesterId = it.id) }
     val previousCode = active?.let { a ->
-        semesters
+        program
             .asSequence()
             .filter { it.id != a.id && it.startDate < a.startDate }
             .maxByOrNull { it.startDate }
@@ -57,6 +63,21 @@ private fun buildTile(
         crDelta = before?.let { overall - it },
         comparisonSemesterCode = previousCode?.takeIf { before != null },
     )
+}
+
+// The program the tile speaks for: the active semester's track, or — with no
+// active semester — the track of the newest semester holding enrollments.
+private fun currentTrack(
+    semesters: List<SemesterEntity>,
+    enrollments: List<EnrolledDisciplineRow>,
+    active: SemesterEntity?,
+): String? {
+    if (active != null) return active.track
+    val enrolledIds = enrollments.mapTo(mutableSetOf()) { it.semesterId }
+    return semesters
+        .filter { it.id in enrolledIds }
+        .maxByOrNull { it.startDate }
+        ?.track
 }
 
 private fun overallScore(

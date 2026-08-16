@@ -124,9 +124,13 @@ struct MirrorStore: Sendable {
            let record = semesters.first(where: { $0.id == active.id }) {
             overview = try snapshot(for: record, db: db).meOverview(now: now)
         }
-        if let coefficient = try coefficientHistory(semesters: semesters, db: db).summary() {
+        let history = try coefficientHistory(semesters: semesters, db: db)
+        if let coefficient = history.summary() {
             overview.coefficient = coefficient
         }
+        // The hero lets the student walk through their programs, so it needs
+        // all of them and not just the one it opens on.
+        overview.coefficientPrograms = history.programs()
         return CachedMeOverview(overview: overview, syncedAt: syncedAt)
     }
 

@@ -2,6 +2,7 @@ package dev.forcetower.unes.ui.feature.disciplines.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,7 +10,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,12 +34,18 @@ import java.util.Locale
 
 // "Desempenho acumulado" card at the top of the Histórico tab — overall CR,
 // count of disciplines taken, and approval rate across downloaded semesters.
+// Every number belongs to one program: a student with a mestrado on top of
+// their graduação picks which one through the chip row, and students with a
+// single program never see it.
 @Composable
 internal fun HistorySummaryCard(
     overallMean: Double?,
     taken: Int,
     approvalPercent: Int?,
     modifier: Modifier = Modifier,
+    programTracks: List<String?> = emptyList(),
+    selectedTrack: String? = null,
+    onSelectProgram: (String?) -> Unit = {},
 ) {
     val shape = RoundedCornerShape(22.dp)
     Column(
@@ -51,6 +61,14 @@ internal fun HistorySummaryCard(
             style = MaterialTheme.typography.labelSmall.copy(fontSize = 11.sp),
             color = MaterialTheme.colorScheme.outlineVariant,
         )
+        if (programTracks.isNotEmpty()) {
+            Spacer(Modifier.height(12.dp))
+            ProgramChips(
+                tracks = programTracks,
+                selectedTrack = selectedTrack,
+                onSelectProgram = onSelectProgram,
+            )
+        }
         Spacer(Modifier.height(14.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             StatTile(
@@ -70,6 +88,51 @@ internal fun HistorySummaryCard(
                 label = stringResource(R.string.disciplines_history_approval_rate),
                 valueColor = MaterialTheme.melon.status.ok,
                 modifier = Modifier.weight(1f),
+            )
+        }
+    }
+}
+
+// One chip per program the student has semesters in. The track code is the
+// label — upstream gives us no name for a program, only the suffix it stamps
+// on its semester codes (22.1RUE → "RUE").
+@Composable
+private fun ProgramChips(
+    tracks: List<String?>,
+    selectedTrack: String?,
+    onSelectProgram: (String?) -> Unit,
+) {
+    Row(
+        modifier = Modifier.horizontalScroll(rememberScrollState()),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        tracks.forEach { track ->
+            val selected = track == selectedTrack
+            FilterChip(
+                selected = selected,
+                onClick = { onSelectProgram(track) },
+                modifier = Modifier.height(32.dp),
+                shape = RoundedCornerShape(9.dp),
+                label = {
+                    Text(
+                        text = track ?: stringResource(R.string.program_undergrad),
+                        style = MaterialTheme.typography.labelLarge.copy(
+                            fontWeight = if (selected) FontWeight.Bold else FontWeight.SemiBold,
+                        ),
+                    )
+                },
+                colors = FilterChipDefaults.filterChipColors(
+                    containerColor = Color.Transparent,
+                    labelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    selectedContainerColor = MaterialTheme.colorScheme.primary,
+                    selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                ),
+                border = FilterChipDefaults.filterChipBorder(
+                    enabled = true,
+                    selected = selected,
+                    borderColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.18f),
+                ),
             )
         }
     }
@@ -114,6 +177,12 @@ private fun StatTile(
 @Composable
 private fun HistorySummaryCardPreview() {
     MelonTheme {
-        HistorySummaryCard(overallMean = 7.0, taken = 16, approvalPercent = 88)
+        HistorySummaryCard(
+            overallMean = 7.0,
+            taken = 16,
+            approvalPercent = 88,
+            programTracks = listOf(null, "RUE"),
+            selectedTrack = null,
+        )
     }
 }

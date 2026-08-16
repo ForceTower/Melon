@@ -40,6 +40,8 @@ internal object MeFixtures {
         progressPct = 100,
         cr = 6.7,
         crDelta = 0.1,
+        crTrack = null,
+        crIsSplit = false,
         attendancePercent = 94,
         semesterOrdinal = 6,
         semesterStart = "18 fev",

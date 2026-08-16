@@ -451,6 +451,9 @@
     <string name="disciplines_status_pending">Sem notas</string>
     <!-- endregion -->
 
+    <!-- Name of the regular undergrad program. Every other program is
+         labelled by the code upstream stamps on its semesters (RUE, PGM). -->
+    <string name="program_undergrad">Graduação</string>
     <!-- region Disciplinas · Histórico -->
     <string name="disciplines_history_performance">Desempenho acumulado</string>
     <string name="disciplines_history_overall_mean">média geral</string>
@@ -673,6 +676,7 @@
     <string name="me_stat_score">Score</string>
     <!-- Caption under the Score value when there is no visible delta. -->
     <string name="me_stat_score_caption">geral</string>
+    <string name="me_stat_score_cycle">Ver o coeficiente do outro programa</string>
     <string name="me_stat_attendance">Frequência</string>
     <string name="me_stat_attendance_caption">presença</string>
     <string name="me_stat_semester">Semestre</string>

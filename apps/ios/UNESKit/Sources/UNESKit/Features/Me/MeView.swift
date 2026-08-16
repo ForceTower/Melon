@@ -94,10 +94,14 @@ struct MeView: View {
                     course: store.profile?.course,
                     campus: store.overview?.campus,
                     imageUrl: store.profile?.imageUrl,
-                    coefficient: store.overview?.coefficient,
+                    coefficient: store.shownProgram?.summary ?? store.overview?.coefficient,
+                    programLabel: store.shownProgramLabel,
                     attendancePercent: store.overview?.attendancePercent,
                     progress: store.overview?.progress,
-                    onEditProfile: { store.send(.editProfileTapped) }
+                    onEditProfile: { store.send(.editProfileTapped) },
+                    onCycleProgram: store.shownProgramLabel == nil
+                        ? nil
+                        : { store.send(.scoreProgramTapped) }
                 )
                 .scaleIn(delay: 0.1, duration: 0.62)
                 .padding(.bottom, 20)

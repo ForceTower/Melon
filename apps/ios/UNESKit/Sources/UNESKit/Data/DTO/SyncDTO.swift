@@ -76,6 +76,8 @@ struct SemesterListDTO: Decodable {
         var dirtyAt: String? = nil
         /// Enrolled disciplines, for the "download this semester" cards.
         var disciplineCount: Int? = nil
+        /// Program calendar; nil is the regular undergrad one.
+        var track: String? = nil
     }
 }
 
@@ -91,6 +93,7 @@ extension SemesterListDTO.ItemDTO {
             description: description,
             startDate: startDate,
             endDate: endDate,
+            track: track,
             disciplineCount: disciplineCount,
             dirtyAt: dirtyAt
         )
@@ -120,6 +123,8 @@ struct SemesterPayloadDTO: Decodable {
         let description: String
         let startDate: String
         let endDate: String
+        /// Program calendar; nil is the regular undergrad one.
+        var track: String? = nil
     }
 
     struct DisciplineDTO: Decodable {
@@ -236,7 +241,8 @@ extension SemesterPayloadDTO {
                 code: semester.code,
                 description: semester.description,
                 startDate: semester.startDate,
-                endDate: semester.endDate
+                endDate: semester.endDate,
+                track: semester.track
             ),
             disciplines: disciplines.map {
                 DisciplineRecord(

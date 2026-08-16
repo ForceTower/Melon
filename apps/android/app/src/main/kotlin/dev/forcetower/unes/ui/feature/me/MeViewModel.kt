@@ -8,7 +8,8 @@ import dev.forcetower.melon.core.common.Outcome
 import dev.forcetower.melon.core.session.domain.SessionStore
 import dev.forcetower.melon.feature.campusevent.domain.usecase.ClearCampusEventUseCase
 import dev.forcetower.melon.feature.disciplines.domain.usecase.CalculateOverallScoreUseCase
-import dev.forcetower.melon.feature.disciplines.domain.usecase.OverallScoreSummary
+import dev.forcetower.melon.feature.disciplines.domain.model.OverallScore
+import dev.forcetower.melon.feature.disciplines.domain.model.ProgramScore
 import dev.forcetower.melon.feature.me.domain.model.AcademicDocument
 import dev.forcetower.melon.feature.me.domain.model.DocumentFetchError
 import dev.forcetower.melon.feature.me.domain.model.MeProfile
@@ -73,6 +74,9 @@ internal sealed interface MeIntent : UiIntent {
     // view sticks. iOS doesn't need this because `RootView` swaps the whole
     // `ConnectedView` destination, which destroys the VM.
     data object ResetLogout : MeIntent
+    // Advances the Score stat to the next program. Only reachable when the
+    // student has more than one.
+    data object CycleScoreProgram : MeIntent
 }
 
 internal sealed interface MeEffect : UiEffect
@@ -142,7 +146,10 @@ internal const val ProfileNameMaxLength = 24
 
 internal data class MeUiState(
     val profileRaw: MeProfile? = null,
-    val scoreRaw: OverallScoreSummary? = null,
+    val scoreRaw: OverallScore = OverallScore.Empty,
+    // Which program the Score stat is showing. Null follows the program the
+    // student is currently in; tapping the stat pins an index and cycles.
+    val scoreProgramIndex: Int? = null,
     val gates: FeatureGates = FeatureGates(),
     val documentSheet: DocumentSheetState? = null,
     val editProfile: ProfileEditState? = null,
@@ -155,7 +162,11 @@ internal data class MeUiState(
     // Null until the profile flow emits — the screen hides the hero in that
     // window rather than substitute fake fixture content. `MeFixtures.identity`
     // is preview-only.
-    val identity: ProfileIdentity? = profileRaw?.let { mapIdentity(it, scoreRaw) }
+    val identity: ProfileIdentity? = profileRaw?.let { mapIdentity(it, shownProgram, scoreRaw.isSplit) }
+
+    // The pinned program if the student cycled to one, else the current one.
+    val shownProgram: ProgramScore?
+        get() = scoreProgramIndex?.let { scoreRaw.programs.getOrNull(it) } ?: scoreRaw.current
     val shortcuts: List<Shortcut> = MeFixtures.gridShortcuts(gates)
 }
 
@@ -179,7 +190,7 @@ internal class MeViewModel @Inject constructor(
             observeMeProfile().collect { value -> setState { copy(profileRaw = value) } }
         }
         viewModelScope.launch {
-            overallScore.summary().collect { value -> setState { copy(scoreRaw = value) } }
+            overallScore().collect { value -> setState { copy(scoreRaw = value) } }
         }
         viewModelScope.launch {
             featureFlags.gates.collect { value -> setState { copy(gates = value) } }
@@ -211,7 +222,19 @@ internal class MeViewModel @Inject constructor(
             MeIntent.CancelLogout -> setState { copy(logoutStep = LogoutStep.Idle) }
             MeIntent.ConfirmLogout -> performLogout()
             MeIntent.ResetLogout -> setState {
-                copy(logoutStep = LogoutStep.Idle, profileRaw = null, scoreRaw = null, documentSheet = null)
+                copy(
+                    logoutStep = LogoutStep.Idle,
+                    profileRaw = null,
+                    scoreRaw = OverallScore.Empty,
+                    scoreProgramIndex = null,
+                    documentSheet = null,
+                )
+            }
+            MeIntent.CycleScoreProgram -> setState {
+                val programs = scoreRaw.programs
+                if (programs.size < 2) return@setState this
+                val shown = programs.indexOf(shownProgram).coerceAtLeast(0)
+                copy(scoreProgramIndex = (shown + 1) % programs.size)
             }
         }
     }
@@ -421,7 +444,7 @@ private val AcademicDocument.shortcutItemId: String
 private val ShortDateFormatter: DateTimeFormatter
     get() = DateTimeFormatter.ofPattern("d MMM", Locale.getDefault())
 
-private fun mapIdentity(raw: MeProfile, score: OverallScoreSummary?): ProfileIdentity {
+private fun mapIdentity(raw: MeProfile, score: ProgramScore?, isSplit: Boolean): ProfileIdentity {
     val canonical = raw.identity.userName.ifBlank { raw.identity.firstName }
     val first = raw.identity.firstName.ifBlank { canonical.substringBefore(' ') }
     val initial = first.firstOrNull()?.uppercaseChar()?.toString() ?: "?"
@@ -441,6 +464,8 @@ private fun mapIdentity(raw: MeProfile, score: OverallScoreSummary?): ProfileIde
         progressPct = semester?.progressPercent ?: 0,
         cr = score?.value,
         crDelta = score?.delta,
+        crTrack = score?.track,
+        crIsSplit = isSplit,
         attendancePercent = raw.attendancePercent,
         semesterOrdinal = raw.semesterOrdinal,
         semesterStart = formatShortDate(semester?.startDate),

@@ -62,7 +62,11 @@ extension MirrorStore {
         guard !summaries.isEmpty else { return nil }
 
         let semesters = try SemesterRecord.order(Column("startDate").desc).fetchAll(db)
-        let checkpoints = try coefficientHistory(semesters: semesters, db: db).checkpoints()
+        // Scoped to the recapped semester's own program — the CR movement in
+        // this deck belongs to that degree, not to a blend of every program
+        // the student has been in.
+        let checkpoints = try coefficientHistory(semesters: semesters, db: db)
+            .checkpoints(track: semester.track)
 
         let totalHours = summaries.reduce(0) { $0 + $1.hours }
         let missedHours = summaries.reduce(0) { $0 + $1.missedHours }

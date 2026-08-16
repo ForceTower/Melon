@@ -10,6 +10,10 @@ struct MeOverview: Equatable, Sendable {
     /// "Campus · Módulo" where the student's classes most often meet.
     var campus: String?
     var coefficient: CoefficientSummary?
+    /// Every program the student has a coefficient in, newest first. One
+    /// entry for nearly everyone; a second appears when they take up a
+    /// mestrado or another program on its own calendar.
+    var coefficientPrograms: [ProgramCoefficient] = []
     var attendancePercent: Int?
     var progress: SemesterProgress?
     var countdown: SemesterCountdown?

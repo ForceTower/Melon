@@ -265,6 +265,14 @@ private func migrator() -> DatabaseMigrator {
             t.add(column: "authorName", .text)
         }
     }
+    // The program a semester belongs to. Backfilled by the next refresh —
+    // existing rows read as the undergrad calendar until then, which is what
+    // they were being treated as anyway.
+    migrator.registerMigration("v10") { db in
+        try db.alter(table: "semesters") { t in
+            t.add(column: "track", .text)
+        }
+    }
     return migrator
 }
 
