@@ -116,7 +116,7 @@ private fun ProgramChips(
                 shape = RoundedCornerShape(9.dp),
                 label = {
                     Text(
-                        text = track ?: stringResource(R.string.disciplines_history_program_undergrad),
+                        text = track ?: stringResource(R.string.program_undergrad),
                         style = MaterialTheme.typography.labelLarge.copy(
                             fontWeight = if (selected) FontWeight.Bold else FontWeight.SemiBold,
                         ),

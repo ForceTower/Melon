@@ -44,8 +44,30 @@ struct MeFeature {
         @Shared(.appStorage(FeatureFlags.retrospectiveEnabledKey)) var isRetrospectiveEnabled = false
         /// The semester whose Retrospectiva window the mirror says is open.
         var retrospectiveSemester: String?
+        /// Which program the hero's Score stat is showing. Nil follows the
+        /// one the student is currently in; tapping the stat pins an index
+        /// and walks from there.
+        var scoreProgramIndex: Int?
 
         var displayName: String? { profile?.displayName ?? userName }
+
+        /// Programs the student has a coefficient in, newest first.
+        var coefficientPrograms: [ProgramCoefficient] { overview?.coefficientPrograms ?? [] }
+
+        /// The pinned program, else whichever the overview opened on.
+        var shownProgram: ProgramCoefficient? {
+            guard let scoreProgramIndex, coefficientPrograms.indices.contains(scoreProgramIndex)
+            else { return coefficientPrograms.first }
+            return coefficientPrograms[scoreProgramIndex]
+        }
+
+        /// What to label the Score stat with. Nil unless the student has more
+        /// than one program — everyone else keeps the plain "Score" label and
+        /// an untappable stat.
+        var shownProgramLabel: String? {
+            guard coefficientPrograms.count > 1 else { return nil }
+            return shownProgram?.track ?? String.localized(.programUndergrad)
+        }
 
         /// The flag-gated tile set — the gated shortcuts appear only while
         /// their flag is on. Always applies the filter, independent of build
@@ -110,6 +132,8 @@ struct MeFeature {
         case profileLoaded(Profile)
         case shortcutTapped(MeShortcut)
         case editProfileTapped
+        /// Walks the hero's Score stat to the next program.
+        case scoreProgramTapped
         case editProfile(PresentationAction<ProfileEditFeature.Action>)
         case deeplinkOpened(Deeplink)
         case settingsRowTapped(MeSettingsRow)
@@ -224,6 +248,13 @@ struct MeFeature {
                 guard let profile = state.profile else { return .none }
                 analytics.selectContent(contentType: ContentTypes.setting, itemId: "edit_profile")
                 state.editProfile = ProfileEditFeature.State(profile: profile)
+                return .none
+
+            case .scoreProgramTapped:
+                let programs = state.coefficientPrograms
+                guard programs.count > 1 else { return .none }
+                let shown = state.shownProgram.flatMap { programs.firstIndex(of: $0) } ?? 0
+                state.scoreProgramIndex = (shown + 1) % programs.count
                 return .none
 
             case .editProfile(.presented(.delegate(.saved))):

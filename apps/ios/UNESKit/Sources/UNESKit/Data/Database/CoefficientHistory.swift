@@ -29,6 +29,14 @@ struct CoefficientHistory {
         tracksByRecency().lazy.compactMap { summary(track: $0) }.first
     }
 
+    /// Every program the student has a CR in, newest first. Programs with
+    /// nothing closed yet are left out — they have no coefficient to show.
+    func programs() -> [ProgramCoefficient] {
+        tracksByRecency().compactMap { track in
+            summary(track: track).map { ProgramCoefficient(track: track, summary: $0) }
+        }
+    }
+
     /// One program's CR, or nil when none of its disciplines has closed.
     func summary(track: String?) -> CoefficientSummary? {
         let spark = checkpoints(track: track).map(\.value)

@@ -58,6 +58,17 @@ struct CoefficientSummary: Equatable, Sendable {
     var delta: Double?
 }
 
+/// One program's coefficient. `track` is the semester-track that identifies
+/// the program — nil is the regular undergrad calendar, anything else a
+/// program that runs its own (a mestrado, an EAD course). Programs are never
+/// averaged together; see `CoefficientHistory`.
+struct ProgramCoefficient: Equatable, Sendable, Identifiable {
+    var track: String?
+    var summary: CoefficientSummary
+
+    var id: String { track ?? "" }
+}
+
 struct AttendanceSummary: Equatable, Sendable {
     /// Presence guaranteed so far: `(1 - missed / total hours) × 100`.
     var percent: Int

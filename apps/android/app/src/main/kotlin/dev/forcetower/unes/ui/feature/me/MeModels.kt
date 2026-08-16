@@ -28,11 +28,17 @@ internal data class ProfileIdentity(
     val semesterWeek: Int,
     val semesterTotalWeeks: Int,
     val progressPct: Int,
-    // Lifetime CR ("Score"). Null until the score flow emits — rendered "–".
+    // Lifetime CR ("Score") of one program. Null until the score flow emits
+    // — rendered "–".
     val cr: Double?,
     // Signed movement caused by the last closed semester; the delta row
     // renders only when |delta| ≥ 0.1 (same rule as iOS).
     val crDelta: Double?,
+    // Program the CR belongs to; null is the graduação. Only meaningful when
+    // `crIsSplit` — otherwise the student has a single program and the stat
+    // keeps its plain "Score" label.
+    val crTrack: String?,
+    val crIsSplit: Boolean,
     val attendancePercent: Int?,
     // 1-based enrolled-semester ordinal ("6º").
     val semesterOrdinal: Int?,

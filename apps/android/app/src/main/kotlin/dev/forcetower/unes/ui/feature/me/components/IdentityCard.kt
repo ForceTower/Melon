@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDownward
 import androidx.compose.material.icons.filled.ArrowUpward
+import androidx.compose.material.icons.filled.Autorenew
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.School
 import androidx.compose.material3.Icon
@@ -65,6 +66,7 @@ internal fun IdentityCard(
     modifier: Modifier = Modifier,
     revealDelayMs: Int = 120,
     onEditProfile: (() -> Unit)? = null,
+    onCycleScoreProgram: (() -> Unit)? = null,
 ) {
     val fixed = MaterialTheme.melon.fixed
     val shape = RoundedCornerShape(28.dp)
@@ -111,7 +113,7 @@ internal fun IdentityCard(
                     .background(fixed.onHero.copy(alpha = 0.16f)),
             )
             Spacer(Modifier.height(16.dp))
-            StatsRow(identity)
+            StatsRow(identity, onCycleScoreProgram = onCycleScoreProgram)
         }
     }
 }
@@ -267,11 +269,21 @@ private fun Avatar(initial: String, avatarUrl: String?, showEditBadge: Boolean) 
 }
 
 @Composable
-private fun StatsRow(identity: ProfileIdentity) {
+private fun StatsRow(identity: ProfileIdentity, onCycleScoreProgram: (() -> Unit)?) {
     Row(modifier = Modifier.height(IntrinsicSize.Min)) {
+        // With more than one program the stat drops the generic "Score" label
+        // for the program's own name — an unlabelled CR is exactly what made
+        // this number unreadable — and tapping walks to the next program.
+        val cycle = onCycleScoreProgram?.takeIf { identity.crIsSplit }
         Stat(
-            label = stringResource(R.string.me_stat_score),
+            label = if (identity.crIsSplit) {
+                identity.crTrack ?: stringResource(R.string.program_undergrad)
+            } else {
+                stringResource(R.string.me_stat_score)
+            },
             value = formatGrade(identity.cr),
+            trailingIcon = if (cycle != null) Icons.Filled.Autorenew else null,
+            onClick = cycle,
             modifier = Modifier.weight(1f),
         ) {
             ScoreDelta(delta = identity.crDelta)
@@ -318,10 +330,20 @@ private fun Stat(
     value: String,
     modifier: Modifier = Modifier,
     valueSuffix: String? = null,
+    trailingIcon: ImageVector? = null,
+    onClick: (() -> Unit)? = null,
     footer: @Composable () -> Unit,
 ) {
     val onHero = MaterialTheme.melon.fixed.onHero
-    Column(modifier = modifier) {
+    Column(
+        modifier = if (onClick == null) {
+            modifier
+        } else {
+            modifier
+                .clip(RoundedCornerShape(10.dp))
+                .clickable(onClick = onClick)
+        },
+    ) {
         Text(
             text = label.uppercase(LocalConfiguration.current.locales[0]),
             style = MaterialTheme.typography.labelSmall.copy(
@@ -349,6 +371,17 @@ private fun Stat(
                     style = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp),
                     color = onHero.copy(alpha = 0.7f),
                     modifier = Modifier.padding(bottom = 1.dp),
+                )
+            }
+            if (trailingIcon != null) {
+                Spacer(Modifier.width(5.dp))
+                Icon(
+                    imageVector = trailingIcon,
+                    contentDescription = stringResource(R.string.me_stat_score_cycle),
+                    tint = onHero.copy(alpha = 0.6f),
+                    modifier = Modifier
+                        .padding(bottom = 3.dp)
+                        .size(13.dp),
                 )
             }
         }

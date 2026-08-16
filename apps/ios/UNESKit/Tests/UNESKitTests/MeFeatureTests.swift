@@ -51,6 +51,50 @@ struct MeFeatureTests {
         }
     }
 
+    /// Issue #55: a student in a mestrado on top of their graduação has two
+    /// coefficients, and the hero walks between them instead of averaging.
+    @Test
+    func tappingTheScoreWalksThroughThePrograms() async {
+        var overview = MeOverview.preview
+        overview.coefficientPrograms = [
+            ProgramCoefficient(track: "RUE", summary: CoefficientSummary(value: 9.1, spark: [9.1], delta: nil)),
+            ProgramCoefficient(track: nil, summary: CoefficientSummary(value: 7.0, spark: [8.0, 7.0], delta: -1.0)),
+        ]
+        let store = TestStore(initialState: MeFeature.State(overview: overview)) {
+            MeFeature()
+        }
+
+        #expect(store.state.shownProgram?.track == "RUE")
+        #expect(store.state.shownProgramLabel == "RUE")
+
+        await store.send(.scoreProgramTapped) {
+            $0.scoreProgramIndex = 1
+        }
+        #expect(store.state.shownProgram?.summary.value == 7.0)
+        #expect(store.state.shownProgramLabel == String.localized(.programUndergrad))
+
+        // Wraps back around to the program they are in.
+        await store.send(.scoreProgramTapped) {
+            $0.scoreProgramIndex = 0
+        }
+        #expect(store.state.shownProgram?.track == "RUE")
+    }
+
+    /// A single program keeps the plain "Score" label and an inert stat.
+    @Test
+    func oneProgramLeavesTheScoreStatAlone() async {
+        var overview = MeOverview.preview
+        overview.coefficientPrograms = [
+            ProgramCoefficient(track: nil, summary: CoefficientSummary(value: 7.0, spark: [7.0], delta: nil)),
+        ]
+        let store = TestStore(initialState: MeFeature.State(overview: overview)) {
+            MeFeature()
+        }
+
+        #expect(store.state.shownProgramLabel == nil)
+        await store.send(.scoreProgramTapped)
+    }
+
     @Test
     func calendarShortcutPushesTheCalendar() async {
         let store = TestStore(initialState: MeFeature.State()) {

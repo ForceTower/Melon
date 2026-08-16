@@ -161,6 +161,7 @@ internal fun MeScreen(
                     IdentityCard(
                         identity = identity,
                         onEditProfile = { vm.onIntent(MeIntent.OpenEditProfile) },
+                        onCycleScoreProgram = { vm.onIntent(MeIntent.CycleScoreProgram) },
                     )
                     if (identity.semesterTotalWeeks > 0) {
                         Spacer(Modifier.height(14.dp))

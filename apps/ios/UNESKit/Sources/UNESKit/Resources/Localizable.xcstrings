@@ -16834,6 +16834,23 @@
         }
       }
     },
+    "me.stat.scoreCycle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show the other program’s coefficient"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ver o coeficiente do outro programa"
+          }
+        }
+      }
+    },
     "me.stat.semester" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -16864,6 +16881,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "/ %lld sem"
+          }
+        }
+      }
+    },
+    "program.undergrad" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Undergraduate"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Graduação"
           }
         }
       }
