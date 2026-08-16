@@ -60,18 +60,42 @@ struct MessageDetailView: View {
                 .padding(EdgeInsets(top: 8, leading: 16, bottom: 24, trailing: 16))
             }
         }
+        // Two plain trailing items: the system groups them into one Liquid
+        // Glass capsule and animates the share hand-off for us.
         .toolbar {
+            ToolbarItem(placement: .trailingCompat) {
+                Button {
+                    store.send(.shareTapped)
+                } label: {
+                    Label {
+                        Text(.messagesShareTitle)
+                    } icon: {
+                        Image(systemName: "square.and.arrow.up")
+                    }
+                }
+            }
             ToolbarItem(placement: .trailingCompat) {
                 Button {
                     store.send(.starTapped)
                 } label: {
-                    Image(systemName: message.starred ? "star.fill" : "star")
-                        .font(.system(size: 15, weight: .semibold))
-                        .foregroundStyle(message.starred ? UNESColor.caution : UNESColor.ink3)
+                    Label {
+                        Text(message.starred ? .messagesDetailUnsave : .messagesDetailSave)
+                    } icon: {
+                        Image(systemName: message.starred ? "star.fill" : "star")
+                    }
                 }
+                .tint(message.starred ? UNESColor.caution : UNESColor.ink3)
             }
         }
         .inlineNavigationBar()
+        .sheet(
+            isPresented: Binding(
+                get: { store.isSharePresented },
+                set: { if !$0 { store.send(.shareDismissed) } }
+            )
+        ) {
+            MessageShareSheet(message: message)
+        }
         .task { await store.send(.task).finish() }
     }
 

@@ -6,11 +6,14 @@ struct MessageDetailFeature {
     @ObservableState
     struct State: Equatable {
         var message: MessageItem
+        var isSharePresented = false
     }
 
     enum Action: Equatable {
         case task
         case starTapped
+        case shareTapped
+        case shareDismissed
         case delegate(Delegate)
 
         enum Delegate: Equatable {
@@ -50,6 +53,19 @@ struct MessageDetailFeature {
                         }
                     }
                 )
+
+            case .shareTapped:
+                analytics.selectContent(
+                    contentType: ContentTypes.message,
+                    itemId: state.message.id,
+                    properties: ["action": "share"]
+                )
+                state.isSharePresented = true
+                return .none
+
+            case .shareDismissed:
+                state.isSharePresented = false
+                return .none
 
             case .delegate:
                 return .none
