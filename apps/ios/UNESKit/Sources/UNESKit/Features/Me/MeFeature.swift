@@ -4,7 +4,8 @@ import Foundation
 /// The pinned shortcuts — most push their flow; the document ones
 /// (comprovante / histórico) open the request sheet instead.
 enum MeShortcut: String, Equatable, Sendable, Identifiable, CaseIterable {
-    case enrollment, calendar, countdown, certificate, history, paradoxo, materials, library, retrospective
+    case enrollment, calendar, countdown, courseProgress, certificate, history, paradoxo, materials, library,
+         retrospective
 
     var id: String { rawValue }
 }
@@ -42,6 +43,7 @@ struct MeFeature {
         @Shared(.appStorage(FeatureFlags.materialsEnabledKey)) var isMaterialsEnabled = false
         @Shared(.appStorage(FeatureFlags.libraryEnabledKey)) var isLibraryEnabled = false
         @Shared(.appStorage(FeatureFlags.retrospectiveEnabledKey)) var isRetrospectiveEnabled = false
+        @Shared(.appStorage(FeatureFlags.courseProgressEnabledKey)) var isCourseProgressEnabled = false
         /// The semester whose Retrospectiva window the mirror says is open.
         var retrospectiveSemester: String?
 
@@ -60,6 +62,7 @@ struct MeFeature {
                 case .materials: isMaterialsEnabled
                 case .library: isLibraryEnabled
                 case .retrospective: isRetrospectiveEnabled && retrospectiveSemester != nil
+                case .courseProgress: isCourseProgressEnabled
                 case .calendar, .countdown: true
                 }
             }
@@ -101,6 +104,8 @@ struct MeFeature {
         case library(LibraryFeature)
         case libraryResults(LibraryResultsFeature)
         case libraryWork(LibraryWorkDetailFeature)
+        case courseProgress(CourseProgressFeature)
+        case curriculumFlow(CurriculumFlowFeature)
     }
 
     enum Action: Equatable {
@@ -194,6 +199,8 @@ struct MeFeature {
                     state.path.append(.calendar(CalendarFeature.State()))
                 case .countdown:
                     state.path.append(.countdown(FinalCountdownFeature.State()))
+                case .courseProgress:
+                    state.path.append(.courseProgress(CourseProgressFeature.State(course: state.profile?.course)))
                 case .certificate:
                     state.document = documentState(.enrollmentCertificate, from: state)
                 case .history:
@@ -346,7 +353,8 @@ struct MeFeature {
                     routeEnrollment(pathAction, state: &state),
                     routeParadoxo(pathAction, state: &state),
                     routeMaterials(pathAction, state: &state),
-                    routeLibrary(pathAction, state: &state)
+                    routeLibrary(pathAction, state: &state),
+                    routeCourseProgress(pathAction, state: &state)
                 )
 
             case .document, .path, .delegate:
@@ -497,6 +505,15 @@ struct MeFeature {
         return .none
     }
 
+    /// The fluxograma pushes on top of the progress screen, carrying the
+    /// mirrored payload so it renders offline.
+    private func routeCourseProgress(_ action: Path.Action, state: inout State) -> Effect<Action> {
+        if case let .courseProgress(.delegate(.openFlowchart(progress))) = action {
+            state.path.append(.curriculumFlow(CurriculumFlowFeature.State(progress: progress)))
+        }
+        return .none
+    }
+
     private func wakeCalendar(in state: State) -> [Effect<Action>] {
         state.path.ids.compactMap { id in
             guard case .calendar = state.path[id: id] else { return nil }
@@ -562,6 +579,7 @@ extension MeShortcut {
         case .enrollment: "enrollment"
         case .calendar: "calendar"
         case .countdown: "final_countdown"
+        case .courseProgress: "course_progress"
         case .certificate: "certificate"
         case .history: "academic_history"
         case .paradoxo: "paradoxo"

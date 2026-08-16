@@ -32,6 +32,7 @@ nonisolated enum RemoteBoolKey: String {
     case campusEvent = "enable_campus_event"
     case evaluationReminders = "enable_evaluation_reminders"
     case retrospective = "enable_retrospective"
+    case courseProgress = "enable_course_progress"
 }
 
 nonisolated enum RemoteStringKey: String {

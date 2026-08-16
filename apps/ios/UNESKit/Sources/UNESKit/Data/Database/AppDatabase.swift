@@ -265,6 +265,71 @@ private func migrator() -> DatabaseMigrator {
             t.add(column: "authorName", .text)
         }
     }
+    // Course progress: the student's curriculum ("matriz curricular") as
+    // real rows — the version, its hour-type buckets, every grid slot with
+    // the student's status, and the prerequisite edges — plus one summary
+    // row. Only ever one curriculum at a time (the binding), replaced whole
+    // on every refresh so the fluxograma and progress screen work offline.
+    migrator.registerMigration("v10") { db in
+        try db.create(table: "curricula") { t in
+            t.primaryKey("id", .text)
+            t.column("code", .text).notNull()
+            t.column("label", .text).notNull()
+            t.column("asOf", .text).notNull()
+            t.column("minPeriods", .integer)
+            t.column("maxPeriods", .integer)
+            t.column("stale", .boolean).notNull()
+        }
+        try db.create(table: "curriculumProgress") { t in
+            t.primaryKey("key", .text)
+            t.column("curriculumId", .text)
+            t.column("completedHours", .integer).notNull()
+            t.column("requiredHours", .integer)
+            t.column("percent", .double)
+            t.column("excludedHours", .integer).notNull()
+            t.column("unclassifiedHours", .integer).notNull()
+            t.column("disciplinesCompleted", .integer).notNull()
+            t.column("disciplinesTotal", .integer).notNull()
+            t.column("currentPeriod", .integer)
+            t.column("prerequisitesKnown", .boolean).notNull()
+            t.column("syncedAt", .text).notNull()
+        }
+        try db.create(table: "curriculumRequirements") { t in
+            t.column("curriculumId", .text).notNull()
+            t.column("code", .text).notNull()
+            t.column("kind", .text).notNull()
+            t.column("label", .text).notNull()
+            t.column("shortLabel", .text).notNull()
+            t.column("startsAtPeriod", .integer)
+            t.column("hoursRequired", .integer).notNull()
+            t.column("hoursCompleted", .integer).notNull()
+            t.column("derivable", .boolean).notNull()
+            t.column("percent", .double)
+            t.column("position", .integer).notNull()
+            t.primaryKey(["curriculumId", "code"])
+        }
+        try db.create(table: "curriculumEntries") { t in
+            t.column("curriculumId", .text).notNull()
+            t.column("code", .text).notNull()
+            t.column("name", .text).notNull()
+            t.column("hours", .integer).notNull()
+            t.column("credits", .integer)
+            t.column("period", .integer)
+            t.column("coreqGroup", .integer)
+            t.column("requirementCode", .text)
+            t.column("status", .text).notNull()
+            t.column("position", .integer).notNull()
+            t.primaryKey(["curriculumId", "code"])
+        }
+        try db.create(table: "curriculumPrerequisites") { t in
+            t.column("curriculumId", .text).notNull()
+            t.column("entryCode", .text).notNull()
+            t.column("requiresCode", .text).notNull()
+            t.column("kind", .text).notNull()
+            t.column("position", .integer).notNull()
+            t.primaryKey(["curriculumId", "entryCode", "requiresCode", "kind"])
+        }
+    }
     return migrator
 }
 

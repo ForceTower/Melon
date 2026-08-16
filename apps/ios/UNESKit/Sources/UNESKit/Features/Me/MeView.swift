@@ -60,6 +60,10 @@ struct MeView: View {
                 LibraryResultsView(store: store)
             case let .libraryWork(store):
                 LibraryWorkDetailView(store: store)
+            case let .courseProgress(store):
+                CourseProgressView(store: store)
+            case let .curriculumFlow(store):
+                CurriculumFlowView(store: store)
             }
         }
         .task { await store.send(.task).finish() }

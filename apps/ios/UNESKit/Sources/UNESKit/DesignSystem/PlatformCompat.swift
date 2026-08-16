@@ -45,6 +45,17 @@ extension View {
         #endif
     }
 
+    /// Navigation bar hidden or shown by a flag — for a stack whose root
+    /// draws its own header while pushed screens keep the system bar.
+    @ViewBuilder
+    func navigationBarHiddenCompat(_ hidden: Bool) -> some View {
+        #if os(iOS)
+        toolbarVisibility(hidden ? .hidden : .automatic, for: .navigationBar)
+        #else
+        self
+        #endif
+    }
+
     /// Fully hidden navigation bar (root screens with their own chrome).
     @ViewBuilder
     func hiddenNavigationBar() -> some View {

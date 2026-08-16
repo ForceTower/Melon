@@ -46,6 +46,9 @@ enum Screens {
     static let paradoxoTeacher = "paradoxo_teacher"
     static let paradoxoExplore = "paradoxo_explore"
 
+    static let courseProgress = "course_progress"
+    static let curriculumFlow = "curriculum_flow"
+
     static let enrollment = "enrollment"
     static let enrollmentOffers = "enrollment_offers"
     static let enrollmentDiscipline = "enrollment_discipline"

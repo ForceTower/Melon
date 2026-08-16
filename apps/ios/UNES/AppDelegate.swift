@@ -94,6 +94,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
             campusEventEnabled: settings.bool(.campusEvent),
             evaluationRemindersEnabled: settings.bool(.evaluationReminders),
             retrospectiveEnabled: settings.bool(.retrospective),
+            courseProgressEnabled: settings.bool(.courseProgress),
             documentCaptchaSiteKey: settings.string(.documentCaptchaSiteKey),
             documentCaptchaBaseURL: settings.string(.documentCaptchaBaseURL)
         )

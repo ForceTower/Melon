@@ -83,6 +83,7 @@ extension MeShortcut {
         case .enrollment: .localized(.meShortcutEnrollment)
         case .calendar: .localized(.meShortcutCalendar)
         case .countdown: .localized(.meShortcutCountdown)
+        case .courseProgress: .localized(.meShortcutCourseProgress)
         case .certificate: .localized(.meShortcutCertificate)
         case .history: .localized(.meShortcutHistory)
         case .paradoxo: .localized(.meShortcutParadoxo)
@@ -97,6 +98,7 @@ extension MeShortcut {
         case .enrollment: .localized(.meShortcutEnrollmentHint)
         case .calendar: .localized(.meShortcutCalendarHint)
         case .countdown: nil
+        case .courseProgress: .localized(.meShortcutCourseProgressHint)
         case .certificate: nil
         case .history: nil
         case .paradoxo: .localized(.meShortcutParadoxoHint)
@@ -111,6 +113,7 @@ extension MeShortcut {
         case .enrollment: "checklist"
         case .calendar: "calendar"
         case .countdown: "timer"
+        case .courseProgress: "graduationcap"
         case .certificate: "doc.text"
         case .history: "chart.bar.doc.horizontal"
         case .paradoxo: "chart.xyaxis.line"
@@ -132,6 +135,7 @@ extension MeShortcut {
         case .enrollment: UNESColor.readable(0x3B9EAE)
         case .calendar: UNESColor.readable(0xE85D4E)
         case .countdown: UNESColor.readable(0xB23A7A)
+        case .courseProgress: UNESColor.readable(0xD9852E)
         case .certificate: UNESColor.readable(0x0A84FF)
         case .history: UNESColor.readable(0x7A5AD0)
         case .paradoxo: UNESColor.readable(0xF4A23C)

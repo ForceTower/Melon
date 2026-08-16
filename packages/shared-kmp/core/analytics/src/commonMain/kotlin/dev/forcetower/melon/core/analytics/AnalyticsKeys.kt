@@ -46,6 +46,9 @@ object Screens {
     const val PARADOXO_TEACHER = "paradoxo_teacher"
     const val PARADOXO_EXPLORE = "paradoxo_explore"
 
+    const val COURSE_PROGRESS = "course_progress"
+    const val CURRICULUM_FLOW = "curriculum_flow"
+
     const val ENROLLMENT = "enrollment"
     const val ENROLLMENT_OFFERS = "enrollment_offers"
     const val ENROLLMENT_DISCIPLINE = "enrollment_discipline"
