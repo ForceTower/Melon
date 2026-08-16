@@ -18,6 +18,9 @@ internal data class MessageDto(
     val content: String,
     val senderName: String,
     val senderType: Int?,
+    // The admin behind an app message; absent for upstream messages and
+    // comunicados sent before the server recorded it.
+    val authorName: String? = null,
     // ISO-8601 datetime; persisted as String in Message.timestamp.
     val timestamp: String,
     val createdAt: String,

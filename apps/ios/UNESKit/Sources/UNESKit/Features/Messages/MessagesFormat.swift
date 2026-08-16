@@ -94,13 +94,13 @@ enum MessagesFormat {
     }
 
     /// The secondary sender line, derived from the origin — upstream carries
-    /// no role/title for senders.
+    /// no role/title for senders; app messages name the admin behind them.
     static func roleLine(_ message: MessageItem) -> String {
         switch message.origin {
         case .discipline: message.disciplineName ?? String.localized(.messagesOriginDiscipline)
         case .secretariat: .localized(.messagesRoleSecretariat)
         case .campus: .localized(.messagesRoleCampus)
-        case .app: .localized(.messagesRoleApp)
+        case .app: message.authorName ?? String.localized(.messagesRoleApp)
         case .direct: .localized(.messagesRoleDirect)
         }
     }

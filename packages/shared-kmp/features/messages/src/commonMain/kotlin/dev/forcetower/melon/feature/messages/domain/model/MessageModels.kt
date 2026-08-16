@@ -27,6 +27,8 @@ data class MessageFeedItem(
     val content: String,
     val senderName: String,
     val senderType: Int?,
+    // The admin behind an app message (APP origin only); null when unknown.
+    val authorName: String?,
     val timestamp: String,
     val isUnread: Boolean,
     val isStarred: Boolean,
@@ -44,6 +46,7 @@ data class MessageFeedDetail(
     val content: String,
     val senderName: String,
     val senderType: Int?,
+    val authorName: String?,
     val timestamp: String,
     val isUnread: Boolean,
     val isStarred: Boolean,

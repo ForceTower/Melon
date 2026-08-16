@@ -75,17 +75,19 @@ import dev.forcetower.melon.core.database.entity.UserSettingsEntity
         AcademicCalendarEventEntity::class,
         PersonalEventEntity::class,
     ],
-    version = 11,
+    version = 12,
     // Adding `PersonalEvent` is purely additive, so Room can generate the
     // migration from the exported schemas — the student's own entries survive
     // the upgrade instead of falling through to the destructive fallback.
     // v10 adds the nullable Semester.dirtyAt/appliedDirtyAt staleness
     // columns, additive as well. v11 adds the nullable User.alternateName
-    // profile-customization column.
+    // profile-customization column. v12 adds the nullable Message.authorName
+    // (the admin behind an app message).
     autoMigrations = [
         AutoMigration(from = 8, to = 9),
         AutoMigration(from = 9, to = 10),
         AutoMigration(from = 10, to = 11),
+        AutoMigration(from = 11, to = 12),
     ],
 )
 @ConstructedBy(MelonDatabaseConstructor::class)

@@ -186,6 +186,9 @@ struct MessageRecord: Codable, Equatable, Sendable, FetchableRecord, Persistable
     /// it optimistically alongside the `messageStates` overlay; refreshes
     /// then re-stamp it with the acked value.
     var starred: Bool? = nil
+    /// The admin behind an app message; nil for upstream messages and
+    /// comunicados sent before the server recorded it.
+    var authorName: String? = nil
 }
 
 struct MessageScopeRecord: Codable, Equatable, Sendable, FetchableRecord, PersistableRecord {

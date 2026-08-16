@@ -258,6 +258,13 @@ private func migrator() -> DatabaseMigrator {
             t.add(column: "appliedDirtyAt", .text)
         }
     }
+    // App-message attribution: the admin behind a comunicado, shown under the
+    // sender name. Nullable — older rows and upstream messages have none.
+    migrator.registerMigration("v9") { db in
+        try db.alter(table: "messages") { t in
+            t.add(column: "authorName", .text)
+        }
+    }
     return migrator
 }
 

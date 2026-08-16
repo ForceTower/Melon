@@ -49,6 +49,9 @@ struct MessageItem: Equatable, Sendable, Identifiable {
     var subject: String?
     var body: String
     var senderName: String
+    /// The person behind an app message (`.app` origin only); nil when the
+    /// server didn't record one, in which case the generic team line shows.
+    var authorName: String? = nil
     var receivedAt: Date
     var unread: Bool
     var starred: Bool

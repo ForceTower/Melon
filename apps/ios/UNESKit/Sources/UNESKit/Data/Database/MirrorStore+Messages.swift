@@ -189,6 +189,7 @@ extension MirrorStore {
             subject: record.subject?.trimmingCharacters(in: .whitespacesAndNewlines).nonEmpty,
             body: record.content?.trimmingCharacters(in: .whitespacesAndNewlines) ?? "",
             senderName: record.senderName?.trimmingCharacters(in: .whitespacesAndNewlines).nonEmpty ?? "UNES",
+            authorName: record.authorName?.trimmingCharacters(in: .whitespacesAndNewlines).nonEmpty,
             receivedAt: record.timestamp.flatMap { try? Date($0, strategy: timestampFormat) } ?? .distantPast,
             unread: record.read != true && state?.readAt == nil,
             starred: record.starred == true || state?.starred == true,

@@ -24,4 +24,7 @@ data class MessageEntity(
     // starred = starred == true || overlay.starred.
     val read: Boolean?,
     val starred: Boolean?,
+    // The admin behind an app message; null for upstream messages and
+    // comunicados sent before the server recorded it.
+    val authorName: String? = null,
 )

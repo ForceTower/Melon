@@ -58,7 +58,7 @@ internal fun KmpMessageFeedItem.toUi(roles: MessageRoleStrings): Message {
         origin = mappedOrigin,
         sender = MessageSender(
             name = senderName,
-            role = roleFor(mappedOrigin, disciplineName, roles),
+            role = roleFor(mappedOrigin, disciplineName, authorName, roles),
         ),
         body = content,
         receivedAt = parseTimestamp(timestamp),
@@ -79,7 +79,7 @@ internal fun KmpMessageFeedDetail.toUi(roles: MessageRoleStrings): Message {
         origin = mappedOrigin,
         sender = MessageSender(
             name = senderName,
-            role = roleFor(mappedOrigin, disciplineName, roles),
+            role = roleFor(mappedOrigin, disciplineName, authorName, roles),
         ),
         body = content,
         receivedAt = parseTimestamp(timestamp),
@@ -135,15 +135,18 @@ private fun mapKind(raw: KmpMessageFeedAttachmentKind): MessageAttachmentKind = 
     KmpMessageFeedAttachmentKind.OTHER -> MessageAttachmentKind.Other
 }
 
+// App messages name the admin behind them when the server recorded one;
+// older comunicados fall back to the generic team line.
 private fun roleFor(
     origin: MessageOrigin,
     disciplineName: String?,
+    authorName: String?,
     roles: MessageRoleStrings,
 ): String = when (origin) {
     MessageOrigin.Discipline -> disciplineName?.takeIf { it.isNotBlank() } ?: roles.disciplineDefault
     MessageOrigin.Secretariat -> roles.secretariat
     MessageOrigin.Campus -> roles.campus
-    MessageOrigin.App -> roles.app
+    MessageOrigin.App -> authorName?.takeIf { it.isNotBlank() } ?: roles.app
     MessageOrigin.Module -> roles.module
     MessageOrigin.Direct -> roles.direct
 }

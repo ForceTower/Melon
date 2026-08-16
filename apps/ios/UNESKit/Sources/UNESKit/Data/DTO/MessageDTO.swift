@@ -15,6 +15,9 @@ struct MessageListDTO: Decodable {
         let content: String?
         let senderName: String?
         var senderType: Int? = nil
+        /// The person behind an app message (the admin who sent it); nil for
+        /// upstream messages and older comunicados.
+        var authorName: String? = nil
         /// ISO8601 with fractional seconds — kept as a string on purpose:
         /// `JSONDecoder`'s `.iso8601` cannot parse it, and the UTC string
         /// sorts lexicographically anyway.
@@ -55,7 +58,8 @@ extension MessageListDTO {
                     read: $0.read,
                     source: $0.source,
                     senderType: $0.senderType,
-                    starred: $0.starred
+                    starred: $0.starred,
+                    authorName: $0.authorName
                 )
             },
             scopes: messages.flatMap { message in

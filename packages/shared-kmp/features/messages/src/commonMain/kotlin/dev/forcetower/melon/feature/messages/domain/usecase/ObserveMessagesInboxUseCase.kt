@@ -56,6 +56,7 @@ class ObserveMessagesInboxUseCase internal constructor(
             content = entity.content,
             senderName = entity.senderName,
             senderType = entity.senderType,
+            authorName = entity.authorName,
             timestamp = entity.timestamp,
             isUnread = entity.read != true && state?.readAt == null,
             isStarred = entity.starred == true || state?.starred == true,
