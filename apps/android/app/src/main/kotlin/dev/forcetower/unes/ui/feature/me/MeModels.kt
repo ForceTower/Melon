@@ -44,15 +44,16 @@ internal data class ProfileIdentity(
 // Hue slot applied to a shortcut/settings tonal treatment. Values route
 // through `MaterialTheme.melon.palette` in `MeTones.kt`; the mapping mirrors
 // the dc `EuScreen` hue map.
-internal enum class ShortcutTone { Teal, Coral, Magenta, Indigo, Violet, Amber, Green }
+internal enum class ShortcutTone { Teal, Coral, Magenta, Indigo, Violet, Amber, Green, Mustard }
 
-// Same set as iOS `MeShortcut` (MeFeature.swift). Enrollment, Certificate,
-// History, Paradoxo, and Materials are remote-config gated; Calendar and
-// Countdown always show.
+// Same set as iOS `MeShortcut` (MeFeature.swift). Enrollment, CourseProgress,
+// Certificate, History, Paradoxo, Library and Materials are remote-config
+// gated; Calendar and Countdown always show.
 internal enum class ShortcutKind {
     Enrollment,
     Calendar,
     Countdown,
+    CourseProgress,
     Certificate,
     History,
     Paradoxo,

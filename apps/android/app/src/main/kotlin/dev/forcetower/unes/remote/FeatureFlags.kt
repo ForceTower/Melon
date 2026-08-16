@@ -27,6 +27,7 @@ internal data class FeatureGates(
     val library: Boolean = false,
     val campusEvent: Boolean = false,
     val evaluationReminders: Boolean = false,
+    val courseProgress: Boolean = false,
     val documentCaptchaSiteKey: String = "",
     val documentCaptchaBaseUrl: String = "",
 )
@@ -70,6 +71,7 @@ internal class FeatureFlags @Inject constructor(
                 library = true,
                 campusEvent = true,
                 evaluationReminders = true,
+                courseProgress = true,
                 documentCaptchaSiteKey = captchaSiteKey,
                 documentCaptchaBaseUrl = captchaBaseUrl,
             )
@@ -83,6 +85,7 @@ internal class FeatureFlags @Inject constructor(
             library = settings.bool(RemoteBoolKey.LIBRARY),
             campusEvent = settings.bool(RemoteBoolKey.CAMPUS_EVENT),
             evaluationReminders = settings.bool(RemoteBoolKey.EVALUATION_REMINDERS),
+            courseProgress = settings.bool(RemoteBoolKey.COURSE_PROGRESS),
             documentCaptchaSiteKey = captchaSiteKey,
             documentCaptchaBaseUrl = captchaBaseUrl,
         )

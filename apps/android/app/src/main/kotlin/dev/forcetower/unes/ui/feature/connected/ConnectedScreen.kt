@@ -43,6 +43,8 @@ import dev.forcetower.unes.ui.feature.campusevent.CampusEventSpeakersScreen
 import dev.forcetower.unes.ui.feature.campusevent.CampusEventVenuesScreen
 import dev.forcetower.unes.ui.feature.campusevent.CampusEventViewModel
 import dev.forcetower.unes.ui.feature.campusevent.CampusEventWorkshopsScreen
+import dev.forcetower.unes.ui.feature.courseprogress.CourseProgressScreen
+import dev.forcetower.unes.ui.feature.courseprogress.CurriculumFlowScreen
 import dev.forcetower.unes.ui.feature.disciplinedetail.DisciplineDetailRoute
 import dev.forcetower.unes.ui.feature.disciplines.Discipline
 import dev.forcetower.unes.ui.feature.disciplines.DisciplinesIntent
@@ -498,6 +500,19 @@ fun ConnectedScreen(
                         onOpenTeacher = { id, name ->
                             navigator.navigate(ConnectedRoute.ParadoxoTeacher(id, name))
                         },
+                        bottomInset = bottomInset,
+                    )
+                }
+                entry<ConnectedRoute.CourseProgress> {
+                    CourseProgressScreen(
+                        onBack = { navigator.goBack() },
+                        onOpenFlowchart = { navigator.navigate(ConnectedRoute.CurriculumFlow) },
+                        bottomInset = bottomInset,
+                    )
+                }
+                entry<ConnectedRoute.CurriculumFlow> {
+                    CurriculumFlowScreen(
+                        onBack = { navigator.goBack() },
                         bottomInset = bottomInset,
                     )
                 }

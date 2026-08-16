@@ -150,6 +150,8 @@ private fun ConnectedRoute.toScreenEvent(): Pair<String, Map<String, Any>> = whe
     ConnectedRoute.Library -> Screens.LIBRARY to emptyMap()
     is ConnectedRoute.LibraryResults -> Screens.LIBRARY_RESULTS to mapOf("scope" to (scope ?: "all"))
     is ConnectedRoute.LibraryWork -> Screens.LIBRARY_WORK to mapOf("work_id" to workId)
+    ConnectedRoute.CourseProgress -> Screens.COURSE_PROGRESS to emptyMap()
+    ConnectedRoute.CurriculumFlow -> Screens.CURRICULUM_FLOW to emptyMap()
     ConnectedRoute.Materials -> Screens.MATERIALS to emptyMap()
     is ConnectedRoute.MaterialsDiscipline -> Screens.MATERIALS_DISCIPLINE to mapOf("discipline_id" to disciplineId)
     is ConnectedRoute.MaterialsDetail -> Screens.MATERIALS_DETAIL to mapOf("material_id" to materialId)

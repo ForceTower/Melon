@@ -8,6 +8,7 @@ import androidx.room.RoomDatabaseConstructor
 import dev.forcetower.melon.core.database.dao.AcademicDao
 import dev.forcetower.melon.core.database.dao.CalendarEventDao
 import dev.forcetower.melon.core.database.dao.CredentialsDao
+import dev.forcetower.melon.core.database.dao.CurriculumDao
 import dev.forcetower.melon.core.database.dao.MessageDao
 import dev.forcetower.melon.core.database.dao.PendingMutationDao
 import dev.forcetower.melon.core.database.dao.PersonalEventDao
@@ -26,6 +27,11 @@ import dev.forcetower.melon.core.database.entity.ClassSpaceEntity
 import dev.forcetower.melon.core.database.entity.ClassTeacherEntity
 import dev.forcetower.melon.core.database.entity.CourseEntity
 import dev.forcetower.melon.core.database.entity.CredentialsEntity
+import dev.forcetower.melon.core.database.entity.CurriculumEntity
+import dev.forcetower.melon.core.database.entity.CurriculumEntryEntity
+import dev.forcetower.melon.core.database.entity.CurriculumPrerequisiteEntity
+import dev.forcetower.melon.core.database.entity.CurriculumProgressEntity
+import dev.forcetower.melon.core.database.entity.CurriculumRequirementEntity
 import dev.forcetower.melon.core.database.entity.DisciplineEntity
 import dev.forcetower.melon.core.database.entity.DisciplineOfferEntity
 import dev.forcetower.melon.core.database.entity.LectureMaterialEntity
@@ -74,20 +80,28 @@ import dev.forcetower.melon.core.database.entity.UserSettingsEntity
         PendingMutationEntity::class,
         AcademicCalendarEventEntity::class,
         PersonalEventEntity::class,
+        CurriculumEntity::class,
+        CurriculumProgressEntity::class,
+        CurriculumRequirementEntity::class,
+        CurriculumEntryEntity::class,
+        CurriculumPrerequisiteEntity::class,
     ],
-    version = 12,
+    version = 13,
     // Adding `PersonalEvent` is purely additive, so Room can generate the
     // migration from the exported schemas — the student's own entries survive
     // the upgrade instead of falling through to the destructive fallback.
     // v10 adds the nullable Semester.dirtyAt/appliedDirtyAt staleness
     // columns, additive as well. v11 adds the nullable User.alternateName
     // profile-customization column. v12 adds the nullable Message.authorName
-    // (the admin behind an app message).
+    // (the admin behind an app message). v13 adds the five curriculum-mirror
+    // tables behind "Progresso do curso" — new tables only, so the student's
+    // synced payloads survive the upgrade.
     autoMigrations = [
         AutoMigration(from = 8, to = 9),
         AutoMigration(from = 9, to = 10),
         AutoMigration(from = 10, to = 11),
         AutoMigration(from = 11, to = 12),
+        AutoMigration(from = 12, to = 13),
     ],
 )
 @ConstructedBy(MelonDatabaseConstructor::class)
@@ -98,6 +112,7 @@ abstract class MelonDatabase : RoomDatabase() {
     abstract fun academicDao(): AcademicDao
     abstract fun calendarEventDao(): CalendarEventDao
     abstract fun personalEventDao(): PersonalEventDao
+    abstract fun curriculumDao(): CurriculumDao
     abstract fun messageDao(): MessageDao
     abstract fun settingsDao(): SettingsDao
     abstract fun userSettingsDao(): UserSettingsDao

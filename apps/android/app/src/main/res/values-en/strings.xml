@@ -2109,4 +2109,135 @@
     <string name="library_toast_registro_copied">Record copied</string>
     <!-- endregion -->
 
+    <!-- region Progresso do curso -->
+    <string name="me_shortcut_course_progress_label">Progress</string>
+    <string name="me_shortcut_course_progress_hint">How much is left</string>
+
+    <string name="course_progress_title">Course progress</string>
+    <string name="course_progress_back">Back</string>
+    <string name="course_progress_retry">Try again</string>
+    <string name="course_progress_loading">Fetching your progress…</string>
+    <string name="course_progress_load_failed_title">Couldn\'t load</string>
+    <string name="course_progress_load_failed_body">We couldn\'t reach the server and nothing is stored on this device yet.</string>
+
+    <string name="course_progress_hour_unit">h</string>
+    <string name="course_progress_hours_format">%1$s h</string>
+    <string name="course_progress_hours_of_required_format">%1$s of %2$s h</string>
+    <string name="course_progress_hours_completed_short_format">%1$s completed</string>
+    <string name="course_progress_remaining_short_format">%1$s left</string>
+    <string name="course_progress_semester_format">%1$s semester</string>
+    <string name="course_progress_curriculum_code">curriculum %1$s</string>
+    <string name="course_progress_curriculum_code_stale">curriculum %1$s · outdated</string>
+
+    <string name="course_progress_overall_completed">Course load completed</string>
+    <string name="course_progress_overall_hours_completed">Hours completed</string>
+    <string name="course_progress_total_unknown">course total unknown</string>
+
+    <string name="course_progress_stale_title_format">Curriculum grid from %1$s</string>
+    <string name="course_progress_stale_body_format">It\'s the newest version we could read from the portal, checked on %1$s. If the department changed the grid after that, the required hours may differ.</string>
+    <string name="course_progress_stale_body_undated">It\'s the newest version we could read from the portal. If the department changed the grid after that, the required hours may differ.</string>
+    <string name="course_progress_no_curriculum_title">We don\'t have this curriculum\'s grid</string>
+    <string name="course_progress_no_curriculum_body">The portal reports the hours you\'ve completed, but not the total your course requires. We\'d rather show only what we know than invent a total.</string>
+    <string name="course_progress_no_breakdown_title">Breakdown by hour type unavailable</string>
+    <string name="course_progress_no_breakdown_body">The portal answered with the total hours but not the split by type (core, internships, electives). The number above is right; the breakdown returns once the service answers.</string>
+
+    <string name="course_progress_section_curriculum">Curriculum grid</string>
+    <string name="course_progress_section_curriculum_hint">what\'s behind you, what comes next</string>
+    <string name="course_progress_section_curriculum_hint_unavailable">needs the curriculum grid</string>
+    <string name="course_progress_section_requirements">By hour type</string>
+    <plurals name="course_progress_requirements_hint">
+        <item quantity="one">%1$d hour type</item>
+        <item quantity="other">%1$d hour types</item>
+    </plurals>
+
+    <string name="course_progress_not_counted_yet">not counted yet</string>
+    <string name="course_progress_not_counted_note">The portal only records these hours once the department validates the paper certificates. What you\'ve already done may not show here.</string>
+    <string name="course_progress_no_total_for_curriculum">no total defined for this curriculum</string>
+    <string name="course_progress_completed_suffix_format">%1$s complete</string>
+    <string name="course_progress_starts_at_format">starts in the %1$s</string>
+    <string name="course_progress_not_started">not started</string>
+    <string name="course_progress_explainer_button">Why do complementary activities sit at 0 h?</string>
+    <string name="course_progress_explainer_counted_format">%1$s of %2$s h counted</string>
+    <string name="course_progress_explainer_body1">These hours come from conferences, tutoring, outreach, courses and publications — proven on paper and validated by the department. Until that validation happens, the portal returns 0 h, and that\'s what we show here.</string>
+    <string name="course_progress_explainer_body2_lead">0 h here doesn\'t mean 0 h done.</string>
+    <string name="course_progress_explainer_body2_tail">It means nothing validated yet.</string>
+
+    <string name="course_progress_remaining_title">Left in total</string>
+    <string name="course_progress_remaining_footnote_format">Computed over the %1$s grid. Withdrawals and failures don\'t subtract hours — they only delay.</string>
+    <string name="course_progress_footer_format">Academic portal data · synced %1$s\nThe official hour count is always the department\'s.</string>
+
+    <string name="course_progress_flowchart_title">Flowchart</string>
+    <string name="course_progress_flowchart_unavailable">unavailable for this curriculum</string>
+    <string name="course_progress_flowchart_subtitle_format" tools:ignore="PluralsCandidate">%1$d semesters · %2$d courses · %3$d completed</string>
+
+    <string name="course_progress_lens_picker">View</string>
+    <string name="course_progress_lens_periods">Semesters</string>
+    <string name="course_progress_lens_map">Map</string>
+    <string name="course_progress_lens_grid">Grid</string>
+
+    <string name="course_progress_rail_now">now</string>
+    <string name="course_progress_rail_count_format">%1$d/%2$d</string>
+    <string name="course_progress_period_subtitle_format" tools:ignore="PluralsCandidate">%1$d courses · %2$s · %3$d completed</string>
+    <string name="course_progress_previous_semester">Previous semester</string>
+    <string name="course_progress_next_semester">Next semester</string>
+    <plurals name="course_progress_next_available">
+        <item quantity="one">%1$d course already unlocked for you</item>
+        <item quantity="other">%1$d courses already unlocked for you</item>
+    </plurals>
+    <string name="course_progress_next_none_available">none unlocked yet</string>
+
+    <string name="course_progress_map_title">Whole course</string>
+    <string name="course_progress_map_subtitle_format" tools:ignore="PluralsCandidate">%1$d courses · %2$d completed · %3$d semesters</string>
+    <string name="course_progress_map_hint">Each square is a course; each column, a semester. Tap to open the card, or tap the semester number to read the names.</string>
+    <string name="course_progress_legend">Legend</string>
+    <string name="course_progress_grid_title">Full grid</string>
+    <string name="course_progress_grid_subtitle">scroll sideways · names abbreviated as in the portal</string>
+
+    <string name="course_progress_trail_banner_format" tools:ignore="PluralsCandidate">%1$s trail · %2$d linked courses</string>
+    <string name="course_progress_trail_clear">clear</string>
+    <string name="course_progress_trail_before">Must complete first</string>
+    <string name="course_progress_trail_before_empty">Nothing comes before this course.</string>
+    <string name="course_progress_trail_after">Unlocks afterwards</string>
+    <plurals name="course_progress_trail_group_count">
+        <item quantity="one">%1$d course</item>
+        <item quantity="other">%1$d courses</item>
+    </plurals>
+    <string name="course_progress_show_trail">See this course\'s trail</string>
+
+    <string name="course_progress_depends_on">Depends on</string>
+    <string name="course_progress_no_prerequisites">No prerequisites.</string>
+    <string name="course_progress_taken_alongside">Taken alongside</string>
+    <string name="course_progress_unlocks">Unlocks</string>
+    <string name="course_progress_unlocks_nothing">Not a prerequisite for any course.</string>
+
+    <string name="course_progress_fact_period">Semester</string>
+    <string name="course_progress_fact_elective">Elective</string>
+    <string name="course_progress_fact_hours">Hours</string>
+    <string name="course_progress_fact_requirement">Type</string>
+    <string name="course_progress_fact_curriculum">Curriculum</string>
+
+    <string name="course_progress_withdrawn_title">Withdrawn isn\'t completed</string>
+    <string name="course_progress_withdrawn_body">This course\'s hours are still pending and you need to take it again to finish the degree.</string>
+    <string name="course_progress_failed_title">Needs to be retaken</string>
+    <string name="course_progress_failed_body">Until it\'s completed, the courses that depend on it stay locked.</string>
+    <plurals name="course_progress_blocked_title">
+        <item quantity="one">One course still to complete</item>
+        <item quantity="other">%1$d courses still to complete</item>
+    </plurals>
+    <string name="course_progress_available_title">Unlocked for you</string>
+    <string name="course_progress_available_body">All prerequisites are done. It can go into your class picks for next semester.</string>
+    <string name="course_progress_available_body_no_prereqs">It has no prerequisites. It can go into your class picks for next semester.</string>
+
+    <string name="course_progress_status_completed">Completed</string>
+    <string name="course_progress_status_in_progress">Enrolled</string>
+    <string name="course_progress_status_in_progress_short">Ongoing</string>
+    <string name="course_progress_status_available">Eligible to take</string>
+    <string name="course_progress_status_available_short">Eligible</string>
+    <string name="course_progress_status_withdrawn">Withdrawn</string>
+    <string name="course_progress_status_failed">Failed</string>
+    <string name="course_progress_status_blocked">Prerequisite missing</string>
+    <string name="course_progress_status_blocked_short">Locked</string>
+    <string name="course_progress_status_not_taken">Not taken</string>
+    <!-- endregion -->
+
 </resources>

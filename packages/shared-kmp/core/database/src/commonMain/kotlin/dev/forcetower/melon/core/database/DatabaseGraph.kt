@@ -3,6 +3,7 @@ package dev.forcetower.melon.core.database
 import dev.forcetower.melon.core.database.dao.AcademicDao
 import dev.forcetower.melon.core.database.dao.CalendarEventDao
 import dev.forcetower.melon.core.database.dao.CredentialsDao
+import dev.forcetower.melon.core.database.dao.CurriculumDao
 import dev.forcetower.melon.core.database.dao.MessageDao
 import dev.forcetower.melon.core.database.dao.PendingMutationDao
 import dev.forcetower.melon.core.database.dao.PersonalEventDao
@@ -33,5 +34,6 @@ interface DatabaseGraph {
         @Provides fun syncStateDao(database: MelonDatabase): SyncStateDao = database.syncStateDao()
         @Provides fun pendingMutationDao(database: MelonDatabase): PendingMutationDao = database.pendingMutationDao()
         @Provides fun personalEventDao(database: MelonDatabase): PersonalEventDao = database.personalEventDao()
+        @Provides fun curriculumDao(database: MelonDatabase): CurriculumDao = database.curriculumDao()
     }
 }

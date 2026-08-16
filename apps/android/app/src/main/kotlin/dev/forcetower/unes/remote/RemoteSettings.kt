@@ -35,6 +35,7 @@ internal enum class RemoteBoolKey(val key: String) {
     LIBRARY("enable_library"),
     CAMPUS_EVENT("enable_campus_event"),
     EVALUATION_REMINDERS("enable_evaluation_reminders"),
+    COURSE_PROGRESS("enable_course_progress"),
 }
 
 internal enum class RemoteStringKey(val key: String) {

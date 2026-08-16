@@ -58,6 +58,13 @@ internal sealed interface ConnectedRoute : NavKey {
     @Serializable data class ParadoxoDiscipline(val id: String, val name: String? = null) : ConnectedRoute
     @Serializable data class ParadoxoTeacher(val id: String, val name: String? = null) : ConnectedRoute
     @Serializable data class ParadoxoExplore(val kind: String) : ConnectedRoute
+    // Progresso do curso — pushed from the "Progresso" shortcut on the Me hub
+    // (remote-config gated behind `enable_course_progress`). `CurriculumFlow`
+    // is the fluxograma, pushed from the grade card on the progress screen;
+    // both read the shared activity-scoped `CourseProgressViewModel`, which
+    // observes the mirror, so neither carries a payload.
+    @Serializable data object CourseProgress : ConnectedRoute
+    @Serializable data object CurriculumFlow : ConnectedRoute
     // Materiais hub — pushed from the "Materiais" shortcut on the Me hub
     // (remote-config gated behind `enable_materials`).
     @Serializable data object Materials : ConnectedRoute

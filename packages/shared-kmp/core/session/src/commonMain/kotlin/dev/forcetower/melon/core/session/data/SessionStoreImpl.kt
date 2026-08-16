@@ -3,6 +3,7 @@ package dev.forcetower.melon.core.session.data
 import co.touchlab.kermit.Logger
 import dev.forcetower.melon.core.database.dao.AcademicDao
 import dev.forcetower.melon.core.database.dao.CredentialsDao
+import dev.forcetower.melon.core.database.dao.CurriculumDao
 import dev.forcetower.melon.core.database.dao.MessageDao
 import dev.forcetower.melon.core.database.dao.PersonalEventDao
 import dev.forcetower.melon.core.database.dao.SemesterDao
@@ -57,6 +58,7 @@ internal class SessionStoreImpl(
     private val credentialsDao: CredentialsDao,
     private val syncStateDao: SyncStateDao,
     private val personalEventDao: PersonalEventDao,
+    private val curriculumDao: CurriculumDao,
     private val scope: CoroutineScope,
     logger: Logger,
 ) : SessionStore {
@@ -208,6 +210,9 @@ internal class SessionStoreImpl(
         // The student's own calendar entries go too: the next account on this
         // device must not inherit them.
         personalEventDao.clear()
+        // The curriculum mirror is course-scoped and carries the student's own
+        // situation per slot, so it can't survive into the next account.
+        curriculumDao.clear()
         userDao.clear()
         tokenPresent.value = false
         setSessionInvalid(false)

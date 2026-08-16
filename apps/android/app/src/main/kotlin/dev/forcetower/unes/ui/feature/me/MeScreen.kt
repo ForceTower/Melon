@@ -113,6 +113,10 @@ internal fun MeScreen(
                 vm.trackShortcutOpen("final_countdown")
                 connectedNavigator.navigate(ConnectedRoute.FinalCountdown())
             }
+            ShortcutKind.CourseProgress -> {
+                vm.trackShortcutOpen("course_progress")
+                connectedNavigator.navigate(ConnectedRoute.CourseProgress)
+            }
             ShortcutKind.Materials -> {
                 vm.trackShortcutOpen("materials")
                 connectedNavigator.navigate(ConnectedRoute.Materials)

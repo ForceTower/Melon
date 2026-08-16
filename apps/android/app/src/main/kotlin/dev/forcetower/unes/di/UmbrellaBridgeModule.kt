@@ -29,6 +29,8 @@ import dev.forcetower.melon.feature.calendar.domain.usecase.SavePersonalEventUse
 import dev.forcetower.melon.feature.campusevent.domain.usecase.ClearCampusEventUseCase
 import dev.forcetower.melon.feature.campusevent.domain.usecase.ObserveCampusEventUseCase
 import dev.forcetower.melon.feature.campusevent.domain.usecase.RefreshCampusEventUseCase
+import dev.forcetower.melon.feature.courseprogress.domain.usecase.ObserveCourseProgressUseCase
+import dev.forcetower.melon.feature.courseprogress.domain.usecase.RefreshCourseProgressUseCase
 import dev.forcetower.melon.feature.dashboard.domain.usecase.GetReadyOverviewUseCase
 import dev.forcetower.melon.feature.disciplines.domain.usecase.CalculateOverallScoreUseCase
 import dev.forcetower.melon.feature.disciplines.domain.usecase.ObserveDisciplineDetailUseCase
@@ -339,6 +341,14 @@ object UmbrellaBridgeModule {
         graph.refreshCampusEventUseCase
     @Provides fun provideClearCampusEventUseCase(graph: UmbrellaGraph): ClearCampusEventUseCase =
         graph.clearCampusEventUseCase
+
+    // Progresso do curso — the mirrored curriculum payload behind the hours
+    // gauge and the fluxograma. Offline-first: `observe` replays the mirror,
+    // `refresh` re-pulls on every entry into the feature.
+    @Provides fun provideObserveCourseProgressUseCase(graph: UmbrellaGraph): ObserveCourseProgressUseCase =
+        graph.observeCourseProgressUseCase
+    @Provides fun provideRefreshCourseProgressUseCase(graph: UmbrellaGraph): RefreshCourseProgressUseCase =
+        graph.refreshCourseProgressUseCase
 
     // Calendário — academic-calendar events feed for the agenda + the
     // active-semester code that powers the header eyebrow. Mirrors iOS

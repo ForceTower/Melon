@@ -21,5 +21,6 @@ internal fun ShortcutTone.hue(): Color {
         ShortcutTone.Violet -> palette.violet
         ShortcutTone.Amber -> palette.amber
         ShortcutTone.Green -> palette.green
+        ShortcutTone.Mustard -> palette.mustard
     }
 }

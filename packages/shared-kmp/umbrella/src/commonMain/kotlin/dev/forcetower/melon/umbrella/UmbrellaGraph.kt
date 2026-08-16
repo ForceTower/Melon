@@ -27,6 +27,8 @@ import dev.forcetower.melon.feature.calendar.domain.usecase.SavePersonalEventUse
 import dev.forcetower.melon.feature.campusevent.domain.usecase.ClearCampusEventUseCase
 import dev.forcetower.melon.feature.campusevent.domain.usecase.ObserveCampusEventUseCase
 import dev.forcetower.melon.feature.campusevent.domain.usecase.RefreshCampusEventUseCase
+import dev.forcetower.melon.feature.courseprogress.domain.usecase.ObserveCourseProgressUseCase
+import dev.forcetower.melon.feature.courseprogress.domain.usecase.RefreshCourseProgressUseCase
 import dev.forcetower.melon.feature.dashboard.domain.usecase.GetReadyOverviewUseCase
 import dev.forcetower.melon.feature.disciplines.domain.usecase.CalculateOverallScoreUseCase
 import dev.forcetower.melon.feature.disciplines.domain.usecase.ObserveDisciplineDetailUseCase
@@ -250,6 +252,12 @@ interface UmbrellaGraph {
     val observeCampusEventUseCase: ObserveCampusEventUseCase
     val refreshCampusEventUseCase: RefreshCampusEventUseCase
     val clearCampusEventUseCase: ClearCampusEventUseCase
+
+    // Progresso do curso + fluxograma — the mirrored `api/curriculum` payload.
+    // `observe` replays the mirror so both screens work offline; `refresh` is
+    // fired on every entry and lands back through the same stream.
+    val observeCourseProgressUseCase: ObserveCourseProgressUseCase
+    val refreshCourseProgressUseCase: RefreshCourseProgressUseCase
 
     // Configurações reactive surface — emits the active session's typed
     // upstream credentials so the Settings vault card can render them.

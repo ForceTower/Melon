@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.HourglassTop
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Insights
 import androidx.compose.material.icons.filled.LocalLibrary
+import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.Settings
 import dev.forcetower.unes.R
 import dev.forcetower.unes.remote.FeatureGates
@@ -72,6 +73,13 @@ internal object MeFixtures {
             icon = Icons.Filled.HourglassTop,
         ),
         Shortcut(
+            id = ShortcutKind.CourseProgress,
+            labelRes = R.string.me_shortcut_course_progress_label,
+            hintRes = R.string.me_shortcut_course_progress_hint,
+            tone = ShortcutTone.Mustard,
+            icon = Icons.Filled.School,
+        ),
+        Shortcut(
             id = ShortcutKind.Certificate,
             labelRes = R.string.me_shortcut_certificate_label,
             tone = ShortcutTone.Indigo,
@@ -110,6 +118,7 @@ internal object MeFixtures {
     fun gridShortcuts(gates: FeatureGates): List<Shortcut> = gridLibrary.filter {
         when (it.id) {
             ShortcutKind.Enrollment -> gates.enrollment
+            ShortcutKind.CourseProgress -> gates.courseProgress
             ShortcutKind.Certificate -> gates.enrollmentCertificate
             ShortcutKind.History -> gates.academicHistory
             ShortcutKind.Paradoxo -> gates.paradoxo

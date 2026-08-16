@@ -2168,4 +2168,135 @@
     <string name="library_toast_registro_copied">Registro copiado</string>
     <!-- endregion -->
 
+    <!-- region Progresso do curso -->
+    <string name="me_shortcut_course_progress_label">Progresso</string>
+    <string name="me_shortcut_course_progress_hint">Quanto falta pra formar</string>
+
+    <string name="course_progress_title">Progresso do curso</string>
+    <string name="course_progress_back">Voltar</string>
+    <string name="course_progress_retry">Tentar de novo</string>
+    <string name="course_progress_loading">Buscando seu progresso…</string>
+    <string name="course_progress_load_failed_title">Não deu para carregar</string>
+    <string name="course_progress_load_failed_body">Não conseguimos falar com o servidor e ainda não há nada guardado neste aparelho.</string>
+
+    <string name="course_progress_hour_unit">h</string>
+    <string name="course_progress_hours_format">%1$s h</string>
+    <string name="course_progress_hours_of_required_format">%1$s de %2$s h</string>
+    <string name="course_progress_hours_completed_short_format">%1$s cumpridas</string>
+    <string name="course_progress_remaining_short_format">faltam %1$s</string>
+    <string name="course_progress_semester_format">%1$s semestre</string>
+    <string name="course_progress_curriculum_code">currículo %1$s</string>
+    <string name="course_progress_curriculum_code_stale">currículo %1$s · defasado</string>
+
+    <string name="course_progress_overall_completed">Carga horária concluída</string>
+    <string name="course_progress_overall_hours_completed">Horas cumpridas</string>
+    <string name="course_progress_total_unknown">total do curso desconhecido</string>
+
+    <string name="course_progress_stale_title_format">Grade curricular de %1$s</string>
+    <string name="course_progress_stale_body_format">É a versão mais recente que conseguimos ler do portal, conferida em %1$s. Se o colegiado mudou a grade depois disso, as horas exigidas podem estar diferentes.</string>
+    <string name="course_progress_stale_body_undated">É a versão mais recente que conseguimos ler do portal. Se o colegiado mudou a grade depois disso, as horas exigidas podem estar diferentes.</string>
+    <string name="course_progress_no_curriculum_title">Não temos a grade deste currículo</string>
+    <string name="course_progress_no_curriculum_body">O portal informa as horas que você já cumpriu, mas não a carga total exigida no seu curso. Preferimos mostrar só o que sabemos a inventar um total.</string>
+    <string name="course_progress_no_breakdown_title">Detalhamento por natureza indisponível</string>
+    <string name="course_progress_no_breakdown_body">O portal respondeu com o total de horas, mas não com a divisão por natureza (núcleo comum, estágios, optativas). O número acima está correto; a quebra volta quando o serviço responder.</string>
+
+    <string name="course_progress_section_curriculum">Grade curricular</string>
+    <string name="course_progress_section_curriculum_hint">o que já passou, o que vem depois</string>
+    <string name="course_progress_section_curriculum_hint_unavailable">precisa da grade do currículo</string>
+    <string name="course_progress_section_requirements">Por natureza</string>
+    <plurals name="course_progress_requirements_hint">
+        <item quantity="one">%1$d tipo de carga horária</item>
+        <item quantity="other">%1$d tipos de carga horária</item>
+    </plurals>
+
+    <string name="course_progress_not_counted_yet">ainda não contabilizada</string>
+    <string name="course_progress_not_counted_note">O portal só registra estas horas quando a coordenação valida os certificados em papel. O que você já fez pode não estar aqui.</string>
+    <string name="course_progress_no_total_for_curriculum">sem total definido para este currículo</string>
+    <string name="course_progress_completed_suffix_format">%1$s concluída</string>
+    <string name="course_progress_starts_at_format">começa no %1$s</string>
+    <string name="course_progress_not_started">não iniciada</string>
+    <string name="course_progress_explainer_button">Por que atividades complementares ficam em 0 h?</string>
+    <string name="course_progress_explainer_counted_format">%1$s de %2$s h contabilizadas</string>
+    <string name="course_progress_explainer_body1">Estas horas vêm de congressos, monitorias, extensão, cursos e publicações — comprovadas em papel e validadas pelo colegiado. Enquanto essa validação não acontece, o portal devolve 0 h, e é isso que mostramos aqui.</string>
+    <string name="course_progress_explainer_body2_lead">0 h aqui não significa 0 h feitas.</string>
+    <string name="course_progress_explainer_body2_tail">Significa nada validado ainda.</string>
+
+    <string name="course_progress_remaining_title">Faltam ao todo</string>
+    <string name="course_progress_remaining_footnote_format">Contas feitas sobre a grade de %1$s. Trancamentos e reprovações não descontam horas — só adiam.</string>
+    <string name="course_progress_footer_format">Dados do portal acadêmico · sincronizado em %1$s\nConferência oficial de horas é sempre no colegiado.</string>
+
+    <string name="course_progress_flowchart_title">Fluxograma</string>
+    <string name="course_progress_flowchart_unavailable">indisponível para este currículo</string>
+    <string name="course_progress_flowchart_subtitle_format" tools:ignore="PluralsCandidate">%1$d semestres · %2$d disciplinas · %3$d cumpridas</string>
+
+    <string name="course_progress_lens_picker">Visualização</string>
+    <string name="course_progress_lens_periods">Semestres</string>
+    <string name="course_progress_lens_map">Mapa</string>
+    <string name="course_progress_lens_grid">Grade</string>
+
+    <string name="course_progress_rail_now">agora</string>
+    <string name="course_progress_rail_count_format">%1$d/%2$d</string>
+    <string name="course_progress_period_subtitle_format" tools:ignore="PluralsCandidate">%1$d disciplinas · %2$s · %3$d cumpridas</string>
+    <string name="course_progress_previous_semester">Semestre anterior</string>
+    <string name="course_progress_next_semester">Próximo semestre</string>
+    <plurals name="course_progress_next_available">
+        <item quantity="one">%1$d disciplina já liberada para você</item>
+        <item quantity="other">%1$d disciplinas já liberadas para você</item>
+    </plurals>
+    <string name="course_progress_next_none_available">nenhuma liberada ainda</string>
+
+    <string name="course_progress_map_title">Curso inteiro</string>
+    <string name="course_progress_map_subtitle_format" tools:ignore="PluralsCandidate">%1$d disciplinas · %2$d cumpridas · %3$d semestres</string>
+    <string name="course_progress_map_hint">Cada quadradinho é uma disciplina; cada coluna, um semestre. Toque para abrir a ficha, ou toque no número do semestre para ler os nomes.</string>
+    <string name="course_progress_legend">Legenda</string>
+    <string name="course_progress_grid_title">Grade completa</string>
+    <string name="course_progress_grid_subtitle">role para o lado · nomes abreviados como no portal</string>
+
+    <string name="course_progress_trail_banner_format" tools:ignore="PluralsCandidate">Trilha de %1$s · %2$d disciplinas ligadas</string>
+    <string name="course_progress_trail_clear">limpar</string>
+    <string name="course_progress_trail_before">Precisa cumprir antes</string>
+    <string name="course_progress_trail_before_empty">Nada precede esta disciplina.</string>
+    <string name="course_progress_trail_after">Destrava depois</string>
+    <plurals name="course_progress_trail_group_count">
+        <item quantity="one">%1$d disciplina</item>
+        <item quantity="other">%1$d disciplinas</item>
+    </plurals>
+    <string name="course_progress_show_trail">Ver a trilha desta disciplina</string>
+
+    <string name="course_progress_depends_on">Depende de</string>
+    <string name="course_progress_no_prerequisites">Nenhum pré-requisito.</string>
+    <string name="course_progress_taken_alongside">Cursar junto</string>
+    <string name="course_progress_unlocks">Libera</string>
+    <string name="course_progress_unlocks_nothing">Não é pré-requisito de nenhuma disciplina.</string>
+
+    <string name="course_progress_fact_period">Semestre</string>
+    <string name="course_progress_fact_elective">Optativa</string>
+    <string name="course_progress_fact_hours">Carga</string>
+    <string name="course_progress_fact_requirement">Natureza</string>
+    <string name="course_progress_fact_curriculum">Currículo</string>
+
+    <string name="course_progress_withdrawn_title">Trancada não é cumprida</string>
+    <string name="course_progress_withdrawn_body">As horas desta disciplina continuam pendentes e você precisa cursá-la novamente para concluir o curso.</string>
+    <string name="course_progress_failed_title">Precisa ser refeita</string>
+    <string name="course_progress_failed_body">Enquanto não for cumprida, as disciplinas que dependem dela seguem bloqueadas.</string>
+    <plurals name="course_progress_blocked_title">
+        <item quantity="one">Falta cumprir uma disciplina</item>
+        <item quantity="other">Falta cumprir %1$d disciplinas</item>
+    </plurals>
+    <string name="course_progress_available_title">Liberada para você</string>
+    <string name="course_progress_available_body">Todos os pré-requisitos estão cumpridos. Pode entrar na sua seleção de turmas do próximo semestre.</string>
+    <string name="course_progress_available_body_no_prereqs">Não tem pré-requisitos. Pode entrar na sua seleção de turmas do próximo semestre.</string>
+
+    <string name="course_progress_status_completed">Cumprida</string>
+    <string name="course_progress_status_in_progress">Matriculado</string>
+    <string name="course_progress_status_in_progress_short">Cursando</string>
+    <string name="course_progress_status_available">Apto a cursar</string>
+    <string name="course_progress_status_available_short">Apto</string>
+    <string name="course_progress_status_withdrawn">Trancada</string>
+    <string name="course_progress_status_failed">Reprovada</string>
+    <string name="course_progress_status_blocked">Pré-requisito não cumprido</string>
+    <string name="course_progress_status_blocked_short">Bloqueada</string>
+    <string name="course_progress_status_not_taken">Não cursada</string>
+    <!-- endregion -->
+
 </resources>
