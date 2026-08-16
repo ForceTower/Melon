@@ -123,6 +123,8 @@ internal data class Semester(
     val estimatedCount: Int? = null,
     // Opaque DB primary key used by SyncSemesterUseCase.
     val dbSemesterId: String? = null,
+    // Program calendar this semester belongs to; null is the graduação.
+    val track: String? = null,
 )
 
 internal enum class AbsenceRisk { Ok, Warn, Risk }

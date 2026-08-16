@@ -74,7 +74,7 @@ private fun buildState(
         .asSequence()
         .filter { it.id !in downloadedSemesterIds }
         .sortedByDescending { it.endDate }
-        .map { PendingSemester(semesterId = it.id, semesterCode = it.code) }
+        .map { PendingSemester(semesterId = it.id, semesterCode = it.code, track = it.track) }
         .toList()
 
     return DisciplinesListState(current = current, past = past, pending = pending)
@@ -84,6 +84,7 @@ private fun SemesterEntity.toGroup(items: List<DisciplineListItem>): SemesterDis
     SemesterDisciplines(
         semesterId = id,
         semesterCode = code,
+        track = track,
         disciplines = items.sortedBy { it.code },
     )
 

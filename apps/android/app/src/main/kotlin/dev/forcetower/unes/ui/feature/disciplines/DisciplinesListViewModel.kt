@@ -5,6 +5,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.forcetower.melon.core.analytics.Analytics
 import dev.forcetower.melon.core.analytics.ContentTypes
 import dev.forcetower.melon.core.common.Outcome
+import dev.forcetower.melon.feature.disciplines.domain.model.OverallScore
+import dev.forcetower.melon.feature.disciplines.domain.model.ProgramScore
 import dev.forcetower.melon.feature.disciplines.domain.usecase.CalculateOverallScoreUseCase
 import dev.forcetower.melon.feature.disciplines.domain.usecase.ObserveDisciplinesListUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.SyncSemesterUseCase
@@ -30,9 +32,13 @@ internal data class DisciplinesUiState(
     val current: Semester? = null,
     val past: List<Semester> = emptyList(),
     val pending: List<Semester> = emptyList(),
-    // Lifetime CR (hours-weighted mean of final grades) — feeds the
-    // "Desempenho acumulado" card on the Histórico tab.
-    val overallScore: Double? = null,
+    // Lifetime CR (hours-weighted mean of final grades) per program — feeds
+    // the "Desempenho acumulado" card on the Histórico tab. Students who only
+    // ever took graduação disciplines have a single entry.
+    val score: OverallScore = OverallScore.Empty,
+    // The program the user tapped, or null to follow whichever one they are
+    // currently in. Wrapped because `null` is itself a track (the graduação).
+    val selectedTrack: TrackSelection? = null,
     val downloading: Set<String> = emptySet(),
     val downloadError: String? = null,
     // Seed handover for the detail route. Set when the list-card is tapped so
@@ -42,12 +48,31 @@ internal data class DisciplinesUiState(
     // with the tapped Discipline as the seed.
     val openOfferId: String? = null,
     val openSeed: Discipline? = null,
-) : UiState
+) : UiState {
+    // Track the Histórico tab is showing: the tapped one, else the program
+    // the student is currently in, else the newest program on record. The
+    // selection is checked for presence, not for a non-null track — picking
+    // "Graduação" means picking `null`.
+    val shownTrack: String?
+        get() = when (val selection = selectedTrack) {
+            null -> score.currentTrack ?: past.firstOrNull()?.track
+            else -> selection.track
+        }
+
+    val shownProgram: ProgramScore?
+        get() = score.programs.firstOrNull { it.track == shownTrack }
+}
+
+// A chosen track. `null` inside means the graduação, which is why the choice
+// itself has to be nullable one level up.
+@JvmInline
+internal value class TrackSelection(val track: String?)
 
 internal sealed interface DisciplinesIntent : UiIntent {
     data class Download(val semesterCode: String) : DisciplinesIntent
     data class OpenDiscipline(val discipline: Discipline) : DisciplinesIntent
     data object CloseDiscipline : DisciplinesIntent
+    data class SelectProgram(val track: String?) : DisciplinesIntent
 }
 
 internal sealed interface DisciplinesEffect : UiEffect
@@ -65,7 +90,7 @@ internal class DisciplinesListViewModel @Inject constructor(
             observeList().collect { value -> apply(value) }
         }
         viewModelScope.launch {
-            calculateOverallScore().collect { value -> setState { copy(overallScore = value) } }
+            calculateOverallScore().collect { value -> setState { copy(score = value) } }
         }
     }
 
@@ -80,6 +105,9 @@ internal class DisciplinesListViewModel @Inject constructor(
             }
             DisciplinesIntent.CloseDiscipline -> setState {
                 copy(openOfferId = null, openSeed = null)
+            }
+            is DisciplinesIntent.SelectProgram -> setState {
+                copy(selectedTrack = TrackSelection(intent.track))
             }
         }
     }
@@ -128,6 +156,7 @@ private fun mapSemester(raw: KmpSemester): Semester = Semester(
     isDownloaded = true,
     estimatedCount = null,
     dbSemesterId = raw.semesterId,
+    track = raw.track,
 )
 
 private fun mapPending(raw: KmpPending): Semester = Semester(
@@ -136,6 +165,7 @@ private fun mapPending(raw: KmpPending): Semester = Semester(
     isDownloaded = false,
     estimatedCount = null,
     dbSemesterId = raw.semesterId,
+    track = raw.track,
 )
 
 // Per-evaluation detail from upstream lands in a single "Geral" section here —

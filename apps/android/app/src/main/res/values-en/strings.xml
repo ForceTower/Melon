@@ -412,6 +412,9 @@
     <string name="disciplines_history_overall_mean">overall average</string>
     <string name="disciplines_history_courses_taken">taken</string>
     <string name="disciplines_history_approval_rate">approval</string>
+    <!-- Program picker: label of the regular undergrad calendar. Other programs
+         are labelled by the code upstream stamps on their semesters (RUE, PGM). -->
+    <string name="disciplines_history_program_undergrad">Undergraduate</string>
     <!-- "4 disc." — compact discipline count next to the semester code. -->
     <plurals name="disciplines_history_disc_count">
         <item quantity="one">%d course</item>

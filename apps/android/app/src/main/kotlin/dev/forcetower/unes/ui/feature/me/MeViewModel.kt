@@ -8,7 +8,7 @@ import dev.forcetower.melon.core.common.Outcome
 import dev.forcetower.melon.core.session.domain.SessionStore
 import dev.forcetower.melon.feature.campusevent.domain.usecase.ClearCampusEventUseCase
 import dev.forcetower.melon.feature.disciplines.domain.usecase.CalculateOverallScoreUseCase
-import dev.forcetower.melon.feature.disciplines.domain.usecase.OverallScoreSummary
+import dev.forcetower.melon.feature.disciplines.domain.model.ProgramScore
 import dev.forcetower.melon.feature.me.domain.model.AcademicDocument
 import dev.forcetower.melon.feature.me.domain.model.DocumentFetchError
 import dev.forcetower.melon.feature.me.domain.model.MeProfile
@@ -142,7 +142,7 @@ internal const val ProfileNameMaxLength = 24
 
 internal data class MeUiState(
     val profileRaw: MeProfile? = null,
-    val scoreRaw: OverallScoreSummary? = null,
+    val scoreRaw: ProgramScore? = null,
     val gates: FeatureGates = FeatureGates(),
     val documentSheet: DocumentSheetState? = null,
     val editProfile: ProfileEditState? = null,
@@ -179,7 +179,7 @@ internal class MeViewModel @Inject constructor(
             observeMeProfile().collect { value -> setState { copy(profileRaw = value) } }
         }
         viewModelScope.launch {
-            overallScore.summary().collect { value -> setState { copy(scoreRaw = value) } }
+            overallScore().collect { value -> setState { copy(scoreRaw = value.current) } }
         }
         viewModelScope.launch {
             featureFlags.gates.collect { value -> setState { copy(gates = value) } }
@@ -421,7 +421,7 @@ private val AcademicDocument.shortcutItemId: String
 private val ShortDateFormatter: DateTimeFormatter
     get() = DateTimeFormatter.ofPattern("d MMM", Locale.getDefault())
 
-private fun mapIdentity(raw: MeProfile, score: OverallScoreSummary?): ProfileIdentity {
+private fun mapIdentity(raw: MeProfile, score: ProgramScore?): ProfileIdentity {
     val canonical = raw.identity.userName.ifBlank { raw.identity.firstName }
     val first = raw.identity.firstName.ifBlank { canonical.substringBefore(' ') }
     val initial = first.firstOrNull()?.uppercaseChar()?.toString() ?: "?"
