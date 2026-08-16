@@ -354,6 +354,24 @@
     <!-- Detail screen -->
     <string name="messages_attachments_section_format">ATTACHMENTS · %1$d</string>
     <string name="messages_saved_note">Saved to your messages</string>
+
+    <!-- Share message (dc `MessagesScreen` share flow + `MessageShareCard`). -->
+    <string name="messages_share_a11y">Share message</string>
+    <string name="messages_share_title">Share</string>
+    <string name="messages_share_close_a11y">Close</string>
+    <string name="messages_share_mode_image">Image</string>
+    <string name="messages_share_mode_text">Text</string>
+    <string name="messages_share_subtitle_image">Image · full message</string>
+    <string name="messages_share_subtitle_text">Plain text · full message</string>
+    <string name="messages_share_action">Share</string>
+    <string name="messages_share_save_image">Save image</string>
+    <string name="messages_share_copy_text">Copy text</string>
+    <string name="messages_share_chooser_title">Share message</string>
+    <string name="messages_share_snack_saved">Image saved to Downloads</string>
+    <string name="messages_share_snack_save_failed">Could not save the image</string>
+    <string name="messages_share_snack_copied">Text copied to the clipboard</string>
+    <string name="messages_share_card_kicker">Messages · UEFS</string>
+    <string name="messages_share_card_footer">Shared from UNES, the student app</string>
     <string name="messages_save_a11y">Save message</string>
     <string name="messages_unsave_a11y">Remove from saved messages</string>
     <!-- endregion -->
