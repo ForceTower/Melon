@@ -589,10 +589,8 @@ struct CurriculumGridCell: View {
                     .font(.system(size: 12, weight: .semibold))
                     .tracking(-0.12)
                     .foregroundStyle(UNESColor.ink)
-                    .lineLimit(3)
                     .multilineTextAlignment(.leading)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                Spacer(minLength: 0)
                 HStack(spacing: 6) {
                     Text(CourseProgressFormat.hours(entry.hours))
                         .font(.system(size: 10.5, weight: .semibold))
@@ -606,7 +604,6 @@ struct CurriculumGridCell: View {
             }
             .padding(EdgeInsets(top: 9, leading: 10, bottom: 10, trailing: 10))
             .frame(width: width, alignment: .topLeading)
-            .frame(minHeight: 92, alignment: .top)
             .background(entry.status.fillOpacity > 0 ? entry.status.tone.opacity(entry.status.fillOpacity) : UNESColor.card)
             .overlay {
                 if entry.status == .withdrawn {
