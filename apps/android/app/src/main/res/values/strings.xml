@@ -378,6 +378,26 @@
     <!-- Detail screen -->
     <string name="messages_attachments_section_format">ANEXOS · %1$d</string>
     <string name="messages_saved_note">Salva nas suas mensagens</string>
+
+    <!-- Compartilhar mensagem (dc `MessagesScreen` share flow + `MessageShareCard`). -->
+    <string name="messages_share_a11y">Compartilhar mensagem</string>
+    <string name="messages_share_title">Compartilhar</string>
+    <string name="messages_share_close_a11y">Fechar</string>
+    <string name="messages_share_mode_image">Imagem</string>
+    <string name="messages_share_mode_text">Texto</string>
+    <string name="messages_share_subtitle_image">Imagem · mensagem completa</string>
+    <string name="messages_share_subtitle_text">Texto simples · mensagem completa</string>
+    <string name="messages_share_action">Compartilhar</string>
+    <string name="messages_share_save_image">Salvar imagem</string>
+    <string name="messages_share_copy_text">Copiar texto</string>
+    <string name="messages_share_chooser_title">Compartilhar mensagem</string>
+    <string name="messages_share_snack_saved">Imagem salva em Downloads</string>
+    <string name="messages_share_snack_save_failed">Não foi possível salvar a imagem</string>
+    <string name="messages_share_snack_copied">Texto copiado para a área de transferência</string>
+    <string name="messages_share_card_kicker">Mensagens · UEFS</string>
+    <string name="messages_share_card_footer">Compartilhado pelo UNES, app do estudante</string>
+    <string name="messages_share_card_wordmark" translatable="false">UNES</string>
+    <string name="messages_share_card_monogram" translatable="false">U</string>
     <string name="messages_save_a11y">Salvar mensagem</string>
     <string name="messages_unsave_a11y">Remover das mensagens salvas</string>
     <!-- endregion -->

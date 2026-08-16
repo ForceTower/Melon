@@ -27,17 +27,25 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.Schedule
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarBorder
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -62,6 +70,9 @@ import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
 import dev.forcetower.unes.designsystem.theme.MelonTheme
 import dev.forcetower.unes.designsystem.theme.melon
 import dev.forcetower.unes.ui.feature.messages.components.AttachmentTile
+import dev.forcetower.unes.ui.feature.messages.share.MessageShareOutcome
+import dev.forcetower.unes.ui.feature.messages.share.MessageShareSheet
+import kotlinx.coroutines.launch
 
 // Route adapter sitting between the Messages tab's `MessageDetail` NavKey
 // and the pure detail screen below. Owns the open/close lifecycle of the
@@ -177,127 +188,161 @@ internal fun MessageDetailScreen(
     val images = message.attachments.filter { it.kind == MessageAttachmentKind.Image }
     val nonImages = message.attachments.filter { it.kind != MessageAttachmentKind.Image }
 
+    var sharing by rememberSaveable { mutableStateOf(false) }
+    val snackbar = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+    val outcomeMessages = mapOf(
+        MessageShareOutcome.ImageSaved to stringResource(R.string.messages_share_snack_saved),
+        MessageShareOutcome.ImageSaveFailed to stringResource(R.string.messages_share_snack_save_failed),
+        MessageShareOutcome.TextCopied to stringResource(R.string.messages_share_snack_copied),
+    )
+
     LaunchedEffect(message.id) {
         onAppear?.invoke()
     }
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
-            .verticalScroll(rememberScrollState())
-            .padding(bottom = bottomInset),
-    ) {
-        Row(
+    Box(modifier = modifier.fillMaxSize()) {
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .windowInsetsPadding(WindowInsets.statusBars)
-                .padding(horizontal = 8.dp)
-                .padding(top = 6.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
+                .verticalScroll(rememberScrollState())
+                .padding(bottom = bottomInset),
         ) {
-            IconButton(onClick = onBack) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = stringResource(R.string.messages_back_label),
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-            StarToggle(starred = message.starred, onToggle = onToggleStar)
-        }
-
-        Column(modifier = Modifier.padding(horizontal = 16.dp).padding(top = 12.dp, bottom = 32.dp)) {
-            SenderHeaderCard(
-                message = message,
-                hue = hue,
-                modifier = Modifier.fadeUpOnAppear(delayMs = 60),
-            )
-
             Row(
                 modifier = Modifier
-                    .padding(horizontal = 4.dp)
-                    .padding(top = 20.dp, bottom = 4.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    .fillMaxWidth()
+                    .windowInsetsPadding(WindowInsets.statusBars)
+                    .padding(horizontal = 8.dp)
+                    .padding(top = 6.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Icon(
-                    imageVector = Icons.Filled.Schedule,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.outlineVariant,
-                    modifier = Modifier.size(17.dp),
-                )
-                Text(
-                    text = fullTime(message.receivedAt),
-                    style = MaterialTheme.typography.bodySmall.copy(
-                        fontSize = 13.sp,
-                        fontWeight = FontWeight.SemiBold,
-                    ),
-                    color = MaterialTheme.colorScheme.outline,
-                )
-            }
-
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 14.dp, bottom = 18.dp)
-                    .height(1.dp)
-                    .background(MaterialTheme.melon.surface.line),
-            )
-
-            Column(
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier.fadeUpOnAppear(delayMs = 140),
-            ) {
-                if (!message.subject.isNullOrBlank()) {
-                    Text(
-                        text = message.subject,
-                        style = MaterialTheme.typography.headlineSmall.copy(
-                            fontSize = 21.sp,
-                            lineHeight = 26.sp,
-                        ),
-                        color = MaterialTheme.colorScheme.onBackground,
+                IconButton(onClick = onBack) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = stringResource(R.string.messages_back_label),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
-                message.body.split(ParagraphBreak).forEach { paragraph ->
-                    val trimmed = paragraph.trim()
-                    if (trimmed.isNotEmpty()) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    IconButton(onClick = { sharing = true }) {
+                        Icon(
+                            imageVector = Icons.Filled.Share,
+                            contentDescription = stringResource(R.string.messages_share_a11y),
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                    StarToggle(starred = message.starred, onToggle = onToggleStar)
+                }
+            }
+
+            Column(modifier = Modifier.padding(horizontal = 16.dp).padding(top = 12.dp, bottom = 32.dp)) {
+                SenderHeaderCard(
+                    message = message,
+                    hue = hue,
+                    modifier = Modifier.fadeUpOnAppear(delayMs = 60),
+                )
+
+                Row(
+                    modifier = Modifier
+                        .padding(horizontal = 4.dp)
+                        .padding(top = 20.dp, bottom = 4.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Schedule,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.outlineVariant,
+                        modifier = Modifier.size(17.dp),
+                    )
+                    Text(
+                        text = fullTime(message.receivedAt),
+                        style = MaterialTheme.typography.bodySmall.copy(
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.SemiBold,
+                        ),
+                        color = MaterialTheme.colorScheme.outline,
+                    )
+                }
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 14.dp, bottom = 18.dp)
+                        .height(1.dp)
+                        .background(MaterialTheme.melon.surface.line),
+                )
+
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    modifier = Modifier.fadeUpOnAppear(delayMs = 140),
+                ) {
+                    if (!message.subject.isNullOrBlank()) {
                         Text(
-                            text = linkify(trimmed, accent = hue),
+                            text = message.subject,
+                            style = MaterialTheme.typography.headlineSmall.copy(
+                                fontSize = 21.sp,
+                                lineHeight = 26.sp,
+                            ),
+                            color = MaterialTheme.colorScheme.onBackground,
+                        )
+                    }
+                    message.paragraphs().forEach { paragraph ->
+                        Text(
+                            text = linkify(paragraph, accent = hue),
                             style = MaterialTheme.typography.bodyLarge.copy(lineHeight = 26.sp),
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
                 }
-            }
 
-            if (images.isNotEmpty()) {
-                ImageGallery(
-                    attachments = images,
-                    accent = hue,
-                    modifier = Modifier
-                        .padding(top = 20.dp)
-                        .fadeUpOnAppear(delayMs = 220),
-                )
-            }
+                if (images.isNotEmpty()) {
+                    ImageGallery(
+                        attachments = images,
+                        accent = hue,
+                        modifier = Modifier
+                            .padding(top = 20.dp)
+                            .fadeUpOnAppear(delayMs = 220),
+                    )
+                }
 
-            if (nonImages.isNotEmpty()) {
-                AttachmentsList(
-                    attachments = nonImages,
-                    accent = hue,
-                    modifier = Modifier
-                        .padding(top = 20.dp)
-                        .fadeUpOnAppear(delayMs = 280),
-                )
-            }
+                if (nonImages.isNotEmpty()) {
+                    AttachmentsList(
+                        attachments = nonImages,
+                        accent = hue,
+                        modifier = Modifier
+                            .padding(top = 20.dp)
+                            .fadeUpOnAppear(delayMs = 280),
+                    )
+                }
 
-            if (message.starred) {
-                SavedNote(modifier = Modifier.padding(top = 24.dp))
-            }
+                if (message.starred) {
+                    SavedNote(modifier = Modifier.padding(top = 24.dp))
+                }
 
-            Spacer(Modifier.height(32.dp))
+                Spacer(Modifier.height(32.dp))
+            }
         }
+
+        SnackbarHost(
+            hostState = snackbar,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = bottomInset + 24.dp),
+        )
+    }
+
+    if (sharing) {
+        MessageShareSheet(
+            message = message,
+            onDismiss = { sharing = false },
+            onOutcome = { outcome ->
+                outcomeMessages[outcome]?.let { scope.launch { snackbar.showSnackbar(it) } }
+            },
+        )
     }
 }
 
@@ -410,9 +455,6 @@ private fun SavedNote(modifier: Modifier = Modifier) {
         )
     }
 }
-
-// Paragraphs are separated by blank lines in the upstream body text.
-private val ParagraphBreak = Regex("\\n\\s*\\n")
 
 // Build an annotated body where URL-like tokens are tinted in the category
 // accent color, underlined, and clickable. `Text` routes `LinkAnnotation.Url`

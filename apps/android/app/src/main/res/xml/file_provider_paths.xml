@@ -12,4 +12,8 @@
     <cache-path
         name="camera"
         path="camera/" />
+    <!-- Rendered message cards handed to the share chooser. -->
+    <cache-path
+        name="share"
+        path="share/" />
 </paths>

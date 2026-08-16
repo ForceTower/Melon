@@ -54,6 +54,12 @@ internal data class MessageAttachment(
 
 internal data class MessageSender(val name: String, val role: String)
 
+// Paragraphs are separated by blank lines in the upstream body text.
+internal val MessageParagraphBreak = Regex("\\n\\s*\\n")
+
+internal fun Message.paragraphs(): List<String> =
+    body.split(MessageParagraphBreak).map { it.trim() }.filter { it.isNotEmpty() }
+
 internal data class Message(
     val id: String,
     val origin: MessageOrigin,
