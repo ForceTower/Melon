@@ -156,12 +156,20 @@ struct CurriculumFlowView: View {
                 .padding(EdgeInsets(top: 13, leading: 12, bottom: 11, trailing: 12))
                 .courseProgressCard()
 
+                if let trail = store.trail, let focus = store.progress.entry(trail.focus) {
+                    CurriculumTrailPanel(progress: store.progress, focus: focus) { code in
+                        store.send(.entryTapped(code))
+                    }
+                    .padding(.top, 18)
+                    .transition(.opacity.combined(with: .move(edge: .top)))
+                }
+
                 Text(.courseProgressLegend)
                     .textCase(.uppercase)
                     .font(.system(size: 11.5, weight: .semibold))
                     .tracking(0.5)
                     .foregroundStyle(UNESColor.ink4)
-                    .padding(EdgeInsets(top: 14, leading: 3, bottom: 9, trailing: 3))
+                    .padding(EdgeInsets(top: store.trail == nil ? 14 : 20, leading: 3, bottom: 9, trailing: 3))
                 CurriculumLegend()
 
                 Text(.courseProgressMapHint)
@@ -171,6 +179,7 @@ struct CurriculumFlowView: View {
                     .padding(EdgeInsets(top: 14, leading: 3, bottom: 2, trailing: 3))
             }
             .padding(EdgeInsets(top: 14, leading: 16, bottom: 28, trailing: 16))
+            .animation(UNESMotion.ease(0.3), value: store.trail == nil)
         }
         .scrollIndicators(.hidden)
     }
@@ -521,6 +530,96 @@ struct CurriculumMapTile: View {
         .animation(UNESMotion.ease(0.25), value: dimmed)
         .accessibilityLabel(Text(verbatim: "\(entry.code) \(entry.name)"))
         .accessibilityValue(Text(entry.status.label))
+    }
+}
+
+/// The chain spelled out under the map: what must come before the focused
+/// discipline and what it eventually opens, each entry tappable.
+struct CurriculumTrailPanel: View {
+    var progress: CourseProgress
+    var focus: CurriculumEntry
+    var onOpen: (String) -> Void
+
+    private var before: [CurriculumEntry] { progress.chainEntries(progress.upstream(of: focus.code)) }
+    private var after: [CurriculumEntry] { progress.chainEntries(progress.downstream(of: focus.code)) }
+    private var alongside: [CurriculumEntry] { progress.corequisites(of: focus.code) }
+    private var pending: Int { before.filter { $0.status != .completed }.count }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            HStack(alignment: .top, spacing: 11) {
+                CurriculumStatusBadge(status: focus.status, size: 30, cornerRadius: 9)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(.courseProgressTrailTitle(focus.name))
+                        .font(.system(size: 17, weight: .bold))
+                        .tracking(-0.5)
+                        .foregroundStyle(UNESColor.ink)
+                    Text(summary)
+                        .font(.system(size: 11.5, weight: .medium))
+                        .monospacedDigit()
+                        .foregroundStyle(UNESColor.ink4)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .padding(EdgeInsets(top: 0, leading: 3, bottom: 2, trailing: 3))
+
+            group(.courseProgressTrailBefore, entries: before, empty: .courseProgressTrailBeforeEmpty)
+            if !alongside.isEmpty {
+                group(.courseProgressTakenAlongside, entries: alongside, empty: .courseProgressTrailBeforeEmpty)
+            }
+            group(.courseProgressTrailAfter, entries: after, empty: .courseProgressUnlocksNothing)
+        }
+    }
+
+    private var summary: String {
+        var parts = [focus.code, String.localized(.courseProgressTrailBeforeCount(before.count)),
+                     String.localized(.courseProgressTrailAfterCount(after.count))]
+        if pending > 0 {
+            parts.append(.localized(.courseProgressTrailPending(pending)))
+        }
+        return parts.joined(separator: " · ")
+    }
+
+    private func group(_ title: LocalizedStringResource, entries: [CurriculumEntry], empty: LocalizedStringResource) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(alignment: .firstTextBaseline) {
+                Text(title)
+                    .textCase(.uppercase)
+                    .font(.system(size: 11.5, weight: .semibold))
+                    .tracking(0.5)
+                Spacer()
+                if !entries.isEmpty {
+                    Text(.courseProgressTrailGroupCount(entries.count))
+                        .font(.system(size: 11.5, weight: .semibold))
+                        .monospacedDigit()
+                }
+            }
+            .foregroundStyle(UNESColor.ink4)
+            .padding(.horizontal, 3)
+
+            if entries.isEmpty {
+                Text(empty)
+                    .font(.system(size: 12.5, weight: .medium))
+                    .foregroundStyle(UNESColor.ink4)
+                    .padding(.horizontal, 3)
+            } else {
+                VStack(spacing: 0) {
+                    ForEach(Array(entries.enumerated()), id: \.element.id) { index, entry in
+                        Button {
+                            onOpen(entry.code)
+                        } label: {
+                            CurriculumRelatedEntryRow(entry: entry)
+                        }
+                        .buttonStyle(.plain)
+                        if index < entries.count - 1 {
+                            CardRowDivider()
+                        }
+                    }
+                }
+                .courseProgressCard()
+            }
+        }
+        .padding(.top, 14)
     }
 }
 

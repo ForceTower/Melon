@@ -408,6 +408,46 @@ struct CompactLabelStyle: LabelStyle {
     }
 }
 
+// MARK: - Related-entry row (chains, prerequisites, unlocks)
+
+/// A discipline as a compact row inside a chain card: badge, name, then
+/// `code · semester · status`. Used by the discipline sheet and the trail panel.
+struct CurriculumRelatedEntryRow: View {
+    var entry: CurriculumEntry
+
+    var body: some View {
+        HStack(spacing: 11) {
+            CurriculumStatusBadge(status: entry.status, size: 24, cornerRadius: 7)
+            VStack(alignment: .leading, spacing: 3) {
+                Text(entry.name)
+                    .font(.system(size: 13.5, weight: .semibold))
+                    .tracking(-0.16)
+                    .foregroundStyle(UNESColor.ink)
+                    .multilineTextAlignment(.leading)
+                Text(subtitle)
+                    .font(.system(size: 11, weight: .semibold))
+                    .monospacedDigit()
+                    .foregroundStyle(UNESColor.ink4)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            Image(systemName: "chevron.right")
+                .font(.system(size: 11, weight: .semibold))
+                .foregroundStyle(UNESColor.ink4)
+        }
+        .padding(EdgeInsets(top: 10, leading: 13, bottom: 10, trailing: 13))
+        .contentShape(Rectangle())
+    }
+
+    private var subtitle: String {
+        var parts = [entry.code]
+        if let period = entry.period {
+            parts.append(CourseProgressFormat.semester(period))
+        }
+        parts.append(.localized(entry.status.label))
+        return parts.joined(separator: " · ")
+    }
+}
+
 // MARK: - Loading / failure
 
 struct CourseProgressLoadingView: View {

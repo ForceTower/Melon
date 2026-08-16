@@ -247,7 +247,7 @@ private struct CurriculumEntryDetail: View {
                     ForEach(Array(codes.enumerated()), id: \.element) { index, code in
                         if let related = entries.first(where: { $0.code == code }) {
                             NavigationLink(value: code) {
-                                relatedRow(related)
+                                CurriculumRelatedEntryRow(entry: related)
                             }
                             .buttonStyle(.plain)
                         } else {
@@ -266,38 +266,6 @@ private struct CurriculumEntryDetail: View {
                 .courseProgressCard()
             }
         }
-    }
-
-    private func relatedRow(_ related: CurriculumEntry) -> some View {
-        HStack(spacing: 11) {
-            CurriculumStatusBadge(status: related.status, size: 24, cornerRadius: 7)
-            VStack(alignment: .leading, spacing: 3) {
-                Text(related.name)
-                    .font(.system(size: 13.5, weight: .semibold))
-                    .tracking(-0.16)
-                    .foregroundStyle(UNESColor.ink)
-                    .multilineTextAlignment(.leading)
-                Text(relatedSubtitle(related))
-                    .font(.system(size: 11, weight: .semibold))
-                    .monospacedDigit()
-                    .foregroundStyle(UNESColor.ink4)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            Image(systemName: "chevron.right")
-                .font(.system(size: 11, weight: .semibold))
-                .foregroundStyle(UNESColor.ink4)
-        }
-        .padding(EdgeInsets(top: 10, leading: 13, bottom: 10, trailing: 13))
-        .contentShape(Rectangle())
-    }
-
-    private func relatedSubtitle(_ related: CurriculumEntry) -> String {
-        var parts = [related.code]
-        if let period = related.period {
-            parts.append(CourseProgressFormat.semester(period))
-        }
-        parts.append(.localized(related.status.label))
-        return parts.joined(separator: " · ")
     }
 }
 

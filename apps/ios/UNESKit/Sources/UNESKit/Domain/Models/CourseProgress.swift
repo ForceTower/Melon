@@ -224,22 +224,44 @@ struct CourseProgress: Equatable, Sendable {
     /// depends on (transitively) and everything it eventually unlocks. Always
     /// contains `code` itself.
     func trail(through code: String) -> Set<String> {
+        upstream(of: code).union(downstream(of: code)).union([code])
+    }
+
+    /// Everything `code` transitively depends on — what must be done first.
+    func upstream(of code: String) -> Set<String> {
         let byCode = entriesByCode
+        return reach(from: code) { byCode[$0]?.prerequisites ?? [] }
+    }
+
+    /// Everything `code` transitively unlocks — what it eventually opens.
+    func downstream(of code: String) -> Set<String> {
         var unlocksByCode: [String: [String]] = [:]
         for entry in entries {
             for prerequisite in entry.prerequisites {
                 unlocksByCode[prerequisite, default: []].append(entry.code)
             }
         }
+        return reach(from: code) { unlocksByCode[$0] ?? [] }
+    }
+
+    /// The chain entries in reading order: by período, then code.
+    func chainEntries(_ codes: Set<String>) -> [CurriculumEntry] {
+        codes.compactMap(entry).sorted { lhs, rhs in
+            let l = lhs.period ?? .max, r = rhs.period ?? .max
+            return l != r ? l < r : lhs.code < rhs.code
+        }
+    }
+
+    /// Transitive closure from `code` along `next`, excluding `code` itself.
+    private func reach(from code: String, next: (String) -> [String]) -> Set<String> {
         var visited: Set<String> = [code]
-        func walk(_ current: String, next: (String) -> [String]) {
-            for candidate in next(current) where !visited.contains(candidate) {
-                visited.insert(candidate)
-                walk(candidate, next: next)
+        var frontier = [code]
+        while let current = frontier.popLast() {
+            for candidate in next(current) where visited.insert(candidate).inserted {
+                frontier.append(candidate)
             }
         }
-        walk(code) { byCode[$0]?.prerequisites ?? [] }
-        walk(code) { unlocksByCode[$0] ?? [] }
+        visited.remove(code)
         return visited
     }
 

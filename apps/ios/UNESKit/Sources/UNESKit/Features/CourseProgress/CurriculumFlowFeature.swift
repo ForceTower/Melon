@@ -117,7 +117,11 @@ struct CurriculumFlowFeature {
                 guard state.progress.entry(code) != nil else { return .none }
                 log.info("show trail code=\(code)")
                 analytics.selectContent(contentType: ContentTypes.tile, itemId: "curriculum_trail", properties: ["code": code])
-                state.trail = Trail(focus: code, codes: state.progress.trail(through: code))
+                // Co-requisites ride along: they are taken with the focus, so
+                // dimming them would misread the chain.
+                let codes = state.progress.trail(through: code)
+                    .union(state.progress.corequisites(of: code).map(\.code))
+                state.trail = Trail(focus: code, codes: codes)
                 state.presentedEntryCode = nil
                 state.lens = .map
                 return .none
