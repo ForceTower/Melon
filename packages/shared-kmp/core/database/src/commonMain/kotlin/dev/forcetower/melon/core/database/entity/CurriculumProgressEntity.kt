@@ -1,5 +1,6 @@
 package dev.forcetower.melon.core.database.entity
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -31,6 +32,9 @@ data class CurriculumProgressEntity(
     val prerequisitesKnown: Boolean,
     // Epoch millis of the refresh that wrote this row.
     val syncedAt: Long,
+    // Every hour the student has passed, whichever version lists it — what
+    // each version's `fit` is a share of.
+    @ColumnInfo(defaultValue = "0") val approvedHours: Int = 0,
 ) {
     companion object {
         const val CURRENT = "current"

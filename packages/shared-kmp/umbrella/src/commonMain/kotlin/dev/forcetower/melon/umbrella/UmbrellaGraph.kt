@@ -29,6 +29,8 @@ import dev.forcetower.melon.feature.campusevent.domain.usecase.ObserveCampusEven
 import dev.forcetower.melon.feature.campusevent.domain.usecase.RefreshCampusEventUseCase
 import dev.forcetower.melon.feature.courseprogress.domain.usecase.ObserveCourseProgressUseCase
 import dev.forcetower.melon.feature.courseprogress.domain.usecase.RefreshCourseProgressUseCase
+import dev.forcetower.melon.feature.courseprogress.domain.usecase.ResetCurriculumVersionUseCase
+import dev.forcetower.melon.feature.courseprogress.domain.usecase.SelectCurriculumVersionUseCase
 import dev.forcetower.melon.feature.dashboard.domain.usecase.GetReadyOverviewUseCase
 import dev.forcetower.melon.feature.disciplines.domain.usecase.CalculateOverallScoreUseCase
 import dev.forcetower.melon.feature.disciplines.domain.usecase.ObserveDisciplineDetailUseCase
@@ -258,6 +260,9 @@ interface UmbrellaGraph {
     // fired on every entry and lands back through the same stream.
     val observeCourseProgressUseCase: ObserveCourseProgressUseCase
     val refreshCourseProgressUseCase: RefreshCourseProgressUseCase
+    // The curriculum picker: bind to one version by hand, or back to automatic.
+    val selectCurriculumVersionUseCase: SelectCurriculumVersionUseCase
+    val resetCurriculumVersionUseCase: ResetCurriculumVersionUseCase
 
     // Configurações reactive surface — emits the active session's typed
     // upstream credentials so the Settings vault card can render them.

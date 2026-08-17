@@ -2297,6 +2297,34 @@
     <string name="course_progress_status_blocked">Pré-requisito não cumprido</string>
     <string name="course_progress_status_blocked_short">Bloqueada</string>
     <string name="course_progress_status_not_taken">Não cursada</string>
+
+    <string name="course_progress_version_title_format">Currículo %1$s</string>
+    <string name="course_progress_version_pick">Escolher currículo</string>
+    <string name="course_progress_version_none">nenhum currículo vinculado</string>
+    <plurals name="course_progress_version_count">
+        <item quantity="one">%1$d currículo</item>
+        <item quantity="other">%1$d currículos</item>
+    </plurals>
+    <string name="course_progress_version_standing_current">vigente</string>
+    <string name="course_progress_version_standing_previous">anterior</string>
+    <string name="course_progress_version_standing_retired">encerrado</string>
+    <string name="course_progress_version_standing_unplaced">outro curso</string>
+    <string name="course_progress_version_sheet_title">Currículo</string>
+    <string name="course_progress_version_sheet_subtitle_format">Grades de %1$s</string>
+    <string name="course_progress_version_sheet_subtitle_fallback">Grades do seu curso</string>
+    <string name="course_progress_version_hint_current">vale para quem entra no curso hoje</string>
+    <string name="course_progress_version_hint_superseded_format">substituído pelo %1$s em %2$s</string>
+    <string name="course_progress_version_hint_superseded_undated_format">substituído pelo %1$s</string>
+    <string name="course_progress_version_hint_unplaced">fora da lista do seu curso atual</string>
+    <string name="course_progress_version_hours_only_format">%1$s cumpridas · sem total de referência</string>
+    <string name="course_progress_version_fit_format">%1$s das suas %2$s cursadas contam aqui</string>
+    <string name="course_progress_version_fit_unknown">sem horas cursadas ainda</string>
+    <string name="course_progress_version_footnote">Suas horas continuam contadas em cada grade. Trocar aqui muda qual delas o app usa para calcular seu progresso.</string>
+    <string name="course_progress_version_automatic">Voltar à detecção automática</string>
+    <string name="course_progress_version_selected">Currículo em uso</string>
+    <string name="course_progress_version_switch_failed_title">Não foi possível trocar o currículo</string>
+    <string name="course_progress_version_switch_failed_body">Verifique sua conexão e tente de novo.</string>
+    <string name="course_progress_version_switch_failed_ok">Entendi</string>
     <!-- endregion -->
 
 </resources>

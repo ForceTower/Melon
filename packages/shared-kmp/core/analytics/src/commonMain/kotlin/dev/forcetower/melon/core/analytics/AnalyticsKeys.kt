@@ -87,4 +87,5 @@ object ContentTypes {
     const val DOCUMENT = "document"
     const val SETTING = "setting"
     const val PASSKEY = "passkey"
+    const val CURRICULUM_VERSION = "curriculum_version"
 }

@@ -6,9 +6,12 @@ import dev.forcetower.melon.core.analytics.Analytics
 import dev.forcetower.melon.core.analytics.ContentTypes
 import dev.forcetower.melon.core.common.Outcome
 import dev.forcetower.melon.feature.courseprogress.domain.model.CourseProgress
+import dev.forcetower.melon.feature.courseprogress.domain.model.CourseProgressError
 import dev.forcetower.melon.feature.courseprogress.domain.model.CurriculumPeriod
 import dev.forcetower.melon.feature.courseprogress.domain.usecase.ObserveCourseProgressUseCase
 import dev.forcetower.melon.feature.courseprogress.domain.usecase.RefreshCourseProgressUseCase
+import dev.forcetower.melon.feature.courseprogress.domain.usecase.ResetCurriculumVersionUseCase
+import dev.forcetower.melon.feature.courseprogress.domain.usecase.SelectCurriculumVersionUseCase
 import dev.forcetower.melon.feature.me.domain.usecase.ObserveMeProfileUseCase
 import dev.forcetower.unes.mvi.MviViewModel
 import dev.forcetower.unes.mvi.UiEffect
@@ -42,12 +45,25 @@ internal data class CourseProgressUiState(
     // The discipline whose sheet is open, by code.
     val openedEntryCode: String? = null,
     val explainerOpen: Boolean = false,
+    val versionPickerOpen: Boolean = false,
+    // The version whose PUT (or the DELETE back to automatic, as
+    // [AUTOMATIC_VERSION_SWITCH]) is in flight — the picker locks and spins
+    // on it meanwhile.
+    val switchingVersionId: String? = null,
+    // The last switch failed; the dialog stays up until dismissed.
+    val versionSwitchFailed: Boolean = false,
 ) : UiState {
     val selectedPeriodEntries: CurriculumPeriod?
         get() = selectedPeriod?.let { progress?.period(it) }
 
     val openedEntry get() = openedEntryCode?.let { progress?.entry(it) }
+
+    val isSwitchingVersion: Boolean get() = switchingVersionId != null
 }
+
+// Sentinel for `switchingVersionId` while resetting to the server's resolution
+// rather than picking a version.
+internal const val AUTOMATIC_VERSION_SWITCH = "automatic"
 
 internal sealed interface CourseProgressIntent : UiIntent {
     data object Load : CourseProgressIntent
@@ -60,6 +76,11 @@ internal sealed interface CourseProgressIntent : UiIntent {
     data object TrailCleared : CourseProgressIntent
     data object ExplainerTapped : CourseProgressIntent
     data object ExplainerDismissed : CourseProgressIntent
+    data object VersionPickerTapped : CourseProgressIntent
+    data object VersionPickerDismissed : CourseProgressIntent
+    data class VersionSelected(val curriculumId: String) : CourseProgressIntent
+    data object AutomaticVersionTapped : CourseProgressIntent
+    data object VersionSwitchFailureDismissed : CourseProgressIntent
 }
 
 internal sealed interface CourseProgressEffect : UiEffect
@@ -76,6 +97,8 @@ internal class CourseProgressViewModel @Inject constructor(
     observeCourseProgress: ObserveCourseProgressUseCase,
     observeMeProfile: ObserveMeProfileUseCase,
     private val refreshCourseProgress: RefreshCourseProgressUseCase,
+    private val selectCurriculumVersion: SelectCurriculumVersionUseCase,
+    private val resetCurriculumVersion: ResetCurriculumVersionUseCase,
     private val analytics: Analytics,
 ) : MviViewModel<CourseProgressUiState, CourseProgressIntent, CourseProgressEffect>(
     CourseProgressUiState(),
@@ -113,6 +136,11 @@ internal class CourseProgressViewModel @Inject constructor(
                 setState { copy(explainerOpen = true) }
             }
             CourseProgressIntent.ExplainerDismissed -> setState { copy(explainerOpen = false) }
+            CourseProgressIntent.VersionPickerTapped -> openVersionPicker()
+            CourseProgressIntent.VersionPickerDismissed -> setState { copy(versionPickerOpen = false) }
+            is CourseProgressIntent.VersionSelected -> selectVersion(intent.curriculumId)
+            CourseProgressIntent.AutomaticVersionTapped -> resetVersion()
+            CourseProgressIntent.VersionSwitchFailureDismissed -> setState { copy(versionSwitchFailed = false) }
         }
     }
 
@@ -147,6 +175,50 @@ internal class CourseProgressViewModel @Inject constructor(
             }
         } finally {
             refreshMutex.unlock()
+        }
+    }
+
+    private fun openVersionPicker() {
+        if (currentState.progress?.canPickVersion != true) return
+        analytics.selectContent(ContentTypes.HUB, "curriculum_version_picker")
+        setState { copy(versionPickerOpen = true) }
+    }
+
+    private fun selectVersion(curriculumId: String) {
+        val state = currentState
+        if (state.isSwitchingVersion) return
+        // Re-picking the bound version is a no-op: nothing to send, just close.
+        if (state.progress?.curriculum?.id == curriculumId) {
+            setState { copy(versionPickerOpen = false) }
+            return
+        }
+        analytics.selectContent(ContentTypes.CURRICULUM_VERSION, curriculumId)
+        switchVersion(curriculumId) { selectCurriculumVersion(curriculumId) }
+    }
+
+    private fun resetVersion() {
+        val state = currentState
+        if (state.isSwitchingVersion || state.progress?.curriculum?.isManualPick != true) return
+        analytics.selectContent(ContentTypes.CURRICULUM_VERSION, AUTOMATIC_VERSION_SWITCH)
+        switchVersion(AUTOMATIC_VERSION_SWITCH) { resetCurriculumVersion() }
+    }
+
+    // The rebuilt payload lands through the observation; the sheet closes over
+    // the new numbers, or stays up behind the failure dialog.
+    private fun switchVersion(
+        switchingId: String,
+        request: suspend () -> Outcome<Unit, CourseProgressError>,
+    ) {
+        setState { copy(switchingVersionId = switchingId) }
+        viewModelScope.launch {
+            val outcome = request()
+            setState {
+                copy(
+                    switchingVersionId = null,
+                    versionPickerOpen = outcome !is Outcome.Ok,
+                    versionSwitchFailed = outcome is Outcome.Err,
+                )
+            }
         }
     }
 

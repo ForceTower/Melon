@@ -4,17 +4,25 @@ import dev.forcetower.melon.core.common.Outcome
 import dev.forcetower.melon.core.network.ApiEnvelope
 import dev.forcetower.melon.feature.courseprogress.domain.model.CourseProgress
 import dev.forcetower.melon.feature.courseprogress.domain.model.CourseProgressError
+import dev.forcetower.melon.feature.courseprogress.domain.model.CurriculumBindingSource
 import dev.forcetower.melon.feature.courseprogress.domain.model.CurriculumEntry
 import dev.forcetower.melon.feature.courseprogress.domain.model.CurriculumEntryStatus
 import dev.forcetower.melon.feature.courseprogress.domain.model.CurriculumPeriod
 import dev.forcetower.melon.feature.courseprogress.domain.model.CurriculumRequirementKind
 import dev.forcetower.melon.feature.courseprogress.domain.model.CurriculumRequirementProgress
 import dev.forcetower.melon.feature.courseprogress.domain.model.CurriculumSummary
+import dev.forcetower.melon.feature.courseprogress.domain.model.CurriculumSupersession
 import dev.forcetower.melon.feature.courseprogress.domain.model.CurriculumVersion
 import dev.zacsweers.metro.Inject
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.request.delete
 import io.ktor.client.request.get
+import io.ktor.client.request.put
+import io.ktor.client.request.setBody
+import io.ktor.client.statement.HttpResponse
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
 import io.ktor.http.isSuccess
 import kotlin.time.Instant
 import kotlinx.serialization.Serializable
@@ -27,13 +35,37 @@ import kotlinx.serialization.Serializable
 // Everything past `summary` is optional on the wire: the portal can answer
 // with hours and no grid (an unmapped curriculum) or with a grid and no
 // breakdown, and both are screens the design has copy for.
+//
+// The version endpoints (`PUT`/`DELETE api/curriculum/version`) bind the
+// student to one of `availableVersions` by hand, or hand the binding back to
+// the server's resolution; both answer with the rebuilt payload, so a pick is
+// mirrored the same way a refresh is.
 @Inject
 internal class CurriculumService(
     private val client: HttpClient,
 ) {
-    suspend fun curriculum(syncedAt: Instant): Outcome<CourseProgress, CourseProgressError> {
+    suspend fun curriculum(syncedAt: Instant): Outcome<CourseProgress, CourseProgressError> =
+        payload(syncedAt) { client.get("api/curriculum") }
+
+    suspend fun selectVersion(
+        curriculumId: String,
+        syncedAt: Instant,
+    ): Outcome<CourseProgress, CourseProgressError> = payload(syncedAt) {
+        client.put("api/curriculum/version") {
+            contentType(ContentType.Application.Json)
+            setBody(VersionSelectionRequest(curriculumId))
+        }
+    }
+
+    suspend fun resetVersion(syncedAt: Instant): Outcome<CourseProgress, CourseProgressError> =
+        payload(syncedAt) { client.delete("api/curriculum/version") }
+
+    private suspend inline fun payload(
+        syncedAt: Instant,
+        request: () -> HttpResponse,
+    ): Outcome<CourseProgress, CourseProgressError> {
         val payload = try {
-            val response = client.get("api/curriculum")
+            val response = request()
             if (!response.status.isSuccess()) return Outcome.Err(CourseProgressError.Connection)
             response.body<ApiEnvelope<CurriculumPayloadDTO>>().takeIf { it.ok }?.data
         } catch (_: Exception) {
@@ -44,8 +76,13 @@ internal class CurriculumService(
 }
 
 @Serializable
+private data class VersionSelectionRequest(val curriculumId: String)
+
+@Serializable
 internal data class CurriculumPayloadDTO(
     val curriculum: VersionDTO? = null,
+    val availableVersions: List<VersionDTO>? = null,
+    val approvedHours: Int? = null,
     val summary: SummaryDTO,
     val requirements: List<RequirementDTO>? = null,
     val periods: List<PeriodDTO>? = null,
@@ -61,6 +98,19 @@ internal data class CurriculumPayloadDTO(
         val minPeriods: Int? = null,
         val maxPeriods: Int? = null,
         val stale: Boolean? = null,
+        val current: Boolean? = null,
+        val supersededBy: SupersessionDTO? = null,
+        val source: String? = null,
+        val completedHours: Int? = null,
+        val requiredHours: Int? = null,
+        val percent: Double? = null,
+        val fit: Double? = null,
+    )
+
+    @Serializable
+    internal data class SupersessionDTO(
+        val code: String,
+        val effectiveFrom: String? = null,
     )
 
     @Serializable
@@ -116,6 +166,8 @@ internal fun CurriculumPayloadDTO.toDomain(syncedAt: Instant) = CourseProgress(
     currentPeriod = currentPeriod,
     prerequisitesKnown = prerequisitesKnown ?: false,
     syncedAt = syncedAt,
+    availableVersions = availableVersions.orEmpty().map { it.toDomain() },
+    approvedHours = approvedHours ?: summary.completedHours,
 )
 
 private fun CurriculumPayloadDTO.VersionDTO.toDomain() = CurriculumVersion(
@@ -126,6 +178,13 @@ private fun CurriculumPayloadDTO.VersionDTO.toDomain() = CurriculumVersion(
     minPeriods = minPeriods,
     maxPeriods = maxPeriods,
     stale = stale ?: false,
+    current = current ?: false,
+    supersededBy = supersededBy?.let { CurriculumSupersession(code = it.code, effectiveFrom = it.effectiveFrom) },
+    source = CurriculumBindingSource.fromWire(source),
+    completedHours = completedHours,
+    requiredHours = requiredHours,
+    percent = percent,
+    fit = fit,
 )
 
 private fun CurriculumPayloadDTO.SummaryDTO.toDomain() = CurriculumSummary(

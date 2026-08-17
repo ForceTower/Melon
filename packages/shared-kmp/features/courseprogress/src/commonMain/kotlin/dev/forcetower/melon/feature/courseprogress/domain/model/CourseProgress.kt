@@ -49,7 +49,48 @@ enum class CurriculumRequirementKind(val wire: String) {
     }
 }
 
-// The curriculum version ("matriz curricular") the student is bound to.
+// How the student came to be on a curriculum version. `Manual` is their own
+// pick and outranks resolution; `Resolved` is the server's guess from the
+// entry semester; `Upstream` would be SAGRES saying so (it doesn't yet).
+enum class CurriculumBindingSource(val wire: String) {
+    Resolved("resolved"),
+    Manual("manual"),
+    Upstream("upstream"),
+    ;
+
+    companion object {
+        fun fromWire(raw: String?): CurriculumBindingSource? = entries.firstOrNull { it.wire == raw }
+    }
+}
+
+// The version that replaced another one, and the semester new entrants moved
+// over.
+data class CurriculumSupersession(
+    // SAGRES's identifier for the successor: "20232".
+    val code: String,
+    // Semester code the successor started taking entrants — not always its
+    // own code.
+    val effectiveFrom: String?,
+) {
+    val codeLabel: String get() = CurriculumVersion.codeLabel(code)
+
+    val effectiveFromLabel: String? get() = effectiveFrom?.let(CurriculumVersion::codeLabel)
+}
+
+// Where a version sits in its course's succession, as the picker words it.
+enum class CurriculumStanding {
+    // The newest grid — what a calouro enters on today.
+    Current,
+    // The grid right before the current one; students were migrated off it.
+    Previous,
+    // Older than that: nobody has entered on it in a long while.
+    Retired,
+    // Outside the course's own list (a manual pick after a transfer).
+    Unplaced,
+}
+
+// One curriculum version ("matriz curricular") of the student's course — the
+// one they are bound to, or one they could switch to.
 data class CurriculumVersion(
     val id: String,
     // SAGRES's version identifier, a semester code: "20232".
@@ -62,15 +103,35 @@ data class CurriculumVersion(
     val maxPeriods: Int?,
     // The source document is old enough that required hours may have moved.
     val stale: Boolean,
+    // The newest version of the course.
+    val current: Boolean = false,
+    // Null on the current version; set on every older one.
+    val supersededBy: CurriculumSupersession? = null,
+    // Set only on the version the student is bound to.
+    val source: CurriculumBindingSource? = null,
+    // The student's progress against *this* version — every version has its
+    // own grid and required hours, so the numbers move on a switch.
+    val completedHours: Int? = null,
+    val requiredHours: Int? = null,
+    val percent: Double? = null,
+    // 0…100: how much of the student's own approved hours this version even
+    // lists. Distinct from `percent` — this says whether the grid is theirs
+    // at all. Null while they have no approved hours.
+    val fit: Double? = null,
 ) {
     // The version as students read it — "2024.1" for the semester code
     // "20241". Anything not shaped like a semester code shows verbatim.
-    val codeLabel: String
-        get() = if (code.length == 5 && code.all { it.isDigit() }) {
+    val codeLabel: String get() = codeLabel(code)
+
+    val isManualPick: Boolean get() = source == CurriculumBindingSource.Manual
+
+    companion object {
+        fun codeLabel(code: String): String = if (code.length == 5 && code.all { it.isDigit() }) {
             "${code.take(4)}.${code.last()}"
         } else {
             code
         }
+    }
 }
 
 // The headline numbers. `requiredHours` is null only when no curriculum is
@@ -175,8 +236,29 @@ data class CourseProgress(
     // False when too few entries carry prerequisites to claim availability.
     val prerequisitesKnown: Boolean,
     val syncedAt: Instant,
+    // Every version on file for the course, newest first, the bound one
+    // included. Empty when the course has no curriculum at all.
+    val availableVersions: List<CurriculumVersion> = emptyList(),
+    // Every hour the student has passed, whichever version lists it — the
+    // pool each version's `fit` is a share of.
+    val approvedHours: Int = 0,
 ) {
     val hasCurriculum: Boolean get() = curriculum != null
+
+    // There is a choice to make: more than one version, or none bound while
+    // some exist (the resolver refused — the student must pick by hand).
+    val canPickVersion: Boolean
+        get() = availableVersions.size > 1 || (curriculum == null && availableVersions.isNotEmpty())
+
+    // The version's place in the course's succession. Derived from the list:
+    // the successor of the version right behind the current one *is* the
+    // current one; further back it is not.
+    fun standing(version: CurriculumVersion): CurriculumStanding {
+        if (version.current) return CurriculumStanding.Current
+        val successor = version.supersededBy ?: return CurriculumStanding.Unplaced
+        val successorIsCurrent = availableVersions.any { it.current && it.code == successor.code }
+        return if (successorIsCurrent) CurriculumStanding.Previous else CurriculumStanding.Retired
+    }
 
     // The total is known but the per-requirement split didn't come back.
     val hasBreakdown: Boolean get() = requirements.isNotEmpty()

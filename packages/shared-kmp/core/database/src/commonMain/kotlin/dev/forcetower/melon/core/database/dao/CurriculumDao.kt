@@ -12,17 +12,18 @@ import dev.forcetower.melon.core.database.entity.CurriculumProgressEntity
 import dev.forcetower.melon.core.database.entity.CurriculumRequirementEntity
 import kotlinx.coroutines.flow.Flow
 
-// The curriculum mirror behind "Progresso do curso" and the fluxograma. The
-// student is bound to exactly one curriculum version at a time, so every table
-// here holds that one version's rows and the queries need no scoping — the
-// invariant is enforced by [replace], which is the only writer.
+// The curriculum mirror behind "Progresso do curso" and the fluxograma.
+// `Curriculum` holds every version of the student's course (the picker's
+// list), but the student is bound to exactly one at a time, so the grid tables
+// hold that one version's rows and the queries need no scoping — the invariant
+// is enforced by [replace], which is the only writer.
 @Dao
 abstract class CurriculumDao {
     @Query("SELECT * FROM CurriculumProgress WHERE `key` = '${CurriculumProgressEntity.CURRENT}'")
     abstract fun observeProgress(): Flow<CurriculumProgressEntity?>
 
-    @Query("SELECT * FROM Curriculum LIMIT 1")
-    abstract fun observeCurriculum(): Flow<CurriculumEntity?>
+    @Query("SELECT * FROM Curriculum ORDER BY position ASC")
+    abstract fun observeVersions(): Flow<List<CurriculumEntity>>
 
     @Query("SELECT * FROM CurriculumRequirement ORDER BY position ASC")
     abstract fun observeRequirements(): Flow<List<CurriculumRequirementEntity>>
@@ -37,7 +38,7 @@ abstract class CurriculumDao {
     abstract suspend fun insertProgress(progress: CurriculumProgressEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract suspend fun insertCurriculum(curriculum: CurriculumEntity)
+    abstract suspend fun insertVersions(versions: List<CurriculumEntity>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insertRequirements(requirements: List<CurriculumRequirementEntity>)
@@ -57,14 +58,15 @@ abstract class CurriculumDao {
 
     // One refresh result written whole, in one transaction: a mid-run failure
     // leaves the previous payload intact instead of a half-written grid, and
-    // observers wake once, on a consistent snapshot. `curriculum` is null when
-    // the portal knows the student's hours but we hold no grid for the course
-    // — the progress row still lands, so the screen can show hours with no
+    // observers wake once, on a consistent snapshot. `versions` is every
+    // version of the course, bound one included; it is empty when the portal
+    // knows the student's hours but we hold no grid for the course — the
+    // progress row still lands, so the screen can show hours with no
     // denominator.
     @Transaction
     open suspend fun replace(
         progress: CurriculumProgressEntity,
-        curriculum: CurriculumEntity?,
+        versions: List<CurriculumEntity>,
         requirements: List<CurriculumRequirementEntity>,
         entries: List<CurriculumEntryEntity>,
         prerequisites: List<CurriculumPrerequisiteEntity>,
@@ -72,8 +74,7 @@ abstract class CurriculumDao {
         clearProgress()
         clearCurriculum()
         insertProgress(progress)
-        if (curriculum == null) return
-        insertCurriculum(curriculum)
+        if (versions.isNotEmpty()) insertVersions(versions)
         if (requirements.isNotEmpty()) insertRequirements(requirements)
         if (entries.isNotEmpty()) insertEntries(entries)
         if (prerequisites.isNotEmpty()) insertPrerequisites(prerequisites)

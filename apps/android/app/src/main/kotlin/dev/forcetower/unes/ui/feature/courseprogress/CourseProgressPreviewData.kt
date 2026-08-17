@@ -1,12 +1,14 @@
 package dev.forcetower.unes.ui.feature.courseprogress
 
 import dev.forcetower.melon.feature.courseprogress.domain.model.CourseProgress
+import dev.forcetower.melon.feature.courseprogress.domain.model.CurriculumBindingSource
 import dev.forcetower.melon.feature.courseprogress.domain.model.CurriculumEntry
 import dev.forcetower.melon.feature.courseprogress.domain.model.CurriculumEntryStatus
 import dev.forcetower.melon.feature.courseprogress.domain.model.CurriculumPeriod
 import dev.forcetower.melon.feature.courseprogress.domain.model.CurriculumRequirementKind
 import dev.forcetower.melon.feature.courseprogress.domain.model.CurriculumRequirementProgress
 import dev.forcetower.melon.feature.courseprogress.domain.model.CurriculumSummary
+import dev.forcetower.melon.feature.courseprogress.domain.model.CurriculumSupersession
 import dev.forcetower.melon.feature.courseprogress.domain.model.CurriculumVersion
 import kotlin.time.Instant
 
@@ -36,16 +38,59 @@ internal object CourseProgressPreviewData {
         corequisites = corequisites,
     )
 
-    val progress = CourseProgress(
-        curriculum = CurriculumVersion(
-            id = "cur-1",
-            code = "20232",
+    // Three versions of the course: the one the student is bound to (2023.2,
+    // superseded), the current 2025.1 grid, and a retired 2019.1 one — enough
+    // to exercise every standing the picker words.
+    private val boundVersion = CurriculumVersion(
+        id = "cur-1",
+        code = "20232",
+        label = "BACHAREL E FORMAÇÃO DE PSICÓLOGO",
+        asOf = "2024-03-04",
+        minPeriods = 10,
+        maxPeriods = 16,
+        stale = true,
+        supersededBy = CurriculumSupersession(code = "20251", effectiveFrom = "20251"),
+        source = CurriculumBindingSource.Manual,
+        completedHours = 1500,
+        requiredHours = 4040,
+        percent = 37.1,
+        fit = 100.0,
+    )
+
+    private val versions = listOf(
+        CurriculumVersion(
+            id = "cur-2",
+            code = "20251",
             label = "BACHAREL E FORMAÇÃO DE PSICÓLOGO",
-            asOf = "2024-03-04",
+            asOf = "2025-02-10",
+            minPeriods = 10,
+            maxPeriods = 16,
+            stale = false,
+            current = true,
+            completedHours = 1320,
+            requiredHours = 4200,
+            percent = 31.4,
+            fit = 88.0,
+        ),
+        boundVersion,
+        CurriculumVersion(
+            id = "cur-0",
+            code = "20191",
+            label = "BACHAREL E FORMAÇÃO DE PSICÓLOGO",
+            asOf = "2019-03-01",
             minPeriods = 10,
             maxPeriods = 16,
             stale = true,
+            supersededBy = CurriculumSupersession(code = "20232", effectiveFrom = "20232"),
+            completedHours = 900,
+            requiredHours = null,
+            percent = null,
+            fit = 60.0,
         ),
+    )
+
+    val progress = CourseProgress(
+        curriculum = boundVersion,
         summary = CurriculumSummary(
             completedHours = 1500,
             requiredHours = 4040,
@@ -146,5 +191,7 @@ internal object CourseProgressPreviewData {
         currentPeriod = 3,
         prerequisitesKnown = true,
         syncedAt = Instant.fromEpochMilliseconds(1_786_000_000_000),
+        availableVersions = versions,
+        approvedHours = 1500,
     )
 }

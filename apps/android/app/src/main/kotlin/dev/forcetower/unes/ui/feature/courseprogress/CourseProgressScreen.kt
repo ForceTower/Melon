@@ -21,6 +21,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.HelpOutline
 import androidx.compose.material.icons.filled.ErrorOutline
 import androidx.compose.material.icons.filled.Schedule
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -29,6 +30,7 @@ import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -57,6 +59,8 @@ import dev.forcetower.unes.ui.feature.courseprogress.components.ComplementaryHou
 import dev.forcetower.unes.ui.feature.courseprogress.components.CurriculumFlowCard
 import dev.forcetower.unes.ui.feature.courseprogress.components.CurriculumRemainingCard
 import dev.forcetower.unes.ui.feature.courseprogress.components.CurriculumRequirementsCard
+import dev.forcetower.unes.ui.feature.courseprogress.components.CurriculumVersionButton
+import dev.forcetower.unes.ui.feature.courseprogress.components.CurriculumVersionPickerSheet
 import dev.forcetower.unes.ui.feature.courseprogress.components.requirementsHint
 
 // "Progresso do curso" — how much carga horária is done against the
@@ -87,6 +91,11 @@ internal fun CourseProgressScreen(
         onRetry = { vm.onIntent(CourseProgressIntent.Retry) },
         onOpenExplainer = { vm.onIntent(CourseProgressIntent.ExplainerTapped) },
         onDismissExplainer = { vm.onIntent(CourseProgressIntent.ExplainerDismissed) },
+        onOpenVersionPicker = { vm.onIntent(CourseProgressIntent.VersionPickerTapped) },
+        onDismissVersionPicker = { vm.onIntent(CourseProgressIntent.VersionPickerDismissed) },
+        onPickVersion = { vm.onIntent(CourseProgressIntent.VersionSelected(it)) },
+        onAutomaticVersion = { vm.onIntent(CourseProgressIntent.AutomaticVersionTapped) },
+        onDismissVersionSwitchFailure = { vm.onIntent(CourseProgressIntent.VersionSwitchFailureDismissed) },
         modifier = modifier,
         bottomInset = bottomInset,
     )
@@ -101,6 +110,11 @@ private fun CourseProgressContent(
     onRetry: () -> Unit,
     onOpenExplainer: () -> Unit,
     onDismissExplainer: () -> Unit,
+    onOpenVersionPicker: () -> Unit,
+    onDismissVersionPicker: () -> Unit,
+    onPickVersion: (String) -> Unit,
+    onAutomaticVersion: () -> Unit,
+    onDismissVersionSwitchFailure: () -> Unit,
     modifier: Modifier = Modifier,
     bottomInset: Dp = 0.dp,
 ) {
@@ -150,6 +164,7 @@ private fun CourseProgressContent(
                 progress = progress,
                 onOpenFlowchart = onOpenFlowchart,
                 onOpenExplainer = onOpenExplainer,
+                onOpenVersionPicker = onOpenVersionPicker,
                 bottomInset = bottomInset,
             )
             state.failed -> LoadFailure(onRetry = onRetry)
@@ -164,6 +179,30 @@ private fun CourseProgressContent(
             onDismiss = onDismissExplainer,
         )
     }
+
+    if (state.versionPickerOpen && state.progress != null) {
+        CurriculumVersionPickerSheet(
+            progress = state.progress,
+            course = state.course,
+            switchingVersionId = state.switchingVersionId,
+            onPick = onPickVersion,
+            onAutomatic = onAutomaticVersion,
+            onDismiss = onDismissVersionPicker,
+        )
+    }
+
+    if (state.versionSwitchFailed) {
+        AlertDialog(
+            onDismissRequest = onDismissVersionSwitchFailure,
+            title = { Text(text = stringResource(R.string.course_progress_version_switch_failed_title)) },
+            text = { Text(text = stringResource(R.string.course_progress_version_switch_failed_body)) },
+            confirmButton = {
+                TextButton(onClick = onDismissVersionSwitchFailure) {
+                    Text(text = stringResource(R.string.course_progress_version_switch_failed_ok))
+                }
+            },
+        )
+    }
 }
 
 @Composable
@@ -172,6 +211,7 @@ private fun LoadedContent(
     progress: CourseProgress,
     onOpenFlowchart: () -> Unit,
     onOpenExplainer: () -> Unit,
+    onOpenVersionPicker: () -> Unit,
     bottomInset: Dp,
 ) {
     val curriculum = progress.curriculum
@@ -193,6 +233,15 @@ private fun LoadedContent(
                 style = MaterialTheme.typography.bodySmall.copy(fontSize = 13.sp),
                 color = MaterialTheme.colorScheme.outline,
                 modifier = Modifier.padding(start = 4.dp),
+            )
+        }
+
+        if (progress.canPickVersion) {
+            CurriculumVersionButton(
+                progress = progress,
+                course = state.course,
+                onClick = onOpenVersionPicker,
+                modifier = Modifier.fadeUpOnAppear(delayMs = 20),
             )
         }
 
@@ -411,6 +460,11 @@ private fun CourseProgressScreenPreview() {
             onRetry = {},
             onOpenExplainer = {},
             onDismissExplainer = {},
+            onOpenVersionPicker = {},
+            onDismissVersionPicker = {},
+            onPickVersion = {},
+            onAutomaticVersion = {},
+            onDismissVersionSwitchFailure = {},
         )
     }
 }

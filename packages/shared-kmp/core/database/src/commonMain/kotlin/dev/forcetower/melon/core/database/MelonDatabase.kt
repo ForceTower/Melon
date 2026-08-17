@@ -86,7 +86,7 @@ import dev.forcetower.melon.core.database.entity.UserSettingsEntity
         CurriculumEntryEntity::class,
         CurriculumPrerequisiteEntity::class,
     ],
-    version = 13,
+    version = 14,
     // Adding `PersonalEvent` is purely additive, so Room can generate the
     // migration from the exported schemas — the student's own entries survive
     // the upgrade instead of falling through to the destructive fallback.
@@ -95,13 +95,17 @@ import dev.forcetower.melon.core.database.entity.UserSettingsEntity
     // profile-customization column. v12 adds the nullable Message.authorName
     // (the admin behind an app message). v13 adds the five curriculum-mirror
     // tables behind "Progresso do curso" — new tables only, so the student's
-    // synced payloads survive the upgrade.
+    // synced payloads survive the upgrade. v14 turns `Curriculum` into the
+    // list of every version of the course (picker columns with defaults) and
+    // adds `CurriculumProgress.approvedHours` — additive; the next refresh
+    // fills the new columns in.
     autoMigrations = [
         AutoMigration(from = 8, to = 9),
         AutoMigration(from = 9, to = 10),
         AutoMigration(from = 10, to = 11),
         AutoMigration(from = 11, to = 12),
         AutoMigration(from = 12, to = 13),
+        AutoMigration(from = 13, to = 14),
     ],
 )
 @ConstructedBy(MelonDatabaseConstructor::class)

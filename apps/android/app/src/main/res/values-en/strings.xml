@@ -2238,6 +2238,34 @@
     <string name="course_progress_status_blocked">Prerequisite missing</string>
     <string name="course_progress_status_blocked_short">Locked</string>
     <string name="course_progress_status_not_taken">Not taken</string>
+
+    <string name="course_progress_version_title_format">Curriculum %1$s</string>
+    <string name="course_progress_version_pick">Choose a curriculum</string>
+    <string name="course_progress_version_none">no curriculum bound</string>
+    <plurals name="course_progress_version_count">
+        <item quantity="one">%1$d curriculum</item>
+        <item quantity="other">%1$d curricula</item>
+    </plurals>
+    <string name="course_progress_version_standing_current">current</string>
+    <string name="course_progress_version_standing_previous">previous</string>
+    <string name="course_progress_version_standing_retired">retired</string>
+    <string name="course_progress_version_standing_unplaced">other course</string>
+    <string name="course_progress_version_sheet_title">Curriculum</string>
+    <string name="course_progress_version_sheet_subtitle_format">%1$s curriculum grids</string>
+    <string name="course_progress_version_sheet_subtitle_fallback">Your course’s curriculum grids</string>
+    <string name="course_progress_version_hint_current">what new entrants join today</string>
+    <string name="course_progress_version_hint_superseded_format">replaced by %1$s in %2$s</string>
+    <string name="course_progress_version_hint_superseded_undated_format">replaced by %1$s</string>
+    <string name="course_progress_version_hint_unplaced">outside your current course\'s list</string>
+    <string name="course_progress_version_hours_only_format">%1$s completed · no reference total</string>
+    <string name="course_progress_version_fit_format">%1$s of your %2$s taken count here</string>
+    <string name="course_progress_version_fit_unknown">no hours taken yet</string>
+    <string name="course_progress_version_footnote">Your hours stay counted on every grid. Switching here changes which one the app uses to work out your progress.</string>
+    <string name="course_progress_version_automatic">Back to automatic detection</string>
+    <string name="course_progress_version_selected">Curriculum in use</string>
+    <string name="course_progress_version_switch_failed_title">Couldn\'t switch curriculum</string>
+    <string name="course_progress_version_switch_failed_body">Check your connection and try again.</string>
+    <string name="course_progress_version_switch_failed_ok">Got it</string>
     <!-- endregion -->
 
 </resources>
