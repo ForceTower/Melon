@@ -48,6 +48,7 @@ import dev.forcetower.melon.feature.library.domain.usecase.SearchLibraryUseCase
 import dev.forcetower.melon.feature.materials.domain.usecase.GetMaterialsDisciplineUseCase
 import dev.forcetower.melon.feature.materials.domain.usecase.GetMaterialsOverviewUseCase
 import dev.forcetower.melon.feature.materials.domain.usecase.GetSavedMaterialsUseCase
+import dev.forcetower.melon.feature.materials.domain.usecase.GetUploadSemestersUseCase
 import dev.forcetower.melon.feature.materials.domain.usecase.OpenMaterialUseCase
 import dev.forcetower.melon.feature.materials.domain.usecase.ReportMaterialUseCase
 import dev.forcetower.melon.feature.materials.domain.usecase.SetMaterialSavedUseCase
@@ -316,6 +317,8 @@ object UmbrellaBridgeModule {
         graph.getMaterialUseCase
     @Provides fun provideGetSavedMaterialsUseCase(graph: UmbrellaGraph): GetSavedMaterialsUseCase =
         graph.getSavedMaterialsUseCase
+    @Provides fun provideGetUploadSemestersUseCase(graph: UmbrellaGraph): GetUploadSemestersUseCase =
+        graph.getUploadSemestersUseCase
     @Provides fun provideSetMaterialUsefulUseCase(graph: UmbrellaGraph): SetMaterialUsefulUseCase =
         graph.setMaterialUsefulUseCase
     @Provides fun provideSetMaterialSavedUseCase(graph: UmbrellaGraph): SetMaterialSavedUseCase =

@@ -46,6 +46,7 @@ import dev.forcetower.melon.feature.materials.domain.usecase.GetMaterialUseCase
 import dev.forcetower.melon.feature.materials.domain.usecase.GetMaterialsDisciplineUseCase
 import dev.forcetower.melon.feature.materials.domain.usecase.GetMaterialsOverviewUseCase
 import dev.forcetower.melon.feature.materials.domain.usecase.GetSavedMaterialsUseCase
+import dev.forcetower.melon.feature.materials.domain.usecase.GetUploadSemestersUseCase
 import dev.forcetower.melon.feature.materials.domain.usecase.OpenMaterialUseCase
 import dev.forcetower.melon.feature.materials.domain.usecase.ReportMaterialUseCase
 import dev.forcetower.melon.feature.materials.domain.usecase.SetMaterialSavedUseCase
@@ -235,6 +236,7 @@ interface UmbrellaGraph {
     val getMaterialsDisciplineUseCase: GetMaterialsDisciplineUseCase
     val getMaterialUseCase: GetMaterialUseCase
     val getSavedMaterialsUseCase: GetSavedMaterialsUseCase
+    val getUploadSemestersUseCase: GetUploadSemestersUseCase
     val setMaterialUsefulUseCase: SetMaterialUsefulUseCase
     val setMaterialSavedUseCase: SetMaterialSavedUseCase
     val reportMaterialUseCase: ReportMaterialUseCase
