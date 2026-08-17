@@ -102,13 +102,7 @@ android {
 licensee {
     allow("Apache-2.0")
     allow("MIT")
-    allow("BSD-2-Clause")
     allow("BSD-3-Clause")
-    allow("ISC")
-    allow("MPL-2.0")
-    allow("EPL-1.0")
-    allow("CC0-1.0")
-    allow("Unlicense")
 
     // Play Services and Google identity libraries declare their license via
     // URL only (no SPDX id), so allow the Android SDK terms URL explicitly —

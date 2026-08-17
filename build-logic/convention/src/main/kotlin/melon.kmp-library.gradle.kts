@@ -14,6 +14,7 @@ kotlin {
             project.path.removePrefix(":packages:shared-kmp").replace(":", ".")
         compileSdk = 37
         minSdk = 28
+        withHostTest {}
     }
     jvm()
     iosArm64()
