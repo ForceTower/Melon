@@ -100,6 +100,9 @@ data class MelonSurfaceColors(
     // notification bubble on top. Adaptive, but dark-leaning in both themes.
     val previewPlate: Color,
     val previewCard: Color,
+    // Skeleton placeholder fill + sweeping highlight (`Modifier.shimmer`).
+    val skeletonPlate: Color,
+    val skeletonSheen: Color,
 )
 
 // Mesh palettes for the Final Countdown verdict hero (dc `FinalCountdownScreen`
@@ -248,6 +251,8 @@ internal fun melonColorsLight() = MelonColors(
         pressedAccent = AccentPressLight,
         previewPlate = PreviewPlateLight,
         previewCard = PreviewCardLight,
+        skeletonPlate = SkeletonPlateLight,
+        skeletonSheen = SkeletonSheenLight,
     ),
     palette = MelonPaletteColors(
         coral = PaletteCoralLight,
@@ -284,6 +289,8 @@ internal fun melonColorsDark() = MelonColors(
         pressedAccent = AccentPressDark,
         previewPlate = PreviewPlateDark,
         previewCard = PreviewCardDark,
+        skeletonPlate = SkeletonPlateDark,
+        skeletonSheen = SkeletonSheenDark,
     ),
     palette = MelonPaletteColors(
         coral = PaletteCoralDark,

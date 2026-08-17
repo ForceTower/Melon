@@ -54,6 +54,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -79,11 +80,11 @@ import dev.forcetower.melon.feature.library.domain.model.LibraryYear
 import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.components.MelonBanner
 import dev.forcetower.unes.designsystem.foundation.PinnedHeaderHairline
+import dev.forcetower.unes.designsystem.foundation.SkeletonBar
 import dev.forcetower.unes.designsystem.theme.MelonTheme
 import dev.forcetower.unes.designsystem.theme.melon
 import dev.forcetower.unes.ui.feature.library.components.LibraryFreshnessRow
 import dev.forcetower.unes.ui.feature.library.components.LibraryRowAvailability
-import dev.forcetower.unes.ui.feature.library.components.LibraryShimmerBar
 import dev.forcetower.unes.ui.feature.library.components.LibrarySuggestionRow
 import dev.forcetower.unes.ui.feature.library.components.LibraryTypeTag
 import dev.forcetower.unes.ui.feature.library.components.LibraryWorkMark
@@ -459,7 +460,7 @@ private fun ResultsList(
                         )
                     }
                 } else {
-                    LibraryShimmerBar(width = 180, height = 22)
+                    SkeletonBar(width = 180.dp, height = 22.dp)
                 }
                 LibraryFreshnessRow(
                     reading = aggregate,
@@ -870,17 +871,18 @@ private fun SkeletonRow(opacity: Float) {
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         modifier = Modifier
             .fillMaxWidth()
+            .alpha(opacity)
             .padding(horizontal = 20.dp, vertical = 14.dp),
     ) {
-        LibraryShimmerBar(width = 56, height = 80)
+        SkeletonBar(width = 56.dp, height = 80.dp)
         Column(
             verticalArrangement = Arrangement.spacedBy(9.dp),
             modifier = Modifier.padding(top = 5.dp),
         ) {
-            LibraryShimmerBar(width = 70, height = 9)
-            LibraryShimmerBar(width = 240, height = 13)
-            LibraryShimmerBar(width = 150, height = 10)
-            LibraryShimmerBar(width = 120, height = 9)
+            SkeletonBar(width = 70.dp, height = 9.dp)
+            SkeletonBar(width = 240.dp, height = 13.dp)
+            SkeletonBar(width = 150.dp, height = 10.dp)
+            SkeletonBar(width = 120.dp, height = 9.dp)
         }
     }
 }

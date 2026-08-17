@@ -1,11 +1,5 @@
 package dev.forcetower.unes.ui.feature.library.components
 
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -40,7 +34,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -55,6 +48,7 @@ import dev.forcetower.melon.feature.library.domain.model.LibraryReading
 import dev.forcetower.melon.feature.library.domain.model.LibraryWork
 import dev.forcetower.melon.feature.library.domain.model.LibraryWorkType
 import dev.forcetower.unes.R
+import dev.forcetower.unes.designsystem.foundation.SkeletonBar
 import dev.forcetower.unes.designsystem.theme.melon
 import dev.forcetower.unes.ui.feature.library.formatLibraryAgo
 import dev.forcetower.unes.ui.feature.library.hue
@@ -263,29 +257,6 @@ internal fun LibraryTypeTag(work: LibraryWork, modifier: Modifier = Modifier) {
     )
 }
 
-// Pulsing placeholder capsule while the availability consultation runs.
-@Composable
-internal fun LibraryShimmerBar(width: Int, height: Int, modifier: Modifier = Modifier) {
-    val transition = rememberInfiniteTransition(label = "libraryShimmer")
-    val alpha by transition.animateFloat(
-        initialValue = 0.55f,
-        targetValue = 0.22f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 650, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse,
-        ),
-        label = "libraryShimmerAlpha",
-    )
-    Box(
-        modifier = modifier
-            .width(width.dp)
-            .height(height.dp)
-            .alpha(alpha)
-            .clip(RoundedCornerShape(height.dp / 2))
-            .background(MaterialTheme.colorScheme.outlineVariant),
-    )
-}
-
 internal enum class LibraryVerdictTone { Ok, Bad, Other, Muted }
 
 @Composable
@@ -330,8 +301,8 @@ internal fun LibraryRowAvailability(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.height(18.dp),
         ) {
-            LibraryShimmerBar(width = 9, height = 9)
-            LibraryShimmerBar(width = 112, height = 9)
+            SkeletonBar(width = 9.dp, height = 9.dp)
+            SkeletonBar(width = 112.dp, height = 9.dp)
         }
         LibraryReading.Unavailable -> Row(
             verticalAlignment = Alignment.CenterVertically,

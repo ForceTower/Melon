@@ -87,6 +87,7 @@ import dev.forcetower.melon.feature.library.domain.model.LibraryWork
 import dev.forcetower.melon.feature.library.domain.model.LibraryYear
 import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.foundation.PinnedHeaderHairline
+import dev.forcetower.unes.designsystem.foundation.SkeletonBar
 import dev.forcetower.unes.designsystem.theme.MelonTheme
 import dev.forcetower.unes.designsystem.theme.melon
 import dev.forcetower.unes.ui.feature.library.components.LibraryBackButton
@@ -94,7 +95,6 @@ import dev.forcetower.unes.ui.feature.library.components.LibraryCard
 import dev.forcetower.unes.ui.feature.library.components.LibraryFreshnessRow
 import dev.forcetower.unes.ui.feature.library.components.LibraryInfoNote
 import dev.forcetower.unes.ui.feature.library.components.LibrarySectionLabel
-import dev.forcetower.unes.ui.feature.library.components.LibraryShimmerBar
 import dev.forcetower.unes.ui.feature.library.components.LibraryTypeTag
 import dev.forcetower.unes.ui.feature.library.components.color
 import dev.forcetower.unes.ui.feature.library.components.verdictTone
@@ -745,8 +745,8 @@ private fun AnswerCard(
         Column(modifier = Modifier.padding(18.dp)) {
             when (reading) {
                 null -> Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    LibraryShimmerBar(width = 180, height = 24)
-                    LibraryShimmerBar(width = 124, height = 12)
+                    SkeletonBar(width = 180.dp, height = 24.dp)
+                    SkeletonBar(width = 124.dp, height = 12.dp)
                 }
                 LibraryReading.Unavailable -> Column {
                     Row(

@@ -35,4 +35,7 @@ object MelonMotion {
 
     fun <T> navPush(): AnimationSpec<T> =
         tween(durationMillis = NavPushDurationMillis, easing = NavPushEasing)
+
+    // One full sheen sweep across the screen for `Modifier.shimmer` skeletons.
+    const val ShimmerPeriodMillis: Int = 1400
 }

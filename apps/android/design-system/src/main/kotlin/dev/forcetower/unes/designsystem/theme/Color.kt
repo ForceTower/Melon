@@ -188,3 +188,11 @@ internal val PreviewPlateLight = Color(0xFF2A2233)
 internal val PreviewPlateDark = Color(0xFF181020)
 internal val PreviewCardLight = Color(0x24FFFFFF)
 internal val PreviewCardDark = Color(0xD93C3448)
+
+// Skeleton placeholders (`Modifier.shimmer`): `plate` is the resting capsule
+// fill, `sheen` the highlight band that sweeps across it. The sheen is white
+// in both themes — a lighter pass reads as "loading" on dark and light alike.
+internal val SkeletonPlateLight = Color(0x2E9C8FA0)
+internal val SkeletonSheenLight = Color(0xB3FFFFFF)
+internal val SkeletonPlateDark = Color(0xFF2A2232)
+internal val SkeletonSheenDark = Color(0x26FFFFFF)
