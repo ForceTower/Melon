@@ -119,6 +119,25 @@ extension APIClient {
         ))
     }
 
+    func put<T: Decodable>(
+        _ type: T.Type = T.self,
+        at path: String,
+        body: some Encodable & Sendable
+    ) async throws -> T {
+        let request = APIRequest(
+            method: "PUT",
+            path: path,
+            body: try JSONEncoder().encode(body)
+        )
+        return try Self.unwrap(await send(request))
+    }
+
+    /// DELETE whose response carries a data payload (e.g. the rebuilt
+    /// curriculum after clearing a manual version).
+    func delete<T: Decodable>(_ type: T.Type = T.self, _ path: String) async throws -> T {
+        try Self.unwrap(await send(APIRequest(method: "DELETE", path: path)))
+    }
+
     /// DELETE whose response carries no data payload.
     func delete(_ path: String, query: [URLQueryItem] = []) async throws {
         _ = try await send(APIRequest(method: "DELETE", path: path, query: query))

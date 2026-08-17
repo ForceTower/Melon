@@ -87,4 +87,5 @@ enum ContentTypes {
     static let document = "document"
     static let setting = "setting"
     static let passkey = "passkey"
+    static let curriculumVersion = "curriculum_version"
 }

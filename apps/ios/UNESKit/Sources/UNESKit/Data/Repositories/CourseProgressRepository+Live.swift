@@ -11,24 +11,26 @@ extension CourseProgressRepository: DependencyKey {
         },
         refresh: {
             @Dependency(\.apiClient) var wrappedClient
-            @Dependency(\.database) var wrappedDatabase
-            @Dependency(\.date) var wrappedDate
             let apiClient = wrappedClient
-            let mirror = MirrorStore(writer: wrappedDatabase)
-
             log.debug("refresh start")
-            do {
-                let dto: CurriculumPayloadDTO = try await apiClient.get(from: "api/curriculum")
-                let progress = dto.domain(syncedAt: wrappedDate.now)
-                try await mirror.applyCourseProgress(progress)
-                log.info("""
-                refresh ok curriculum=\(progress.curriculum?.code ?? "<none>") \
-                completed=\(progress.summary.completedHours)h required=\(progress.summary.requiredHours.map(String.init) ?? "?")h \
-                entries=\(progress.entries.count)
-                """)
-            } catch {
-                logFailure("refresh", error: error)
-                throw error
+            try await apply("refresh") {
+                try await apiClient.get(from: "api/curriculum")
+            }
+        },
+        selectVersion: { curriculumId in
+            @Dependency(\.apiClient) var wrappedClient
+            let apiClient = wrappedClient
+            log.info("select version id=\(curriculumId)")
+            try await apply("select version") {
+                try await apiClient.put(at: "api/curriculum/version", body: VersionSelectionBody(curriculumId: curriculumId))
+            }
+        },
+        resetVersion: {
+            @Dependency(\.apiClient) var wrappedClient
+            let apiClient = wrappedClient
+            log.info("reset version to automatic")
+            try await apply("reset version") {
+                try await apiClient.delete(CurriculumPayloadDTO.self, "api/curriculum/version")
             }
         },
         observe: {
@@ -53,6 +55,30 @@ extension CourseProgressRepository: DependencyKey {
         }
     )
 
+    /// Every write path returns the rebuilt payload, so fetching and mirroring
+    /// are the same move for a refresh, a pick and a reset.
+    private static func apply(
+        _ operation: String,
+        _ fetch: @Sendable () async throws -> CurriculumPayloadDTO
+    ) async throws {
+        @Dependency(\.database) var wrappedDatabase
+        @Dependency(\.date) var wrappedDate
+        let mirror = MirrorStore(writer: wrappedDatabase)
+        do {
+            let progress = try await fetch().domain(syncedAt: wrappedDate.now)
+            try await mirror.applyCourseProgress(progress)
+            log.info("""
+            \(operation) ok curriculum=\(progress.curriculum?.code ?? "<none>") \
+            source=\(progress.curriculum?.source?.rawValue ?? "<none>") versions=\(progress.availableVersions.count) \
+            completed=\(progress.summary.completedHours)h required=\(progress.summary.requiredHours.map(String.init) ?? "?")h \
+            entries=\(progress.entries.count)
+            """)
+        } catch {
+            logFailure(operation, error: error)
+            throw error
+        }
+    }
+
     private static func logFailure(_ operation: String, error: Error) {
         switch error {
         case APIError.server(401, _):
@@ -71,7 +97,20 @@ extension CourseProgressRepository: DependencyKey {
 
 // MARK: - DTOs (`api/curriculum`)
 
+private struct VersionSelectionBody: Encodable {
+    var curriculumId: String
+}
+
 struct CurriculumPayloadDTO: Decodable {
+    struct Supersession: Decodable {
+        var code: String
+        var effectiveFrom: String? = nil
+
+        var domain: CurriculumSupersession {
+            CurriculumSupersession(code: code, effectiveFrom: effectiveFrom)
+        }
+    }
+
     struct Version: Decodable {
         var id: String
         var code: String
@@ -80,11 +119,23 @@ struct CurriculumPayloadDTO: Decodable {
         var minPeriods: Int? = nil
         var maxPeriods: Int? = nil
         var stale: Bool? = nil
+        var current: Bool? = nil
+        var supersededBy: Supersession? = nil
+        var source: String? = nil
+        var completedHours: Int? = nil
+        var requiredHours: Int? = nil
+        var percent: Double? = nil
+        var fit: Double? = nil
 
         var domain: CurriculumVersion {
             CurriculumVersion(
                 id: id, code: code, label: label, asOf: asOf,
-                minPeriods: minPeriods, maxPeriods: maxPeriods, stale: stale ?? false
+                minPeriods: minPeriods, maxPeriods: maxPeriods, stale: stale ?? false,
+                current: current ?? false,
+                supersededBy: supersededBy?.domain,
+                source: source.flatMap(CurriculumBindingSource.init(rawValue:)),
+                completedHours: completedHours, requiredHours: requiredHours,
+                percent: percent, fit: fit
             )
         }
     }
@@ -165,6 +216,8 @@ struct CurriculumPayloadDTO: Decodable {
     }
 
     var curriculum: Version? = nil
+    var availableVersions: [Version]? = nil
+    var approvedHours: Int? = nil
     var summary: Summary
     var requirements: [Requirement]? = nil
     var periods: [Period]? = nil
@@ -179,7 +232,9 @@ struct CurriculumPayloadDTO: Decodable {
             periods: (periods ?? []).map(\.domain).sorted { $0.id < $1.id },
             currentPeriod: currentPeriod,
             prerequisitesKnown: prerequisitesKnown ?? false,
-            syncedAt: syncedAt
+            syncedAt: syncedAt,
+            availableVersions: (availableVersions ?? []).map(\.domain),
+            approvedHours: approvedHours ?? summary.completedHours
         )
     }
 }

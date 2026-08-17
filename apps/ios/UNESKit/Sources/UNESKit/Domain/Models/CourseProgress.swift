@@ -33,7 +33,41 @@ enum CurriculumRequirementKind: String, Equatable, Sendable, Codable {
     case required, elective, complementary, internship, capstone, `extension`, other
 }
 
-/// The curriculum version ("matriz curricular") the student is bound to.
+/// How the student came to be on a curriculum version. `manual` is their
+/// own pick and outranks resolution; `resolved` is the server's guess from
+/// the entry semester; `upstream` would be SAGRES saying so (it doesn't yet).
+enum CurriculumBindingSource: String, Equatable, Sendable, Codable {
+    case resolved, manual, upstream
+}
+
+/// The version that replaced another one, and the semester new entrants
+/// moved over.
+struct CurriculumSupersession: Equatable, Sendable {
+    /// SAGRES's identifier for the successor: "20232".
+    var code: String
+    /// Semester code the successor started taking entrants — not always its
+    /// own code.
+    var effectiveFrom: String?
+
+    var codeLabel: String { CurriculumVersion.codeLabel(for: code) }
+
+    var effectiveFromLabel: String? { effectiveFrom.map(CurriculumVersion.codeLabel(for:)) }
+}
+
+/// Where a version sits in its course's succession, as the picker words it.
+enum CurriculumStanding: Equatable, Sendable {
+    /// The newest grid — what a calouro enters on today.
+    case current
+    /// The grid right before the current one; students were migrated off it.
+    case previous
+    /// Older than that: nobody has entered on it in a long while.
+    case retired
+    /// Outside the course's own list (a manual pick after a transfer).
+    case unplaced
+}
+
+/// One curriculum version ("matriz curricular") of the student's course —
+/// the one they are bound to, or one they could switch to.
 struct CurriculumVersion: Equatable, Sendable, Identifiable {
     var id: String
     /// SAGRES's version identifier, a semester code: "20232".
@@ -46,6 +80,21 @@ struct CurriculumVersion: Equatable, Sendable, Identifiable {
     var maxPeriods: Int?
     /// The source document is old enough that required hours may have moved.
     var stale: Bool
+    /// The newest version of the course.
+    var current = false
+    /// nil on the current version; set on every older one.
+    var supersededBy: CurriculumSupersession?
+    /// Set only on the version the student is bound to.
+    var source: CurriculumBindingSource?
+    /// The student's progress against *this* version — every version has its
+    /// own grid and required hours, so the numbers move on a switch.
+    var completedHours: Int?
+    var requiredHours: Int?
+    var percent: Double?
+    /// 0…100: how much of the student's own approved hours this version even
+    /// lists. Distinct from `percent` — this says whether the grid is theirs
+    /// at all. nil while they have no approved hours.
+    var fit: Double?
 
     var asOfDate: Date? {
         try? Date(asOf, strategy: .iso8601.year().month().day())
@@ -53,7 +102,11 @@ struct CurriculumVersion: Equatable, Sendable, Identifiable {
 
     /// The version as students read it — "2024.1" for the semester code
     /// "20241". Anything not shaped like a semester code shows verbatim.
-    var codeLabel: String {
+    var codeLabel: String { Self.codeLabel(for: code) }
+
+    var isManualPick: Bool { source == .manual }
+
+    static func codeLabel(for code: String) -> String {
         guard code.count == 5, code.allSatisfy(\.isNumber) else { return code }
         return "\(code.prefix(4)).\(code.suffix(1))"
     }
@@ -164,8 +217,29 @@ struct CourseProgress: Equatable, Sendable {
     /// False when too few entries carry prerequisites to claim availability.
     var prerequisitesKnown: Bool
     var syncedAt: Date
+    /// Every version on file for the course, newest first, the bound one
+    /// included. Empty when the course has no curriculum at all.
+    var availableVersions: [CurriculumVersion] = []
+    /// Every hour the student has passed, whichever version lists it — the
+    /// pool each version's `fit` is a share of.
+    var approvedHours = 0
 
     var hasCurriculum: Bool { curriculum != nil }
+
+    /// There is a choice to make: more than one version, or none bound while
+    /// some exist (the resolver refused — the student must pick by hand).
+    var canPickVersion: Bool {
+        availableVersions.count > 1 || (curriculum == nil && !availableVersions.isEmpty)
+    }
+
+    /// The version's place in the course's succession. Derived from the
+    /// list: the successor of the version right behind the current one *is*
+    /// the current one; further back it is not.
+    func standing(of version: CurriculumVersion) -> CurriculumStanding {
+        if version.current { return .current }
+        guard let successor = version.supersededBy else { return .unplaced }
+        return availableVersions.contains { $0.current && $0.code == successor.code } ? .previous : .retired
+    }
 
     /// The total is known but the per-requirement split didn't come back.
     var hasBreakdown: Bool { !requirements.isEmpty }

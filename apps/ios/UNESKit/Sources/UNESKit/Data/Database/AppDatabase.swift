@@ -330,6 +330,34 @@ private func migrator() -> DatabaseMigrator {
             t.primaryKey(["curriculumId", "entryCode", "requiresCode", "kind"])
         }
     }
+    // Curriculum picker: every version on file for the student's course
+    // (bound one included), each scored against their own history, replaces
+    // the single-row `curricula` table. Nothing to carry over — the next
+    // refresh rewrites the whole payload anyway.
+    migrator.registerMigration("v11") { db in
+        try db.drop(table: "curricula")
+        try db.alter(table: "curriculumProgress") { t in
+            t.add(column: "approvedHours", .integer).notNull().defaults(to: 0)
+        }
+        try db.create(table: "curriculumVersions") { t in
+            t.primaryKey("id", .text)
+            t.column("code", .text).notNull()
+            t.column("label", .text).notNull()
+            t.column("asOf", .text).notNull()
+            t.column("minPeriods", .integer)
+            t.column("maxPeriods", .integer)
+            t.column("stale", .boolean).notNull()
+            t.column("current", .boolean).notNull()
+            t.column("supersededByCode", .text)
+            t.column("supersededByEffectiveFrom", .text)
+            t.column("source", .text)
+            t.column("completedHours", .integer)
+            t.column("requiredHours", .integer)
+            t.column("percent", .double)
+            t.column("fit", .double)
+            t.column("position", .integer).notNull()
+        }
+    }
     return migrator
 }
 

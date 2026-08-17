@@ -5,9 +5,10 @@ private let log = Log.scoped("MirrorStore")
 
 // MARK: - Course progress (curriculum mirror)
 
-/// The curriculum version the student is bound to. One row at a time.
-struct CurriculumRecord: Codable, Equatable, Sendable, FetchableRecord, PersistableRecord {
-    static let databaseTableName = "curricula"
+/// One curriculum version of the student's course, in the server's order
+/// (newest first). The bound one is named by `CurriculumProgressRecord`.
+struct CurriculumVersionRecord: Codable, Equatable, Sendable, FetchableRecord, PersistableRecord {
+    static let databaseTableName = "curriculumVersions"
     var id: String
     var code: String
     var label: String
@@ -15,8 +16,17 @@ struct CurriculumRecord: Codable, Equatable, Sendable, FetchableRecord, Persista
     var minPeriods: Int?
     var maxPeriods: Int?
     var stale: Bool
+    var current: Bool
+    var supersededByCode: String?
+    var supersededByEffectiveFrom: String?
+    var source: String?
+    var completedHours: Int?
+    var requiredHours: Int?
+    var percent: Double?
+    var fit: Double?
+    var position: Int
 
-    init(_ version: CurriculumVersion) {
+    init(_ version: CurriculumVersion, position: Int) {
         id = version.id
         code = version.code
         label = version.label
@@ -24,12 +34,26 @@ struct CurriculumRecord: Codable, Equatable, Sendable, FetchableRecord, Persista
         minPeriods = version.minPeriods
         maxPeriods = version.maxPeriods
         stale = version.stale
+        current = version.current
+        supersededByCode = version.supersededBy?.code
+        supersededByEffectiveFrom = version.supersededBy?.effectiveFrom
+        source = version.source?.rawValue
+        completedHours = version.completedHours
+        requiredHours = version.requiredHours
+        percent = version.percent
+        fit = version.fit
+        self.position = position
     }
 
     var domain: CurriculumVersion {
         CurriculumVersion(
             id: id, code: code, label: label, asOf: asOf,
-            minPeriods: minPeriods, maxPeriods: maxPeriods, stale: stale
+            minPeriods: minPeriods, maxPeriods: maxPeriods, stale: stale,
+            current: current,
+            supersededBy: supersededByCode.map { CurriculumSupersession(code: $0, effectiveFrom: supersededByEffectiveFrom) },
+            source: source.flatMap(CurriculumBindingSource.init(rawValue:)),
+            completedHours: completedHours, requiredHours: requiredHours,
+            percent: percent, fit: fit
         )
     }
 }
@@ -53,6 +77,7 @@ struct CurriculumProgressRecord: Codable, Equatable, Sendable, FetchableRecord, 
     var currentPeriod: Int?
     var prerequisitesKnown: Bool
     var syncedAt: String
+    var approvedHours: Int
 
     init(_ progress: CourseProgress) {
         curriculumId = progress.curriculum?.id
@@ -66,6 +91,7 @@ struct CurriculumProgressRecord: Codable, Equatable, Sendable, FetchableRecord, 
         currentPeriod = progress.currentPeriod
         prerequisitesKnown = progress.prerequisitesKnown
         syncedAt = progress.syncedAt.formatted(MirrorStore.timestampFormat)
+        approvedHours = progress.approvedHours
     }
 
     var summary: CurriculumSummary {
@@ -178,8 +204,16 @@ extension MirrorStore {
             try await writer.write { db in
                 try Self.clearCourseProgress(db)
                 try CurriculumProgressRecord(progress).insert(db)
+                // The server lists the bound version among the alternatives;
+                // should it ever not, it still has to be readable back.
+                var versions = progress.availableVersions
+                if let curriculum = progress.curriculum, !versions.contains(where: { $0.id == curriculum.id }) {
+                    versions.insert(curriculum, at: 0)
+                }
+                for (position, version) in versions.enumerated() {
+                    try CurriculumVersionRecord(version, position: position).insert(db)
+                }
                 guard let curriculum = progress.curriculum else { return }
-                try CurriculumRecord(curriculum).insert(db)
                 for (position, requirement) in progress.requirements.enumerated() {
                     try CurriculumRequirementRecord(requirement, curriculumId: curriculum.id, position: position)
                         .insert(db)
@@ -206,7 +240,7 @@ extension MirrorStore {
             }
             log.info("""
             upsert curriculum id=\(progress.curriculum?.id ?? "<none>") \
-            requirements=\(progress.requirements.count) entries=\(progress.entries.count)
+            versions=\(progress.availableVersions.count) requirements=\(progress.requirements.count) entries=\(progress.entries.count)
             """)
         } catch {
             log.error("apply curriculum failed", error: error)
@@ -229,7 +263,7 @@ extension MirrorStore {
 
     static func clearCourseProgress(_ db: Database) throws {
         try CurriculumProgressRecord.deleteAll(db)
-        try CurriculumRecord.deleteAll(db)
+        try CurriculumVersionRecord.deleteAll(db)
         try CurriculumRequirementRecord.deleteAll(db)
         try CurriculumEntryRecord.deleteAll(db)
         try CurriculumPrerequisiteRecord.deleteAll(db)
@@ -239,14 +273,16 @@ extension MirrorStore {
         guard let progressRecord = try CurriculumProgressRecord.fetchOne(db, key: CurriculumProgressRecord.currentKey)
         else { return nil }
         let syncedAt = (try? Date(progressRecord.syncedAt, strategy: timestampFormat)) ?? .distantPast
+        let versions = try CurriculumVersionRecord.order(Column("position")).fetchAll(db).map(\.domain)
 
         guard let curriculumId = progressRecord.curriculumId,
-              let curriculum = try CurriculumRecord.fetchOne(db, key: curriculumId)
+              let curriculum = versions.first(where: { $0.id == curriculumId })
         else {
             return CourseProgress(
                 curriculum: nil, summary: progressRecord.summary, requirements: [], periods: [],
                 currentPeriod: progressRecord.currentPeriod,
-                prerequisitesKnown: progressRecord.prerequisitesKnown, syncedAt: syncedAt
+                prerequisitesKnown: progressRecord.prerequisitesKnown, syncedAt: syncedAt,
+                availableVersions: versions, approvedHours: progressRecord.approvedHours
             )
         }
 
@@ -294,13 +330,15 @@ extension MirrorStore {
         periods.sort { $0.id < $1.id }
 
         return CourseProgress(
-            curriculum: curriculum.domain,
+            curriculum: curriculum,
             summary: progressRecord.summary,
             requirements: requirements,
             periods: periods,
             currentPeriod: progressRecord.currentPeriod,
             prerequisitesKnown: progressRecord.prerequisitesKnown,
-            syncedAt: syncedAt
+            syncedAt: syncedAt,
+            availableVersions: versions,
+            approvedHours: progressRecord.approvedHours
         )
     }
 }

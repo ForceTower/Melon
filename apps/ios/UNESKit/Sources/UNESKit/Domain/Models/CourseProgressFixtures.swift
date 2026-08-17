@@ -7,6 +7,7 @@ extension CourseProgress {
         curriculum: Bool = true,
         breakdown: Bool = true,
         stale: Bool = false,
+        manualPick: Bool = false,
         syncedAt: Date = Date(timeIntervalSince1970: 1_786_777_920)
     ) -> CourseProgress {
         guard curriculum else {
@@ -21,15 +22,14 @@ extension CourseProgress {
                 periods: [],
                 currentPeriod: nil,
                 prerequisitesKnown: false,
-                syncedAt: syncedAt
+                syncedAt: syncedAt,
+                availableVersions: previewVersions(stale: stale, bound: nil),
+                approvedHours: 1500
             )
         }
+        let versions = previewVersions(stale: stale, bound: manualPick ? .manual : .resolved)
         return CourseProgress(
-            curriculum: CurriculumVersion(
-                id: "cur-psi-20232", code: "20232",
-                label: "BACHAREL E FORMAÇÃO DE PSICÓLOGO",
-                asOf: "2024-03-04", minPeriods: 10, maxPeriods: 15, stale: stale
-            ),
+            curriculum: versions[0],
             summary: CurriculumSummary(
                 completedHours: 1500, requiredHours: 4040, percent: 37.13,
                 excludedHours: 200, unclassifiedHours: 0,
@@ -39,8 +39,42 @@ extension CourseProgress {
             periods: previewPeriods,
             currentPeriod: 3,
             prerequisitesKnown: true,
-            syncedAt: syncedAt
+            syncedAt: syncedAt,
+            availableVersions: versions,
+            approvedHours: 1500
         )
+    }
+
+    /// Psicologia's succession: 20232 (current) ← 20122 ← 20051. `bound`
+    /// is the source stamped on 20232, nil when nothing is bound.
+    private static func previewVersions(stale: Bool, bound: CurriculumBindingSource?) -> [CurriculumVersion] {
+        [
+            CurriculumVersion(
+                id: "cur-psi-20232", code: "20232",
+                label: "BACHAREL E FORMAÇÃO DE PSICÓLOGO",
+                asOf: "2024-03-04", minPeriods: 10, maxPeriods: 15, stale: stale,
+                current: true, supersededBy: nil, source: bound,
+                completedHours: 1500, requiredHours: 4040, percent: 37.13, fit: 100
+            ),
+            CurriculumVersion(
+                id: "cur-psi-20122", code: "20122",
+                label: "BACHAREL E FORMAÇÃO DE PSICÓLOGO",
+                asOf: "2013-02-18", minPeriods: 10, maxPeriods: 15, stale: true,
+                current: false,
+                supersededBy: CurriculumSupersession(code: "20232", effectiveFrom: "20232"),
+                source: nil,
+                completedHours: 780, requiredHours: 3890, percent: 20.05, fit: 52
+            ),
+            CurriculumVersion(
+                id: "cur-psi-20051", code: "20051",
+                label: "PSICOLOGIA",
+                asOf: "2005-03-01", minPeriods: 10, maxPeriods: 14, stale: true,
+                current: false,
+                supersededBy: CurriculumSupersession(code: "20122", effectiveFrom: nil),
+                source: nil,
+                completedHours: 240, requiredHours: 3420, percent: 7.02, fit: 16
+            ),
+        ]
     }
 
     private static let previewRequirements: [CurriculumRequirementProgress] = [

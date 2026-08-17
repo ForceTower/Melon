@@ -18,12 +18,32 @@ struct CourseProgressView: View {
                 requirement: store.progress?.requirements.first { !$0.derivable }
             )
         }
+        .sheet(isPresented: versionPickerBinding) {
+            if let progress = store.progress {
+                CurriculumVersionPickerSheet(
+                    progress: progress,
+                    course: store.course,
+                    switchingVersionId: store.switchingVersionId,
+                    onPick: { store.send(.versionSelected($0)) },
+                    onAutomatic: { store.send(.automaticVersionTapped) }
+                )
+                .interactiveDismissDisabled(store.isSwitchingVersion)
+            }
+        }
+        .alert($store.scope(state: \.alert, action: \.alert))
     }
 
     private var explainerBinding: Binding<Bool> {
         Binding(
             get: { store.isComplementaryExplainerPresented },
             set: { if !$0 { store.send(.complementaryExplainerDismissed) } }
+        )
+    }
+
+    private var versionPickerBinding: Binding<Bool> {
+        Binding(
+            get: { store.isVersionPickerPresented },
+            set: { if !$0 { store.send(.versionPickerDismissed) } }
         )
     }
 
@@ -46,6 +66,13 @@ struct CourseProgressView: View {
                 subtitle(progress)
                     .fadeUp(delay: 0.02)
                     .padding(.bottom, 2)
+
+                if progress.canPickVersion {
+                    CourseProgressVersionButton(progress: progress, course: store.course) {
+                        store.send(.versionPickerTapped)
+                    }
+                    .fadeUp(delay: 0.05)
+                }
 
                 if let curriculum = progress.curriculum, curriculum.stale {
                     staleNotice(curriculum)
@@ -559,6 +586,19 @@ struct ComplementaryHoursExplainerSheet: View {
     NavigationStack {
         CourseProgressView(
             store: Store(initialState: CourseProgressFeature.State(course: "Psicologia", progress: .preview(stale: true))) {
+                CourseProgressFeature()
+            } withDependencies: {
+                $0.courseProgressRepository.observe = { .finished }
+                $0.courseProgressRepository.refresh = {}
+            }
+        )
+    }
+}
+
+#Preview("Currículo escolhido à mão") {
+    NavigationStack {
+        CourseProgressView(
+            store: Store(initialState: CourseProgressFeature.State(course: "Psicologia", progress: .preview(manualPick: true))) {
                 CourseProgressFeature()
             } withDependencies: {
                 $0.courseProgressRepository.observe = { .finished }

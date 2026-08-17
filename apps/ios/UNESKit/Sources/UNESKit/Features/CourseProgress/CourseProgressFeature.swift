@@ -17,12 +17,24 @@ struct CourseProgressFeature {
         /// The refresh failed and nothing is mirrored to fall back on.
         var loadFailed = false
         var isComplementaryExplainerPresented = false
+        var isVersionPickerPresented = false
+        /// The version whose PUT (or the DELETE back to automatic, as
+        /// `automaticVersionSwitch`) is in flight — the picker locks and
+        /// spins on it meanwhile.
+        var switchingVersionId: String?
+        @Presents var alert: AlertState<Never>?
+
+        var isSwitchingVersion: Bool { switchingVersionId != nil }
 
         init(course: String? = nil, progress: CourseProgress? = nil) {
             self.course = course
             self.progress = progress
         }
     }
+
+    /// Sentinel for `switchingVersionId` while resetting to the server's
+    /// resolution rather than picking a version.
+    static let automaticVersionSwitch = "automatic"
 
     enum Action: Equatable {
         case task
@@ -33,6 +45,12 @@ struct CourseProgressFeature {
         case flowchartTapped
         case complementaryExplainerTapped
         case complementaryExplainerDismissed
+        case versionPickerTapped
+        case versionPickerDismissed
+        case versionSelected(String)
+        case automaticVersionTapped
+        case versionSwitchFinished(succeeded: Bool)
+        case alert(PresentationAction<Never>)
         case delegate(Delegate)
 
         enum Delegate: Equatable {
@@ -45,7 +63,7 @@ struct CourseProgressFeature {
 
     private let log = Log.scoped("CourseProgressFeature")
 
-    private enum CancelID { case observation, refresh }
+    private enum CancelID { case observation, refresh, versionSwitch }
 
     var body: some ReducerOf<Self> {
         Reduce { state, action in
@@ -99,10 +117,75 @@ struct CourseProgressFeature {
                 state.isComplementaryExplainerPresented = false
                 return .none
 
+            case .versionPickerTapped:
+                guard let progress = state.progress, progress.canPickVersion else { return .none }
+                analytics.selectContent(contentType: ContentTypes.hub, itemId: "curriculum_version_picker")
+                state.isVersionPickerPresented = true
+                return .none
+
+            case .versionPickerDismissed:
+                state.isVersionPickerPresented = false
+                return .none
+
+            case let .versionSelected(curriculumId):
+                guard !state.isSwitchingVersion else { return .none }
+                // Re-picking the bound version is a no-op: nothing to send,
+                // just close.
+                if state.progress?.curriculum?.id == curriculumId {
+                    state.isVersionPickerPresented = false
+                    return .none
+                }
+                log.info("select curriculum version id=\(curriculumId)")
+                analytics.selectContent(contentType: ContentTypes.curriculumVersion, itemId: curriculumId)
+                state.switchingVersionId = curriculumId
+                return .run { send in
+                    do {
+                        try await courseProgressRepository.selectVersion(curriculumId)
+                        await send(.versionSwitchFinished(succeeded: true))
+                    } catch {
+                        await send(.versionSwitchFinished(succeeded: false))
+                    }
+                }
+                .cancellable(id: CancelID.versionSwitch, cancelInFlight: true)
+
+            case .automaticVersionTapped:
+                guard !state.isSwitchingVersion, state.progress?.curriculum?.isManualPick == true else { return .none }
+                log.info("reset curriculum version to automatic")
+                analytics.selectContent(contentType: ContentTypes.curriculumVersion, itemId: Self.automaticVersionSwitch)
+                state.switchingVersionId = Self.automaticVersionSwitch
+                return .run { send in
+                    do {
+                        try await courseProgressRepository.resetVersion()
+                        await send(.versionSwitchFinished(succeeded: true))
+                    } catch {
+                        await send(.versionSwitchFinished(succeeded: false))
+                    }
+                }
+                .cancellable(id: CancelID.versionSwitch, cancelInFlight: true)
+
+            case let .versionSwitchFinished(succeeded):
+                state.switchingVersionId = nil
+                // The rebuilt payload already landed through the observation;
+                // the sheet closes over the new numbers.
+                if succeeded {
+                    state.isVersionPickerPresented = false
+                } else {
+                    state.alert = AlertState {
+                        TextState(String.localized(.courseProgressVersionSwitchFailedTitle))
+                    } message: {
+                        TextState(String.localized(.courseProgressVersionSwitchFailedBody))
+                    }
+                }
+                return .none
+
+            case .alert:
+                return .none
+
             case .delegate:
                 return .none
             }
         }
+        .ifLet(\.$alert, action: \.alert)
     }
 
     private func observeMirror() -> Effect<Action> {
