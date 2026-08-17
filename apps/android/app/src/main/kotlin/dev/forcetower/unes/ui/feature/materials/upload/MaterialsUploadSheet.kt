@@ -535,45 +535,62 @@ private fun DetailsStep(
             FieldLabel(text = stringResource(R.string.materials_upload_field_semester))
             Spacer(Modifier.height(8.dp))
         }
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier
-                .horizontalScroll(rememberScrollState())
-                .padding(horizontal = 20.dp),
-        ) {
-            state.semesterOptions.forEach { semester ->
-                val selected = state.semester == semester
-                Text(
-                    text = semester,
-                    style = MaterialTheme.typography.labelMedium.copy(
-                        fontSize = 13.sp,
-                        fontWeight = FontWeight.SemiBold,
-                    ),
-                    color = if (selected) {
-                        MaterialTheme.colorScheme.inverseOnSurface
-                    } else {
-                        MaterialTheme.colorScheme.onSurfaceVariant
-                    },
-                    modifier = Modifier
-                        .clip(CircleShape)
-                        .background(
-                            if (selected) {
-                                MaterialTheme.colorScheme.inverseSurface
-                            } else {
-                                MaterialTheme.melon.surface.card
-                            },
-                        )
-                        .border(
-                            1.dp,
-                            if (selected) Color.Transparent else MaterialTheme.melon.surface.line,
-                            CircleShape,
-                        )
-                        .clickable { onIntent(MaterialsUploadIntent.SemesterChanged(semester)) }
-                        .padding(horizontal = 15.dp, vertical = 8.dp),
-                )
+        // Quick-picks over the student's real enrolled semesters. Absent for a
+        // student with no mirrored enrollments — the field below still works.
+        if (state.semesterOptions.isNotEmpty()) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier
+                    .horizontalScroll(rememberScrollState())
+                    .padding(horizontal = 20.dp),
+            ) {
+                state.semesterOptions.forEach { semester ->
+                    val selected = state.semester.trim() == semester
+                    Text(
+                        text = semester,
+                        style = MaterialTheme.typography.labelMedium.copy(
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.SemiBold,
+                        ),
+                        color = if (selected) {
+                            MaterialTheme.colorScheme.inverseOnSurface
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        },
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .background(
+                                if (selected) {
+                                    MaterialTheme.colorScheme.inverseSurface
+                                } else {
+                                    MaterialTheme.melon.surface.card
+                                },
+                            )
+                            .border(
+                                1.dp,
+                                if (selected) Color.Transparent else MaterialTheme.melon.surface.line,
+                                CircleShape,
+                            )
+                            .clickable { onIntent(MaterialsUploadIntent.SemesterChanged(semester)) }
+                            .padding(horizontal = 15.dp, vertical = 8.dp),
+                    )
+                }
             }
+            Spacer(Modifier.height(10.dp))
         }
         Column(modifier = Modifier.padding(horizontal = 20.dp)) {
+            SheetTextField(
+                value = state.semester,
+                onValueChange = { onIntent(MaterialsUploadIntent.SemesterChanged(it)) },
+                placeholder = stringResource(R.string.materials_upload_semester_placeholder),
+            )
+            Spacer(Modifier.height(6.dp))
+            Text(
+                text = stringResource(R.string.materials_upload_semester_hint),
+                style = MaterialTheme.typography.labelSmall.copy(fontSize = 11.sp),
+                color = MaterialTheme.colorScheme.outline,
+            )
+
             Spacer(Modifier.height(18.dp))
             Row(verticalAlignment = Alignment.Bottom) {
                 FieldLabel(text = stringResource(R.string.materials_upload_field_teacher))

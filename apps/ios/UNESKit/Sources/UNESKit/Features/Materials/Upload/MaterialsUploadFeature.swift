@@ -32,6 +32,7 @@ struct MaterialsUploadFeature {
         /// Set → the picker is skipped and back never returns to it.
         var isDisciplineLocked: Bool
         var discipline: MaterialsDiscipline?
+        /// Quick-picks only; `semester` is free text and may hold anything.
         var semesterOptions: [String]
         /// First screen of the sheet's own NavigationStack.
         let root: Step
@@ -52,30 +53,39 @@ struct MaterialsUploadFeature {
         var filePickFailed = false
         @Shared(.appStorage("materials_guidelines_acknowledged")) var hasAcknowledgedGuidelines = false
 
+        /// `initialSemester` pre-fills the field for a re-upload, which should
+        /// keep the semester of the material it replaces. Otherwise the field
+        /// adopts the newest mirrored semester once `.task` loads the chips.
         init(
             disciplines: [MaterialsDiscipline],
-            semester: String?,
-            locked: MaterialsDiscipline? = nil,
-            now: Date = .now
+            initialSemester: String? = nil,
+            locked: MaterialsDiscipline? = nil
         ) {
             let resolved = locked ?? (disciplines.count == 1 ? disciplines.first : nil)
-            let options = MaterialsFormat.uploadSemesters(
-                from: semester ?? MaterialsFormat.currentSemester(now: now)
-            )
             self.disciplines = disciplines
             isDisciplineLocked = locked != nil
             discipline = resolved
-            semesterOptions = options
-            self.semester = options.first ?? ""
+            semesterOptions = []
+            semester = initialSemester ?? ""
             root = resolved == nil ? .pickDiscipline : .source
         }
 
         var canContinue: Bool {
-            title.trimmingCharacters(in: .whitespaces).count > 1 && file != nil
+            title.trimmingCharacters(in: .whitespaces).count > 1 && file != nil && isSemesterValid
+        }
+
+        /// Non-blank and within the server's length cap. No shape check — the
+        /// server takes any label and every upload is moderated, so a student
+        /// on a term we have never seen ("26.2PGM") can still tag it.
+        var isSemesterValid: Bool {
+            let trimmed = semester.trimmingCharacters(in: .whitespaces)
+            return !trimmed.isEmpty && trimmed.count <= MaterialsFormat.semesterMaxLength
         }
     }
 
     enum Action: Equatable, BindableAction {
+        case task
+        case semesterOptionsLoaded([String])
         case disciplinePicked(MaterialsDiscipline)
         case sourceFileTapped
         case sourceScanTapped
@@ -107,6 +117,25 @@ struct MaterialsUploadFeature {
         BindingReducer()
         Reduce { state, action in
             switch action {
+            case .task:
+                guard state.semesterOptions.isEmpty else { return .none }
+                return .run { send in
+                    guard let options = try? await materialsRepository.uploadSemesters() else { return }
+                    await send(.semesterOptionsLoaded(options))
+                }
+
+            case let .semesterOptionsLoaded(options):
+                guard !options.isEmpty else { return .none }
+                let current = state.semester.trimmingCharacters(in: .whitespaces)
+                // A pre-filled semester the mirror doesn't know (an old
+                // re-upload) still deserves a chip rather than looking unset.
+                state.semesterOptions =
+                    current.isEmpty || options.contains(current) ? options : [current] + options
+                if current.isEmpty {
+                    state.semester = options[0]
+                }
+                return .none
+
             case let .disciplinePicked(discipline):
                 log.info("upload discipline picked id=\(discipline.id)")
                 state.discipline = discipline
@@ -217,7 +246,7 @@ struct MaterialsUploadFeature {
             disciplineId: discipline.id,
             type: state.type,
             title: state.title.trimmingCharacters(in: .whitespaces),
-            semester: state.semester,
+            semester: state.semester.trimmingCharacters(in: .whitespaces),
             teacherName: teacher.isEmpty ? nil : teacher,
             fileKind: .pdf,
             pages: file.pages,
@@ -232,16 +261,5 @@ struct MaterialsUploadFeature {
                 await send(.submitFailed)
             }
         }
-    }
-}
-
-extension MaterialsFormat {
-    /// The Brazilian academic semester a date falls in — "2026.1" through
-    /// June, "2026.2" after.
-    static func currentSemester(now: Date) -> String {
-        let components = Calendar(identifier: .gregorian).dateComponents([.year, .month], from: now)
-        let year = components.year ?? 2026
-        let term = (components.month ?? 1) <= 6 ? 1 : 2
-        return "\(year).\(term)"
     }
 }

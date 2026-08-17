@@ -23,23 +23,7 @@ enum MaterialsFormat {
         code.unicodeScalars.reduce(0) { ($0 &+ Int($1.value)) % 997 }
     }
 
-    /// The five semesters an upload can be tagged with, newest first,
-    /// starting at the current one — "2025.2" → ["2025.2", "2025.1", …].
-    static func uploadSemesters(from current: String) -> [String] {
-        let parts = current.split(separator: ".")
-        guard parts.count == 2, var year = Int(parts[0]), var term = Int(parts[1]), (1...2).contains(term) else {
-            return [current]
-        }
-        var semesters: [String] = []
-        for _ in 0..<5 {
-            semesters.append("\(year).\(term)")
-            if term == 1 {
-                year -= 1
-                term = 2
-            } else {
-                term = 1
-            }
-        }
-        return semesters
-    }
+    /// Upper bound on a hand-typed upload semester, mirroring the server's
+    /// only remaining constraint on the label.
+    static let semesterMaxLength = 32
 }

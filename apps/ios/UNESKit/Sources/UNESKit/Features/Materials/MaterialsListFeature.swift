@@ -120,7 +120,6 @@ struct MaterialsListFeature {
                 log.info("open upload from list id=\(state.discipline.id)")
                 state.upload = MaterialsUploadFeature.State(
                     disciplines: [state.discipline],
-                    semester: nil,
                     locked: state.discipline
                 )
                 return .none

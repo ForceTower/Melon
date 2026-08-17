@@ -1596,6 +1596,8 @@
     <string name="materials_upload_field_title">Title</string>
     <string name="materials_upload_title_placeholder">E.g.: Exam 1 — lists and stacks</string>
     <string name="materials_upload_field_semester">Semester</string>
+    <string name="materials_upload_semester_placeholder">E.g.: 2025.2</string>
+    <string name="materials_upload_semester_hint">Use the semester as it appears in your classes.</string>
     <string name="materials_upload_field_teacher">Professor</string>
     <string name="materials_upload_optional">optional</string>
     <string name="materials_upload_teacher_placeholder">Professor\'s name</string>

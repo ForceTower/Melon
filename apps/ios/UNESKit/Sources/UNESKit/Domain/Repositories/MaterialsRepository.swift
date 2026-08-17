@@ -22,6 +22,10 @@ struct MaterialsRepository: Sendable {
     var open: @Sendable (_ material: Material) async throws -> URL
     /// Sends a new upload into moderation; returns it as `pending`.
     var submit: @Sendable (_ submission: MaterialSubmission) async throws -> Material
+    /// Quick-pick semester labels for the upload sheet, newest first. The one
+    /// local read in an otherwise online-only feature — the semester list is
+    /// already mirrored for Turmas.
+    var uploadSemesters: @Sendable () async throws -> [String]
 }
 
 extension MaterialsRepository: TestDependencyKey {
@@ -44,7 +48,8 @@ extension MaterialsRepository: TestDependencyKey {
             material.type = submission.type
             material.semester = submission.semester
             return material
-        }
+        },
+        uploadSemesters: { ["2025.2", "2025.1", "2024.2"] }
     )
 }
 

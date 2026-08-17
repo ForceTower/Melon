@@ -1,6 +1,7 @@
 package dev.forcetower.melon.feature.materials.domain.usecase
 
 import dev.forcetower.melon.core.common.Outcome
+import dev.forcetower.melon.core.database.dao.SemesterDao
 import dev.forcetower.melon.feature.materials.data.network.MaterialsService
 import dev.forcetower.melon.feature.materials.domain.model.FetchedMaterialFile
 import dev.forcetower.melon.feature.materials.domain.model.Material
@@ -11,9 +12,11 @@ import dev.forcetower.melon.feature.materials.domain.model.MaterialsError
 import dev.forcetower.melon.feature.materials.domain.model.MaterialsOverview
 import dev.zacsweers.metro.Inject
 
-// Materiais is online-only, so every use case is a live request — no flows,
-// no mirror. Grouped in one file because each is a one-line delegation; the
-// behavioral contract lives on `MaterialsService`.
+// Materiais is online-only, so the acervo use cases are all live requests —
+// no flows, no mirror. Grouped in one file because each is a one-line
+// delegation; the behavioral contract lives on `MaterialsService`. The lone
+// exception is `GetUploadSemestersUseCase`, which reads the already-mirrored
+// semester list instead of asking the server for something it has locally.
 
 // Hub payload: the student's current-semester disciplines with per-type
 // tallies, plus the saved-bookmarks count.
@@ -109,4 +112,29 @@ class SubmitMaterialUseCase internal constructor(
     suspend operator fun invoke(
         submission: MaterialSubmission,
     ): Outcome<Material, MaterialsError> = service.submit(submission)
+}
+
+// The semester labels offered as quick-picks in the upload sheet, newest
+// first. Read from the local mirror rather than the network: the semester
+// list is already synced for Turmas, so this works offline and costs nothing.
+//
+// These are suggestions, not a whitelist — the field itself is free text,
+// because a student can legitimately upload something from a term that never
+// made it into their mirror.
+@Inject
+class GetUploadSemestersUseCase internal constructor(
+    private val semesterDao: SemesterDao,
+) {
+    suspend operator fun invoke(): List<String> =
+        semesterDao.listAll().map { semesterLabel(it.code) }.distinct()
+}
+
+// "20261" → "2026.1". Everything else passes through as-is: postgrad
+// ("26.2PGM"), EaD ("20242AD") and Medicina ("2026M") codes are already the
+// label students see, and mangling them would be worse than leaving them.
+private fun semesterLabel(code: String): String {
+    if (code.length == 5 && code.all { it.isDigit() }) {
+        return "${code.take(4)}.${code.last()}"
+    }
+    return code
 }

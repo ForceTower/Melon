@@ -185,9 +185,11 @@ struct MaterialsDetailFeature {
                     teacherName: state.material.teacherName,
                     colorIndex: ref.colorIndex, counts: [:]
                 )
+                // A re-upload replaces this material, so its own semester is
+                // the right default — whatever shape that label happens to be.
                 state.upload = MaterialsUploadFeature.State(
                     disciplines: [discipline],
-                    semester: nil,
+                    initialSemester: state.material.semester,
                     locked: discipline
                 )
                 return .none

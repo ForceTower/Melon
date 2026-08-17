@@ -1656,6 +1656,8 @@
     <string name="materials_upload_field_title">Título</string>
     <string name="materials_upload_title_placeholder">Ex: Prova 1 — listas e pilhas</string>
     <string name="materials_upload_field_semester">Semestre</string>
+    <string name="materials_upload_semester_placeholder">Ex: 2025.2</string>
+    <string name="materials_upload_semester_hint">Use o semestre como ele aparece nas suas turmas.</string>
     <string name="materials_upload_field_teacher">Professor</string>
     <string name="materials_upload_optional">opcional</string>
     <string name="materials_upload_teacher_placeholder">Nome do professor</string>

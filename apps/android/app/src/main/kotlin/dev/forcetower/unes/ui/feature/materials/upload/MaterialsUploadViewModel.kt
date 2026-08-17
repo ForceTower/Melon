@@ -17,12 +17,12 @@ import dev.forcetower.melon.feature.materials.domain.model.MaterialFileKind
 import dev.forcetower.melon.feature.materials.domain.model.MaterialSubmission
 import dev.forcetower.melon.feature.materials.domain.model.MaterialType
 import dev.forcetower.melon.feature.materials.domain.model.MaterialsDiscipline
+import dev.forcetower.melon.feature.materials.domain.usecase.GetUploadSemestersUseCase
 import dev.forcetower.melon.feature.materials.domain.usecase.SubmitMaterialUseCase
 import dev.forcetower.unes.mvi.MviViewModel
 import dev.forcetower.unes.mvi.UiEffect
 import dev.forcetower.unes.mvi.UiIntent
 import dev.forcetower.unes.mvi.UiState
-import dev.forcetower.unes.ui.feature.materials.MaterialsFormat
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -41,6 +41,9 @@ internal enum class MaterialsUploadStep {
     Guidelines,
     Success,
 }
+
+// Mirrors the server's only remaining constraint on the label.
+internal const val SEMESTER_MAX_LENGTH = 32
 
 internal data class MaterialsPickedFile(
     val fileName: String,
@@ -61,6 +64,9 @@ internal data class MaterialsUploadUiState(
     val fileReadFailed: Boolean = false,
     val type: MaterialType = MaterialType.Exam,
     val title: String = "",
+    // Free text: the label is whatever the student's course actually calls the
+    // semester ("2026.1", "26.2PGM", "20242AD"). Chips are a shortcut, never a
+    // constraint — an upload can be from a term we have never seen.
     val semester: String = "",
     val semesterOptions: List<String> = emptyList(),
     val teacherName: String = "",
@@ -70,7 +76,13 @@ internal data class MaterialsUploadUiState(
     val submitFailed: Boolean = false,
     val submitted: Material? = null,
 ) : UiState {
-    val canContinue: Boolean get() = title.trim().length > 1 && file != null
+    val canContinue: Boolean
+        get() = title.trim().length > 1 && file != null && isSemesterValid
+
+    // Non-blank and within the server's length cap — no shape check, because
+    // the server takes any label and a moderator reviews every upload.
+    val isSemesterValid: Boolean
+        get() = semester.trim().isNotEmpty() && semester.trim().length <= SEMESTER_MAX_LENGTH
     val showsBack: Boolean
         get() = when (step) {
             MaterialsUploadStep.Source -> !isLocked
@@ -118,26 +130,33 @@ internal sealed interface MaterialsUploadEffect : UiEffect {
 internal class MaterialsUploadViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val submitMaterial: SubmitMaterialUseCase,
+    private val getUploadSemesters: GetUploadSemestersUseCase,
     private val analytics: Analytics,
 ) : MviViewModel<MaterialsUploadUiState, MaterialsUploadIntent, MaterialsUploadEffect>(
     MaterialsUploadUiState(),
 ) {
     override fun onIntent(intent: MaterialsUploadIntent) {
         when (intent) {
-            is MaterialsUploadIntent.StartFromHub -> setState {
-                freshState().copy(
-                    isOpen = true,
-                    options = intent.options,
-                    step = MaterialsUploadStep.PickDiscipline,
-                )
+            is MaterialsUploadIntent.StartFromHub -> {
+                setState {
+                    freshState().copy(
+                        isOpen = true,
+                        options = intent.options,
+                        step = MaterialsUploadStep.PickDiscipline,
+                    )
+                }
+                loadSemesterOptions()
             }
-            is MaterialsUploadIntent.StartFromDiscipline -> setState {
-                freshState().copy(
-                    isOpen = true,
-                    discipline = intent.discipline,
-                    isLocked = true,
-                    step = MaterialsUploadStep.Source,
-                )
+            is MaterialsUploadIntent.StartFromDiscipline -> {
+                setState {
+                    freshState().copy(
+                        isOpen = true,
+                        discipline = intent.discipline,
+                        isLocked = true,
+                        step = MaterialsUploadStep.Source,
+                    )
+                }
+                loadSemesterOptions()
             }
             is MaterialsUploadIntent.PickDiscipline -> {
                 val choice = currentState.options.firstOrNull { it.id == intent.disciplineId }
@@ -148,7 +167,9 @@ internal class MaterialsUploadViewModel @Inject constructor(
             is MaterialsUploadIntent.ScanPicked -> readScan(intent)
             is MaterialsUploadIntent.TypeChanged -> setState { copy(type = intent.type) }
             is MaterialsUploadIntent.TitleChanged -> setState { copy(title = intent.title) }
-            is MaterialsUploadIntent.SemesterChanged -> setState { copy(semester = intent.semester) }
+            is MaterialsUploadIntent.SemesterChanged -> setState {
+                copy(semester = intent.semester.take(SEMESTER_MAX_LENGTH))
+            }
             is MaterialsUploadIntent.TeacherChanged -> setState { copy(teacherName = intent.teacher) }
             MaterialsUploadIntent.ToggleGuidelines -> setState {
                 copy(isGuidelinesAccepted = !isGuidelinesAccepted)
@@ -170,10 +191,27 @@ internal class MaterialsUploadViewModel @Inject constructor(
     }
 
     private fun freshState() = MaterialsUploadUiState(
-        semester = MaterialsFormat.currentSemester(),
-        semesterOptions = MaterialsFormat.uploadSemesters(),
         guidelinesAlreadyAcknowledged = prefs().getBoolean(KEY_GUIDELINES, false),
     )
+
+    // Straight off the mirror, so the chips are there by the time the student
+    // reaches the details step even with no connection.
+    private fun loadSemesterOptions() {
+        viewModelScope.launch {
+            val options = getUploadSemesters()
+            if (options.isEmpty()) return@launch
+            setState {
+                if (!isOpen) {
+                    this
+                } else {
+                    copy(
+                        semesterOptions = options,
+                        semester = semester.ifBlank { options.first() },
+                    )
+                }
+            }
+        }
+    }
 
     private fun back() {
         setState {
@@ -274,7 +312,7 @@ internal class MaterialsUploadViewModel @Inject constructor(
                 disciplineId = discipline.id,
                 type = state.type,
                 title = state.title.trim(),
-                semester = state.semester,
+                semester = state.semester.trim(),
                 teacherName = state.teacherName.trim().ifBlank { null },
                 fileKind = MaterialFileKind.Pdf,
                 pages = file.pages,

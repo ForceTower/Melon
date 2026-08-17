@@ -159,6 +159,10 @@ extension MaterialsRepository: DependencyKey {
                 logFailure("submit", error: error)
                 throw error
             }
+        },
+        uploadSemesters: {
+            @Dependency(\.database) var wrappedDatabase
+            return try await MirrorStore(writer: wrappedDatabase).uploadSemesterLabels()
         }
     )
 

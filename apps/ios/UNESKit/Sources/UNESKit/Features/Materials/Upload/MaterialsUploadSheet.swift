@@ -35,6 +35,7 @@ struct MaterialsUploadSheet: View {
             onFail: { store.send(.filePickFailed) }
         )
         .interactiveDismissDisabled(store.isSubmitting)
+        .task { store.send(.task) }
     }
 
     // MARK: Steps
@@ -308,7 +309,20 @@ struct MaterialsUploadSheet: View {
                 )
             }
             field(.materialsUploadFieldSemester) {
-                semesterChips
+                VStack(alignment: .leading, spacing: 10) {
+                    // Quick-picks over the student's real enrolled semesters;
+                    // absent when the server has none to offer.
+                    if !store.semesterOptions.isEmpty {
+                        semesterChips
+                    }
+                    textInput(
+                        text: $store.semester,
+                        placeholder: .materialsUploadSemesterPlaceholder
+                    )
+                    Text(.materialsUploadSemesterHint)
+                        .font(.system(size: 11, weight: .medium))
+                        .foregroundStyle(UNESColor.ink4)
+                }
             }
             field(.materialsUploadFieldTeacher, optional: true) {
                 textInput(
@@ -446,7 +460,7 @@ struct MaterialsUploadSheet: View {
         ScrollView(.horizontal) {
             HStack(spacing: 8) {
                 ForEach(store.semesterOptions, id: \.self) { semester in
-                    let isOn = store.semester == semester
+                    let isOn = store.semester.trimmingCharacters(in: .whitespaces) == semester
                     Button {
                         store.send(.binding(.set(\.semester, semester)))
                     } label: {
@@ -748,8 +762,7 @@ extension View {
             MaterialsUploadSheet(
                 store: Store(
                     initialState: MaterialsUploadFeature.State(
-                        disciplines: MaterialsOverview.preview().disciplines,
-                        semester: "2025.2"
+                        disciplines: MaterialsOverview.preview().disciplines
                     )
                 ) {
                     MaterialsUploadFeature()
@@ -765,7 +778,7 @@ extension View {
                 store: Store(
                     initialState: MaterialsUploadFeature.State(
                         disciplines: [MaterialsOverview.preview().disciplines[0]],
-                        semester: "2025.2",
+                        initialSemester: "26.2PGM",
                         locked: MaterialsOverview.preview().disciplines[0]
                     )
                 ) {

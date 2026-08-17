@@ -83,7 +83,7 @@ struct MaterialsDiscipline: Equatable, Sendable, Identifiable {
 
 /// The Materiais landing payload.
 struct MaterialsOverview: Equatable, Sendable {
-    /// Current semester label — "2025.2".
+    /// Current semester label — "2025.2", or "26.2PGM" for postgrad.
     var semester: String
     var disciplines: [MaterialsDiscipline]
     /// Materials the student bookmarked, across all disciplines.

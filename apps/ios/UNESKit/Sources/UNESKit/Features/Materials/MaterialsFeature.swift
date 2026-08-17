@@ -77,10 +77,7 @@ struct MaterialsFeature {
             case .contributeTapped:
                 guard let overview = state.overview else { return .none }
                 log.info("open upload from hub")
-                state.upload = MaterialsUploadFeature.State(
-                    disciplines: overview.disciplines,
-                    semester: overview.semester
-                )
+                state.upload = MaterialsUploadFeature.State(disciplines: overview.disciplines)
                 return .none
 
             case .savedTapped:

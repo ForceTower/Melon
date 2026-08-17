@@ -14556,6 +14556,40 @@
         }
       }
     },
+    "materials.upload.semesterHint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use the semester as it appears in your classes."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use o semestre como ele aparece nas suas turmas."
+          }
+        }
+      }
+    },
+    "materials.upload.semesterPlaceholder" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "E.g.: 2025.2"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ex: 2025.2"
+          }
+        }
+      }
+    },
     "materials.upload.fieldTeacher" : {
       "extractionState" : "manual",
       "localizations" : {
