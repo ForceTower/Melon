@@ -18,6 +18,7 @@ import dev.forcetower.unes.remote.FeatureFlags
 import dev.forcetower.unes.firebase.PushRegistrar
 import dev.forcetower.unes.reminders.EvaluationReminderScheduler
 import dev.forcetower.unes.reminders.PersonalEventReminderScheduler
+import dev.forcetower.unes.review.ReviewPrompter
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -50,6 +51,9 @@ internal class MelonApp : Application() {
 
     @Inject
     lateinit var pushRegistrar: PushRegistrar
+
+    @Inject
+    lateinit var reviewPrompter: ReviewPrompter
 
     @Inject
     @ApplicationScope
@@ -107,6 +111,13 @@ internal class MelonApp : Application() {
                 }
         }
         featureFlags.start()
+        reviewPrompter.start()
+        applicationScope.launch {
+            // A crash last run is the loudest possible "not now".
+            if (FirebaseCrashlytics.getInstance().didCrashOnPreviousExecution()) {
+                reviewPrompter.noteTrouble("crash")
+            }
+        }
         // App-lifetime like the analytics collector: also runs when a boot
         // broadcast spins the process up, so alarms re-anchor to fresh data.
         evaluationReminders.start()

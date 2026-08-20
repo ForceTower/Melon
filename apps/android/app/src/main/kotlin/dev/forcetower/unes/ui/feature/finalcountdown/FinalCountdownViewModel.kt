@@ -9,9 +9,12 @@ import dev.forcetower.unes.mvi.MviViewModel
 import dev.forcetower.unes.mvi.UiEffect
 import dev.forcetower.unes.mvi.UiIntent
 import dev.forcetower.unes.mvi.UiState
+import dev.forcetower.unes.review.ReviewPrompter
 import dev.forcetower.unes.ui.feature.disciplines.formatSemesterCode
 import javax.inject.Inject
 import kotlin.math.roundToInt
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import dev.forcetower.melon.feature.disciplines.domain.model.DisciplineListItem as KmpListItem
 import dev.forcetower.melon.feature.disciplines.domain.model.ListGradeEntry as KmpGrade
@@ -60,13 +63,26 @@ internal sealed interface FinalCountdownEffect : UiEffect
 internal class FinalCountdownViewModel @Inject constructor(
     observeList: ObserveDisciplinesListUseCase,
     private val analytics: Analytics,
+    private val reviewPrompter: ReviewPrompter,
 ) : MviViewModel<FinalCountdownUiState, FinalCountdownIntent, FinalCountdownEffect>(
     FinalCountdownUiState(),
 ) {
     // Route seed waiting for the choices flow to emit the matching discipline.
     private var pendingRouteSeed: String? = null
 
+    // Once the student edits a row the verdict is a hypothetical, not news.
+    private var rowsEdited = false
+
     init {
+        viewModelScope.launch {
+            state.map { FinalCountdownMath.verdict(it.rows, it.weighted).kind to it.discipline }
+                .distinctUntilChanged()
+                .collect { (kind, discipline) ->
+                    if (kind == FCVerdictKind.Passed && discipline != null && !rowsEdited) {
+                        reviewPrompter.reportFinalCountdownPass()
+                    }
+                }
+        }
         viewModelScope.launch {
             observeList().collect { list ->
                 // Between semesters (`current` is date-scoped to today) fall
@@ -97,6 +113,7 @@ internal class FinalCountdownViewModel @Inject constructor(
     }
 
     override fun onIntent(intent: FinalCountdownIntent) {
+        if (intent.editsRows) rowsEdited = true
         when (intent) {
             is FinalCountdownIntent.RowLabelChanged -> updateRow(intent.id) {
                 copy(label = intent.label.take(6))
@@ -138,6 +155,7 @@ internal class FinalCountdownViewModel @Inject constructor(
     }
 
     private fun pick(offerId: String?) {
+        rowsEdited = false
         if (offerId == null) {
             setState { copy(discipline = null, rows = FinalCountdownUiState.freeRows()) }
             return
@@ -150,6 +168,11 @@ internal class FinalCountdownViewModel @Inject constructor(
         setState { copy(rows = rows.map { if (it.id == id) it.transform() else it }) }
     }
 }
+
+// Picking reseeds from real grades; everything else types over them.
+private val FinalCountdownIntent.editsRows: Boolean
+    get() = this !is FinalCountdownIntent.PickDiscipline &&
+        this !is FinalCountdownIntent.SeedFromRoute
 
 // ───────── KMP → UI projection + seeding ─────────
 

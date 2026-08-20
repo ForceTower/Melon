@@ -12,7 +12,10 @@ import dev.forcetower.unes.mvi.MviViewModel
 import dev.forcetower.unes.mvi.UiEffect
 import dev.forcetower.unes.mvi.UiIntent
 import dev.forcetower.unes.mvi.UiState
+import dev.forcetower.unes.review.ReviewPrompter
 import dev.forcetower.unes.ui.feature.disciplines.Discipline
+import dev.forcetower.unes.ui.feature.disciplines.DisciplineStatus
+import dev.forcetower.unes.ui.feature.disciplines.status
 import javax.inject.Inject
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -53,12 +56,14 @@ internal class DisciplineDetailViewModel @Inject constructor(
     private val getMaterialsDiscipline: GetMaterialsDisciplineUseCase,
     private val featureFlags: FeatureFlags,
     private val analytics: Analytics,
+    private val reviewPrompter: ReviewPrompter,
 ) : MviViewModel<DisciplineDetailUiState, DisciplineDetailIntent, DisciplineDetailEffect>(
     DisciplineDetailUiState(),
 ) {
     private var detailJob: Job? = null
     private var collabJob: Job? = null
     private var collabLoadedFor: String? = null
+    private var verdictReportedFor: String? = null
 
     // Called from the composable click handler right before the hoisted
     // navigation lambda fires — the Colaborativo banner only invokes a nav
@@ -86,6 +91,7 @@ internal class DisciplineDetailViewModel @Inject constructor(
         detailJob?.cancel()
         collabJob?.cancel()
         collabLoadedFor = null
+        verdictReportedFor = null
         setState {
             copy(offerId = offerId, seed = seed, hydrated = null, selectedGroup = null, collabCount = null)
         }
@@ -96,7 +102,27 @@ internal class DisciplineDetailViewModel @Inject constructor(
                 val mapped = mapDetail(raw, seed = currentState.seed)
                 setState { copy(hydrated = mapped) }
                 loadCollabCount(raw.disciplineId)
+                reportVerdict(offerId, mapped)
             }
+        }
+    }
+
+    // Once per open, on hydrated data only — the seed's verdict is stale.
+    private fun reportVerdict(offerId: String, discipline: Discipline) {
+        if (verdictReportedFor == offerId) return
+        verdictReportedFor = offerId
+        when (discipline.status.key) {
+            DisciplineStatus.Key.Approved -> {
+                reviewPrompter.reportApprovedDiscipline(offerId)
+                reviewPrompter.reportGradesViewed()
+            }
+            DisciplineStatus.Key.Ongoing -> reviewPrompter.reportGradesViewed()
+            DisciplineStatus.Key.Failed -> reviewPrompter.reportFailedDiscipline()
+            // Nothing to celebrate, but not the app failing either.
+            DisciplineStatus.Key.Low,
+            DisciplineStatus.Key.Final,
+            DisciplineStatus.Key.Pending,
+            -> Unit
         }
     }
 
@@ -122,6 +148,7 @@ internal class DisciplineDetailViewModel @Inject constructor(
         collabJob?.cancel()
         collabJob = null
         collabLoadedFor = null
+        verdictReportedFor = null
         setState { DisciplineDetailUiState() }
     }
 }

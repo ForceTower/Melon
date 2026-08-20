@@ -16,12 +16,15 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.collectAsState
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import dagger.hilt.android.AndroidEntryPoint
 import dev.forcetower.unes.designsystem.theme.MelonTheme
 import dev.forcetower.unes.theme.ThemeMode
 import dev.forcetower.unes.theme.ThemePreferenceStore
 import dev.forcetower.unes.firebase.PushSyncCoordinator
+import dev.forcetower.unes.review.ReviewPrompter
 import dev.forcetower.unes.ui.feature.connected.DeepLinkHandler
 import dev.forcetower.unes.ui.navigation.AppNavHost
 import dev.forcetower.unes.update.InAppUpdater
@@ -46,6 +49,9 @@ class MainActivity : FragmentActivity() {
     @Inject
     internal lateinit var appUpdater: InAppUpdater
 
+    @Inject
+    internal lateinit var reviewPrompter: ReviewPrompter
+
     private val updateFlowLauncher = registerForActivityResult(
         ActivityResultContracts.StartIntentSenderForResult(),
     ) { result ->
@@ -62,6 +68,14 @@ class MainActivity : FragmentActivity() {
         // per process, which keeps the downloaded-while-dead recovery alive
         // across process-death restores.
         lifecycleScope.launch { appUpdater.checkOnLaunch(updateFlowLauncher) }
+        // RESUMED, not STARTED: Play needs a foreground activity.
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                reviewPrompter.requests.collect { trigger ->
+                    reviewPrompter.present(this@MainActivity, trigger)
+                }
+            }
+        }
         // Dissolve the OS splash into the in-app Compose splash instead of
         // cutting: both share the same dark base color, so fading the OS layer
         // out (with the icon lifting slightly) reads as one continuous handoff.
@@ -113,6 +127,8 @@ class MainActivity : FragmentActivity() {
         // delivered to the already-resumed activity (shade pulled down over
         // the open app), where onNewIntent fires without an ON_START.
         if (intent?.getStringExtra("kind") != null) pushSync.request()
+        // Grade pushes are the ones carrying a discipline code (docs/deeplinks.md).
+        if (intent?.getStringExtra("disciplineCode") != null) reviewPrompter.noteGradePushLaunch()
     }
 
     // Two carriers: a real VIEW intent puts the URL in `data` (links, adb),

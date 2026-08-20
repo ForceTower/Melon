@@ -88,4 +88,8 @@ object ContentTypes {
     const val SETTING = "setting"
     const val PASSKEY = "passkey"
     const val CURRICULUM_VERSION = "curriculum_version"
+
+    // Store review sheet requested; `item_id` is the trigger tag. Whether it
+    // appeared, and what was rated, the store never gives back.
+    const val REVIEW_PROMPT = "review_prompt"
 }

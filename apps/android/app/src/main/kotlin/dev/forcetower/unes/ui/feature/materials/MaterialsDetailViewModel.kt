@@ -20,6 +20,7 @@ import dev.forcetower.unes.mvi.MviViewModel
 import dev.forcetower.unes.mvi.UiEffect
 import dev.forcetower.unes.mvi.UiIntent
 import dev.forcetower.unes.mvi.UiState
+import dev.forcetower.unes.review.ReviewPrompter
 import dev.forcetower.unes.ui.feature.materials.components.MaterialsToastKind
 import java.io.File
 import javax.inject.Inject
@@ -81,6 +82,7 @@ internal class MaterialsDetailViewModel @Inject constructor(
     private val reportMaterial: ReportMaterialUseCase,
     private val openMaterial: OpenMaterialUseCase,
     private val analytics: Analytics,
+    private val reviewPrompter: ReviewPrompter,
 ) : MviViewModel<MaterialsDetailUiState, MaterialsDetailIntent, MaterialsDetailEffect>(
     MaterialsDetailUiState(),
 ) {
@@ -132,7 +134,7 @@ internal class MaterialsDetailViewModel @Inject constructor(
         setState { copy(material = optimistic) }
         viewModelScope.launch {
             when (setUseful(material.id, !wasUseful)) {
-                is Outcome.Ok -> Unit
+                is Outcome.Ok -> if (!wasUseful) reportSharedShelfPaidOff(material)
                 is Outcome.Err -> {
                     setState { copy(material = this.material?.copy(isUseful = wasUseful, usefulCount = material.usefulCount)) }
                     flash(MaterialsToastKind.SyncFailed)
@@ -153,13 +155,19 @@ internal class MaterialsDetailViewModel @Inject constructor(
         flash(if (wasSaved) MaterialsToastKind.Unsaved else MaterialsToastKind.Saved)
         viewModelScope.launch {
             when (setSaved(material.id, !wasSaved)) {
-                is Outcome.Ok -> Unit
+                is Outcome.Ok -> if (!wasSaved) reportSharedShelfPaidOff(material)
                 is Outcome.Err -> {
                     setState { copy(material = this.material?.copy(isSaved = wasSaved)) }
                     flash(MaterialsToastKind.SyncFailed)
                 }
             }
         }
+    }
+
+    // Own uploads don't count — that's tidying, not the shelf paying off.
+    private fun reportSharedShelfPaidOff(material: Material) {
+        if (material.isMine) return
+        reviewPrompter.reportMaterialUseful()
     }
 
     private fun openFile() {

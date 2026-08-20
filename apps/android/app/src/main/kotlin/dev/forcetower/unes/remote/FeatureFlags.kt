@@ -30,6 +30,9 @@ internal data class FeatureGates(
     val courseProgress: Boolean = false,
     val documentCaptchaSiteKey: String = "",
     val documentCaptchaBaseUrl: String = "",
+    // Kill switch + per-moment allow-list for the Play review prompt.
+    val inAppReview: Boolean = false,
+    val inAppReviewTriggers: String = "",
 )
 
 // The gate projection over whatever `RemoteSettings` currently resolves to —
@@ -61,6 +64,7 @@ internal class FeatureFlags @Inject constructor(
     private fun readGates(): FeatureGates {
         val captchaSiteKey = settings.string(RemoteStringKey.DOCUMENT_CAPTCHA_SITE_KEY)
         val captchaBaseUrl = settings.string(RemoteStringKey.DOCUMENT_CAPTCHA_BASE_URL)
+        val reviewTriggers = settings.string(RemoteStringKey.IN_APP_REVIEW_TRIGGERS)
         if (BuildConfig.DEBUG) {
             return FeatureGates(
                 enrollment = true,
@@ -74,6 +78,8 @@ internal class FeatureFlags @Inject constructor(
                 courseProgress = true,
                 documentCaptchaSiteKey = captchaSiteKey,
                 documentCaptchaBaseUrl = captchaBaseUrl,
+                inAppReview = true,
+                inAppReviewTriggers = reviewTriggers,
             )
         }
         return FeatureGates(
@@ -88,6 +94,8 @@ internal class FeatureFlags @Inject constructor(
             courseProgress = settings.bool(RemoteBoolKey.COURSE_PROGRESS),
             documentCaptchaSiteKey = captchaSiteKey,
             documentCaptchaBaseUrl = captchaBaseUrl,
+            inAppReview = settings.bool(RemoteBoolKey.IN_APP_REVIEW),
+            inAppReviewTriggers = reviewTriggers,
         )
     }
 }

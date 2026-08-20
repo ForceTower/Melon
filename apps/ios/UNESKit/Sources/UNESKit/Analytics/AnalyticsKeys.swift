@@ -88,4 +88,8 @@ enum ContentTypes {
     static let setting = "setting"
     static let passkey = "passkey"
     static let curriculumVersion = "curriculum_version"
+
+    /// Store review sheet requested; `item_id` is the trigger tag. Android
+    /// only today — mirrored so the shared tag contract stays whole.
+    static let reviewPrompt = "review_prompt"
 }

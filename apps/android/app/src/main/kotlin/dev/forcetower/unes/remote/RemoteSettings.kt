@@ -36,9 +36,14 @@ internal enum class RemoteBoolKey(val key: String) {
     CAMPUS_EVENT("enable_campus_event"),
     EVALUATION_REMINDERS("enable_evaluation_reminders"),
     COURSE_PROGRESS("enable_course_progress"),
+
+    IN_APP_REVIEW("enable_in_app_review"),
 }
 
 internal enum class RemoteStringKey(val key: String) {
     DOCUMENT_CAPTCHA_SITE_KEY("document_captcha_site_key"),
     DOCUMENT_CAPTCHA_BASE_URL("document_captcha_base_url"),
+
+    // Comma-separated `ReviewTrigger.tag` allow-list; empty means all of them.
+    IN_APP_REVIEW_TRIGGERS("in_app_review_triggers"),
 }

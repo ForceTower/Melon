@@ -31,6 +31,7 @@ android-biometric = "1.4.0-alpha07"
 android-glance = "1.1.1"
 android-work = "2.11.2"
 play-app-update = "2.1.0"
+play-review = "2.0.2"
 timber = "5.0.1"
 kotlinx-coroutines-android = "1.11.0"
 licensee = "1.14.1"
@@ -133,6 +134,9 @@ play-services-mlkit-document-scanner = { module = "com.google.android.gms:play-s
 
 # Play In-App Updates (flexible/immediate update flows — see docs/in-app-update.md)
 play-app-update-ktx = { module = "com.google.android.play:app-update-ktx", version.ref = "play-app-update" }
+
+# Play In-App Reviews (the rating sheet)
+play-review-ktx = { module = "com.google.android.play:review-ktx", version.ref = "play-review" }
 
 # Timber (Android logging tree backing core/logging)
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }

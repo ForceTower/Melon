@@ -196,6 +196,9 @@ dependencies {
     // Play In-App Updates — flexible/immediate update flows (docs/in-app-update.md).
     implementation(libs.play.app.update.ktx)
 
+    // Play In-App Reviews — the rating sheet (`ReviewPrompter`).
+    implementation(libs.play.review.ktx)
+
     // lever — our own remote config (github.com/ForceTower/lever), the first
     // layer of `CompositeRemoteSettings` in front of Firebase Remote Config.
     implementation(libs.lever.android)

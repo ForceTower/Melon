@@ -8,9 +8,11 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.forcetower.melon.core.analytics.Analytics
 import dev.forcetower.melon.core.analytics.Screens
 import dev.forcetower.melon.core.common.Outcome
+import dev.forcetower.melon.core.sync.domain.model.SyncError
 import dev.forcetower.melon.feature.sync.domain.usecase.BackfillMirrorUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.PingActivityUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.RefreshSessionUseCase
+import dev.forcetower.unes.review.ReviewPrompter
 import dev.forcetower.unes.update.InAppUpdater
 import dev.forcetower.unes.widgets.WidgetSnapshotPublisher
 import javax.inject.Inject
@@ -35,6 +37,7 @@ internal class ConnectedViewModel @Inject constructor(
     private val analytics: Analytics,
     deepLinkHandler: DeepLinkHandler,
     private val inAppUpdater: InAppUpdater,
+    private val reviewPrompter: ReviewPrompter,
     logger: Logger,
 ) : ViewModel() {
     // Deeplink targets buffered since the notification tap (or VIEW intent).
@@ -70,6 +73,7 @@ internal class ConnectedViewModel @Inject constructor(
         // already subscribed. Mirrors iOS `ConnectedView`'s `.task` mounting
         // of `WidgetSnapshotPublisher`.
         widgetSnapshotPublisher.start()
+        reviewPrompter.noteActiveDay()
     }
 
     private suspend fun runRefresh(reason: String) {
@@ -81,7 +85,13 @@ internal class ConnectedViewModel @Inject constructor(
             log.i { "refreshing session reason=$reason" }
             when (val outcome = refreshSession()) {
                 is Outcome.Ok -> log.i { "session refresh ok reason=$reason" }
-                is Outcome.Err -> log.w { "session refresh failed reason=$reason err=${outcome.error}" }
+                is Outcome.Err -> {
+                    log.w { "session refresh failed reason=$reason err=${outcome.error}" }
+                    // Being offline isn't the app failing the student.
+                    if (outcome.error != SyncError.NoConnection) {
+                        reviewPrompter.noteTrouble("sync_failed")
+                    }
+                }
             }
         } finally {
             refreshMutex.unlock()
@@ -120,6 +130,11 @@ internal class ConnectedViewModel @Inject constructor(
         lastReportedRoute = connectedRoute
         val (screen, properties) = connectedRoute.toScreenEvent()
         analytics.screen(screen, properties)
+        when (connectedRoute) {
+            is ConnectedRoute.ParadoxoDiscipline -> reviewPrompter.reportParadoxoEntity(connectedRoute.id)
+            is ConnectedRoute.ParadoxoTeacher -> reviewPrompter.reportParadoxoEntity(connectedRoute.id)
+            else -> Unit
+        }
     }
 }
 
