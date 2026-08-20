@@ -80,6 +80,9 @@ apps/ios/UNES/Resources/Licenses/
 tmp/
 .temp/
 
+# Scratch notes that shouldn't ship with the repo.
+docs/local/
+
 claude_scripts/
 claude_design_ref/
 .claude/worktrees/
