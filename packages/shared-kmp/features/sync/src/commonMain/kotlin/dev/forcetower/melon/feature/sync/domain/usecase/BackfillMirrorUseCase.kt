@@ -8,6 +8,7 @@ import dev.forcetower.melon.core.sync.domain.model.SyncError
 import dev.forcetower.melon.core.sync.domain.repository.MirrorRepository
 import dev.forcetower.melon.core.sync.domain.repository.SyncStateRepository
 import dev.zacsweers.metro.Inject
+import kotlin.coroutines.cancellation.CancellationException
 import kotlinx.coroutines.delay
 
 // Polls for server Phase 2 completion and mirrors historical data (every
@@ -84,8 +85,11 @@ class BackfillMirrorUseCase internal constructor(
 
                 is Outcome.Ok -> Unit
             }
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Throwable) {
-            log.e(e) { "Waaat?" }
+            log.e(e) { "backfill message pagination threw" }
+            return Outcome.Err(SyncError.Unexpected)
         }
 
         syncState.setBackfillMirrorComplete(true)
