@@ -70,20 +70,20 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         sink.register(properties: ["machine_id": MachineIdentity.id])
     }
 
-    /// Publish once from whatever both layers already have on disk, then again
-    /// on every change either of them reports.
+    /// Publish once from whatever lever already has on disk, then again on
+    /// every change it reports.
     ///
-    /// The composite outlives this call by being captured in the change
+    /// The settings value outlives this call by being captured in the change
     /// callback — which is also what keeps lever's client, and its stream,
     /// alive for the process.
     private func configureRemoteSettings() {
-        let settings = CompositeRemoteSettings.live()
+        let settings = RemoteSettings.live()
         Self.publishFlags(from: settings)
         settings.start { Self.publishFlags(from: settings) }
     }
 
-    /// Off the main actor — both layers call back on their own queues.
-    private nonisolated static func publishFlags(from settings: some RemoteSettings) {
+    /// Off the main actor — lever calls back on its own queue.
+    private nonisolated static func publishFlags(from settings: RemoteSettings) {
         FeatureFlags.update(
             enrollmentEnabled: settings.bool(.enrollment),
             certificateEnabled: settings.bool(.enrollmentCertificate),

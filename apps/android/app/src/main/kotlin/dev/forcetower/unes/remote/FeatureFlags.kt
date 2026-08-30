@@ -35,22 +35,20 @@ internal data class FeatureGates(
     val inAppReviewTriggers: String = "",
 )
 
-// The gate projection over whatever `RemoteSettings` currently resolves to —
-// in production, lever in front of Firebase Remote Config. This layer knows
-// nothing about either: it reads keys and recomputes whenever a source says its
-// values changed. The Android analogue of iOS `AppDelegate.publishFlags`.
+// The gate projection over whatever `RemoteSettings` currently resolves to: it
+// reads keys and recomputes whenever lever says its values changed. The Android
+// analogue of iOS `AppDelegate.publishFlags`.
 @Singleton
 internal class FeatureFlags @Inject constructor(
     private val settings: RemoteSettings,
     @ApplicationScope private val scope: CoroutineScope,
 ) {
-    // Seeded before any fetch: both sources serve their last activated values
-    // from disk, so gates hold their state offline and across launches.
+    // Seeded before any fetch: lever serves its last activated values from
+    // disk, so gates hold their state offline and across launches.
     private val gatesFlow = MutableStateFlow(readGates())
     val gates: StateFlow<FeatureGates> = gatesFlow
 
     fun start() {
-        settings.start()
         scope.launch {
             // The `onStart` recompute covers anything that activated between
             // construction and this subscription — lever fetches from the

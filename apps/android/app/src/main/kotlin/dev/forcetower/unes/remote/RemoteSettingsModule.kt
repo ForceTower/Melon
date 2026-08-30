@@ -21,10 +21,6 @@ import timber.log.Timber
 @InstallIn(SingletonComponent::class)
 internal object RemoteSettingsModule {
 
-    @Provides
-    @Singleton
-    fun provideRemoteSettings(composite: CompositeRemoteSettings): RemoteSettings = composite
-
     // Built here rather than through `Lever.configure`/`Lever.shared`: Hilt
     // injects `MelonApp`'s fields inside `super.onCreate()`, before any of our
     // own launch code runs, so a process-global that had to be configured first
@@ -46,8 +42,8 @@ internal object RemoteSettingsModule {
                 // the SDK, so a parameter can be split android-vs-ios or rolled
                 // out by version without a client release.
                 context = LeverContext(appVersion = BuildConfig.VERSION_NAME),
-                // Same rule the Firebase layer follows: no fetch cache while
-                // developing, so a publish lands on the next launch.
+                // No fetch cache while developing, so a publish lands on the
+                // next launch.
                 minimumFetchInterval = if (BuildConfig.DEBUG) Duration.ZERO else 12.hours,
                 // Pins the cache file's identity to a name we own, so rotating
                 // the client key still lands on a warm cache.

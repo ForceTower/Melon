@@ -52,9 +52,9 @@ android {
         )
         buildConfigField("String", "POSTHOG_HOST", "\"https://a.forcetower.dev\"")
 
-        // lever — our self-hosted remote config, the layer in front of Firebase
-        // Remote Config. This is the API origin; the dashboard is a separate
-        // deployment at rc.forcetower.dev and is not what clients talk to.
+        // lever — our self-hosted remote config. This is the API origin; the
+        // dashboard is a separate deployment at rc.forcetower.dev and is not
+        // what clients talk to.
         //
         // The `pk_` key is a public client identifier by design: it authorizes
         // reading one environment's resolved values, which every user of the
@@ -199,17 +199,14 @@ dependencies {
     // Play In-App Reviews — the rating sheet (`ReviewPrompter`).
     implementation(libs.play.review.ktx)
 
-    // lever — our own remote config (github.com/ForceTower/lever), the first
-    // layer of `CompositeRemoteSettings` in front of Firebase Remote Config.
+    // lever — our own remote config (github.com/ForceTower/lever), the only
+    // source behind `RemoteSettings`.
     implementation(libs.lever.android)
 
     // Firebase BoM pins all SDK versions in lockstep — Analytics for usage
-    // tracking, Crashlytics for crash reporting, Messaging for FCM push,
-    // Remote Config as the fallback layer under lever (same parameter keys as
-    // iOS).
+    // tracking, Crashlytics for crash reporting, Messaging for FCM push.
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
-    implementation(libs.firebase.config)
     implementation(libs.firebase.crashlytics)
     implementation(libs.firebase.messaging)
     // `await()` extension for FirebaseMessaging.getToken() / Tasks.

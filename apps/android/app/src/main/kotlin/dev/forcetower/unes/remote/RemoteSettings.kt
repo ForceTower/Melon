@@ -1,31 +1,39 @@
 package dev.forcetower.unes.remote
 
+import dev.forcetower.lever.LeverClient
+import dev.forcetower.lever.LeverKey
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
-// A remote-config source that always answers. Reads are synchronous and total:
-// a key nothing has published resolves to the type's empty value (`false` /
-// `""`), which is the floor every gate is written against — a feature stays off
-// and the captcha pair stays empty until something says otherwise.
+// Our remote config (https://github.com/ForceTower/lever), and the only source
+// every gate resolves against.
 //
-// Only the *base* source implements this. Layers stacked on top of it report
-// absence instead (see `LeverRemoteSettings`), so they can decline a key and
-// let the layer below answer.
-internal interface RemoteSettings {
-    fun bool(key: RemoteBoolKey): Boolean
+// Reads are synchronous and total: a key lever has not published resolves to
+// the type's empty value (`false` / `""`), which is the floor every gate is
+// written against — a feature stays off and the captcha pair stays empty until
+// something says otherwise. The client loads its cache when it is constructed
+// and keeps the last activated values on disk, so gates hold their state
+// offline and across launches.
+@Singleton
+internal class RemoteSettings @Inject constructor(private val client: LeverClient) {
+    private val boolKeys = RemoteBoolKey.entries.associateWith { LeverKey.boolean(it.key, false) }
+    private val stringKeys = RemoteStringKey.entries.associateWith { LeverKey.string(it.key, "") }
 
-    fun string(key: RemoteStringKey): String
+    // Emits on every value-changing activation — the launch fetch, the polling
+    // floor, and the SSE nudge that lands a console publish while the app is
+    // open, all through one channel.
+    val changes: Flow<Unit> = client.updates.map { }
 
-    // Emits whenever the serving values changed. No replay: the current values
-    // are always readable, so a collector wants the *next* change, not the last.
-    val changes: Flow<Unit>
+    fun bool(key: RemoteBoolKey): Boolean = client.value(boolKeys.getValue(key))
 
-    // Kicks off fetching. Called once, from `MelonApp.onCreate`.
-    fun start()
+    fun string(key: RemoteStringKey): String = client.value(stringKeys.getValue(key))
 }
 
-// Parameter names are the un-prefixed keys shared with iOS. Android and iOS
-// resolve them from the same lever environment, so a gate that should differ
-// between the two is a platform condition on the parameter — not a second key.
+// Parameter names are the keys shared with iOS. Android and iOS resolve them
+// from the same lever environment, so a gate that should differ between the two
+// is a platform condition on the parameter — not a second key.
 internal enum class RemoteBoolKey(val key: String) {
     ENROLLMENT("enable_enrollment"),
     ENROLLMENT_CERTIFICATE("enable_enrollment_certificate"),

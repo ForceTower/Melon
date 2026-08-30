@@ -313,8 +313,8 @@ strings are the entire user-facing surface we own.
 ## Non-goals (v1)
 
 - **No backend/remote-config kill switch or forced-update gate.** The app does
-  have Firebase Remote Config infrastructure
-  (`apps/android/app/src/main/kotlin/dev/forcetower/unes/firebase/FeatureFlags.kt`),
+  have remote-config infrastructure
+  (`apps/android/app/src/main/kotlin/dev/forcetower/unes/remote/FeatureFlags.kt`),
   so a `update_required_min_version` gate would be cheap to add later — but
   `updatePriority` set at release time already covers "everyone must take this
   build", so v1 doesn't duplicate it.
