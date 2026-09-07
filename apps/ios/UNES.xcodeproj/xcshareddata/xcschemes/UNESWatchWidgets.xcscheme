@@ -78,7 +78,6 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "CAFEAA00000000000000001C"
             BuildableName = "UNESWatchWidgets.appex"
-            BlueprintName = "UNESWatchWidgets"
             ReferencedContainer = "container:UNES.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -121,7 +120,6 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "CAFEAA00000000000000001C"
             BuildableName = "UNESWatchWidgets.appex"
-            BlueprintName = "UNESWatchWidgets"
             ReferencedContainer = "container:UNES.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
