@@ -17,6 +17,10 @@ struct RootFeature {
                 ? .onboarding(OnboardingFeature.State())
                 : .connected(AppFeature.State())
         }
+
+        var isConnected: Bool {
+            if case .connected = self { true } else { false }
+        }
     }
 
     enum Action {

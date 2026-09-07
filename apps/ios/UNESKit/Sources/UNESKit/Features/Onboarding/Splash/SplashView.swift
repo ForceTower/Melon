@@ -1,24 +1,32 @@
 import SwiftUI
 
+/// Signed-out cold start. Frame zero is the system launch image — flat
+/// `darkBg` ground with `LaunchTile` at the screen centre — and everything
+/// grows out of it: the mesh blooms in, the tile pulses and lifts, and the
+/// wordmark and footer rise beneath it before the flow crossfades to Welcome.
 struct SplashView: View {
+    @State private var awake = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    /// About half the wordmark block, so the lifted group ends up centred.
+    private let lift: CGFloat = 52
+
     var body: some View {
         ZStack {
             UNESColor.darkBg
-            MeshView(variant: .warm)
-            LinearGradient.css(
-                stops: [
-                    .init(color: UNESColor.scrim.opacity(0.2), location: 0),
-                    .init(color: UNESColor.scrim.opacity(0.55), location: 1),
-                ],
-                angle: 160
-            )
+            LaunchBackdrop()
+                .opacity(awake ? 1 : 0)
 
             VStack(spacing: 20) {
-                appIcon
-                    .popIn(duration: 0.8, from: 0.7, offsetY: 8, overshoot: 1.3)
+                tile
                 wordmark
                     .fadeUp(delay: 0.25, duration: 0.7)
             }
+            // The ZStack centres this guide, so frame zero puts the tile's
+            // centre — not the group's — at the screen centre, where the
+            // launch image sits; the wordmark then hangs below it.
+            .alignmentGuide(VerticalAlignment.center) { d in d[.top] + LaunchTile.size / 2 }
+            .offset(y: awake && !reduceMotion ? -lift : 0)
 
             VStack {
                 Spacer()
@@ -28,23 +36,19 @@ struct SplashView: View {
             }
         }
         .ignoresSafeArea()
+        .animation(reduceMotion ? nil : UNESMotion.ease(0.9), value: awake)
+        .onAppear { awake = true }
     }
 
-    private var appIcon: some View {
-        ZStack {
-            MeshView(variant: .warm)
-            Text(verbatim: "u")
-                .font(.system(size: 40, weight: .heavy))
-                .foregroundStyle(.white)
-                .shadow(color: .black.opacity(0.25), radius: 4, y: 2)
-        }
-        .frame(width: 76, height: 76)
-        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-        .overlay {
-            RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .strokeBorder(.white.opacity(0.18), lineWidth: 0.5)
-        }
-        .shadow(color: .black.opacity(0.4), radius: 17, y: 12)
+    /// Settles with a single pulse as the mesh blooms behind it.
+    private var tile: some View {
+        LaunchTile(shadowOpacity: awake ? 1 : 0)
+            .keyframeAnimator(initialValue: CGFloat(1), trigger: awake && !reduceMotion) { content, scale in
+                content.scaleEffect(scale)
+            } keyframes: { _ in
+                CubicKeyframe(1.08, duration: 0.3)
+                CubicKeyframe(1, duration: 0.5)
+            }
     }
 
     private var wordmark: some View {
