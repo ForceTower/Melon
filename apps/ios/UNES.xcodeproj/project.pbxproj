@@ -93,8 +93,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		AB1E57000000000000000001 /* UNESIntentTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UNESIntentTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6CF5E0FB2FF5A43F00953BC4 /* UNES.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UNES.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AB1E57000000000000000001 /* UNESIntentTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UNESIntentTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CAFEAA000000000000000003 /* UNESWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UNESWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CAFEAA000000000000000013 /* UNESWatchWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = UNESWatchWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		CAFECAFE0000000000000004 /* UNESKit */ = {isa = PBXFileReference; lastKnownFileType = folder; path = UNESKit; sourceTree = SOURCE_ROOT; };
@@ -140,11 +140,6 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		AB1E57000000000000000002 /* UNESIntentTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = UNESIntentTests;
-			sourceTree = "<group>";
-		};
 		6CF5E0FD2FF5A43F00953BC4 /* UNES */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -152,6 +147,11 @@
 				CAFEAA000000000000000025 /* Exceptions for "UNES" folder in "UNESWatch" target */,
 			);
 			path = UNES;
+			sourceTree = "<group>";
+		};
+		AB1E57000000000000000002 /* UNESIntentTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = UNESIntentTests;
 			sourceTree = "<group>";
 		};
 		CAFEAA000000000000000004 /* UNESWatch */ = {
@@ -181,13 +181,6 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		AB1E57000000000000000005 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		6CF5E0F82FF5A43F00953BC4 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -200,6 +193,13 @@
 				CAFEFB0000000000000000B2 /* PostHog in Frameworks */,
 				CAFEFB0000000000000000D2 /* Lever in Frameworks */,
 				CAFECAFE0000000000000003 /* UNESKit in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AB1E57000000000000000005 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -260,29 +260,6 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		AB1E57000000000000000003 /* UNESIntentTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = AB1E57000000000000000009 /* Build configuration list for PBXNativeTarget "UNESIntentTests" */;
-			buildPhases = (
-				AB1E57000000000000000004 /* Sources */,
-				AB1E57000000000000000005 /* Frameworks */,
-				AB1E57000000000000000006 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				AB1E57000000000000000008 /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				AB1E57000000000000000002 /* UNESIntentTests */,
-			);
-			name = UNESIntentTests;
-			packageProductDependencies = (
-			);
-			productName = UNESIntentTests;
-			productReference = AB1E57000000000000000001 /* UNESIntentTests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
 		6CF5E0FA2FF5A43F00953BC4 /* UNES */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6CF5E1062FF5A44000953BC4 /* Build configuration list for PBXNativeTarget "UNES" */;
@@ -317,6 +294,29 @@
 			productName = UNES;
 			productReference = 6CF5E0FB2FF5A43F00953BC4 /* UNES.app */;
 			productType = "com.apple.product-type.application";
+		};
+		AB1E57000000000000000003 /* UNESIntentTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AB1E57000000000000000009 /* Build configuration list for PBXNativeTarget "UNESIntentTests" */;
+			buildPhases = (
+				AB1E57000000000000000004 /* Sources */,
+				AB1E57000000000000000005 /* Frameworks */,
+				AB1E57000000000000000006 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				AB1E57000000000000000008 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				AB1E57000000000000000002 /* UNESIntentTests */,
+			);
+			name = UNESIntentTests;
+			packageProductDependencies = (
+			);
+			productName = UNESIntentTests;
+			productReference = AB1E57000000000000000001 /* UNESIntentTests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 		CAFEAA00000000000000000C /* UNESWatch */ = {
 			isa = PBXNativeTarget;
@@ -442,14 +442,14 @@
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		AB1E57000000000000000006 /* Resources */ = {
+		6CF5E0F92FF5A43F00953BC4 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		6CF5E0F92FF5A43F00953BC4 /* Resources */ = {
+		AB1E57000000000000000006 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -525,14 +525,14 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		AB1E57000000000000000004 /* Sources */ = {
+		6CF5E0F72FF5A43F00953BC4 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		6CF5E0F72FF5A43F00953BC4 /* Sources */ = {
+		AB1E57000000000000000004 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -586,42 +586,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		AB1E5700000000000000000A /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 5GH6Q6KS69;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = dev.forcetower.unes.ios.intenttests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 6.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = UNES;
-			};
-			name = Debug;
-		};
-		AB1E5700000000000000000B /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 5GH6Q6KS69;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = dev.forcetower.unes.ios.intenttests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 6.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = UNES;
-			};
-			name = Release;
-		};
 		6CF5E1042FF5A44000953BC4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -758,11 +722,13 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = UNES/Info.plist;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_NSCameraUsageDescription = "A câmera tira sua foto de perfil e digitaliza folhas de material de estudo para envio em PDF.";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "O Face ID confirma que é você antes de mostrar a senha guardada.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleLightContent;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
@@ -800,11 +766,13 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = UNES/Info.plist;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_NSCameraUsageDescription = "A câmera tira sua foto de perfil e digitaliza folhas de material de estudo para envio em PDF.";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "O Face ID confirma que é você antes de mostrar a senha guardada.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleLightContent;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
@@ -824,6 +792,42 @@
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		AB1E5700000000000000000A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5GH6Q6KS69;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = dev.forcetower.unes.ios.intenttests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = UNES;
+			};
+			name = Debug;
+		};
+		AB1E5700000000000000000B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5GH6Q6KS69;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = dev.forcetower.unes.ios.intenttests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = UNES;
 			};
 			name = Release;
 		};
@@ -1020,15 +1024,6 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		AB1E57000000000000000009 /* Build configuration list for PBXNativeTarget "UNESIntentTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				AB1E5700000000000000000A /* Debug */,
-				AB1E5700000000000000000B /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		6CF5E0F62FF5A43F00953BC4 /* Build configuration list for PBXProject "UNES" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -1043,6 +1038,15 @@
 			buildConfigurations = (
 				6CF5E1072FF5A44000953BC4 /* Debug */,
 				6CF5E1082FF5A44000953BC4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AB1E57000000000000000009 /* Build configuration list for PBXNativeTarget "UNESIntentTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AB1E5700000000000000000A /* Debug */,
+				AB1E5700000000000000000B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
