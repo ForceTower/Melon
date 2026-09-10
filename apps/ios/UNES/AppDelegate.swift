@@ -30,6 +30,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         // Before any scene task reads dependencies — the indexer's entity
         // types live in this target, so the package can't install it itself.
         SpotlightSupport.installIndexer(UNESSpotlightIndexer())
+        SpotlightSupport.installAnnotator(UNESOnscreenAnnotator.identifier)
 
         FirebaseApp.configure()
         log.info("firebase configured")

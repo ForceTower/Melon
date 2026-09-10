@@ -62,6 +62,7 @@ struct MessageDetailView: View {
         }
         // Plain trailing items: the system groups them into one Liquid Glass
         // capsule and animates the share hand-off.
+        .onscreenEntity(.message(id: message.id))
         .toolbar {
             ToolbarItem(placement: .trailingCompat) {
                 Button {

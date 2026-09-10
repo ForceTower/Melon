@@ -118,6 +118,50 @@ struct UnreadMessagesIntent: AppIntent {
     }
 }
 
+struct DisciplineNextClassIntent: AppIntent {
+    static let title: LocalizedStringResource = "intent.disciplineClass.title"
+    /// Schedule answers on the lock screen — see `NextClassIntent`.
+    static let authenticationPolicy: IntentAuthenticationPolicy = .alwaysAllowed
+
+    @Parameter(title: "intent.disciplineClass.param.discipline")
+    var discipline: DisciplineEntity
+
+    init() {}
+
+    func perform() async throws -> some IntentResult & ProvidesDialog & ShowsSnippetView {
+        let answer = await IntentSupport.disciplineClass(
+            semesterId: discipline.projection.semesterId,
+            disciplineId: discipline.projection.disciplineId
+        )
+        if let card = answer.card {
+            return .result(dialog: answer.dialog, view: card)
+        }
+        return .result(dialog: answer.dialog, view: EmptyView())
+    }
+}
+
+struct DisciplineGradesIntent: AppIntent {
+    static let title: LocalizedStringResource = "intent.grades.title"
+    /// A grade surface: never spoken or rendered at a locked phone.
+    static let authenticationPolicy: IntentAuthenticationPolicy = .requiresLocalDeviceAuthentication
+
+    @Parameter(title: "intent.grades.param.discipline")
+    var discipline: DisciplineEntity
+
+    init() {}
+
+    func perform() async throws -> some IntentResult & ProvidesDialog & ShowsSnippetView {
+        let answer = await IntentSupport.disciplineGrades(
+            semesterId: discipline.projection.semesterId,
+            disciplineId: discipline.projection.disciplineId
+        )
+        if let card = answer.card {
+            return .result(dialog: answer.dialog, view: card)
+        }
+        return .result(dialog: answer.dialog, view: EmptyView())
+    }
+}
+
 struct FinalExamIntent: AppIntent {
     static let title: LocalizedStringResource = "intent.finalExam.title"
     /// A grade surface: never spoken or rendered at a locked phone.

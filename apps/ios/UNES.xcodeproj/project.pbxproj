@@ -26,6 +26,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		AB1E57000000000000000007 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6CF5E0F32FF5A43F00953BC4 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6CF5E0FA2FF5A43F00953BC4;
+			remoteInfo = UNES;
+		};
 		CAFEAA00000000000000001D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 6CF5E0F32FF5A43F00953BC4 /* Project object */;
@@ -86,6 +93,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		AB1E57000000000000000001 /* UNESIntentTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UNESIntentTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6CF5E0FB2FF5A43F00953BC4 /* UNES.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UNES.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CAFEAA000000000000000003 /* UNESWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UNESWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CAFEAA000000000000000013 /* UNESWatchWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = UNESWatchWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -132,6 +140,11 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		AB1E57000000000000000002 /* UNESIntentTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = UNESIntentTests;
+			sourceTree = "<group>";
+		};
 		6CF5E0FD2FF5A43F00953BC4 /* UNES */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -168,6 +181,13 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		AB1E57000000000000000005 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6CF5E0F82FF5A43F00953BC4 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -219,6 +239,7 @@
 				CAFECAFE0000000000000008 /* UNESWidgets */,
 				CAFEAA000000000000000004 /* UNESWatch */,
 				CAFEAA000000000000000014 /* UNESWatchWidgets */,
+				AB1E57000000000000000002 /* UNESIntentTests */,
 				CAFECAFE0000000000000004 /* UNESKit */,
 				6CF5E0FC2FF5A43F00953BC4 /* Products */,
 			);
@@ -231,6 +252,7 @@
 				CAFECAFE0000000000000007 /* UNESWidgets.appex */,
 				CAFEAA000000000000000003 /* UNESWatch.app */,
 				CAFEAA000000000000000013 /* UNESWatchWidgets.appex */,
+				AB1E57000000000000000001 /* UNESIntentTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -238,6 +260,29 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		AB1E57000000000000000003 /* UNESIntentTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AB1E57000000000000000009 /* Build configuration list for PBXNativeTarget "UNESIntentTests" */;
+			buildPhases = (
+				AB1E57000000000000000004 /* Sources */,
+				AB1E57000000000000000005 /* Frameworks */,
+				AB1E57000000000000000006 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				AB1E57000000000000000008 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				AB1E57000000000000000002 /* UNESIntentTests */,
+			);
+			name = UNESIntentTests;
+			packageProductDependencies = (
+			);
+			productName = UNESIntentTests;
+			productReference = AB1E57000000000000000001 /* UNESIntentTests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 		6CF5E0FA2FF5A43F00953BC4 /* UNES */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6CF5E1062FF5A44000953BC4 /* Build configuration list for PBXNativeTarget "UNES" */;
@@ -360,6 +405,10 @@
 					6CF5E0FA2FF5A43F00953BC4 = {
 						CreatedOnToolsVersion = 26.6;
 					};
+					AB1E57000000000000000003 = {
+						CreatedOnToolsVersion = 27.0;
+						TestTargetID = 6CF5E0FA2FF5A43F00953BC4;
+					};
 				};
 			};
 			buildConfigurationList = 6CF5E0F62FF5A43F00953BC4 /* Build configuration list for PBXProject "UNES" */;
@@ -387,11 +436,19 @@
 				CAFECAFE000000000000000A /* UNESWidgets */,
 				CAFEAA00000000000000000C /* UNESWatch */,
 				CAFEAA00000000000000001C /* UNESWatchWidgets */,
+				AB1E57000000000000000003 /* UNESIntentTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		AB1E57000000000000000006 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6CF5E0F92FF5A43F00953BC4 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -468,6 +525,13 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		AB1E57000000000000000004 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6CF5E0F72FF5A43F00953BC4 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -499,6 +563,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		AB1E57000000000000000008 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6CF5E0FA2FF5A43F00953BC4 /* UNES */;
+			targetProxy = AB1E57000000000000000007 /* PBXContainerItemProxy */;
+		};
 		CAFEAA00000000000000001E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = CAFEAA00000000000000001C /* UNESWatchWidgets */;
@@ -517,6 +586,42 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		AB1E5700000000000000000A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5GH6Q6KS69;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = dev.forcetower.unes.ios.intenttests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = UNES;
+			};
+			name = Debug;
+		};
+		AB1E5700000000000000000B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5GH6Q6KS69;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = dev.forcetower.unes.ios.intenttests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = UNES;
+			};
+			name = Release;
+		};
 		6CF5E1042FF5A44000953BC4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -915,6 +1020,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		AB1E57000000000000000009 /* Build configuration list for PBXNativeTarget "UNESIntentTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AB1E5700000000000000000A /* Debug */,
+				AB1E5700000000000000000B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		6CF5E0F62FF5A43F00953BC4 /* Build configuration list for PBXProject "UNES" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

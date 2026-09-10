@@ -11798,6 +11798,142 @@
         }
       }
     },
+    "intent.disciplineClass.dialog.inClass" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You're in %1$@ until %2$@%3$@."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Você está em aula de %1$@ até %2$@%3$@."
+          }
+        }
+      }
+    },
+    "intent.disciplineClass.dialog.none" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I couldn't find any %@ classes in the coming days."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não encontrei aulas de %@ nos próximos dias."
+          }
+        }
+      }
+    },
+    "intent.disciplineClass.dialog.noneTeacher" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I couldn't find any %1$@ classes in the coming days. The course is taught by %2$@."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não encontrei aulas de %1$@ nos próximos dias. A disciplina é com %2$@."
+          }
+        }
+      }
+    },
+    "intent.disciplineClass.dialog.today" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your next %1$@ class is today at %2$@%3$@."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sua próxima aula de %1$@ é hoje às %2$@%3$@."
+          }
+        }
+      }
+    },
+    "intent.disciplineClass.dialog.tomorrow" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your next %1$@ class is tomorrow at %2$@%3$@."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sua próxima aula de %1$@ é amanhã às %2$@%3$@."
+          }
+        }
+      }
+    },
+    "intent.disciplineClass.dialog.weekday" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your next %1$@ class is on %2$@ at %3$@%4$@."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sua próxima aula de %1$@ é %2$@ às %3$@%4$@."
+          }
+        }
+      }
+    },
+    "intent.disciplineClass.suffix.room" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ", in room %@"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ", na sala %@"
+          }
+        }
+      }
+    },
+    "intent.disciplineClass.suffix.teacher" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ", with %@"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ", com %@"
+          }
+        }
+      }
+    },
     "intent.finalExam.card.average" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -12015,6 +12151,108 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Não encontrei essa disciplina no semestre atual."
+          }
+        }
+      }
+    },
+    "intent.grades.card.average" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "partial average"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "média parcial"
+          }
+        }
+      }
+    },
+    "intent.grades.card.averageFinal" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "final average"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "média final"
+          }
+        }
+      }
+    },
+    "intent.grades.card.pending" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "pending"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "pendente"
+          }
+        }
+      }
+    },
+    "intent.grades.dialog.closed" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In %1$@ you got %2$@. Final average %3$@."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Em %1$@ você teve %2$@. Média final %3$@."
+          }
+        }
+      }
+    },
+    "intent.grades.dialog.list" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In %1$@ you have %2$@. Partial average %3$@."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Em %1$@ você tem %2$@. Média parcial %3$@."
+          }
+        }
+      }
+    },
+    "intent.grades.item" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ on %2$@"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ em %2$@"
           }
         }
       }

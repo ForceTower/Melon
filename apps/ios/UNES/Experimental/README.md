@@ -1,43 +1,26 @@
-# iOS 27 experiment (spec 0001 / Phase 3 §3.8)
+# iOS 27 experiments (spec 0001)
 
-Compile-gated spikes — **nothing here ships**. Both files are inert unless
-the `UNES_IOS27_EXPERIMENT` compilation condition is set, which requires the
-iOS 27 SDK (Xcode-beta). The main scheme keeps building with stable Xcode
-with all of this compiled away.
+Only the **E3 body-index driver** lives here now. It compiles in every
+`DEBUG` build (no compilation condition, no xcconfig — the
+`UNES_IOS27_EXPERIMENT` flag was retired on 2026-09-09) and is gated on
+`@available(iOS 27, *)`. Release builds never contain it.
 
-Build the experiment from the CLI (no project changes needed):
-
-```sh
-DEVELOPER_DIR=/Applications/Xcode-beta.app/Contents/Developer \
-  xcodebuild -project UNES.xcodeproj -scheme UNES \
-  -destination 'platform=iOS,name=<your device>' \
-  -xcconfig UNES/Experimental/Experiment.xcconfig \
-  -allowProvisioningUpdates build
-```
-
-(or open the project in Xcode-beta and add `UNES_IOS27_EXPERIMENT` to the
-UNES target's Debug `SWIFT_ACTIVE_COMPILATION_CONDITIONS` — don't commit.)
+The E2 calendar types and the E4 messages types were promoted into the app
+target as `UNES/UNESSchemaEntities.swift`.
 
 Findings live in `docs/research/0001-siri-integration/research.md` §9.
 
-- **E1 — done (2026-07-04):** gated scheme builds with Xcode 27.0
-  (27A5209h); main scheme unaffected under stable Xcode.
-- **E2 (build half) — done:** the spec's `@AssistantEntity(schema:
-.calendar.event)` premise was superseded — iOS 27's mechanism is the new
-  `AppSchema` system, and **`@AppEntity(schema: .calendar.event)` accepts
-  entity-only conformance**: it compiles, and the metadata exports
-  `{domain: calendar, name: EventEntity}` with zero write intents in the
-  target. `ExperimentalEvaluationEvent` maps evaluations without invented
-  data (title + all-day start date; empty attendees/organizers/alarms; a
-  stub "UNES" calendar entity; everything else nil). The required-field
-  table came from the metadata processor's own errors and is recorded in
-  research §9.
-- **E2 (device half) — pending:** does Siri AI answer "when is my test
-  from …" better through the schema entity than the plain `IndexedEntity`?
-  Currently data-blocked — no scheduled pending evaluation exists until
-  2026.2 posts one.
-- **E3 — no match on iOS 27.0 beta (2026-07-04, iPhone Air):** the
-  Shortcuts action **"E3: index message bodies"** indexed the 5 newest
-  messages; a distinctive body word produced no system-wide match — same
-  as the iOS 17–26 regression. Re-run on a later beta/RC before Phase 4
-  decides; messages stay on classic `CSSearchableItem`s until then.
+- **E1 — done (2026-07-04):** the gated scheme built with the first Xcode 27
+  beta; the main scheme was unaffected.
+- **E2 — done:** `@AppEntity(schema: .calendar.event)` accepts entity-only
+  conformance (no write intents). Promoted.
+- **E3 — closed, still broken (2026-09-09, iPhone Air, iOS 27.0 24A435):**
+  neither the shipped classic `CSSearchableItem` + `textContent` path nor
+  `indexAppEntities` + `@Property(indexingKey: \.textContent)` produce a
+  system-wide Spotlight match for a body word. Messages stay classic items
+  for the Spotlight list; the messages-schema entity feeds Siri AI. To
+  re-check on a new OS build: run the Shortcuts action **"E3: index
+  message bodies"** on a debug build, then search a body word from one of
+  the five newest messages.
+- **E4 — passed (2026-09-09):** entity-only `.messages.message` validates
+  with zero messages intents. Promoted.

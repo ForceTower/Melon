@@ -12,6 +12,7 @@ nonisolated enum SpotlightDomain {
     static let discipline = "unes.discipline"
     static let message = "unes.message"
     static let evaluation = "unes.evaluation"
+    static let lecture = "unes.lecture"
 }
 
 struct DisciplineEntity: AppEntity, IndexedEntity {
@@ -19,6 +20,25 @@ struct DisciplineEntity: AppEntity, IndexedEntity {
     static let defaultQuery = DisciplineEntityQuery()
 
     let projection: SpotlightDiscipline
+
+    // Typed properties: what Shortcuts and Siri can read off a discipline
+    // beyond its title — the answer to "who teaches / where / when".
+    @Property(title: "entity.discipline.property.code")
+    var code: String
+    @Property(title: "entity.discipline.property.teacher")
+    var teacher: String?
+    @Property(title: "entity.discipline.property.room")
+    var room: String?
+    @Property(title: "entity.discipline.property.schedule")
+    var schedule: String?
+
+    init(projection: SpotlightDiscipline) {
+        self.projection = projection
+        code = projection.code
+        teacher = projection.teacher
+        room = projection.room
+        schedule = projection.schedule
+    }
 
     var id: String { projection.id }
 
@@ -30,9 +50,9 @@ struct DisciplineEntity: AppEntity, IndexedEntity {
         let attributes = CSSearchableItemAttributeSet(contentType: .item)
         attributes.displayName = projection.title
         // Post-iOS 17 Spotlight lexically matches display and alternate
-        // names only — keywords never match. The alternate name is what
-        // makes "EXA807" find the discipline.
-        attributes.alternateNames = [projection.code]
+        // names only — keywords never match. The alternate names are what
+        // make "EXA807" and the professor's name find the discipline.
+        attributes.alternateNames = [projection.code] + (projection.teacher.map { [$0] } ?? [])
         attributes.title = projection.title
         attributes.contentDescription = projection.subtitle
         attributes.keywords = projection.keywords
@@ -99,7 +119,8 @@ struct MessageEntityQuery: EntityQuery {
 
 /// A scheduled, still-pending evaluation — the calendar-shaped data. No
 /// body text, so the entity path suffices (unlike messages), and no grade
-/// values anywhere.
+/// values anywhere. On iOS 27 the indexer writes `EvaluationEventEntity`
+/// (the calendar schema) instead.
 struct EvaluationEntity: AppEntity, IndexedEntity {
     static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "entity.evaluation.typeName")
     static let defaultQuery = EvaluationEntityQuery()
@@ -133,5 +154,41 @@ struct EvaluationEntityQuery: EntityQuery {
     /// Soonest first.
     func suggestedEntities() async throws -> [EvaluationEntity] {
         await SpotlightSupport.suggestedEvaluations().map(EvaluationEntity.init)
+    }
+}
+
+/// A lecture with a posted subject — the class content students search
+/// for before a test. Taps land on the discipline detail.
+struct LectureEntity: AppEntity, IndexedEntity {
+    static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "entity.lecture.typeName")
+    static let defaultQuery = LectureEntityQuery()
+
+    let projection: SpotlightLecture
+
+    var id: String { projection.id }
+
+    var displayRepresentation: DisplayRepresentation {
+        DisplayRepresentation(title: "\(projection.title)", subtitle: "\(projection.subtitle)")
+    }
+
+    var attributeSet: CSSearchableItemAttributeSet {
+        let attributes = CSSearchableItemAttributeSet(contentType: .item)
+        attributes.displayName = projection.title
+        attributes.title = projection.title
+        attributes.contentDescription = projection.subtitle
+        attributes.keywords = projection.keywords
+        attributes.domainIdentifier = SpotlightDomain.lecture
+        return attributes
+    }
+}
+
+struct LectureEntityQuery: EntityQuery {
+    func entities(for identifiers: [String]) async throws -> [LectureEntity] {
+        await SpotlightSupport.lectures(for: identifiers).map(LectureEntity.init)
+    }
+
+    /// Most recently dated first.
+    func suggestedEntities() async throws -> [LectureEntity] {
+        await SpotlightSupport.suggestedLectures().map(LectureEntity.init)
     }
 }

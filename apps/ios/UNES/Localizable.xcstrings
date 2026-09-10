@@ -4,6 +4,74 @@
     "%@" : {
 
     },
+    "entity.discipline.property.code" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Code"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Código"
+          }
+        }
+      }
+    },
+    "entity.discipline.property.room" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Room"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sala"
+          }
+        }
+      }
+    },
+    "entity.discipline.property.schedule" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schedule"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Horário"
+          }
+        }
+      }
+    },
+    "entity.discipline.property.teacher" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Professor"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Professor"
+          }
+        }
+      }
+    },
     "entity.discipline.typeName" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -38,6 +106,23 @@
         }
       }
     },
+    "entity.lecture.typeName" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lecture"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aula"
+          }
+        }
+      }
+    },
     "entity.message.typeName" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -51,6 +136,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mensagem"
+          }
+        }
+      }
+    },
+    "intent.disciplineClass.param.discipline" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Course"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disciplina"
+          }
+        }
+      }
+    },
+    "intent.disciplineClass.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Next class of a course"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Próxima aula da disciplina"
           }
         }
       }
@@ -85,6 +204,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Prova Final"
+          }
+        }
+      }
+    },
+    "intent.grades.param.discipline" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Course"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disciplina"
+          }
+        }
+      }
+    },
+    "intent.grades.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Course grades"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notas da disciplina"
           }
         }
       }
@@ -276,6 +429,23 @@
         }
       }
     },
+    "shortcut.disciplineClass.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Class of a course"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aula da disciplina"
+          }
+        }
+      }
+    },
     "shortcut.finalExam.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -289,6 +459,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Prova Final"
+          }
+        }
+      }
+    },
+    "shortcut.grades.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grades"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notas"
           }
         }
       }

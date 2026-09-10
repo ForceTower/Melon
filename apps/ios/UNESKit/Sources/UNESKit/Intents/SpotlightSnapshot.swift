@@ -14,6 +14,15 @@ struct SpotlightSnapshot: Equatable, Codable, Sendable {
     /// Scheduled, still-pending evaluations of the active semester, soonest
     /// first.
     var evaluations: [SpotlightEvaluation]
+    /// Lectures with a subject, per enrolled discipline of the active
+    /// semester, chronological.
+    var lectures: [SpotlightLecture] = []
+    /// One per merged weekly session of the active semester — the Horário
+    /// rail's rows. Written only on iOS 27 (calendar-schema entities).
+    var sessions: [SpotlightSession] = []
+    /// The student's own calendar entries, earliest first. Written only on
+    /// iOS 27 (calendar-schema entities).
+    var personalEvents: [SpotlightPersonalEvent] = []
 }
 
 public struct SpotlightDiscipline: Equatable, Codable, Sendable, Identifiable {
@@ -29,6 +38,11 @@ public struct SpotlightDiscipline: Equatable, Codable, Sendable, Identifiable {
     public var subtitle: String
     /// Code, name, teacher, semester labels.
     public var keywords: [String]
+    public var teacher: String? = nil
+    /// First room the weekly pattern resolves.
+    public var room: String? = nil
+    /// Weekday labels + earliest start: "seg · qua · 10:50".
+    public var schedule: String? = nil
 }
 
 public struct SpotlightMessage: Equatable, Codable, Sendable, Identifiable {
@@ -43,6 +57,16 @@ public struct SpotlightMessage: Equatable, Codable, Sendable, Identifiable {
     public var body: String
     /// Discipline code/name on class-scoped messages.
     public var keywords: [String]
+    /// Sender name; "UNES" when upstream sent none.
+    public var sender: String = "UNES"
+    public var receivedAt: Date? = nil
+    /// Upstream's read flag — the local overlay stays out of the projection.
+    public var isRead: Bool = false
+    /// The origin the inbox groups by, as a stable key: "class/<code>",
+    /// "university", "secretariat", "app", or "sender/<name>".
+    public var originId: String = "university"
+    /// The origin's display name.
+    public var originName: String = "UNES"
 }
 
 public struct SpotlightEvaluation: Equatable, Codable, Sendable, Identifiable {
@@ -63,12 +87,76 @@ public struct SpotlightEvaluation: Equatable, Codable, Sendable, Identifiable {
     public var keywords: [String]
 }
 
+public struct SpotlightLecture: Equatable, Codable, Sendable, Identifiable {
+    /// Entity identifier — encodes the route back into the app (the
+    /// discipline detail, where lectures live).
+    public var id: String
+    public var semesterId: String
+    public var disciplineId: String
+    public var lectureId: String
+    /// The posted subject: "Integrais duplas".
+    public var title: String
+    /// Localized date + discipline: "qui., 12 de set. · Cálculo II".
+    public var subtitle: String
+    /// yyyy-MM-dd; nil when the lecture isn't scheduled yet.
+    public var dateStamp: String?
+    /// Subject, discipline code and name.
+    public var keywords: [String]
+}
+
+/// One merged weekly session of an enrolled class — the calendar-shaped
+/// view of the schedule. Times are minutes from midnight in the campus day;
+/// the app target turns them into recurring calendar events.
+public struct SpotlightSession: Equatable, Codable, Sendable, Identifiable {
+    public var id: String
+    public var semesterId: String
+    public var disciplineId: String
+    public var classId: String
+    /// "Cálculo II"
+    public var title: String
+    /// "MAT202"
+    public var code: String
+    /// 0 = Sunday, as upstream.
+    public var day: Int
+    public var startMinute: Int
+    public var endMinute: Int?
+    public var room: String?
+    public var teacher: String?
+    /// yyyy-MM-dd — the recurrence window.
+    public var semesterStart: String
+    public var semesterEnd: String
+}
+
+public struct SpotlightPersonalEvent: Equatable, Codable, Sendable, Identifiable {
+    public var id: String
+    public var eventId: String
+    public var title: String
+    /// yyyy-MM-dd.
+    public var start: String
+    /// yyyy-MM-dd of the last day; nil for single-day entries.
+    public var end: String?
+    public var notes: String
+    /// `PersonalEvent.Category` raw value.
+    public var category: String
+    public var disciplineName: String?
+    public var disciplineCode: String?
+}
+
+/// The calendar-shaped index kinds, as the app target's event entity
+/// needs to tell them apart.
+public enum SpotlightEventKind: Equatable, Sendable {
+    case session, evaluation, personalEvent
+}
+
 /// Builds and parses the opaque identifier strings that ride Spotlight
 /// results back into the app — the single place that knows the format.
 enum SpotlightEntityID {
     private static let disciplineKind = "discipline"
     private static let messageKind = "message"
     private static let evaluationKind = "evaluation"
+    private static let lectureKind = "lecture"
+    private static let sessionKind = "session"
+    private static let personalEventKind = "personalEvent"
 
     /// Everything but "/" and "%" passes through, so an upstream id
     /// containing the separator can't shear the format.
@@ -84,6 +172,30 @@ enum SpotlightEntityID {
 
     static func evaluation(semesterId: String, disciplineId: String, gradeId: String) -> String {
         [evaluationKind, escape(semesterId), escape(disciplineId), escape(gradeId)].joined(separator: "/")
+    }
+
+    static func lecture(semesterId: String, disciplineId: String, lectureId: String) -> String {
+        [lectureKind, escape(semesterId), escape(disciplineId), escape(lectureId)].joined(separator: "/")
+    }
+
+    static func session(semesterId: String, disciplineId: String, classId: String, day: Int, startMinute: Int) -> String {
+        [sessionKind, escape(semesterId), escape(disciplineId), escape(classId), String(day), String(startMinute)]
+            .joined(separator: "/")
+    }
+
+    static func personalEvent(id: String) -> String {
+        [personalEventKind, escape(id)].joined(separator: "/")
+    }
+
+    /// Which calendar-shaped kind an identifier names — the app target's
+    /// single calendar event entity resolves ids per kind.
+    static func eventKind(of identifier: String) -> SpotlightEventKind? {
+        switch identifier.split(separator: "/").first.map(String.init) {
+        case sessionKind: .session
+        case evaluationKind: .evaluation
+        case personalEventKind: .personalEvent
+        default: nil
+        }
     }
 
     static func parse(_ identifier: String) -> IntentRoute? {
@@ -106,14 +218,16 @@ enum SpotlightEntityID {
         case (messageKind, 2):
             guard let id = parts[1].removingPercentEncoding else { return nil }
             return .message(id: id)
-        case (evaluationKind, 4):
-            // Evaluations live on the discipline detail screen — the tap
-            // resolves to the discipline route; the grade id only keeps the
-            // index identifier unique.
+        case (evaluationKind, 4), (lectureKind, 4), (sessionKind, 6):
+            // Evaluations, lectures, and sessions live on the discipline
+            // detail screen — the tap resolves to the discipline route; the
+            // trailing components only keep the index identifier unique.
             guard let semesterId = parts[1].removingPercentEncoding,
                   let disciplineId = parts[2].removingPercentEncoding
             else { return nil }
             return .discipline(semesterId: semesterId, disciplineId: disciplineId)
+        case (personalEventKind, 2):
+            return .calendar
         default:
             return nil
         }

@@ -79,6 +79,43 @@ extension MirrorStore {
         try await writer.read { db in try Self.spotlightEvaluations(db, now: now) }
     }
 
+    func spotlightLectures(ids: [String], now: Date) async throws -> [SpotlightLecture] {
+        let wanted = Set(ids)
+        return try await writer.read { db in
+            try Self.activeSpotlightScope(db, now: now)?.spotlightLectures().filter { wanted.contains($0.id) } ?? []
+        }
+    }
+
+    /// The most recently dated lectures — the Shortcuts picker.
+    func spotlightSuggestedLectures(now: Date, limit: Int) async throws -> [SpotlightLecture] {
+        try await writer.read { db in
+            let lectures = try Self.activeSpotlightScope(db, now: now)?.spotlightLectures() ?? []
+            return Array(lectures.filter { $0.dateStamp != nil }.suffix(limit).reversed())
+        }
+    }
+
+    func spotlightSessions(ids: [String], now: Date) async throws -> [SpotlightSession] {
+        let wanted = Set(ids)
+        return try await writer.read { db in
+            try Self.activeSpotlightScope(db, now: now)?.spotlightSessions().filter { wanted.contains($0.id) } ?? []
+        }
+    }
+
+    func spotlightSuggestedSessions(now: Date) async throws -> [SpotlightSession] {
+        try await writer.read { db in try Self.activeSpotlightScope(db, now: now)?.spotlightSessions() ?? [] }
+    }
+
+    func spotlightPersonalEvents(ids: [String]) async throws -> [SpotlightPersonalEvent] {
+        let wanted = Set(ids)
+        return try await writer.read { db in
+            try Self.fetchPersonalEvents(db).map(Self.spotlightPersonalEvent).filter { wanted.contains($0.id) }
+        }
+    }
+
+    func spotlightSuggestedPersonalEvents() async throws -> [SpotlightPersonalEvent] {
+        try await writer.read { db in try Self.fetchPersonalEvents(db).map(Self.spotlightPersonalEvent) }
+    }
+
     // MARK: Fetch
 
     private static func spotlightSnapshot(_ db: Database, now: Date) throws -> SpotlightSnapshot? {
@@ -88,7 +125,10 @@ extension MirrorStore {
         return SpotlightSnapshot(
             disciplines: scope?.spotlightDisciplines() ?? [],
             messages: try spotlightMessages(db, records: records),
-            evaluations: scope?.spotlightEvaluations(now: now) ?? []
+            evaluations: scope?.spotlightEvaluations(now: now) ?? [],
+            lectures: scope?.spotlightLectures() ?? [],
+            sessions: scope?.spotlightSessions() ?? [],
+            personalEvents: try fetchPersonalEvents(db).map(spotlightPersonalEvent)
         )
     }
 
@@ -108,15 +148,15 @@ extension MirrorStore {
         return try spotlightScope(for: record, db: db)
     }
 
-    /// Like `snapshot(for:db:)` minus lectures and materials. Grade rows are
-    /// in scope since Phase 3 — the evaluation projection needs their names
-    /// and dates — but grade *values* still never reach a projection; the
-    /// projection tests pin that.
+    /// Like `snapshot(for:db:)` minus materials. Grade rows are in scope
+    /// since Phase 3 — the evaluation projection needs their names and
+    /// dates — but grade *values* still never reach a projection; the
+    /// projection tests pin that. Lectures joined in Phase 4.
     private static func spotlightScope(for semester: SemesterRecord, db: Database) throws -> SemesterSnapshot {
         func scoped<R: FetchableRecord & TableRecord>(_ type: R.Type) throws -> [R] {
             try R.filter(Column("semesterId") == semester.id).orderByPrimaryKey().fetchAll(db)
         }
-        return try SemesterSnapshot(
+        var snapshot = try SemesterSnapshot(
             semester: semester,
             disciplines: scoped(DisciplineRecord.self),
             disciplineOffers: scoped(DisciplineOfferRecord.self),
@@ -128,6 +168,8 @@ extension MirrorStore {
             studentClasses: scoped(StudentClassRecord.self),
             studentGrades: scoped(StudentGradeRecord.self)
         )
+        snapshot.lectures = try scoped(LectureRecord.self)
+        return snapshot
     }
 
     private static func spotlightMessages(_ db: Database, records: [MessageRecord]) throws -> [SpotlightMessage] {
@@ -155,12 +197,12 @@ extension MirrorStore {
         // the wrong headline for a class notice or a rectorate broadcast.
         // Personal (and app) messages keep the sender: there the name is
         // the point.
-        let originTitle: String? = switch resolveOrigin(source: record.source, scopes: scopes) {
+        let origin = resolveOrigin(source: record.source, scopes: scopes)
+        let disciplineCode = disciplineScope?.disciplineCode?.trimmingCharacters(in: .whitespaces).spotlightNonEmpty
+        let disciplineName = disciplineScope?.disciplineName?.trimmingCharacters(in: .whitespaces).spotlightNonEmpty
+        let originTitle: String? = switch origin {
         case .discipline:
-            disciplineScope.flatMap { scope in
-                (scope.disciplineName ?? scope.disciplineCode)?
-                    .trimmingCharacters(in: .whitespaces).spotlightNonEmpty
-            }
+            disciplineName ?? disciplineCode
         case .campus:
             String.localized(.messagesFilterUniversity)
         case .secretariat:
@@ -169,6 +211,16 @@ extension MirrorStore {
             nil
         }
         let title = subject ?? originTitle ?? sender
+
+        // The origin doubles as the schema entity's "conversation": a
+        // stable key per grouping, named the way the inbox names it.
+        let originId: String = switch origin {
+        case .discipline: "class/\(disciplineCode ?? disciplineScope?.classId ?? "")"
+        case .campus: "university"
+        case .secretariat: "secretariat"
+        case .app: "app"
+        case .direct: "sender/\(sender)"
+        }
 
         // The sender rides in the subtitle whenever it isn't the title
         // itself; subject-less rows add a body snippet so several notes
@@ -182,10 +234,12 @@ extension MirrorStore {
             title: title,
             subtitle: subtitleParts.compactMap { $0 }.joined(separator: " · "),
             body: body,
-            keywords: [
-                disciplineScope?.disciplineCode?.trimmingCharacters(in: .whitespaces).spotlightNonEmpty,
-                disciplineScope?.disciplineName?.trimmingCharacters(in: .whitespaces).spotlightNonEmpty,
-            ].compactMap { $0 }
+            keywords: [disciplineCode, disciplineName].compactMap { $0 },
+            sender: sender,
+            receivedAt: receivedAt,
+            isRead: record.read ?? false,
+            originId: originId,
+            originName: originTitle ?? sender
         )
     }
 
@@ -196,6 +250,20 @@ extension MirrorStore {
         guard !collapsed.isEmpty else { return nil }
         guard collapsed.count > 80 else { return collapsed }
         return collapsed.prefix(80) + "…"
+    }
+
+    static func spotlightPersonalEvent(_ event: PersonalEvent) -> SpotlightPersonalEvent {
+        SpotlightPersonalEvent(
+            id: SpotlightEntityID.personalEvent(id: event.id),
+            eventId: event.id,
+            title: event.title,
+            start: event.start,
+            end: event.end,
+            notes: event.notes,
+            category: event.category.rawValue,
+            disciplineName: event.discipline?.name,
+            disciplineCode: event.discipline?.code
+        )
     }
 }
 
@@ -230,38 +298,41 @@ extension SemesterSnapshot {
             .map { discipline in
                 let code = index.displayCode(for: discipline)
                 let teacher = classIdsByDiscipline[discipline.id]?
-                    .firstNonNil { index.teacherName(forClass: $0) }
+                    .firstNonNil { index.teacherName(forClass: $0) }?
+                    .trimmingCharacters(in: .whitespaces).spotlightNonEmpty
+                let week = weekLine(
+                    days: daysByDiscipline[discipline.id] ?? [],
+                    sessions: sessionsByDiscipline[discipline.id] ?? [],
+                    index: index,
+                    calendar: calendar
+                )
                 return SpotlightDiscipline(
                     id: SpotlightEntityID.discipline(semesterId: semester.id, disciplineId: discipline.id),
                     semesterId: semester.id,
                     disciplineId: discipline.id,
                     title: discipline.name,
                     code: code,
-                    subtitle: subtitle(
-                        code: code,
-                        days: daysByDiscipline[discipline.id] ?? [],
-                        sessions: sessionsByDiscipline[discipline.id] ?? [],
-                        index: index,
-                        calendar: calendar
-                    ),
+                    subtitle: ([code] + week.labels + [week.start, week.room].compactMap { $0 }).joined(separator: " · "),
                     keywords: [code, discipline.name, teacher, semester.code, semester.description]
-                        .compactMap { $0?.trimmingCharacters(in: .whitespaces).spotlightNonEmpty }
+                        .compactMap { $0?.trimmingCharacters(in: .whitespaces).spotlightNonEmpty },
+                    teacher: teacher,
+                    room: week.room,
+                    schedule: (week.labels + [week.start].compactMap { $0 }).joined(separator: " · ").spotlightNonEmpty
                 )
             }
     }
 
-    /// "MAT202 · seg · qua · 10:50 · MT-14" — days in the calendar's week
-    /// order, the earliest session's start, the first room; absent parts drop.
-    private func subtitle(
-        code: String,
+    /// "seg · qua" + "10:50" + "MT-14" — days in the calendar's week order,
+    /// the earliest session's start, the first room; absent parts nil.
+    private func weekLine(
         days: [Int],
         sessions: [DaySession],
         index: SnapshotIndex,
         calendar: Calendar
-    ) -> String {
+    ) -> (labels: [String], start: String?, room: String?) {
         // Upstream days are 0 = Sunday; firstWeekday is 1-based on the same week.
         let weekStart = calendar.firstWeekday - 1
-        let dayLabels = days
+        let labels = days
             .sorted { ($0 - weekStart + 7) % 7 < ($1 - weekStart + 7) % 7 }
             .map { day in
                 let symbol = calendar.shortWeekdaySymbols[day]
@@ -272,7 +343,86 @@ extension SemesterSnapshot {
         let room = sessions
             .firstNonNil { $0.spaceId.flatMap { index.spacesById[$0]?.location } }?
             .trimmingCharacters(in: .whitespaces).spotlightNonEmpty
-        return ([code] + dayLabels + [start, room].compactMap { $0 }).joined(separator: " · ")
+        return (labels, start, room)
+    }
+}
+
+// MARK: - Semester snapshot → [SpotlightSession]
+
+extension SemesterSnapshot {
+    /// One entry per merged weekly session of an enrolled class, Sunday
+    /// first — the rows the Horário rail draws, carrying the room, the
+    /// teacher, and the semester window for the calendar recurrence.
+    func spotlightSessions() -> [SpotlightSession] {
+        let index = SnapshotIndex(snapshot: self)
+        var sessions: [SpotlightSession] = []
+        for day in 0..<7 {
+            for session in mergedSessions(on: day, index: index) {
+                guard let discipline = index.discipline(forClass: session.classId) else { continue }
+                sessions.append(SpotlightSession(
+                    id: SpotlightEntityID.session(
+                        semesterId: semester.id,
+                        disciplineId: discipline.id,
+                        classId: session.classId,
+                        day: day,
+                        startMinute: session.startMinute
+                    ),
+                    semesterId: semester.id,
+                    disciplineId: discipline.id,
+                    classId: session.classId,
+                    title: discipline.name,
+                    code: index.displayCode(for: discipline),
+                    day: day,
+                    startMinute: session.startMinute,
+                    endMinute: session.endMinute,
+                    room: session.spaceId.flatMap { index.spacesById[$0]?.location }?
+                        .trimmingCharacters(in: .whitespaces).spotlightNonEmpty,
+                    teacher: index.teacherName(forClass: session.classId)?
+                        .trimmingCharacters(in: .whitespaces).spotlightNonEmpty,
+                    semesterStart: semester.startDate,
+                    semesterEnd: semester.endDate
+                ))
+            }
+        }
+        return sessions
+    }
+}
+
+// MARK: - Semester snapshot → [SpotlightLecture]
+
+extension SemesterSnapshot {
+    /// One entry per lecture with a posted subject in an enrolled class,
+    /// chronological (undated last) — the class content students search
+    /// for before a test. Placeholder rows without a subject are dropped,
+    /// as the detail screen drops them.
+    func spotlightLectures(
+        calendar: Calendar = .current,
+        locale: Locale = .autoupdatingCurrent
+    ) -> [SpotlightLecture] {
+        let index = SnapshotIndex(snapshot: self)
+        return lectures
+            .filter { index.enrolledClassIds.contains($0.classId) }
+            .compactMap { lecture -> SpotlightLecture? in
+                guard let subject = lecture.subject?.trimmingCharacters(in: .whitespacesAndNewlines).spotlightNonEmpty,
+                      let discipline = index.discipline(forClass: lecture.classId)
+                else { return nil }
+                let dateLine = lecture.date
+                    .flatMap { parseDayStamp($0, calendar: calendar) }
+                    .map { $0.formatted(.dateTime.weekday(.abbreviated).day().month(.abbreviated).locale(locale)) }
+                return SpotlightLecture(
+                    id: SpotlightEntityID.lecture(
+                        semesterId: semester.id, disciplineId: discipline.id, lectureId: lecture.id
+                    ),
+                    semesterId: semester.id,
+                    disciplineId: discipline.id,
+                    lectureId: lecture.id,
+                    title: subject,
+                    subtitle: [dateLine, discipline.name].compactMap { $0 }.joined(separator: " · "),
+                    dateStamp: lecture.date,
+                    keywords: [subject, index.displayCode(for: discipline), discipline.name]
+                )
+            }
+            .sorted { ($0.dateStamp ?? "9999-99-99", $0.lectureId) < ($1.dateStamp ?? "9999-99-99", $1.lectureId) }
     }
 }
 

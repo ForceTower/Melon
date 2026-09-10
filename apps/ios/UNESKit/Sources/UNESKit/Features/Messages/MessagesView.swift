@@ -122,6 +122,7 @@ struct MessagesView: View {
                     ) {
                         store.send(.messageTapped(message))
                     }
+                    .onscreenEntity(.message(id: message.id))
                 }
             }
             .background(UNESColor.card)

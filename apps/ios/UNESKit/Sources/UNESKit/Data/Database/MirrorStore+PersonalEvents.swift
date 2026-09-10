@@ -71,18 +71,20 @@ extension MirrorStore {
 
     /// Every stored entry, earliest first.
     func personalEvents() async throws -> [PersonalEvent] {
-        try await writer.read { db in try Self.personalEvents(db) }
+        try await writer.read { db in try Self.fetchPersonalEvents(db) }
     }
 
     /// Emits the stored entries on subscription and again after every write
     /// that changes them.
     func personalEventUpdates() -> AsyncValueObservation<[PersonalEvent]> {
         ValueObservation
-            .tracking { db in try Self.personalEvents(db) }
+            .tracking { db in try Self.fetchPersonalEvents(db) }
             .values(in: writer)
     }
 
-    private static func personalEvents(_ db: Database) throws -> [PersonalEvent] {
+    /// Shared with the Spotlight projection, which reads the table inside
+    /// its own observation.
+    static func fetchPersonalEvents(_ db: Database) throws -> [PersonalEvent] {
         try PersonalEventRecord
             .order(Column("start"), Column("createdAt"), Column("id"))
             .fetchAll(db)

@@ -10,13 +10,23 @@ struct SpotlightDiff: Equatable, Sendable {
     var messageIdsToDelete: [String] = []
     var evaluationsToIndex: [SpotlightEvaluation] = []
     var evaluationIdsToDelete: [String] = []
+    var lecturesToIndex: [SpotlightLecture] = []
+    var lectureIdsToDelete: [String] = []
+    var sessionsToIndex: [SpotlightSession] = []
+    var sessionIdsToDelete: [String] = []
+    var personalEventsToIndex: [SpotlightPersonalEvent] = []
+    var personalEventIdsToDelete: [String] = []
     /// The mirror was wiped while the index still has entries.
     var wipeAll = false
 
     var isEmpty: Bool {
         disciplinesToIndex.isEmpty && disciplineIdsToDelete.isEmpty
             && messagesToIndex.isEmpty && messageIdsToDelete.isEmpty
-            && evaluationsToIndex.isEmpty && evaluationIdsToDelete.isEmpty && !wipeAll
+            && evaluationsToIndex.isEmpty && evaluationIdsToDelete.isEmpty
+            && lecturesToIndex.isEmpty && lectureIdsToDelete.isEmpty
+            && sessionsToIndex.isEmpty && sessionIdsToDelete.isEmpty
+            && personalEventsToIndex.isEmpty && personalEventIdsToDelete.isEmpty
+            && !wipeAll
     }
 
     static func compute(ledger: SpotlightIndexLedger, snapshot: SpotlightSnapshot?) -> SpotlightDiff {
@@ -25,36 +35,30 @@ struct SpotlightDiff: Equatable, Sendable {
             return SpotlightDiff(wipeAll: !ledger.isEmpty)
         }
         var diff = SpotlightDiff()
-        var currentDisciplineIds: Set<String> = []
-        for discipline in snapshot.disciplines {
-            currentDisciplineIds.insert(discipline.id)
-            if ledger.disciplines[discipline.id] != SpotlightIndexLedger.digest(of: discipline) {
-                diff.disciplinesToIndex.append(discipline)
-            }
-        }
-        diff.disciplineIdsToDelete = ledger.disciplines.keys
-            .filter { !currentDisciplineIds.contains($0) }.sorted()
-
-        var currentMessageIds: Set<String> = []
-        for message in snapshot.messages {
-            currentMessageIds.insert(message.id)
-            if ledger.messages[message.id] != SpotlightIndexLedger.digest(of: message) {
-                diff.messagesToIndex.append(message)
-            }
-        }
-        diff.messageIdsToDelete = ledger.messages.keys
-            .filter { !currentMessageIds.contains($0) }.sorted()
-
-        var currentEvaluationIds: Set<String> = []
-        for evaluation in snapshot.evaluations {
-            currentEvaluationIds.insert(evaluation.id)
-            if ledger.evaluations[evaluation.id] != SpotlightIndexLedger.digest(of: evaluation) {
-                diff.evaluationsToIndex.append(evaluation)
-            }
-        }
-        diff.evaluationIdsToDelete = ledger.evaluations.keys
-            .filter { !currentEvaluationIds.contains($0) }.sorted()
+        (diff.disciplinesToIndex, diff.disciplineIdsToDelete) = delta(ledger.disciplines, snapshot.disciplines)
+        (diff.messagesToIndex, diff.messageIdsToDelete) = delta(ledger.messages, snapshot.messages)
+        (diff.evaluationsToIndex, diff.evaluationIdsToDelete) = delta(ledger.evaluations, snapshot.evaluations)
+        (diff.lecturesToIndex, diff.lectureIdsToDelete) = delta(ledger.lectures, snapshot.lectures)
+        (diff.sessionsToIndex, diff.sessionIdsToDelete) = delta(ledger.sessions, snapshot.sessions)
+        (diff.personalEventsToIndex, diff.personalEventIdsToDelete) = delta(ledger.personalEvents, snapshot.personalEvents)
         return diff
+    }
+
+    /// Items whose digest changed (or are new), and ledger ids no longer
+    /// projected — sorted so the diff is deterministic.
+    private static func delta<Item: Encodable & Identifiable>(
+        _ digests: [String: String],
+        _ items: [Item]
+    ) -> (toIndex: [Item], toDelete: [String]) where Item.ID == String {
+        var current: Set<String> = []
+        var toIndex: [Item] = []
+        for item in items {
+            current.insert(item.id)
+            if digests[item.id] != SpotlightIndexLedger.digest(of: item) {
+                toIndex.append(item)
+            }
+        }
+        return (toIndex, digests.keys.filter { !current.contains($0) }.sorted())
     }
 }
 
@@ -75,41 +79,70 @@ struct SpotlightIndexLedger: Equatable, Codable, Sendable {
     /// survived every schema wipe and lingered as stale duplicates.
     /// 6: discipline items gained the code as a Spotlight alternate name —
     /// an attribute-set-only change the digests can't see.
-    static let schemaVersion = 6
+    /// 7: Phase 4 — disciplines carry typed properties and the teacher as
+    /// an alternate name; lectures, sessions, and personal events joined;
+    /// on iOS 27 evaluations, sessions, personal events, and messages are
+    /// written as schema entities.
+    /// 8: on iOS 27 sessions became visible and messages entity-only (the
+    /// hidden twins never reached Siri AI's index) — an attribute-level
+    /// change the digests can't see.
+    static let schemaVersion = 8
+
+    /// The OS major the ledger was written under. The app target picks
+    /// entity types by `#available`, so an OS upgrade changes what the
+    /// same digests map to — a mismatch is treated like a schema bump.
+    static var currentPlatform: Int { ProcessInfo.processInfo.operatingSystemVersion.majorVersion }
 
     var version: Int = SpotlightIndexLedger.schemaVersion
+    var platform: Int = SpotlightIndexLedger.currentPlatform
     var disciplines: [String: String] = [:]
     var messages: [String: String] = [:]
     var evaluations: [String: String] = [:]
+    var lectures: [String: String] = [:]
+    var sessions: [String: String] = [:]
+    var personalEvents: [String: String] = [:]
 
-    var isEmpty: Bool { disciplines.isEmpty && messages.isEmpty && evaluations.isEmpty }
+    var isEmpty: Bool {
+        disciplines.isEmpty && messages.isEmpty && evaluations.isEmpty
+            && lectures.isEmpty && sessions.isEmpty && personalEvents.isEmpty
+    }
 
-    /// The two kinds apply separately so one failed index write only holds
+    /// The kinds apply separately so one failed index write only holds
     /// back its own kind's ledger update (and retry).
     mutating func applyDisciplines(_ diff: SpotlightDiff) {
-        for discipline in diff.disciplinesToIndex {
-            disciplines[discipline.id] = Self.digest(of: discipline)
-        }
-        for id in diff.disciplineIdsToDelete {
-            disciplines[id] = nil
-        }
+        Self.apply(&disciplines, indexed: diff.disciplinesToIndex, deleted: diff.disciplineIdsToDelete)
     }
 
     mutating func applyMessages(_ diff: SpotlightDiff) {
-        for message in diff.messagesToIndex {
-            messages[message.id] = Self.digest(of: message)
-        }
-        for id in diff.messageIdsToDelete {
-            messages[id] = nil
-        }
+        Self.apply(&messages, indexed: diff.messagesToIndex, deleted: diff.messageIdsToDelete)
     }
 
     mutating func applyEvaluations(_ diff: SpotlightDiff) {
-        for evaluation in diff.evaluationsToIndex {
-            evaluations[evaluation.id] = Self.digest(of: evaluation)
+        Self.apply(&evaluations, indexed: diff.evaluationsToIndex, deleted: diff.evaluationIdsToDelete)
+    }
+
+    mutating func applyLectures(_ diff: SpotlightDiff) {
+        Self.apply(&lectures, indexed: diff.lecturesToIndex, deleted: diff.lectureIdsToDelete)
+    }
+
+    mutating func applySessions(_ diff: SpotlightDiff) {
+        Self.apply(&sessions, indexed: diff.sessionsToIndex, deleted: diff.sessionIdsToDelete)
+    }
+
+    mutating func applyPersonalEvents(_ diff: SpotlightDiff) {
+        Self.apply(&personalEvents, indexed: diff.personalEventsToIndex, deleted: diff.personalEventIdsToDelete)
+    }
+
+    private static func apply<Item: Encodable & Identifiable>(
+        _ digests: inout [String: String],
+        indexed: [Item],
+        deleted: [String]
+    ) where Item.ID == String {
+        for item in indexed {
+            digests[item.id] = digest(of: item)
         }
-        for id in diff.evaluationIdsToDelete {
-            evaluations[id] = nil
+        for id in deleted {
+            digests[id] = nil
         }
     }
 

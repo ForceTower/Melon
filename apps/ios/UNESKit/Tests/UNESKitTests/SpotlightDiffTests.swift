@@ -172,16 +172,12 @@ struct SpotlightDiffTests {
 private struct DisciplineRejectingWriter: SpotlightIndexWriter {
     struct Rejected: Error {}
 
-    func index(
-        disciplines: [SpotlightDiscipline],
-        messages: [SpotlightMessage],
-        evaluations: [SpotlightEvaluation]
-    ) async throws {
-        guard disciplines.isEmpty else { throw Rejected() }
+    func index(_ batch: SpotlightIndexBatch) async throws {
+        guard batch.disciplines.isEmpty else { throw Rejected() }
     }
 
-    func delete(disciplineIds: [String], messageIds: [String], evaluationIds: [String]) async throws {
-        guard disciplineIds.isEmpty else { throw Rejected() }
+    func delete(_ batch: SpotlightDeleteBatch) async throws {
+        guard batch.disciplineIds.isEmpty else { throw Rejected() }
     }
 
     func deleteAll() async throws {}

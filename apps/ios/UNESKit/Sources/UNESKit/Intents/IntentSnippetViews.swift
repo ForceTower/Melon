@@ -280,8 +280,99 @@ public struct IntentVerdictCardView: View {
     }
 }
 
+/// One discipline's grades: every evaluation row (pending ones with their
+/// date), then the mean the detail screen leads with.
+public struct IntentGradesCardView: View {
+    var code: String
+    var name: String
+    var grades: [DisciplineDetailGrade]
+    var finalExam: DisciplineDetailGrade?
+    var average: Double
+    var closed: Bool
+
+    public var body: some View {
+        SnippetCard {
+            VStack(alignment: .leading, spacing: 10) {
+                Text(code)
+                    .font(.system(size: 11, weight: .bold))
+                    .tracking(0.4)
+                    .foregroundStyle(UNESColor.accent)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .background(UNESColor.accent.opacity(0.14), in: RoundedRectangle(cornerRadius: 7, style: .continuous))
+                Text(name)
+                    .font(.system(size: 22, weight: .bold))
+                    .tracking(-0.66)
+                    .foregroundStyle(UNESColor.ink)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.8)
+                VStack(alignment: .leading, spacing: 8) {
+                    ForEach(rows) { grade in
+                        row(for: grade)
+                    }
+                }
+                HStack(alignment: .lastTextBaseline, spacing: 8) {
+                    Text(formatGrade(average))
+                        .font(.system(size: 34, weight: .bold))
+                        .tracking(-1)
+                        .monospacedDigit()
+                        .foregroundStyle(UNESColor.ink)
+                    Text(closed ? .intentGradesCardAverageFinal : .intentGradesCardAverage)
+                        .font(.system(size: 12, weight: .medium))
+                        .foregroundStyle(UNESColor.ink4)
+                }
+            }
+        }
+    }
+
+    private var rows: [DisciplineDetailGrade] {
+        grades + (finalExam.map { [$0] } ?? [])
+    }
+
+    private func row(for grade: DisciplineDetailGrade) -> some View {
+        HStack(alignment: .firstTextBaseline, spacing: 10) {
+            Text(grade.label)
+                .font(.system(size: 11, weight: .bold))
+                .tracking(0.3)
+                .foregroundStyle(UNESColor.ink4)
+                .frame(minWidth: 34, alignment: .leading)
+            Text(grade.title)
+                .font(.system(size: 15, weight: .semibold))
+                .foregroundStyle(UNESColor.ink)
+                .lineLimit(1)
+            Spacer(minLength: 8)
+            if let value = grade.value {
+                Text(formatGrade(value))
+                    .font(.system(size: 15, weight: .semibold))
+                    .monospacedDigit()
+                    .foregroundStyle(UNESColor.ink)
+            } else if let date = grade.date {
+                Text(DisciplinesFormat.shortDate(date))
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundStyle(UNESColor.ink4)
+            } else {
+                Text(.intentGradesCardPending)
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundStyle(UNESColor.ink4)
+            }
+        }
+    }
+}
+
 #Preview("Class card") {
     IntentClassCardView(occurrence: .preview())
+}
+
+#Preview("Grades card") {
+    let detail = DisciplineDetail.preview()
+    IntentGradesCardView(
+        code: detail.code,
+        name: detail.name,
+        grades: detail.grades(forGroup: nil),
+        finalExam: nil,
+        average: 8.3,
+        closed: false
+    )
 }
 
 #Preview("Day list") {

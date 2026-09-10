@@ -118,7 +118,9 @@
               "What do I need on the final exam for ${discipline} in ${applicationName}",
               "How am I doing in ${discipline} in ${applicationName}",
               "What do I need on the finals in ${applicationName}",
-              "Am I headed to finals in ${applicationName}"
+              "Am I headed to finals in ${applicationName}",
+              "What do I need on the ${discipline} exam in ${applicationName}",
+              "What do I need to get in ${discipline} in ${applicationName}"
             ]
           }
         },
@@ -130,7 +132,61 @@
               "Quanto preciso na Prova Final de ${discipline} no ${applicationName}",
               "Como estou em ${discipline} no ${applicationName}",
               "Quanto preciso na final no ${applicationName}",
-              "Tô de final no ${applicationName}"
+              "Tô de final no ${applicationName}",
+              "Quanto preciso tirar na prova de ${discipline} no ${applicationName}",
+              "Quanto preciso tirar em ${discipline} no ${applicationName}"
+            ]
+          }
+        }
+      }
+    },
+    "Qual minha nota em ${discipline} no ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "What's my grade in ${discipline} in ${applicationName}",
+              "My ${discipline} grades in ${applicationName}",
+              "What did I get in ${discipline} in ${applicationName}"
+            ]
+          }
+        },
+        "pt-BR" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Qual minha nota em ${discipline} no ${applicationName}",
+              "Minhas notas de ${discipline} no ${applicationName}",
+              "Quanto tirei em ${discipline} no ${applicationName}"
+            ]
+          }
+        }
+      }
+    },
+    "Quando é minha aula de ${discipline} no ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "When is my ${discipline} class in ${applicationName}",
+              "Where is my ${discipline} class in ${applicationName}",
+              "Who teaches ${discipline} in ${applicationName}",
+              "Who is the ${discipline} professor in ${applicationName}"
+            ]
+          }
+        },
+        "pt-BR" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Quando é minha aula de ${discipline} no ${applicationName}",
+              "Onde é minha aula de ${discipline} no ${applicationName}",
+              "Qual o professor de ${discipline} no ${applicationName}",
+              "Quem dá aula de ${discipline} no ${applicationName}"
             ]
           }
         }

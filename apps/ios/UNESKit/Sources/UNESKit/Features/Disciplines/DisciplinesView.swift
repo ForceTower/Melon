@@ -57,6 +57,7 @@ struct DisciplinesView: View {
                                 DisciplineSummaryCard(discipline: discipline) {
                                     store.send(.disciplineTapped(semesterId: current.id, discipline: discipline))
                                 }
+                                .onscreenEntity(.discipline(semesterId: current.id, disciplineId: discipline.id))
                                 .fadeUp(delay: 0.18 + Double(index) * 0.06)
                             }
                         }

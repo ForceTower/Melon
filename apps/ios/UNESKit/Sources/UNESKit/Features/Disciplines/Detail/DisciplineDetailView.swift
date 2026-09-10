@@ -35,6 +35,7 @@ struct DisciplineDetailView: View {
             }
         }
         .inlineNavigationBar()
+        .onscreenEntity(store.detail.map { .discipline(semesterId: $0.semesterId, disciplineId: $0.id) })
         .task { await store.send(.task).finish() }
     }
 

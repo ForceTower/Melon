@@ -5,17 +5,23 @@ import GRDB
 
 extension MirrorStore {
     private static let ledgerVersionKey = "version"
+    private static let ledgerPlatformKey = "platform"
     private static let disciplineKind = "discipline"
     private static let messageKind = "message"
     private static let evaluationKind = "evaluation"
+    private static let lectureKind = "lecture"
+    private static let sessionKind = "session"
+    private static let personalEventKind = "personalEvent"
 
     /// Nil means no usable ledger — the caller must wipe the index before
     /// re-indexing, because the old items' identifier formats may differ.
-    /// That covers three cases: another schema version, a missing version
-    /// row (a DEBUG `eraseDatabaseOnSchemaChange` empties these tables while
-    /// Spotlight keeps its entries — an empty read must not masquerade as a
-    /// fresh install), and the pre-Phase-3 JSON-file ledger, whose presence
-    /// marks a legacy install.
+    /// That covers four cases: another schema version, another OS major
+    /// (the app target maps the same projections onto different entity
+    /// types per OS), a missing version row (a DEBUG
+    /// `eraseDatabaseOnSchemaChange` empties these tables while Spotlight
+    /// keeps its entries — an empty read must not masquerade as a fresh
+    /// install), and the pre-Phase-3 JSON-file ledger, whose presence marks
+    /// a legacy install.
     func spotlightLedger() async throws -> SpotlightIndexLedger? {
         // File check outside the database access: the marker is deleted by
         // the caller only after the wipe succeeds, so a failed wipe keeps
@@ -23,7 +29,9 @@ extension MirrorStore {
         if Self.legacySpotlightLedgerFileExists { return nil }
         return try await writer.read { db -> SpotlightIndexLedger? in
             guard let stored = try SpotlightLedgerStateRecord.fetchOne(db, key: Self.ledgerVersionKey),
-                  stored.value == String(SpotlightIndexLedger.schemaVersion)
+                  stored.value == String(SpotlightIndexLedger.schemaVersion),
+                  let platform = try SpotlightLedgerStateRecord.fetchOne(db, key: Self.ledgerPlatformKey),
+                  platform.value == String(SpotlightIndexLedger.currentPlatform)
             else { return nil }
             var ledger = SpotlightIndexLedger()
             for row in try SpotlightLedgerRecord.fetchAll(db) {
@@ -31,6 +39,9 @@ extension MirrorStore {
                 case Self.disciplineKind: ledger.disciplines[row.identifier] = row.digest
                 case Self.messageKind: ledger.messages[row.identifier] = row.digest
                 case Self.evaluationKind: ledger.evaluations[row.identifier] = row.digest
+                case Self.lectureKind: ledger.lectures[row.identifier] = row.digest
+                case Self.sessionKind: ledger.sessions[row.identifier] = row.digest
+                case Self.personalEventKind: ledger.personalEvents[row.identifier] = row.digest
                 default: break
                 }
             }
@@ -48,6 +59,9 @@ extension MirrorStore {
                 (Self.disciplineKind, ledger.disciplines),
                 (Self.messageKind, ledger.messages),
                 (Self.evaluationKind, ledger.evaluations),
+                (Self.lectureKind, ledger.lectures),
+                (Self.sessionKind, ledger.sessions),
+                (Self.personalEventKind, ledger.personalEvents),
             ]
             for (kind, digests) in kinds {
                 for (identifier, digest) in digests {
@@ -55,6 +69,7 @@ extension MirrorStore {
                 }
             }
             try SpotlightLedgerStateRecord(key: Self.ledgerVersionKey, value: String(ledger.version)).upsert(db)
+            try SpotlightLedgerStateRecord(key: Self.ledgerPlatformKey, value: String(ledger.platform)).upsert(db)
         }
     }
 

@@ -1,13 +1,15 @@
-#if UNES_IOS27_EXPERIMENT
+#if DEBUG
 import AppIntents
 import CoreSpotlight
 import UNESKit
 
-/// §3.8(b) — the blocked half of Phase 2 criterion 3. On iOS ≤ 26,
+/// E3 — the blocked half of Phase 2 criterion 3. On iOS 17–27.0,
 /// entity-created index items never lexically match their body, which is
-/// why shipped messages ride classic `CSSearchableItem`s. The 27.0 SDK adds
-/// `@Property(indexingKey:)`; the question is whether `indexAppEntities`
-/// items now match body words in system-wide search on device (E3).
+/// why shipped messages ride classic `CSSearchableItem`s. This driver
+/// re-runs the check on a new OS build: it pushes the newest messages
+/// through `indexAppEntities` with `@Property(indexingKey: \.textContent)`
+/// so a body-word search in Spotlight gives a fresh verdict. Debug builds
+/// only — nothing here ships.
 @available(iOS 27, *)
 struct ExperimentalIndexedMessageEntity: AppEntity, IndexedEntity {
     static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "entity.message.typeName")
@@ -42,10 +44,10 @@ struct ExperimentalIndexedMessageEntity: AppEntity, IndexedEntity {
     }
 }
 
-/// One-shot driver for the spike: pushes the recent messages through
-/// `indexAppEntities` so the E3 question gets a clean answer. Triggered
-/// from the Shortcuts app via `ExperimentalBodyIndexIntent`; search a
-/// distinctive body word afterwards, record the verdict.
+/// One-shot driver: pushes the recent messages through `indexAppEntities`
+/// so the E3 question gets a clean answer. Triggered from the Shortcuts app
+/// via `ExperimentalBodyIndexIntent`; search a distinctive body word
+/// afterwards, record the verdict.
 @available(iOS 27, *)
 enum ExperimentalMessageBodyIndexing {
     static func indexRecentMessages() async throws -> Int {
@@ -56,7 +58,7 @@ enum ExperimentalMessageBodyIndexing {
     }
 }
 
-/// The E3 trigger, visible in the Shortcuts app on experiment builds only.
+/// The E3 trigger, visible in the Shortcuts app on debug builds only.
 /// Bare literal strings on purpose: nothing here ships or localizes.
 @available(iOS 27, *)
 struct ExperimentalBodyIndexIntent: AppIntent {

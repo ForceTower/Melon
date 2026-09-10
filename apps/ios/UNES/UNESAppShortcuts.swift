@@ -67,9 +67,32 @@ struct UNESAppShortcuts: AppShortcutsProvider {
                 "Como estou em \(\.$discipline) no \(.applicationName)",
                 "Quanto preciso na final no \(.applicationName)",
                 "Tô de final no \(.applicationName)",
+                "Quanto preciso tirar na prova de \(\.$discipline) no \(.applicationName)",
+                "Quanto preciso tirar em \(\.$discipline) no \(.applicationName)",
             ],
             shortTitle: "shortcut.finalExam.title",
             systemImageName: "flag.checkered"
+        )
+        AppShortcut(
+            intent: DisciplineNextClassIntent(),
+            phrases: [
+                "Quando é minha aula de \(\.$discipline) no \(.applicationName)",
+                "Onde é minha aula de \(\.$discipline) no \(.applicationName)",
+                "Qual o professor de \(\.$discipline) no \(.applicationName)",
+                "Quem dá aula de \(\.$discipline) no \(.applicationName)",
+            ],
+            shortTitle: "shortcut.disciplineClass.title",
+            systemImageName: "calendar.badge.clock"
+        )
+        AppShortcut(
+            intent: DisciplineGradesIntent(),
+            phrases: [
+                "Qual minha nota em \(\.$discipline) no \(.applicationName)",
+                "Minhas notas de \(\.$discipline) no \(.applicationName)",
+                "Quanto tirei em \(\.$discipline) no \(.applicationName)",
+            ],
+            shortTitle: "shortcut.grades.title",
+            systemImageName: "number.square"
         )
     }
 

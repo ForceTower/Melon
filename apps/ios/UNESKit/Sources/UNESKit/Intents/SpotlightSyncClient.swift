@@ -32,16 +32,33 @@ extension DependencyValues {
     }
 }
 
+/// One kind's worth of items to write. The loop sends one kind per call so
+/// a failed write only holds back that kind's ledger update.
+public struct SpotlightIndexBatch: Sendable {
+    public var disciplines: [SpotlightDiscipline] = []
+    public var messages: [SpotlightMessage] = []
+    public var evaluations: [SpotlightEvaluation] = []
+    public var lectures: [SpotlightLecture] = []
+    public var sessions: [SpotlightSession] = []
+    public var personalEvents: [SpotlightPersonalEvent] = []
+}
+
+/// Entity identifiers to remove, per kind.
+public struct SpotlightDeleteBatch: Sendable {
+    public var disciplineIds: [String] = []
+    public var messageIds: [String] = []
+    public var evaluationIds: [String] = []
+    public var lectureIds: [String] = []
+    public var sessionIds: [String] = []
+    public var personalEventIds: [String] = []
+}
+
 /// The `CSSearchableIndex` boundary, implemented by the app target (the
 /// `AppEntity` types live there next to the app's catalog); UNESKit owns
 /// everything up to it — observation, coalescing, diffing, the ledger.
 public protocol SpotlightIndexWriter: Sendable {
-    func index(
-        disciplines: [SpotlightDiscipline],
-        messages: [SpotlightMessage],
-        evaluations: [SpotlightEvaluation]
-    ) async throws
-    func delete(disciplineIds: [String], messageIds: [String], evaluationIds: [String]) async throws
+    func index(_ batch: SpotlightIndexBatch) async throws
+    func delete(_ batch: SpotlightDeleteBatch) async throws
     func deleteAll() async throws
     /// The discipline set changed (or the index was wiped) — the app target
     /// re-registers its App Shortcut parameters so Siri's phrase-embedded
@@ -109,10 +126,57 @@ public enum SpotlightSupport {
             .spotlightSuggestedEvaluations(now: date.now)) ?? []
     }
 
+    public static func lectures(for identifiers: [String]) async -> [SpotlightLecture] {
+        @Dependency(\.database) var database
+        @Dependency(\.date) var date
+        return (try? await MirrorStore(writer: database)
+            .spotlightLectures(ids: identifiers, now: date.now)) ?? []
+    }
+
+    /// The most recently dated lectures.
+    public static func suggestedLectures() async -> [SpotlightLecture] {
+        @Dependency(\.database) var database
+        @Dependency(\.date) var date
+        return (try? await MirrorStore(writer: database)
+            .spotlightSuggestedLectures(now: date.now, limit: 5)) ?? []
+    }
+
+    public static func sessions(for identifiers: [String]) async -> [SpotlightSession] {
+        @Dependency(\.database) var database
+        @Dependency(\.date) var date
+        return (try? await MirrorStore(writer: database)
+            .spotlightSessions(ids: identifiers, now: date.now)) ?? []
+    }
+
+    /// Every weekly session of the active semester, Sunday first.
+    public static func suggestedSessions() async -> [SpotlightSession] {
+        @Dependency(\.database) var database
+        @Dependency(\.date) var date
+        return (try? await MirrorStore(writer: database)
+            .spotlightSuggestedSessions(now: date.now)) ?? []
+    }
+
+    /// Which calendar-shaped kind an entity identifier names; nil for the
+    /// other kinds.
+    public static func eventKind(of identifier: String) -> SpotlightEventKind? {
+        SpotlightEntityID.eventKind(of: identifier)
+    }
+
+    public static func personalEvents(for identifiers: [String]) async -> [SpotlightPersonalEvent] {
+        @Dependency(\.database) var database
+        return (try? await MirrorStore(writer: database).spotlightPersonalEvents(ids: identifiers)) ?? []
+    }
+
+    /// The student's own entries, earliest first.
+    public static func suggestedPersonalEvents() async -> [SpotlightPersonalEvent] {
+        @Dependency(\.database) var database
+        return (try? await MirrorStore(writer: database).spotlightSuggestedPersonalEvents()) ?? []
+    }
+
     // MARK: Indexer loop
 
-    /// One `indexAppEntities` call per chunk bounds the first full pass
-    /// (the mirrored inbox can be thousands of messages).
+    /// One index call per chunk bounds the first full pass (the mirrored
+    /// inbox can be thousands of messages).
     private static let chunkSize = 200
 
     static func run(writer: some SpotlightIndexWriter) async {
@@ -126,12 +190,13 @@ public enum SpotlightSupport {
         if let loaded = (try? await mirror.spotlightLedger()) ?? nil {
             ledger = loaded
         } else {
-            // No usable ledger (another schema version, the legacy JSON
-            // file, or a DEBUG schema erase): the indexed items' identifier
-            // formats may have changed, so re-indexing over them would leave
-            // duplicates — clean slate instead. The fresh ledger and the
-            // legacy-file deletion land only after the wipe succeeds; a
-            // failed wipe keeps its signal and retries next launch.
+            // No usable ledger (another schema version or OS major, the
+            // legacy JSON file, or a DEBUG schema erase): the indexed
+            // items' identifier formats or entity types may have changed,
+            // so re-indexing over them would leave duplicates — clean slate
+            // instead. The fresh ledger and the legacy-file deletion land
+            // only after the wipe succeeds; a failed wipe keeps its signal
+            // and retries next launch.
             do {
                 try await writer.deleteAll()
                 log.info("index wiped reason=schema")
@@ -181,15 +246,10 @@ public enum SpotlightSupport {
         // A failed write leaves that kind's ledger untouched, so the next
         // emission retries the same delta (index upserts are idempotent).
         var next = ledger
-        do {
-            for chunk in diff.disciplinesToIndex.chunked(into: chunkSize) {
-                try await writer.index(disciplines: chunk, messages: [], evaluations: [])
-            }
-            if !diff.disciplineIdsToDelete.isEmpty {
-                try await writer.delete(
-                    disciplineIds: diff.disciplineIdsToDelete, messageIds: [], evaluationIds: []
-                )
-            }
+        if await applyKind(
+            "discipline", diff.disciplinesToIndex, diff.disciplineIdsToDelete, writer: writer,
+            index: { SpotlightIndexBatch(disciplines: $0) }, delete: { SpotlightDeleteBatch(disciplineIds: $0) }
+        ) {
             next.applyDisciplines(diff)
             if !diff.disciplinesToIndex.isEmpty || !diff.disciplineIdsToDelete.isEmpty {
                 // Ride the existing choke point: the Prova Final shortcut
@@ -197,41 +257,70 @@ public enum SpotlightSupport {
                 // change re-registers the shortcut parameters.
                 await writer.disciplinesDidChange()
             }
-        } catch {
-            log.error("discipline index apply failed", error: error)
         }
-        do {
-            for chunk in diff.messagesToIndex.chunked(into: chunkSize) {
-                try await writer.index(disciplines: [], messages: chunk, evaluations: [])
-            }
-            if !diff.messageIdsToDelete.isEmpty {
-                try await writer.delete(
-                    disciplineIds: [], messageIds: diff.messageIdsToDelete, evaluationIds: []
-                )
-            }
+        if await applyKind(
+            "message", diff.messagesToIndex, diff.messageIdsToDelete, writer: writer,
+            index: { SpotlightIndexBatch(messages: $0) }, delete: { SpotlightDeleteBatch(messageIds: $0) }
+        ) {
             next.applyMessages(diff)
-        } catch {
-            log.error("message index apply failed", error: error)
         }
-        do {
-            for chunk in diff.evaluationsToIndex.chunked(into: chunkSize) {
-                try await writer.index(disciplines: [], messages: [], evaluations: chunk)
-            }
-            if !diff.evaluationIdsToDelete.isEmpty {
-                try await writer.delete(
-                    disciplineIds: [], messageIds: [], evaluationIds: diff.evaluationIdsToDelete
-                )
-            }
+        if await applyKind(
+            "evaluation", diff.evaluationsToIndex, diff.evaluationIdsToDelete, writer: writer,
+            index: { SpotlightIndexBatch(evaluations: $0) }, delete: { SpotlightDeleteBatch(evaluationIds: $0) }
+        ) {
             next.applyEvaluations(diff)
-        } catch {
-            log.error("evaluation index apply failed", error: error)
+        }
+        if await applyKind(
+            "lecture", diff.lecturesToIndex, diff.lectureIdsToDelete, writer: writer,
+            index: { SpotlightIndexBatch(lectures: $0) }, delete: { SpotlightDeleteBatch(lectureIds: $0) }
+        ) {
+            next.applyLectures(diff)
+        }
+        if await applyKind(
+            "session", diff.sessionsToIndex, diff.sessionIdsToDelete, writer: writer,
+            index: { SpotlightIndexBatch(sessions: $0) }, delete: { SpotlightDeleteBatch(sessionIds: $0) }
+        ) {
+            next.applySessions(diff)
+        }
+        if await applyKind(
+            "personalEvent", diff.personalEventsToIndex, diff.personalEventIdsToDelete, writer: writer,
+            index: { SpotlightIndexBatch(personalEvents: $0) }, delete: { SpotlightDeleteBatch(personalEventIds: $0) }
+        ) {
+            next.applyPersonalEvents(diff)
         }
         log.info(
             "indexed disciplines=+\(diff.disciplinesToIndex.count)/-\(diff.disciplineIdsToDelete.count)"
                 + " messages=+\(diff.messagesToIndex.count)/-\(diff.messageIdsToDelete.count)"
                 + " evaluations=+\(diff.evaluationsToIndex.count)/-\(diff.evaluationIdsToDelete.count)"
+                + " lectures=+\(diff.lecturesToIndex.count)/-\(diff.lectureIdsToDelete.count)"
+                + " sessions=+\(diff.sessionsToIndex.count)/-\(diff.sessionIdsToDelete.count)"
+                + " personalEvents=+\(diff.personalEventsToIndex.count)/-\(diff.personalEventIdsToDelete.count)"
         )
         return next
+    }
+
+    /// Writes one kind's upserts (chunked) and deletes; false when any
+    /// write failed, so the caller leaves that kind's ledger untouched.
+    private static func applyKind<Item>(
+        _ kind: String,
+        _ items: [Item],
+        _ deletions: [String],
+        writer: some SpotlightIndexWriter,
+        index: ([Item]) -> SpotlightIndexBatch,
+        delete: ([String]) -> SpotlightDeleteBatch
+    ) async -> Bool {
+        do {
+            for chunk in items.chunked(into: chunkSize) {
+                try await writer.index(index(chunk))
+            }
+            if !deletions.isEmpty {
+                try await writer.delete(delete(deletions))
+            }
+            return true
+        } catch {
+            log.error("\(kind) index apply failed", error: error)
+            return false
+        }
     }
 
     /// The mirror's projection stream, coalesced: emissions settle for the
