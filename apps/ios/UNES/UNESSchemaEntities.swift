@@ -66,7 +66,7 @@ struct AcademicAttendeeEntity: TransientAppEntity {
     }
 
     var displayRepresentation: DisplayRepresentation {
-        DisplayRepresentation(title: "UNES")
+        DisplayRepresentation(title: "entity.attendee.title")
     }
 }
 
@@ -76,7 +76,9 @@ enum AcademicAttendeeStatus: String {
     case accepted, declined, tentative
 
     static let caseDisplayRepresentations: [AcademicAttendeeStatus: DisplayRepresentation] = [
-        .accepted: "Accepted", .declined: "Declined", .tentative: "Tentative",
+        .accepted: "enum.attendeeStatus.accepted",
+        .declined: "enum.attendeeStatus.declined",
+        .tentative: "enum.attendeeStatus.tentative",
     ]
 }
 
@@ -86,7 +88,9 @@ enum AcademicAttendeeType: String {
     case person, room, resource
 
     static let caseDisplayRepresentations: [AcademicAttendeeType: DisplayRepresentation] = [
-        .person: "Person", .room: "Room", .resource: "Resource",
+        .person: "enum.attendeeType.person",
+        .room: "enum.attendeeType.room",
+        .resource: "enum.attendeeType.resource",
     ]
 }
 
@@ -96,7 +100,9 @@ enum AcademicEventStatus: String {
     case confirmed, tentative, cancelled
 
     static let caseDisplayRepresentations: [AcademicEventStatus: DisplayRepresentation] = [
-        .confirmed: "Confirmed", .tentative: "Tentative", .cancelled: "Cancelled",
+        .confirmed: "enum.eventStatus.confirmed",
+        .tentative: "enum.eventStatus.tentative",
+        .cancelled: "enum.eventStatus.cancelled",
     ]
 }
 
@@ -437,7 +443,7 @@ struct MessageAttachmentEntity: TransientAppEntity {
     }
 
     var displayRepresentation: DisplayRepresentation {
-        DisplayRepresentation(title: "Attachment")
+        DisplayRepresentation(title: "entity.attachment.title")
     }
 }
 
@@ -449,7 +455,7 @@ enum MessageKind: String {
     case unspecified
 
     static let caseDisplayRepresentations: [MessageKind: DisplayRepresentation] = [
-        .unspecified: "Message",
+        .unspecified: "enum.messageType.unspecified",
     ]
 }
 
@@ -459,7 +465,7 @@ enum MessageAttributeKind: String {
     case institutional
 
     static let caseDisplayRepresentations: [MessageAttributeKind: DisplayRepresentation] = [
-        .institutional: "Institutional",
+        .institutional: "enum.messageAttribute.institutional",
     ]
 }
 
@@ -469,7 +475,7 @@ enum MessageOriginAttribute: String {
     case institutional
 
     static let caseDisplayRepresentations: [MessageOriginAttribute: DisplayRepresentation] = [
-        .institutional: "Institutional",
+        .institutional: "enum.conversationAttribute.institutional",
     ]
 }
 
@@ -479,7 +485,7 @@ enum MessageEffectKind: String {
     case none
 
     static let caseDisplayRepresentations: [MessageEffectKind: DisplayRepresentation] = [
-        .none: "None",
+        .none: "enum.messageEffect.none",
     ]
 }
 
@@ -489,7 +495,7 @@ enum MessageTapback: String {
     case like
 
     static let caseDisplayRepresentations: [MessageTapback: DisplayRepresentation] = [
-        .like: "Like",
+        .like: "enum.customReaction.like",
     ]
 }
 
