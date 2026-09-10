@@ -230,7 +230,7 @@ data class DisciplineDetailLectureRow(
 // LectureMaterial joined with its lecture's date + enclosing classId. The
 // detail view renders these as the attachments block and groups them by
 // class when the discipline runs multiple groups. `caption` is aliased from
-// the `description` column to keep the SKIE-generated Swift API clear of
+// the `description` column to keep the exported Swift API clear of
 // `NSObject.description` ambiguity.
 data class DisciplineDetailMaterialRow(
     val materialId: String,

@@ -1,8 +1,8 @@
 package dev.forcetower.melon.core.database.entity
 
-import androidx.room.Entity
-import androidx.room.Index
-import androidx.room.PrimaryKey
+import androidx.room3.Entity
+import androidx.room3.Index
+import androidx.room3.PrimaryKey
 
 // Calendar entries the student created themselves. The only table here with no
 // upstream counterpart — sync never writes it and never clears it, so the

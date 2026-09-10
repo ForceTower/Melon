@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import dev.forcetower.melon.core.common.ApplicationContext
 import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.BindingContainer
 import dev.zacsweers.metro.ContributesTo
 import dev.zacsweers.metro.Provides
 import dev.zacsweers.metro.SingleIn
@@ -34,6 +35,7 @@ internal class DataStoreKeyValueStorage(
 }
 
 @ContributesTo(AppScope::class)
+@BindingContainer
 interface AndroidStorageGraph {
     companion object {
         @Provides

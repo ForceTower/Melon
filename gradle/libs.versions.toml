@@ -1,15 +1,14 @@
 [versions]
-kotlin = "2.4.10"
-ksp = "2.3.11"
-metro = "1.4.2"
-skie = "0.10.14"
-room = "2.8.4"
-sqlite = "2.7.0"
+kotlin = "2.4.20"
+ksp = "2.3.12"
+metro = "1.4.3"
+room = "3.0.3"
+sqlite = "2.7.1"
 ktor = "3.5.2"
 kotlinx-coroutines = "1.11.0"
 kotlinx-serialization = "1.11.0"
 kotlinx-datetime = "0.8.0"
-kermit = "2.1.0"
+kermit = "2.2.0"
 
 # Android
 agp = "9.4.0"
@@ -20,7 +19,7 @@ android-core-ktx = "1.19.0"
 android-splashscreen = "1.2.0"
 android-activity-compose = "1.13.0"
 android-lifecycle = "2.11.0"
-android-compose-bom = "2026.08.00"
+android-compose-bom = "2026.09.00"
 android-navigation3 = "1.1.7"
 android-hilt = "2.60.1"
 android-hilt-navigation-compose = "1.4.0"
@@ -36,11 +35,11 @@ timber = "5.0.1"
 kotlinx-coroutines-android = "1.11.0"
 licensee = "1.14.1"
 google-services = "4.5.0"
-firebase-bom = "34.18.0"
+firebase-bom = "34.19.0"
 firebase-crashlytics-gradle = "3.0.8"
-posthog-android = "3.61.1"
+posthog-android = "3.64.0"
 lever = "0.2.0"
-coil = "3.6.1"
+coil = "3.6.2"
 
 [libraries]
 # Gradle plugin artifacts used by the build-logic convention project
@@ -48,7 +47,7 @@ kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", v
 kotlin-compose-compiler-gradle-plugin = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "kotlin" }
 ksp-gradle-plugin = { module = "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 metro-gradle-plugin = { module = "dev.zacsweers.metro:gradle-plugin", version.ref = "metro" }
-room-gradle-plugin = { module = "androidx.room:room-gradle-plugin", version.ref = "room" }
+room-gradle-plugin = { module = "androidx.room3:room3-gradle-plugin", version.ref = "room" }
 agp-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "agp" }
 hilt-gradle-plugin = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "android-hilt" }
 google-services-gradle-plugin = { module = "com.google.gms:google-services", version.ref = "google-services" }
@@ -74,8 +73,8 @@ kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
 kermit-crashlytics = { module = "co.touchlab:kermit-crashlytics", version.ref = "kermit" }
 
 # Room (KMP)
-androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
-androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+androidx-room-runtime = { module = "androidx.room3:room3-runtime", version.ref = "room" }
+androidx-room-compiler = { module = "androidx.room3:room3-compiler", version.ref = "room" }
 androidx-sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
 
 # AndroidX core / lifecycle / activity
@@ -169,8 +168,7 @@ kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "ko
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 metro = { id = "dev.zacsweers.metro", version.ref = "metro" }
-skie = { id = "co.touchlab.skie", version.ref = "skie" }
-androidx-room = { id = "androidx.room", version.ref = "room" }
+androidx-room = { id = "androidx.room3", version.ref = "room" }
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 android-kmp-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }

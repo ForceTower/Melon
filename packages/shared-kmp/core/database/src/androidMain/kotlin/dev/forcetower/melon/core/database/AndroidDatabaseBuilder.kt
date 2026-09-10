@@ -1,16 +1,18 @@
 package dev.forcetower.melon.core.database
 
-import androidx.room.Room
-import androidx.room.RoomDatabase
+import androidx.room3.Room
+import androidx.room3.RoomDatabase
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import dev.forcetower.melon.core.common.ApplicationContext
 import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.BindingContainer
 import dev.zacsweers.metro.ContributesTo
 import dev.zacsweers.metro.Provides
 import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.Dispatchers
 
 @ContributesTo(AppScope::class)
+@BindingContainer
 interface AndroidDatabaseGraph {
     companion object {
         @Provides

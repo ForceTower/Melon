@@ -1,7 +1,7 @@
 package dev.forcetower.melon.core.database.entity
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room3.Entity
+import androidx.room3.PrimaryKey
 
 // Login writes {id, name, imageUrl}; sync/profile tops up `email` and
 // `alternateName`. On logout + re-login, both go back to null until the first

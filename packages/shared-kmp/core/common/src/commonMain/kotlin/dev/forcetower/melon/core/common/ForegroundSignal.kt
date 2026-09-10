@@ -1,6 +1,7 @@
 package dev.forcetower.melon.core.common
 
 import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.BindingContainer
 import dev.zacsweers.metro.ContributesTo
 import dev.zacsweers.metro.Provides
 import dev.zacsweers.metro.SingleIn
@@ -36,6 +37,7 @@ internal class ForegroundSignalImpl : ForegroundSignal {
 }
 
 @ContributesTo(AppScope::class)
+@BindingContainer
 interface ForegroundSignalGraph {
     companion object {
         @Provides

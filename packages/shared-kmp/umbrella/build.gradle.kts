@@ -3,7 +3,6 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
 plugins {
     id("melon.kmp-library")
     alias(libs.plugins.metro)
-    alias(libs.plugins.skie)
 }
 
 kotlin {

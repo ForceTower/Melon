@@ -1,7 +1,7 @@
 package dev.forcetower.melon.core.database.entity
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room3.Entity
+import androidx.room3.PrimaryKey
 
 // Mirror of the server-side `user_settings` row. Single-row table per
 // logged-in user; `gradeSpoiler` is `0=value`, `1=comment`, `2=posted` (the

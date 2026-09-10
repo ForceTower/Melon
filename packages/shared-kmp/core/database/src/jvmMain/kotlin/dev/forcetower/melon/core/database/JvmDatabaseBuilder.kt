@@ -1,8 +1,9 @@
 package dev.forcetower.melon.core.database
 
-import androidx.room.Room
+import androidx.room3.Room
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.BindingContainer
 import dev.zacsweers.metro.ContributesTo
 import dev.zacsweers.metro.Provides
 import dev.zacsweers.metro.SingleIn
@@ -11,6 +12,7 @@ import java.io.File
 import java.nio.file.Files
 
 @ContributesTo(AppScope::class)
+@BindingContainer
 interface JvmDatabaseGraph {
     companion object {
         @Provides

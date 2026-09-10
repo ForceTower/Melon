@@ -1,8 +1,8 @@
 package dev.forcetower.melon.core.database.entity
 
-import androidx.room.Entity
-import androidx.room.Index
-import androidx.room.PrimaryKey
+import androidx.room3.Entity
+import androidx.room3.Index
+import androidx.room3.PrimaryKey
 
 // Operation log for local-first writes (e.g., mark-message-read). The drainer
 // reads oldest-first, replays each against the server with `id` as the

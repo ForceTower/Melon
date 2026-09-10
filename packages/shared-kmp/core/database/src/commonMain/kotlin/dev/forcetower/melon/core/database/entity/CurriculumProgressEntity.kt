@@ -1,8 +1,8 @@
 package dev.forcetower.melon.core.database.entity
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room3.ColumnInfo
+import androidx.room3.Entity
+import androidx.room3.PrimaryKey
 
 // The student's headline hour counts plus the payload-level facts that don't
 // belong to any single entry. Single row keyed by [CURRENT]; it exists

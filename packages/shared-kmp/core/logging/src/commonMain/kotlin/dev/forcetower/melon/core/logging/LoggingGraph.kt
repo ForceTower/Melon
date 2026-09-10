@@ -4,11 +4,13 @@ import co.touchlab.kermit.Logger
 import co.touchlab.kermit.LoggerConfig
 import co.touchlab.kermit.StaticConfig
 import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.BindingContainer
 import dev.zacsweers.metro.ContributesTo
 import dev.zacsweers.metro.Provides
 import dev.zacsweers.metro.SingleIn
 
 @ContributesTo(AppScope::class)
+@BindingContainer
 interface LoggingGraph {
     companion object {
         @Provides

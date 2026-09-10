@@ -12,8 +12,7 @@ data class CalendarEventFeed(
     val id: String,
     val platformId: String,
     // `description` collides with `KotlinBase.description()` in Swift; expose
-    // it as `text` to ObjC/Swift so the binding is stable (not the SKIE-
-    // generated `description_` fallback).
+    // it as `text` to give ObjC/Swift consumers a stable binding.
     @property:ObjCName("text") val description: String,
     val start: LocalDate,
     val end: LocalDate?,

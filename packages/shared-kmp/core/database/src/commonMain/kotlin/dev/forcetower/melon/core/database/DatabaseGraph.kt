@@ -14,12 +14,14 @@ import dev.forcetower.melon.core.database.dao.SyncStateDao
 import dev.forcetower.melon.core.database.dao.UserDao
 import dev.forcetower.melon.core.database.dao.UserSettingsDao
 import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.BindingContainer
 import dev.zacsweers.metro.ContributesTo
 import dev.zacsweers.metro.Provides
 
 // The MelonDatabase itself is provided per-platform (iosMain / jvmMain) because the builder setup
 // differs. This common container only exposes the DAOs as graph bindings.
 @ContributesTo(AppScope::class)
+@BindingContainer
 interface DatabaseGraph {
     companion object {
         @Provides fun userDao(database: MelonDatabase): UserDao = database.userDao()

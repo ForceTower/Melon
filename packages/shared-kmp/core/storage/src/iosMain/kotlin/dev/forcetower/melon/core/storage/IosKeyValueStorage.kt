@@ -1,6 +1,7 @@
 package dev.forcetower.melon.core.storage
 
 import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.BindingContainer
 import dev.zacsweers.metro.ContributesTo
 import dev.zacsweers.metro.Provides
 import dev.zacsweers.metro.SingleIn
@@ -24,6 +25,7 @@ internal class IosKeyValueStorage(suiteName: String) : KeyValueStorage {
 }
 
 @ContributesTo(AppScope::class)
+@BindingContainer
 interface IosStorageGraph {
     companion object {
         @Provides

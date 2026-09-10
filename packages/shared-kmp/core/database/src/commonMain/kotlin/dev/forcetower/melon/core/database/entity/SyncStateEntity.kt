@@ -1,7 +1,7 @@
 package dev.forcetower.melon.core.database.entity
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room3.Entity
+import androidx.room3.PrimaryKey
 
 // K/V bookkeeping for the sync layer: last-active-semester-pull timestamp,
 // messages cursor, onboarding-complete flag. Separate from Settings so a

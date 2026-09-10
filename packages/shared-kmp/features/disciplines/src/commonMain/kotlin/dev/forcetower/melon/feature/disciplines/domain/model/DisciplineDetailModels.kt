@@ -94,7 +94,7 @@ data class DisciplineDetailLecture(
 // One LectureMaterial row with its owning class/group resolved. The native
 // side infers AttachmentKind from the URL extension. `caption` is the
 // upstream `description` — renamed here to avoid clashing with
-// `NSObject.description` on the SKIE-generated Swift API.
+// `NSObject.description` on the exported Swift API.
 data class DisciplineDetailAttachment(
     val materialId: String,
     val classId: String,

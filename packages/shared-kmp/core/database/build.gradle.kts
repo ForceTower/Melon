@@ -13,10 +13,17 @@ kotlin {
             implementation(libs.androidx.sqlite.bundled)
             implementation(libs.kotlinx.coroutines.core)
         }
+        jvmTest {
+            resources.srcDir("schemas")
+            dependencies {
+                implementation(kotlin("test"))
+                implementation(libs.kotlinx.serialization.json)
+            }
+        }
     }
 }
 
-room {
+room3 {
     schemaDirectory("$projectDir/schemas")
 }
 
