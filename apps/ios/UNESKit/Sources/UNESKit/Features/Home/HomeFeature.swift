@@ -98,7 +98,7 @@ struct HomeFeature {
     @Dependency(\.campusEventRepository) var campusEventRepository
     @Dependency(\.credentialStatusRepository) var credentialStatusRepository
     @Dependency(\.credentialInvalidation) var credentialInvalidation
-    @Dependency(\.database) var database
+    @Dependency(\.mirrorStore) var mirrorStore
     @Dependency(\.date.now) var now
     @Dependency(\.continuousClock) var clock
     @Dependency(\.analytics) var analytics
@@ -413,8 +413,7 @@ struct HomeFeature {
     private func checkRetrospective(_ state: State) -> Effect<Action> {
         guard state.isRetrospectiveEnabled else { return .none }
         return .run { [now] send in
-            let mirror = MirrorStore(writer: database)
-            await send(.retrospectiveChecked(try? await mirror.retrospectiveWindowCode(now: now)))
+            await send(.retrospectiveChecked(try? await mirrorStore.retrospectiveWindowCode(now: now)))
         }
     }
 }

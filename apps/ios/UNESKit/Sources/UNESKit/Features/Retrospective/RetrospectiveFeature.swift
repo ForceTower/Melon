@@ -78,7 +78,7 @@ struct RetrospectiveFeature {
         case closeTapped
     }
 
-    @Dependency(\.database) var database
+    @Dependency(\.mirrorStore) var mirrorStore
     @Dependency(\.sessionStore) var sessionStore
     @Dependency(\.retrospectiveRepository) var retrospectiveRepository
     @Dependency(\.date) var date
@@ -97,8 +97,7 @@ struct RetrospectiveFeature {
                     .split(separator: " ").first.map(String.init) ?? ""
                 let code = state.semesterCode
                 return .run { send in
-                    let mirror = MirrorStore(writer: database)
-                    let deck = try? await mirror.retrospective(semesterCode: code, now: date.now)
+                    let deck = try? await mirrorStore.retrospective(semesterCode: code, now: date.now)
                     await send(.deckLoaded(deck))
                     guard deck != nil else { return }
                     // Best-effort: offline just means no turma beat.

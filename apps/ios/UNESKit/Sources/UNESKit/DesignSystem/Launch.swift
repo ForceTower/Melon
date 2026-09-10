@@ -10,7 +10,7 @@ import SwiftUI
 /// can only read the main bundle, so package previews render the tile empty.
 struct LaunchTile: View {
     /// The imageset's native point size — what the launch screen draws it at.
-    static let size: CGFloat = 76
+    nonisolated static let size: CGFloat = 76
 
     /// 0 on the launch frame, where the flat ground has nothing to cast a
     /// shadow onto; raised together with the mesh blooming in behind.

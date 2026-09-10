@@ -153,7 +153,7 @@ struct MeFeature {
     @Dependency(\.openURL) var openURL
     @Dependency(\.locale) var locale
     @Dependency(\.continuousClock) var clock
-    @Dependency(\.database) var database
+    @Dependency(\.mirrorStore) var mirrorStore
     @Dependency(\.date) var date
     @Dependency(\.analytics) var analytics
 
@@ -526,8 +526,7 @@ struct MeFeature {
     private func checkRetrospectiveWindow(_ state: State) -> Effect<Action> {
         guard state.isRetrospectiveEnabled else { return .none }
         return .run { send in
-            let mirror = MirrorStore(writer: database)
-            await send(.retrospectiveWindowChecked(try? await mirror.retrospectiveWindowCode(now: date.now)))
+            await send(.retrospectiveWindowChecked(try? await mirrorStore.retrospectiveWindowCode(now: date.now)))
         }
     }
 

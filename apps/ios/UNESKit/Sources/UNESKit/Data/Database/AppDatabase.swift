@@ -372,4 +372,8 @@ extension DependencyValues {
         get { self[DatabaseKey.self] }
         set { self[DatabaseKey.self] = newValue }
     }
+
+    /// The mirror over `database`, for reducers that read it directly without
+    /// spelling GRDB's `DatabaseWriter` in a file that doesn't import GRDB.
+    var mirrorStore: MirrorStore { MirrorStore(writer: database) }
 }
