@@ -59,12 +59,19 @@ complete concurrency.
 
 ## Build & test
 
+Xcode 27 or newer is required for the Siri entity schemas and onscreen
+annotations. CI uses the `xcode-27` runner, including prerelease toolchains.
+
 ```sh
 # Build the app for a simulator
 xcodebuild build -scheme UNES -destination 'platform=iOS Simulator,name=iPhone 17 Pro'
 
-# Run the feature tests (fast — runs natively on the macOS host)
-cd UNESKit && swift test
+# Run the feature tests on iOS Simulator with the app's primary language
+cd UNESKit
+xcodebuild test -scheme UNESKit \
+  -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest' \
+  -testLanguage pt-BR -testRegion BR \
+  -skipMacroValidation -skipPackagePluginValidation
 ```
 
 ## Status
