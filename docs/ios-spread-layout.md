@@ -37,6 +37,7 @@ A layout never asks which device it is on. It reads what the scene is handed.
 | Open, held upright | 669 × 951, regular | `.stack` — too narrow for two pages |
 | Upright, half-open ("laptop") | same, fold active | `.stack` — one uniform scroll across the waist fold, by choice (a top/bottom split of Hoje was built and dropped) |
 | iPad | regular, ≥ 700pt | `.spread` |
+| Big iPhone on its side (Pro Max, Air) | 956 × 440, regular width | `.spread` — two short pages; upright it is compact, so rotating swaps the shell |
 
 Two tabs deviate on purpose:
 
@@ -70,6 +71,21 @@ Onboarding: Welcome, the intro pager and Sync are two-page compositions (`Facing
   **in place**, so the new page's `.task` never runs and a detail that loads on appear spins
   forever. `SpreadStack` gives every pushed page `.id(ObjectIdentifier(store))`. The preview
   fixtures return one canned discipline detail for any id, so check this with a recording.
+- Rotating a big iPhone, or folding the Duo, swaps `SpreadStack`'s shell, and two things empty
+  the path on the way: the shell being torn down, and a `NavigationSplitView` whose detail
+  stack is mounted with a path already in it (it sends `popFrom` ~100ms after mounting).
+  `SpreadStack` hands both a parked, empty path store to empty, and lets the new shell read
+  the live path once it is up, so open pages carry over. The shell must still be *built*
+  against the live store: TCA's destination modifier keeps the store it is built with in
+  `@State`, and pages built against the parked one send their actions nowhere (a spinner
+  that never resolves).
+- A page in the split view's detail column is first proposed the whole scene width and only
+  then the width beside the leading page. A vertical `ScrollView` reports the width of content
+  wider than itself, which widens an enclosing `ZStack` and everything measured inside it —
+  `DisciplineDetailView` pins its content to a measured page width, and without a flexible
+  frame around the scroller that width latched at the first, too-wide proposal.
+  `containerRelativeFrame(.horizontal)` is no substitute: it spans the horizontal safe area,
+  so on a phone held sideways the page slid under the Dynamic Island.
 - A pushed page's horizontal safe area is the leading page on one side and the Duo's status
   strip on the other. Content under a bare `ignoresSafeArea()` slides beneath both
   (`EnrollmentSuccessView` did); bleed the backdrop, and at most `.vertical` for content.
