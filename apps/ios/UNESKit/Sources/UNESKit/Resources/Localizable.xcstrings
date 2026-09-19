@@ -7311,7 +7311,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pick a class on the left to see its details."
+            "value" : "Pick a class to see its details here."
           }
         },
         "pt-BR" : {
@@ -17095,7 +17095,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pick a shortcut on the left to open it here."
+            "value" : "Pick a shortcut to open it here."
           }
         },
         "pt-BR" : {
@@ -17693,7 +17693,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pick a message on the left to read it here."
+            "value" : "Pick a message to read it here."
           }
         },
         "pt-BR" : {
@@ -20723,7 +20723,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tap a class on the left to open it here."
+            "value" : "Tap a class to open it here."
           }
         },
         "pt-BR" : {
