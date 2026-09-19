@@ -38,9 +38,11 @@ struct SpreadLayoutTests {
         let flat = DeviceFold.make(frame: frame, isBent: false, in: size)
         #expect(flat?.axis == .spine)
         #expect(flat?.spineX == CGFloat(475))
+        #expect(flat?.isBook == false)
 
         let bent = DeviceFold.make(frame: frame, isBent: true, in: size)
         #expect(bent?.spineX == CGFloat(475))
+        #expect(bent?.isBook == true)
     }
 
     @Test
@@ -49,6 +51,7 @@ struct SpreadLayoutTests {
         let fold = DeviceFold.make(frame: frame, isBent: true, in: CGSize(width: 669, height: 951))
         #expect(fold?.axis == .waist)
         #expect(fold?.spineX == nil)
+        #expect(fold?.isBook == false)
     }
 
     @Test

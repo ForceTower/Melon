@@ -17,6 +17,9 @@ struct DeviceFold: Equatable, Sendable {
 
     var spineX: CGFloat? { axis == .spine ? frame.midX : nil }
 
+    /// Half-open like a book: two pages standing at an angle to each other.
+    var isBook: Bool { axis == .spine && isBent }
+
     static let minPage: CGFloat = 300
 
     /// A fold only counts when it crosses the whole scene with a page's worth

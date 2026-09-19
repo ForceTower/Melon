@@ -15,7 +15,8 @@ A layout never asks which device it is on. It reads what the scene is handed.
 - **`SpreadStack`** — every tab's navigation shell. On `.stack` it is the `NavigationStack` the
   phone always had. On `.spread` it is a `NavigationSplitView`: the tab's root stays on the
   leading page, and the trailing page takes every push. List tabs show `SpreadHint` there
-  until something is opened; Hoje and Eu show an overview page instead.
+  until something is opened. A tab's page keeps everything it has on a phone, hero cards
+  included.
 - **`StackState.open(_:)`** — pushes made from a tab's *root* replace the path instead of
   appending. On a stack the root is only tappable with an empty path, so nothing changes; on
   a spread the root stays on screen beside the open page. Pushes made from a pushed page
@@ -36,6 +37,14 @@ A layout never asks which device it is on. It reads what the scene is handed.
 | Open, held upright | 669 × 951, regular | `.stack` — too narrow for two pages |
 | Upright, half-open ("laptop") | same, fold active | `.stack` — one uniform scroll across the waist fold, by choice (a top/bottom split of Hoje was built and dropped) |
 | iPad | regular, ≥ 700pt | `.spread` |
+
+Two tabs deviate on purpose:
+
+- **Hoje** uses its trailing page as a second column ("Seu dia", Turmas) rather than a
+  placeholder.
+- **Horário (week grid)** ignores width: it stays one full-width page when flat, and only a
+  bent spine (`DeviceFold.isBook`) splits it into grid | agenda. It overrides `\.pageLayout`
+  for its own subtree, so its shell is rebuilt as the hinge passes flat.
 
 The system owns the bars. With the status bar down the trailing edge (folded, and open in
 landscape) it moves the tab bar and the trailing page's toolbar into that strip by itself;
@@ -61,6 +70,11 @@ Onboarding: Welcome, the intro pager and Sync are two-page compositions (`Facing
   **in place**, so the new page's `.task` never runs and a detail that loads on appear spins
   forever. `SpreadStack` gives every pushed page `.id(ObjectIdentifier(store))`. The preview
   fixtures return one canned discipline detail for any id, so check this with a recording.
+- A pushed page's horizontal safe area is the leading page on one side and the Duo's status
+  strip on the other. Content under a bare `ignoresSafeArea()` slides beneath both
+  (`EnrollmentSuccessView` did); bleed the backdrop, and at most `.vertical` for content.
+- Running `xcodebuild test -scheme UNESKit` rewrites `UNESKit/Package.resolved` (the whole-app
+  lockfile) — restore it afterwards. `-destination 'platform=macOS'` keeps the simulator free.
 - A fixed sidebar width is honoured, so the pages *can* be pinned to the spine when flat. We
   chose the narrower list instead: list smaller than detail when flat, equal pages when bent
   (what Notes and Mail do).
@@ -80,4 +94,5 @@ the shell 600ms after the change did not help. Unresolved as of iOS 27.1 beta 1.
 
 Real hardware. Split View multitasking halves. Right-to-left. Dynamic Type in the strip.
 The tent posture. iPad on this branch (layout rules are unit-tested; screens not yet walked).
-`ScheduleGridView` (the week-grid Horário) still uses a full-width stack.
+`EnrollmentSuccessView`'s safe-area fix on a spread (needs the Matrícula flow walked).
+Sheets on a bent spine: the class sheet sat centred across the fold in one capture.

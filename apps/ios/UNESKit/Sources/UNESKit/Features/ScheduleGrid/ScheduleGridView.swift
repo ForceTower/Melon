@@ -2,13 +2,21 @@ import ComposableArchitecture
 import SwiftUI
 
 /// The week-grid Horário: the whole week as one proportional time grid with
-/// the agenda list beneath it. Swapped with `ScheduleView` by a settings
-/// flag at runtime.
+/// the agenda list beneath it — or facing it, on a spread. Swapped with
+/// `ScheduleView` by a settings flag at runtime.
 struct ScheduleGridView: View {
     @Bindable var store: StoreOf<ScheduleGridFeature>
+    @Environment(\.pageLayout) private var scenePageLayout
+    @Environment(\.deviceFold) private var fold
+
+    /// Flat, the week reads best as one full-width page however wide the
+    /// scene is; only a bent spine splits it into grid and agenda.
+    private var pageLayout: PageLayout {
+        scenePageLayout == .spread && fold?.isBook == true ? .spread : .stack
+    }
 
     var body: some View {
-        NavigationStack(path: $store.scope(state: \.path, action: \.path)) {
+        SpreadStack(path: $store.scope(state: \.path, action: \.path)) {
             ZStack {
                 UNESColor.surface.ignoresSafeArea()
 
@@ -33,6 +41,8 @@ struct ScheduleGridView: View {
                     onClose: { store.send(.sheetDismissed) }
                 )
             }
+        } overview: {
+            agendaPage
         } destination: { store in
             switch store.case {
             case let .detail(store):
@@ -43,6 +53,7 @@ struct ScheduleGridView: View {
                 MaterialsDetailView(store: store)
             }
         }
+        .environment(\.pageLayout, pageLayout)
         .task { await store.send(.task).finish() }
     }
 
@@ -80,55 +91,97 @@ struct ScheduleGridView: View {
             .padding(EdgeInsets(top: 2, leading: 20, bottom: 4, trailing: 20))
     }
 
-    private func loaded(_ overview: ScheduleOverview) -> some View {
-        TimelineView(.everyMinute) { context in
-            let now = context.date
-            let calendar = Calendar.current
-            let nowMinutes = calendar.component(.hour, from: now) * 60 + calendar.component(.minute, from: now)
-            let todayIndex = overview.todayIndex(now: now)
-            let layout = ScheduleGridLayout(days: overview.days)
-            let weekIsEmpty = layout.dayIndices.allSatisfy { overview.days[$0].classes.isEmpty }
+    /// What both pages derive from the week and the current minute.
+    private struct Week {
+        let overview: ScheduleOverview
+        let layout: ScheduleGridLayout
+        let todayIndex: Int?
+        let nowMinutes: Int
 
+        init(_ overview: ScheduleOverview, now: Date) {
+            let calendar = Calendar.current
+            self.overview = overview
+            layout = ScheduleGridLayout(days: overview.days)
+            todayIndex = overview.todayIndex(now: now)
+            nowMinutes = calendar.component(.hour, from: now) * 60 + calendar.component(.minute, from: now)
+        }
+
+        var isEmpty: Bool {
+            layout.dayIndices.allSatisfy { overview.days[$0].classes.isEmpty }
+        }
+    }
+
+    private func loaded(_ overview: ScheduleOverview) -> some View {
+        weekPage(overview) { week in
+            eyebrow(overview, todayIndex: week.todayIndex)
+                .slideIn(delay: 0.02)
+
+            ScheduleGridDayHeader(days: overview.days, layout: week.layout, todayIndex: week.todayIndex)
+                .fadeIn(delay: 0.02)
+
+            ScheduleGridWeekCanvas(
+                days: overview.days,
+                layout: week.layout,
+                todayIndex: week.todayIndex,
+                nowMinutes: week.nowMinutes
+            ) { scheduleClass, dayIndex in
+                store.send(.classTapped(scheduleClass, dayIndex: dayIndex))
+            }
+            .padding(.bottom, 28)
+
+            if pageLayout == .stack {
+                agenda(week)
+            }
+        }
+    }
+
+    private var agendaPage: some View {
+        ZStack {
+            UNESColor.surface.ignoresSafeArea()
+
+            if let overview = store.overview, !overview.days.isEmpty {
+                weekPage(overview) { week in
+                    agenda(week)
+                        .padding(.top, 8)
+                }
+            }
+        }
+    }
+
+    private func weekPage(
+        _ overview: ScheduleOverview,
+        @ViewBuilder content: @escaping (Week) -> some View
+    ) -> some View {
+        TimelineView(.everyMinute) { context in
             ScrollView {
                 VStack(spacing: 0) {
-                    eyebrow(overview, todayIndex: todayIndex)
-                        .slideIn(delay: 0.02)
-
-                    ScheduleGridDayHeader(days: overview.days, layout: layout, todayIndex: todayIndex)
-                        .fadeIn(delay: 0.02)
-
-                    ScheduleGridWeekCanvas(
-                        days: overview.days,
-                        layout: layout,
-                        todayIndex: todayIndex,
-                        nowMinutes: nowMinutes
-                    ) { scheduleClass, dayIndex in
-                        store.send(.classTapped(scheduleClass, dayIndex: dayIndex))
-                    }
-                    .padding(.bottom, 28)
-
-                    if weekIsEmpty {
-                        Text(.scheduleGridEmptyWeek)
-                            .font(.system(size: 15, weight: .semibold))
-                            .foregroundStyle(UNESColor.ink3)
-                            .padding(EdgeInsets(top: 0, leading: 20, bottom: 24, trailing: 20))
-                            .fadeUp(delay: 0.2)
-                    } else {
-                        ScheduleGridAgendaList(
-                            days: overview.days,
-                            layout: layout,
-                            todayIndex: todayIndex,
-                            nowMinutes: nowMinutes
-                        ) { scheduleClass, dayIndex in
-                            store.send(.classTapped(scheduleClass, dayIndex: dayIndex))
-                        }
-                    }
+                    content(Week(overview, now: context.date))
                 }
                 .padding(.bottom, 12)
             }
             .scrollIndicators(.hidden)
             .refreshable {
                 await store.send(.refreshPulled).finish()
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func agenda(_ week: Week) -> some View {
+        if week.isEmpty {
+            Text(.scheduleGridEmptyWeek)
+                .font(.system(size: 15, weight: .semibold))
+                .foregroundStyle(UNESColor.ink3)
+                .padding(EdgeInsets(top: 0, leading: 20, bottom: 24, trailing: 20))
+                .fadeUp(delay: 0.2)
+        } else {
+            ScheduleGridAgendaList(
+                days: week.overview.days,
+                layout: week.layout,
+                todayIndex: week.todayIndex,
+                nowMinutes: week.nowMinutes
+            ) { scheduleClass, dayIndex in
+                store.send(.classTapped(scheduleClass, dayIndex: dayIndex))
             }
         }
     }
