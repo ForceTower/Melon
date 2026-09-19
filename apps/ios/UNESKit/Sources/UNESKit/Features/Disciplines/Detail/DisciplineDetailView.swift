@@ -8,6 +8,7 @@ import SwiftUI
 struct DisciplineDetailView: View {
     @Bindable var store: StoreOf<DisciplineDetailFeature>
     @State private var titleProgress: CGFloat = 0
+    @State private var pageWidth: CGFloat?
 
     private var color: Color { UNESColor.disciplineColor(store.colorIndex) }
 
@@ -16,8 +17,20 @@ struct DisciplineDetailView: View {
             UNESColor.surface.ignoresSafeArea()
             ambientTint
 
+            // The page's width inside the safe area.
+            Color.clear
+                .onGeometryChange(for: CGFloat.self) { proxy in
+                    proxy.size.width
+                } action: { width in
+                    pageWidth = width
+                }
+
             if let detail = store.detail {
                 content(detail)
+                    // A scroller reports the width of content wider than
+                    // itself, which would widen this stack and, through the
+                    // measure above, latch the content at that width.
+                    .frame(minWidth: 0, maxWidth: .infinity)
             } else {
                 SpinnerRing(size: 28, color: UNESColor.accent, trackColor: UNESColor.surface3)
                     .frame(maxHeight: .infinity)
@@ -109,9 +122,11 @@ struct DisciplineDetailView: View {
             }
             .padding(.top, 16)
             .padding(.bottom, 12)
-            // Pin the content to the viewport width — anything wider would
-            // let the vertical scroller pan sideways.
-            .containerRelativeFrame(.horizontal)
+            // Pin the content to the page width — anything wider would let
+            // the vertical scroller pan sideways. `containerRelativeFrame`
+            // spans the horizontal safe area, which on a phone held sideways
+            // slides the page under the Dynamic Island.
+            .frame(width: pageWidth)
         }
         .scrollIndicators(.hidden)
         .onScrollGeometryChange(for: CGFloat.self) { geometry in
