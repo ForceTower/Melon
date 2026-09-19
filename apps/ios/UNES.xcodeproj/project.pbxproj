@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 77;
+	objectVersion = 110;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -59,36 +59,30 @@
 /* Begin PBXCopyFilesBuildPhase section */
 		CAFEAA000000000000000020 /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
 			dstPath = "";
-			dstSubfolderSpec = 13;
+			dstSubfolder = PlugIns;
 			files = (
 				CAFEAA00000000000000001F /* UNESWatchWidgets.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		CAFEAA000000000000000024 /* Embed Watch Content */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
 			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
-			dstSubfolderSpec = 16;
+			dstSubfolder = Product;
 			files = (
 				CAFEAA000000000000000023 /* UNESWatch.app in Embed Watch Content */,
 			);
 			name = "Embed Watch Content";
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		CAFECAFE0000000000000013 /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
 			dstPath = "";
-			dstSubfolderSpec = 13;
+			dstSubfolder = PlugIns;
 			files = (
 				CAFECAFE0000000000000014 /* UNESWidgets.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
@@ -183,7 +177,6 @@
 /* Begin PBXFrameworksBuildPhase section */
 		6CF5E0F82FF5A43F00953BC4 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				CAFEFB0000000000000000AC /* FirebaseAnalyticsCore in Frameworks */,
 				CAFEFB0000000000000000A2 /* FirebaseCore in Frameworks */,
@@ -194,40 +187,31 @@
 				CAFEFB0000000000000000D2 /* Lever in Frameworks */,
 				CAFECAFE0000000000000003 /* UNESKit in Frameworks */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		AB1E57000000000000000005 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		CAFEAA000000000000000007 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				CAFEAA000000000000000027 /* FirebaseCore in Frameworks */,
 				CAFEAA000000000000000029 /* FirebaseCrashlytics in Frameworks */,
 				CAFEAA000000000000000002 /* UNESKit in Frameworks */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		CAFEAA000000000000000017 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				CAFEAA000000000000000012 /* UNESKit in Frameworks */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		CAFECAFE000000000000000C /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				CAFECAFE0000000000000006 /* UNESKit in Frameworks */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
@@ -312,8 +296,6 @@
 				AB1E57000000000000000002 /* UNESIntentTests */,
 			);
 			name = UNESIntentTests;
-			packageProductDependencies = (
-			);
 			productName = UNESIntentTests;
 			productReference = AB1E57000000000000000001 /* UNESIntentTests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
@@ -356,8 +338,6 @@
 			);
 			buildRules = (
 			);
-			dependencies = (
-			);
 			fileSystemSynchronizedGroups = (
 				CAFEAA000000000000000014 /* UNESWatchWidgets */,
 			);
@@ -378,8 +358,6 @@
 				CAFECAFE000000000000000D /* Resources */,
 			);
 			buildRules = (
-			);
-			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
 				CAFECAFE0000000000000008 /* UNESWidgets */,
@@ -427,7 +405,7 @@
 				CAFEFB0000000000000000B0 /* XCRemoteSwiftPackageReference "posthog-ios" */,
 				CAFEFB0000000000000000D0 /* XCRemoteSwiftPackageReference "lever-swift" */,
 			);
-			preferredProjectObjectVersion = 77;
+			preferredProjectObjectVersion = 110;
 			productRefGroup = 6CF5E0FC2FF5A43F00953BC4 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -444,38 +422,28 @@
 /* Begin PBXResourcesBuildPhase section */
 		6CF5E0F92FF5A43F00953BC4 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		AB1E57000000000000000006 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		CAFEAA000000000000000008 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		CAFEAA000000000000000018 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		CAFECAFE000000000000000D /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
@@ -483,82 +451,58 @@
 		CAFEAA00000000000000002A /* Upload Symbols (Firebase Crashlytics) */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
 			inputPaths = (
 				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",
 				"$(SRCROOT)/$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
 			);
 			name = "Upload Symbols (Firebase Crashlytics)";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${BUILD_DIR%/Build/*}/SourcePackages/checkouts/firebase-ios-sdk/Crashlytics/run\"\n";
+			shellScript = (
+				"\"${BUILD_DIR%/Build/*}/SourcePackages/checkouts/firebase-ios-sdk/Crashlytics/run\"",
+				"",
+			);
 		};
 		CAFEFB0000000000000000A7 /* Upload Symbols (Firebase Crashlytics) */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
 			inputPaths = (
 				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",
 				"$(SRCROOT)/$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
 			);
 			name = "Upload Symbols (Firebase Crashlytics)";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${BUILD_DIR%/Build/*}/SourcePackages/checkouts/firebase-ios-sdk/Crashlytics/run\"\n";
+			shellScript = (
+				"\"${BUILD_DIR%/Build/*}/SourcePackages/checkouts/firebase-ios-sdk/Crashlytics/run\"",
+				"",
+			);
 		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		6CF5E0F72FF5A43F00953BC4 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		AB1E57000000000000000004 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		CAFEAA000000000000000006 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		CAFEAA000000000000000016 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		CAFECAFE000000000000000B /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
@@ -586,7 +530,7 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		6CF5E1042FF5A44000953BC4 /* Debug */ = {
+		6CF5E1042FF5A44000953BC4 /* Debug configuration for PBXProject "UNES" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -652,7 +596,7 @@
 			};
 			name = Debug;
 		};
-		6CF5E1052FF5A44000953BC4 /* Release */ = {
+		6CF5E1052FF5A44000953BC4 /* Release configuration for PBXProject "UNES" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -711,7 +655,7 @@
 			};
 			name = Release;
 		};
-		6CF5E1072FF5A44000953BC4 /* Debug */ = {
+		6CF5E1072FF5A44000953BC4 /* Debug configuration for PBXNativeTarget "UNES" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = "BaseSans NowShip Ocean Paper Stripped";
@@ -755,7 +699,7 @@
 			};
 			name = Debug;
 		};
-		6CF5E1082FF5A44000953BC4 /* Release */ = {
+		6CF5E1082FF5A44000953BC4 /* Release configuration for PBXNativeTarget "UNES" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = "BaseSans NowShip Ocean Paper Stripped";
@@ -799,7 +743,7 @@
 			};
 			name = Release;
 		};
-		AB1E5700000000000000000A /* Debug */ = {
+		AB1E5700000000000000000A /* Debug configuration for PBXNativeTarget "UNESIntentTests" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
@@ -817,7 +761,7 @@
 			};
 			name = Debug;
 		};
-		AB1E5700000000000000000B /* Release */ = {
+		AB1E5700000000000000000B /* Release configuration for PBXNativeTarget "UNESIntentTests" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
@@ -835,7 +779,7 @@
 			};
 			name = Release;
 		};
-		CAFEAA00000000000000000A /* Debug */ = {
+		CAFEAA00000000000000000A /* Debug configuration for PBXNativeTarget "UNESWatch" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = Aurora;
@@ -869,7 +813,7 @@
 			};
 			name = Debug;
 		};
-		CAFEAA00000000000000000B /* Release */ = {
+		CAFEAA00000000000000000B /* Release configuration for PBXNativeTarget "UNESWatch" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = Aurora;
@@ -903,7 +847,7 @@
 			};
 			name = Release;
 		};
-		CAFEAA00000000000000001A /* Debug */ = {
+		CAFEAA00000000000000001A /* Debug configuration for PBXNativeTarget "UNESWatchWidgets" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = UNESWatchWidgets/UNESWatchWidgets.entitlements;
@@ -934,7 +878,7 @@
 			};
 			name = Debug;
 		};
-		CAFEAA00000000000000001B /* Release */ = {
+		CAFEAA00000000000000001B /* Release configuration for PBXNativeTarget "UNESWatchWidgets" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = UNESWatchWidgets/UNESWatchWidgets.entitlements;
@@ -965,7 +909,7 @@
 			};
 			name = Release;
 		};
-		CAFECAFE000000000000000F /* Debug */ = {
+		CAFECAFE000000000000000F /* Debug configuration for PBXNativeTarget "UNESWidgets" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = UNESWidgets/UNESWidgets.entitlements;
@@ -995,7 +939,7 @@
 			};
 			name = Debug;
 		};
-		CAFECAFE0000000000000010 /* Release */ = {
+		CAFECAFE0000000000000010 /* Release configuration for PBXNativeTarget "UNESWidgets" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = UNESWidgets/UNESWidgets.entitlements;
@@ -1031,55 +975,49 @@
 		6CF5E0F62FF5A43F00953BC4 /* Build configuration list for PBXProject "UNES" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				6CF5E1042FF5A44000953BC4 /* Debug */,
-				6CF5E1052FF5A44000953BC4 /* Release */,
+				6CF5E1042FF5A44000953BC4 /* Debug configuration for PBXProject "UNES" */,
+				6CF5E1052FF5A44000953BC4 /* Release configuration for PBXProject "UNES" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 		6CF5E1062FF5A44000953BC4 /* Build configuration list for PBXNativeTarget "UNES" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				6CF5E1072FF5A44000953BC4 /* Debug */,
-				6CF5E1082FF5A44000953BC4 /* Release */,
+				6CF5E1072FF5A44000953BC4 /* Debug configuration for PBXNativeTarget "UNES" */,
+				6CF5E1082FF5A44000953BC4 /* Release configuration for PBXNativeTarget "UNES" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 		AB1E57000000000000000009 /* Build configuration list for PBXNativeTarget "UNESIntentTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				AB1E5700000000000000000A /* Debug */,
-				AB1E5700000000000000000B /* Release */,
+				AB1E5700000000000000000A /* Debug configuration for PBXNativeTarget "UNESIntentTests" */,
+				AB1E5700000000000000000B /* Release configuration for PBXNativeTarget "UNESIntentTests" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 		CAFEAA000000000000000009 /* Build configuration list for PBXNativeTarget "UNESWatch" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				CAFEAA00000000000000000A /* Debug */,
-				CAFEAA00000000000000000B /* Release */,
+				CAFEAA00000000000000000A /* Debug configuration for PBXNativeTarget "UNESWatch" */,
+				CAFEAA00000000000000000B /* Release configuration for PBXNativeTarget "UNESWatch" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 		CAFEAA000000000000000019 /* Build configuration list for PBXNativeTarget "UNESWatchWidgets" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				CAFEAA00000000000000001A /* Debug */,
-				CAFEAA00000000000000001B /* Release */,
+				CAFEAA00000000000000001A /* Debug configuration for PBXNativeTarget "UNESWatchWidgets" */,
+				CAFEAA00000000000000001B /* Release configuration for PBXNativeTarget "UNESWatchWidgets" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 		CAFECAFE000000000000000E /* Build configuration list for PBXNativeTarget "UNESWidgets" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				CAFECAFE000000000000000F /* Debug */,
-				CAFECAFE0000000000000010 /* Release */,
+				CAFECAFE000000000000000F /* Debug configuration for PBXNativeTarget "UNESWidgets" */,
+				CAFECAFE0000000000000010 /* Release configuration for PBXNativeTarget "UNESWidgets" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
