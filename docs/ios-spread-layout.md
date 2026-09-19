@@ -53,7 +53,9 @@ the leading page keeps a horizontal bar. Toolbar items need a title **and** a sy
 eligible — text-only and custom-view items stay horizontal.
 
 Onboarding: Welcome, the intro pager and Sync are two-page compositions (`FacingPages` /
-`pageColumn`); Login and Ready stay full width by choice.
+`pageColumn`); Login and Ready stay full width by choice. Login is the one screen that reads
+the *vertical* size class: on a phone held sideways (compact height) its column and pinned
+sign-in bar cannot fit, so it lays out heading | form side by side instead.
 
 ## Measured, worth knowing
 

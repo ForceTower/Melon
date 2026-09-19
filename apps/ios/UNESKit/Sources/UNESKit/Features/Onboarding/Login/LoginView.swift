@@ -9,60 +9,98 @@ struct LoginView: View {
         case username, password
     }
 
+    /// A phone held sideways: too short for the column with its pinned bar.
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
+
     var body: some View {
-        ZStack(alignment: .top) {
-            UNESColor.surface.ignoresSafeArea()
-            ambientWash
-
-            ScrollView {
-                VStack(alignment: .leading, spacing: 0) {
-                    Eyebrow(text: "UEFS · SAGRES")
-                        .fadeUp(delay: 0.04, duration: 0.5)
-
-                    title
-                        .padding(.top, 10)
-                        .fadeUp(delay: 0.12, duration: 0.6)
-
-                    Text(.onboardingLoginSubtitle)
-                        .font(.system(size: 15.5))
-                        .foregroundStyle(UNESColor.ink3)
-                        .padding(.top, 8)
-                        .fadeUp(delay: 0.2, duration: 0.6)
-
-                    fieldsCard
-                        .padding(.top, 26)
-                        .fadeUp(delay: 0.28, duration: 0.6)
-
-                    if let error = store.errorMessage {
-                        Text(error)
-                            .font(.system(size: 13, weight: .medium))
-                            .foregroundStyle(UNESColor.coral)
-                            .padding(.top, 10)
-                            .transition(.opacity.combined(with: .move(edge: .top)))
-                    }
-
-                    Button {
-                        store.send(.forgotPasswordTapped)
-                    } label: {
-                        Text(.onboardingLoginForgotPassword)
-                    }
-                    .font(.system(size: 15, weight: .semibold))
-                    .tint(UNESColor.accent)
-                    .padding(.top, 12)
-                    .fadeUp(delay: 0.34, duration: 0.6)
-                }
-                .padding(.horizontal, 24)
-                .padding(.top, 12)
+        Group {
+            if verticalSizeClass == .compact {
+                sideBySide
+            } else {
+                column
             }
-            .scrollBounceBehavior(.basedOnSize)
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+        // Behind the content rather than beside it: as a sibling its fixed
+        // height was the least the screen could shrink to, and whatever didn't
+        // fit was cut off at both ends.
+        .background(alignment: .top) { ambientWash }
+        .background { UNESColor.surface.ignoresSafeArea() }
         .animation(.easeInOut(duration: 0.2), value: store.errorMessage)
-        .safeAreaInset(edge: .bottom) { bottomBar }
         .bareNavigationBar()
         .task { await store.send(.task).finish() }
     }
 
+    // MARK: Layouts
+
+    private var column: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 0) {
+                heading
+                form
+                    .padding(.top, 26)
+            }
+            .padding(.horizontal, 24)
+            .padding(.top, 12)
+        }
+        .scrollBounceBehavior(.basedOnSize)
+        .safeAreaInset(edge: .bottom) {
+            VStack(spacing: 16) {
+                actions
+                terms(centered: true)
+                    .fadeUp(delay: 0.6, duration: 0.5)
+            }
+            .padding(EdgeInsets(top: 20, leading: 24, bottom: 12, trailing: 24))
+            .background(UNESColor.surface)
+        }
+    }
+
+    /// Heading on one side, everything to fill in and tap on the other.
+    private var sideBySide: some View {
+        HStack(alignment: .top, spacing: 32) {
+            VStack(alignment: .leading, spacing: 16) {
+                heading
+                Spacer(minLength: 0)
+                terms(centered: false)
+                    .fadeUp(delay: 0.6, duration: 0.5)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.bottom, 12)
+
+            ScrollView {
+                VStack(alignment: .leading, spacing: 0) {
+                    form
+                    actions
+                        .padding(.top, 20)
+                }
+                .padding(.bottom, 12)
+            }
+            .scrollBounceBehavior(.basedOnSize)
+            .scrollIndicators(.hidden)
+            .frame(maxWidth: .infinity)
+        }
+        .padding(.horizontal, 24)
+        .padding(.top, 12)
+    }
+
     // MARK: Chrome
+
+    private var heading: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Eyebrow(text: "UEFS · SAGRES")
+                .fadeUp(delay: 0.04, duration: 0.5)
+
+            title
+                .padding(.top, 10)
+                .fadeUp(delay: 0.12, duration: 0.6)
+
+            Text(.onboardingLoginSubtitle)
+                .font(.system(size: 15.5))
+                .foregroundStyle(UNESColor.ink3)
+                .padding(.top, 8)
+                .fadeUp(delay: 0.2, duration: 0.6)
+        }
+    }
 
     private var ambientWash: some View {
         // Fading the mesh's own alpha (instead of painting surface over it)
@@ -100,6 +138,31 @@ struct LoginView: View {
     }
 
     // MARK: Fields
+
+    private var form: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            fieldsCard
+                .fadeUp(delay: 0.28, duration: 0.6)
+
+            if let error = store.errorMessage {
+                Text(error)
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundStyle(UNESColor.coral)
+                    .padding(.top, 10)
+                    .transition(.opacity.combined(with: .move(edge: .top)))
+            }
+
+            Button {
+                store.send(.forgotPasswordTapped)
+            } label: {
+                Text(.onboardingLoginForgotPassword)
+            }
+            .font(.system(size: 15, weight: .semibold))
+            .tint(UNESColor.accent)
+            .padding(.top, 12)
+            .fadeUp(delay: 0.34, duration: 0.6)
+        }
+    }
 
     private var fieldsCard: some View {
         VStack(spacing: 0) {
@@ -191,9 +254,9 @@ struct LoginView: View {
         .animation(.easeInOut(duration: 0.18), value: isFocused)
     }
 
-    // MARK: Bottom bar
+    // MARK: Actions
 
-    private var bottomBar: some View {
+    private var actions: some View {
         VStack(spacing: 0) {
             Button {
                 store.send(.submitTapped)
@@ -229,15 +292,7 @@ struct LoginView: View {
             .buttonStyle(.unesNeutral)
             .disabled(store.isLoading)
             .fadeUp(delay: 0.52, duration: 0.6)
-
-            terms
-                .padding(.top, 16)
-                .fadeUp(delay: 0.6, duration: 0.5)
         }
-        .padding(.horizontal, 24)
-        .padding(.top, 20)
-        .padding(.bottom, 12)
-        .background(UNESColor.surface)
     }
 
     private var divider: some View {
@@ -252,7 +307,7 @@ struct LoginView: View {
         }
     }
 
-    private var terms: some View {
+    private func terms(centered: Bool) -> some View {
         (
             Text(.onboardingLoginTermsPrefix)
                 + Text(.onboardingLoginTermsLink).fontWeight(.medium).foregroundStyle(UNESColor.ink2)
@@ -262,8 +317,8 @@ struct LoginView: View {
         )
         .font(.system(size: 12.5))
         .foregroundStyle(UNESColor.ink4)
-        .multilineTextAlignment(.center)
-        .frame(maxWidth: .infinity)
+        .multilineTextAlignment(centered ? .center : .leading)
+        .frame(maxWidth: .infinity, alignment: centered ? .center : .leading)
     }
 }
 
