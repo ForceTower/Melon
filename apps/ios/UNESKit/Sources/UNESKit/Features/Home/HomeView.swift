@@ -49,7 +49,7 @@ struct HomeView: View {
                 ReauthSheet(store: reauthStore)
             }
         } overview: {
-            glancePage
+            dayPage
         } destination: { store in
             switch store.case {
             case let .detail(store):
@@ -112,10 +112,10 @@ struct HomeView: View {
                 announcements
                 heroCard(overview)
                     .padding(.bottom, 22)
+                widgets(overview)
                 if pageLayout == .stack {
-                    widgets(overview)
+                    daySection(overview)
                 }
-                daySection(overview)
             }
             .padding(.horizontal, 16)
 
@@ -126,14 +126,14 @@ struct HomeView: View {
         }
     }
 
-    private var glancePage: some View {
+    private var dayPage: some View {
         ZStack(alignment: .top) {
             UNESColor.surface.ignoresSafeArea()
             ambientWash
 
             if let overview = store.overview {
                 scrollPage {
-                    widgets(overview)
+                    daySection(overview)
                         .padding(EdgeInsets(top: 8, leading: 16, bottom: 0, trailing: 16))
                     carousel(overview)
                     footer
