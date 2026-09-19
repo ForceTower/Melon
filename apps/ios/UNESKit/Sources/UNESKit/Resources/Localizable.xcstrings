@@ -17089,6 +17089,23 @@
         }
       }
     },
+    "me.spread.hint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pick a shortcut on the left to open it here."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha um atalho ao lado para abrir aqui."
+          }
+        }
+      }
+    },
     "me.stat.attendance" : {
       "extractionState" : "manual",
       "localizations" : {
