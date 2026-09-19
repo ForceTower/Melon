@@ -3,15 +3,27 @@ import SwiftUI
 
 struct MeView: View {
     @Bindable var store: StoreOf<MeFeature>
+    @Environment(\.pageLayout) private var pageLayout
 
     var body: some View {
-        NavigationStack(path: $store.scope(state: \.path, action: \.path)) {
+        SpreadStack(path: $store.scope(state: \.path, action: \.path)) {
             ZStack(alignment: .top) {
                 UNESColor.surface.ignoresSafeArea()
                 ambientWash
                 content
             }
             .navigationTitle(Text(.meTitle))
+        } overview: {
+            ZStack(alignment: .top) {
+                UNESColor.surface.ignoresSafeArea()
+                ambientWash
+                ScrollView {
+                    identity
+                        .padding(EdgeInsets(top: 8, leading: 16, bottom: 12, trailing: 16))
+                }
+                .scrollIndicators(.hidden)
+                .scrollBounceBehavior(.basedOnSize)
+            }
         } destination: { store in
             switch store.case {
             case let .settings(store):
@@ -90,26 +102,34 @@ struct MeView: View {
         .sensoryFeedback(.success, trigger: store.profileSaveCount)
     }
 
+    private var identity: some View {
+        VStack(spacing: 0) {
+            MeIdentityHero(
+                name: store.displayName ?? String.localized(.meDefaultName),
+                course: store.profile?.course,
+                campus: store.overview?.campus,
+                imageUrl: store.profile?.imageUrl,
+                coefficient: store.overview?.coefficient,
+                attendancePercent: store.overview?.attendancePercent,
+                progress: store.overview?.progress,
+                onEditProfile: { store.send(.editProfileTapped) }
+            )
+            .scaleIn(delay: 0.1, duration: 0.62)
+            .padding(.bottom, 20)
+
+            if let progress = store.overview?.progress {
+                MeSemesterWidget(progress: progress)
+                    .fadeUp(delay: 0.2)
+                    .padding(.bottom, 22)
+            }
+        }
+    }
+
     private var content: some View {
         ScrollView {
             VStack(spacing: 0) {
-                MeIdentityHero(
-                    name: store.displayName ?? String.localized(.meDefaultName),
-                    course: store.profile?.course,
-                    campus: store.overview?.campus,
-                    imageUrl: store.profile?.imageUrl,
-                    coefficient: store.overview?.coefficient,
-                    attendancePercent: store.overview?.attendancePercent,
-                    progress: store.overview?.progress,
-                    onEditProfile: { store.send(.editProfileTapped) }
-                )
-                .scaleIn(delay: 0.1, duration: 0.62)
-                .padding(.bottom, 20)
-
-                if let progress = store.overview?.progress {
-                    MeSemesterWidget(progress: progress)
-                        .fadeUp(delay: 0.2)
-                        .padding(.bottom, 22)
+                if pageLayout == .stack {
+                    identity
                 }
 
                 VStack(spacing: 0) {

@@ -124,7 +124,7 @@ struct DisciplinesFeature {
                     // offer-id namespace.
                     analytics.selectContent(contentType: ContentTypes.discipline, itemId: offerId)
                 }
-                state.path.append(
+                state.path.open(
                     .detail(DisciplineDetailFeature.State(summary: discipline, semesterId: semesterId))
                 )
                 return .none

@@ -3,9 +3,10 @@ import SwiftUI
 
 struct HomeView: View {
     @Bindable var store: StoreOf<HomeFeature>
+    @Environment(\.pageLayout) private var pageLayout
 
     var body: some View {
-        NavigationStack(path: $store.scope(state: \.path, action: \.path)) {
+        SpreadStack(path: $store.scope(state: \.path, action: \.path)) {
             ZStack(alignment: .top) {
                 UNESColor.surface.ignoresSafeArea()
                 ambientWash
@@ -47,6 +48,8 @@ struct HomeView: View {
             .sheet(item: $store.scope(state: \.reauth, action: \.reauth)) { reauthStore in
                 ReauthSheet(store: reauthStore)
             }
+        } overview: {
+            glancePage
         } destination: { store in
             switch store.case {
             case let .detail(store):
@@ -101,80 +104,124 @@ struct HomeView: View {
     // MARK: Content
 
     private func loaded(_ overview: HomeOverview) -> some View {
+        scrollPage {
+            eyebrow
+                .fadeUp(delay: 0.02)
+
+            VStack(spacing: 0) {
+                announcements
+                heroCard(overview)
+                    .padding(.bottom, 22)
+                if pageLayout == .stack {
+                    widgets(overview)
+                }
+                daySection(overview)
+            }
+            .padding(.horizontal, 16)
+
+            if pageLayout == .stack {
+                carousel(overview)
+                footer
+            }
+        }
+    }
+
+    private var glancePage: some View {
+        ZStack(alignment: .top) {
+            UNESColor.surface.ignoresSafeArea()
+            ambientWash
+
+            if let overview = store.overview {
+                scrollPage {
+                    widgets(overview)
+                        .padding(EdgeInsets(top: 8, leading: 16, bottom: 0, trailing: 16))
+                    carousel(overview)
+                    footer
+                }
+            }
+        }
+    }
+
+    private func scrollPage(@ViewBuilder content: () -> some View) -> some View {
         ScrollView {
             VStack(spacing: 0) {
-                eyebrow
-                    .fadeUp(delay: 0.02)
-
-                VStack(spacing: 0) {
-                    if let event = store.campusEvent {
-                        CampusEventHomeCard(event: event) {
-                            store.send(.campusEventCardTapped)
-                        }
-                        .scaleIn(delay: 0.06, duration: 0.62)
-                        .padding(.bottom, 22)
-                    }
-
-                    if store.showsRetrospectiveBanner, let retroCode = store.retrospectiveSemester {
-                        RetrospectiveBanner(
-                            semesterLabel: MirrorStore.semesterLabel(code: retroCode),
-                            seen: store.isRetrospectiveSeen,
-                            onOpen: { store.send(.retrospectiveCardTapped) },
-                            onDismiss: { store.send(.retrospectiveBannerDismissed, animation: UNESMotion.ease(0.4)) }
-                        )
-                        .scaleIn(delay: 0.06, duration: 0.62)
-                        .padding(.bottom, 22)
-                    }
-
-                    if let hero = overview.hero {
-                        HomeHeroCard(hero: hero) {
-                            guard let id = hero.disciplineId else { return }
-                            store.send(.disciplineTapped(
-                                id: id, name: hero.disciplineName, offerId: hero.offerId, isNowClass: true
-                            ))
-                        }
-                        .scaleIn(delay: 0.1, duration: 0.62)
-                        .padding(.bottom, 22)
-                    }
-
-                    HomeWidgetGrid(overview: overview) {
-                        store.send(.messagesWidgetTapped)
-                    }
-                    .fadeUp(delay: 0.2)
-                    .padding(.bottom, 26)
-
-                    HomeDaySection(today: overview.today) {
-                        store.send(.seeScheduleTapped)
-                    } onOpenClass: { item in
-                        store.send(.disciplineTapped(
-                            id: item.disciplineId, name: item.title, offerId: item.offerId, isNowClass: false
-                        ))
-                    }
-                    .fadeUp(delay: 0.3)
-                    .padding(.bottom, 26)
-                }
-                .padding(.horizontal, 16)
-
-                if !overview.disciplines.isEmpty {
-                    HomeClassesCarousel(disciplines: overview.disciplines) {
-                        store.send(.seeAllClassesTapped)
-                    } onOpen: { discipline in
-                        store.send(.disciplineTapped(
-                            id: discipline.id, name: discipline.name, offerId: discipline.offerId, isNowClass: false
-                        ))
-                    }
-                    .fadeUp(delay: 0.38)
-                    .padding(.bottom, 20)
-                }
-
-                footer
-                    .fadeUp(delay: 0.46)
+                content()
             }
             .padding(.bottom, 12)
         }
         .scrollIndicators(.hidden)
         .refreshable {
             await store.send(.refreshPulled).finish()
+        }
+    }
+
+    @ViewBuilder
+    private var announcements: some View {
+        if let event = store.campusEvent {
+            CampusEventHomeCard(event: event) {
+                store.send(.campusEventCardTapped)
+            }
+            .scaleIn(delay: 0.06, duration: 0.62)
+            .padding(.bottom, 22)
+        }
+
+        if store.showsRetrospectiveBanner, let retroCode = store.retrospectiveSemester {
+            RetrospectiveBanner(
+                semesterLabel: MirrorStore.semesterLabel(code: retroCode),
+                seen: store.isRetrospectiveSeen,
+                onOpen: { store.send(.retrospectiveCardTapped) },
+                onDismiss: { store.send(.retrospectiveBannerDismissed, animation: UNESMotion.ease(0.4)) }
+            )
+            .scaleIn(delay: 0.06, duration: 0.62)
+            .padding(.bottom, 22)
+        }
+    }
+
+    @ViewBuilder
+    private func heroCard(_ overview: HomeOverview) -> some View {
+        if let hero = overview.hero {
+            HomeHeroCard(hero: hero) {
+                guard let id = hero.disciplineId else { return }
+                store.send(.disciplineTapped(
+                    id: id, name: hero.disciplineName, offerId: hero.offerId, isNowClass: true
+                ))
+            }
+            .scaleIn(delay: 0.1, duration: 0.62)
+        }
+    }
+
+    private func widgets(_ overview: HomeOverview) -> some View {
+        HomeWidgetGrid(overview: overview) {
+            store.send(.messagesWidgetTapped)
+        }
+        .fadeUp(delay: 0.2)
+        .padding(.bottom, 26)
+    }
+
+    private func daySection(_ overview: HomeOverview) -> some View {
+        HomeDaySection(today: overview.today) {
+            store.send(.seeScheduleTapped)
+        } onOpenClass: { item in
+            store.send(.disciplineTapped(
+                id: item.disciplineId, name: item.title, offerId: item.offerId, isNowClass: false
+            ))
+        }
+        .fadeUp(delay: 0.3)
+        .padding(.bottom, 26)
+    }
+
+    @ViewBuilder
+    private func carousel(_ overview: HomeOverview) -> some View {
+        if !overview.disciplines.isEmpty {
+            HomeClassesCarousel(disciplines: overview.disciplines) {
+                store.send(.seeAllClassesTapped)
+            } onOpen: { discipline in
+                store.send(.disciplineTapped(
+                    id: discipline.id, name: discipline.name, offerId: discipline.offerId, isNowClass: false
+                ))
+            }
+            .fadeUp(delay: 0.38)
+            .padding(.bottom, 20)
         }
     }
 
@@ -217,6 +264,7 @@ struct HomeView: View {
                     .padding(.vertical, 4)
             }
         }
+        .fadeUp(delay: 0.46)
     }
 
     /// Faint warm mesh washing down from behind the large title.

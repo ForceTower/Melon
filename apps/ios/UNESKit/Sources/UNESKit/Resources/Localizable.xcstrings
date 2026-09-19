@@ -7305,6 +7305,23 @@
         }
       }
     },
+    "disciplines.spread.hint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pick a class on the left to see its details."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha uma disciplina ao lado para ver os detalhes."
+          }
+        }
+      }
+    },
     "disciplines.status.approved" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -17653,6 +17670,23 @@
         }
       }
     },
+    "messages.spread.hint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pick a message on the left to read it here."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha uma mensagem ao lado para ler aqui."
+          }
+        }
+      }
+    },
     "messages.time.daysAgo" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -20662,6 +20696,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Local a definir"
+          }
+        }
+      }
+    },
+    "schedule.spread.hint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tap a class on the left to open it here."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toque em uma aula ao lado para abrir aqui."
           }
         }
       }

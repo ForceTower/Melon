@@ -3,36 +3,53 @@ import SwiftUI
 
 struct SyncView: View {
     let store: StoreOf<SyncFeature>
+    @Environment(\.pageLayout) private var pageLayout
 
     var body: some View {
         ZStack {
             backdrop
                 .ignoresSafeArea()
 
-            VStack(alignment: .leading, spacing: 0) {
-                Eyebrow(text: String.localized(.onboardingSyncEyebrow), color: .white.opacity(0.92), live: true)
-                    .fadeUp(duration: 0.5)
-
-                title
-                    .padding(.top, 12)
-                    .fadeUp(delay: 0.1, duration: 0.6)
-
-                Spacer()
-
-                progressRing
-                    .frame(maxWidth: .infinity)
-
-                Spacer()
-
-                stepsCard
+            Group {
+                if pageLayout == .spread {
+                    FacingPages {
+                        VStack(alignment: .leading, spacing: 0) {
+                            heading
+                            Spacer()
+                            stepsCard
+                        }
+                        .padding(.horizontal, 24)
+                    } trailing: {
+                        progressRing
+                    }
+                } else {
+                    VStack(alignment: .leading, spacing: 0) {
+                        heading
+                        Spacer()
+                        progressRing
+                            .frame(maxWidth: .infinity)
+                        Spacer()
+                        stepsCard
+                    }
+                    .padding(.horizontal, 24)
+                }
             }
-            .padding(.horizontal, 24)
             .padding(.top, 44)
             .padding(.bottom, 12)
         }
         .navigationBarBackButtonHidden()
         .bareNavigationBar()
         .task { await store.send(.task).finish() }
+    }
+
+    @ViewBuilder
+    private var heading: some View {
+        Eyebrow(text: String.localized(.onboardingSyncEyebrow), color: .white.opacity(0.92), live: true)
+            .fadeUp(duration: 0.5)
+
+        title
+            .padding(.top, 12)
+            .fadeUp(delay: 0.1, duration: 0.6)
     }
 
     private var backdrop: some View {

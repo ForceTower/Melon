@@ -181,14 +181,14 @@ struct HomeFeature {
                 guard let code = state.retrospectiveSemester else { return .none }
                 analytics.selectContent(contentType: ContentTypes.hub, itemId: "retrospective")
                 log.info("open retrospective semester=\(code)")
-                state.path.append(.retrospective(RetrospectiveFeature.State(semesterCode: code)))
+                state.path.open(.retrospective(RetrospectiveFeature.State(semesterCode: code)))
                 return .none
 
             case .campusEventCardTapped:
                 guard let event = state.campusEvent else { return .none }
                 analytics.selectContent(contentType: ContentTypes.hub, itemId: "campus_event")
                 log.info("open campus event id=\(event.id)")
-                state.path.append(.campusEvent(CampusEventFeature.State(event: event)))
+                state.path.open(.campusEvent(CampusEventFeature.State(event: event)))
                 return .none
 
             case let .disciplineTapped(id, name, offerId, isNowClass):
@@ -206,7 +206,7 @@ struct HomeFeature {
                 }
                 guard let overview = state.overview, let semesterId = overview.semesterId else { return .none }
                 let colorIndex = overview.disciplines.first { $0.id == id }?.colorIndex ?? 0
-                state.path.append(.detail(DisciplineDetailFeature.State(
+                state.path.open(.detail(DisciplineDetailFeature.State(
                     semesterId: semesterId,
                     disciplineId: id,
                     name: name,
