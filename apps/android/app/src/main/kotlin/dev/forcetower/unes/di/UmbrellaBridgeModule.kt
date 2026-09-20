@@ -33,6 +33,7 @@ import dev.forcetower.melon.feature.courseprogress.domain.usecase.ObserveCourseP
 import dev.forcetower.melon.feature.courseprogress.domain.usecase.RefreshCourseProgressUseCase
 import dev.forcetower.melon.feature.courseprogress.domain.usecase.ResetCurriculumVersionUseCase
 import dev.forcetower.melon.feature.courseprogress.domain.usecase.SelectCurriculumVersionUseCase
+import dev.forcetower.melon.feature.courseprogress.domain.usecase.SetManualCompletionUseCase
 import dev.forcetower.melon.feature.dashboard.domain.usecase.GetReadyOverviewUseCase
 import dev.forcetower.melon.feature.disciplines.domain.usecase.CalculateOverallScoreUseCase
 import dev.forcetower.melon.feature.disciplines.domain.usecase.ObserveDisciplineDetailUseCase
@@ -358,6 +359,8 @@ object UmbrellaBridgeModule {
         graph.selectCurriculumVersionUseCase
     @Provides fun provideResetCurriculumVersionUseCase(graph: UmbrellaGraph): ResetCurriculumVersionUseCase =
         graph.resetCurriculumVersionUseCase
+    @Provides fun provideSetManualCompletionUseCase(graph: UmbrellaGraph): SetManualCompletionUseCase =
+        graph.setManualCompletionUseCase
 
     // Calendário — academic-calendar events feed for the agenda + the
     // active-semester code that powers the header eyebrow. Mirrors iOS
