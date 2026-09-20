@@ -29223,6 +29223,142 @@
           }
         }
       }
+    },
+    "courseProgress.manualCompletion.mark" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mark as completed"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Marcar como concluída"
+          }
+        }
+      }
+    },
+    "courseProgress.manualCompletion.unmark" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove completed mark"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desmarcar conclusão"
+          }
+        }
+      }
+    },
+    "courseProgress.manualCompletion.hint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "For transferred credits, waivers and anything else missing from your transcript. It counts toward your hours and unlocks what depends on it."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para aproveitamentos, dispensas e o que mais não aparecer no seu histórico. Conta nas suas horas e libera o que depende dela."
+          }
+        }
+      }
+    },
+    "courseProgress.manualCompletion.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Marked by you"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Marcada por você"
+          }
+        }
+      }
+    },
+    "courseProgress.manualCompletion.body" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This course counts as completed because you marked it — the approval isn't on your transcript."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta disciplina conta como concluída porque você marcou — a aprovação não aparece no seu histórico."
+          }
+        }
+      }
+    },
+    "courseProgress.manualCompletion.failed.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't update the course"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível atualizar a disciplina"
+          }
+        }
+      }
+    },
+    "courseProgress.manualCompletion.failed.body" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check your connection and try again."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verifique sua conexão e tente de novo."
+          }
+        }
+      }
+    },
+    "courseProgress.footer.manual" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Includes %@ from courses you marked as completed"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inclui %@ de disciplinas que você marcou como concluídas"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

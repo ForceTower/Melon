@@ -205,6 +205,9 @@ struct CourseProgressView: View {
 
     private func footer(_ progress: CourseProgress) -> some View {
         VStack(spacing: 2) {
+            if progress.summary.manuallyCompletedHours > 0 {
+                Text(.courseProgressFooterManual(CourseProgressFormat.hours(progress.summary.manuallyCompletedHours)))
+            }
             Text(.courseProgressFooterSynced(CourseProgressFormat.syncedAt(progress.syncedAt)))
             Text(.courseProgressFooterOfficial)
         }

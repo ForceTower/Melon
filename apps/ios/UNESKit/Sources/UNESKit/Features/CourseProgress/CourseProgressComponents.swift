@@ -125,11 +125,12 @@ struct DiagonalHatch: View {
 
 struct CurriculumStatusBadge: View {
     var status: CurriculumEntryStatus
+    var manual = false
     var size: CGFloat = 26
     var cornerRadius: CGFloat = 8
 
     var body: some View {
-        let solid = status == .completed
+        let solid = status == .completed && !manual
         let shape = RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
         Image(systemName: status.symbol)
             .font(.system(size: size * 0.46, weight: .bold))
@@ -151,6 +152,8 @@ struct CurriculumStatusBadge: View {
             .overlay {
                 if solid {
                     shape.strokeBorder(status.tone, lineWidth: 1)
+                } else if manual {
+                    shape.strokeBorder(status.tone, style: StrokeStyle(lineWidth: 1.5, dash: [3, 3]))
                 } else {
                     Color.clear.modifier(CurriculumStatusBorder(status: status, cornerRadius: cornerRadius))
                 }
@@ -417,7 +420,7 @@ struct CurriculumRelatedEntryRow: View {
 
     var body: some View {
         HStack(spacing: 11) {
-            CurriculumStatusBadge(status: entry.status, size: 24, cornerRadius: 7)
+            CurriculumStatusBadge(status: entry.status, manual: entry.isManuallyCompleted, size: 24, cornerRadius: 7)
             VStack(alignment: .leading, spacing: 3) {
                 Text(entry.name)
                     .font(.system(size: 13.5, weight: .semibold))

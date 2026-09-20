@@ -9,13 +9,16 @@ import Foundation
 ///
 /// `selectVersion` binds the student to one of `availableVersions` by hand
 /// and `resetVersion` hands the binding back to the server's resolution;
-/// both rewrite the mirror with the rebuilt payload the server returns.
+/// both rewrite the mirror with the rebuilt payload the server returns, as
+/// do `markCompleted` / `unmarkCompleted`.
 @DependencyClient
 struct CourseProgressRepository: Sendable {
     var cached: @Sendable () async throws -> CourseProgress?
     var refresh: @Sendable () async throws -> Void
     var selectVersion: @Sendable (_ curriculumId: String) async throws -> Void
     var resetVersion: @Sendable () async throws -> Void
+    var markCompleted: @Sendable (_ code: String) async throws -> Void
+    var unmarkCompleted: @Sendable (_ code: String) async throws -> Void
     var observe: @Sendable () -> AsyncStream<CourseProgress?> = { .finished }
 }
 
@@ -27,6 +30,8 @@ extension CourseProgressRepository: TestDependencyKey {
         refresh: {},
         selectVersion: { _ in },
         resetVersion: {},
+        markCompleted: { _ in },
+        unmarkCompleted: { _ in },
         observe: {
             AsyncStream { continuation in
                 continuation.yield(.preview())

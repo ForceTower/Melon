@@ -78,6 +78,7 @@ struct CurriculumProgressRecord: Codable, Equatable, Sendable, FetchableRecord, 
     var prerequisitesKnown: Bool
     var syncedAt: String
     var approvedHours: Int
+    var manuallyCompletedHours: Int
 
     init(_ progress: CourseProgress) {
         curriculumId = progress.curriculum?.id
@@ -92,12 +93,14 @@ struct CurriculumProgressRecord: Codable, Equatable, Sendable, FetchableRecord, 
         prerequisitesKnown = progress.prerequisitesKnown
         syncedAt = progress.syncedAt.formatted(MirrorStore.timestampFormat)
         approvedHours = progress.approvedHours
+        manuallyCompletedHours = progress.summary.manuallyCompletedHours
     }
 
     var summary: CurriculumSummary {
         CurriculumSummary(
             completedHours: completedHours, requiredHours: requiredHours, percent: percent,
             excludedHours: excludedHours, unclassifiedHours: unclassifiedHours,
+            manuallyCompletedHours: manuallyCompletedHours,
             disciplinesCompleted: disciplinesCompleted, disciplinesTotal: disciplinesTotal
         )
     }
@@ -155,6 +158,7 @@ struct CurriculumEntryRecord: Codable, Equatable, Sendable, FetchableRecord, Per
     var coreqGroup: Int?
     var requirementCode: String?
     var status: String
+    var manuallyCompleted: Bool
     var position: Int
 
     init(_ entry: CurriculumEntry, curriculumId: String, position: Int) {
@@ -167,6 +171,7 @@ struct CurriculumEntryRecord: Codable, Equatable, Sendable, FetchableRecord, Per
         coreqGroup = entry.coreqGroup
         requirementCode = entry.requirementCode
         status = entry.status.rawValue
+        manuallyCompleted = entry.isManuallyCompleted
         self.position = position
     }
 
@@ -176,6 +181,7 @@ struct CurriculumEntryRecord: Codable, Equatable, Sendable, FetchableRecord, Per
             coreqGroup: coreqGroup, requirementCode: requirementCode,
             // Anything this build can't name is, at most, not completed.
             status: CurriculumEntryStatus(rawValue: status) ?? .notTaken,
+            isManuallyCompleted: manuallyCompleted,
             prerequisites: prerequisites, corequisites: corequisites
         )
     }

@@ -15,9 +15,15 @@ struct CurriculumFlowView: View {
         .task { await store.send(.task).finish() }
         .sheet(isPresented: sheetBinding) {
             if let entry = store.presentedEntry {
-                CurriculumEntrySheet(progress: store.progress, entry: entry) { code in
-                    store.send(.trailRequested(code))
-                }
+                CurriculumEntrySheet(
+                    progress: store.progress,
+                    entry: entry,
+                    togglingCompletionCode: store.togglingCompletionCode,
+                    onTrail: { store.send(.trailRequested($0)) },
+                    onToggleCompletion: { store.send(.completionToggled($0)) }
+                )
+                // Attached to the sheet: the screen underneath can't present while it is up.
+                .alert($store.scope(state: \.alert, action: \.alert))
             }
         }
     }
@@ -413,7 +419,7 @@ struct CurriculumEntryRow: View {
     var body: some View {
         Button(action: onOpen) {
             HStack(alignment: .top, spacing: 12) {
-                CurriculumStatusBadge(status: entry.status, size: 28)
+                CurriculumStatusBadge(status: entry.status, manual: entry.isManuallyCompleted, size: 28)
                     .padding(.top, 1)
                 VStack(alignment: .leading, spacing: 6) {
                     Text(entry.name)
@@ -516,7 +522,7 @@ struct CurriculumMapTile: View {
 
     var body: some View {
         Button(action: onOpen) {
-            CurriculumStatusBadge(status: entry.status, size: size, cornerRadius: 8)
+            CurriculumStatusBadge(status: entry.status, manual: entry.isManuallyCompleted, size: size, cornerRadius: 8)
                 .overlay {
                     if ringed {
                         RoundedRectangle(cornerRadius: 8, style: .continuous)
@@ -548,7 +554,7 @@ struct CurriculumTrailPanel: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack(alignment: .top, spacing: 11) {
-                CurriculumStatusBadge(status: focus.status, size: 30, cornerRadius: 9)
+                CurriculumStatusBadge(status: focus.status, manual: focus.isManuallyCompleted, size: 30, cornerRadius: 9)
                 VStack(alignment: .leading, spacing: 4) {
                     Text(.courseProgressTrailTitle(focus.name))
                         .font(.system(size: 17, weight: .bold))
@@ -682,7 +688,7 @@ struct CurriculumGridCell: View {
                         .monospacedDigit()
                         .foregroundStyle(UNESColor.ink3)
                     Spacer(minLength: 0)
-                    CurriculumStatusBadge(status: entry.status, size: 19, cornerRadius: 6)
+                    CurriculumStatusBadge(status: entry.status, manual: entry.isManuallyCompleted, size: 19, cornerRadius: 6)
                 }
                 Text(entry.name)
                     .font(.system(size: 12, weight: .semibold))

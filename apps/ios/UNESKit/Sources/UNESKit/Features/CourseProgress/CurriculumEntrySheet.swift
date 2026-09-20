@@ -7,7 +7,9 @@ import SwiftUI
 struct CurriculumEntrySheet: View {
     var progress: CourseProgress
     var entry: CurriculumEntry
+    var togglingCompletionCode: String?
     var onTrail: (String) -> Void
+    var onToggleCompletion: (String) -> Void
 
     @State private var path: [String] = []
     /// Measured content height so the sheet hugs whichever card is showing —
@@ -17,16 +19,28 @@ struct CurriculumEntrySheet: View {
 
     var body: some View {
         NavigationStack(path: $path) {
-            CurriculumEntryDetail(progress: progress, entry: entry, isRoot: true, onTrail: onTrail, onHeight: fit)
+            detail(entry, isRoot: true)
                 .navigationDestination(for: String.self) { code in
                     if let pushed = progress.entry(code) {
-                        CurriculumEntryDetail(progress: progress, entry: pushed, isRoot: false, onTrail: onTrail, onHeight: fit)
+                        detail(pushed, isRoot: false)
                     }
                 }
         }
         .presentationBackground(UNESColor.surface)
         .presentationDetents([.height(height)])
         .presentationDragIndicator(.visible)
+    }
+
+    private func detail(_ entry: CurriculumEntry, isRoot: Bool) -> some View {
+        CurriculumEntryDetail(
+            progress: progress,
+            entry: entry,
+            isRoot: isRoot,
+            togglingCompletionCode: togglingCompletionCode,
+            onTrail: onTrail,
+            onToggleCompletion: onToggleCompletion,
+            onHeight: fit
+        )
     }
 
     private func fit(_ measured: CGFloat) {
@@ -44,7 +58,9 @@ private struct CurriculumEntryDetail: View {
     var progress: CourseProgress
     var entry: CurriculumEntry
     var isRoot: Bool
+    var togglingCompletionCode: String?
     var onTrail: (String) -> Void
+    var onToggleCompletion: (String) -> Void
     var onHeight: (CGFloat) -> Void
 
     /// Room for the system bar pushed cards carry above their content.
@@ -109,6 +125,7 @@ private struct CurriculumEntryDetail: View {
                     .buttonStyle(.unesDark)
                     .padding(.top, 2)
                 }
+                completionToggle
             }
             .padding(EdgeInsets(top: isRoot ? 22 : 8, leading: 18, bottom: 26, trailing: 18))
             .onGeometryChange(for: CGFloat.self) { proxy in
@@ -128,7 +145,7 @@ private struct CurriculumEntryDetail: View {
 
     private var heading: some View {
         HStack(alignment: .top, spacing: 12) {
-            CurriculumStatusBadge(status: entry.status, size: 38, cornerRadius: 12)
+            CurriculumStatusBadge(status: entry.status, manual: entry.isManuallyCompleted, size: 38, cornerRadius: 12)
             VStack(alignment: .leading, spacing: 3) {
                 Text(entry.code)
                     .font(.system(size: 11.5, weight: .bold))
@@ -159,7 +176,53 @@ private struct CurriculumEntryDetail: View {
     }
 
     @ViewBuilder
+    private var completionToggle: some View {
+        if entry.isManuallyCompleted || entry.canBeMarkedCompleted {
+            let isToggling = togglingCompletionCode == entry.code
+            VStack(spacing: 8) {
+                Button {
+                    onToggleCompletion(entry.code)
+                } label: {
+                    if isToggling {
+                        ProgressView()
+                    } else {
+                        Label(
+                            String.localized(entry.isManuallyCompleted
+                                ? .courseProgressManualCompletionUnmark
+                                : .courseProgressManualCompletionMark),
+                            systemImage: entry.isManuallyCompleted ? "arrow.uturn.backward" : "checkmark.circle"
+                        )
+                        .font(.system(size: 14, weight: .semibold))
+                    }
+                }
+                .buttonStyle(.unesNeutral)
+                .disabled(togglingCompletionCode != nil)
+
+                if !entry.isManuallyCompleted {
+                    Text(.courseProgressManualCompletionHint)
+                        .font(.system(size: 11.5, weight: .medium))
+                        .lineSpacing(2)
+                        .foregroundStyle(UNESColor.ink4)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 8)
+                }
+            }
+        }
+    }
+
+    @ViewBuilder
     private var statusNotice: some View {
+        if entry.isManuallyCompleted {
+            UNESBanner(tone: .neutral, title: .localized(.courseProgressManualCompletionTitle)) {
+                Text(.courseProgressManualCompletionBody)
+            }
+        } else {
+            observedStatusNotice
+        }
+    }
+
+    @ViewBuilder
+    private var observedStatusNotice: some View {
         switch entry.status {
         case .withdrawn:
             UNESBanner(tone: .warn, title: .localized(.courseProgressWithdrawnTitle)) {
@@ -275,7 +338,8 @@ private struct CurriculumEntryDetail: View {
             CurriculumEntrySheet(
                 progress: .preview(),
                 entry: CourseProgress.preview().entry("CHF345")!,
-                onTrail: { _ in }
+                onTrail: { _ in },
+                onToggleCompletion: { _ in }
             )
         }
 }

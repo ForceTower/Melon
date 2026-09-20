@@ -27,6 +27,8 @@ struct CurriculumFlowFeature {
         var trail: Trail?
         /// The discipline whose sheet is open, by code.
         var presentedEntryCode: String?
+        var togglingCompletionCode: String?
+        @Presents var alert: AlertState<Never>?
 
         init(progress: CourseProgress) {
             self.progress = progress
@@ -53,6 +55,9 @@ struct CurriculumFlowFeature {
         case entrySheetDismissed
         case trailRequested(String)
         case trailCleared
+        case completionToggled(String)
+        case completionToggleFinished(succeeded: Bool)
+        case alert(PresentationAction<Never>)
     }
 
     @Dependency(\.courseProgressRepository) var courseProgressRepository
@@ -60,7 +65,7 @@ struct CurriculumFlowFeature {
 
     private let log = Log.scoped("CurriculumFlowFeature")
 
-    private enum CancelID { case observation }
+    private enum CancelID { case observation, completionToggle }
 
     var body: some ReducerOf<Self> {
         Reduce { state, action in
@@ -129,7 +134,49 @@ struct CurriculumFlowFeature {
             case .trailCleared:
                 state.trail = nil
                 return .none
+
+            case let .completionToggled(code):
+                guard state.togglingCompletionCode == nil,
+                      let entry = state.progress.entry(code),
+                      entry.isManuallyCompleted || entry.canBeMarkedCompleted
+                else { return .none }
+                let marking = !entry.isManuallyCompleted
+                log.info("\(marking ? "mark" : "unmark") completed code=\(code)")
+                analytics.selectContent(
+                    contentType: ContentTypes.tile,
+                    itemId: "curriculum_manual_completion",
+                    properties: ["code": code, "marked": marking]
+                )
+                state.togglingCompletionCode = code
+                return .run { send in
+                    do {
+                        if marking {
+                            try await courseProgressRepository.markCompleted(code)
+                        } else {
+                            try await courseProgressRepository.unmarkCompleted(code)
+                        }
+                        await send(.completionToggleFinished(succeeded: true))
+                    } catch {
+                        await send(.completionToggleFinished(succeeded: false))
+                    }
+                }
+                .cancellable(id: CancelID.completionToggle, cancelInFlight: true)
+
+            case let .completionToggleFinished(succeeded):
+                state.togglingCompletionCode = nil
+                if !succeeded {
+                    state.alert = AlertState {
+                        TextState(String.localized(.courseProgressManualCompletionFailedTitle))
+                    } message: {
+                        TextState(String.localized(.courseProgressManualCompletionFailedBody))
+                    }
+                }
+                return .none
+
+            case .alert:
+                return .none
             }
         }
+        .ifLet(\.$alert, action: \.alert)
     }
 }
