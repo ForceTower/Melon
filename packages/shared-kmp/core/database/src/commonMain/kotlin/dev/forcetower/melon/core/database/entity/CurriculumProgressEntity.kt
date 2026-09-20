@@ -35,6 +35,7 @@ data class CurriculumProgressEntity(
     // Every hour the student has passed, whichever version lists it — what
     // each version's `fit` is a share of.
     @ColumnInfo(defaultValue = "0") val approvedHours: Int = 0,
+    @ColumnInfo(defaultValue = "0") val manuallyCompletedHours: Int = 0,
 ) {
     companion object {
         const val CURRENT = "current"

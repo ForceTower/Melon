@@ -2327,6 +2327,14 @@
     <string name="course_progress_version_switch_failed_title">Não foi possível trocar o currículo</string>
     <string name="course_progress_version_switch_failed_body">Verifique sua conexão e tente de novo.</string>
     <string name="course_progress_version_switch_failed_ok">Entendi</string>
+    <string name="course_progress_manual_completion_mark">Marcar como concluída</string>
+    <string name="course_progress_manual_completion_unmark">Desmarcar conclusão</string>
+    <string name="course_progress_manual_completion_hint">Para aproveitamentos, dispensas e o que mais não aparecer no seu histórico. Conta nas suas horas e libera o que depende dela.</string>
+    <string name="course_progress_manual_completion_title">Marcada por você</string>
+    <string name="course_progress_manual_completion_body">Esta disciplina conta como concluída porque você marcou — a aprovação não aparece no seu histórico.</string>
+    <string name="course_progress_manual_completion_failed_title">Não foi possível atualizar a disciplina</string>
+    <string name="course_progress_manual_completion_failed_body">Verifique sua conexão e tente de novo.</string>
+    <string name="course_progress_footer_manual_format">Inclui %1$s de disciplinas que você marcou como concluídas</string>
     <!-- endregion -->
 
 </resources>

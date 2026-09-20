@@ -149,6 +149,7 @@ data class CurriculumSummary(
     val unclassifiedHours: Int,
     val disciplinesCompleted: Int,
     val disciplinesTotal: Int,
+    val manuallyCompletedHours: Int = 0,
 ) {
     val remainingHours: Int?
         get() = requiredHours?.let { maxOf(0, it - completedHours) }
@@ -205,7 +206,12 @@ data class CurriculumEntry(
     val prerequisites: List<String>,
     // Taken alongside; never gates availability.
     val corequisites: List<String>,
-)
+    val manuallyCompleted: Boolean = false,
+) {
+    // An observed approval needs no mark and a live enrolment contradicts one.
+    val canBeMarkedCompleted: Boolean
+        get() = status != CurriculumEntryStatus.Completed && status != CurriculumEntryStatus.InProgress
+}
 
 // The entries scheduled for one período; `period == null` is the elective pool.
 data class CurriculumPeriod(

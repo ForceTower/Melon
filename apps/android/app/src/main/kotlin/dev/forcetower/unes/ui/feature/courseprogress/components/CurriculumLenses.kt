@@ -465,6 +465,7 @@ private fun MapTile(
             size = 28.dp,
             corner = 9.dp,
             iconSize = 15.dp,
+            manual = entry.manuallyCompleted,
         )
     }
 }
@@ -734,6 +735,7 @@ private fun GridCell(
                 size = 20.dp,
                 corner = 7.dp,
                 iconSize = 13.dp,
+                manual = entry.manuallyCompleted,
             )
         }
         Text(

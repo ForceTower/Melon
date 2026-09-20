@@ -60,6 +60,12 @@ internal class CurriculumService(
     suspend fun resetVersion(syncedAt: Instant): Outcome<CourseProgress, CourseProgressError> =
         payload(syncedAt) { client.delete("api/curriculum/version") }
 
+    suspend fun markCompleted(code: String, syncedAt: Instant): Outcome<CourseProgress, CourseProgressError> =
+        payload(syncedAt) { client.put("api/curriculum/entries/$code/completion") }
+
+    suspend fun unmarkCompleted(code: String, syncedAt: Instant): Outcome<CourseProgress, CourseProgressError> =
+        payload(syncedAt) { client.delete("api/curriculum/entries/$code/completion") }
+
     private suspend inline fun payload(
         syncedAt: Instant,
         request: () -> HttpResponse,
@@ -122,6 +128,7 @@ internal data class CurriculumPayloadDTO(
         val unclassifiedHours: Int? = null,
         val disciplinesCompleted: Int? = null,
         val disciplinesTotal: Int? = null,
+        val manuallyCompletedHours: Int? = null,
     )
 
     @Serializable
@@ -149,6 +156,7 @@ internal data class CurriculumPayloadDTO(
         val status: String,
         val prerequisites: List<String>? = null,
         val corequisites: List<String>? = null,
+        val manuallyCompleted: Boolean? = null,
     )
 
     @Serializable
@@ -195,6 +203,7 @@ private fun CurriculumPayloadDTO.SummaryDTO.toDomain() = CurriculumSummary(
     unclassifiedHours = unclassifiedHours ?: 0,
     disciplinesCompleted = disciplinesCompleted ?: 0,
     disciplinesTotal = disciplinesTotal ?: 0,
+    manuallyCompletedHours = manuallyCompletedHours ?: 0,
 )
 
 private fun CurriculumPayloadDTO.RequirementDTO.toDomain() = CurriculumRequirementProgress(
@@ -225,4 +234,5 @@ private fun CurriculumPayloadDTO.EntryDTO.toDomain() = CurriculumEntry(
     status = CurriculumEntryStatus.fromWire(status),
     prerequisites = prerequisites.orEmpty(),
     corequisites = corequisites.orEmpty(),
+    manuallyCompleted = manuallyCompleted ?: false,
 )

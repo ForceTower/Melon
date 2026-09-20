@@ -66,6 +66,15 @@ class CourseProgressRepository internal constructor(
     suspend fun resetVersion(): Outcome<Unit, CourseProgressError> =
         mirror { service.resetVersion(Clock.System.now()) }
 
+    suspend fun setManuallyCompleted(code: String, completed: Boolean): Outcome<Unit, CourseProgressError> =
+        mirror {
+            if (completed) {
+                service.markCompleted(code, Clock.System.now())
+            } else {
+                service.unmarkCompleted(code, Clock.System.now())
+            }
+        }
+
     // Every write path answers with the whole payload, so fetching and
     // mirroring are the same move for a refresh, a pick and a reset.
     private suspend inline fun mirror(
@@ -135,6 +144,7 @@ private fun CourseProgress.toProgressEntity(curriculumId: String?) = CurriculumP
     prerequisitesKnown = prerequisitesKnown,
     syncedAt = syncedAt.toEpochMilliseconds(),
     approvedHours = approvedHours,
+    manuallyCompletedHours = summary.manuallyCompletedHours,
 )
 
 private fun CurriculumVersion.toEntity(position: Int) = CurriculumEntity(
@@ -182,6 +192,7 @@ private fun CurriculumEntry.toEntity(curriculumId: String, position: Int) = Curr
     requirementCode = requirementCode,
     status = status.wire,
     position = position,
+    manuallyCompleted = manuallyCompleted,
 )
 
 private fun CurriculumEntry.edgeEntities(curriculumId: String): List<CurriculumPrerequisiteEntity> =
@@ -219,6 +230,7 @@ private fun CurriculumProgressEntity.project(
         unclassifiedHours = unclassifiedHours,
         disciplinesCompleted = disciplinesCompleted,
         disciplinesTotal = disciplinesTotal,
+        manuallyCompletedHours = manuallyCompletedHours,
     )
     val versions = versionRows.map { it.toDomain() }
     val version = versions.firstOrNull { it.id == curriculumId }
@@ -262,6 +274,7 @@ private fun CurriculumProgressEntity.project(
                 status = CurriculumEntryStatus.fromWire(row.status),
                 prerequisites = prerequisitesByEntry[row.code].orEmpty(),
                 corequisites = corequisitesByEntry[row.code].orEmpty(),
+                manuallyCompleted = row.manuallyCompleted,
             )
         }
         .groupBy { it.period }
