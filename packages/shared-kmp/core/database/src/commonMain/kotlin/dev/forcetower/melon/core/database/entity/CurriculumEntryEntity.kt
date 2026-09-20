@@ -1,5 +1,6 @@
 package dev.forcetower.melon.core.database.entity
 
+import androidx.room3.ColumnInfo
 import androidx.room3.Entity
 import androidx.room3.ForeignKey
 import androidx.room3.Index
@@ -39,4 +40,5 @@ data class CurriculumEntryEntity(
     // completed | in_progress | withdrawn | failed | available | blocked | not_taken
     val status: String,
     val position: Int,
+    @ColumnInfo(defaultValue = "0") val manuallyCompleted: Boolean = false,
 )

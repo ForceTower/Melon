@@ -12,6 +12,7 @@ import dev.forcetower.melon.feature.courseprogress.domain.usecase.ObserveCourseP
 import dev.forcetower.melon.feature.courseprogress.domain.usecase.RefreshCourseProgressUseCase
 import dev.forcetower.melon.feature.courseprogress.domain.usecase.ResetCurriculumVersionUseCase
 import dev.forcetower.melon.feature.courseprogress.domain.usecase.SelectCurriculumVersionUseCase
+import dev.forcetower.melon.feature.courseprogress.domain.usecase.SetManualCompletionUseCase
 import dev.forcetower.melon.feature.me.domain.usecase.ObserveMeProfileUseCase
 import dev.forcetower.unes.mvi.MviViewModel
 import dev.forcetower.unes.mvi.UiEffect
@@ -52,6 +53,8 @@ internal data class CourseProgressUiState(
     val switchingVersionId: String? = null,
     // The last switch failed; the dialog stays up until dismissed.
     val versionSwitchFailed: Boolean = false,
+    val togglingCompletionCode: String? = null,
+    val completionToggleFailed: Boolean = false,
 ) : UiState {
     val selectedPeriodEntries: CurriculumPeriod?
         get() = selectedPeriod?.let { progress?.period(it) }
@@ -81,6 +84,8 @@ internal sealed interface CourseProgressIntent : UiIntent {
     data class VersionSelected(val curriculumId: String) : CourseProgressIntent
     data object AutomaticVersionTapped : CourseProgressIntent
     data object VersionSwitchFailureDismissed : CourseProgressIntent
+    data class CompletionToggled(val code: String) : CourseProgressIntent
+    data object CompletionToggleFailureDismissed : CourseProgressIntent
 }
 
 internal sealed interface CourseProgressEffect : UiEffect
@@ -99,6 +104,7 @@ internal class CourseProgressViewModel @Inject constructor(
     private val refreshCourseProgress: RefreshCourseProgressUseCase,
     private val selectCurriculumVersion: SelectCurriculumVersionUseCase,
     private val resetCurriculumVersion: ResetCurriculumVersionUseCase,
+    private val setManualCompletion: SetManualCompletionUseCase,
     private val analytics: Analytics,
 ) : MviViewModel<CourseProgressUiState, CourseProgressIntent, CourseProgressEffect>(
     CourseProgressUiState(),
@@ -141,6 +147,9 @@ internal class CourseProgressViewModel @Inject constructor(
             is CourseProgressIntent.VersionSelected -> selectVersion(intent.curriculumId)
             CourseProgressIntent.AutomaticVersionTapped -> resetVersion()
             CourseProgressIntent.VersionSwitchFailureDismissed -> setState { copy(versionSwitchFailed = false) }
+            is CourseProgressIntent.CompletionToggled -> toggleCompletion(intent.code)
+            CourseProgressIntent.CompletionToggleFailureDismissed ->
+                setState { copy(completionToggleFailed = false) }
         }
     }
 
@@ -219,6 +228,24 @@ internal class CourseProgressViewModel @Inject constructor(
                     versionSwitchFailed = outcome is Outcome.Err,
                 )
             }
+        }
+    }
+
+    private fun toggleCompletion(code: String) {
+        val state = currentState
+        val entry = state.progress?.entry(code) ?: return
+        if (state.togglingCompletionCode != null) return
+        if (!entry.manuallyCompleted && !entry.canBeMarkedCompleted) return
+        val marking = !entry.manuallyCompleted
+        analytics.selectContent(
+            ContentTypes.TILE,
+            "curriculum_manual_completion",
+            mapOf("code" to code, "marked" to marking),
+        )
+        setState { copy(togglingCompletionCode = code) }
+        viewModelScope.launch {
+            val outcome = setManualCompletion(code, marking)
+            setState { copy(togglingCompletionCode = null, completionToggleFailed = outcome is Outcome.Err) }
         }
     }
 

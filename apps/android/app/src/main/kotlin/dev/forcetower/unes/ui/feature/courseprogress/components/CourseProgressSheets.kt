@@ -14,17 +14,22 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Undo
 import androidx.compose.material.icons.filled.AccountTree
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.CheckCircleOutline
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Description
+import androidx.compose.material.icons.filled.HowToReg
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -38,6 +43,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
@@ -145,8 +151,10 @@ internal fun ComplementaryHoursSheet(
 internal fun CurriculumEntrySheet(
     entry: CurriculumEntry,
     progress: CourseProgress,
+    togglingCompletionCode: String?,
     onOpenEntry: (String) -> Unit,
     onShowTrail: (String) -> Unit,
+    onToggleCompletion: (String) -> Unit,
     onDismiss: () -> Unit,
 ) {
     val style = curriculumStatusStyle(entry.status)
@@ -172,6 +180,7 @@ internal fun CurriculumEntrySheet(
                     size = 44.dp,
                     corner = 14.dp,
                     iconSize = 22.dp,
+                    manual = entry.manuallyCompleted,
                 )
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
@@ -264,6 +273,73 @@ internal fun CurriculumEntrySheet(
                     )
                 }
             }
+
+            if (entry.manuallyCompleted || entry.canBeMarkedCompleted) {
+                CompletionToggle(
+                    entry = entry,
+                    toggling = togglingCompletionCode == entry.code,
+                    enabled = togglingCompletionCode == null,
+                    onToggle = { onToggleCompletion(entry.code) },
+                    modifier = Modifier.padding(top = 10.dp),
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun CompletionToggle(
+    entry: CurriculumEntry,
+    toggling: Boolean,
+    enabled: Boolean,
+    onToggle: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
+        OutlinedButton(
+            onClick = onToggle,
+            enabled = enabled,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(52.dp),
+        ) {
+            if (toggling) {
+                CircularProgressIndicator(modifier = Modifier.size(20.dp), strokeWidth = 2.dp)
+            } else {
+                Icon(
+                    imageVector = if (entry.manuallyCompleted) {
+                        Icons.AutoMirrored.Filled.Undo
+                    } else {
+                        Icons.Filled.CheckCircleOutline
+                    },
+                    contentDescription = null,
+                    modifier = Modifier
+                        .padding(end = 9.dp)
+                        .size(20.dp),
+                )
+                Text(
+                    text = stringResource(
+                        if (entry.manuallyCompleted) {
+                            R.string.course_progress_manual_completion_unmark
+                        } else {
+                            R.string.course_progress_manual_completion_mark
+                        },
+                    ),
+                    style = MaterialTheme.typography.labelLarge.copy(
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Bold,
+                    ),
+                )
+            }
+        }
+        if (!entry.manuallyCompleted) {
+            Text(
+                text = stringResource(R.string.course_progress_manual_completion_hint),
+                style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp, lineHeight = 16.sp),
+                color = MaterialTheme.colorScheme.outline,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(start = 8.dp, top = 10.dp, end = 8.dp),
+            )
         }
     }
 }
@@ -281,9 +357,30 @@ private fun EntryNotice(
         .mapNotNull(progress::entry)
         .filter { it.status != CurriculumEntryStatus.Completed }
 
-    data class Notice(val tone: Color, val icon: ImageVector, val title: String, val body: String)
+    val notice = when {
+        entry.manuallyCompleted -> Notice(
+            tone = MaterialTheme.colorScheme.outline,
+            icon = Icons.Filled.HowToReg,
+            title = stringResource(R.string.course_progress_manual_completion_title),
+            body = stringResource(R.string.course_progress_manual_completion_body),
+        )
+        else -> observedNotice(entry, pending)
+    } ?: return
 
-    val notice = when (entry.status) {
+    CourseProgressNotice(
+        tone = notice.tone,
+        icon = notice.icon,
+        title = notice.title,
+        body = notice.body,
+        modifier = modifier,
+    )
+}
+
+private data class Notice(val tone: Color, val icon: ImageVector, val title: String, val body: String)
+
+@Composable
+private fun observedNotice(entry: CurriculumEntry, pending: List<CurriculumEntry>): Notice? =
+    when (entry.status) {
         CurriculumEntryStatus.Withdrawn -> Notice(
             tone = MaterialTheme.melon.palette.orange,
             icon = Icons.Filled.Pause,
@@ -325,16 +422,7 @@ private fun EntryNotice(
             ),
         )
         else -> null
-    } ?: return
-
-    CourseProgressNotice(
-        tone = notice.tone,
-        icon = notice.icon,
-        title = notice.title,
-        body = notice.body,
-        modifier = modifier,
-    )
-}
+    }
 
 @Composable
 private fun EntryFacts(

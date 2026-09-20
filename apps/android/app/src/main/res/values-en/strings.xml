@@ -2268,6 +2268,14 @@
     <string name="course_progress_version_switch_failed_title">Couldn\'t switch curriculum</string>
     <string name="course_progress_version_switch_failed_body">Check your connection and try again.</string>
     <string name="course_progress_version_switch_failed_ok">Got it</string>
+    <string name="course_progress_manual_completion_mark">Mark as completed</string>
+    <string name="course_progress_manual_completion_unmark">Remove completed mark</string>
+    <string name="course_progress_manual_completion_hint">For transferred credits, waivers and anything else missing from your transcript. It counts toward your hours and unlocks what depends on it.</string>
+    <string name="course_progress_manual_completion_title">Marked by you</string>
+    <string name="course_progress_manual_completion_body">This course counts as completed because you marked it — the approval isn\'t on your transcript.</string>
+    <string name="course_progress_manual_completion_failed_title">Couldn\'t update the course</string>
+    <string name="course_progress_manual_completion_failed_body">Check your connection and try again.</string>
+    <string name="course_progress_footer_manual_format">Includes %1$s from courses you marked as completed</string>
     <!-- endregion -->
 
 </resources>

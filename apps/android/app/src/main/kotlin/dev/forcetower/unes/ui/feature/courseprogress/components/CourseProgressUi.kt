@@ -228,7 +228,13 @@ internal fun CurriculumEntryRow(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            CurriculumStatusBadge(status = entry.status, size = 26.dp, corner = 8.dp, iconSize = 15.dp)
+            CurriculumStatusBadge(
+                status = entry.status,
+                size = 26.dp,
+                corner = 8.dp,
+                iconSize = 15.dp,
+                manual = entry.manuallyCompleted,
+            )
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = entry.name,

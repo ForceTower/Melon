@@ -347,11 +347,18 @@ private fun LoadedContent(
             }
         }
 
+        val syncedFooter = stringResource(
+            R.string.course_progress_footer_format,
+            CourseProgressFormat.syncedAt(progress.syncedAt.toEpochMilliseconds()),
+        )
+        val manualHours = progress.summary.manuallyCompletedHours
         Text(
-            text = stringResource(
-                R.string.course_progress_footer_format,
-                CourseProgressFormat.syncedAt(progress.syncedAt.toEpochMilliseconds()),
-            ),
+            text = if (manualHours > 0) {
+                val hours = stringResource(R.string.course_progress_hours_format, CourseProgressFormat.count(manualHours))
+                stringResource(R.string.course_progress_footer_manual_format, hours) + "\n" + syncedFooter
+            } else {
+                syncedFooter
+            },
             style = MaterialTheme.typography.bodySmall.copy(fontSize = 11.5.sp, lineHeight = 17.sp),
             color = MaterialTheme.colorScheme.outlineVariant,
             textAlign = TextAlign.Center,

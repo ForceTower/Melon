@@ -132,6 +132,10 @@ extension APIClient {
         return try Self.unwrap(await send(request))
     }
 
+    func put<T: Decodable>(_ type: T.Type = T.self, at path: String) async throws -> T {
+        try Self.unwrap(await send(APIRequest(method: "PUT", path: path)))
+    }
+
     /// DELETE whose response carries a data payload (e.g. the rebuilt
     /// curriculum after clearing a manual version).
     func delete<T: Decodable>(_ type: T.Type = T.self, _ path: String) async throws -> T {

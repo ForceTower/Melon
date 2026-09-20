@@ -358,6 +358,14 @@ private func migrator() -> DatabaseMigrator {
             t.column("position", .integer).notNull()
         }
     }
+    migrator.registerMigration("v12") { db in
+        try db.alter(table: "curriculumEntries") { t in
+            t.add(column: "manuallyCompleted", .boolean).notNull().defaults(to: false)
+        }
+        try db.alter(table: "curriculumProgress") { t in
+            t.add(column: "manuallyCompletedHours", .integer).notNull().defaults(to: 0)
+        }
+    }
     return migrator
 }
 

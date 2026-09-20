@@ -33,6 +33,22 @@ extension CourseProgressRepository: DependencyKey {
                 try await apiClient.delete(CurriculumPayloadDTO.self, "api/curriculum/version")
             }
         },
+        markCompleted: { code in
+            @Dependency(\.apiClient) var wrappedClient
+            let apiClient = wrappedClient
+            log.info("mark completed code=\(code)")
+            try await apply("mark completed") {
+                try await apiClient.put(at: "api/curriculum/entries/\(code)/completion")
+            }
+        },
+        unmarkCompleted: { code in
+            @Dependency(\.apiClient) var wrappedClient
+            let apiClient = wrappedClient
+            log.info("unmark completed code=\(code)")
+            try await apply("unmark completed") {
+                try await apiClient.delete(CurriculumPayloadDTO.self, "api/curriculum/entries/\(code)/completion")
+            }
+        },
         observe: {
             @Dependency(\.database) var wrappedDatabase
             let mirror = MirrorStore(writer: wrappedDatabase)
@@ -146,6 +162,7 @@ struct CurriculumPayloadDTO: Decodable {
         var percent: Double? = nil
         var excludedHours: Int? = nil
         var unclassifiedHours: Int? = nil
+        var manuallyCompletedHours: Int? = nil
         var disciplinesCompleted: Int? = nil
         var disciplinesTotal: Int? = nil
 
@@ -153,6 +170,7 @@ struct CurriculumPayloadDTO: Decodable {
             CurriculumSummary(
                 completedHours: completedHours, requiredHours: requiredHours, percent: percent,
                 excludedHours: excludedHours ?? 0, unclassifiedHours: unclassifiedHours ?? 0,
+                manuallyCompletedHours: manuallyCompletedHours ?? 0,
                 disciplinesCompleted: disciplinesCompleted ?? 0, disciplinesTotal: disciplinesTotal ?? 0
             )
         }
@@ -193,6 +211,7 @@ struct CurriculumPayloadDTO: Decodable {
         var coreqGroup: Int? = nil
         var requirementCode: String? = nil
         var status: String
+        var manuallyCompleted: Bool? = nil
         var prerequisites: [String]? = nil
         var corequisites: [String]? = nil
 
@@ -201,6 +220,7 @@ struct CurriculumPayloadDTO: Decodable {
                 code: code, name: name, hours: hours, credits: credits, period: period,
                 coreqGroup: coreqGroup, requirementCode: requirementCode,
                 status: CurriculumEntryStatus(rawValue: status) ?? .notTaken,
+                isManuallyCompleted: manuallyCompleted ?? false,
                 prerequisites: prerequisites ?? [], corequisites: corequisites ?? []
             )
         }

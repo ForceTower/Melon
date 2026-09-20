@@ -159,6 +159,46 @@ struct CourseProgressTests {
     }
 
     @Test
+    func payloadDecodesManualCompletions() throws {
+        let json = """
+        {
+          "summary": {"completedHours": 120, "manuallyCompletedHours": 60},
+          "periods": [
+            {"period": 1, "entries": [
+              {"code": "CHF289", "name": "HIST.", "hours": 60, "status": "completed", "manuallyCompleted": true},
+              {"code": "CHF288", "name": "PSIC.", "hours": 60, "status": "completed"}
+            ]}
+          ]
+        }
+        """
+        let dto = try JSONDecoder().decode(CurriculumPayloadDTO.self, from: Data(json.utf8))
+        let progress = dto.domain(syncedAt: Date(timeIntervalSince1970: 0))
+
+        #expect(progress.summary.manuallyCompletedHours == 60)
+        #expect(progress.entry("CHF289")?.isManuallyCompleted == true)
+        #expect(progress.entry("CHF288")?.isManuallyCompleted == false)
+    }
+
+    @Test
+    func mirrorKeepsManualCompletions() async throws {
+        let store = MirrorStore(writer: try inMemoryDatabase())
+        var progress = CourseProgress.preview()
+        progress.summary.manuallyCompletedHours = 60
+        progress.periods[0].entries[0].isManuallyCompleted = true
+        try await store.applyCourseProgress(progress)
+        #expect(try await store.cachedCourseProgress() == progress)
+    }
+
+    @Test
+    func onlyUnfinishedEntriesCanBeMarkedCompleted() {
+        let progress = CourseProgress.preview()
+        #expect(progress.entry("CHF345")?.canBeMarkedCompleted == true)
+        #expect(progress.entry("CHF292")?.canBeMarkedCompleted == true)
+        #expect(progress.entry("CHF289")?.canBeMarkedCompleted == false)
+        #expect(progress.entry("CHF344")?.canBeMarkedCompleted == false)
+    }
+
+    @Test
     func mirrorKeepsTheElectivePool() async throws {
         let store = MirrorStore(writer: try inMemoryDatabase())
         var progress = CourseProgress.preview()

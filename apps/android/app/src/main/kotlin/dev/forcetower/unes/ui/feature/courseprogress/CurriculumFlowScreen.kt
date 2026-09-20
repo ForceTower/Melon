@@ -15,6 +15,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -23,6 +24,7 @@ import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -73,6 +75,8 @@ internal fun CurriculumFlowScreen(
         onDismissEntry = { vm.onIntent(CourseProgressIntent.EntrySheetDismissed) },
         onShowTrail = { vm.onIntent(CourseProgressIntent.TrailRequested(it)) },
         onClearTrail = { vm.onIntent(CourseProgressIntent.TrailCleared) },
+        onToggleCompletion = { vm.onIntent(CourseProgressIntent.CompletionToggled(it)) },
+        onDismissCompletionFailure = { vm.onIntent(CourseProgressIntent.CompletionToggleFailureDismissed) },
         modifier = modifier,
         bottomInset = bottomInset,
     )
@@ -89,6 +93,8 @@ private fun CurriculumFlowContent(
     onDismissEntry: () -> Unit,
     onShowTrail: (String) -> Unit,
     onClearTrail: () -> Unit,
+    onToggleCompletion: (String) -> Unit,
+    onDismissCompletionFailure: () -> Unit,
     modifier: Modifier = Modifier,
     bottomInset: Dp = 0.dp,
 ) {
@@ -218,9 +224,24 @@ private fun CurriculumFlowContent(
         CurriculumEntrySheet(
             entry = openedEntry,
             progress = progress,
+            togglingCompletionCode = state.togglingCompletionCode,
             onOpenEntry = onOpenEntry,
             onShowTrail = onShowTrail,
+            onToggleCompletion = onToggleCompletion,
             onDismiss = onDismissEntry,
+        )
+    }
+
+    if (state.completionToggleFailed) {
+        AlertDialog(
+            onDismissRequest = onDismissCompletionFailure,
+            title = { Text(text = stringResource(R.string.course_progress_manual_completion_failed_title)) },
+            text = { Text(text = stringResource(R.string.course_progress_manual_completion_failed_body)) },
+            confirmButton = {
+                TextButton(onClick = onDismissCompletionFailure) {
+                    Text(text = stringResource(R.string.course_progress_version_switch_failed_ok))
+                }
+            },
         )
     }
 }
@@ -248,6 +269,8 @@ private fun CurriculumFlowScreenPreview() {
             onDismissEntry = {},
             onShowTrail = {},
             onClearTrail = {},
+            onToggleCompletion = {},
+            onDismissCompletionFailure = {},
         )
     }
 }

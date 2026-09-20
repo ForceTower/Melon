@@ -125,6 +125,7 @@ struct CurriculumSummary: Equatable, Sendable {
     /// Completed hours whose requirement is unknown — in the total, absent
     /// from the bars.
     var unclassifiedHours: Int
+    var manuallyCompletedHours = 0
     var disciplinesCompleted: Int
     var disciplinesTotal: Int
 
@@ -177,12 +178,18 @@ struct CurriculumEntry: Equatable, Sendable, Identifiable {
     var coreqGroup: Int?
     var requirementCode: String?
     var status: CurriculumEntryStatus
+    var isManuallyCompleted = false
     /// Must be completed first; these gate `available` / `blocked`.
     var prerequisites: [String]
     /// Taken alongside; never gates availability.
     var corequisites: [String]
 
     var id: String { code }
+
+    /// An observed approval needs no mark and a live enrolment contradicts one.
+    var canBeMarkedCompleted: Bool {
+        status != .completed && status != .inProgress
+    }
 }
 
 /// The entries scheduled for one período; `period == nil` is the elective

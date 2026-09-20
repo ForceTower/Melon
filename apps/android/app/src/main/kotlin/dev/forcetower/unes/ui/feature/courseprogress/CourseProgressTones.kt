@@ -185,8 +185,11 @@ internal fun CurriculumStatusBadge(
     size: Dp = 30.dp,
     corner: Dp = 10.dp,
     iconSize: Dp = 17.dp,
+    manual: Boolean = false,
 ) {
-    val style = curriculumStatusStyle(status)
+    val style = curriculumStatusStyle(status).let {
+        if (manual) it.copy(filled = false, edge = CurriculumStatusEdge.Dashed) else it
+    }
     val faintEdge = MaterialTheme.melon.surface.line
     Box(
         modifier = modifier
