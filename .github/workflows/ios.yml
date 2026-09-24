@@ -28,7 +28,8 @@ jobs:
       - name: Select Xcode
         uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: latest
+          # Return to latest after Xcode 27.2 leaves beta.
+          xcode-version: '27.1'
 
       - name: Show toolchain
         run: xcodebuild -version && swift --version
@@ -68,7 +69,8 @@ jobs:
       - name: Select Xcode
         uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: latest
+          # Return to latest after Xcode 27.2 leaves beta.
+          xcode-version: '27.1'
 
       - name: Show toolchain
         run: xcodebuild -version && swift --version
