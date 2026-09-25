@@ -22,6 +22,8 @@ public struct RootView: View {
                 LaunchCover { launchCover = false }
             }
         }
+        .resolvesPageLayout()
+        .readsDeviceFold()
         .task { await store.send(.task).finish() }
     }
 

@@ -5,7 +5,7 @@ struct DisciplinesView: View {
     @Bindable var store: StoreOf<DisciplinesFeature>
 
     var body: some View {
-        NavigationStack(path: $store.scope(state: \.path, action: \.path)) {
+        SpreadStack(path: $store.scope(state: \.path, action: \.path)) {
             ZStack(alignment: .top) {
                 UNESColor.surface.ignoresSafeArea()
                 ambientWash
@@ -21,6 +21,8 @@ struct DisciplinesView: View {
             }
             .navigationTitle(Text(.disciplinesTitle))
             .alert($store.scope(state: \.alert, action: \.alert))
+        } overview: {
+            SpreadHint(systemImage: "square.stack.3d.up", text: .disciplinesSpreadHint)
         } destination: { store in
             switch store.case {
             case let .detail(store):

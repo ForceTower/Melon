@@ -5,13 +5,15 @@ struct MeView: View {
     @Bindable var store: StoreOf<MeFeature>
 
     var body: some View {
-        NavigationStack(path: $store.scope(state: \.path, action: \.path)) {
+        SpreadStack(path: $store.scope(state: \.path, action: \.path)) {
             ZStack(alignment: .top) {
                 UNESColor.surface.ignoresSafeArea()
                 ambientWash
                 content
             }
             .navigationTitle(Text(.meTitle))
+        } overview: {
+            SpreadHint(systemImage: "square.grid.2x2", text: .meSpreadHint)
         } destination: { store in
             switch store.case {
             case let .settings(store):

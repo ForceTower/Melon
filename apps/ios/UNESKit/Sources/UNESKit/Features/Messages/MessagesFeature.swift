@@ -130,7 +130,7 @@ struct MessagesFeature {
                 if let index = state.overview?.messages.firstIndex(where: { $0.id == message.id }) {
                     state.overview?.messages[index] = opened
                 }
-                state.path.append(.detail(MessageDetailFeature.State(message: opened)))
+                state.path.open(.detail(MessageDetailFeature.State(message: opened)))
                 guard message.unread else { return .none }
                 log.info("mark message read id=\(message.id)")
                 return .merge(

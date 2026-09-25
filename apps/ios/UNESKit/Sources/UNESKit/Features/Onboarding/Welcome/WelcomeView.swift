@@ -44,6 +44,7 @@ struct WelcomeView: View {
             .padding(.horizontal, 28)
             .padding(.top, 44)
             .padding(.bottom, 12)
+            .pageColumn()
         }
         .hiddenNavigationBar()
     }

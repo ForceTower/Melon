@@ -199,6 +199,7 @@ private struct AttachmentRow: View {
                     .foregroundStyle(UNESColor.ink4)
             }
             .padding(EdgeInsets(top: 12, leading: 15, bottom: 12, trailing: 15))
+            .contentShape(Rectangle())
             .overlay(alignment: .bottom) {
                 if !isLast {
                     Rectangle().fill(UNESColor.line).frame(height: 0.5)

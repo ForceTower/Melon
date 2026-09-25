@@ -9,21 +9,26 @@ struct EnrollmentSuccessView: View {
 
     var body: some View {
         ZStack {
-            Color(hex: 0x0F1A14)
-            MeshView(variant: .fresh, intensity: 0.85)
-                .opacity(0.9)
-            LinearGradient(
-                stops: [
-                    .init(color: Color(hex: 0x0F1A14, opacity: 0.2), location: 0),
-                    .init(color: Color(hex: 0x0F1A14, opacity: 0.78), location: 1),
-                ],
-                startPoint: .top,
-                endPoint: .bottom
-            )
+            ZStack {
+                Color(hex: 0x0F1A14)
+                MeshView(variant: .fresh, intensity: 0.85)
+                    .opacity(0.9)
+                LinearGradient(
+                    stops: [
+                        .init(color: Color(hex: 0x0F1A14, opacity: 0.2), location: 0),
+                        .init(color: Color(hex: 0x0F1A14, opacity: 0.78), location: 1),
+                    ],
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+            }
+            .ignoresSafeArea()
 
+            // The side insets are a spread's leading page and the Duo's
+            // status strip; only the backdrop may run under those.
             content
+                .ignoresSafeArea(edges: .vertical)
         }
-        .ignoresSafeArea()
         .environment(\.colorScheme, .dark)
         .navigationBarBackButtonHidden(true)
         .bareNavigationBar()

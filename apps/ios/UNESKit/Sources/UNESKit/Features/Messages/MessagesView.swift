@@ -3,9 +3,10 @@ import SwiftUI
 
 struct MessagesView: View {
     @Bindable var store: StoreOf<MessagesFeature>
+    @Environment(\.pageLayout) private var pageLayout
 
     var body: some View {
-        NavigationStack(path: $store.scope(state: \.path, action: \.path)) {
+        SpreadStack(path: $store.scope(state: \.path, action: \.path)) {
             ZStack(alignment: .top) {
                 UNESColor.surface.ignoresSafeArea()
                 ambientWash
@@ -24,6 +25,8 @@ struct MessagesView: View {
                 }
             }
             .navigationTitle(Text(.navMessages))
+        } overview: {
+            SpreadHint(systemImage: "envelope.open", text: .messagesSpreadHint)
         } destination: { store in
             switch store.case {
             case let .detail(store):
@@ -98,6 +101,11 @@ struct MessagesView: View {
         }
     }
 
+    private var openMessageId: String? {
+        guard pageLayout == .spread, case let .detail(detail) = store.path.first else { return nil }
+        return detail.message.id
+    }
+
     private func section(_ group: MessageBucketGroup, now: Date) -> some View {
         VStack(spacing: 0) {
             HStack(alignment: .lastTextBaseline, spacing: 8) {
@@ -118,7 +126,8 @@ struct MessagesView: View {
                     MessageRow(
                         message: message,
                         relativeTime: MessagesFormat.relativeTime(for: message.receivedAt, now: now),
-                        isLast: message.id == group.messages.last?.id
+                        isLast: message.id == group.messages.last?.id,
+                        isSelected: message.id == openMessageId
                     ) {
                         store.send(.messageTapped(message))
                     }

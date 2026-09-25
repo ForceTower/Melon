@@ -7305,6 +7305,23 @@
         }
       }
     },
+    "disciplines.spread.hint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pick a class to see its details here."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha uma disciplina ao lado para ver os detalhes."
+          }
+        }
+      }
+    },
     "disciplines.status.approved" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -17072,6 +17089,23 @@
         }
       }
     },
+    "me.spread.hint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pick a shortcut to open it here."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha um atalho ao lado para abrir aqui."
+          }
+        }
+      }
+    },
     "me.stat.attendance" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -17649,6 +17683,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Secretaria Acadêmica"
+          }
+        }
+      }
+    },
+    "messages.spread.hint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pick a message to read it here."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha uma mensagem ao lado para ler aqui."
           }
         }
       }
@@ -20662,6 +20713,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Local a definir"
+          }
+        }
+      }
+    },
+    "schedule.spread.hint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tap a class to open it here."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toque em uma aula ao lado para abrir aqui."
           }
         }
       }

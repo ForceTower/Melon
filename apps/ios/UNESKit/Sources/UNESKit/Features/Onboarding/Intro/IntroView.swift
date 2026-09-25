@@ -51,11 +51,30 @@ private struct IntroSlidePage: View {
     let isLast: Bool
     let onContinue: () -> Void
 
-    var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            illustrationArea
-                .frame(height: 344)
+    @Environment(\.pageLayout) private var pageLayout
 
+    var body: some View {
+        if pageLayout == .spread {
+            FacingPages {
+                copy
+                    .padding(.horizontal, 28)
+            } trailing: {
+                illustrationArea
+            }
+            .padding(.bottom, 12)
+        } else {
+            VStack(alignment: .leading, spacing: 0) {
+                illustrationArea
+                    .frame(height: 344)
+                copy
+            }
+            .padding(.horizontal, 28)
+            .padding(.bottom, 12)
+        }
+    }
+
+    private var copy: some View {
+        VStack(alignment: .leading, spacing: 0) {
             Spacer(minLength: 0)
 
             Eyebrow(text: slide.eyebrow, color: slide.accent)
@@ -80,8 +99,6 @@ private struct IntroSlidePage: View {
             .padding(.top, 26)
             .fadeUp(delay: 0.36, duration: 0.6)
         }
-        .padding(.horizontal, 28)
-        .padding(.bottom, 12)
     }
 
     private var illustrationArea: some View {

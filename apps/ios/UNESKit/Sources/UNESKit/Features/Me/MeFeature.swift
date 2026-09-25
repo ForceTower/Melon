@@ -194,23 +194,23 @@ struct MeFeature {
                 analytics.selectContent(contentType: ContentTypes.shortcut, itemId: shortcut.analyticsItemId)
                 switch shortcut {
                 case .enrollment:
-                    state.path.append(.enrollment(EnrollmentFeature.State(profile: state.profile)))
+                    state.path.open(.enrollment(EnrollmentFeature.State(profile: state.profile)))
                 case .calendar:
-                    state.path.append(.calendar(CalendarFeature.State()))
+                    state.path.open(.calendar(CalendarFeature.State()))
                 case .countdown:
-                    state.path.append(.countdown(FinalCountdownFeature.State()))
+                    state.path.open(.countdown(FinalCountdownFeature.State()))
                 case .courseProgress:
-                    state.path.append(.courseProgress(CourseProgressFeature.State(course: state.profile?.course)))
+                    state.path.open(.courseProgress(CourseProgressFeature.State(course: state.profile?.course)))
                 case .certificate:
                     state.document = documentState(.enrollmentCertificate, from: state)
                 case .history:
                     state.document = documentState(.academicHistory, from: state)
                 case .paradoxo:
-                    state.path.append(.paradoxo(ParadoxoFeature.State()))
+                    state.path.open(.paradoxo(ParadoxoFeature.State()))
                 case .materials:
-                    state.path.append(.materials(MaterialsFeature.State()))
+                    state.path.open(.materials(MaterialsFeature.State()))
                 case .library:
-                    state.path.append(.library(LibraryFeature.State()))
+                    state.path.open(.library(LibraryFeature.State()))
                 case .retrospective:
                     // DEBUG builds surface the shortcut even outside the
                     // window; fall back to the newest mirrored semester code.
@@ -219,7 +219,7 @@ struct MeFeature {
                     #else
                     guard let semesterCode = state.retrospectiveSemester else { return .none }
                     #endif
-                    state.path.append(.retrospective(RetrospectiveFeature.State(
+                    state.path.open(.retrospective(RetrospectiveFeature.State(
                         semesterCode: semesterCode
                     )))
                 }
@@ -270,12 +270,12 @@ struct MeFeature {
                 switch row {
                 case .settings:
                     analytics.selectContent(contentType: ContentTypes.shortcut, itemId: "settings")
-                    state.path.append(.settings(SettingsFeature.State(
+                    state.path.open(.settings(SettingsFeature.State(
                         profile: state.profile,
                         userName: state.userName
                     )))
                 case .licenses:
-                    state.path.append(.licenses(LicensesFeature.State()))
+                    state.path.open(.licenses(LicensesFeature.State()))
                 case .about:
                     // The sheet opens with the synchronous snapshot; StoreKit
                     // refines the channel label right behind it.

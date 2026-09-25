@@ -141,8 +141,10 @@ struct MessagesFeatureTests {
         await store.receive(.delegate(.unreadChanged(2)))
         #expect(readIds.value == [unreadMessage.id])
 
-        // Re-opening a read message pushes without another write.
+        // Opening from the list again replaces the open detail — on a spread
+        // the list stays tappable beside it — without another write.
         await store.send(.messageTapped(opened)) {
+            $0.path.pop(from: 0)
             $0.path[id: 1] = .detail(MessageDetailFeature.State(message: opened))
         }
         #expect(readIds.value == [unreadMessage.id])

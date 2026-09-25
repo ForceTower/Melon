@@ -5,7 +5,7 @@ struct ScheduleView: View {
     @Bindable var store: StoreOf<ScheduleFeature>
 
     var body: some View {
-        NavigationStack(path: $store.scope(state: \.path, action: \.path)) {
+        SpreadStack(path: $store.scope(state: \.path, action: \.path)) {
             ZStack(alignment: .top) {
                 UNESColor.surface.ignoresSafeArea()
                 ambientWash
@@ -24,6 +24,8 @@ struct ScheduleView: View {
                 }
             }
             .navigationTitle(Text(.navSchedule))
+        } overview: {
+            SpreadHint(systemImage: "calendar.day.timeline.left", text: .scheduleSpreadHint)
         } destination: { store in
             switch store.case {
             case let .detail(store):

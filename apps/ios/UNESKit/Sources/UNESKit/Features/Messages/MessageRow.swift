@@ -35,6 +35,7 @@ struct MessageRow: View {
     var message: MessageItem
     var relativeTime: String
     var isLast: Bool
+    var isSelected = false
     var onTap: () -> Void
 
     var body: some View {
@@ -86,7 +87,7 @@ struct MessageRow: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .contentShape(Rectangle())
         }
-        .buttonStyle(MessageRowPressStyle(unread: message.unread))
+        .buttonStyle(MessageRowPressStyle(unread: message.unread, selected: isSelected))
         .overlay(alignment: .leading) {
             if message.unread {
                 RoundedRectangle(cornerRadius: 2)
@@ -129,11 +130,12 @@ struct MessageRow: View {
 /// Rows tint accent-6% while unread and highlight like a table cell on press.
 private struct MessageRowPressStyle: ButtonStyle {
     var unread: Bool
+    var selected: Bool
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .background {
-                if configuration.isPressed {
+                if configuration.isPressed || selected {
                     UNESColor.surface2
                 } else if unread {
                     UNESColor.accent.opacity(0.06)

@@ -107,7 +107,7 @@ struct ScheduleGridFeature {
                         properties: ["code": scheduleClass.code]
                     )
                 }
-                state.path.append(
+                state.path.open(
                     .detail(DisciplineDetailFeature.State(
                         semesterId: semesterId,
                         disciplineId: scheduleClass.disciplineId,
