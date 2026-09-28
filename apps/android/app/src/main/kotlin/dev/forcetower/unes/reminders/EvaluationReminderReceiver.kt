@@ -22,7 +22,10 @@ import dev.forcetower.unes.R
 // file and system services, same isolation the widget receiver keeps.
 internal class EvaluationReminderReceiver : BroadcastReceiver() {
 
-    override fun onReceive(context: Context, intent: Intent) {
+    override fun onReceive(
+        context: Context,
+        intent: Intent,
+    ) {
         when (intent.action) {
             ACTION_FIRE -> {
                 postDueReminders(context)
@@ -73,7 +76,10 @@ internal class EvaluationReminderReceiver : BroadcastReceiver() {
 
     // Taps land on Turmas through the same unes:// path notification pushes
     // use — MainActivity reads either the data URI or the "url" extra.
-    private fun contentIntent(context: Context, key: String): PendingIntent {
+    private fun contentIntent(
+        context: Context,
+        key: String,
+    ): PendingIntent {
         val intent = Intent(context, MainActivity::class.java).apply {
             action = Intent.ACTION_VIEW
             data = CLASSES_DEEPLINK.toUri()

@@ -109,19 +109,20 @@ internal object DisciplinesFixtures {
         title: String,
         finalGrade: Double,
         approved: Boolean,
-    ): Discipline = Discipline(
-        code = code,
-        fullCode = code,
-        title = title,
-        dept = "Ciências Exatas",
-        prof = "",
-        color = androidx.compose.ui.graphics.Color.Unspecified,
-        hours = 60,
-        absences = 0,
-        allowedAbsences = 15,
-        sections = emptyList(),
-        finalGrade = finalGrade,
-        approved = approved,
-        offerId = "offer-$code",
-    )
+    ): Discipline =
+        Discipline(
+            code = code,
+            fullCode = code,
+            title = title,
+            dept = "Ciências Exatas",
+            prof = "",
+            color = androidx.compose.ui.graphics.Color.Unspecified,
+            hours = 60,
+            absences = 0,
+            allowedAbsences = 15,
+            sections = emptyList(),
+            finalGrade = finalGrade,
+            approved = approved,
+            offerId = "offer-$code",
+        )
 }

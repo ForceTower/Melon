@@ -106,7 +106,8 @@ internal fun formatCountdown(mins: Int): String {
 // Top-eyebrow label for the upcoming-style layouts (Small, Medium upcoming,
 // Large). Switches copy when a class is in session so the eyebrow doesn't
 // read "em 0 min". Mirrors `countdownEyebrow` on iOS.
-internal fun countdownEyebrow(entry: NextClassEntry): String = when (entry.state) {
-    NextClassState.InClass -> "agora · termina em ${formatCountdown(entry.endsIn)}"
-    NextClassState.Upcoming, NextClassState.DayDone -> "em ${formatCountdown(entry.startsIn)}"
-}
+internal fun countdownEyebrow(entry: NextClassEntry): String =
+    when (entry.state) {
+        NextClassState.InClass -> "agora · termina em ${formatCountdown(entry.endsIn)}"
+        NextClassState.Upcoming, NextClassState.DayDone -> "em ${formatCountdown(entry.startsIn)}"
+    }

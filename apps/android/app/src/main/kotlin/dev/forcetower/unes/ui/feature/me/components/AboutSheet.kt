@@ -108,7 +108,9 @@ internal fun rememberAppInfo(): AppInfo {
                 context.contentResolver,
                 android.provider.Settings.Secure.ANDROID_ID,
             ).orEmpty().lowercase(Locale.ROOT).ifBlank { "—" },
-            phoneModel = "${Build.MANUFACTURER.replaceFirstChar { it.uppercase() }} ${Build.MODEL} · Android ${Build.VERSION.RELEASE}",
+            phoneModel = "${Build.MANUFACTURER.replaceFirstChar {
+                it.uppercase()
+            }} ${Build.MODEL} · Android ${Build.VERSION.RELEASE}",
             deviceName = Build.MODEL,
             osVersion = Build.VERSION.RELEASE.orEmpty().ifBlank { "—" },
             channel = if (debuggable) "desenvolvimento" else "estável",
@@ -385,7 +387,10 @@ private fun InfoTile(
 }
 
 @Composable
-private fun CopyButton(copied: Boolean, onCopy: () -> Unit) {
+private fun CopyButton(
+    copied: Boolean,
+    onCopy: () -> Unit,
+) {
     val accent = MaterialTheme.colorScheme.primary
     val onAccent = MaterialTheme.colorScheme.onPrimary
     val label = stringResource(

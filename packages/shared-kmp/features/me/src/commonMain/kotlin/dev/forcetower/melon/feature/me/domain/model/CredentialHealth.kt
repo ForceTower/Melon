@@ -30,5 +30,7 @@ sealed interface ReauthError {
 
     data object NoConnection : ReauthError
 
-    data class Server(val message: String?) : ReauthError
+    data class Server(
+        val message: String?,
+    ) : ReauthError
 }

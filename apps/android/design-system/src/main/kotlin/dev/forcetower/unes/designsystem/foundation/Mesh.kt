@@ -19,10 +19,10 @@ import androidx.compose.ui.draw.BlurredEdgeTreatment
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
-import androidx.compose.ui.preferredFrameRate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.preferredFrameRate
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.forcetower.unes.designsystem.theme.MelonBrandColors
@@ -109,7 +109,6 @@ private fun MeshField(
     modifier: Modifier = Modifier,
     intensity: Float = 1f,
 ) {
-
     // Monotonic wall-clock seconds, mirroring iOS's `TimelineView(.animation)`
     // + `Date().timeIntervalSince1970`. A finite tween won't work here because
     // the blob periods (11, 13, 14, 16, 17) aren't commensurate, so any
@@ -138,8 +137,11 @@ private fun MeshField(
             modifier = Modifier
                 .fillMaxSize()
                 .then(
-                    if (SupportsBlur) Modifier.blur(BlurRadius, BlurredEdgeTreatment.Unbounded)
-                    else Modifier,
+                    if (SupportsBlur) {
+                        Modifier.blur(BlurRadius, BlurredEdgeTreatment.Unbounded)
+                    } else {
+                        Modifier
+                    },
                 ),
         ) {
             val w = size.width
@@ -223,45 +225,46 @@ fun MeshChip(
 private fun blobsFor(
     variant: MeshVariant,
     brand: MelonBrandColors,
-): List<MeshBlob> = when (variant) {
-    MeshVariant.Warm -> listOf(
-        MeshBlob(brand.plum, -0.15f, -0.10f, 340f, 40f, 30f, 14f, 0f, 1.1f),
-        MeshBlob(brand.coral, 0.50f, 0.30f, 300f, 45f, 25f, 11f, 1.3f, 0.9f),
-        MeshBlob(brand.amber, -0.20f, 0.65f, 280f, 35f, 40f, 17f, 2.6f, 1.2f),
-        MeshBlob(brand.magenta, 0.55f, 0.60f, 240f, 40f, 30f, 13f, 0.8f, -1.0f),
-    )
-    MeshVariant.Cool -> listOf(
-        MeshBlob(Color(0xFF1E3A5F), -0.10f, -0.10f, 320f, 40f, 30f, 13f, 0f, 1f),
-        MeshBlob(Color(0xFF3B9EAE), 0.55f, 0.40f, 280f, 45f, 25f, 15f, 1.5f, 0.8f),
-        MeshBlob(Color(0xFF88D4C1), -0.15f, 0.60f, 260f, 35f, 40f, 12f, 2.2f, 1.1f),
-    )
-    MeshVariant.Sun -> listOf(
-        MeshBlob(Color(0xFFC94538), -0.10f, -0.15f, 320f, 40f, 30f, 15f, 0f, 1f),
-        MeshBlob(brand.amber, 0.50f, 0.35f, 300f, 45f, 25f, 12f, 1.3f, 0.9f),
-        MeshBlob(brand.peach, -0.05f, 0.55f, 280f, 35f, 40f, 14f, 2.4f, 1.15f),
-    )
-    MeshVariant.Rose -> listOf(
-        MeshBlob(Color(0xFF3D1B3E), -0.10f, -0.10f, 300f, 40f, 30f, 14f, 0f, 1f),
-        MeshBlob(brand.magenta, 0.50f, 0.30f, 290f, 45f, 25f, 13f, 1.3f, 0.9f),
-        MeshBlob(brand.coral, -0.15f, 0.65f, 260f, 35f, 40f, 16f, 2.5f, 1.1f),
-    )
-    MeshVariant.Fresh -> listOf(
-        MeshBlob(Color(0xFF0F4D3A), -0.10f, -0.10f, 320f, 40f, 30f, 13f, 0f, 1f),
-        MeshBlob(Color(0xFF4AA679), 0.50f, 0.35f, 290f, 45f, 25f, 14f, 1.3f, 0.9f),
-        MeshBlob(brand.amber, -0.10f, 0.65f, 240f, 35f, 40f, 15f, 2.5f, 1.1f),
-    )
-    // Blob origins/sizes mirror the design's contained hero card (dc HomeScreen):
-    // plum top-left, coral top-right, amber bottom-left, magenta bottom-right.
-    MeshVariant.Hero -> listOf(
-        MeshBlob(brand.plum, -0.12f, -0.30f, 240f, 40f, 30f, 14f, 0f, 1.1f),
-        MeshBlob(brand.coral, 0.48f, 0.10f, 220f, 45f, 25f, 11f, 1.3f, 0.9f),
-        MeshBlob(brand.amber, -0.18f, 0.50f, 200f, 35f, 40f, 17f, 2.6f, 1.2f),
-        MeshBlob(brand.magenta, 0.60f, 0.40f, 180f, 40f, 30f, 13f, 0.8f, -1.0f),
-    )
-    MeshVariant.Dusk -> listOf(
-        MeshBlob(brand.plum, -0.12f, -0.30f, 240f, 40f, 30f, 14f, 0f, 1.1f),
-        MeshBlob(Color(0xFF3B5EA8), 0.50f, 0.20f, 220f, 45f, 25f, 11f, 1.3f, 0.9f),
-        MeshBlob(brand.magenta, -0.18f, 0.55f, 200f, 35f, 40f, 16f, 2.5f, 1.1f),
-        MeshBlob(brand.plum, 0.60f, 0.40f, 180f, 40f, 30f, 13f, 0.8f, -1.0f),
-    )
-}
+): List<MeshBlob> =
+    when (variant) {
+        MeshVariant.Warm -> listOf(
+            MeshBlob(brand.plum, -0.15f, -0.10f, 340f, 40f, 30f, 14f, 0f, 1.1f),
+            MeshBlob(brand.coral, 0.50f, 0.30f, 300f, 45f, 25f, 11f, 1.3f, 0.9f),
+            MeshBlob(brand.amber, -0.20f, 0.65f, 280f, 35f, 40f, 17f, 2.6f, 1.2f),
+            MeshBlob(brand.magenta, 0.55f, 0.60f, 240f, 40f, 30f, 13f, 0.8f, -1.0f),
+        )
+        MeshVariant.Cool -> listOf(
+            MeshBlob(Color(0xFF1E3A5F), -0.10f, -0.10f, 320f, 40f, 30f, 13f, 0f, 1f),
+            MeshBlob(Color(0xFF3B9EAE), 0.55f, 0.40f, 280f, 45f, 25f, 15f, 1.5f, 0.8f),
+            MeshBlob(Color(0xFF88D4C1), -0.15f, 0.60f, 260f, 35f, 40f, 12f, 2.2f, 1.1f),
+        )
+        MeshVariant.Sun -> listOf(
+            MeshBlob(Color(0xFFC94538), -0.10f, -0.15f, 320f, 40f, 30f, 15f, 0f, 1f),
+            MeshBlob(brand.amber, 0.50f, 0.35f, 300f, 45f, 25f, 12f, 1.3f, 0.9f),
+            MeshBlob(brand.peach, -0.05f, 0.55f, 280f, 35f, 40f, 14f, 2.4f, 1.15f),
+        )
+        MeshVariant.Rose -> listOf(
+            MeshBlob(Color(0xFF3D1B3E), -0.10f, -0.10f, 300f, 40f, 30f, 14f, 0f, 1f),
+            MeshBlob(brand.magenta, 0.50f, 0.30f, 290f, 45f, 25f, 13f, 1.3f, 0.9f),
+            MeshBlob(brand.coral, -0.15f, 0.65f, 260f, 35f, 40f, 16f, 2.5f, 1.1f),
+        )
+        MeshVariant.Fresh -> listOf(
+            MeshBlob(Color(0xFF0F4D3A), -0.10f, -0.10f, 320f, 40f, 30f, 13f, 0f, 1f),
+            MeshBlob(Color(0xFF4AA679), 0.50f, 0.35f, 290f, 45f, 25f, 14f, 1.3f, 0.9f),
+            MeshBlob(brand.amber, -0.10f, 0.65f, 240f, 35f, 40f, 15f, 2.5f, 1.1f),
+        )
+        // Blob origins/sizes mirror the design's contained hero card (dc HomeScreen):
+        // plum top-left, coral top-right, amber bottom-left, magenta bottom-right.
+        MeshVariant.Hero -> listOf(
+            MeshBlob(brand.plum, -0.12f, -0.30f, 240f, 40f, 30f, 14f, 0f, 1.1f),
+            MeshBlob(brand.coral, 0.48f, 0.10f, 220f, 45f, 25f, 11f, 1.3f, 0.9f),
+            MeshBlob(brand.amber, -0.18f, 0.50f, 200f, 35f, 40f, 17f, 2.6f, 1.2f),
+            MeshBlob(brand.magenta, 0.60f, 0.40f, 180f, 40f, 30f, 13f, 0.8f, -1.0f),
+        )
+        MeshVariant.Dusk -> listOf(
+            MeshBlob(brand.plum, -0.12f, -0.30f, 240f, 40f, 30f, 14f, 0f, 1.1f),
+            MeshBlob(Color(0xFF3B5EA8), 0.50f, 0.20f, 220f, 45f, 25f, 11f, 1.3f, 0.9f),
+            MeshBlob(brand.magenta, -0.18f, 0.55f, 200f, 35f, 40f, 16f, 2.5f, 1.1f),
+            MeshBlob(brand.plum, 0.60f, 0.40f, 180f, 40f, 30f, 13f, 0.8f, -1.0f),
+        )
+    }

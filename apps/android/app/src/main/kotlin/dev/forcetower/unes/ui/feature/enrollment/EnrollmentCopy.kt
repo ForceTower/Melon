@@ -9,10 +9,11 @@ import dev.forcetower.unes.R
 // `EnrollmentFormat.message`). Server messages pass through verbatim when
 // the backend sent one.
 @Composable
-internal fun enrollmentErrorMessage(error: EnrollmentError?): String = when (error) {
-    EnrollmentError.Unauthorized -> stringResource(R.string.enrollment_error_session)
-    EnrollmentError.NoConnection -> stringResource(R.string.enrollment_error_network)
-    is EnrollmentError.Server ->
-        error.message?.takeIf { it.isNotBlank() } ?: stringResource(R.string.enrollment_error_generic)
-    else -> stringResource(R.string.enrollment_error_generic)
-}
+internal fun enrollmentErrorMessage(error: EnrollmentError?): String =
+    when (error) {
+        EnrollmentError.Unauthorized -> stringResource(R.string.enrollment_error_session)
+        EnrollmentError.NoConnection -> stringResource(R.string.enrollment_error_network)
+        is EnrollmentError.Server ->
+            error.message?.takeIf { it.isNotBlank() } ?: stringResource(R.string.enrollment_error_generic)
+        else -> stringResource(R.string.enrollment_error_generic)
+    }

@@ -140,11 +140,12 @@ class ReadyViewModel @Inject constructor(
     }
 }
 
-private fun NextClassInfo.toDisplay(): NextClassDisplay = NextClassDisplay(
-    disciplineName = disciplineName,
-    startRaw = startTime,
-    endRaw = endTime,
-    spaceLocation = spaceLocation?.takeIf { it.isNotBlank() },
-    teacherName = teacherName?.trim()?.takeIf { it.isNotBlank() },
-    startsInMinutes = startsInMinutes,
-)
+private fun NextClassInfo.toDisplay(): NextClassDisplay =
+    NextClassDisplay(
+        disciplineName = disciplineName,
+        startRaw = startTime,
+        endRaw = endTime,
+        spaceLocation = spaceLocation?.takeIf { it.isNotBlank() },
+        teacherName = teacherName?.trim()?.takeIf { it.isNotBlank() },
+        startsInMinutes = startsInMinutes,
+    )

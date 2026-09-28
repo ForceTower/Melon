@@ -13,6 +13,7 @@ import dev.forcetower.melon.feature.schedule.domain.usecase.ObserveNextClassDayU
 import dev.forcetower.melon.feature.schedule.domain.usecase.ObserveScheduleWeekUseCase
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.time.Clock
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -22,7 +23,6 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlin.time.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
@@ -138,16 +138,17 @@ class WidgetSnapshotPublisher @Inject constructor(
         )
     }
 
-    private fun convert(c: ScheduleClass): WidgetSnapshot.Class = WidgetSnapshot.Class(
-        classId = c.classId,
-        code = c.code,
-        title = c.title,
-        prof = c.teacherName,
-        room = c.room,
-        topic = c.topic,
-        startTime = trim(c.startTime),
-        endTime = c.endTime?.let(::trim),
-    )
+    private fun convert(c: ScheduleClass): WidgetSnapshot.Class =
+        WidgetSnapshot.Class(
+            classId = c.classId,
+            code = c.code,
+            title = c.title,
+            prof = c.teacherName,
+            room = c.room,
+            topic = c.topic,
+            startTime = trim(c.startTime),
+            endTime = c.endTime?.let(::trim),
+        )
 
     // KMP carries times as "HH:mm" or "HH:mm:ss" depending on upstream — same
     // fixup the iOS publisher does (`String(value.prefix(5))`).

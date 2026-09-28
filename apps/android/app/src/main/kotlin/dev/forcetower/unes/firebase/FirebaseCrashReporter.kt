@@ -14,7 +14,10 @@ internal class FirebaseCrashReporter(
         crashlytics.log(message)
     }
 
-    override fun recordNonFatal(message: String, throwable: Throwable?) {
+    override fun recordNonFatal(
+        message: String,
+        throwable: Throwable?,
+    ) {
         if (throwable != null) {
             crashlytics.log(message)
             crashlytics.recordException(throwable)

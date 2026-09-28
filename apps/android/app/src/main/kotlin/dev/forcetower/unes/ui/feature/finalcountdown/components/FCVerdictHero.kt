@@ -137,8 +137,11 @@ internal fun FCVerdictHero(
                 }
                 Text(
                     text = stringResource(
-                        if (weighted) R.string.final_countdown_hero_mode_weighted
-                        else R.string.final_countdown_hero_mode_simple,
+                        if (weighted) {
+                            R.string.final_countdown_hero_mode_weighted
+                        } else {
+                            R.string.final_countdown_hero_mode_simple
+                        },
                     ),
                     style = MaterialTheme.typography.labelMedium.copy(
                         fontSize = 11.5.sp,
@@ -241,7 +244,11 @@ internal fun FCVerdictHero(
 // dc hero ring: a 74% arc opening at the bottom, track at 14% white, fill
 // proportional to média/10, the truncated average + "média" in the middle.
 @Composable
-private fun AverageRing(avg: Double?, hue: Color, onHero: Color) {
+private fun AverageRing(
+    avg: Double?,
+    hue: Color,
+    onHero: Color,
+) {
     val fraction by animateFloatAsState(
         targetValue = avg?.let { (it / 10.0).toFloat().coerceIn(0f, 1f) } ?: 0f,
         animationSpec = MelonMotion.easeSlow(),
@@ -308,7 +315,11 @@ private fun AverageRing(avg: Double?, hue: Color, onHero: Color) {
 // gradient rail with a white marker at the needed grade, captioned
 // fácil/cruel/brutal.
 @Composable
-private fun FinalScale(need: Double, onHero: Color, modifier: Modifier = Modifier) {
+private fun FinalScale(
+    need: Double,
+    onHero: Color,
+    modifier: Modifier = Modifier,
+) {
     val tokens = MaterialTheme.melon.verdict
     val markerBias by animateFloatAsState(
         // Fraction 0..1 mapped onto BiasAlignment's -1..1 range.
@@ -373,11 +384,12 @@ private fun FinalScale(need: Double, onHero: Color, modifier: Modifier = Modifie
 
 // Hairline above the stat strip — drawn so it hugs the row's width inside the
 // padded column without a divider composable claiming layout space.
-private fun Modifier.topHairline(color: Color): Modifier = drawBehind {
-    drawLine(
-        color = color,
-        start = Offset.Zero,
-        end = Offset(size.width, 0f),
-        strokeWidth = 1.dp.toPx(),
-    )
-}
+private fun Modifier.topHairline(color: Color): Modifier =
+    drawBehind {
+        drawLine(
+            color = color,
+            start = Offset.Zero,
+            end = Offset(size.width, 0f),
+            strokeWidth = 1.dp.toPx(),
+        )
+    }

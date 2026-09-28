@@ -2,19 +2,26 @@
 
 package dev.forcetower.melon.core.network
 
+import kotlin.time.Clock
 import kotlinx.cinterop.BetaInteropApi
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.alloc
 import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.ptr
 import kotlinx.cinterop.value
-import kotlin.time.Clock
 import platform.CoreFoundation.CFErrorGetCode
 import platform.CoreFoundation.CFErrorRefVar
 import platform.CoreFoundation.CFRelease
 import platform.CoreFoundation.CFStringRef
-import platform.Foundation.*
-import platform.Security.*
+import platform.Foundation.CFBridgingRelease
+import platform.Foundation.NSURLAuthenticationChallenge
+import platform.Foundation.NSURLAuthenticationMethodServerTrust
+import platform.Foundation.serverTrust
+import platform.Security.SecCertificateCopySubjectSummary
+import platform.Security.SecTrustEvaluateWithError
+import platform.Security.SecTrustGetCertificateAtIndex
+import platform.Security.SecTrustGetCertificateCount
+import platform.Security.SecTrustRef
 
 // errSec OSStatus values that map to "the device clock is wrong (or the cert really
 // is expired)". We treat both the same way — the user-facing copy will suggest
@@ -23,7 +30,7 @@ private const val ERR_SEC_CERTIFICATE_EXPIRED = -67818
 private const val ERR_SEC_CERTIFICATE_NOT_VALID_YET = -67817
 
 // Inspect a server-trust challenge for diagnostics ONLY. We deliberately do not
-// return a credential or a cancellation disposition — the IosNetworkEngine block
+// return a credential or a cancellation disposition — the IosNetworkEngineGraph block
 // always responds with PerformDefaultHandling so the system makes the actual trust
 // decision. SecTrustEvaluateWithError here is a side-effect: it tells us whether
 // the chain would fail validation, and gives us a CFError code to classify
@@ -44,7 +51,11 @@ internal fun inspectTlsChallengeForDiagnostic(challenge: NSURLAuthenticationChal
     }
 }
 
-private fun recordDiagnostic(trust: SecTrustRef, host: String, errorCode: Int?) {
+private fun recordDiagnostic(
+    trust: SecTrustRef,
+    host: String,
+    errorCode: Int?,
+) {
     val reason = when (errorCode) {
         ERR_SEC_CERTIFICATE_EXPIRED, ERR_SEC_CERTIFICATE_NOT_VALID_YET -> TlsFailureReason.ClockSkew
         null -> TlsFailureReason.Generic

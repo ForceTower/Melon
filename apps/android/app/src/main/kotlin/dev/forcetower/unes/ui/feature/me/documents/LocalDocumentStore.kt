@@ -36,7 +36,10 @@ internal class LocalDocumentStore @Inject constructor(
         )
     }
 
-    fun save(document: AcademicDocument, bytes: ByteArray): StoredAcademicDocument {
+    fun save(
+        document: AcademicDocument,
+        bytes: ByteArray,
+    ): StoredAcademicDocument {
         val file = slot(document)
         file.parentFile?.mkdirs()
         // Write-then-rename so a crash mid-write never corrupts the slot.
@@ -61,11 +64,9 @@ internal class LocalDocumentStore @Inject constructor(
         return runCatching { JSONObject(file.readText()) }.getOrNull()
     }
 
-    private fun slot(document: AcademicDocument): File =
-        File(directory(), document.fileName)
+    private fun slot(document: AcademicDocument): File = File(directory(), document.fileName)
 
-    private fun metaFile(document: AcademicDocument): File =
-        File(directory(), "${document.fileName}.meta.json")
+    private fun metaFile(document: AcademicDocument): File = File(directory(), "${document.fileName}.meta.json")
 
     private fun directory(): File = File(context.filesDir, "documents")
 }

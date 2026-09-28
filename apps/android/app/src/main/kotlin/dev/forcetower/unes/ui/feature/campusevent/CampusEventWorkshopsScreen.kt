@@ -108,7 +108,10 @@ internal fun CampusEventWorkshopsScreen(
 }
 
 @Composable
-private fun WorkshopCard(workshop: CampusEventWorkshop, modifier: Modifier = Modifier) {
+private fun WorkshopCard(
+    workshop: CampusEventWorkshop,
+    modifier: Modifier = Modifier,
+) {
     val tone = workshop.audience.tone()
     Column(
         modifier = modifier

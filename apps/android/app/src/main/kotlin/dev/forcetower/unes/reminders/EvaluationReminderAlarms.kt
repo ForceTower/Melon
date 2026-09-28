@@ -31,7 +31,10 @@ internal object EvaluationReminderAlarms {
         alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, nextAtMs, pi)
     }
 
-    fun nextFireEpochMs(snapshot: EvaluationReminderSnapshot, nowMs: Long): Long? =
+    fun nextFireEpochMs(
+        snapshot: EvaluationReminderSnapshot,
+        nowMs: Long,
+    ): Long? =
         snapshot.reminders
             .mapNotNull { fireEpochMs(it.dateIso) }
             .filter { it > nowMs }

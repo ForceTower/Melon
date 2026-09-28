@@ -1,5 +1,6 @@
 package dev.forcetower.unes.ui.feature.overview
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,39 +23,38 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import android.widget.Toast
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.forcetower.melon.feature.overview.domain.model.OverviewClassState as KmpOverviewClassState
+import dev.forcetower.melon.feature.overview.domain.model.OverviewMessagesTile as KmpOverviewMessagesTile
+import dev.forcetower.melon.feature.overview.domain.model.OverviewNowClass as KmpOverviewNowClass
+import dev.forcetower.melon.feature.overview.domain.model.OverviewTodayItem as KmpOverviewTodayItem
 import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.components.MelonBanner
 import dev.forcetower.unes.designsystem.foundation.PinnedHeaderHairline
-import dev.forcetower.unes.designsystem.theme.melon
-import dev.forcetower.unes.mvi.collectAsEffect
-import dev.forcetower.unes.ui.feature.overview.components.ReauthSheet
-import dev.forcetower.unes.ui.feature.overview.components.SessionExpiredSheet
 import dev.forcetower.unes.designsystem.foundation.fadeInOnAppear
 import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
 import dev.forcetower.unes.designsystem.foundation.scaleInOnAppear
+import dev.forcetower.unes.designsystem.theme.melon
+import dev.forcetower.unes.mvi.collectAsEffect
 import dev.forcetower.unes.ui.feature.campusevent.CampusEventHomeCard
 import dev.forcetower.unes.ui.feature.disciplines.formatSemesterCode
 import dev.forcetower.unes.ui.feature.overview.components.FinalStretchCard
 import dev.forcetower.unes.ui.feature.overview.components.HeroCard
 import dev.forcetower.unes.ui.feature.overview.components.MessagesPreview
 import dev.forcetower.unes.ui.feature.overview.components.OverviewHeader
+import dev.forcetower.unes.ui.feature.overview.components.ReauthSheet
+import dev.forcetower.unes.ui.feature.overview.components.SessionExpiredSheet
 import dev.forcetower.unes.ui.feature.overview.components.TodayTimeline
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 import kotlin.time.Instant
-import dev.forcetower.melon.feature.overview.domain.model.OverviewClassState as KmpOverviewClassState
-import dev.forcetower.melon.feature.overview.domain.model.OverviewMessagesTile as KmpOverviewMessagesTile
-import dev.forcetower.melon.feature.overview.domain.model.OverviewNowClass as KmpOverviewNowClass
-import dev.forcetower.melon.feature.overview.domain.model.OverviewTodayItem as KmpOverviewTodayItem
 
 // "Hoje" tab — 2026 redesign (dc project `UNES Home - Android`): app bar,
 // mesh hero card (next / live / day-done), "Reta final" countdown, the
@@ -113,12 +113,27 @@ internal fun OverviewScreen(
         modifier = modifier,
         bottomInset = bottomInset,
         onIntent = vm::onIntent,
-        onOpenDiscipline = { vm.trackDisciplineTap(it.offerId); onOpenDiscipline(it) },
-        onOpenNowClass = { vm.trackNowClassTap(it.offerId); onOpenDiscipline(it) },
-        onOpenMessages = { vm.trackMessagesTileTap(); onOpenMessages() },
-        onOpenSchedule = { vm.trackScheduleTileTap(); onOpenSchedule() },
+        onOpenDiscipline = {
+            vm.trackDisciplineTap(it.offerId)
+            onOpenDiscipline(it)
+        },
+        onOpenNowClass = {
+            vm.trackNowClassTap(it.offerId)
+            onOpenDiscipline(it)
+        },
+        onOpenMessages = {
+            vm.trackMessagesTileTap()
+            onOpenMessages()
+        },
+        onOpenSchedule = {
+            vm.trackScheduleTileTap()
+            onOpenSchedule()
+        },
         onOpenProfile = onOpenProfile,
-        onOpenCampusEvent = { vm.trackCampusEventTap(); onOpenCampusEvent() },
+        onOpenCampusEvent = {
+            vm.trackCampusEventTap()
+            onOpenCampusEvent()
+        },
     )
 }
 
@@ -328,14 +343,15 @@ private fun deriveHeroState(state: OverviewUiState): OverviewHeroState? {
     return null
 }
 
-private fun mapHeroClass(raw: KmpOverviewNowClass): OverviewHeroClass = OverviewHeroClass(
-    offerId = raw.offerId,
-    code = raw.code,
-    title = raw.title,
-    prof = raw.teacherName?.takeIf { it.isNotBlank() },
-    room = raw.roomLocation?.takeIf { it.isNotBlank() },
-    timeRange = formatTimeRange(raw.startTime, raw.endTime),
-)
+private fun mapHeroClass(raw: KmpOverviewNowClass): OverviewHeroClass =
+    OverviewHeroClass(
+        offerId = raw.offerId,
+        code = raw.code,
+        title = raw.title,
+        prof = raw.teacherName?.takeIf { it.isNotBlank() },
+        room = raw.roomLocation?.takeIf { it.isNotBlank() },
+        timeRange = formatTimeRange(raw.startTime, raw.endTime),
+    )
 
 // The exam variant wins whenever an evaluation is on the horizon; otherwise
 // fall back to the semester-end countdown — but only once the semester really
@@ -358,20 +374,21 @@ private fun deriveFinalStretch(state: OverviewUiState): OverviewFinalStretch? {
     return OverviewFinalStretch.Semester(daysLeft = daysLeft, semesterLabel = semesterLabel)
 }
 
-private fun mapTodayItem(raw: KmpOverviewTodayItem): OverviewTodayItem = OverviewTodayItem(
-    offerId = raw.offerId,
-    code = raw.code,
-    title = raw.title,
-    startTime = raw.startTime,
-    endTime = raw.endTime,
-    room = raw.roomLocation?.takeIf { it.isNotBlank() },
-    state = when (raw.state) {
-        KmpOverviewClassState.DONE -> OverviewClassState.Done
-        KmpOverviewClassState.NOW -> OverviewClassState.Now
-        KmpOverviewClassState.NEXT -> OverviewClassState.Next
-        KmpOverviewClassState.LATER -> OverviewClassState.Later
-    },
-)
+private fun mapTodayItem(raw: KmpOverviewTodayItem): OverviewTodayItem =
+    OverviewTodayItem(
+        offerId = raw.offerId,
+        code = raw.code,
+        title = raw.title,
+        startTime = raw.startTime,
+        endTime = raw.endTime,
+        room = raw.roomLocation?.takeIf { it.isNotBlank() },
+        state = when (raw.state) {
+            KmpOverviewClassState.DONE -> OverviewClassState.Done
+            KmpOverviewClassState.NOW -> OverviewClassState.Now
+            KmpOverviewClassState.NEXT -> OverviewClassState.Next
+            KmpOverviewClassState.LATER -> OverviewClassState.Later
+        },
+    )
 
 @Composable
 private fun mapMessages(
@@ -388,7 +405,10 @@ private fun mapMessages(
 }
 
 @Composable
-private fun relativeTimeLabel(iso: String, clock: Instant): String? {
+private fun relativeTimeLabel(
+    iso: String,
+    clock: Instant,
+): String? {
     val parsed = runCatching { Instant.parse(iso) }.getOrNull() ?: return null
     val minutes = ((clock.epochSeconds - parsed.epochSeconds) / 60).coerceAtLeast(0)
     return when {
@@ -410,7 +430,10 @@ private fun parseHhMm(value: String?): Int? {
     return h * 60 + m
 }
 
-private fun formatTimeRange(start: String, end: String?): String {
+private fun formatTimeRange(
+    start: String,
+    end: String?,
+): String {
     val s = start.take(5)
     val e = end?.take(5)?.takeIf { it.isNotEmpty() } ?: return s
     return "$s – $e"
@@ -418,9 +441,10 @@ private fun formatTimeRange(start: String, end: String?): String {
 
 // "Seg, 21 mar" — device-locale formatted, abbreviation dots stripped,
 // leading capital to match the design.
-private fun formatExamDate(iso: String): String = runCatching {
-    DateTimeFormatter.ofPattern("EEE, d MMM", Locale.getDefault())
-        .format(LocalDate.parse(iso.take(10)))
-        .replace(".", "")
-        .replaceFirstChar { it.titlecase(Locale.getDefault()) }
-}.getOrDefault(iso)
+private fun formatExamDate(iso: String): String =
+    runCatching {
+        DateTimeFormatter.ofPattern("EEE, d MMM", Locale.getDefault())
+            .format(LocalDate.parse(iso.take(10)))
+            .replace(".", "")
+            .replaceFirstChar { it.titlecase(Locale.getDefault()) }
+    }.getOrDefault(iso)

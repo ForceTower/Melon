@@ -3,7 +3,10 @@ package dev.forcetower.melon.feature.me.domain.model
 // The SAGRES-issued PDFs the app can request through the backend. `kind` is
 // the request identifier `POST api/documents/fetch` takes; `fileName` is the
 // name the offline copy gets on device. Mirrors iOS `AcademicDocument`.
-enum class AcademicDocument(val kind: String, val fileName: String) {
+enum class AcademicDocument(
+    val kind: String,
+    val fileName: String,
+) {
     EnrollmentCertificate("enrollment-certificate", "comprovante-matricula.pdf"),
     AcademicHistory("academic-history", "historico-escolar.pdf"),
 }

@@ -30,7 +30,10 @@ internal object PersonalEventReminderAlarms {
         alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, nextAtMs, pi)
     }
 
-    fun nextFireEpochMs(snapshot: PersonalEventReminderSnapshot, nowMs: Long): Long? =
+    fun nextFireEpochMs(
+        snapshot: PersonalEventReminderSnapshot,
+        nowMs: Long,
+    ): Long? =
         snapshot.reminders
             .mapNotNull { fireEpochMs(it.fireDateIso) }
             .filter { it > nowMs }

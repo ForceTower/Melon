@@ -4,12 +4,12 @@ import dev.forcetower.melon.core.sync.data.dto.MessagePageResponse
 import dev.forcetower.melon.core.sync.data.dto.OnboardingStatusResponse
 import dev.forcetower.melon.core.sync.data.dto.ProfileResponse
 import dev.forcetower.melon.core.sync.data.dto.SemesterPayloadResponse
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.decodeFromJsonElement
-import kotlinx.serialization.json.jsonObject
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.decodeFromJsonElement
+import kotlinx.serialization.json.jsonObject
 
 internal class PilotContractTest {
     private val json = Json { ignoreUnknownKeys = true }

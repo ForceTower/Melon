@@ -114,7 +114,10 @@ internal fun InClassMediumContent(
 // hairline of safety). Acceptable because the medium widget always renders
 // at the same dp width regardless of host density.
 @Composable
-private fun ProgressTrack(progress: Float, theme: WidgetTheme) {
+private fun ProgressTrack(
+    progress: Float,
+    theme: WidgetTheme,
+) {
     val trackDp = 306
     val fillDp = (trackDp * progress).toInt().coerceIn(0, trackDp)
     Box(

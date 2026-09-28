@@ -61,7 +61,10 @@ import kotlin.time.Instant
 // stamp, and the small plates/notes the three screens share.
 
 @Composable
-internal fun LibraryBackButton(onBack: () -> Unit, modifier: Modifier = Modifier) {
+internal fun LibraryBackButton(
+    onBack: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     IconButton(onClick = onBack, modifier = modifier) {
         Icon(
             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -133,7 +136,10 @@ internal fun LibraryCard(
 }
 
 @Composable
-internal fun LibrarySectionLabel(text: String, modifier: Modifier = Modifier) {
+internal fun LibrarySectionLabel(
+    text: String,
+    modifier: Modifier = Modifier,
+) {
     Text(
         text = text.uppercase(),
         style = MaterialTheme.typography.labelSmall.copy(
@@ -243,7 +249,10 @@ internal fun LibraryWorkMark(
 
 // Uppercase type chip — "LIVRO", "CORDEL" — in the type hue.
 @Composable
-internal fun LibraryTypeTag(work: LibraryWork, modifier: Modifier = Modifier) {
+internal fun LibraryTypeTag(
+    work: LibraryWork,
+    modifier: Modifier = Modifier,
+) {
     Text(
         text = stringResource(work.type.labelRes()).uppercase(),
         style = MaterialTheme.typography.labelSmall.copy(
@@ -260,30 +269,33 @@ internal fun LibraryTypeTag(work: LibraryWork, modifier: Modifier = Modifier) {
 internal enum class LibraryVerdictTone { Ok, Bad, Other, Muted }
 
 @Composable
-internal fun LibraryVerdictTone.color(): Color = when (this) {
-    LibraryVerdictTone.Ok -> MaterialTheme.melon.status.ok
-    LibraryVerdictTone.Bad -> MaterialTheme.melon.status.bad
-    LibraryVerdictTone.Other -> MaterialTheme.melon.palette.indigo
-    LibraryVerdictTone.Muted -> MaterialTheme.colorScheme.outline
-}
+internal fun LibraryVerdictTone.color(): Color =
+    when (this) {
+        LibraryVerdictTone.Ok -> MaterialTheme.melon.status.ok
+        LibraryVerdictTone.Bad -> MaterialTheme.melon.status.bad
+        LibraryVerdictTone.Other -> MaterialTheme.melon.palette.indigo
+        LibraryVerdictTone.Muted -> MaterialTheme.colorScheme.outline
+    }
 
-internal fun LibraryAvailability.verdictTone(): LibraryVerdictTone = when (verdict) {
-    LibraryAvailability.Verdict.Available -> LibraryVerdictTone.Ok
-    LibraryAvailability.Verdict.AllOnLoan -> LibraryVerdictTone.Bad
-    LibraryAvailability.Verdict.LocalUseOnly -> LibraryVerdictTone.Other
-}
+internal fun LibraryAvailability.verdictTone(): LibraryVerdictTone =
+    when (verdict) {
+        LibraryAvailability.Verdict.Available -> LibraryVerdictTone.Ok
+        LibraryAvailability.Verdict.AllOnLoan -> LibraryVerdictTone.Bad
+        LibraryAvailability.Verdict.LocalUseOnly -> LibraryVerdictTone.Other
+    }
 
 // Verdict headline — "51 de 100 disponíveis" / "Nenhum disponível" /
 // "Só consulta local". Missing copies are already outside the denominator.
 @Composable
-internal fun LibraryAvailability.verdictHead(): String = when (verdict) {
-    LibraryAvailability.Verdict.Available ->
-        pluralStringResource(R.plurals.library_availability_some, available, available, total)
-    LibraryAvailability.Verdict.AllOnLoan ->
-        stringResource(R.string.library_availability_none)
-    LibraryAvailability.Verdict.LocalUseOnly ->
-        stringResource(R.string.library_availability_local)
-}
+internal fun LibraryAvailability.verdictHead(): String =
+    when (verdict) {
+        LibraryAvailability.Verdict.Available ->
+            pluralStringResource(R.plurals.library_availability_some, available, available, total)
+        LibraryAvailability.Verdict.AllOnLoan ->
+            stringResource(R.string.library_availability_none)
+        LibraryAvailability.Verdict.LocalUseOnly ->
+            stringResource(R.string.library_availability_local)
+    }
 
 // The one-line availability slot on a result row: shimmer while consulting,
 // an honest "couldn't read it" when Pergamum is down, or the verdict dot +

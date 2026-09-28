@@ -70,8 +70,12 @@ internal sealed interface MaterialsListIntent : UiIntent {
     ) : MaterialsListIntent
 
     data object Reload : MaterialsListIntent
-    data class QueryChanged(val query: String) : MaterialsListIntent
-    data class FilterChanged(val filter: MaterialType?) : MaterialsListIntent
+    data class QueryChanged(
+        val query: String,
+    ) : MaterialsListIntent
+    data class FilterChanged(
+        val filter: MaterialType?,
+    ) : MaterialsListIntent
 }
 
 internal sealed interface MaterialsListEffect : UiEffect
@@ -135,5 +139,6 @@ internal class MaterialsListViewModel @Inject constructor(
     }
 }
 
-private fun String.fold(): String = Normalizer.normalize(lowercase(), Normalizer.Form.NFD)
-    .replace(Regex("\\p{Mn}+"), "")
+private fun String.fold(): String =
+    Normalizer.normalize(lowercase(), Normalizer.Form.NFD)
+        .replace(Regex("\\p{Mn}+"), "")

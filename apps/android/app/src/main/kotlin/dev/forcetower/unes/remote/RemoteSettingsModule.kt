@@ -54,7 +54,10 @@ internal object RemoteSettingsModule {
 }
 
 private object TimberLeverLogSink : LeverLogSink {
-    override fun log(level: LeverLogLevel, message: String) {
+    override fun log(
+        level: LeverLogLevel,
+        message: String,
+    ) {
         val priority = when (level) {
             LeverLogLevel.DEBUG -> android.util.Log.DEBUG
             LeverLogLevel.INFO -> android.util.Log.INFO

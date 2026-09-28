@@ -74,7 +74,13 @@ internal fun NextClassSmallContent(
                 // discipline name reads in full instead of "Cálculo Difer…".
                 text = if (tall) entry.title else entry.shortTitle,
                 style = WidgetText.serif(titleSize, theme.ink),
-                maxLines = if (veryTall) 4 else if (tall) 3 else 2,
+                maxLines = if (veryTall) {
+                    4
+                } else if (tall) {
+                    3
+                } else {
+                    2
+                },
             )
             // Topic only when there's the vertical room — iOS Small doesn't
             // surface it because WidgetKit pins the family at 158pt; we have

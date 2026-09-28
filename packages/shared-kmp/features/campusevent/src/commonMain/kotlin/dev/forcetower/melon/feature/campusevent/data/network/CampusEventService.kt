@@ -164,57 +164,62 @@ private fun CampusEventDTO.ActivityDTO.toDomainOrNull(): CampusEventActivity? {
     )
 }
 
-private fun CampusEventDTO.SpeakerDTO.toDomain() = CampusEventSpeaker(
-    id = id,
-    name = name,
-    role = role,
-    organization = organization,
-    bio = bio,
-    tag = tag,
-)
+private fun CampusEventDTO.SpeakerDTO.toDomain() =
+    CampusEventSpeaker(
+        id = id,
+        name = name,
+        role = role,
+        organization = organization,
+        bio = bio,
+        tag = tag,
+    )
 
-private fun CampusEventDTO.WorkshopDTO.toDomain() = CampusEventWorkshop(
-    id = id,
-    title = title,
-    details = details,
-    audience = audienceOf(audience),
-    venueName = venueName,
-    instructors = instructors,
-    requiresSignup = requiresSignup ?: false,
-    slots = slots,
-)
+private fun CampusEventDTO.WorkshopDTO.toDomain() =
+    CampusEventWorkshop(
+        id = id,
+        title = title,
+        details = details,
+        audience = audienceOf(audience),
+        venueName = venueName,
+        instructors = instructors,
+        requiresSignup = requiresSignup ?: false,
+        slots = slots,
+    )
 
-private fun CampusEventDTO.VenueDTO.toDomain() = CampusEventVenue(
-    id = id,
-    name = name,
-    shortName = shortName,
-    hint = hint,
-    mapX = mapX,
-    mapY = mapY,
-)
+private fun CampusEventDTO.VenueDTO.toDomain() =
+    CampusEventVenue(
+        id = id,
+        name = name,
+        shortName = shortName,
+        hint = hint,
+        mapX = mapX,
+        mapY = mapY,
+    )
 
-private fun CampusEventDTO.OrganizationDTO.toDomain() = CampusEventOrganization(
-    id = id,
-    name = name,
-    fullName = fullName,
-    tag = tag,
-    details = details,
-)
+private fun CampusEventDTO.OrganizationDTO.toDomain() =
+    CampusEventOrganization(
+        id = id,
+        name = name,
+        fullName = fullName,
+        tag = tag,
+        details = details,
+    )
 
-private fun categoryOf(raw: String): CampusEventCategory = when (raw) {
-    "quest" -> CampusEventCategory.Quest
-    "workshop" -> CampusEventCategory.Workshop
-    "lecture" -> CampusEventCategory.Lecture
-    "presentation" -> CampusEventCategory.Presentation
-    "dynamic" -> CampusEventCategory.GroupDynamic
-    else -> CampusEventCategory.Other
-}
+private fun categoryOf(raw: String): CampusEventCategory =
+    when (raw) {
+        "quest" -> CampusEventCategory.Quest
+        "workshop" -> CampusEventCategory.Workshop
+        "lecture" -> CampusEventCategory.Lecture
+        "presentation" -> CampusEventCategory.Presentation
+        "dynamic" -> CampusEventCategory.GroupDynamic
+        else -> CampusEventCategory.Other
+    }
 
-private fun audienceOf(raw: String?): CampusEventAudience = when (raw) {
-    "freshmen" -> CampusEventAudience.Freshmen
-    "veterans" -> CampusEventAudience.Veterans
-    else -> CampusEventAudience.Everyone
-}
+private fun audienceOf(raw: String?): CampusEventAudience =
+    when (raw) {
+        "freshmen" -> CampusEventAudience.Freshmen
+        "veterans" -> CampusEventAudience.Veterans
+        else -> CampusEventAudience.Everyone
+    }
 
-private fun parseInstant(raw: String): Instant? =
-    runCatching { Instant.parse(raw) }.getOrNull()
+private fun parseInstant(raw: String): Instant? = runCatching { Instant.parse(raw) }.getOrNull()

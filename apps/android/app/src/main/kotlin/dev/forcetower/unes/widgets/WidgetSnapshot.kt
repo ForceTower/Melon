@@ -1,12 +1,12 @@
 package dev.forcetower.unes.widgets
 
 import android.content.Context
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
 import java.io.File
 import java.util.Calendar
 import java.util.Locale
 import java.util.TimeZone
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
 
 // Wire-format snapshot the host process writes to internal storage and the
 // widget reads back at render time. Same idea as iOS, except both producer
@@ -69,7 +69,10 @@ internal data class WidgetSnapshot(
             }.getOrNull()
         }
 
-        fun save(context: Context, snapshot: WidgetSnapshot) {
+        fun save(
+            context: Context,
+            snapshot: WidgetSnapshot,
+        ) {
             val f = file(context)
             // Atomic replace: write a sibling tmp file then rename so a
             // half-written JSON never lands on disk for the widget reader to
@@ -99,7 +102,10 @@ internal data class WidgetSnapshot(
 // the entry uses the lifted dark-mode hex when the host renders against a
 // dark UI mode. The receiver's tick path is theme-agnostic and can pass
 // false (the bar/subject colors aren't read by the alarm scheduler).
-internal fun loadCurrentEntry(context: Context, isDark: Boolean = false): NextClassEntry? {
+internal fun loadCurrentEntry(
+    context: Context,
+    isDark: Boolean = false,
+): NextClassEntry? {
     val snapshot = WidgetSnapshot.load(context) ?: return null
     val tz = TimeZone.getDefault()
     val now = Calendar.getInstance(tz)
@@ -312,7 +318,10 @@ private fun formatDayDoneLine(
 // `nowDateIso` and the snapshot's `nextDay.dateIso` so the dayDone / upcoming
 // branch picks the right state even when the snapshot is stale across a day
 // boundary. Returns null if either input doesn't parse.
-internal fun daysBetweenIsoDays(from: String, to: String): Int? {
+internal fun daysBetweenIsoDays(
+    from: String,
+    to: String,
+): Int? {
     val a = parseIsoDay(from) ?: return null
     val b = parseIsoDay(to) ?: return null
     val diffMs = b.timeInMillis - a.timeInMillis
@@ -400,7 +409,10 @@ internal object SubjectPalette {
         0xFFD4A84C, // mustard
     )
 
-    fun argb(code: String, isDark: Boolean = false): Int {
+    fun argb(
+        code: String,
+        isDark: Boolean = false,
+    ): Int {
         val palette = if (isDark) dark else light
         val bucket = (stableHash(code).let { if (it < 0) -it else it }) % palette.size
         return palette[bucket].toInt()
@@ -416,16 +428,17 @@ internal object SubjectPalette {
 // Localized weekday name in pt-BR ("segunda", "terça", …). Used by the
 // snapshot renderer when the next class is more than one day out so the
 // dayDone copy reads naturally.
-internal fun weekdayLabelForIsoDay(isoDay: String): String? = runCatching {
-    val parts = isoDay.split("-")
-    if (parts.size != 3) return null
-    val year = parts[0].toInt()
-    val month = parts[1].toInt()
-    val day = parts[2].toInt()
-    val cal = java.util.Calendar.getInstance(Locale.Builder().setLanguage("pt").setRegion("BR").build())
-    cal.set(year, month - 1, day)
-    val df = java.text.SimpleDateFormat("EEEE", Locale.Builder().setLanguage("pt").setRegion("BR").build())
-    df.format(cal.time)
-        .replace("-feira", "")
-        .lowercase(Locale.Builder().setLanguage("pt").setRegion("BR").build())
-}.getOrNull()
+internal fun weekdayLabelForIsoDay(isoDay: String): String? =
+    runCatching {
+        val parts = isoDay.split("-")
+        if (parts.size != 3) return null
+        val year = parts[0].toInt()
+        val month = parts[1].toInt()
+        val day = parts[2].toInt()
+        val cal = java.util.Calendar.getInstance(Locale.Builder().setLanguage("pt").setRegion("BR").build())
+        cal.set(year, month - 1, day)
+        val df = java.text.SimpleDateFormat("EEEE", Locale.Builder().setLanguage("pt").setRegion("BR").build())
+        df.format(cal.time)
+            .replace("-feira", "")
+            .lowercase(Locale.Builder().setLanguage("pt").setRegion("BR").build())
+    }.getOrNull()

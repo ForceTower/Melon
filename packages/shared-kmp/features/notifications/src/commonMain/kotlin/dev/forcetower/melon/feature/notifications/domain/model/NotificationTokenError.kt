@@ -7,5 +7,7 @@ sealed interface NotificationTokenError {
         Unexpected,
     }
 
-    data class Server(val message: String?) : NotificationTokenError
+    data class Server(
+        val message: String?,
+    ) : NotificationTokenError
 }

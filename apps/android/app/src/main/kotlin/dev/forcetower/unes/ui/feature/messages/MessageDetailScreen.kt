@@ -41,10 +41,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -138,7 +138,10 @@ internal fun MessageDetailRoute(
 }
 
 @Composable
-private fun MessageDetailLoading(onBack: () -> Unit, modifier: Modifier = Modifier) {
+private fun MessageDetailLoading(
+    onBack: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -347,7 +350,10 @@ internal fun MessageDetailScreen(
 }
 
 @Composable
-private fun StarToggle(starred: Boolean, onToggle: () -> Unit) {
+private fun StarToggle(
+    starred: Boolean,
+    onToggle: () -> Unit,
+) {
     val accent = MaterialTheme.colorScheme.primary
     val tonal = accent.copy(alpha = 0.16f).compositeOver(MaterialTheme.melon.surface.card)
     val label = stringResource(
@@ -371,7 +377,11 @@ private fun StarToggle(starred: Boolean, onToggle: () -> Unit) {
 }
 
 @Composable
-private fun SenderHeaderCard(message: Message, hue: Color, modifier: Modifier = Modifier) {
+private fun SenderHeaderCard(
+    message: Message,
+    hue: Color,
+    modifier: Modifier = Modifier,
+) {
     val shape = RoundedCornerShape(24.dp)
     Row(
         modifier = modifier
@@ -465,30 +475,34 @@ private val UrlPattern = Regex(
     RegexOption.IGNORE_CASE,
 )
 
-private fun linkify(text: String, accent: Color): AnnotatedString = buildAnnotatedString {
-    val linkStyle = TextLinkStyles(
-        style = SpanStyle(color = accent, textDecoration = TextDecoration.Underline),
-    )
-    var cursor = 0
-    UrlPattern.findAll(text).forEach { match ->
-        if (match.range.first > cursor) {
-            append(text.substring(cursor, match.range.first))
+private fun linkify(
+    text: String,
+    accent: Color,
+): AnnotatedString =
+    buildAnnotatedString {
+        val linkStyle = TextLinkStyles(
+            style = SpanStyle(color = accent, textDecoration = TextDecoration.Underline),
+        )
+        var cursor = 0
+        UrlPattern.findAll(text).forEach { match ->
+            if (match.range.first > cursor) {
+                append(text.substring(cursor, match.range.first))
+            }
+            val raw = match.value
+            val href = when {
+                raw.startsWith("http://", ignoreCase = true) -> raw
+                raw.startsWith("https://", ignoreCase = true) -> raw
+                else -> "https://$raw"
+            }
+            withLink(LinkAnnotation.Url(url = href, styles = linkStyle)) {
+                append(raw)
+            }
+            cursor = match.range.last + 1
         }
-        val raw = match.value
-        val href = when {
-            raw.startsWith("http://", ignoreCase = true) -> raw
-            raw.startsWith("https://", ignoreCase = true) -> raw
-            else -> "https://$raw"
+        if (cursor < text.length) {
+            append(text.substring(cursor))
         }
-        withLink(LinkAnnotation.Url(url = href, styles = linkStyle)) {
-            append(raw)
-        }
-        cursor = match.range.last + 1
     }
-    if (cursor < text.length) {
-        append(text.substring(cursor))
-    }
-}
 
 @Composable
 private fun ImageGallery(

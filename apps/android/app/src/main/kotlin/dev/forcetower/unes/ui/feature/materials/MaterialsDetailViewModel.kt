@@ -52,25 +52,34 @@ internal data class MaterialsDetailUiState(
 
 internal sealed interface MaterialsDetailIntent : UiIntent {
     // In-memory handoff fired by the list/saved row tap before navigation.
-    data class Seed(val material: Material) : MaterialsDetailIntent
+    data class Seed(
+        val material: Material,
+    ) : MaterialsDetailIntent
 
     // Route-driven fallback: fetch the material by id when there's no seed
     // (or a different one).
-    data class Ensure(val materialId: String) : MaterialsDetailIntent
+    data class Ensure(
+        val materialId: String,
+    ) : MaterialsDetailIntent
 
     data object ToggleUseful : MaterialsDetailIntent
     data object ToggleSave : MaterialsDetailIntent
     data object OpenFile : MaterialsDetailIntent
     data object OpenReport : MaterialsDetailIntent
     data object CloseReport : MaterialsDetailIntent
-    data class PickReportReason(val reason: MaterialReportReason) : MaterialsDetailIntent
+    data class PickReportReason(
+        val reason: MaterialReportReason,
+    ) : MaterialsDetailIntent
     data object ConfirmReport : MaterialsDetailIntent
 }
 
 internal sealed interface MaterialsDetailEffect : UiEffect {
     // Bytes are on disk; the screen resolves the FileProvider grant and fires
     // the ACTION_VIEW intent.
-    data class ViewFile(val file: File, val mimeType: String) : MaterialsDetailEffect
+    data class ViewFile(
+        val file: File,
+        val mimeType: String,
+    ) : MaterialsDetailEffect
 }
 
 @HiltViewModel
@@ -136,7 +145,9 @@ internal class MaterialsDetailViewModel @Inject constructor(
             when (setUseful(material.id, !wasUseful)) {
                 is Outcome.Ok -> if (!wasUseful) reportSharedShelfPaidOff(material)
                 is Outcome.Err -> {
-                    setState { copy(material = this.material?.copy(isUseful = wasUseful, usefulCount = material.usefulCount)) }
+                    setState {
+                        copy(material = this.material?.copy(isUseful = wasUseful, usefulCount = material.usefulCount))
+                    }
                     flash(MaterialsToastKind.SyncFailed)
                 }
             }
@@ -211,7 +222,10 @@ internal class MaterialsDetailViewModel @Inject constructor(
     // The name is uploader-supplied and not a trusted path. Every scan is named
     // "digitalizacao.pdf", so the id keys the directory to stop distinct
     // materials overwriting each other.
-    private fun materialCacheFile(materialId: String, fileName: String): File {
+    private fun materialCacheFile(
+        materialId: String,
+        fileName: String,
+    ): File {
         val root = File(context.cacheDir, "materials")
         val target = File(root, "${basename(materialId)}/${basename(fileName)}")
         if (!target.canonicalPath.startsWith(root.canonicalPath + File.separator)) {
@@ -220,9 +234,10 @@ internal class MaterialsDetailViewModel @Inject constructor(
         return target
     }
 
-    private fun basename(value: String) = File(value).name
-        .takeUnless { it.isBlank() || it == "." || it == ".." }
-        ?: "material.pdf"
+    private fun basename(value: String) =
+        File(value).name
+            .takeUnless { it.isBlank() || it == "." || it == ".." }
+            ?: "material.pdf"
 
     // Downloads accumulate here until the OS evicts the cache dir. Once past the
     // budget, drop the oldest entries — never the one just written, which an

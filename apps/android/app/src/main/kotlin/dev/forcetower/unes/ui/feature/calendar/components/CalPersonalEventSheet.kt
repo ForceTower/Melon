@@ -18,9 +18,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Notes
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.automirrored.filled.Notes
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DatePicker
@@ -60,8 +60,8 @@ import dev.forcetower.unes.ui.feature.calendar.PersonalDisciplineOption
 import dev.forcetower.unes.ui.feature.calendar.PersonalEntry
 import dev.forcetower.unes.ui.feature.calendar.PersonalReminder
 import dev.forcetower.unes.ui.feature.calendar.color
-import dev.forcetower.unes.ui.feature.overview.ColorFor
 import dev.forcetower.unes.ui.feature.calendar.icon
+import dev.forcetower.unes.ui.feature.overview.ColorFor
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneOffset
@@ -481,7 +481,10 @@ private fun ChipButton(
 }
 
 @Composable
-private fun ReminderPicker(selected: PersonalReminder, onSelect: (PersonalReminder) -> Unit) {
+private fun ReminderPicker(
+    selected: PersonalReminder,
+    onSelect: (PersonalReminder) -> Unit,
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -521,7 +524,10 @@ private fun ReminderPicker(selected: PersonalReminder, onSelect: (PersonalRemind
 }
 
 @Composable
-private fun NotesField(notes: String, onChange: (String) -> Unit) {
+private fun NotesField(
+    notes: String,
+    onChange: (String) -> Unit,
+) {
     // Same first-line pinning as the title card; 15dp against the 26dp tile.
     val pinned = notes.isNotBlank()
     Row(
@@ -593,7 +599,10 @@ private fun DeleteButton(onClick: () -> Unit) {
 
 // Inset-grouped section: uppercase caption over one rounded card.
 @Composable
-private fun FormGroup(label: String, content: @Composable () -> Unit) {
+private fun FormGroup(
+    label: String,
+    content: @Composable () -> Unit,
+) {
     Column(modifier = Modifier.padding(top = 16.dp)) {
         Text(
             text = label.uppercase(),
@@ -656,7 +665,10 @@ private fun FormRow(
 }
 
 @Composable
-private fun ValuePill(text: String, onClick: () -> Unit) {
+private fun ValuePill(
+    text: String,
+    onClick: () -> Unit,
+) {
     Surface(
         onClick = onClick,
         shape = RoundedCornerShape(9.dp),
@@ -714,12 +726,13 @@ private fun DatePickerSheet(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun transparentFieldColors() = androidx.compose.material3.OutlinedTextFieldDefaults.colors(
-    focusedBorderColor = Color.Transparent,
-    unfocusedBorderColor = Color.Transparent,
-    focusedContainerColor = Color.Transparent,
-    unfocusedContainerColor = Color.Transparent,
-)
+private fun transparentFieldColors() =
+    androidx.compose.material3.OutlinedTextFieldDefaults.colors(
+        focusedBorderColor = Color.Transparent,
+        unfocusedBorderColor = Color.Transparent,
+        focusedContainerColor = Color.Transparent,
+        unfocusedContainerColor = Color.Transparent,
+    )
 
 // The composer seeds "today" when opened from the app bar.
 internal fun personalEventSeedDay(): LocalDate = CalendarMath.today

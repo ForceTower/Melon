@@ -53,206 +53,215 @@ internal class MirrorRepositoryImpl(
 
     private val log = logger.withTag("MirrorRepositoryImpl")
 
-    override suspend fun syncProfile(): Outcome<Unit, SyncError> = callNetwork("syncProfile") {
-        val response = api.getProfile()
-        when (val mapped = classifyResponse<ProfileResponse>(response, "syncProfile")) {
-            is Outcome.Err -> mapped
-            is Outcome.Ok -> {
-                val payload = mapped.value
-                // Preserve existing user row via `updateProfile` to avoid
-                // nulling fields session wrote (e.g., imageUrl from login) if
-                // the server later carries a null. Profile is the authority
-                // here though, so straight upsert is acceptable too.
-                userDao.upsert(payload.user.toEntity())
-                payload.course?.let { studentDao.upsertCourse(it.toEntity()) }
-                studentDao.upsertStudent(payload.student.toEntity(payload.lastSyncCompletedAt))
-                userSettingsDao.upsert(payload.settings.toEntity(payload.user.id))
-                log.i { "syncProfile ok userId=${payload.user.id} studentId=${payload.student.id}" }
-                Outcome.Ok(Unit)
+    override suspend fun syncProfile(): Outcome<Unit, SyncError> =
+        callNetwork("syncProfile") {
+            val response = api.getProfile()
+            when (val mapped = classifyResponse<ProfileResponse>(response, "syncProfile")) {
+                is Outcome.Err -> mapped
+                is Outcome.Ok -> {
+                    val payload = mapped.value
+                    // Preserve existing user row via `updateProfile` to avoid
+                    // nulling fields session wrote (e.g., imageUrl from login) if
+                    // the server later carries a null. Profile is the authority
+                    // here though, so straight upsert is acceptable too.
+                    userDao.upsert(payload.user.toEntity())
+                    payload.course?.let { studentDao.upsertCourse(it.toEntity()) }
+                    studentDao.upsertStudent(payload.student.toEntity(payload.lastSyncCompletedAt))
+                    userSettingsDao.upsert(payload.settings.toEntity(payload.user.id))
+                    log.i { "syncProfile ok userId=${payload.user.id} studentId=${payload.student.id}" }
+                    Outcome.Ok(Unit)
+                }
             }
         }
-    }
 
-    override suspend fun syncSemesterList(): Outcome<List<SemesterSummary>, SyncError> = callNetwork("syncSemesterList") {
-        val response = api.getSemesters()
-        when (val mapped = classifyResponse<SemesterListResponse>(response, "syncSemesterList")) {
-            is Outcome.Err -> mapped
-            is Outcome.Ok -> {
-                val items = mapped.value.semesters
-                // Upsert the semester rows so the client has the list even
-                // before fetching full payloads. Scoped subtree (disciplines,
-                // classes, grades) lands on each per-semester fetch. The list
-                // never carries `appliedDirtyAt` — keep the stamp the last
-                // payload apply wrote.
-                val appliedById = semesterDao.listAll().associate { it.id to it.appliedDirtyAt }
-                semesterDao.upsertAll(items.map { it.toEntity().copy(appliedDirtyAt = appliedById[it.id]) })
-                semesterDao.deleteMissing(items.map { it.id })
-                log.i { "syncSemesterList ok count=${items.size}" }
-                Outcome.Ok(
-                    items.map {
-                        SemesterSummary(
-                            id = it.id,
-                            code = it.code,
-                            desc = it.description,
-                            startDate = it.startDate,
-                            endDate = it.endDate,
-                            track = it.track,
-                            dirtyAt = it.dirtyAt,
-                        )
-                    },
-                )
+    override suspend fun syncSemesterList(): Outcome<List<SemesterSummary>, SyncError> =
+        callNetwork("syncSemesterList") {
+            val response = api.getSemesters()
+            when (val mapped = classifyResponse<SemesterListResponse>(response, "syncSemesterList")) {
+                is Outcome.Err -> mapped
+                is Outcome.Ok -> {
+                    val items = mapped.value.semesters
+                    // Upsert the semester rows so the client has the list even
+                    // before fetching full payloads. Scoped subtree (disciplines,
+                    // classes, grades) lands on each per-semester fetch. The list
+                    // never carries `appliedDirtyAt` — keep the stamp the last
+                    // payload apply wrote.
+                    val appliedById = semesterDao.listAll().associate { it.id to it.appliedDirtyAt }
+                    semesterDao.upsertAll(items.map { it.toEntity().copy(appliedDirtyAt = appliedById[it.id]) })
+                    semesterDao.deleteMissing(items.map { it.id })
+                    log.i { "syncSemesterList ok count=${items.size}" }
+                    Outcome.Ok(
+                        items.map {
+                            SemesterSummary(
+                                id = it.id,
+                                code = it.code,
+                                desc = it.description,
+                                startDate = it.startDate,
+                                endDate = it.endDate,
+                                track = it.track,
+                                dirtyAt = it.dirtyAt,
+                            )
+                        },
+                    )
+                }
             }
         }
-    }
 
     override suspend fun listStaleMirroredSemesterIds(): List<String> = semesterDao.listStaleMirroredIds()
 
-    override suspend fun syncSemester(semesterId: String): Outcome<Unit, SyncError> = callNetwork("syncSemester") {
-        log.d { "syncSemester start id=$semesterId" }
-        val response = api.getSemesterPayload(semesterId)
-        when (val mapped = classifyResponse<SemesterPayloadResponse>(response, "syncSemester id=$semesterId")) {
-            is Outcome.Err -> mapped
-            is Outcome.Ok -> {
-                val p = mapped.value
-                academicDao.applySemesterPayload(
-                    semesterId = semesterId,
-                    semester = p.semester.toEntity(),
-                    disciplines = p.disciplines.map { it.toEntity() },
-                    teachers = p.teachers.map { it.toEntity() },
-                    spaces = p.spaces.map { it.toEntity() },
-                    offers = p.disciplineOffers.map { it.toEntity() },
-                    classes = p.classes.map { it.toEntity() },
-                    classTeachers = p.classTeachers.map { it.toEntity() },
-                    allocations = p.allocations.map { it.toEntity() },
-                    studentClasses = p.studentClasses.map { it.toEntity() },
-                    evaluations = p.evaluations.map { it.toEntity() },
-                    grades = p.studentGrades.map { it.toEntity() },
-                    lectures = p.lectures.map { it.toEntity() },
-                    lectureMaterials = p.lectureMaterials.map { it.toEntity() },
-                )
-                log.i {
-                    "syncSemester ok id=$semesterId disciplines=${p.disciplines.size} " +
-                        "classes=${p.classes.size} grades=${p.studentGrades.size}"
+    override suspend fun syncSemester(semesterId: String): Outcome<Unit, SyncError> =
+        callNetwork("syncSemester") {
+            log.d { "syncSemester start id=$semesterId" }
+            val response = api.getSemesterPayload(semesterId)
+            when (val mapped = classifyResponse<SemesterPayloadResponse>(response, "syncSemester id=$semesterId")) {
+                is Outcome.Err -> mapped
+                is Outcome.Ok -> {
+                    val p = mapped.value
+                    academicDao.applySemesterPayload(
+                        semesterId = semesterId,
+                        semester = p.semester.toEntity(),
+                        disciplines = p.disciplines.map { it.toEntity() },
+                        teachers = p.teachers.map { it.toEntity() },
+                        spaces = p.spaces.map { it.toEntity() },
+                        offers = p.disciplineOffers.map { it.toEntity() },
+                        classes = p.classes.map { it.toEntity() },
+                        classTeachers = p.classTeachers.map { it.toEntity() },
+                        allocations = p.allocations.map { it.toEntity() },
+                        studentClasses = p.studentClasses.map { it.toEntity() },
+                        evaluations = p.evaluations.map { it.toEntity() },
+                        grades = p.studentGrades.map { it.toEntity() },
+                        lectures = p.lectures.map { it.toEntity() },
+                        lectureMaterials = p.lectureMaterials.map { it.toEntity() },
+                    )
+                    log.i {
+                        "syncSemester ok id=$semesterId disciplines=${p.disciplines.size} " +
+                            "classes=${p.classes.size} grades=${p.studentGrades.size}"
+                    }
+                    Outcome.Ok(Unit)
                 }
-                Outcome.Ok(Unit)
             }
         }
-    }
 
-    override suspend fun fetchOnboardingStatus(): Outcome<OnboardingStatus, SyncError> = callNetwork("fetchOnboardingStatus") {
-        val response = api.getOnboardingStatus()
-        when (val mapped = classifyResponse<OnboardingStatusResponse>(response, "fetchOnboardingStatus")) {
-            is Outcome.Err -> mapped
-            is Outcome.Ok -> Outcome.Ok(mapped.value.toDomain())
+    override suspend fun fetchOnboardingStatus(): Outcome<OnboardingStatus, SyncError> =
+        callNetwork("fetchOnboardingStatus") {
+            val response = api.getOnboardingStatus()
+            when (val mapped = classifyResponse<OnboardingStatusResponse>(response, "fetchOnboardingStatus")) {
+                is Outcome.Err -> mapped
+                is Outcome.Ok -> Outcome.Ok(mapped.value.toDomain())
+            }
         }
-    }
 
     override suspend fun syncMessages(
         since: String?,
         cursor: String?,
-    ): Outcome<MessagePageResult, SyncError> = callNetwork("syncMessages") {
-        log.d { "syncMessages request since=${since ?: "<nil>"} cursor=${cursor ?: "<nil>"}" }
-        val response = api.getMessages(since, cursor)
-        when (val mapped = classifyResponse<MessagePageResponse>(response, "syncMessages")) {
-            is Outcome.Err -> mapped
-            is Outcome.Ok -> {
-                val page = mapped.value
-                val scopesCount = page.messages.sumOf { it.scopes.size }
-                val attachmentsCount = page.messages.sumOf { it.attachments.size }
-                // Server-merged read/starred land on the Message row itself;
-                // the local MessageState overlay is deliberately left alone so
-                // sync never resurrects an unread dot (matches iOS
-                // `MirrorStore.upsertMessages`).
-                messageDao.applyMessagePage(
-                    messages = page.messages.map { it.toEntity() },
-                    scopes = page.messages.flatMap { msg -> msg.scopes.map { it.toEntity(msg.id) } },
-                    attachments = page.messages.flatMap { msg ->
-                        msg.attachments.map { it.toEntity(msg.id) }
-                    },
-                )
-                log.i {
-                    "syncMessages ok messages=${page.messages.size} scopes=$scopesCount " +
-                        "attachments=$attachmentsCount nextCursor=${page.nextCursor ?: "<nil>"}"
+    ): Outcome<MessagePageResult, SyncError> =
+        callNetwork("syncMessages") {
+            log.d { "syncMessages request since=${since ?: "<nil>"} cursor=${cursor ?: "<nil>"}" }
+            val response = api.getMessages(since, cursor)
+            when (val mapped = classifyResponse<MessagePageResponse>(response, "syncMessages")) {
+                is Outcome.Err -> mapped
+                is Outcome.Ok -> {
+                    val page = mapped.value
+                    val scopesCount = page.messages.sumOf { it.scopes.size }
+                    val attachmentsCount = page.messages.sumOf { it.attachments.size }
+                    // Server-merged read/starred land on the Message row itself;
+                    // the local MessageState overlay is deliberately left alone so
+                    // sync never resurrects an unread dot (matches iOS
+                    // `MirrorStore.upsertMessages`).
+                    messageDao.applyMessagePage(
+                        messages = page.messages.map { it.toEntity() },
+                        scopes = page.messages.flatMap { msg -> msg.scopes.map { it.toEntity(msg.id) } },
+                        attachments = page.messages.flatMap { msg ->
+                            msg.attachments.map { it.toEntity(msg.id) }
+                        },
+                    )
+                    log.i {
+                        "syncMessages ok messages=${page.messages.size} scopes=$scopesCount " +
+                            "attachments=$attachmentsCount nextCursor=${page.nextCursor ?: "<nil>"}"
+                    }
+                    Outcome.Ok(MessagePageResult(appliedCount = page.messages.size, nextCursor = page.nextCursor))
                 }
-                Outcome.Ok(MessagePageResult(appliedCount = page.messages.size, nextCursor = page.nextCursor))
             }
         }
-    }
 
-    override suspend fun syncCalendarEvents(): Outcome<Int, SyncError> = callNetwork("syncCalendarEvents") {
-        val response = api.getCalendarEvents()
-        when (val mapped = classifyResponse<CalendarEventsResponse>(response, "syncCalendarEvents")) {
-            is Outcome.Err -> mapped
-            is Outcome.Ok -> {
-                val events = mapped.value.events.map { it.toEntity() }
-                // Server emits the canonical 90-day window each call; replace
-                // wholesale so upstream deletes propagate. The DAO wraps this
-                // in a transaction so observers never see an empty state.
-                calendarEventDao.replaceAll(events)
-                log.i { "syncCalendarEvents ok applied=${events.size}" }
-                Outcome.Ok(events.size)
-            }
-        }
-    }
-
-    override suspend fun syncMyCredentials(): Outcome<Unit, SyncError> = callNetwork("syncMyCredentials") {
-        val response = api.getMyCredentials()
-        when (val mapped = classifyResponse<MyCredentialsResponse>(response, "syncMyCredentials")) {
-            is Outcome.Err -> mapped
-            is Outcome.Ok -> {
-                val credentials = mapped.value.credentials
-                if (credentials != null) {
-                    sessionStore.updateUpstreamCredentials(credentials.username, credentials.password)
-                    log.i { "syncMyCredentials ok stored=true" }
-                } else {
-                    // Server has nothing on file (e.g. user has never logged in
-                    // with username + password). Nothing to mirror; not an error.
-                    log.i { "syncMyCredentials ok stored=false (server returned null)" }
+    override suspend fun syncCalendarEvents(): Outcome<Int, SyncError> =
+        callNetwork("syncCalendarEvents") {
+            val response = api.getCalendarEvents()
+            when (val mapped = classifyResponse<CalendarEventsResponse>(response, "syncCalendarEvents")) {
+                is Outcome.Err -> mapped
+                is Outcome.Ok -> {
+                    val events = mapped.value.events.map { it.toEntity() }
+                    // Server emits the canonical 90-day window each call; replace
+                    // wholesale so upstream deletes propagate. The DAO wraps this
+                    // in a transaction so observers never see an empty state.
+                    calendarEventDao.replaceAll(events)
+                    log.i { "syncCalendarEvents ok applied=${events.size}" }
+                    Outcome.Ok(events.size)
                 }
-                Outcome.Ok(Unit)
             }
         }
-    }
 
-    override suspend fun pingActivity(): Outcome<Unit, SyncError> = callNetwork("pingActivity") {
-        val statusCode = api.ping().status.value
-        when (statusCode) {
-            in 200..299 -> Outcome.Ok(Unit)
-            401 -> {
-                log.w { "pingActivity unauthorized" }
-                Outcome.Err(SyncError.Unauthorized)
-            }
-            in 500..599 -> {
-                log.w { "pingActivity server $statusCode" }
-                Outcome.Err(SyncError.Server(null))
-            }
-            else -> {
-                log.w { "pingActivity unexpected status $statusCode" }
-                Outcome.Err(SyncError.Unexpected)
+    override suspend fun syncMyCredentials(): Outcome<Unit, SyncError> =
+        callNetwork("syncMyCredentials") {
+            val response = api.getMyCredentials()
+            when (val mapped = classifyResponse<MyCredentialsResponse>(response, "syncMyCredentials")) {
+                is Outcome.Err -> mapped
+                is Outcome.Ok -> {
+                    val credentials = mapped.value.credentials
+                    if (credentials != null) {
+                        sessionStore.updateUpstreamCredentials(credentials.username, credentials.password)
+                        log.i { "syncMyCredentials ok stored=true" }
+                    } else {
+                        // Server has nothing on file (e.g. user has never logged in
+                        // with username + password). Nothing to mirror; not an error.
+                        log.i { "syncMyCredentials ok stored=false (server returned null)" }
+                    }
+                    Outcome.Ok(Unit)
+                }
             }
         }
-    }
+
+    override suspend fun pingActivity(): Outcome<Unit, SyncError> =
+        callNetwork("pingActivity") {
+            val statusCode = api.ping().status.value
+            when (statusCode) {
+                in 200..299 -> Outcome.Ok(Unit)
+                401 -> {
+                    log.w { "pingActivity unauthorized" }
+                    Outcome.Err(SyncError.Unauthorized)
+                }
+                in 500..599 -> {
+                    log.w { "pingActivity server $statusCode" }
+                    Outcome.Err(SyncError.Server(null))
+                }
+                else -> {
+                    log.w { "pingActivity unexpected status $statusCode" }
+                    Outcome.Err(SyncError.Unexpected)
+                }
+            }
+        }
 
     private suspend inline fun <T> callNetwork(
         op: String,
         block: suspend () -> Outcome<T, SyncError>,
-    ): Outcome<T, SyncError> = try {
-        block()
-    } catch (cancellation: CancellationException) {
-        throw cancellation
-    } catch (ex: SerializationException) {
-        // Response envelope didn't match the expected DTO shape — most often a
-        // backend field drift that wasn't mirrored on the KMP side. Surface
-        // the concrete exception so we don't guess at the schema mismatch.
-        log.e(throwable = ex) { "$op serialization failure" }
-        Outcome.Err(SyncError.Unexpected)
-    } catch (ex: Throwable) {
-        // All other throwables land here as `NoConnection` — transport
-        // failures, Ktor body-parse errors, etc. Log with the real cause so
-        // failures are diagnosable from the Xcode console / logcat.
-        log.w(throwable = ex) { "$op transport failure" }
-        Outcome.Err(SyncError.NoConnection)
-    }
+    ): Outcome<T, SyncError> =
+        try {
+            block()
+        } catch (cancellation: CancellationException) {
+            throw cancellation
+        } catch (ex: SerializationException) {
+            // Response envelope didn't match the expected DTO shape — most often a
+            // backend field drift that wasn't mirrored on the KMP side. Surface
+            // the concrete exception so we don't guess at the schema mismatch.
+            log.e(throwable = ex) { "$op serialization failure" }
+            Outcome.Err(SyncError.Unexpected)
+        } catch (ex: Throwable) {
+            // All other throwables land here as `NoConnection` — transport
+            // failures, Ktor body-parse errors, etc. Log with the real cause so
+            // failures are diagnosable from the Xcode console / logcat.
+            log.w(throwable = ex) { "$op transport failure" }
+            Outcome.Err(SyncError.NoConnection)
+        }
 
     private suspend inline fun <reified T> classifyResponse(
         response: HttpResponse,

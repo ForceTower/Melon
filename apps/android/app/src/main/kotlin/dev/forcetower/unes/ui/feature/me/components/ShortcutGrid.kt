@@ -149,7 +149,12 @@ private fun ShortcutCard(
 }
 
 @Composable
-private fun IconContainer(shortcut: Shortcut, hue: Color, size: androidx.compose.ui.unit.Dp, iconSize: androidx.compose.ui.unit.Dp) {
+private fun IconContainer(
+    shortcut: Shortcut,
+    hue: Color,
+    size: androidx.compose.ui.unit.Dp,
+    iconSize: androidx.compose.ui.unit.Dp,
+) {
     Box(
         modifier = Modifier
             .size(size)
@@ -188,8 +193,7 @@ private fun BetaBadge() {
 
 // dc `color-mix(in srgb, hue 8%, card)` — the tonal plate every shortcut sits on.
 @Composable
-private fun tonalPlate(hue: Color): Color =
-    hue.copy(alpha = 0.08f).compositeOver(MaterialTheme.melon.surface.card)
+private fun tonalPlate(hue: Color): Color = hue.copy(alpha = 0.08f).compositeOver(MaterialTheme.melon.surface.card)
 
 @Preview
 @Composable

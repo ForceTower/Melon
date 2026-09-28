@@ -75,7 +75,10 @@ class ReauthenticateUpstreamUseCase internal constructor(
 ) {
     private val log = logger.withTag("CredentialStatus")
 
-    suspend operator fun invoke(password: String, captchaToken: String? = null): Outcome<Unit, ReauthError> {
+    suspend operator fun invoke(
+        password: String,
+        captchaToken: String? = null,
+    ): Outcome<Unit, ReauthError> {
         val response = try {
             service.reauthenticate(ReauthRequest(password = password, captchaToken = captchaToken))
         } catch (e: CancellationException) {
@@ -100,8 +103,9 @@ class ReauthenticateUpstreamUseCase internal constructor(
     }
 }
 
-private fun String.toDomain(): CredentialStatus = when (lowercase()) {
-    "invalid" -> CredentialStatus.Invalid
-    "none" -> CredentialStatus.None
-    else -> CredentialStatus.Ok
-}
+private fun String.toDomain(): CredentialStatus =
+    when (lowercase()) {
+        "invalid" -> CredentialStatus.Invalid
+        "none" -> CredentialStatus.None
+        else -> CredentialStatus.Ok
+    }

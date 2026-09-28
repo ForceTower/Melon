@@ -112,7 +112,7 @@
   "apps/android/app/src/main/kotlin/dev/forcetower/unes/ui/feature/splash/SplashViewModel.kt:explicit-visibility:sealed interface SplashEffect : UiEffect {": 1,
   "apps/android/app/src/main/kotlin/dev/forcetower/unes/ui/feature/splash/SplashViewModel.kt:explicit-visibility:class SplashViewModel @Inject constructor(": 1,
   "apps/android/app/src/main/kotlin/dev/forcetower/unes/ui/navigation/AppNavHost.kt:explicit-visibility:fun AppNavHost() {": 1,
-  "apps/android/app/src/main/kotlin/dev/forcetower/unes/ui/navigation/AppRoutes.kt:explicit-visibility:sealed interface AppRoute : NavKey {": 1,
+  "apps/android/app/src/main/kotlin/dev/forcetower/unes/ui/navigation/AppRoute.kt:explicit-visibility:sealed interface AppRoute : NavKey {": 1,
   "apps/android/app/src/main/kotlin/dev/forcetower/unes/widgets/NextClassWidgetReceiver.kt:explicit-visibility:class NextClassWidgetReceiver : GlanceAppWidgetReceiver() {": 1,
   "apps/android/app/src/main/kotlin/dev/forcetower/unes/widgets/NextClassWidgetTheme.kt:theme-color:surface = Color(0xFFFBF7F2),": 1,
   "apps/android/app/src/main/kotlin/dev/forcetower/unes/widgets/NextClassWidgetTheme.kt:theme-color:ink = Color(0xFF1A1420),": 1,

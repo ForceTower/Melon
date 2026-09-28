@@ -54,55 +54,60 @@ val SkeletonShape: Shape = RoundedCornerShape(percent = 50)
 private const val SheenWidthFraction = 0.55f
 private const val SheenTilt = 0.35f
 
-fun Modifier.shimmer(shape: Shape = SkeletonShape): Modifier = composed {
-    val plate = MaterialTheme.melon.surface.skeletonPlate
-    val sheen = MaterialTheme.melon.surface.skeletonSheen
-    val animated = !LocalInspectionMode.current
+fun Modifier.shimmer(shape: Shape = SkeletonShape): Modifier =
+    composed {
+        val plate = MaterialTheme.melon.surface.skeletonPlate
+        val sheen = MaterialTheme.melon.surface.skeletonSheen
+        val animated = !LocalInspectionMode.current
 
-    // Read only inside `drawBehind` so each frame invalidates draw, not
-    // composition.
-    var progress by remember { mutableFloatStateOf(0f) }
-    var rootX by remember { mutableFloatStateOf(0f) }
-    var rootWidth by remember { mutableFloatStateOf(0f) }
+        // Read only inside `drawBehind` so each frame invalidates draw, not
+        // composition.
+        var progress by remember { mutableFloatStateOf(0f) }
+        var rootX by remember { mutableFloatStateOf(0f) }
+        var rootWidth by remember { mutableFloatStateOf(0f) }
 
-    if (animated) {
-        LaunchedEffect(Unit) {
-            val period = MelonMotion.ShimmerPeriodMillis
-            while (true) {
-                withInfiniteAnimationFrameMillis { frame ->
-                    progress = (frame % period) / period.toFloat()
+        if (animated) {
+            LaunchedEffect(Unit) {
+                val period = MelonMotion.ShimmerPeriodMillis
+                while (true) {
+                    withInfiniteAnimationFrameMillis { frame ->
+                        progress = (frame % period) / period.toFloat()
+                    }
                 }
             }
         }
-    }
 
-    this
-        .onGloballyPositioned { coordinates ->
-            rootX = coordinates.positionInRoot().x
-            rootWidth = coordinates.findRootCoordinates().size.width.toFloat()
-        }
-        .clip(shape)
-        .drawBehind {
-            drawRect(plate)
-            if (!animated || rootWidth <= 0f) return@drawBehind
-            val band = rootWidth * SheenWidthFraction
-            val travel = rootWidth + 2 * band
-            val startX = -band + travel * progress - rootX
-            drawRect(
-                brush = Brush.linearGradient(
-                    0f to Color.Transparent,
-                    0.5f to sheen,
-                    1f to Color.Transparent,
-                    start = Offset(startX, 0f),
-                    end = Offset(startX + band, band * SheenTilt),
-                ),
-            )
-        }
-}
+        this
+            .onGloballyPositioned { coordinates ->
+                rootX = coordinates.positionInRoot().x
+                rootWidth = coordinates.findRootCoordinates().size.width.toFloat()
+            }
+            .clip(shape)
+            .drawBehind {
+                drawRect(plate)
+                if (!animated || rootWidth <= 0f) return@drawBehind
+                val band = rootWidth * SheenWidthFraction
+                val travel = rootWidth + 2 * band
+                val startX = -band + travel * progress - rootX
+                drawRect(
+                    brush = Brush.linearGradient(
+                        0f to Color.Transparent,
+                        0.5f to sheen,
+                        1f to Color.Transparent,
+                        start = Offset(startX, 0f),
+                        end = Offset(startX + band, band * SheenTilt),
+                    ),
+                )
+            }
+    }
 
 /** A fixed-size shimmering capsule standing in for a line of text or a thumbnail. */
 @Composable
-fun SkeletonBar(width: Dp, height: Dp, modifier: Modifier = Modifier) {
+fun SkeletonBar(
+    width: Dp,
+    height: Dp,
+    modifier: Modifier = Modifier,
+) {
     Box(modifier = modifier.size(width, height).shimmer())
 }
 

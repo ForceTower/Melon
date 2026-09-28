@@ -95,26 +95,47 @@ internal data class MaterialsUploadUiState(
 
 internal sealed interface MaterialsUploadIntent : UiIntent {
     // Hub entry — free discipline pick over the overview's options.
-    data class StartFromHub(val options: List<MaterialsDiscipline>) : MaterialsUploadIntent
+    data class StartFromHub(
+        val options: List<MaterialsDiscipline>,
+    ) : MaterialsUploadIntent
 
     // Shelf entry — locked to the discipline the student is looking at.
-    data class StartFromDiscipline(val discipline: MaterialsDiscipline) : MaterialsUploadIntent
+    data class StartFromDiscipline(
+        val discipline: MaterialsDiscipline,
+    ) : MaterialsUploadIntent
 
-    data class PickDiscipline(val disciplineId: String) : MaterialsUploadIntent
-    data class FilePicked(val uri: Uri) : MaterialsUploadIntent
+    data class PickDiscipline(
+        val disciplineId: String,
+    ) : MaterialsUploadIntent
+    data class FilePicked(
+        val uri: Uri,
+    ) : MaterialsUploadIntent
 
     // ML Kit document scanner result — already a PDF in app storage, with the
     // page count reported by the scanner.
-    data class ScanPicked(val pdfUri: Uri, val pages: Int) : MaterialsUploadIntent
-    data class TypeChanged(val type: MaterialType) : MaterialsUploadIntent
-    data class TitleChanged(val title: String) : MaterialsUploadIntent
-    data class SemesterChanged(val semester: String) : MaterialsUploadIntent
-    data class TeacherChanged(val teacher: String) : MaterialsUploadIntent
+    data class ScanPicked(
+        val pdfUri: Uri,
+        val pages: Int,
+    ) : MaterialsUploadIntent
+    data class TypeChanged(
+        val type: MaterialType,
+    ) : MaterialsUploadIntent
+    data class TitleChanged(
+        val title: String,
+    ) : MaterialsUploadIntent
+    data class SemesterChanged(
+        val semester: String,
+    ) : MaterialsUploadIntent
+    data class TeacherChanged(
+        val teacher: String,
+    ) : MaterialsUploadIntent
     data object ToggleGuidelines : MaterialsUploadIntent
     data object Back : MaterialsUploadIntent
+
     // Details CTA — advances to guidelines, or submits directly once they
     // were acknowledged on a previous upload.
     data object Continue : MaterialsUploadIntent
+
     // Guidelines CTA.
     data object Publish : MaterialsUploadIntent
     data object Dismiss : MaterialsUploadIntent
@@ -123,7 +144,9 @@ internal sealed interface MaterialsUploadIntent : UiIntent {
 internal sealed interface MaterialsUploadEffect : UiEffect {
     // Fired when the sheet closes after a successful submission so hosts can
     // refetch (the new material lands under "Meus envios").
-    data class Finished(val disciplineId: String) : MaterialsUploadEffect
+    data class Finished(
+        val disciplineId: String,
+    ) : MaterialsUploadEffect
 }
 
 @HiltViewModel
@@ -190,9 +213,10 @@ internal class MaterialsUploadViewModel @Inject constructor(
         }
     }
 
-    private fun freshState() = MaterialsUploadUiState(
-        guidelinesAlreadyAcknowledged = prefs().getBoolean(KEY_GUIDELINES, false),
-    )
+    private fun freshState() =
+        MaterialsUploadUiState(
+            guidelinesAlreadyAcknowledged = prefs().getBoolean(KEY_GUIDELINES, false),
+        )
 
     // Straight off the mirror, so the chips are there by the time the student
     // reaches the details step even with no connection.
@@ -269,8 +293,7 @@ internal class MaterialsUploadViewModel @Inject constructor(
         }
     }
 
-    private fun pageCount(descriptor: ParcelFileDescriptor): Int =
-        PdfRenderer(descriptor).use { it.pageCount }
+    private fun pageCount(descriptor: ParcelFileDescriptor): Int = PdfRenderer(descriptor).use { it.pageCount }
 
     // The scanner flattens the captured sheets into a PDF and reports its
     // page count, so only the bytes need lifting. Fixed name mirrors iOS

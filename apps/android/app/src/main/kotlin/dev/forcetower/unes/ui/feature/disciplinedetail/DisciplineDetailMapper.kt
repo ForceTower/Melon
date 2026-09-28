@@ -19,7 +19,10 @@ import dev.forcetower.unes.ui.feature.disciplines.GradeSection
 // `DisciplineDetailViewModel.map(detail:seed:)` so both clients land on the
 // same projection. Color is left as `Color.Unspecified` here; the screen
 // resolves it against the live palette via `ColorFor.discipline`.
-internal fun mapDetail(raw: KmpDetail, seed: Discipline?): Discipline {
+internal fun mapDetail(
+    raw: KmpDetail,
+    seed: Discipline?,
+): Discipline {
     val hasMultipleGroups = raw.groups.size > 1
     val classIdToGroupName = raw.groups.associate { it.classId to it.code }
     val groups = raw.groups.map(::mapGroup)
@@ -69,11 +72,12 @@ internal fun mapDetail(raw: KmpDetail, seed: Discipline?): Discipline {
     )
 }
 
-private fun mapGroup(raw: KmpGroup) = DisciplineGroup(
-    code = raw.code,
-    kind = kindLabel(raw.kind),
-    prof = raw.teacherName.orEmpty(),
-)
+private fun mapGroup(raw: KmpGroup) =
+    DisciplineGroup(
+        code = raw.code,
+        kind = kindLabel(raw.kind),
+        prof = raw.teacherName.orEmpty(),
+    )
 
 // Both halves must match — "Prova Final" evaluations named by the teacher
 // carry AV-style shorts and stay in the regular list. Mirrors iOS
@@ -85,21 +89,28 @@ private fun isFinalExamGrade(raw: KmpGrade): Boolean =
 // KMP emits a single merged section per discipline (groupName null, kind ""
 // on multi-group). The UI's section header reads `name`, so a blank kind
 // falls back to "Notas".
-private fun mapSection(raw: KmpSection, grades: List<KmpGrade>) = GradeSection(
+private fun mapSection(
+    raw: KmpSection,
+    grades: List<KmpGrade>,
+) = GradeSection(
     name = if (raw.kind.isEmpty()) "Notas" else kindLabel(raw.kind),
     group = raw.groupName,
     grades = grades.map(::mapGrade),
 )
 
-private fun mapGrade(raw: KmpGrade) = GradeEntry(
-    label = raw.gradeNameShort.orEmpty(),
-    title = raw.evaluationName.orEmpty(),
-    date = DisciplineDateFormatting.ddMmYyyy(raw.dateIso),
-    score = raw.value,
-    weight = raw.weight,
-)
+private fun mapGrade(raw: KmpGrade) =
+    GradeEntry(
+        label = raw.gradeNameShort.orEmpty(),
+        title = raw.evaluationName.orEmpty(),
+        date = DisciplineDateFormatting.ddMmYyyy(raw.dateIso),
+        score = raw.value,
+        weight = raw.weight,
+    )
 
-private fun mapLecture(raw: KmpLecture, group: String?) = ClassEntry(
+private fun mapLecture(
+    raw: KmpLecture,
+    group: String?,
+) = ClassEntry(
     date = DisciplineDateFormatting.ddMmYyyy(raw.dateIso),
     title = raw.subject.orEmpty(),
     attachments = raw.attachmentCount.takeIf { it > 0 },
@@ -127,12 +138,13 @@ private fun mapAttachment(
 private fun primaryProf(groups: List<KmpGroup>): String? =
     groups.asSequence().mapNotNull { it.teacherName }.firstOrNull { it.isNotEmpty() }
 
-private fun kindLabel(raw: String): String = when (raw.uppercase()) {
-    "TEO", "TEORICA", "TEÓRICA" -> "Teórica"
-    "PRA", "PRATICA", "PRÁTICA" -> "Prática"
-    "LAB", "LABORATORIO", "LABORATÓRIO" -> "Laboratório"
-    else -> raw
-}
+private fun kindLabel(raw: String): String =
+    when (raw.uppercase()) {
+        "TEO", "TEORICA", "TEÓRICA" -> "Teórica"
+        "PRA", "PRATICA", "PRÁTICA" -> "Prática"
+        "LAB", "LABORATORIO", "LABORATÓRIO" -> "Laboratório"
+        else -> raw
+    }
 
 private fun inferKind(url: String): AttachmentKind {
     val lower = url.lowercase()

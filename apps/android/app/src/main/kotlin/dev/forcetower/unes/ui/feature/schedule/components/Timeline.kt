@@ -1,12 +1,12 @@
 package dev.forcetower.unes.ui.feature.schedule.components
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -128,7 +128,10 @@ internal fun ScheduleTimeline(
 }
 
 @Composable
-private fun GapDivider(gapMin: Int, modifier: Modifier = Modifier) {
+private fun GapDivider(
+    gapMin: Int,
+    modifier: Modifier = Modifier,
+) {
     val ink3 = MaterialTheme.colorScheme.outline
     val ink4 = MaterialTheme.colorScheme.outlineVariant
     val line = MaterialTheme.melon.surface.line
@@ -185,7 +188,10 @@ private fun GapDivider(gapMin: Int, modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun DashedLine(color: Color, modifier: Modifier = Modifier) {
+private fun DashedLine(
+    color: Color,
+    modifier: Modifier = Modifier,
+) {
     Canvas(modifier = modifier) {
         val dash = 6.dp.toPx()
         drawLine(
@@ -347,7 +353,9 @@ private fun ClassCard(
                         color = cls.color,
                         onClick = if (cls.offerId != null) {
                             { onOpenDiscipline(cls) }
-                        } else null,
+                        } else {
+                            null
+                        },
                         modifier = Modifier.weight(1f),
                     )
                     QuickAction(
@@ -356,7 +364,9 @@ private fun ClassCard(
                         color = cls.color,
                         onClick = if (cls.disciplineId != null && onOpenMaterials != null) {
                             { onOpenMaterials(cls) }
-                        } else null,
+                        } else {
+                            null
+                        },
                         modifier = Modifier.weight(1f),
                     )
                 }
@@ -366,7 +376,10 @@ private fun ClassCard(
 }
 
 @Composable
-private fun CodeChip(code: String, color: Color) {
+private fun CodeChip(
+    code: String,
+    color: Color,
+) {
     Box(
         modifier = Modifier
             .height(24.dp)
@@ -389,7 +402,11 @@ private fun CodeChip(code: String, color: Color) {
 }
 
 @Composable
-private fun NoteChip(note: String, color: Color, modifier: Modifier = Modifier) {
+private fun NoteChip(
+    note: String,
+    color: Color,
+    modifier: Modifier = Modifier,
+) {
     Row(
         modifier = modifier
             .height(26.dp)
@@ -419,7 +436,10 @@ private fun NoteChip(note: String, color: Color, modifier: Modifier = Modifier) 
 }
 
 @Composable
-private fun FooterRow(cls: ScheduleClass, modifier: Modifier = Modifier) {
+private fun FooterRow(
+    cls: ScheduleClass,
+    modifier: Modifier = Modifier,
+) {
     val ink2 = MaterialTheme.colorScheme.onSurfaceVariant
     val ink3 = MaterialTheme.colorScheme.outline
     val ink4 = MaterialTheme.colorScheme.outlineVariant

@@ -42,20 +42,20 @@ class CourseProgressRepository internal constructor(
     private val dao: CurriculumDao,
 ) {
     // Null until the first successful refresh lands (and again after logout).
-    fun observe(): Flow<CourseProgress?> = combine(
-        dao.observeProgress(),
-        dao.observeVersions(),
-        dao.observeRequirements(),
-        dao.observeEntries(),
-        dao.observePrerequisites(),
-    ) { progress, versions, requirements, entries, prerequisites ->
-        progress?.project(versions, requirements, entries, prerequisites)
-    }.distinctUntilChanged()
+    fun observe(): Flow<CourseProgress?> =
+        combine(
+            dao.observeProgress(),
+            dao.observeVersions(),
+            dao.observeRequirements(),
+            dao.observeEntries(),
+            dao.observePrerequisites(),
+        ) { progress, versions, requirements, entries, prerequisites ->
+            progress?.project(versions, requirements, entries, prerequisites)
+        }.distinctUntilChanged()
 
     // Failures leave the mirrored payload alone — a stale screen beats an
     // error screen, and the caller decides whether to narrate the failure.
-    suspend fun refresh(): Outcome<Unit, CourseProgressError> =
-        mirror { service.curriculum(Clock.System.now()) }
+    suspend fun refresh(): Outcome<Unit, CourseProgressError> = mirror { service.curriculum(Clock.System.now()) }
 
     // Binds the student to one of `availableVersions` by hand; the screen
     // re-renders from the rebuilt payload.
@@ -63,10 +63,12 @@ class CourseProgressRepository internal constructor(
         mirror { service.selectVersion(curriculumId, Clock.System.now()) }
 
     // Hands the binding back to the server's own resolution.
-    suspend fun resetVersion(): Outcome<Unit, CourseProgressError> =
-        mirror { service.resetVersion(Clock.System.now()) }
+    suspend fun resetVersion(): Outcome<Unit, CourseProgressError> = mirror { service.resetVersion(Clock.System.now()) }
 
-    suspend fun setManuallyCompleted(code: String, completed: Boolean): Outcome<Unit, CourseProgressError> =
+    suspend fun setManuallyCompleted(
+        code: String,
+        completed: Boolean,
+    ): Outcome<Unit, CourseProgressError> =
         mirror {
             if (completed) {
                 service.markCompleted(code, Clock.System.now())
@@ -79,13 +81,14 @@ class CourseProgressRepository internal constructor(
     // mirroring are the same move for a refresh, a pick and a reset.
     private suspend inline fun mirror(
         fetch: () -> Outcome<CourseProgress, CourseProgressError>,
-    ): Outcome<Unit, CourseProgressError> = when (val outcome = fetch()) {
-        is Outcome.Ok -> {
-            apply(outcome.value)
-            Outcome.Ok(Unit)
+    ): Outcome<Unit, CourseProgressError> =
+        when (val outcome = fetch()) {
+            is Outcome.Ok -> {
+                apply(outcome.value)
+                Outcome.Ok(Unit)
+            }
+            is Outcome.Err -> Outcome.Err(outcome.error)
         }
-        is Outcome.Err -> Outcome.Err(outcome.error)
-    }
 
     private suspend fun apply(progress: CourseProgress) {
         val curriculum = progress.curriculum
@@ -131,57 +134,64 @@ class CourseProgressRepository internal constructor(
 
 // ───────── domain → mirror ─────────
 
-private fun CourseProgress.toProgressEntity(curriculumId: String?) = CurriculumProgressEntity(
-    curriculumId = curriculumId,
-    completedHours = summary.completedHours,
-    requiredHours = summary.requiredHours,
-    percent = summary.percent,
-    excludedHours = summary.excludedHours,
-    unclassifiedHours = summary.unclassifiedHours,
-    disciplinesCompleted = summary.disciplinesCompleted,
-    disciplinesTotal = summary.disciplinesTotal,
-    currentPeriod = currentPeriod,
-    prerequisitesKnown = prerequisitesKnown,
-    syncedAt = syncedAt.toEpochMilliseconds(),
-    approvedHours = approvedHours,
-    manuallyCompletedHours = summary.manuallyCompletedHours,
-)
-
-private fun CurriculumVersion.toEntity(position: Int) = CurriculumEntity(
-    id = id,
-    code = code,
-    label = label,
-    asOf = asOf,
-    minPeriods = minPeriods,
-    maxPeriods = maxPeriods,
-    stale = stale,
-    current = current,
-    supersededByCode = supersededBy?.code,
-    supersededByEffectiveFrom = supersededBy?.effectiveFrom,
-    source = source?.wire,
-    completedHours = completedHours,
-    requiredHours = requiredHours,
-    percent = percent,
-    fit = fit,
-    position = position,
-)
-
-private fun CurriculumRequirementProgress.toEntity(curriculumId: String, position: Int) =
-    CurriculumRequirementEntity(
+private fun CourseProgress.toProgressEntity(curriculumId: String?) =
+    CurriculumProgressEntity(
         curriculumId = curriculumId,
+        completedHours = summary.completedHours,
+        requiredHours = summary.requiredHours,
+        percent = summary.percent,
+        excludedHours = summary.excludedHours,
+        unclassifiedHours = summary.unclassifiedHours,
+        disciplinesCompleted = summary.disciplinesCompleted,
+        disciplinesTotal = summary.disciplinesTotal,
+        currentPeriod = currentPeriod,
+        prerequisitesKnown = prerequisitesKnown,
+        syncedAt = syncedAt.toEpochMilliseconds(),
+        approvedHours = approvedHours,
+        manuallyCompletedHours = summary.manuallyCompletedHours,
+    )
+
+private fun CurriculumVersion.toEntity(position: Int) =
+    CurriculumEntity(
+        id = id,
         code = code,
-        kind = kind.wire,
         label = label,
-        shortLabel = shortLabel,
-        startsAtPeriod = startsAtPeriod,
-        hoursRequired = hoursRequired,
-        hoursCompleted = hoursCompleted,
-        derivable = derivable,
+        asOf = asOf,
+        minPeriods = minPeriods,
+        maxPeriods = maxPeriods,
+        stale = stale,
+        current = current,
+        supersededByCode = supersededBy?.code,
+        supersededByEffectiveFrom = supersededBy?.effectiveFrom,
+        source = source?.wire,
+        completedHours = completedHours,
+        requiredHours = requiredHours,
         percent = percent,
+        fit = fit,
         position = position,
     )
 
-private fun CurriculumEntry.toEntity(curriculumId: String, position: Int) = CurriculumEntryEntity(
+private fun CurriculumRequirementProgress.toEntity(
+    curriculumId: String,
+    position: Int,
+) = CurriculumRequirementEntity(
+    curriculumId = curriculumId,
+    code = code,
+    kind = kind.wire,
+    label = label,
+    shortLabel = shortLabel,
+    startsAtPeriod = startsAtPeriod,
+    hoursRequired = hoursRequired,
+    hoursCompleted = hoursCompleted,
+    derivable = derivable,
+    percent = percent,
+    position = position,
+)
+
+private fun CurriculumEntry.toEntity(
+    curriculumId: String,
+    position: Int,
+) = CurriculumEntryEntity(
     curriculumId = curriculumId,
     code = code,
     name = name,
@@ -306,21 +316,22 @@ private fun CurriculumProgressEntity.project(
     )
 }
 
-private fun CurriculumEntity.toDomain() = CurriculumVersion(
-    id = id,
-    code = code,
-    label = label,
-    asOf = asOf,
-    minPeriods = minPeriods,
-    maxPeriods = maxPeriods,
-    stale = stale,
-    current = current,
-    supersededBy = supersededByCode?.let {
-        CurriculumSupersession(code = it, effectiveFrom = supersededByEffectiveFrom)
-    },
-    source = CurriculumBindingSource.fromWire(source),
-    completedHours = completedHours,
-    requiredHours = requiredHours,
-    percent = percent,
-    fit = fit,
-)
+private fun CurriculumEntity.toDomain() =
+    CurriculumVersion(
+        id = id,
+        code = code,
+        label = label,
+        asOf = asOf,
+        minPeriods = minPeriods,
+        maxPeriods = maxPeriods,
+        stale = stale,
+        current = current,
+        supersededBy = supersededByCode?.let {
+            CurriculumSupersession(code = it, effectiveFrom = supersededByEffectiveFrom)
+        },
+        source = CurriculumBindingSource.fromWire(source),
+        completedHours = completedHours,
+        requiredHours = requiredHours,
+        percent = percent,
+        fit = fit,
+    )

@@ -194,7 +194,10 @@ internal fun ScheduleGridSheet(
 }
 
 @Composable
-private fun CodeChip(code: String, color: Color) {
+private fun CodeChip(
+    code: String,
+    color: Color,
+) {
     Box(
         modifier = Modifier
             .height(26.dp)

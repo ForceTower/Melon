@@ -177,7 +177,10 @@ internal fun PasskeysScreen(
 }
 
 @Composable
-private fun PasskeysTopBar(onBack: () -> Unit, modifier: Modifier = Modifier) {
+private fun PasskeysTopBar(
+    onBack: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -274,7 +277,11 @@ private fun PasskeyListCard(
 }
 
 @Composable
-private fun PasskeyRow(item: PasskeyItem, highlighted: Boolean, onClick: () -> Unit) {
+private fun PasskeyRow(
+    item: PasskeyItem,
+    highlighted: Boolean,
+    onClick: () -> Unit,
+) {
     val flash by animateColorAsState(
         targetValue = if (highlighted) {
             MaterialTheme.colorScheme.primary.copy(alpha = 0.10f)
@@ -317,7 +324,10 @@ private fun PasskeyRow(item: PasskeyItem, highlighted: Boolean, onClick: () -> U
 }
 
 @Composable
-internal fun SyncLine(isSynced: Boolean, trailing: String?) {
+internal fun SyncLine(
+    isSynced: Boolean,
+    trailing: String?,
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(6.dp),
@@ -442,7 +452,10 @@ private fun PasskeysStatusCard(
 }
 
 @Composable
-private fun AddPasskeyButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
+private fun AddPasskeyButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -482,14 +495,21 @@ private fun PasskeysFootnote(modifier: Modifier = Modifier) {
         )
         Text(
             text = stringResource(R.string.passkeys_footnote),
-            style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp, lineHeight = 18.sp, fontWeight = FontWeight.Medium),
+            style = MaterialTheme.typography.bodySmall.copy(
+                fontSize = 12.sp,
+                lineHeight = 18.sp,
+                fontWeight = FontWeight.Medium,
+            ),
             color = MaterialTheme.colorScheme.outlineVariant,
         )
     }
 }
 
 @Composable
-private fun PasskeyToastHost(toast: PasskeyToast?, modifier: Modifier = Modifier) {
+private fun PasskeyToastHost(
+    toast: PasskeyToast?,
+    modifier: Modifier = Modifier,
+) {
     // Hold the last shown toast so the fade-out keeps its own copy + tint
     // instead of flashing the default while `toast` is already null.
     var lastToast by remember { mutableStateOf(PasskeyToast.Created) }
@@ -558,7 +578,11 @@ internal fun passkeyTileIcon(isSynced: Boolean): ImageVector =
 // Rounded tinted tile carrying the credential glyph. Shared by the list row,
 // the add-target cards, and the detail header.
 @Composable
-internal fun PasskeyTile(isSynced: Boolean, size: Dp, radius: Dp) {
+internal fun PasskeyTile(
+    isSynced: Boolean,
+    size: Dp,
+    radius: Dp,
+) {
     val tone = passkeyTileTone(isSynced)
     Box(
         modifier = Modifier

@@ -7,11 +7,11 @@ import dev.forcetower.melon.core.analytics.ContentTypes
 import dev.forcetower.melon.core.common.Outcome
 import dev.forcetower.melon.feature.disciplines.domain.usecase.ObserveDisciplineDetailUseCase
 import dev.forcetower.melon.feature.materials.domain.usecase.GetMaterialsDisciplineUseCase
-import dev.forcetower.unes.remote.FeatureFlags
 import dev.forcetower.unes.mvi.MviViewModel
 import dev.forcetower.unes.mvi.UiEffect
 import dev.forcetower.unes.mvi.UiIntent
 import dev.forcetower.unes.mvi.UiState
+import dev.forcetower.unes.remote.FeatureFlags
 import dev.forcetower.unes.review.ReviewPrompter
 import dev.forcetower.unes.ui.feature.disciplines.Discipline
 import dev.forcetower.unes.ui.feature.disciplines.DisciplineStatus
@@ -25,9 +25,14 @@ import kotlinx.coroutines.launch
 // the local UI projection by `mapDetail`. Until the first non-null emission
 // lands, the screen renders the seed Discipline carried over from the list.
 internal sealed interface DisciplineDetailIntent : UiIntent {
-    data class Open(val offerId: String, val seed: Discipline?) : DisciplineDetailIntent
+    data class Open(
+        val offerId: String,
+        val seed: Discipline?,
+    ) : DisciplineDetailIntent
     data object Close : DisciplineDetailIntent
-    data class SelectGroup(val code: String?) : DisciplineDetailIntent
+    data class SelectGroup(
+        val code: String?,
+    ) : DisciplineDetailIntent
 }
 
 internal sealed interface DisciplineDetailEffect : UiEffect
@@ -80,7 +85,10 @@ internal class DisciplineDetailViewModel @Inject constructor(
         }
     }
 
-    private fun open(offerId: String, seed: Discipline?) {
+    private fun open(
+        offerId: String,
+        seed: Discipline?,
+    ) {
         if (currentState.offerId == offerId) {
             // Same offer reopened — refresh the seed (it may have been updated
             // by a list re-emission) but keep the existing hydrated payload so
@@ -108,7 +116,10 @@ internal class DisciplineDetailViewModel @Inject constructor(
     }
 
     // Once per open, on hydrated data only — the seed's verdict is stale.
-    private fun reportVerdict(offerId: String, discipline: Discipline) {
+    private fun reportVerdict(
+        offerId: String,
+        discipline: Discipline,
+    ) {
         if (verdictReportedFor == offerId) return
         verdictReportedFor = offerId
         when (discipline.status.key) {

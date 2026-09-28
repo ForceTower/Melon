@@ -2,7 +2,6 @@ package dev.forcetower.unes.ui.feature.onboarding.login
 
 import android.app.Activity
 import android.content.Context
-import co.touchlab.kermit.Logger
 import androidx.credentials.CreatePublicKeyCredentialRequest
 import androidx.credentials.CreatePublicKeyCredentialResponse
 import androidx.credentials.CredentialManager
@@ -14,17 +13,18 @@ import androidx.credentials.exceptions.CreateCredentialException
 import androidx.credentials.exceptions.GetCredentialCancellationException
 import androidx.credentials.exceptions.GetCredentialException
 import androidx.credentials.exceptions.NoCredentialException
+import co.touchlab.kermit.Logger
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dev.forcetower.melon.feature.auth.domain.model.PasskeyAssertion
 import dev.forcetower.melon.feature.auth.domain.model.PasskeyAttestation
 import dev.forcetower.melon.feature.auth.domain.model.PasskeyChallenge
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
-import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.add
 import kotlinx.serialization.json.addJsonObject
 import kotlinx.serialization.json.buildJsonArray
@@ -45,7 +45,10 @@ class PasskeyClient @Inject constructor(
 ) {
     private val log = logger.withTag("PasskeyClient")
 
-    suspend fun assert(challenge: PasskeyChallenge, activity: Activity): PasskeyAssertion {
+    suspend fun assert(
+        challenge: PasskeyChallenge,
+        activity: Activity,
+    ): PasskeyAssertion {
         val requestJson = encodeRequestJson(challenge)
         val option = GetPublicKeyCredentialOption(requestJson = requestJson)
         val request = GetCredentialRequest(credentialOptions = listOf(option))
@@ -97,7 +100,10 @@ class PasskeyClient @Inject constructor(
         return decodeAttestation(result.registrationResponseJson)
     }
 
-    private fun applyAuthenticatorAttachment(requestJson: String, attachment: String?): String {
+    private fun applyAuthenticatorAttachment(
+        requestJson: String,
+        attachment: String?,
+    ): String {
         if (attachment == null) return requestJson
         val root = try {
             JSON.parseToJsonElement(requestJson).jsonObject
@@ -184,19 +190,33 @@ class PasskeyClient @Inject constructor(
         get(key)?.optionalString()
             ?: throw PasskeyException.InvalidChallenge(IllegalStateException("missing $key"))
 
-    private fun JsonElement.optionalString(): String? = when (this) {
-        is JsonNull -> null
-        is JsonPrimitive -> content
-        else -> null
-    }
+    private fun JsonElement.optionalString(): String? =
+        when (this) {
+            is JsonNull -> null
+            is JsonPrimitive -> content
+            else -> null
+        }
 
-    sealed class PasskeyException(cause: Throwable?) : Exception(cause) {
-        class NotSupported(cause: Throwable? = null) : PasskeyException(cause)
-        class InvalidChallenge(cause: Throwable? = null) : PasskeyException(cause)
-        class NoCredential(cause: Throwable? = null) : PasskeyException(cause)
+    sealed class PasskeyException(
+        cause: Throwable?,
+    ) : Exception(cause) {
+        class NotSupported(
+            cause: Throwable? = null,
+        ) : PasskeyException(cause)
+        class InvalidChallenge(
+            cause: Throwable? = null,
+        ) : PasskeyException(cause)
+        class NoCredential(
+            cause: Throwable? = null,
+        ) : PasskeyException(cause)
+
         // User dismissed the system sheet — a silent abort, not an error to surface.
-        class Cancelled(cause: Throwable? = null) : PasskeyException(cause)
-        class Unknown(cause: Throwable? = null) : PasskeyException(cause)
+        class Cancelled(
+            cause: Throwable? = null,
+        ) : PasskeyException(cause)
+        class Unknown(
+            cause: Throwable? = null,
+        ) : PasskeyException(cause)
     }
 
     private companion object {

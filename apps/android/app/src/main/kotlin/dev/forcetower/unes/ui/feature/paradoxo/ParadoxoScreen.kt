@@ -454,12 +454,13 @@ private val ExploreEntries = listOf(
 )
 
 @Composable
-internal fun paradoxoExploreTone(kind: ParadoxoExploreKind): Color = when (kind) {
-    ParadoxoExploreKind.Brutal -> MaterialTheme.melon.status.bad
-    ParadoxoExploreKind.Kind -> MaterialTheme.melon.status.ok
-    ParadoxoExploreKind.Rising -> MaterialTheme.melon.palette.teal
-    ParadoxoExploreKind.Gap -> MaterialTheme.melon.palette.magenta
-}
+internal fun paradoxoExploreTone(kind: ParadoxoExploreKind): Color =
+    when (kind) {
+        ParadoxoExploreKind.Brutal -> MaterialTheme.melon.status.bad
+        ParadoxoExploreKind.Kind -> MaterialTheme.melon.status.ok
+        ParadoxoExploreKind.Rising -> MaterialTheme.melon.palette.teal
+        ParadoxoExploreKind.Gap -> MaterialTheme.melon.palette.magenta
+    }
 
 @Composable
 private fun ParadoxoExploreGrid(
@@ -772,7 +773,10 @@ private fun SearchEmpty(query: String) {
 // ───────── Row subtitles ─────────
 
 @Composable
-private fun mineSubtitle(sampleCount: Int, myPercentile: Int?): AnnotatedString {
+private fun mineSubtitle(
+    sampleCount: Int,
+    myPercentile: Int?,
+): AnnotatedString {
     val ok = MaterialTheme.melon.status.ok
     val samples = stringResource(
         R.string.paradoxo_samples_format,

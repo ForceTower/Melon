@@ -51,7 +51,10 @@ internal fun AttachmentTile(
 }
 
 @Composable
-private fun ImageTile(accent: Color, modifier: Modifier) {
+private fun ImageTile(
+    accent: Color,
+    modifier: Modifier,
+) {
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -70,7 +73,11 @@ private fun ImageTile(accent: Color, modifier: Modifier) {
 }
 
 @Composable
-private fun LinkTile(attachment: MessageAttachment, accent: Color, modifier: Modifier) {
+private fun LinkTile(
+    attachment: MessageAttachment,
+    accent: Color,
+    modifier: Modifier,
+) {
     val card = MaterialTheme.melon.surface.card
     val cardLine = MaterialTheme.melon.surface.cardLine
 
@@ -114,7 +121,11 @@ private fun LinkTile(attachment: MessageAttachment, accent: Color, modifier: Mod
 }
 
 @Composable
-private fun FileTile(attachment: MessageAttachment, accent: Color, modifier: Modifier) {
+private fun FileTile(
+    attachment: MessageAttachment,
+    accent: Color,
+    modifier: Modifier,
+) {
     val card = MaterialTheme.melon.surface.card
     val cardLine = MaterialTheme.melon.surface.cardLine
     val ink3 = MaterialTheme.colorScheme.onSurfaceVariant
@@ -168,7 +179,10 @@ private fun FileTile(attachment: MessageAttachment, accent: Color, modifier: Mod
 }
 
 @Composable
-private fun Badge(accent: Color, content: @Composable () -> Unit) {
+private fun Badge(
+    accent: Color,
+    content: @Composable () -> Unit,
+) {
     Box(
         modifier = Modifier
             .size(40.dp)
@@ -181,7 +195,10 @@ private fun Badge(accent: Color, content: @Composable () -> Unit) {
 }
 
 @Composable
-private fun ImageGlyph(color: Color, size: androidx.compose.ui.unit.Dp) {
+private fun ImageGlyph(
+    color: Color,
+    size: androidx.compose.ui.unit.Dp,
+) {
     Canvas(modifier = Modifier.size(size)) {
         val w = this.size.width
         val h = this.size.height

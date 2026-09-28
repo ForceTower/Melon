@@ -176,7 +176,10 @@ private fun CalendarContent(
             if (hero != null) {
                 CalHeroCard(
                     event = hero,
-                    onClick = { onOpenEvent(hero); openEventId = hero.id },
+                    onClick = {
+                        onOpenEvent(hero)
+                        openEventId = hero.id
+                    },
                     modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 14.dp),
                 )
             }
@@ -200,7 +203,10 @@ private fun CalendarContent(
                 CalendarViewMode.Agenda -> AgendaBody(
                     monthGroups = monthGroups,
                     isPersonalScope = scope == CalendarScopeFilter.Personal,
-                    onOpen = { ev -> onOpenEvent(ev); openEventId = ev.id },
+                    onOpen = { ev ->
+                        onOpenEvent(ev)
+                        openEventId = ev.id
+                    },
                     onEdit = { composer = ComposerRequest(entry = it, seedDay = it.start) },
                     onDelete = onDeletePersonal,
                     onAdd = { composer = ComposerRequest(entry = null, seedDay = today) },
@@ -212,7 +218,10 @@ private fun CalendarContent(
                     today = today,
                     onSelect = { selectedEpochDay = it.toEpochDay() },
                     onMonthShift = { gridMonthIndex += it },
-                    onOpen = { ev -> onOpenEvent(ev); openEventId = ev.id },
+                    onOpen = { ev ->
+                        onOpenEvent(ev)
+                        openEventId = ev.id
+                    },
                     onEdit = { composer = ComposerRequest(entry = it, seedDay = it.start) },
                     onDelete = onDeletePersonal,
                     onAdd = { composer = ComposerRequest(entry = null, seedDay = selected) },
@@ -253,7 +262,10 @@ private fun CalendarContent(
 
 // What the composer was opened with: an entry to edit, or the day a new one
 // should start on.
-private data class ComposerRequest(val entry: PersonalEntry?, val seedDay: LocalDate)
+private data class ComposerRequest(
+    val entry: PersonalEntry?,
+    val seedDay: LocalDate,
+)
 
 @Composable
 private fun AppBar(
@@ -340,7 +352,10 @@ private fun ViewToggleButton(
 }
 
 @Composable
-private fun Headline(personalCount: Int, modifier: Modifier = Modifier) {
+private fun Headline(
+    personalCount: Int,
+    modifier: Modifier = Modifier,
+) {
     Column(modifier = modifier.padding(horizontal = 20.dp)) {
         Text(
             text = stringResource(R.string.calendar_title),
@@ -574,7 +589,10 @@ private fun SyncFooter(modifier: Modifier = Modifier) {
 // Nothing matches the filters. Under "Meus" it turns into the invitation to
 // create the first entry.
 @Composable
-private fun EmptyState(isPersonalScope: Boolean, onAdd: () -> Unit) {
+private fun EmptyState(
+    isPersonalScope: Boolean,
+    onAdd: () -> Unit,
+) {
     if (!isPersonalScope) {
         Text(
             text = stringResource(R.string.calendar_empty_state),

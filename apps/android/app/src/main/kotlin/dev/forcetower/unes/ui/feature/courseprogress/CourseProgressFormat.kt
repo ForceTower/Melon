@@ -16,8 +16,10 @@ import java.util.Locale
 internal object CourseProgressFormat {
 
     // Grouped integer — "4.040".
-    fun count(value: Int, locale: Locale = Locale.getDefault()): String =
-        NumberFormat.getIntegerInstance(locale).format(value.toLong())
+    fun count(
+        value: Int,
+        locale: Locale = Locale.getDefault(),
+    ): String = NumberFormat.getIntegerInstance(locale).format(value.toLong())
 
     // `value` is 0…100. Whole numbers print bare ("53%"), the rest keep up to
     // `fractionDigits` ("53,19%").
@@ -25,14 +27,18 @@ internal object CourseProgressFormat {
         value: Double,
         fractionDigits: Int = 2,
         locale: Locale = Locale.getDefault(),
-    ): String = NumberFormat.getPercentInstance(locale).apply {
-        minimumFractionDigits = 0
-        maximumFractionDigits = fractionDigits
-    }.format(value / 100)
+    ): String =
+        NumberFormat.getPercentInstance(locale).apply {
+            minimumFractionDigits = 0
+            maximumFractionDigits = fractionDigits
+        }.format(value / 100)
 
     // The headline percent — always one decimal so 37,1% never rounds up to a
     // round 40 in the reader's head.
-    fun headlinePercent(value: Double, locale: Locale = Locale.getDefault()): String =
+    fun headlinePercent(
+        value: Double,
+        locale: Locale = Locale.getDefault(),
+    ): String =
         NumberFormat.getPercentInstance(locale).apply {
             minimumFractionDigits = 1
             maximumFractionDigits = 1
@@ -40,7 +46,10 @@ internal object CourseProgressFormat {
 
     // Ordinal período — "3º" (pt-BR) / "3rd" (en), through ICU's own ordinal
     // rules. Locales ICU has no rules for fall back to the plain number.
-    fun ordinal(period: Int, locale: Locale = Locale.getDefault()): String =
+    fun ordinal(
+        period: Int,
+        locale: Locale = Locale.getDefault(),
+    ): String =
         runCatching {
             ordinalFormats.getOrPut(locale) { MessageFormat("{0,ordinal}", locale) }
                 .format(arrayOf(period))
@@ -49,7 +58,10 @@ internal object CourseProgressFormat {
     private val ordinalFormats = mutableMapOf<Locale, MessageFormat>()
 
     // "16 de ago de 2026 07:12" — when the mirror last heard from the portal.
-    fun syncedAt(epochMillis: Long, locale: Locale = Locale.getDefault()): String =
+    fun syncedAt(
+        epochMillis: Long,
+        locale: Locale = Locale.getDefault(),
+    ): String =
         DateTimeFormatter
             .ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT)
             .withLocale(locale)
@@ -57,7 +69,10 @@ internal object CourseProgressFormat {
 
     // The source-document date — "4 de mar de 2024". Null when the payload's
     // `asOf` isn't a date we can read.
-    fun asOf(raw: String, locale: Locale = Locale.getDefault()): String? =
+    fun asOf(
+        raw: String,
+        locale: Locale = Locale.getDefault(),
+    ): String? =
         runCatching { LocalDate.parse(raw) }.getOrNull()?.let {
             DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(locale).format(it)
         }

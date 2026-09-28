@@ -24,7 +24,12 @@ internal val MelonSans: FontFamily = FontFamily(
     Font(googleFont = ManropeFont, fontProvider = GoogleFontsProvider, weight = FontWeight.SemiBold),
     Font(googleFont = ManropeFont, fontProvider = GoogleFontsProvider, weight = FontWeight.Bold),
     Font(googleFont = ManropeFont, fontProvider = GoogleFontsProvider, weight = FontWeight.ExtraBold),
-    Font(googleFont = ManropeFont, fontProvider = GoogleFontsProvider, weight = FontWeight.Normal, style = FontStyle.Italic),
+    Font(
+        googleFont = ManropeFont,
+        fontProvider = GoogleFontsProvider,
+        weight = FontWeight.Normal,
+        style = FontStyle.Italic,
+    ),
 )
 
 internal val MelonMono: FontFamily = FontFamily.Monospace

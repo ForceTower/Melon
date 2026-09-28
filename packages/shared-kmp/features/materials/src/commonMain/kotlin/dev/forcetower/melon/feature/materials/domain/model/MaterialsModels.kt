@@ -5,7 +5,9 @@ package dev.forcetower.melon.feature.materials.domain.model
 // device ("Salvar" is a server-side bookmark). Mirrors iOS
 // `Domain/Models/Materials.swift`; raw values are the wire contract.
 
-enum class MaterialType(val wire: String) {
+enum class MaterialType(
+    val wire: String,
+) {
     Exam("exam"),
     SolvedList("list"),
     Summary("summary"),
@@ -17,7 +19,9 @@ enum class MaterialType(val wire: String) {
     }
 }
 
-enum class MaterialFileKind(val wire: String) {
+enum class MaterialFileKind(
+    val wire: String,
+) {
     Pdf("pdf"),
     Photo("photo"),
     ;
@@ -27,7 +31,9 @@ enum class MaterialFileKind(val wire: String) {
     }
 }
 
-enum class MaterialStatus(val wire: String) {
+enum class MaterialStatus(
+    val wire: String,
+) {
     Published("published"),
     Pending("pending"),
     Rejected("rejected"),
@@ -38,7 +44,9 @@ enum class MaterialStatus(val wire: String) {
     }
 }
 
-enum class MaterialReportReason(val wire: String) {
+enum class MaterialReportReason(
+    val wire: String,
+) {
     Illegible("illegible"),
     OngoingExam("ongoing_exam"),
     RestrictedByTeacher("restricted_by_teacher"),

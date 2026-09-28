@@ -169,14 +169,16 @@ private fun AppBadge() {
     }
 }
 
-private fun SpoilerMode.previewTitleRes(): Int = when (this) {
-    SpoilerMode.Value -> R.string.settings_preview_value_title
-    SpoilerMode.Comment -> R.string.settings_preview_summary_title
-    SpoilerMode.Posted -> R.string.settings_preview_discreet_title
-}
+private fun SpoilerMode.previewTitleRes(): Int =
+    when (this) {
+        SpoilerMode.Value -> R.string.settings_preview_value_title
+        SpoilerMode.Comment -> R.string.settings_preview_summary_title
+        SpoilerMode.Posted -> R.string.settings_preview_discreet_title
+    }
 
-private fun SpoilerMode.previewBodyRes(): Int = when (this) {
-    SpoilerMode.Value -> R.string.settings_preview_value_body
-    SpoilerMode.Comment -> R.string.settings_preview_summary_body
-    SpoilerMode.Posted -> R.string.settings_preview_discreet_body
-}
+private fun SpoilerMode.previewBodyRes(): Int =
+    when (this) {
+        SpoilerMode.Value -> R.string.settings_preview_value_body
+        SpoilerMode.Comment -> R.string.settings_preview_summary_body
+        SpoilerMode.Posted -> R.string.settings_preview_discreet_body
+    }

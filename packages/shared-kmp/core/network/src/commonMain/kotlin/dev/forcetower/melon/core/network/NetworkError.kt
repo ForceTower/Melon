@@ -1,7 +1,13 @@
 package dev.forcetower.melon.core.network
 
-sealed class NetworkError(message: String?, cause: Throwable?) : Exception(message, cause) {
-    sealed class Tls(message: String?, cause: Throwable?) : NetworkError(message, cause) {
+sealed class NetworkError(
+    message: String?,
+    cause: Throwable?,
+) : Exception(message, cause) {
+    sealed class Tls(
+        message: String?,
+        cause: Throwable?,
+    ) : NetworkError(message, cause) {
         // The TLS chain was signed by an issuer that isn't trusted by the device — the
         // typical cause is a corporate proxy or local AV that re-signs traffic with its
         // own root CA. productName is the curated, user-friendly name (e.g. "Fortinet")
@@ -36,8 +42,12 @@ sealed class NetworkError(message: String?, cause: Throwable?) : Exception(messa
 
         // TLS handshake failed for a reason we couldn't classify (cipher mismatch,
         // protocol downgrade, malformed cert, etc.).
-        class Generic(cause: Throwable?) : Tls("TLS handshake failed", cause)
+        class Generic(
+            cause: Throwable?,
+        ) : Tls("TLS handshake failed", cause)
     }
 
-    class Other(cause: Throwable?) : NetworkError(cause?.message, cause)
+    class Other(
+        cause: Throwable?,
+    ) : NetworkError(cause?.message, cause)
 }

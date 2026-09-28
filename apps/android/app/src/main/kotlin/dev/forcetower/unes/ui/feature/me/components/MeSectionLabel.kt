@@ -16,7 +16,10 @@ import dev.forcetower.unes.designsystem.theme.MelonTheme
 // Uppercase section eyebrow above the shortcut grid and the settings list —
 // dc `EuScreen` "ATALHOS" / "DEFINIÇÕES" labels.
 @Composable
-internal fun MeSectionLabel(label: String, modifier: Modifier = Modifier) {
+internal fun MeSectionLabel(
+    label: String,
+    modifier: Modifier = Modifier,
+) {
     Text(
         text = label.uppercase(LocalConfiguration.current.locales[0]),
         style = MaterialTheme.typography.labelMedium.copy(

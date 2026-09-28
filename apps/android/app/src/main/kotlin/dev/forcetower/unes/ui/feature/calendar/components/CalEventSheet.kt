@@ -17,9 +17,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Event
 import androidx.compose.material.icons.filled.PushPin
 import androidx.compose.material3.Button
@@ -260,7 +260,11 @@ private fun MetaGrid(event: CalendarEvent) {
 }
 
 @Composable
-private fun MetaCell(label: String, value: String, modifier: Modifier = Modifier) {
+private fun MetaCell(
+    label: String,
+    value: String,
+    modifier: Modifier = Modifier,
+) {
     Column(
         modifier = modifier
             .clip(RoundedCornerShape(16.dp))
@@ -377,7 +381,10 @@ private fun NotesCard(notes: String) {
 }
 
 @Composable
-private fun DisciplineCard(name: String, accent: androidx.compose.ui.graphics.Color) {
+private fun DisciplineCard(
+    name: String,
+    accent: androidx.compose.ui.graphics.Color,
+) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(14.dp),

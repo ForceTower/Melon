@@ -17,10 +17,10 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.FormatListNumbered
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Block
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.FormatListNumbered
 import androidx.compose.material.icons.filled.Group
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Schedule
@@ -105,7 +105,11 @@ internal fun EnrollmentSectionCard(
                     ),
                     color = MaterialTheme.colorScheme.onBackground,
                 )
-                ShiftChip(shift = section.meetings.firstOrNull()?.shift ?: EnrollmentShift.Undefined, hue = hue, muted = noSchedule)
+                ShiftChip(
+                    shift = section.meetings.firstOrNull()?.shift ?: EnrollmentShift.Undefined,
+                    hue = hue,
+                    muted = noSchedule,
+                )
                 if (section.coursePreferential) {
                     Box(
                         modifier = Modifier
@@ -115,12 +119,21 @@ internal fun EnrollmentSectionCard(
                     )
                 }
                 Box(modifier = Modifier.weight(1f))
-                SeatMeter(filled = seats.filled, total = seats.total, fraction = seats.fraction, color = seatColor, label = seatLabel(seats.isFull, seats.isTight))
+                SeatMeter(
+                    filled = seats.filled,
+                    total = seats.total,
+                    fraction = seats.fraction,
+                    color = seatColor,
+                    label = seatLabel(seats.isFull, seats.isTight),
+                )
             }
 
             Column(modifier = Modifier.padding(top = 12.dp), verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 if (noSchedule) {
-                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    ) {
                         Icon(
                             imageVector = Icons.Filled.Schedule,
                             contentDescription = null,
@@ -183,8 +196,11 @@ internal fun EnrollmentSectionCard(
                                 append(meeting.room ?: stringResource(R.string.enrollment_room_tbd))
                                 append(" · ")
                                 append(
-                                    if (meeting.professors.isEmpty()) stringResource(R.string.enrollment_prof_tbd)
-                                    else meeting.professors.joinToString(", "),
+                                    if (meeting.professors.isEmpty()) {
+                                        stringResource(R.string.enrollment_prof_tbd)
+                                    } else {
+                                        meeting.professors.joinToString(", ")
+                                    },
                                 )
                             },
                             style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.5.sp),
@@ -237,16 +253,24 @@ internal fun EnrollmentSectionCard(
 }
 
 @Composable
-private fun seatLabel(full: Boolean, tight: Boolean): String = stringResource(
-    when {
-        full -> R.string.enrollment_seats_full
-        tight -> R.string.enrollment_seats_tight
-        else -> R.string.enrollment_seats_open
-    },
-)
+private fun seatLabel(
+    full: Boolean,
+    tight: Boolean,
+): String =
+    stringResource(
+        when {
+            full -> R.string.enrollment_seats_full
+            tight -> R.string.enrollment_seats_tight
+            else -> R.string.enrollment_seats_open
+        },
+    )
 
 @Composable
-private fun ShiftChip(shift: EnrollmentShift, hue: Color, muted: Boolean) {
+private fun ShiftChip(
+    shift: EnrollmentShift,
+    hue: Color,
+    muted: Boolean,
+) {
     Text(
         text = stringResource(
             when (shift) {
@@ -269,7 +293,13 @@ private fun ShiftChip(shift: EnrollmentShift, hue: Color, muted: Boolean) {
 }
 
 @Composable
-private fun SeatMeter(filled: Int, total: Int, fraction: Float, color: Color, label: String) {
+private fun SeatMeter(
+    filled: Int,
+    total: Int,
+    fraction: Float,
+    color: Color,
+    label: String,
+) {
     Column(horizontalAlignment = Alignment.End, verticalArrangement = Arrangement.spacedBy(5.dp)) {
         Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.spacedBy(3.dp)) {
             Text(
@@ -315,7 +345,12 @@ private fun SeatMeter(filled: Int, total: Int, fraction: Float, color: Color, la
 }
 
 @Composable
-private fun SectionNotice(hue: Color, icon: ImageVector, title: String, text: String) {
+private fun SectionNotice(
+    hue: Color,
+    icon: ImageVector,
+    title: String,
+    text: String,
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -420,8 +455,11 @@ private fun SectionFooterButton(
             }
             .background(background)
             .then(
-                if (inert) Modifier
-                else Modifier.clickable(role = Role.Button, onClickLabel = label, onClick = onTap),
+                if (inert) {
+                    Modifier
+                } else {
+                    Modifier.clickable(role = Role.Button, onClickLabel = label, onClick = onTap)
+                },
             ),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,

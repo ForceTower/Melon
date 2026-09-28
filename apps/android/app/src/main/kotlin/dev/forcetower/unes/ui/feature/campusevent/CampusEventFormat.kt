@@ -20,7 +20,10 @@ internal object CampusEventFormat {
         identifier?.let { runCatching { ZoneId.of(it) }.getOrNull() } ?: ZoneId.systemDefault()
 
     // "Seg" / "Mon" — abbreviated weekday, capitalized, no trailing dot.
-    fun weekdayShort(instant: Instant, zone: ZoneId): String =
+    fun weekdayShort(
+        instant: Instant,
+        zone: ZoneId,
+    ): String =
         format(instant, zone, "EEE")
             .replace(".", "")
             .replaceFirstChar { it.titlecase(Locale.getDefault()) }
@@ -41,8 +44,10 @@ internal object CampusEventFormat {
     fun dayNumber(date: LocalDate): String = "%02d".format(date.day)
 
     // "6 de agosto" / "August 6".
-    fun fullDate(instant: Instant, zone: ZoneId): String =
-        format(instant, zone, bestPattern("dMMMM"))
+    fun fullDate(
+        instant: Instant,
+        zone: ZoneId,
+    ): String = format(instant, zone, bestPattern("dMMMM"))
 
     // "4 – 8 de agosto" / "August 4 – 8"; `withYear` adds it for the welcome
     // footer. Locale-composed by `DateUtils`, rendered in the event zone.
@@ -66,18 +71,32 @@ internal object CampusEventFormat {
     }
 
     // "08:00" / "8:00 AM" — locale-preferred hour cycle.
-    fun time(instant: Instant, zone: ZoneId): String =
-        format(instant, zone, bestPattern("jm"))
+    fun time(
+        instant: Instant,
+        zone: ZoneId,
+    ): String = format(instant, zone, bestPattern("jm"))
 
     // "08:00 – 09:30", or just the start for open-ended activities.
-    fun timeRange(start: Instant, end: Instant?, zone: ZoneId): String {
+    fun timeRange(
+        start: Instant,
+        end: Instant?,
+        zone: ZoneId,
+    ): String {
         if (end == null) return time(start, zone)
         return "${time(start, zone)} – ${time(end, zone)}"
     }
 
-    data class Countdown(val days: Int, val hours: Int, val minutes: Int, val seconds: Int)
+    data class Countdown(
+        val days: Int,
+        val hours: Int,
+        val minutes: Int,
+        val seconds: Int,
+    )
 
-    fun countdown(target: Instant, now: Instant): Countdown {
+    fun countdown(
+        target: Instant,
+        now: Instant,
+    ): Countdown {
         val left = (target - now).inWholeSeconds.coerceAtLeast(0).toInt()
         return Countdown(
             days = left / 86_400,
@@ -89,7 +108,11 @@ internal object CampusEventFormat {
 
     fun padded(value: Int): String = "%02d".format(value)
 
-    private fun format(instant: Instant, zone: ZoneId, pattern: String): String =
+    private fun format(
+        instant: Instant,
+        zone: ZoneId,
+        pattern: String,
+    ): String =
         DateTimeFormatter.ofPattern(pattern, Locale.getDefault())
             .withZone(zone)
             .format(java.time.Instant.ofEpochMilli(instant.toEpochMilliseconds()))
@@ -97,6 +120,5 @@ internal object CampusEventFormat {
     private fun bestPattern(skeleton: String): String =
         android.text.format.DateFormat.getBestDateTimePattern(Locale.getDefault(), skeleton)
 
-    private fun LocalDate.toJava(): java.time.LocalDate =
-        java.time.LocalDate.of(year, month.number, day)
+    private fun LocalDate.toJava(): java.time.LocalDate = java.time.LocalDate.of(year, month.number, day)
 }

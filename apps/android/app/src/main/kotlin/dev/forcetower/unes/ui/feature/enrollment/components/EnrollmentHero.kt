@@ -36,9 +36,9 @@ import dev.forcetower.melon.feature.enrollment.domain.model.EnrollmentWindow
 import dev.forcetower.melon.feature.enrollment.domain.model.EnrollmentWindowState
 import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.foundation.Mesh
+import dev.forcetower.unes.designsystem.foundation.MeshVariant
 import dev.forcetower.unes.designsystem.foundation.RevealShadow
 import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
-import dev.forcetower.unes.designsystem.foundation.MeshVariant
 import dev.forcetower.unes.designsystem.theme.melon
 import dev.forcetower.unes.ui.feature.enrollment.EnrollmentFormat
 
@@ -238,7 +238,10 @@ internal fun EnrollmentHero(
 }
 
 @Composable
-private fun heroTitle(window: EnrollmentWindow, end: java.time.OffsetDateTime?): String =
+private fun heroTitle(
+    window: EnrollmentWindow,
+    end: java.time.OffsetDateTime?,
+): String =
     when (window.state) {
         EnrollmentWindowState.Open ->
             end?.let { stringResource(R.string.enrollment_hero_open_title_format, EnrollmentFormat.shortDate(it)) }
@@ -251,7 +254,12 @@ private fun heroTitle(window: EnrollmentWindow, end: java.time.OffsetDateTime?):
     }
 
 @Composable
-private fun HeroDateCell(label: String, value: String?, onHero: Color, modifier: Modifier = Modifier) {
+private fun HeroDateCell(
+    label: String,
+    value: String?,
+    onHero: Color,
+    modifier: Modifier = Modifier,
+) {
     Column(modifier = modifier) {
         Text(
             text = label.uppercase(),
@@ -277,7 +285,11 @@ private fun HeroDateCell(label: String, value: String?, onHero: Color, modifier:
 // dc hero ring: full circle, 6dp stroke, fill = remaining fraction of the
 // window, the big day count in the middle.
 @Composable
-private fun DaysLeftRing(days: Int, fraction: Float, onHero: Color) {
+private fun DaysLeftRing(
+    days: Int,
+    fraction: Float,
+    onHero: Color,
+) {
     Box(modifier = Modifier.size(78.dp), contentAlignment = Alignment.Center) {
         Canvas(modifier = Modifier.fillMaxSize()) {
             val stroke = Stroke(width = 6.dp.toPx(), cap = StrokeCap.Round)

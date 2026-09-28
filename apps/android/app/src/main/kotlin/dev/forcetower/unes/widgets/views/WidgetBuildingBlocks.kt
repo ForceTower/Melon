@@ -13,12 +13,6 @@ import androidx.glance.Image
 import androidx.glance.ImageProvider
 import androidx.glance.appwidget.cornerRadius
 import androidx.glance.background
-// Glance ships two overloads named `ColorProvider`: a `(Color)` factory in
-// `androidx.glance.unit` for fixed colors, and a `(day, night)` factory in
-// `androidx.glance.color` for adaptive ones. The unit-package factory is
-// what we want everywhere — the widget already resolves the theme eagerly
-// based on the host's UI mode, so the day/night routing happens upstream.
-import androidx.glance.unit.ColorProvider
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Box
 import androidx.glance.layout.Column
@@ -36,9 +30,16 @@ import androidx.glance.text.FontStyle
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
+import androidx.glance.unit.ColorProvider
 import dev.forcetower.unes.widgets.NextClassEntry
 import dev.forcetower.unes.widgets.WidgetBrand
 import dev.forcetower.unes.widgets.WidgetTheme
+
+// Glance ships two overloads named `ColorProvider`: a `(Color)` factory in
+// `androidx.glance.unit` for fixed colors, and a `(day, night)` factory in
+// `androidx.glance.color` for adaptive ones. The unit-package factory is
+// what we want everywhere — the widget already resolves the theme eagerly
+// based on the host's UI mode, so the day/night routing happens upstream.
 
 // Shared text styles + small layout primitives reused across all three widget
 // sizes. Centralized so a typography tweak in one place propagates and
@@ -49,37 +50,40 @@ internal object WidgetText {
         size: Float,
         weight: FontWeight = FontWeight.Normal,
         color: Color,
-    ): TextStyle = TextStyle(
-        color = ColorProvider(color),
-        fontSize = size.sp,
-        fontWeight = weight,
-        fontFamily = FontFamily.Monospace,
-    )
+    ): TextStyle =
+        TextStyle(
+            color = ColorProvider(color),
+            fontSize = size.sp,
+            fontWeight = weight,
+            fontFamily = FontFamily.Monospace,
+        )
 
     fun serif(
         size: Float,
         color: Color,
         italic: Boolean = false,
-    ): TextStyle = TextStyle(
-        color = ColorProvider(color),
-        fontSize = size.sp,
-        fontWeight = FontWeight.Normal,
-        fontFamily = FontFamily.Serif,
-        fontStyle = if (italic) FontStyle.Italic else FontStyle.Normal,
-    )
+    ): TextStyle =
+        TextStyle(
+            color = ColorProvider(color),
+            fontSize = size.sp,
+            fontWeight = FontWeight.Normal,
+            fontFamily = FontFamily.Serif,
+            fontStyle = if (italic) FontStyle.Italic else FontStyle.Normal,
+        )
 
     fun sans(
         size: Float,
         color: Color,
         weight: FontWeight = FontWeight.Normal,
         italic: Boolean = false,
-    ): TextStyle = TextStyle(
-        color = ColorProvider(color),
-        fontSize = size.sp,
-        fontWeight = weight,
-        fontFamily = FontFamily.SansSerif,
-        fontStyle = if (italic) FontStyle.Italic else FontStyle.Normal,
-    )
+    ): TextStyle =
+        TextStyle(
+            color = ColorProvider(color),
+            fontSize = size.sp,
+            fontWeight = weight,
+            fontFamily = FontFamily.SansSerif,
+            fontStyle = if (italic) FontStyle.Italic else FontStyle.Normal,
+        )
 }
 
 // `cornerRadius` requires API 31+; Glance falls back silently on older
@@ -88,7 +92,9 @@ internal object WidgetText {
 internal fun GlanceModifier.cornerRadiusCompat(radius: Dp): GlanceModifier =
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
         cornerRadius(radius)
-    } else this
+    } else {
+        this
+    }
 
 // Small monospace pill used to badge the subject code (CALC II / ALGI / ...).
 // Mirrors `CodePill` in `screens-widgets.jsx` and the iOS `CodePill`.
@@ -119,7 +125,10 @@ internal enum class PillSize { Sm, Lg }
 // halo because layered Boxes with translucent backgrounds add too much
 // weight at the small dot scale.
 @Composable
-internal fun LiveDot(color: Color = WidgetBrand.amber, dotSize: Int = 5) {
+internal fun LiveDot(
+    color: Color = WidgetBrand.amber,
+    dotSize: Int = 5,
+) {
     Box(
         modifier = GlanceModifier
             .size(dotSize.dp)

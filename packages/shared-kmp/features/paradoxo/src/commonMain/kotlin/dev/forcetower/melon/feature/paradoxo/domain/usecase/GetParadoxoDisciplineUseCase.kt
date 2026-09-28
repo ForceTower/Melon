@@ -10,6 +10,5 @@ import dev.zacsweers.metro.Inject
 class GetParadoxoDisciplineUseCase internal constructor(
     private val service: ParadoxoService,
 ) {
-    suspend operator fun invoke(id: String): Outcome<ParadoxoDisciplineDetail, ParadoxoError> =
-        service.discipline(id)
+    suspend operator fun invoke(id: String): Outcome<ParadoxoDisciplineDetail, ParadoxoError> = service.discipline(id)
 }

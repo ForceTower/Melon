@@ -290,7 +290,10 @@ private fun DependenciesControls(
 }
 
 @Composable
-private fun Footer(version: String, build: String) {
+private fun Footer(
+    version: String,
+    build: String,
+) {
     val ink4 = MaterialTheme.colorScheme.outlineVariant
     // The footer format adds its own "v" prefix; drop a leading v/V so a
     // versionName that already carries one (e.g. "v1-legacy-android") doesn't
@@ -498,33 +501,63 @@ private fun LicensesPreviewDark() {
 
 private val previewLicensePackages: List<LicensePackage> = listOf(
     LicensePackage(
-        "androidx.compose.ui:ui", "ui", "1.9.0", "androidx.compose.ui",
-        "Apache-2.0", "Apache License 2.0", "https://www.apache.org/licenses/LICENSE-2.0",
+        "androidx.compose.ui:ui",
+        "ui",
+        "1.9.0",
+        "androidx.compose.ui",
+        "Apache-2.0",
+        "Apache License 2.0",
+        "https://www.apache.org/licenses/LICENSE-2.0",
         "https://cs.android.com/androidx/platform/frameworks/support",
     ),
     LicensePackage(
-        "com.squareup.okhttp3:okhttp", "okhttp", "4.12.0", "com.squareup.okhttp3",
-        "Apache-2.0", "Apache License 2.0", "https://www.apache.org/licenses/LICENSE-2.0",
+        "com.squareup.okhttp3:okhttp",
+        "okhttp",
+        "4.12.0",
+        "com.squareup.okhttp3",
+        "Apache-2.0",
+        "Apache License 2.0",
+        "https://www.apache.org/licenses/LICENSE-2.0",
         "https://github.com/square/okhttp",
     ),
     LicensePackage(
-        "org.jetbrains.kotlinx:kotlinx-coroutines-core", "kotlinx-coroutines-core", "1.9.0",
-        "org.jetbrains.kotlinx", "Apache-2.0", null, "https://www.apache.org/licenses/LICENSE-2.0",
+        "org.jetbrains.kotlinx:kotlinx-coroutines-core",
+        "kotlinx-coroutines-core",
+        "1.9.0",
+        "org.jetbrains.kotlinx",
+        "Apache-2.0",
+        null,
+        "https://www.apache.org/licenses/LICENSE-2.0",
         "https://github.com/Kotlin/kotlinx.coroutines",
     ),
     LicensePackage(
-        "com.google.code.gson:gson", "gson", "2.11.0", "com.google.code.gson",
-        "Apache-2.0", null, "https://www.apache.org/licenses/LICENSE-2.0",
+        "com.google.code.gson:gson",
+        "gson",
+        "2.11.0",
+        "com.google.code.gson",
+        "Apache-2.0",
+        null,
+        "https://www.apache.org/licenses/LICENSE-2.0",
         "https://github.com/google/gson",
     ),
     LicensePackage(
-        "org.slf4j:slf4j-api", "slf4j-api", "2.0.13", "org.slf4j",
-        "MIT", "MIT License", "https://opensource.org/license/mit",
+        "org.slf4j:slf4j-api",
+        "slf4j-api",
+        "2.0.13",
+        "org.slf4j",
+        "MIT",
+        "MIT License",
+        "https://opensource.org/license/mit",
         "https://github.com/qos-ch/slf4j",
     ),
     LicensePackage(
-        "com.google.protobuf:protobuf-javalite", "protobuf-javalite", "3.25.3",
-        "com.google.protobuf", "BSD-3-Clause", "BSD 3-Clause", "https://opensource.org/licenses/BSD-3-Clause",
+        "com.google.protobuf:protobuf-javalite",
+        "protobuf-javalite",
+        "3.25.3",
+        "com.google.protobuf",
+        "BSD-3-Clause",
+        "BSD 3-Clause",
+        "https://opensource.org/licenses/BSD-3-Clause",
         "https://github.com/protocolbuffers/protobuf",
     ),
 )

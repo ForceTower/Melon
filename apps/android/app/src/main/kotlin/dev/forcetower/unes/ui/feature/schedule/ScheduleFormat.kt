@@ -3,15 +3,15 @@ package dev.forcetower.unes.ui.feature.schedule
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
+import dev.forcetower.melon.feature.schedule.domain.model.ScheduleClass as KmpScheduleClass
+import dev.forcetower.melon.feature.schedule.domain.model.ScheduleDay as KmpScheduleDay
+import dev.forcetower.melon.feature.schedule.domain.model.ScheduleWeek as KmpScheduleWeek
 import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.theme.MelonPaletteColors
 import dev.forcetower.unes.ui.feature.overview.ColorFor
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
-import dev.forcetower.melon.feature.schedule.domain.model.ScheduleClass as KmpScheduleClass
-import dev.forcetower.melon.feature.schedule.domain.model.ScheduleDay as KmpScheduleDay
-import dev.forcetower.melon.feature.schedule.domain.model.ScheduleWeek as KmpScheduleWeek
 
 // KMP → UI projection and date formatting shared by the two Horário
 // renderings (`ScheduleScreen` timeline and `ScheduleGridScreen`). Mirrors
@@ -31,10 +31,15 @@ internal fun mapWeek(
     return bucket
 }
 
-private fun mapDay(day: KmpScheduleDay, palette: MelonPaletteColors): List<ScheduleClass> =
-    day.classes.map { mapClass(it, palette) }
+private fun mapDay(
+    day: KmpScheduleDay,
+    palette: MelonPaletteColors,
+): List<ScheduleClass> = day.classes.map { mapClass(it, palette) }
 
-private fun mapClass(raw: KmpScheduleClass, palette: MelonPaletteColors): ScheduleClass =
+private fun mapClass(
+    raw: KmpScheduleClass,
+    palette: MelonPaletteColors,
+): ScheduleClass =
     ScheduleClass(
         start = trimTime(raw.startTime),
         end = raw.endTime?.let(::trimTime).orEmpty(),
@@ -78,8 +83,7 @@ internal fun formatDayDate(iso: String?): String {
 // "Quinta" — the weekday without the pt-BR "-feira" tail, for the grid's
 // agenda section headers and sheet caption. Locales without the tail pass
 // through unchanged.
-internal fun formatShortDayName(iso: String?): String =
-    formatDayName(iso).substringBefore("-feira")
+internal fun formatShortDayName(iso: String?): String = formatDayName(iso).substringBefore("-feira")
 
 // "17 abr" — the compact date the grid's agenda list pairs with each weekday.
 internal fun formatShortDayMonth(iso: String?): String {
@@ -89,7 +93,10 @@ internal fun formatShortDayMonth(iso: String?): String {
 }
 
 @Composable
-internal fun formatWeekRange(firstIso: String?, lastIso: String?): String {
+internal fun formatWeekRange(
+    firstIso: String?,
+    lastIso: String?,
+): String {
     if (firstIso == null || lastIso == null) return ""
     val first = runCatching { LocalDate.parse(firstIso) }.getOrNull() ?: return ""
     val last = runCatching { LocalDate.parse(lastIso) }.getOrNull() ?: return ""

@@ -91,7 +91,6 @@ fun SplashScreen(
 
 @Composable
 private fun SplashContent() {
-
     val night = MaterialTheme.melon.fixed.night
     val veil = MaterialTheme.melon.fixed.nightVeil
     val cream = MaterialTheme.melon.fixed.surfaceLight

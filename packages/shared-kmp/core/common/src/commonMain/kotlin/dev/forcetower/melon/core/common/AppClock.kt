@@ -1,8 +1,8 @@
 package dev.forcetower.melon.core.common
 
+import kotlin.time.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
-import kotlin.time.Clock
 
 class AppClock(
     private val clock: Clock = Clock.System,

@@ -21,7 +21,10 @@ import dev.forcetower.unes.R
 // everything it needs is the snapshot file and system services.
 internal class PersonalEventReminderReceiver : BroadcastReceiver() {
 
-    override fun onReceive(context: Context, intent: Intent) {
+    override fun onReceive(
+        context: Context,
+        intent: Intent,
+    ) {
         when (intent.action) {
             ACTION_FIRE -> {
                 postDueReminders(context)
@@ -66,7 +69,10 @@ internal class PersonalEventReminderReceiver : BroadcastReceiver() {
 
     // Taps land on Calendário through the same unes:// path notification pushes
     // use — MainActivity reads either the data URI or the "url" extra.
-    private fun contentIntent(context: Context, id: String): PendingIntent {
+    private fun contentIntent(
+        context: Context,
+        id: String,
+    ): PendingIntent {
         val intent = Intent(context, MainActivity::class.java).apply {
             action = Intent.ACTION_VIEW
             data = CALENDAR_DEEPLINK.toUri()

@@ -63,7 +63,11 @@ internal fun RecaptchaWebView(
     )
 }
 
-private fun captchaHtml(siteKey: String, theme: String): String = """
+private fun captchaHtml(
+    siteKey: String,
+    theme: String,
+): String =
+    """
     <!doctype html>
     <html>
     <head>
@@ -85,4 +89,4 @@ private fun captchaHtml(siteKey: String, theme: String): String = """
     <script src="https://www.google.com/recaptcha/api.js?onload=captchaLoaded&render=explicit" async defer></script>
     </body>
     </html>
-""".trimIndent()
+    """.trimIndent()

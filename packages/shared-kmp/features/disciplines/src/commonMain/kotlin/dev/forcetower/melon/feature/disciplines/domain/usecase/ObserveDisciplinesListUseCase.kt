@@ -13,10 +13,10 @@ import dev.forcetower.melon.feature.disciplines.domain.model.PendingSemester
 import dev.forcetower.melon.feature.disciplines.domain.model.SemesterDisciplines
 import dev.zacsweers.metro.Inject
 import kotlin.math.ceil
+import kotlin.time.Clock
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlin.time.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
@@ -32,14 +32,15 @@ class ObserveDisciplinesListUseCase internal constructor(
 ) {
     private val timeZone = TimeZone.currentSystemDefault()
 
-    operator fun invoke(): Flow<DisciplinesListState> = combine(
-        semesterDao.observeAll(),
-        academicDao.observeAllEnrolledDisciplines(),
-        academicDao.observeAllPartialGrades(),
-    ) { semesters, enrollments, grades ->
-        val today = Clock.System.now().toLocalDateTime(timeZone).date.toString()
-        buildState(semesters, enrollments, grades, today)
-    }.distinctUntilChanged()
+    operator fun invoke(): Flow<DisciplinesListState> =
+        combine(
+            semesterDao.observeAll(),
+            academicDao.observeAllEnrolledDisciplines(),
+            academicDao.observeAllPartialGrades(),
+        ) { semesters, enrollments, grades ->
+            val today = Clock.System.now().toLocalDateTime(timeZone).date.toString()
+            buildState(semesters, enrollments, grades, today)
+        }.distinctUntilChanged()
 }
 
 private fun buildState(
@@ -150,13 +151,14 @@ private fun buildItem(
     )
 }
 
-private fun PartialGradeRow.toListEntry(): ListGradeEntry = ListGradeEntry(
-    name = name,
-    nameShort = nameShort,
-    date = date?.takeIf { it.isNotBlank() },
-    value = parsedValue(),
-    weight = weight.replace(",", ".").toDoubleOrNull(),
-)
+private fun PartialGradeRow.toListEntry(): ListGradeEntry =
+    ListGradeEntry(
+        name = name,
+        nameShort = nameShort,
+        date = date?.takeIf { it.isNotBlank() },
+        value = parsedValue(),
+        weight = weight.replace(",", ".").toDoubleOrNull(),
+    )
 
 private fun weightedAverage(grades: List<PartialGradeRow>): Double? {
     var weightedSum = 0.0
@@ -199,12 +201,13 @@ private fun classifyStatus(
     wentToFinals: Boolean,
     finalGrade: Double?,
     partialAverage: Double?,
-): DisciplineStatusKind = when {
-    approved == true -> DisciplineStatusKind.APROVADO
-    approved == false -> DisciplineStatusKind.REPROVADO
-    wentToFinals -> DisciplineStatusKind.FINAL
-    finalGrade != null -> DisciplineStatusKind.FINAL
-    partialAverage == null -> DisciplineStatusKind.PENDING
-    partialAverage < PASS_THRESHOLD -> DisciplineStatusKind.LOW
-    else -> DisciplineStatusKind.ONGOING
-}
+): DisciplineStatusKind =
+    when {
+        approved == true -> DisciplineStatusKind.APROVADO
+        approved == false -> DisciplineStatusKind.REPROVADO
+        wentToFinals -> DisciplineStatusKind.FINAL
+        finalGrade != null -> DisciplineStatusKind.FINAL
+        partialAverage == null -> DisciplineStatusKind.PENDING
+        partialAverage < PASS_THRESHOLD -> DisciplineStatusKind.LOW
+        else -> DisciplineStatusKind.ONGOING
+    }

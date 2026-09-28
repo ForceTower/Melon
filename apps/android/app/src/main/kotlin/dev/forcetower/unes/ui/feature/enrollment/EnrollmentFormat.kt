@@ -24,13 +24,20 @@ internal object EnrollmentFormat {
             }.getOrNull()
 
     // Whole days until the deadline, ceiling so "4d 2h left" still reads 5.
-    fun daysLeft(end: OffsetDateTime, nowMillis: Long): Int {
+    fun daysLeft(
+        end: OffsetDateTime,
+        nowMillis: Long,
+    ): Int {
         val seconds = Instant.ofEpochMilli(nowMillis).until(end.toInstant(), ChronoUnit.SECONDS)
         return ceil(seconds / 86_400.0).toInt().coerceAtLeast(0)
     }
 
     // Fraction of the window still remaining — the hero ring fill.
-    fun remainingFraction(start: OffsetDateTime, end: OffsetDateTime, nowMillis: Long): Float {
+    fun remainingFraction(
+        start: OffsetDateTime,
+        end: OffsetDateTime,
+        nowMillis: Long,
+    ): Float {
         val total = start.toInstant().until(end.toInstant(), ChronoUnit.SECONDS).toFloat()
         if (total <= 0f) return 0f
         val left = Instant.ofEpochMilli(nowMillis).until(end.toInstant(), ChronoUnit.SECONDS).toFloat()
@@ -50,8 +57,7 @@ internal object EnrollmentFormat {
             .format(date.atZoneSameInstant(ZoneId.systemDefault()))
 
     // Slot day ints are 0=Sunday…6=Saturday on the wire.
-    private fun dayOfWeek(day: Int): DayOfWeek =
-        if (day == 0) DayOfWeek.SUNDAY else DayOfWeek.of(day.coerceIn(1, 6))
+    private fun dayOfWeek(day: Int): DayOfWeek = if (day == 0) DayOfWeek.SUNDAY else DayOfWeek.of(day.coerceIn(1, 6))
 
     // "Seg" — locale short name, period stripped, title-cased.
     fun dayShort(day: Int): String =
@@ -68,7 +74,10 @@ internal object EnrollmentFormat {
     fun slotTime(raw: String): String = raw.take(5)
 }
 
-internal data class ScheduleLine(val days: String, val time: String)
+internal data class ScheduleLine(
+    val days: String,
+    val time: String,
+)
 
 // Collapses a section's slots into per-time lines: "Seg, Qua · 13:30–15:30".
 internal fun scheduleLines(section: EnrollmentSection): List<ScheduleLine> {

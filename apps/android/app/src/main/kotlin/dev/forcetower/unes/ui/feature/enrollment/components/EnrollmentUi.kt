@@ -236,7 +236,11 @@ internal fun EnrollmentTagPill(
 
 // Discipline code chip tinted by the stable per-code hue.
 @Composable
-internal fun EnrollmentCodeChip(code: String, hue: Color, modifier: Modifier = Modifier) {
+internal fun EnrollmentCodeChip(
+    code: String,
+    hue: Color,
+    modifier: Modifier = Modifier,
+) {
     Text(
         text = code,
         style = MaterialTheme.typography.labelSmall.copy(

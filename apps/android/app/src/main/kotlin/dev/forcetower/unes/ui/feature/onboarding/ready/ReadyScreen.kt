@@ -301,7 +301,10 @@ private fun CheckBadge(accent: Color) {
 // ───────── Next class hero ─────────
 
 @Composable
-private fun NextClassHero(next: NextClassDisplay, modifier: Modifier = Modifier) {
+private fun NextClassHero(
+    next: NextClassDisplay,
+    modifier: Modifier = Modifier,
+) {
     val night = MaterialTheme.melon.fixed.night
     val veil = MaterialTheme.melon.fixed.nightVeil
     val onHero = MaterialTheme.melon.fixed.onHero
@@ -499,7 +502,11 @@ private fun StatCard(
 }
 
 @Composable
-private fun ScoreStatCard(score: Double?, spark: List<Double>, modifier: Modifier = Modifier) {
+private fun ScoreStatCard(
+    score: Double?,
+    spark: List<Double>,
+    modifier: Modifier = Modifier,
+) {
     val warn = MaterialTheme.melon.status.warn
     val ink = MaterialTheme.colorScheme.onBackground
 
@@ -535,15 +542,18 @@ private fun ScoreStatCard(score: Double?, spark: List<Double>, modifier: Modifie
 }
 
 @Composable
-private fun Sparkline(points: List<Double>, color: Color, modifier: Modifier = Modifier) {
+private fun Sparkline(
+    points: List<Double>,
+    color: Color,
+    modifier: Modifier = Modifier,
+) {
     Canvas(modifier) {
         val min = points.min()
         val max = points.max()
         val span = (max - min).takeIf { it > 0.0001 } ?: 1.0
         val stepX = size.width / (points.size - 1)
         val pad = 3.dp.toPx()
-        fun yFor(value: Double): Float =
-            pad + ((max - value) / span).toFloat() * (size.height - pad * 2)
+        fun yFor(value: Double): Float = pad + ((max - value) / span).toFloat() * (size.height - pad * 2)
 
         val path = Path()
         points.forEachIndexed { index, value ->
@@ -565,7 +575,10 @@ private fun Sparkline(points: List<Double>, color: Color, modifier: Modifier = M
 }
 
 @Composable
-private fun AttendanceStatCard(percent: Int, modifier: Modifier = Modifier) {
+private fun AttendanceStatCard(
+    percent: Int,
+    modifier: Modifier = Modifier,
+) {
     val jade = MaterialTheme.melon.palette.jade
     val ink = MaterialTheme.colorScheme.onBackground
     val ink3 = MaterialTheme.colorScheme.onSurfaceVariant
@@ -627,7 +640,11 @@ private fun AttendanceStatCard(percent: Int, modifier: Modifier = Modifier) {
 // ───────── Formatting ─────────
 
 @Composable
-private fun readyHeadline(firstName: String, ink: Color, accent: Color): AnnotatedString {
+private fun readyHeadline(
+    firstName: String,
+    ink: Color,
+    accent: Color,
+): AnnotatedString {
     val top = stringResource(R.string.onboarding_ready_headline_top)
     val fallback = stringResource(R.string.onboarding_ready_default_user)
     return buildAnnotatedString {
@@ -670,7 +687,11 @@ private fun formatSemesterSummary(
 // KMP emits "HH:mm[:ss]" — trim to "HH:mm".
 private fun trimTime(raw: String): String = raw.split(':').take(2).joinToString(":")
 
-private fun formatTimeRange(context: android.content.Context, start: String, end: String?): String =
+private fun formatTimeRange(
+    context: android.content.Context,
+    start: String,
+    end: String?,
+): String =
     if (end.isNullOrBlank()) {
         trimTime(start)
     } else {
@@ -681,14 +702,15 @@ private fun formatNextClassMeta(
     context: android.content.Context,
     room: String?,
     teacherName: String?,
-): String = when {
-    !room.isNullOrBlank() && !teacherName.isNullOrBlank() ->
-        context.getString(R.string.onboarding_ready_next_class_meta_full, room, teacherName)
-    !teacherName.isNullOrBlank() -> teacherName
-    !room.isNullOrBlank() ->
-        context.getString(R.string.onboarding_ready_next_class_meta_no_teacher, room)
-    else -> context.getString(R.string.onboarding_ready_next_class_meta_empty)
-}
+): String =
+    when {
+        !room.isNullOrBlank() && !teacherName.isNullOrBlank() ->
+            context.getString(R.string.onboarding_ready_next_class_meta_full, room, teacherName)
+        !teacherName.isNullOrBlank() -> teacherName
+        !room.isNullOrBlank() ->
+            context.getString(R.string.onboarding_ready_next_class_meta_no_teacher, room)
+        else -> context.getString(R.string.onboarding_ready_next_class_meta_empty)
+    }
 
 @Preview
 @Composable

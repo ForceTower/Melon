@@ -1,32 +1,38 @@
 package dev.forcetower.unes.ui.feature.overview
 
+import androidx.annotation.StringRes
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.forcetower.melon.core.analytics.Analytics
 import dev.forcetower.melon.core.analytics.ContentTypes
-import androidx.annotation.StringRes
-import dev.forcetower.melon.core.common.ForegroundSignal
 import dev.forcetower.melon.core.common.AppClock
+import dev.forcetower.melon.core.common.ForegroundSignal
 import dev.forcetower.melon.core.common.Outcome
-import dev.forcetower.melon.feature.me.domain.model.ReauthError
 import dev.forcetower.melon.core.session.domain.SessionStore
 import dev.forcetower.melon.feature.campusevent.domain.model.CampusEvent
 import dev.forcetower.melon.feature.campusevent.domain.usecase.ObserveCampusEventUseCase
 import dev.forcetower.melon.feature.campusevent.domain.usecase.RefreshCampusEventUseCase
+import dev.forcetower.melon.feature.me.domain.model.ReauthError
 import dev.forcetower.melon.feature.me.domain.usecase.ObserveMeProfileUseCase
 import dev.forcetower.melon.feature.me.domain.usecase.ReauthenticateUpstreamUseCase
 import dev.forcetower.melon.feature.me.domain.usecase.RefreshCredentialStatusUseCase
+import dev.forcetower.melon.feature.overview.domain.model.OverviewClassState as KmpOverviewClassState
+import dev.forcetower.melon.feature.overview.domain.model.OverviewMessagesTile as KmpOverviewMessagesTile
+import dev.forcetower.melon.feature.overview.domain.model.OverviewNextTestTile as KmpOverviewNextTestTile
+import dev.forcetower.melon.feature.overview.domain.model.OverviewNowClass as KmpOverviewNowClass
+import dev.forcetower.melon.feature.overview.domain.model.OverviewTodayItem as KmpOverviewTodayItem
+import dev.forcetower.melon.feature.overview.domain.model.OverviewTomorrowPreview as KmpOverviewTomorrowPreview
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveNextTestTileUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveNowClassUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveOverviewHeaderUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveTodayTimelineUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveTomorrowPreviewUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveUnreadMessagesTileUseCase
+import dev.forcetower.unes.R
 import dev.forcetower.unes.mvi.MviViewModel
 import dev.forcetower.unes.mvi.UiEffect
 import dev.forcetower.unes.mvi.UiIntent
 import dev.forcetower.unes.mvi.UiState
-import dev.forcetower.unes.R
 import dev.forcetower.unes.remote.FeatureFlags
 import java.time.LocalDate
 import java.time.ZoneId
@@ -34,22 +40,16 @@ import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.util.Locale
 import javax.inject.Inject
+import kotlin.time.Clock
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Instant
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlin.time.Clock
-import kotlin.time.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
-import kotlin.time.Duration.Companion.milliseconds
-import dev.forcetower.melon.feature.overview.domain.model.OverviewClassState as KmpOverviewClassState
-import dev.forcetower.melon.feature.overview.domain.model.OverviewMessagesTile as KmpOverviewMessagesTile
-import dev.forcetower.melon.feature.overview.domain.model.OverviewNextTestTile as KmpOverviewNextTestTile
-import dev.forcetower.melon.feature.overview.domain.model.OverviewNowClass as KmpOverviewNowClass
-import dev.forcetower.melon.feature.overview.domain.model.OverviewTodayItem as KmpOverviewTodayItem
-import dev.forcetower.melon.feature.overview.domain.model.OverviewTomorrowPreview as KmpOverviewTomorrowPreview
 
 internal enum class GreetingKind { Morning, Afternoon, Evening }
 
@@ -132,7 +132,9 @@ internal data class OverviewUiState(
 internal sealed interface OverviewIntent : UiIntent {
     data object ReloginTapped : OverviewIntent
     data object ReauthTapped : OverviewIntent
-    data class ReauthSubmitted(val password: String) : OverviewIntent
+    data class ReauthSubmitted(
+        val password: String,
+    ) : OverviewIntent
     data object ReauthDismissed : OverviewIntent
 }
 
@@ -307,7 +309,10 @@ internal class OverviewViewModel @Inject constructor(
     }
 }
 
-private fun localDate(now: Instant, timeZone: TimeZone): LocalDate =
+private fun localDate(
+    now: Instant,
+    timeZone: TimeZone,
+): LocalDate =
     java.time.Instant.ofEpochMilli(now.toEpochMilliseconds())
         .atZone(ZoneId.of(timeZone.id))
         .toLocalDate()
@@ -315,20 +320,27 @@ private fun localDate(now: Instant, timeZone: TimeZone): LocalDate =
 // "ter, 11 mar" in pt-BR — device-locale formatted; the header renders it
 // uppercase ("TER, 11 MAR") per the design. Abbreviation dots are dropped to
 // match the design's compact eyebrow.
-private fun formatDayEyebrow(date: LocalDate, locale: Locale): String =
+private fun formatDayEyebrow(
+    date: LocalDate,
+    locale: Locale,
+): String =
     DateTimeFormatter.ofPattern("EEE, d MMM", locale)
         .format(date)
         .replace(".", "")
 
 // "Terça-feira" — capitalized full weekday for the "Seu dia" summary.
-private fun formatWeekday(date: LocalDate, locale: Locale): String =
+private fun formatWeekday(
+    date: LocalDate,
+    locale: Locale,
+): String =
     DateTimeFormatter.ofPattern("EEEE", locale)
         .format(date)
         .replaceFirstChar { it.titlecase(locale) }
 
-private fun ReauthError.toMessageRes(): Int = when (this) {
-    ReauthError.InvalidPassword -> R.string.reauth_error_invalid
-    ReauthError.Unavailable -> R.string.reauth_error_unavailable
-    ReauthError.NoConnection -> R.string.reauth_error_network
-    is ReauthError.Server -> R.string.reauth_error_unavailable
-}
+private fun ReauthError.toMessageRes(): Int =
+    when (this) {
+        ReauthError.InvalidPassword -> R.string.reauth_error_invalid
+        ReauthError.Unavailable -> R.string.reauth_error_unavailable
+        ReauthError.NoConnection -> R.string.reauth_error_network
+        is ReauthError.Server -> R.string.reauth_error_unavailable
+    }

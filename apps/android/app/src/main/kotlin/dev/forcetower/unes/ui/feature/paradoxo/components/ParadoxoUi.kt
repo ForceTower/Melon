@@ -44,70 +44,80 @@ import dev.forcetower.unes.ui.feature.paradoxo.ParadoxoFormat
 
 // Grade-severity tone, shared by tiles, charts and chips.
 @Composable
-internal fun paradoxoTone(mean: Double): Color = when (ParadoxoTier.of(mean)) {
-    ParadoxoTier.Generous -> MaterialTheme.melon.status.ok
-    ParadoxoTier.Fair -> MaterialTheme.melon.palette.teal
-    ParadoxoTier.Balanced -> MaterialTheme.melon.palette.orange
-    ParadoxoTier.Demanding -> MaterialTheme.melon.status.warn
-    ParadoxoTier.Strict -> MaterialTheme.melon.status.bad
-}
+internal fun paradoxoTone(mean: Double): Color =
+    when (ParadoxoTier.of(mean)) {
+        ParadoxoTier.Generous -> MaterialTheme.melon.status.ok
+        ParadoxoTier.Fair -> MaterialTheme.melon.palette.teal
+        ParadoxoTier.Balanced -> MaterialTheme.melon.palette.orange
+        ParadoxoTier.Demanding -> MaterialTheme.melon.status.warn
+        ParadoxoTier.Strict -> MaterialTheme.melon.status.bad
+    }
 
 @Composable
-internal fun paradoxoTierLabel(tier: ParadoxoTier): String = stringResource(
-    when (tier) {
-        ParadoxoTier.Generous -> R.string.paradoxo_tier_generous
-        ParadoxoTier.Fair -> R.string.paradoxo_tier_fair
-        ParadoxoTier.Balanced -> R.string.paradoxo_tier_balanced
-        ParadoxoTier.Demanding -> R.string.paradoxo_tier_demanding
-        ParadoxoTier.Strict -> R.string.paradoxo_tier_strict
-    },
-)
+internal fun paradoxoTierLabel(tier: ParadoxoTier): String =
+    stringResource(
+        when (tier) {
+            ParadoxoTier.Generous -> R.string.paradoxo_tier_generous
+            ParadoxoTier.Fair -> R.string.paradoxo_tier_fair
+            ParadoxoTier.Balanced -> R.string.paradoxo_tier_balanced
+            ParadoxoTier.Demanding -> R.string.paradoxo_tier_demanding
+            ParadoxoTier.Strict -> R.string.paradoxo_tier_strict
+        },
+    )
 
 @Composable
-internal fun paradoxoShapeLabel(shape: ParadoxoShapeKind): String = stringResource(
-    when (shape) {
-        ParadoxoShapeKind.Bimodal -> R.string.paradoxo_shape_bimodal
-        ParadoxoShapeKind.Strict -> R.string.paradoxo_shape_strict
-        ParadoxoShapeKind.Lenient -> R.string.paradoxo_shape_lenient
-        ParadoxoShapeKind.Balanced -> R.string.paradoxo_shape_balanced
-        ParadoxoShapeKind.Regular -> R.string.paradoxo_shape_regular
-    },
-)
+internal fun paradoxoShapeLabel(shape: ParadoxoShapeKind): String =
+    stringResource(
+        when (shape) {
+            ParadoxoShapeKind.Bimodal -> R.string.paradoxo_shape_bimodal
+            ParadoxoShapeKind.Strict -> R.string.paradoxo_shape_strict
+            ParadoxoShapeKind.Lenient -> R.string.paradoxo_shape_lenient
+            ParadoxoShapeKind.Balanced -> R.string.paradoxo_shape_balanced
+            ParadoxoShapeKind.Regular -> R.string.paradoxo_shape_regular
+        },
+    )
 
 @Composable
-internal fun paradoxoPulseLabel(kind: ParadoxoPulseKind): String = stringResource(
+internal fun paradoxoPulseLabel(kind: ParadoxoPulseKind): String =
+    stringResource(
+        when (kind) {
+            ParadoxoPulseKind.Brutal -> R.string.paradoxo_pulse_brutal
+            ParadoxoPulseKind.Kind -> R.string.paradoxo_pulse_kind
+            ParadoxoPulseKind.Trend -> R.string.paradoxo_pulse_trend
+            ParadoxoPulseKind.Gap -> R.string.paradoxo_pulse_gap
+            ParadoxoPulseKind.Rising -> R.string.paradoxo_pulse_rising
+            ParadoxoPulseKind.Surprise -> R.string.paradoxo_pulse_surprise
+            ParadoxoPulseKind.Signature -> R.string.paradoxo_pulse_signature
+        },
+    )
+
+@Composable
+internal fun paradoxoPulseTone(kind: ParadoxoPulseKind): Color =
     when (kind) {
-        ParadoxoPulseKind.Brutal -> R.string.paradoxo_pulse_brutal
-        ParadoxoPulseKind.Kind -> R.string.paradoxo_pulse_kind
-        ParadoxoPulseKind.Trend -> R.string.paradoxo_pulse_trend
-        ParadoxoPulseKind.Gap -> R.string.paradoxo_pulse_gap
-        ParadoxoPulseKind.Rising -> R.string.paradoxo_pulse_rising
-        ParadoxoPulseKind.Surprise -> R.string.paradoxo_pulse_surprise
-        ParadoxoPulseKind.Signature -> R.string.paradoxo_pulse_signature
-    },
-)
+        ParadoxoPulseKind.Brutal -> MaterialTheme.melon.status.bad
+        ParadoxoPulseKind.Kind -> MaterialTheme.melon.status.ok
+        ParadoxoPulseKind.Trend -> MaterialTheme.melon.status.warn
+        ParadoxoPulseKind.Gap, ParadoxoPulseKind.Signature -> MaterialTheme.melon.palette.magenta
+        ParadoxoPulseKind.Rising -> MaterialTheme.melon.palette.teal
+        ParadoxoPulseKind.Surprise -> MaterialTheme.melon.palette.amber
+    }
 
-@Composable
-internal fun paradoxoPulseTone(kind: ParadoxoPulseKind): Color = when (kind) {
-    ParadoxoPulseKind.Brutal -> MaterialTheme.melon.status.bad
-    ParadoxoPulseKind.Kind -> MaterialTheme.melon.status.ok
-    ParadoxoPulseKind.Trend -> MaterialTheme.melon.status.warn
-    ParadoxoPulseKind.Gap, ParadoxoPulseKind.Signature -> MaterialTheme.melon.palette.magenta
-    ParadoxoPulseKind.Rising -> MaterialTheme.melon.palette.teal
-    ParadoxoPulseKind.Surprise -> MaterialTheme.melon.palette.amber
-}
-
-internal fun paradoxoPulseMesh(kind: ParadoxoPulseKind): MeshVariant = when (kind) {
-    ParadoxoPulseKind.Brutal, ParadoxoPulseKind.Gap, ParadoxoPulseKind.Signature -> MeshVariant.Rose
-    ParadoxoPulseKind.Kind -> MeshVariant.Fresh
-    ParadoxoPulseKind.Trend, ParadoxoPulseKind.Surprise -> MeshVariant.Sun
-    ParadoxoPulseKind.Rising -> MeshVariant.Cool
-}
+internal fun paradoxoPulseMesh(kind: ParadoxoPulseKind): MeshVariant =
+    when (kind) {
+        ParadoxoPulseKind.Brutal, ParadoxoPulseKind.Gap, ParadoxoPulseKind.Signature -> MeshVariant.Rose
+        ParadoxoPulseKind.Kind -> MeshVariant.Fresh
+        ParadoxoPulseKind.Trend, ParadoxoPulseKind.Surprise -> MeshVariant.Sun
+        ParadoxoPulseKind.Rising -> MeshVariant.Cool
+    }
 
 // Colored square with the truncated mean — the visual anchor of every list
 // row (dc `tileStyle`: radius 28% of the side, white bold grade).
 @Composable
-internal fun ParadoxoScoreTile(mean: Double, size: Dp, modifier: Modifier = Modifier) {
+internal fun ParadoxoScoreTile(
+    mean: Double,
+    size: Dp,
+    modifier: Modifier = Modifier,
+) {
     val fontSize = (size.value * 0.4f).sp
     Box(
         modifier = modifier
@@ -129,7 +139,10 @@ internal fun ParadoxoScoreTile(mean: Double, size: Dp, modifier: Modifier = Modi
 }
 
 @Composable
-internal fun ParadoxoTierChip(mean: Double, modifier: Modifier = Modifier) {
+internal fun ParadoxoTierChip(
+    mean: Double,
+    modifier: Modifier = Modifier,
+) {
     val tone = paradoxoTone(mean)
     Row(
         modifier = modifier
@@ -216,7 +229,11 @@ internal fun ParadoxoOutcomes(
 }
 
 @Composable
-private fun RowScope.OutcomeCount(value: Int, label: String, dot: Color) {
+private fun RowScope.OutcomeCount(
+    value: Int,
+    label: String,
+    dot: Color,
+) {
     Column(
         modifier = Modifier.weight(1f),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -284,7 +301,10 @@ internal fun ParadoxoLoading(modifier: Modifier = Modifier) {
 }
 
 @Composable
-internal fun ParadoxoFailure(onRetry: () -> Unit, modifier: Modifier = Modifier) {
+internal fun ParadoxoFailure(
+    onRetry: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     val retry = stringResource(R.string.paradoxo_error_retry)
     Column(
         modifier = modifier

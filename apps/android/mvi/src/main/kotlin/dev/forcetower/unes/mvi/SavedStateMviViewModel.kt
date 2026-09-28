@@ -12,7 +12,10 @@ abstract class SavedStateMviViewModel<S : UiState, I : UiIntent, E : UiEffect>(
     initialState: S,
 ) : MviViewModel<S, I, E>(initialState) {
 
-    protected fun <T> persistStateSlice(key: String, selector: (S) -> T) {
+    protected fun <T> persistStateSlice(
+        key: String,
+        selector: (S) -> T,
+    ) {
         viewModelScope.launch {
             state
                 .map(selector)

@@ -4,16 +4,16 @@ import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
-import dev.forcetower.unes.R
-import java.net.URI
-import java.time.LocalDateTime
-import java.time.ZoneId
-import kotlin.time.Instant
 import dev.forcetower.melon.feature.messages.domain.model.MessageFeedAttachment as KmpMessageFeedAttachment
 import dev.forcetower.melon.feature.messages.domain.model.MessageFeedAttachmentKind as KmpMessageFeedAttachmentKind
 import dev.forcetower.melon.feature.messages.domain.model.MessageFeedDetail as KmpMessageFeedDetail
 import dev.forcetower.melon.feature.messages.domain.model.MessageFeedItem as KmpMessageFeedItem
 import dev.forcetower.melon.feature.messages.domain.model.MessageFeedOrigin as KmpMessageFeedOrigin
+import dev.forcetower.unes.R
+import java.net.URI
+import java.time.LocalDateTime
+import java.time.ZoneId
+import kotlin.time.Instant
 
 // KMP feed types → presentation `Message` projection. Mirrors
 // `apps/ios/UNES/Features/Messages/Models/MessageMapping.swift`. Fields the
@@ -36,14 +36,15 @@ internal data class MessageRoleStrings(
     val direct: String,
 )
 
-internal fun MessageRoleStrings(context: Context): MessageRoleStrings = MessageRoleStrings(
-    disciplineDefault = context.getString(R.string.messages_role_discipline_default),
-    secretariat = context.getString(R.string.messages_role_secretariat),
-    campus = context.getString(R.string.messages_role_campus),
-    app = context.getString(R.string.messages_role_app),
-    module = context.getString(R.string.messages_role_module),
-    direct = context.getString(R.string.messages_role_direct),
-)
+internal fun MessageRoleStrings(context: Context): MessageRoleStrings =
+    MessageRoleStrings(
+        disciplineDefault = context.getString(R.string.messages_role_discipline_default),
+        secretariat = context.getString(R.string.messages_role_secretariat),
+        campus = context.getString(R.string.messages_role_campus),
+        app = context.getString(R.string.messages_role_app),
+        module = context.getString(R.string.messages_role_module),
+        direct = context.getString(R.string.messages_role_direct),
+    )
 
 @Composable
 internal fun rememberMessageRoleStrings(): MessageRoleStrings {
@@ -93,13 +94,14 @@ internal fun KmpMessageFeedDetail.toUi(roles: MessageRoleStrings): Message {
     )
 }
 
-private fun mapOrigin(raw: KmpMessageFeedOrigin): MessageOrigin = when (raw) {
-    KmpMessageFeedOrigin.DISCIPLINE -> MessageOrigin.Discipline
-    KmpMessageFeedOrigin.SECRETARIAT -> MessageOrigin.Secretariat
-    KmpMessageFeedOrigin.CAMPUS -> MessageOrigin.Campus
-    KmpMessageFeedOrigin.APP -> MessageOrigin.App
-    KmpMessageFeedOrigin.DIRECT -> MessageOrigin.Direct
-}
+private fun mapOrigin(raw: KmpMessageFeedOrigin): MessageOrigin =
+    when (raw) {
+        KmpMessageFeedOrigin.DISCIPLINE -> MessageOrigin.Discipline
+        KmpMessageFeedOrigin.SECRETARIAT -> MessageOrigin.Secretariat
+        KmpMessageFeedOrigin.CAMPUS -> MessageOrigin.Campus
+        KmpMessageFeedOrigin.APP -> MessageOrigin.App
+        KmpMessageFeedOrigin.DIRECT -> MessageOrigin.Direct
+    }
 
 private fun mapAttachment(raw: KmpMessageFeedAttachment): MessageAttachment {
     val kind = mapKind(raw.kind)
@@ -127,13 +129,14 @@ private fun mapAttachment(raw: KmpMessageFeedAttachment): MessageAttachment {
 
 // Fixtures carry a `.slides` kind that upstream/DB never emits. Video is
 // rare; fold into the generic file tile — matches iOS MessageMapping.
-private fun mapKind(raw: KmpMessageFeedAttachmentKind): MessageAttachmentKind = when (raw) {
-    KmpMessageFeedAttachmentKind.IMAGE -> MessageAttachmentKind.Image
-    KmpMessageFeedAttachmentKind.LINK -> MessageAttachmentKind.Link
-    KmpMessageFeedAttachmentKind.PDF -> MessageAttachmentKind.Pdf
-    KmpMessageFeedAttachmentKind.VIDEO -> MessageAttachmentKind.Other
-    KmpMessageFeedAttachmentKind.OTHER -> MessageAttachmentKind.Other
-}
+private fun mapKind(raw: KmpMessageFeedAttachmentKind): MessageAttachmentKind =
+    when (raw) {
+        KmpMessageFeedAttachmentKind.IMAGE -> MessageAttachmentKind.Image
+        KmpMessageFeedAttachmentKind.LINK -> MessageAttachmentKind.Link
+        KmpMessageFeedAttachmentKind.PDF -> MessageAttachmentKind.Pdf
+        KmpMessageFeedAttachmentKind.VIDEO -> MessageAttachmentKind.Other
+        KmpMessageFeedAttachmentKind.OTHER -> MessageAttachmentKind.Other
+    }
 
 // App messages name the admin behind them when the server recorded one;
 // older comunicados fall back to the generic team line.
@@ -142,24 +145,27 @@ private fun roleFor(
     disciplineName: String?,
     authorName: String?,
     roles: MessageRoleStrings,
-): String = when (origin) {
-    MessageOrigin.Discipline -> disciplineName?.takeIf { it.isNotBlank() } ?: roles.disciplineDefault
-    MessageOrigin.Secretariat -> roles.secretariat
-    MessageOrigin.Campus -> roles.campus
-    MessageOrigin.App -> authorName?.takeIf { it.isNotBlank() } ?: roles.app
-    MessageOrigin.Module -> roles.module
-    MessageOrigin.Direct -> roles.direct
-}
+): String =
+    when (origin) {
+        MessageOrigin.Discipline -> disciplineName?.takeIf { it.isNotBlank() } ?: roles.disciplineDefault
+        MessageOrigin.Secretariat -> roles.secretariat
+        MessageOrigin.Campus -> roles.campus
+        MessageOrigin.App -> authorName?.takeIf { it.isNotBlank() } ?: roles.app
+        MessageOrigin.Module -> roles.module
+        MessageOrigin.Direct -> roles.direct
+    }
 
 private fun String.normalizedSubject(): String? = trim().takeIf { it.isNotEmpty() }
 
-private fun hostFor(url: String): String? = runCatching {
-    URI(url).host?.takeIf { it.isNotBlank() }?.removePrefix("www.")
-}.getOrNull()
+private fun hostFor(url: String): String? =
+    runCatching {
+        URI(url).host?.takeIf { it.isNotBlank() }?.removePrefix("www.")
+    }.getOrNull()
 
-private fun lastPathComponent(url: String): String? = runCatching {
-    URI(url).path?.substringAfterLast('/')?.takeIf { it.isNotBlank() }
-}.getOrNull()
+private fun lastPathComponent(url: String): String? =
+    runCatching {
+        URI(url).path?.substringAfterLast('/')?.takeIf { it.isNotBlank() }
+    }.getOrNull()
 
 // ISO-8601 from Postgres/Ktor comes through in two flavors: with fractional
 // seconds ("2025-11-03T14:22:18.123Z") and without ("2025-11-03T14:22:18Z").

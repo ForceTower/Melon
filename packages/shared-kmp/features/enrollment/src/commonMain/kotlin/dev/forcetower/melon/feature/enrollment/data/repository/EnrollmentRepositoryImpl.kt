@@ -46,28 +46,35 @@ internal class EnrollmentRepositoryImpl(
 
     private val log = logger.withTag("EnrollmentRepositoryImpl")
 
-    override suspend fun window(): Outcome<EnrollmentAvailability, EnrollmentError> = guard("window") {
-        when (val outcome = classify<EnrollmentWindowResponse>(api.window())) {
-            is Outcome.Ok -> Outcome.Ok(outcome.value.toDomain())
-            is Outcome.Err -> outcome
+    override suspend fun window(): Outcome<EnrollmentAvailability, EnrollmentError> =
+        guard("window") {
+            when (val outcome = classify<EnrollmentWindowResponse>(api.window())) {
+                is Outcome.Ok -> Outcome.Ok(outcome.value.toDomain())
+                is Outcome.Err -> outcome
+            }
         }
-    }
 
-    override suspend fun offers(): Outcome<EnrollmentOffers, EnrollmentError> = guard("offers") {
-        when (val outcome = classify<EnrollmentOffersResponse>(api.offers())) {
-            is Outcome.Ok -> Outcome.Ok(EnrollmentOffers(outcome.value.disciplines.map { it.toDomain() }))
-            is Outcome.Err -> outcome
+    override suspend fun offers(): Outcome<EnrollmentOffers, EnrollmentError> =
+        guard("offers") {
+            when (val outcome = classify<EnrollmentOffersResponse>(api.offers())) {
+                is Outcome.Ok -> Outcome.Ok(EnrollmentOffers(outcome.value.disciplines.map { it.toDomain() }))
+                is Outcome.Err -> outcome
+            }
         }
-    }
 
-    override suspend fun submit(selections: List<EnrollmentSelection>): Outcome<Unit, EnrollmentError> = guard("submit") {
-        val body = SubmitEnrollmentRequest(
-            selections = selections.map {
-                EnrollmentSelectionDto(sectionId = it.sectionId, allowsOther = it.allowsOther, waitlist = it.waitlist)
-            },
-        )
-        classifyEmpty(api.submit(body))
-    }
+    override suspend fun submit(selections: List<EnrollmentSelection>): Outcome<Unit, EnrollmentError> =
+        guard("submit") {
+            val body = SubmitEnrollmentRequest(
+                selections = selections.map {
+                    EnrollmentSelectionDto(
+                        sectionId = it.sectionId,
+                        allowsOther = it.allowsOther,
+                        waitlist = it.waitlist,
+                    )
+                },
+            )
+            classifyEmpty(api.submit(body))
+        }
 
     // Wraps a network call: rethrows cancellation, maps a decode failure to
     // Unexpected and any other throwable (transport) to NoConnection. Mirrors the
@@ -129,12 +136,13 @@ private fun EnrollmentWindowDto.toDomain(): EnrollmentWindow =
         courseId = courseId,
     )
 
-private fun parseState(raw: String): EnrollmentWindowState = when (raw) {
-    "OPEN" -> EnrollmentWindowState.Open
-    "UPCOMING" -> EnrollmentWindowState.Upcoming
-    "CLOSED" -> EnrollmentWindowState.Closed
-    else -> EnrollmentWindowState.Unknown
-}
+private fun parseState(raw: String): EnrollmentWindowState =
+    when (raw) {
+        "OPEN" -> EnrollmentWindowState.Open
+        "UPCOMING" -> EnrollmentWindowState.Upcoming
+        "CLOSED" -> EnrollmentWindowState.Closed
+        else -> EnrollmentWindowState.Unknown
+    }
 
 private fun EnrollmentDisciplineDto.toDomain(): EnrollmentDiscipline =
     EnrollmentDiscipline(
@@ -175,12 +183,12 @@ private fun EnrollmentMeetingDto.toDomain(): EnrollmentMeeting =
         slots = slots.map { it.toDomain() },
     )
 
-private fun parseShift(raw: String): EnrollmentShift = when (raw) {
-    "MORNING" -> EnrollmentShift.Morning
-    "AFTERNOON" -> EnrollmentShift.Afternoon
-    "NIGHT" -> EnrollmentShift.Night
-    else -> EnrollmentShift.Undefined
-}
+private fun parseShift(raw: String): EnrollmentShift =
+    when (raw) {
+        "MORNING" -> EnrollmentShift.Morning
+        "AFTERNOON" -> EnrollmentShift.Afternoon
+        "NIGHT" -> EnrollmentShift.Night
+        else -> EnrollmentShift.Undefined
+    }
 
-private fun EnrollmentSlotDto.toDomain(): EnrollmentSlot =
-    EnrollmentSlot(day = day, start = start, end = end)
+private fun EnrollmentSlotDto.toDomain(): EnrollmentSlot = EnrollmentSlot(day = day, start = start, end = end)

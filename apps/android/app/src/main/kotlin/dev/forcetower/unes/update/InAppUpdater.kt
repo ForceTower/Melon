@@ -1,7 +1,5 @@
 package dev.forcetower.unes.update
 
-import dev.forcetower.unes.BuildConfig
-
 import android.app.Activity
 import android.content.Context
 import androidx.activity.result.ActivityResultLauncher
@@ -19,6 +17,7 @@ import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.android.play.core.ktx.requestAppUpdateInfo
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dev.forcetower.unes.BuildConfig
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.coroutines.cancellation.CancellationException

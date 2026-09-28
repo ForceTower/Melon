@@ -246,11 +246,12 @@ private fun CurriculumFlowContent(
     }
 }
 
-private fun lensLabelRes(lens: CurriculumLens): Int = when (lens) {
-    CurriculumLens.Periods -> R.string.course_progress_lens_periods
-    CurriculumLens.Map -> R.string.course_progress_lens_map
-    CurriculumLens.Grid -> R.string.course_progress_lens_grid
-}
+private fun lensLabelRes(lens: CurriculumLens): Int =
+    when (lens) {
+        CurriculumLens.Periods -> R.string.course_progress_lens_periods
+        CurriculumLens.Map -> R.string.course_progress_lens_map
+        CurriculumLens.Grid -> R.string.course_progress_lens_grid
+    }
 
 @Preview
 @Composable

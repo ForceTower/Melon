@@ -3,8 +3,8 @@ package dev.forcetower.melon.feature.auth
 import co.touchlab.kermit.Logger
 import dev.forcetower.melon.core.common.Outcome
 import dev.forcetower.melon.core.network.AuthTokenSource
-import dev.forcetower.melon.core.session.domain.model.AuthState
 import dev.forcetower.melon.core.session.domain.SessionStore
+import dev.forcetower.melon.core.session.domain.model.AuthState
 import dev.forcetower.melon.core.session.domain.model.User
 import dev.forcetower.melon.core.session.domain.model.UserCredentials
 import dev.forcetower.melon.feature.auth.data.network.AuthService
@@ -23,25 +23,26 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.utils.io.ByteReadChannel
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertIs
+import kotlin.test.assertNull
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertIs
-import kotlin.test.assertNull
 
 class LoginFlowTest {
 
     @Test
-    fun login_success_persists_session_and_emits_authenticated() = runTest {
-        val sessionStore = RecordingSessionStore()
-        val useCase = buildUseCase(sessionStore) { _ ->
-            jsonResponse(
-                """
+    fun login_success_persists_session_and_emits_authenticated() =
+        runTest {
+            val sessionStore = RecordingSessionStore()
+            val useCase = buildUseCase(sessionStore) { _ ->
+                jsonResponse(
+                    """
                 {
                   "ok": true,
                   "message": "Login successful",
@@ -52,40 +53,41 @@ class LoginFlowTest {
                   },
                   "error": null
                 }
-                """.trimIndent(),
-                HttpStatusCode.OK,
+                    """.trimIndent(),
+                    HttpStatusCode.OK,
+                )
+            }
+
+            val result = useCase("alice", "hunter2")
+
+            assertIs<Outcome.Ok<Unit>>(result)
+            assertEquals("access-123", sessionStore.lastAccessToken)
+            assertEquals("refresh-456", sessionStore.lastRefreshToken)
+            assertEquals(User("user-1", "Alice", null), sessionStore.lastUser)
+            assertEquals("alice", sessionStore.lastUsername)
+            assertEquals("hunter2", sessionStore.lastPassword)
+            assertEquals(
+                AuthState.Authenticated(User("user-1", "Alice", null)),
+                sessionStore.authState.value,
             )
         }
-
-        val result = useCase("alice", "hunter2")
-
-        assertIs<Outcome.Ok<Unit>>(result)
-        assertEquals("access-123", sessionStore.lastAccessToken)
-        assertEquals("refresh-456", sessionStore.lastRefreshToken)
-        assertEquals(User("user-1", "Alice", null), sessionStore.lastUser)
-        assertEquals("alice", sessionStore.lastUsername)
-        assertEquals("hunter2", sessionStore.lastPassword)
-        assertEquals(
-            AuthState.Authenticated(User("user-1", "Alice", null)),
-            sessionStore.authState.value,
-        )
-    }
 
     @Test
-    fun login_invalid_credentials_maps_to_domain_error() = runTest {
-        val sessionStore = RecordingSessionStore()
-        val useCase = buildUseCase(sessionStore) { _ ->
-            jsonResponse(
-                """{"ok":false,"message":"Invalid credentials","data":null,"error":null}""",
-                HttpStatusCode.BadRequest,
-            )
+    fun login_invalid_credentials_maps_to_domain_error() =
+        runTest {
+            val sessionStore = RecordingSessionStore()
+            val useCase = buildUseCase(sessionStore) { _ ->
+                jsonResponse(
+                    """{"ok":false,"message":"Invalid credentials","data":null,"error":null}""",
+                    HttpStatusCode.BadRequest,
+                )
+            }
+
+            val result = useCase("alice", "wrong")
+
+            assertEquals(Outcome.Err(LoginError.Kind.InvalidCredentials), result)
+            assertNull(sessionStore.lastAccessToken)
         }
-
-        val result = useCase("alice", "wrong")
-
-        assertEquals(Outcome.Err(LoginError.Kind.InvalidCredentials), result)
-        assertNull(sessionStore.lastAccessToken)
-    }
 
     private fun buildUseCase(
         sessionStore: SessionStore,
@@ -98,7 +100,10 @@ class LoginFlowTest {
         return LoginUseCase(AuthRepositoryImpl(AuthService(client), sessionStore, Logger))
     }
 
-    private fun MockRequestHandleScope.jsonResponse(body: String, status: HttpStatusCode): HttpResponseData =
+    private fun MockRequestHandleScope.jsonResponse(
+        body: String,
+        status: HttpStatusCode,
+    ): HttpResponseData =
         respond(
             content = ByteReadChannel(body),
             status = status,
@@ -106,7 +111,9 @@ class LoginFlowTest {
         )
 }
 
-private class RecordingSessionStore : SessionStore, AuthTokenSource {
+private class RecordingSessionStore :
+    SessionStore,
+    AuthTokenSource {
     var lastAccessToken: String? = null
     var lastRefreshToken: String? = null
     var lastUser: User? = null
@@ -124,7 +131,10 @@ private class RecordingSessionStore : SessionStore, AuthTokenSource {
 
     override suspend fun getRefreshToken(): String? = lastRefreshToken
 
-    override suspend fun replaceTokens(accessToken: String, refreshToken: String) {
+    override suspend fun replaceTokens(
+        accessToken: String,
+        refreshToken: String,
+    ) {
         lastAccessToken = accessToken
         lastRefreshToken = refreshToken
     }
@@ -168,7 +178,10 @@ private class RecordingSessionStore : SessionStore, AuthTokenSource {
 
     override fun observeCredentials(): Flow<UserCredentials?> = flowOf(null)
 
-    override suspend fun updateUpstreamCredentials(username: String, password: String) {
+    override suspend fun updateUpstreamCredentials(
+        username: String,
+        password: String,
+    ) {
         lastUsername = username
         lastPassword = password
     }

@@ -59,7 +59,7 @@ class DeepLinkParserTest {
     }
 
     @Test
-fun `reauth resolves to the credentials sheet target`() {
+    fun `reauth resolves to the credentials sheet target`() {
         assertEquals(DeepLinkTarget.Reauth, parseDeepLink("unes://reauth"))
         assertEquals(DeepLinkTarget.Reauth, parseDeepLink("UNES://REAUTH"))
         assertEquals(DeepLinkTarget.Reauth, parseDeepLink("unes://reauth?src=push"))
@@ -73,7 +73,7 @@ fun `reauth resolves to the credentials sheet target`() {
     }
 
     @Test
-        fun `unknown shapes are dropped`() {
+    fun `unknown shapes are dropped`() {
         assertNull(parseDeepLink("unes://materials"))
         assertNull(parseDeepLink("unes://settings"))
         assertNull(parseDeepLink("unes://messages/a/b"))

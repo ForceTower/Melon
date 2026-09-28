@@ -312,13 +312,14 @@ internal fun CurriculumPeriodsLens(
 
 // "CHF344 · 60 h" — the row's own identity; the situation rides the chip.
 @Composable
-private fun entryRowMeta(entry: CurriculumEntry): String = listOf(
-    entry.code,
-    stringResource(
-        R.string.course_progress_hours_format,
-        CourseProgressFormat.count(entry.hours),
-    ),
-).joinToString(" · ")
+private fun entryRowMeta(entry: CurriculumEntry): String =
+    listOf(
+        entry.code,
+        stringResource(
+            R.string.course_progress_hours_format,
+            CourseProgressFormat.count(entry.hours),
+        ),
+    ).joinToString(" · ")
 
 // ───────── Lens · map ─────────
 
@@ -640,7 +641,11 @@ internal fun CurriculumGridLens(
 }
 
 @Composable
-private fun GridColumnHeader(number: Int, hours: Int, isCurrent: Boolean) {
+private fun GridColumnHeader(
+    number: Int,
+    hours: Int,
+    isCurrent: Boolean,
+) {
     val shape = RoundedCornerShape(14.dp)
     Row(
         modifier = Modifier

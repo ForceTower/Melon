@@ -21,9 +21,7 @@ internal class LibraryPagingSource(
 
     private val seenIds = mutableSetOf<String>()
 
-    override suspend fun load(
-        params: LoadParams<Int>,
-    ): LoadResult<Int, LibraryWork> {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, LibraryWork> {
         val offset = params.key ?: 0
         val page = when (val outcome = search(request.copy(offset = offset))) {
             is Outcome.Ok -> outcome.value
@@ -42,9 +40,7 @@ internal class LibraryPagingSource(
 
     // Facet/sort changes rebuild the pager wholesale, so a refresh only
     // happens on retry — restart from the top rather than mid-set.
-    override fun getRefreshKey(
-        state: PagingState<Int, LibraryWork>,
-    ): Int? = null
+    override fun getRefreshKey(state: PagingState<Int, LibraryWork>): Int? = null
 }
 
 internal class LibrarySearchException : Exception("library search failed")

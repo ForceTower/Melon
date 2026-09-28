@@ -54,8 +54,11 @@ internal data class LibraryBranchBody(
                 .filter { it.length > 2 }
                 .mapNotNull { it.firstOrNull() }
                 .take(4)
-            return if (initials.isEmpty()) name.take(3).uppercase()
-            else initials.joinToString("").uppercase()
+            return if (initials.isEmpty()) {
+                name.take(3).uppercase()
+            } else {
+                initials.joinToString("").uppercase()
+            }
         }
     }
 }
@@ -99,12 +102,13 @@ internal data class LibraryParsedTitleBody(
     val edition: String? = null,
     val junkYear: String? = null,
 ) {
-    fun toDomain(): LibraryWorkTitle = LibraryWorkTitle(
-        title = title,
-        subtitle = subtitle,
-        edition = edition,
-        junkYear = junkYear,
-    )
+    fun toDomain(): LibraryWorkTitle =
+        LibraryWorkTitle(
+            title = title,
+            subtitle = subtitle,
+            edition = edition,
+            junkYear = junkYear,
+        )
 }
 
 @Serializable
@@ -169,16 +173,17 @@ internal data class LibraryOverviewBody(
     val recents: List<LibraryRecentSearchBody>? = null,
     val newAcquisitions: List<LibraryWorkBody>? = null,
 ) {
-    fun toDomain(): LibraryOverview = LibraryOverview(
-        recents = recents.orEmpty().map { recent ->
-            LibraryRecentSearch(
-                query = recent.query,
-                scope = LibrarySearchScope.fromWire(recent.scope) ?: LibrarySearchScope.All,
-                resultCount = recent.resultCount ?: 0,
-            )
-        },
-        newAcquisitions = newAcquisitions.orEmpty().map { it.toDomain() },
-    )
+    fun toDomain(): LibraryOverview =
+        LibraryOverview(
+            recents = recents.orEmpty().map { recent ->
+                LibraryRecentSearch(
+                    query = recent.query,
+                    scope = LibrarySearchScope.fromWire(recent.scope) ?: LibrarySearchScope.All,
+                    resultCount = recent.resultCount ?: 0,
+                )
+            },
+            newAcquisitions = newAcquisitions.orEmpty().map { it.toDomain() },
+        )
 }
 
 @Serializable
@@ -197,17 +202,18 @@ internal data class LibrarySearchBody(
     val servedFrom: String? = null,
     val upstreamAvailable: Boolean? = null,
 ) {
-    fun toDomain(): LibrarySearchPage = LibrarySearchPage(
-        works = works.map { it.toDomain() },
-        total = total,
-        offset = offset,
-        // Unknown facet group keys are silently dropped so the backend can
-        // ship new groups ahead of the clients.
-        facets = facets.orEmpty().entries.mapNotNull { (raw, values) ->
-            val group = LibraryFacetGroup.fromWire(raw) ?: return@mapNotNull null
-            group to values.map { LibraryFacetValue(key = it.key, label = it.label, count = it.count) }
-        }.toMap(),
-    )
+    fun toDomain(): LibrarySearchPage =
+        LibrarySearchPage(
+            works = works.map { it.toDomain() },
+            total = total,
+            offset = offset,
+            // Unknown facet group keys are silently dropped so the backend can
+            // ship new groups ahead of the clients.
+            facets = facets.orEmpty().entries.mapNotNull { (raw, values) ->
+                val group = LibraryFacetGroup.fromWire(raw) ?: return@mapNotNull null
+                group to values.map { LibraryFacetValue(key = it.key, label = it.label, count = it.count) }
+            }.toMap(),
+        )
 }
 
 @Serializable
@@ -237,5 +243,4 @@ internal data class LibraryAvailabilityBody(
 
 // The backend stamps instants with `toISOString()`; `Instant.parse` accepts
 // both the fractional and plain ISO-8601 forms.
-private fun parseInstant(raw: String?): Instant? =
-    raw?.let { runCatching { Instant.parse(it) }.getOrNull() }
+private fun parseInstant(raw: String?): Instant? = raw?.let { runCatching { Instant.parse(it) }.getOrNull() }

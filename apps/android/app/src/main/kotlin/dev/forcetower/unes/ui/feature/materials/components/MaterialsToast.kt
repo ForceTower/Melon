@@ -89,25 +89,28 @@ internal fun MaterialsToastOverlay(
     }
 }
 
-private fun MaterialsToastKind.icon(): ImageVector = when (this) {
-    MaterialsToastKind.Saved -> Icons.Filled.Bookmark
-    MaterialsToastKind.Unsaved -> Icons.Filled.BookmarkRemove
-    MaterialsToastKind.Reported -> Icons.Filled.VerifiedUser
-    MaterialsToastKind.SyncFailed -> Icons.Filled.CloudOff
-    MaterialsToastKind.OpenFailed -> Icons.Filled.ErrorOutline
-}
+private fun MaterialsToastKind.icon(): ImageVector =
+    when (this) {
+        MaterialsToastKind.Saved -> Icons.Filled.Bookmark
+        MaterialsToastKind.Unsaved -> Icons.Filled.BookmarkRemove
+        MaterialsToastKind.Reported -> Icons.Filled.VerifiedUser
+        MaterialsToastKind.SyncFailed -> Icons.Filled.CloudOff
+        MaterialsToastKind.OpenFailed -> Icons.Filled.ErrorOutline
+    }
 
 @Composable
-private fun MaterialsToastKind.tint(): Color = when (this) {
-    MaterialsToastKind.Saved, MaterialsToastKind.Unsaved -> MaterialTheme.melon.status.ok
-    MaterialsToastKind.Reported -> MaterialTheme.melon.status.bad
-    MaterialsToastKind.SyncFailed, MaterialsToastKind.OpenFailed -> MaterialTheme.melon.status.warn
-}
+private fun MaterialsToastKind.tint(): Color =
+    when (this) {
+        MaterialsToastKind.Saved, MaterialsToastKind.Unsaved -> MaterialTheme.melon.status.ok
+        MaterialsToastKind.Reported -> MaterialTheme.melon.status.bad
+        MaterialsToastKind.SyncFailed, MaterialsToastKind.OpenFailed -> MaterialTheme.melon.status.warn
+    }
 
-private fun MaterialsToastKind.textRes(): Int = when (this) {
-    MaterialsToastKind.Saved -> R.string.materials_toast_saved
-    MaterialsToastKind.Unsaved -> R.string.materials_toast_unsaved
-    MaterialsToastKind.Reported -> R.string.materials_toast_reported
-    MaterialsToastKind.SyncFailed -> R.string.materials_toast_sync_failed
-    MaterialsToastKind.OpenFailed -> R.string.materials_toast_open_failed
-}
+private fun MaterialsToastKind.textRes(): Int =
+    when (this) {
+        MaterialsToastKind.Saved -> R.string.materials_toast_saved
+        MaterialsToastKind.Unsaved -> R.string.materials_toast_unsaved
+        MaterialsToastKind.Reported -> R.string.materials_toast_reported
+        MaterialsToastKind.SyncFailed -> R.string.materials_toast_sync_failed
+        MaterialsToastKind.OpenFailed -> R.string.materials_toast_open_failed
+    }

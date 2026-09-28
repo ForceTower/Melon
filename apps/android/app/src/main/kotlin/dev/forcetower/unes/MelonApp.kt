@@ -14,10 +14,10 @@ import dev.forcetower.melon.core.network.MachineIdSource
 import dev.forcetower.melon.core.session.domain.SessionStore
 import dev.forcetower.melon.core.session.domain.model.AuthState
 import dev.forcetower.unes.di.ApplicationScope
-import dev.forcetower.unes.remote.FeatureFlags
 import dev.forcetower.unes.firebase.PushRegistrar
 import dev.forcetower.unes.reminders.EvaluationReminderScheduler
 import dev.forcetower.unes.reminders.PersonalEventReminderScheduler
+import dev.forcetower.unes.remote.FeatureFlags
 import dev.forcetower.unes.review.ReviewPrompter
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
@@ -113,10 +113,12 @@ internal class MelonApp : Application() {
         }
         featureFlags.start()
         if (!BuildConfig.SCENARIO) reviewPrompter.start()
-        if (!BuildConfig.SCENARIO) applicationScope.launch {
-            // A crash last run is the loudest possible "not now".
-            if (FirebaseCrashlytics.getInstance().didCrashOnPreviousExecution()) {
-                reviewPrompter.noteTrouble("crash")
+        if (!BuildConfig.SCENARIO) {
+            applicationScope.launch {
+                // A crash last run is the loudest possible "not now".
+                if (FirebaseCrashlytics.getInstance().didCrashOnPreviousExecution()) {
+                    reviewPrompter.noteTrouble("crash")
+                }
             }
         }
         // App-lifetime like the analytics collector: also runs when a boot

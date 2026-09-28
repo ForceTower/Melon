@@ -8,11 +8,11 @@ import io.ktor.client.request.forms.formData
 import io.ktor.client.request.patch
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
+import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
 import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
 import io.ktor.http.contentType
-import io.ktor.client.statement.HttpResponse
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 
@@ -21,7 +21,9 @@ import kotlinx.serialization.json.put
 // `api/sync/profile` afterwards so the mirrored User row picks up whatever the
 // server normalized (e.g. re-typing the official name stores null).
 @Inject
-internal class ProfileService(private val client: HttpClient) {
+internal class ProfileService(
+    private val client: HttpClient,
+) {
 
     // The `name` key is required but nullable server-side: null (or blank,
     // which the API also nulls) clears the alternate name, while a missing
@@ -37,7 +39,10 @@ internal class ProfileService(private val client: HttpClient) {
     // Multipart with a single `file` part. The part's Content-Type must be
     // the real image MIME — the server sniffs magic numbers against it and
     // rejects a mismatch (or a generic octet-stream) with a 400.
-    suspend fun uploadPicture(bytes: ByteArray, mimeType: String): HttpResponse =
+    suspend fun uploadPicture(
+        bytes: ByteArray,
+        mimeType: String,
+    ): HttpResponse =
         client.post("api/me/picture") {
             setBody(
                 MultiPartFormDataContent(

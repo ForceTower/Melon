@@ -18,8 +18,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.MenuBook
@@ -99,9 +99,12 @@ internal fun SettingsScreen(
 
     // Respects the system 12/24-hour setting, like a real lock screen would.
     val clockLabel = remember(state.nowEpochSeconds) {
-        if (state.nowEpochSeconds == 0L) ""
-        else android.text.format.DateFormat.getTimeFormat(context)
-            .format(Date(state.nowEpochSeconds * 1000L))
+        if (state.nowEpochSeconds == 0L) {
+            ""
+        } else {
+            android.text.format.DateFormat.getTimeFormat(context)
+                .format(Date(state.nowEpochSeconds * 1000L))
+        }
     }
 
     // Reveal stays UI-only — every revisit re-mints the masked password so a
@@ -222,7 +225,10 @@ internal fun SettingsScreen(
 // Pinned back-affordance bar; the display title + mission statement live in
 // `SettingsHeadline`, which scrolls with the content.
 @Composable
-private fun SettingsTopBar(onBack: () -> Unit, modifier: Modifier = Modifier) {
+private fun SettingsTopBar(
+    onBack: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -274,7 +280,10 @@ private fun SettingsHeadline(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun MessagesGroup(state: SettingsUiState, onToggle: (SettingsIntent) -> Unit) {
+private fun MessagesGroup(
+    state: SettingsUiState,
+    onToggle: (SettingsIntent) -> Unit,
+) {
     NotificationGroupCard(
         title = stringResource(R.string.settings_notif_group_messages_title),
         activeCount = state.messageActiveCount,
@@ -309,7 +318,10 @@ private fun MessagesGroup(state: SettingsUiState, onToggle: (SettingsIntent) -> 
 }
 
 @Composable
-private fun GradesGroup(state: SettingsUiState, onToggle: (SettingsIntent) -> Unit) {
+private fun GradesGroup(
+    state: SettingsUiState,
+    onToggle: (SettingsIntent) -> Unit,
+) {
     NotificationGroupCard(
         title = stringResource(R.string.settings_notif_group_grades_title),
         activeCount = state.gradeActiveCount,
@@ -344,7 +356,10 @@ private fun GradesGroup(state: SettingsUiState, onToggle: (SettingsIntent) -> Un
 }
 
 @Composable
-private fun ClassesGroup(state: SettingsUiState, onToggle: (SettingsIntent) -> Unit) {
+private fun ClassesGroup(
+    state: SettingsUiState,
+    onToggle: (SettingsIntent) -> Unit,
+) {
     NotificationGroupCard(
         title = stringResource(R.string.settings_notif_group_classes_title),
         activeCount = state.classActiveCount,
@@ -384,7 +399,10 @@ private fun ClassesGroup(state: SettingsUiState, onToggle: (SettingsIntent) -> U
 // device-local (DataStore) and swaps the Horário tab rendering via
 // `ScheduleRoute`.
 @Composable
-private fun AppearanceCard(state: SettingsUiState, onIntent: (SettingsIntent) -> Unit) {
+private fun AppearanceCard(
+    state: SettingsUiState,
+    onIntent: (SettingsIntent) -> Unit,
+) {
     val shape = RoundedCornerShape(24.dp)
     Column(
         modifier = Modifier
@@ -450,7 +468,10 @@ private fun AppearanceCard(state: SettingsUiState, onIntent: (SettingsIntent) ->
 // server groups' header counter, because it schedules on this device and
 // never PATCHes `user_settings`.
 @Composable
-private fun EvaluationReminderCard(state: SettingsUiState, onToggle: (SettingsIntent) -> Unit) {
+private fun EvaluationReminderCard(
+    state: SettingsUiState,
+    onToggle: (SettingsIntent) -> Unit,
+) {
     val shape = RoundedCornerShape(24.dp)
     Column(
         modifier = Modifier
@@ -477,14 +498,16 @@ private val ThemeModeOptions = listOf(ThemeMode.Light, ThemeMode.System, ThemeMo
 // Grade da semana / Lista do dia, in dc order — `true` = week grid.
 private val ScheduleViewOptions = listOf(true, false)
 
-private fun ThemeMode.labelRes(): Int = when (this) {
-    ThemeMode.Light -> R.string.settings_theme_light
-    ThemeMode.System -> R.string.settings_theme_system
-    ThemeMode.Dark -> R.string.settings_theme_dark
-}
+private fun ThemeMode.labelRes(): Int =
+    when (this) {
+        ThemeMode.Light -> R.string.settings_theme_light
+        ThemeMode.System -> R.string.settings_theme_system
+        ThemeMode.Dark -> R.string.settings_theme_dark
+    }
 
-private fun SpoilerMode.labelRes(): Int = when (this) {
-    SpoilerMode.Value -> R.string.settings_privacy_value
-    SpoilerMode.Comment -> R.string.settings_privacy_summary
-    SpoilerMode.Posted -> R.string.settings_privacy_discreet
-}
+private fun SpoilerMode.labelRes(): Int =
+    when (this) {
+        SpoilerMode.Value -> R.string.settings_privacy_value
+        SpoilerMode.Comment -> R.string.settings_privacy_summary
+        SpoilerMode.Posted -> R.string.settings_privacy_discreet
+    }

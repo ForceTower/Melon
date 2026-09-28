@@ -63,15 +63,16 @@ internal data class CurriculumStatusStyle(
 // situations fall back to the neutral outlines so they recede.
 @Composable
 @ReadOnlyComposable
-internal fun curriculumStatusTone(status: CurriculumEntryStatus): Color = when (status) {
-    CurriculumEntryStatus.Completed -> MaterialTheme.melon.status.ok
-    CurriculumEntryStatus.InProgress -> MaterialTheme.melon.palette.sky
-    CurriculumEntryStatus.Available -> MaterialTheme.melon.palette.violet
-    CurriculumEntryStatus.Withdrawn -> MaterialTheme.melon.palette.orange
-    CurriculumEntryStatus.Failed -> MaterialTheme.melon.status.bad
-    CurriculumEntryStatus.Blocked -> MaterialTheme.colorScheme.outline
-    CurriculumEntryStatus.NotTaken -> MaterialTheme.colorScheme.outlineVariant
-}
+internal fun curriculumStatusTone(status: CurriculumEntryStatus): Color =
+    when (status) {
+        CurriculumEntryStatus.Completed -> MaterialTheme.melon.status.ok
+        CurriculumEntryStatus.InProgress -> MaterialTheme.melon.palette.sky
+        CurriculumEntryStatus.Available -> MaterialTheme.melon.palette.violet
+        CurriculumEntryStatus.Withdrawn -> MaterialTheme.melon.palette.orange
+        CurriculumEntryStatus.Failed -> MaterialTheme.melon.status.bad
+        CurriculumEntryStatus.Blocked -> MaterialTheme.colorScheme.outline
+        CurriculumEntryStatus.NotTaken -> MaterialTheme.colorScheme.outlineVariant
+    }
 
 @Composable
 internal fun curriculumStatusStyle(status: CurriculumEntryStatus): CurriculumStatusStyle =
@@ -103,22 +104,24 @@ internal fun curriculumStatusStyle(status: CurriculumEntryStatus): CurriculumSta
         filled = status == CurriculumEntryStatus.Completed,
     )
 
-private fun curriculumStatusLabelRes(status: CurriculumEntryStatus): Int = when (status) {
-    CurriculumEntryStatus.Completed -> R.string.course_progress_status_completed
-    CurriculumEntryStatus.InProgress -> R.string.course_progress_status_in_progress
-    CurriculumEntryStatus.Available -> R.string.course_progress_status_available
-    CurriculumEntryStatus.Withdrawn -> R.string.course_progress_status_withdrawn
-    CurriculumEntryStatus.Failed -> R.string.course_progress_status_failed
-    CurriculumEntryStatus.Blocked -> R.string.course_progress_status_blocked
-    CurriculumEntryStatus.NotTaken -> R.string.course_progress_status_not_taken
-}
+private fun curriculumStatusLabelRes(status: CurriculumEntryStatus): Int =
+    when (status) {
+        CurriculumEntryStatus.Completed -> R.string.course_progress_status_completed
+        CurriculumEntryStatus.InProgress -> R.string.course_progress_status_in_progress
+        CurriculumEntryStatus.Available -> R.string.course_progress_status_available
+        CurriculumEntryStatus.Withdrawn -> R.string.course_progress_status_withdrawn
+        CurriculumEntryStatus.Failed -> R.string.course_progress_status_failed
+        CurriculumEntryStatus.Blocked -> R.string.course_progress_status_blocked
+        CurriculumEntryStatus.NotTaken -> R.string.course_progress_status_not_taken
+    }
 
-private fun curriculumStatusShortLabelRes(status: CurriculumEntryStatus): Int = when (status) {
-    CurriculumEntryStatus.InProgress -> R.string.course_progress_status_in_progress_short
-    CurriculumEntryStatus.Available -> R.string.course_progress_status_available_short
-    CurriculumEntryStatus.Blocked -> R.string.course_progress_status_blocked_short
-    else -> curriculumStatusLabelRes(status)
-}
+private fun curriculumStatusShortLabelRes(status: CurriculumEntryStatus): Int =
+    when (status) {
+        CurriculumEntryStatus.InProgress -> R.string.course_progress_status_in_progress_short
+        CurriculumEntryStatus.Available -> R.string.course_progress_status_available_short
+        CurriculumEntryStatus.Blocked -> R.string.course_progress_status_blocked_short
+        else -> curriculumStatusLabelRes(status)
+    }
 
 // Paints a slot's plate: the tonal wash plus the edge treatment its situation
 // owns. `Modifier.border` would cover the plain outlines, but dashed and
@@ -129,34 +132,35 @@ internal fun Modifier.curriculumSlotSurface(
     style: CurriculumStatusStyle,
     corner: Dp,
     faintEdge: Color,
-): Modifier = drawBehind {
-    val radius = corner.toPx()
-    if (style.fillAlpha > 0f) {
+): Modifier =
+    drawBehind {
+        val radius = corner.toPx()
+        if (style.fillAlpha > 0f) {
+            drawRoundRect(
+                color = style.tone.copy(alpha = style.fillAlpha),
+                cornerRadius = CornerRadius(radius),
+            )
+        }
+        if (style.edge == CurriculumStatusEdge.Hatch) drawHatch(style.tone.copy(alpha = 0.16f))
+
+        val strokeWidth = if (style.edge == CurriculumStatusEdge.Thick) 2.dp.toPx() else 1.dp.toPx()
+        val inset = strokeWidth / 2f
         drawRoundRect(
-            color = style.tone.copy(alpha = style.fillAlpha),
-            cornerRadius = CornerRadius(radius),
+            color = when (style.edge) {
+                CurriculumStatusEdge.Faint -> faintEdge
+                CurriculumStatusEdge.Thick -> style.tone
+                CurriculumStatusEdge.Dashed, CurriculumStatusEdge.Hatch -> style.tone.copy(alpha = 0.75f)
+                CurriculumStatusEdge.Solid -> style.tone.copy(alpha = 0.55f)
+            },
+            topLeft = Offset(inset, inset),
+            size = Size(size.width - strokeWidth, size.height - strokeWidth),
+            cornerRadius = CornerRadius((radius - inset).coerceAtLeast(0f)),
+            style = Stroke(
+                width = strokeWidth,
+                pathEffect = if (style.edge == CurriculumStatusEdge.Dashed) DashedEdge else null,
+            ),
         )
     }
-    if (style.edge == CurriculumStatusEdge.Hatch) drawHatch(style.tone.copy(alpha = 0.16f))
-
-    val strokeWidth = if (style.edge == CurriculumStatusEdge.Thick) 2.dp.toPx() else 1.dp.toPx()
-    val inset = strokeWidth / 2f
-    drawRoundRect(
-        color = when (style.edge) {
-            CurriculumStatusEdge.Faint -> faintEdge
-            CurriculumStatusEdge.Thick -> style.tone
-            CurriculumStatusEdge.Dashed, CurriculumStatusEdge.Hatch -> style.tone.copy(alpha = 0.75f)
-            CurriculumStatusEdge.Solid -> style.tone.copy(alpha = 0.55f)
-        },
-        topLeft = Offset(inset, inset),
-        size = Size(size.width - strokeWidth, size.height - strokeWidth),
-        cornerRadius = CornerRadius((radius - inset).coerceAtLeast(0f)),
-        style = Stroke(
-            width = strokeWidth,
-            pathEffect = if (style.edge == CurriculumStatusEdge.Dashed) DashedEdge else null,
-        ),
-    )
-}
 
 private val DashedEdge = PathEffect.dashPathEffect(floatArrayOf(9f, 7f))
 
@@ -215,7 +219,6 @@ internal fun CurriculumStatusBadge(
 
 // Fades everything outside an active trail without removing it — the chain is
 // only legible against the rest of the grid.
-internal fun Modifier.trailDim(dimmed: Boolean): Modifier =
-    if (dimmed) alpha(TrailDimAlpha) else this
+internal fun Modifier.trailDim(dimmed: Boolean): Modifier = if (dimmed) alpha(TrailDimAlpha) else this
 
 private const val TrailDimAlpha = 0.22f

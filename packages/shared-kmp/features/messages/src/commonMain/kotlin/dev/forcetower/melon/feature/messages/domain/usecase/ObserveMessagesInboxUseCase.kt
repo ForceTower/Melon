@@ -17,24 +17,25 @@ import kotlinx.coroutines.flow.combine
 class ObserveMessagesInboxUseCase internal constructor(
     private val messageDao: MessageDao,
 ) {
-    operator fun invoke(): Flow<List<MessageFeedItem>> = combine(
-        messageDao.observeInbox(),
-        messageDao.observeAllScopes(),
-        messageDao.observeAllAttachments(),
-        messageDao.observeAllStates(),
-    ) { messages, scopes, attachments, states ->
-        val scopesByMessage = scopes.groupBy { it.messageId }
-        val attachmentsByMessage = attachments.groupBy { it.messageId }
-        val stateByMessage = states.associateBy { it.messageId }
-        messages.map { entity ->
-            buildItem(
-                entity,
-                scopesByMessage[entity.id].orEmpty(),
-                attachmentsByMessage[entity.id].orEmpty(),
-                stateByMessage[entity.id],
-            )
+    operator fun invoke(): Flow<List<MessageFeedItem>> =
+        combine(
+            messageDao.observeInbox(),
+            messageDao.observeAllScopes(),
+            messageDao.observeAllAttachments(),
+            messageDao.observeAllStates(),
+        ) { messages, scopes, attachments, states ->
+            val scopesByMessage = scopes.groupBy { it.messageId }
+            val attachmentsByMessage = attachments.groupBy { it.messageId }
+            val stateByMessage = states.associateBy { it.messageId }
+            messages.map { entity ->
+                buildItem(
+                    entity,
+                    scopesByMessage[entity.id].orEmpty(),
+                    attachmentsByMessage[entity.id].orEmpty(),
+                    stateByMessage[entity.id],
+                )
+            }
         }
-    }
 
     private fun buildItem(
         entity: MessageEntity,

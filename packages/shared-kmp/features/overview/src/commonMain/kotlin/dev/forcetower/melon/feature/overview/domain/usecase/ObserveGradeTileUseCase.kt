@@ -28,13 +28,14 @@ class ObserveGradeTileUseCase internal constructor(
 ) {
     private val timeZone = clock.timeZone
 
-    operator fun invoke(): Flow<OverviewGradeTile?> = combine(
-        semesterDao.observeAll(),
-        academicDao.observeAllEnrolledDisciplines(),
-    ) { semesters, enrollments ->
-        val today = clock.now().toLocalDateTime(timeZone).date.toString()
-        buildTile(semesters, enrollments, today)
-    }.distinctUntilChanged()
+    operator fun invoke(): Flow<OverviewGradeTile?> =
+        combine(
+            semesterDao.observeAll(),
+            academicDao.observeAllEnrolledDisciplines(),
+        ) { semesters, enrollments ->
+            val today = clock.now().toLocalDateTime(timeZone).date.toString()
+            buildTile(semesters, enrollments, today)
+        }.distinctUntilChanged()
 }
 
 private fun buildTile(

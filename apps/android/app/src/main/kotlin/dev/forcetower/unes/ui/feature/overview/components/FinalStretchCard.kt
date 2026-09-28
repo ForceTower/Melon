@@ -55,7 +55,10 @@ internal fun FinalStretchCard(
 }
 
 @Composable
-private fun SemesterCard(data: OverviewFinalStretch.Semester, modifier: Modifier = Modifier) {
+private fun SemesterCard(
+    data: OverviewFinalStretch.Semester,
+    modifier: Modifier = Modifier,
+) {
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -97,7 +100,10 @@ private fun SemesterCard(data: OverviewFinalStretch.Semester, modifier: Modifier
 }
 
 @Composable
-private fun ExamCard(data: OverviewFinalStretch.Exam, modifier: Modifier = Modifier) {
+private fun ExamCard(
+    data: OverviewFinalStretch.Exam,
+    modifier: Modifier = Modifier,
+) {
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -177,7 +183,10 @@ internal val CardSurfaceElevation = 2.dp
 // modifier already carries the elevation as a `RevealShadow`, which keeps it
 // out of the fading layer.
 @Composable
-internal fun Modifier.cardSurface(cornerRadius: Dp, shadow: Boolean = true): Modifier {
+internal fun Modifier.cardSurface(
+    cornerRadius: Dp,
+    shadow: Boolean = true,
+): Modifier {
     val shape = RoundedCornerShape(cornerRadius)
     return this
         .then(

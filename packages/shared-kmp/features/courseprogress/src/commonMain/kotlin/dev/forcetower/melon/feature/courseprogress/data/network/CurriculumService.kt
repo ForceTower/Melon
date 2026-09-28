@@ -50,20 +50,27 @@ internal class CurriculumService(
     suspend fun selectVersion(
         curriculumId: String,
         syncedAt: Instant,
-    ): Outcome<CourseProgress, CourseProgressError> = payload(syncedAt) {
-        client.put("api/curriculum/version") {
-            contentType(ContentType.Application.Json)
-            setBody(VersionSelectionRequest(curriculumId))
+    ): Outcome<CourseProgress, CourseProgressError> =
+        payload(syncedAt) {
+            client.put("api/curriculum/version") {
+                contentType(ContentType.Application.Json)
+                setBody(VersionSelectionRequest(curriculumId))
+            }
         }
-    }
 
     suspend fun resetVersion(syncedAt: Instant): Outcome<CourseProgress, CourseProgressError> =
         payload(syncedAt) { client.delete("api/curriculum/version") }
 
-    suspend fun markCompleted(code: String, syncedAt: Instant): Outcome<CourseProgress, CourseProgressError> =
+    suspend fun markCompleted(
+        code: String,
+        syncedAt: Instant,
+    ): Outcome<CourseProgress, CourseProgressError> =
         payload(syncedAt) { client.put("api/curriculum/entries/$code/completion") }
 
-    suspend fun unmarkCompleted(code: String, syncedAt: Instant): Outcome<CourseProgress, CourseProgressError> =
+    suspend fun unmarkCompleted(
+        code: String,
+        syncedAt: Instant,
+    ): Outcome<CourseProgress, CourseProgressError> =
         payload(syncedAt) { client.delete("api/curriculum/entries/$code/completion") }
 
     private suspend inline fun payload(
@@ -82,7 +89,9 @@ internal class CurriculumService(
 }
 
 @Serializable
-private data class VersionSelectionRequest(val curriculumId: String)
+private data class VersionSelectionRequest(
+    val curriculumId: String,
+)
 
 @Serializable
 internal data class CurriculumPayloadDTO(
@@ -166,73 +175,79 @@ internal data class CurriculumPayloadDTO(
     )
 }
 
-internal fun CurriculumPayloadDTO.toDomain(syncedAt: Instant) = CourseProgress(
-    curriculum = curriculum?.toDomain(),
-    summary = summary.toDomain(),
-    requirements = requirements.orEmpty().map { it.toDomain() },
-    periods = periods.orEmpty().map { it.toDomain() }.sortedBy { it.sortKey },
-    currentPeriod = currentPeriod,
-    prerequisitesKnown = prerequisitesKnown ?: false,
-    syncedAt = syncedAt,
-    availableVersions = availableVersions.orEmpty().map { it.toDomain() },
-    approvedHours = approvedHours ?: summary.completedHours,
-)
+internal fun CurriculumPayloadDTO.toDomain(syncedAt: Instant) =
+    CourseProgress(
+        curriculum = curriculum?.toDomain(),
+        summary = summary.toDomain(),
+        requirements = requirements.orEmpty().map { it.toDomain() },
+        periods = periods.orEmpty().map { it.toDomain() }.sortedBy { it.sortKey },
+        currentPeriod = currentPeriod,
+        prerequisitesKnown = prerequisitesKnown ?: false,
+        syncedAt = syncedAt,
+        availableVersions = availableVersions.orEmpty().map { it.toDomain() },
+        approvedHours = approvedHours ?: summary.completedHours,
+    )
 
-private fun CurriculumPayloadDTO.VersionDTO.toDomain() = CurriculumVersion(
-    id = id,
-    code = code,
-    label = label,
-    asOf = asOf,
-    minPeriods = minPeriods,
-    maxPeriods = maxPeriods,
-    stale = stale ?: false,
-    current = current ?: false,
-    supersededBy = supersededBy?.let { CurriculumSupersession(code = it.code, effectiveFrom = it.effectiveFrom) },
-    source = CurriculumBindingSource.fromWire(source),
-    completedHours = completedHours,
-    requiredHours = requiredHours,
-    percent = percent,
-    fit = fit,
-)
+private fun CurriculumPayloadDTO.VersionDTO.toDomain() =
+    CurriculumVersion(
+        id = id,
+        code = code,
+        label = label,
+        asOf = asOf,
+        minPeriods = minPeriods,
+        maxPeriods = maxPeriods,
+        stale = stale ?: false,
+        current = current ?: false,
+        supersededBy = supersededBy?.let { CurriculumSupersession(code = it.code, effectiveFrom = it.effectiveFrom) },
+        source = CurriculumBindingSource.fromWire(source),
+        completedHours = completedHours,
+        requiredHours = requiredHours,
+        percent = percent,
+        fit = fit,
+    )
 
-private fun CurriculumPayloadDTO.SummaryDTO.toDomain() = CurriculumSummary(
-    completedHours = completedHours,
-    requiredHours = requiredHours,
-    percent = percent,
-    excludedHours = excludedHours ?: 0,
-    unclassifiedHours = unclassifiedHours ?: 0,
-    disciplinesCompleted = disciplinesCompleted ?: 0,
-    disciplinesTotal = disciplinesTotal ?: 0,
-    manuallyCompletedHours = manuallyCompletedHours ?: 0,
-)
+private fun CurriculumPayloadDTO.SummaryDTO.toDomain() =
+    CurriculumSummary(
+        completedHours = completedHours,
+        requiredHours = requiredHours,
+        percent = percent,
+        excludedHours = excludedHours ?: 0,
+        unclassifiedHours = unclassifiedHours ?: 0,
+        disciplinesCompleted = disciplinesCompleted ?: 0,
+        disciplinesTotal = disciplinesTotal ?: 0,
+        manuallyCompletedHours = manuallyCompletedHours ?: 0,
+    )
 
-private fun CurriculumPayloadDTO.RequirementDTO.toDomain() = CurriculumRequirementProgress(
-    code = code,
-    kind = CurriculumRequirementKind.fromWire(kind),
-    label = label,
-    shortLabel = shortLabel ?: label,
-    startsAtPeriod = startsAtPeriod,
-    hoursRequired = hoursRequired,
-    hoursCompleted = hoursCompleted,
-    derivable = derivable ?: true,
-    percent = percent,
-)
+private fun CurriculumPayloadDTO.RequirementDTO.toDomain() =
+    CurriculumRequirementProgress(
+        code = code,
+        kind = CurriculumRequirementKind.fromWire(kind),
+        label = label,
+        shortLabel = shortLabel ?: label,
+        startsAtPeriod = startsAtPeriod,
+        hoursRequired = hoursRequired,
+        hoursCompleted = hoursCompleted,
+        derivable = derivable ?: true,
+        percent = percent,
+    )
 
-private fun CurriculumPayloadDTO.PeriodDTO.toDomain() = CurriculumPeriod(
-    period = period,
-    entries = entries.map { it.toDomain() },
-)
+private fun CurriculumPayloadDTO.PeriodDTO.toDomain() =
+    CurriculumPeriod(
+        period = period,
+        entries = entries.map { it.toDomain() },
+    )
 
-private fun CurriculumPayloadDTO.EntryDTO.toDomain() = CurriculumEntry(
-    code = code,
-    name = name,
-    hours = hours,
-    credits = credits,
-    period = period,
-    coreqGroup = coreqGroup,
-    requirementCode = requirementCode,
-    status = CurriculumEntryStatus.fromWire(status),
-    prerequisites = prerequisites.orEmpty(),
-    corequisites = corequisites.orEmpty(),
-    manuallyCompleted = manuallyCompleted ?: false,
-)
+private fun CurriculumPayloadDTO.EntryDTO.toDomain() =
+    CurriculumEntry(
+        code = code,
+        name = name,
+        hours = hours,
+        credits = credits,
+        period = period,
+        coreqGroup = coreqGroup,
+        requirementCode = requirementCode,
+        status = CurriculumEntryStatus.fromWire(status),
+        prerequisites = prerequisites.orEmpty(),
+        corequisites = corequisites.orEmpty(),
+        manuallyCompleted = manuallyCompleted ?: false,
+    )

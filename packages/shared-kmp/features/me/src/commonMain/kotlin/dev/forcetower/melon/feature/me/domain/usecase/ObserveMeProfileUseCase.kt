@@ -142,11 +142,12 @@ class ObserveMeProfileUseCase internal constructor(
         return if (parts.isEmpty()) null else parts.joinToString(" · ")
     }
 
-    private fun modeOf(values: List<String>): String? = values
-        .groupingBy { it }
-        .eachCount()
-        .minWithOrNull(compareByDescending<Map.Entry<String, Int>> { it.value }.thenBy { it.key })
-        ?.key
+    private fun modeOf(values: List<String>): String? =
+        values
+            .groupingBy { it }
+            .eachCount()
+            .minWithOrNull(compareByDescending<Map.Entry<String, Int>> { it.value }.thenBy { it.key })
+            ?.key
 
     // 100 − missed/hours, gated on at least one lecture having happened
     // (`completedHours > 0`) so a fresh semester doesn't open at a
@@ -164,7 +165,10 @@ class ObserveMeProfileUseCase internal constructor(
     // 1-based position of the active semester among enrolled semesters. When
     // the active semester has no enrollments yet (enrollment window), it
     // still counts as the next one after the enrolled history.
-    private fun semesterOrdinal(slice: ProfileSlice, active: SemesterEntity): Int {
+    private fun semesterOrdinal(
+        slice: ProfileSlice,
+        active: SemesterEntity,
+    ): Int {
         val enrolledIds = slice.enrollments.mapTo(mutableSetOf()) { it.semesterId }
         return slice.semesters.count { it.id in enrolledIds && it.startDate < active.startDate } + 1
     }
@@ -192,7 +196,10 @@ class ObserveMeProfileUseCase internal constructor(
         )
     }
 
-    private fun buildSemesterProgress(semester: SemesterEntity, todayIso: String): MeSemesterProgress {
+    private fun buildSemesterProgress(
+        semester: SemesterEntity,
+        todayIso: String,
+    ): MeSemesterProgress {
         val start = runCatching { LocalDate.parse(semester.startDate) }.getOrNull()
         val end = runCatching { LocalDate.parse(semester.endDate) }.getOrNull()
         val today = runCatching { LocalDate.parse(todayIso) }.getOrNull()
@@ -272,7 +279,10 @@ class ObserveMeProfileUseCase internal constructor(
 
 // Same active-semester rule as ObserveDisciplinesUseCase — today inside
 // [startDate, endDate]; otherwise fall back to the most recently started.
-private fun pickActiveSemester(all: List<SemesterEntity>, todayIso: String): SemesterEntity? {
+private fun pickActiveSemester(
+    all: List<SemesterEntity>,
+    todayIso: String,
+): SemesterEntity? {
     if (all.isEmpty()) return null
     return all.firstOrNull { it.startDate <= todayIso && todayIso <= it.endDate }
         ?: all.maxByOrNull { it.startDate }

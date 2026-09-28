@@ -20,7 +20,10 @@ internal interface PasskeyRepository {
 
     suspend fun list(): Outcome<List<PasskeyCredential>, PasskeyError>
 
-    suspend fun rename(id: String, deviceName: String): Outcome<Unit, PasskeyError>
+    suspend fun rename(
+        id: String,
+        deviceName: String,
+    ): Outcome<Unit, PasskeyError>
 
     suspend fun delete(id: String): Outcome<Unit, PasskeyError>
 }

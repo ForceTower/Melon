@@ -9,6 +9,8 @@ import dev.zacsweers.metro.Inject
 class RenamePasskeyUseCase internal constructor(
     private val repository: PasskeyRepository,
 ) {
-    suspend operator fun invoke(id: String, deviceName: String): Outcome<Unit, PasskeyError> =
-        repository.rename(id, deviceName.trim())
+    suspend operator fun invoke(
+        id: String,
+        deviceName: String,
+    ): Outcome<Unit, PasskeyError> = repository.rename(id, deviceName.trim())
 }

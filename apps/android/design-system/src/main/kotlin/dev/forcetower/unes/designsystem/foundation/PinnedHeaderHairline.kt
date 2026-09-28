@@ -18,7 +18,10 @@ import dev.forcetower.unes.designsystem.theme.melon
 // content behind it starts scrolling, so rows visibly slide under fixed
 // chrome — the Compose analogue of the iOS large-title divider.
 @Composable
-fun PinnedHeaderHairline(scrolled: Boolean, modifier: Modifier = Modifier) {
+fun PinnedHeaderHairline(
+    scrolled: Boolean,
+    modifier: Modifier = Modifier,
+) {
     val alpha by animateFloatAsState(
         targetValue = if (scrolled) 1f else 0f,
         animationSpec = MelonMotion.ease(),

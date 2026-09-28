@@ -74,7 +74,10 @@ internal enum class MessageShareOutcome {
     TextCopied,
 }
 
-private enum class ShareMode(val labelRes: Int, val subtitleRes: Int) {
+private enum class ShareMode(
+    val labelRes: Int,
+    val subtitleRes: Int,
+) {
     Image(R.string.messages_share_mode_image, R.string.messages_share_subtitle_image),
     Text(R.string.messages_share_mode_text, R.string.messages_share_subtitle_text),
 }
@@ -171,8 +174,11 @@ internal fun MessageShareSheet(
                             val bitmap = layer.toShareBitmap()
                             val saved = bitmap != null && saveImageToDownloads(context, bitmap)
                             onOutcome(
-                                if (saved) MessageShareOutcome.ImageSaved
-                                else MessageShareOutcome.ImageSaveFailed,
+                                if (saved) {
+                                    MessageShareOutcome.ImageSaved
+                                } else {
+                                    MessageShareOutcome.ImageSaveFailed
+                                },
                             )
                             onDismiss()
                         }
@@ -189,7 +195,10 @@ internal fun MessageShareSheet(
 }
 
 @Composable
-private fun Header(mode: ShareMode, onClose: () -> Unit) {
+private fun Header(
+    mode: ShareMode,
+    onClose: () -> Unit,
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -223,7 +232,10 @@ private fun Header(mode: ShareMode, onClose: () -> Unit) {
 }
 
 @Composable
-private fun ImagePreview(message: Message, layer: GraphicsLayer) {
+private fun ImagePreview(
+    message: Message,
+    layer: GraphicsLayer,
+) {
     // Laid out at the width whose pixel size is the dc's 1080 grid, so what the
     // layer captures is already export resolution. Narrow screens fall back to
     // whatever fits and the export resamples.
@@ -308,7 +320,11 @@ private fun TextPreview(message: Message) {
 }
 
 @Composable
-private fun Actions(mode: ShareMode, onShare: () -> Unit, onSecondary: () -> Unit) {
+private fun Actions(
+    mode: ShareMode,
+    onShare: () -> Unit,
+    onSecondary: () -> Unit,
+) {
     val showSecondary = mode == ShareMode.Text || canSaveToDownloads
     Column(
         modifier = Modifier
@@ -345,7 +361,10 @@ private fun Actions(mode: ShareMode, onShare: () -> Unit, onSecondary: () -> Uni
 }
 
 @Composable
-private fun ActionLabel(icon: ImageVector, labelRes: Int) {
+private fun ActionLabel(
+    icon: ImageVector,
+    labelRes: Int,
+) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically,

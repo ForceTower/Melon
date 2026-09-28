@@ -76,12 +76,13 @@ class UpdateStrategyTest {
         immediateAllowed: Boolean = true,
         flexibleAllowed: Boolean = true,
         flexibleSuppressed: Boolean = false,
-    ): Int? = chooseUpdateType(
-        availability = availability,
-        priority = priority,
-        stalenessDays = stalenessDays,
-        immediateAllowed = immediateAllowed,
-        flexibleAllowed = flexibleAllowed,
-        flexibleSuppressed = flexibleSuppressed,
-    )
+    ): Int? =
+        chooseUpdateType(
+            availability = availability,
+            priority = priority,
+            stalenessDays = stalenessDays,
+            immediateAllowed = immediateAllowed,
+            flexibleAllowed = flexibleAllowed,
+            flexibleSuppressed = flexibleSuppressed,
+        )
 }

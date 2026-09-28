@@ -6,8 +6,12 @@ package dev.forcetower.melon.feature.paradoxo.domain.model
 // iOS `Paradoxo.swift`.
 
 sealed interface ParadoxoRef {
-    data class Discipline(val id: String) : ParadoxoRef
-    data class Teacher(val id: String) : ParadoxoRef
+    data class Discipline(
+        val id: String,
+    ) : ParadoxoRef
+    data class Teacher(
+        val id: String,
+    ) : ParadoxoRef
 }
 
 enum class ParadoxoPulseKind {
@@ -72,8 +76,7 @@ data class ParadoxoOverview(
     val studentCount: Int,
     val meanCount: Int,
 ) {
-    fun ranking(kind: ParadoxoExploreKind): ParadoxoRanking? =
-        rankings.firstOrNull { it.kind == kind }
+    fun ranking(kind: ParadoxoExploreKind): ParadoxoRanking? = rankings.firstOrNull { it.kind == kind }
 }
 
 // Flat search catalogue — every discipline and teacher with published

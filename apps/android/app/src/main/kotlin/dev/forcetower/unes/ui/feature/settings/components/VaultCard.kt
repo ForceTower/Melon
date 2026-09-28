@@ -152,7 +152,10 @@ internal fun VaultCard(
 // always-dark vault card. The "N ativa(s)" pill only shows once the count has
 // resolved to a non-zero value.
 @Composable
-private fun PasskeysRow(count: Int?, onClick: () -> Unit) {
+private fun PasskeysRow(
+    count: Int?,
+    onClick: () -> Unit,
+) {
     val onHero = MaterialTheme.melon.fixed.onHero
     val live = MaterialTheme.melon.fixed.live
     val shape = RoundedCornerShape(16.dp)
@@ -365,8 +368,11 @@ private fun IdentityRow(
             )
             Text(
                 text = stringResource(
-                    if (revealed) R.string.settings_vault_action_hide
-                    else R.string.settings_vault_action_show,
+                    if (revealed) {
+                        R.string.settings_vault_action_hide
+                    } else {
+                        R.string.settings_vault_action_show
+                    },
                 ),
                 style = MaterialTheme.typography.labelMedium.copy(
                     fontSize = 13.sp,
@@ -380,7 +386,11 @@ private fun IdentityRow(
 }
 
 @Composable
-private fun FieldsBox(username: String, password: String, revealed: Boolean) {
+private fun FieldsBox(
+    username: String,
+    password: String,
+    revealed: Boolean,
+) {
     val onHero = MaterialTheme.melon.fixed.onHero
     val shape = RoundedCornerShape(18.dp)
 
@@ -494,7 +504,12 @@ private const val MaskedPassword = "••••••••"
 private const val CopiedFlashMs = 1400L
 
 @SuppressLint("InlinedApi")
-private fun copyToClipboard(context: Context, label: String, value: String, sensitive: Boolean) {
+private fun copyToClipboard(
+    context: Context,
+    label: String,
+    value: String,
+    sensitive: Boolean,
+) {
     val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager ?: return
     val clip = ClipData.newPlainText(label, value)
     if (sensitive) {

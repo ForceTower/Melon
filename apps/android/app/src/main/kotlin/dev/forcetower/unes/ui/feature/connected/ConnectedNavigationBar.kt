@@ -1,10 +1,10 @@
 package dev.forcetower.unes.ui.feature.connected
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
@@ -118,13 +118,14 @@ internal fun ConnectedNavigationBar(
     }
 }
 
-private fun ConnectedTab.icon(selected: Boolean): ImageVector = when (this) {
-    ConnectedTab.Overview -> if (selected) Icons.Filled.Home else Icons.Outlined.Home
-    ConnectedTab.Schedule -> if (selected) Icons.Filled.CalendarMonth else Icons.Outlined.CalendarMonth
-    ConnectedTab.Classes -> if (selected) Icons.Filled.School else Icons.Outlined.School
-    ConnectedTab.Messages -> if (selected) Icons.Filled.ChatBubble else Icons.Outlined.ChatBubbleOutline
-    ConnectedTab.Me -> if (selected) Icons.Filled.Person else Icons.Outlined.PersonOutline
-}
+private fun ConnectedTab.icon(selected: Boolean): ImageVector =
+    when (this) {
+        ConnectedTab.Overview -> if (selected) Icons.Filled.Home else Icons.Outlined.Home
+        ConnectedTab.Schedule -> if (selected) Icons.Filled.CalendarMonth else Icons.Outlined.CalendarMonth
+        ConnectedTab.Classes -> if (selected) Icons.Filled.School else Icons.Outlined.School
+        ConnectedTab.Messages -> if (selected) Icons.Filled.ChatBubble else Icons.Outlined.ChatBubbleOutline
+        ConnectedTab.Me -> if (selected) Icons.Filled.Person else Icons.Outlined.PersonOutline
+    }
 
 @Preview
 @Composable

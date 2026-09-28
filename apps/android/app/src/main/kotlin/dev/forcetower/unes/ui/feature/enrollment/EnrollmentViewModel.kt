@@ -124,7 +124,12 @@ internal class EnrollmentViewModel @Inject constructor(
                     val window = availability.value.window.takeIf { availability.value.available }
                     if (window == null) {
                         setState {
-                            copy(phase = EnrollmentPhase.Loaded, available = false, window = null, disciplines = emptyList())
+                            copy(
+                                phase = EnrollmentPhase.Loaded,
+                                available = false,
+                                window = null,
+                                disciplines = emptyList(),
+                            )
                         }
                         return@launch
                     }
@@ -151,7 +156,10 @@ internal class EnrollmentViewModel @Inject constructor(
     // Tap semantics mirror the section-card footer: re-tapping the current
     // pick removes it; conflicting or full-without-queue sections are inert
     // (defense-in-depth — the card is visually disabled too).
-    private fun sectionTapped(disciplineId: Long, sectionId: Long) {
+    private fun sectionTapped(
+        disciplineId: Long,
+        sectionId: Long,
+    ) {
         val state = currentState
         if (!state.canEdit) return
         val discipline = state.disciplineById(disciplineId) ?: return

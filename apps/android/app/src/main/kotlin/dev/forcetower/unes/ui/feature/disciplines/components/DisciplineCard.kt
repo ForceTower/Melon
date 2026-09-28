@@ -158,7 +158,10 @@ internal fun DisciplineCard(
 }
 
 @Composable
-private fun CodeChip(code: String, hue: Color) {
+private fun CodeChip(
+    code: String,
+    hue: Color,
+) {
     Box(
         modifier = Modifier
             .clip(RoundedCornerShape(8.dp))
@@ -217,7 +220,10 @@ private fun StatusChip(status: DisciplineStatus) {
 // value centered, "MÉDIA" caption underneath. Track is the same hue faded so
 // the ring stays on-palette in both themes.
 @Composable
-private fun AverageRing(average: Double?, hue: Color) {
+private fun AverageRing(
+    average: Double?,
+    hue: Color,
+) {
     Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(4.dp)) {
         Box(modifier = Modifier.size(60.dp), contentAlignment = Alignment.Center) {
             val track = hue.copy(alpha = 0.20f)
@@ -367,7 +373,10 @@ private fun AbsencesMeter(
 }
 
 @Composable
-private fun EvaluationsCount(done: Int, total: Int) {
+private fun EvaluationsCount(
+    done: Int,
+    total: Int,
+) {
     Column(horizontalAlignment = Alignment.End) {
         Text(
             text = stringResource(R.string.disciplines_card_evaluations_label).uppercase(Locale.ROOT),

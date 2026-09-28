@@ -13,7 +13,10 @@ abstract class CalendarEventDao {
     abstract fun observeAll(): Flow<List<AcademicCalendarEventEntity>>
 
     @Query("SELECT * FROM AcademicCalendarEvent WHERE start BETWEEN :start AND :end ORDER BY start ASC, id ASC")
-    abstract fun observeBetween(start: String, end: String): Flow<List<AcademicCalendarEventEntity>>
+    abstract fun observeBetween(
+        start: String,
+        end: String,
+    ): Flow<List<AcademicCalendarEventEntity>>
 
     @Upsert
     abstract suspend fun upsertAll(events: List<AcademicCalendarEventEntity>)

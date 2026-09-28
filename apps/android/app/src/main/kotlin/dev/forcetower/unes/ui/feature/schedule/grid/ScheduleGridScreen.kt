@@ -33,8 +33,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -58,8 +58,8 @@ import java.time.DayOfWeek
 import java.time.LocalTime
 import java.time.format.TextStyle
 import java.util.Locale
-import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.seconds
+import kotlinx.coroutines.delay
 
 // "Horário" tab week-grid rendering (dc project `UNES Grade - Android`,
 // compact density): the same pinned M3 app bar as the timeline screen, then a
@@ -91,7 +91,10 @@ internal fun ScheduleGridScreen(
         state = state,
         week = week,
         nowMinute = nowMinute,
-        onOpenDiscipline = { cls -> vm.trackOpenDiscipline(cls); onOpenDiscipline(cls) },
+        onOpenDiscipline = { cls ->
+            vm.trackOpenDiscipline(cls)
+            onOpenDiscipline(cls)
+        },
         onOpenFolioRunner = onOpenFolioRunner,
         modifier = modifier,
         bottomInset = bottomInset,
@@ -108,16 +111,20 @@ internal fun gridClassState(
     todayIdx: Int,
     cls: ScheduleClass,
     nowMinute: Int,
-): GridClassState = when {
-    dayIdx != todayIdx -> GridClassState.Future
-    nowMinute >= cls.endMin -> GridClassState.Done
-    nowMinute >= cls.startMin -> GridClassState.Now
-    else -> GridClassState.Future
-}
+): GridClassState =
+    when {
+        dayIdx != todayIdx -> GridClassState.Future
+        nowMinute >= cls.endMin -> GridClassState.Done
+        nowMinute >= cls.startMin -> GridClassState.Now
+        else -> GridClassState.Future
+    }
 
 // The class a grid block / agenda row tap hands to the sheet, plus its day so
 // the sheet can caption "Quinta · 17 abr".
-internal data class GridSheetTarget(val dayIdx: Int, val cls: ScheduleClass)
+internal data class GridSheetTarget(
+    val dayIdx: Int,
+    val cls: ScheduleClass,
+)
 
 @Composable
 private fun ScheduleGridContent(

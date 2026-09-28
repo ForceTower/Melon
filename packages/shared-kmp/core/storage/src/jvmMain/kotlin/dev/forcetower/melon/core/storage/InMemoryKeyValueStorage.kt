@@ -17,7 +17,10 @@ internal class InMemoryKeyValueStorage : KeyValueStorage {
 
     override suspend fun get(key: String): String? = lock.withLock { values[key] }
 
-    override suspend fun put(key: String, value: String) {
+    override suspend fun put(
+        key: String,
+        value: String,
+    ) {
         lock.withLock { values[key] = value }
     }
 

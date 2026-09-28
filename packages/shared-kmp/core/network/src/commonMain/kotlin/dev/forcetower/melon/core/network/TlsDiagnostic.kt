@@ -38,7 +38,10 @@ internal object TlsDiagnosticReporter {
         slot.store(diagnostic)
     }
 
-    fun consume(host: String, nowEpochMs: Long = Clock.System.now().toEpochMilliseconds()): TlsDiagnostic? {
+    fun consume(
+        host: String,
+        nowEpochMs: Long = Clock.System.now().toEpochMilliseconds(),
+    ): TlsDiagnostic? {
         val current = slot.load() ?: return null
         if (!current.host.equals(host, ignoreCase = true)) return null
         if (nowEpochMs - current.capturedAtEpochMs > FRESHNESS_WINDOW_MS) {
@@ -55,7 +58,10 @@ internal object TlsDiagnosticReporter {
 // polish the most common interceptors. Anything not on the list still surfaces with
 // the raw issuer CN/O via NetworkError.Tls.Intercepted.displayName.
 internal object MitmIssuerMatcher {
-    private data class Rule(val product: String, val needles: List<String>)
+    private data class Rule(
+        val product: String,
+        val needles: List<String>,
+    )
 
     private val rules = listOf(
         Rule("Fortinet", listOf("Fortinet", "FortiGate", "FortiGuard")),
@@ -76,7 +82,10 @@ internal object MitmIssuerMatcher {
         Rule("Squid Proxy", listOf("Squid Proxy")),
     )
 
-    fun match(issuerCommonName: String?, issuerOrganization: String?): String? {
+    fun match(
+        issuerCommonName: String?,
+        issuerOrganization: String?,
+    ): String? {
         val haystack = listOfNotNull(issuerCommonName, issuerOrganization).joinToString(" | ")
         if (haystack.isEmpty()) return null
         return rules.firstOrNull { rule ->
@@ -85,18 +94,19 @@ internal object MitmIssuerMatcher {
     }
 }
 
-internal fun TlsDiagnostic.toNetworkError(cause: Throwable): NetworkError = when (reason) {
-    TlsFailureReason.Intercepted -> NetworkError.Tls.Intercepted(
-        productName = MitmIssuerMatcher.match(issuerCommonName, issuerOrganization),
-        issuerCommonName = issuerCommonName,
-        issuerOrganization = issuerOrganization,
-        cause = cause,
-    )
-    TlsFailureReason.ClockSkew -> NetworkError.Tls.ClockSkew(
-        deviceTimeEpochSeconds = capturedAtEpochMs / 1000,
-        notBeforeEpochSeconds = notBeforeEpochSeconds,
-        notAfterEpochSeconds = notAfterEpochSeconds,
-        cause = cause,
-    )
-    TlsFailureReason.Generic -> NetworkError.Tls.Generic(cause)
-}
+internal fun TlsDiagnostic.toNetworkError(cause: Throwable): NetworkError =
+    when (reason) {
+        TlsFailureReason.Intercepted -> NetworkError.Tls.Intercepted(
+            productName = MitmIssuerMatcher.match(issuerCommonName, issuerOrganization),
+            issuerCommonName = issuerCommonName,
+            issuerOrganization = issuerOrganization,
+            cause = cause,
+        )
+        TlsFailureReason.ClockSkew -> NetworkError.Tls.ClockSkew(
+            deviceTimeEpochSeconds = capturedAtEpochMs / 1000,
+            notBeforeEpochSeconds = notBeforeEpochSeconds,
+            notAfterEpochSeconds = notAfterEpochSeconds,
+            cause = cause,
+        )
+        TlsFailureReason.Generic -> NetworkError.Tls.Generic(cause)
+    }

@@ -13,6 +13,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.http.isSuccess
 import io.ktor.serialization.kotlinx.json.json
+import kotlin.time.Clock
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.CoroutineScope
@@ -22,7 +23,6 @@ import kotlinx.coroutines.channels.onFailure
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
-import kotlin.time.Clock
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
@@ -54,9 +54,17 @@ class ApiLogWriter internal constructor(
         scope.launch { drain() }
     }
 
-    override fun isLoggable(tag: String, severity: Severity): Boolean = severity >= minSeverity
+    override fun isLoggable(
+        tag: String,
+        severity: Severity,
+    ): Boolean = severity >= minSeverity
 
-    override fun log(severity: Severity, message: String, tag: String, throwable: Throwable?) {
+    override fun log(
+        severity: Severity,
+        message: String,
+        tag: String,
+        throwable: Throwable?,
+    ) {
         val attributes = buildMap {
             put("log.tag", tag)
             throwable?.let {
@@ -144,11 +152,12 @@ class ApiLogWriter internal constructor(
             engine: HttpClientEngine,
             json: Json,
             machineIdSource: MachineIdSource,
-        ): HttpClient = HttpClient(engine) {
-            expectSuccess = false
-            install(ContentNegotiation) { json(json) }
-            install(MachineIdInterceptor) { this.machineIdSource = machineIdSource }
-        }
+        ): HttpClient =
+            HttpClient(engine) {
+                expectSuccess = false
+                install(ContentNegotiation) { json(json) }
+                install(MachineIdInterceptor) { this.machineIdSource = machineIdSource }
+            }
     }
 }
 
@@ -166,11 +175,12 @@ internal data class ApiLogRecord(
     val attributes: Map<String, String> = emptyMap(),
 )
 
-private fun Severity.toApiSeverity(): String = when (this) {
-    Severity.Verbose -> "trace"
-    Severity.Debug -> "debug"
-    Severity.Info -> "info"
-    Severity.Warn -> "warn"
-    Severity.Error -> "error"
-    Severity.Assert -> "fatal"
-}
+private fun Severity.toApiSeverity(): String =
+    when (this) {
+        Severity.Verbose -> "trace"
+        Severity.Debug -> "debug"
+        Severity.Info -> "info"
+        Severity.Warn -> "warn"
+        Severity.Error -> "error"
+        Severity.Assert -> "fatal"
+    }

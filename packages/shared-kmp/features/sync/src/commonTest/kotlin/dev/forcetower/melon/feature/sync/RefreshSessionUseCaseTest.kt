@@ -8,10 +8,10 @@ import dev.forcetower.melon.core.sync.domain.model.SemesterSummary
 import dev.forcetower.melon.core.sync.domain.model.SyncError
 import dev.forcetower.melon.core.sync.domain.repository.MirrorRepository
 import dev.forcetower.melon.feature.sync.domain.usecase.RefreshSessionUseCase
-import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
+import kotlinx.coroutines.test.runTest
 
 // The refresh must pull the active semester AND re-pull any mirrored
 // semester the worker touched since its payload was applied — a result
@@ -24,33 +24,41 @@ class RefreshSessionUseCaseTest {
     private val newest = summary("sem2", start = "2020-08-01", end = "2020-12-15", dirtyAt = "2020-12-20T10:00:00.000Z")
 
     @Test
-    fun refresh_repulls_stale_mirrored_semesters_alongside_the_active_one() = runTest {
-        val mirror = FakeMirrorRepository(summaries = listOf(newest, past), staleIds = listOf("sem1"))
-        val result = RefreshSessionUseCase(mirror, Logger)()
+    fun refresh_repulls_stale_mirrored_semesters_alongside_the_active_one() =
+        runTest {
+            val mirror = FakeMirrorRepository(summaries = listOf(newest, past), staleIds = listOf("sem1"))
+            val result = RefreshSessionUseCase(mirror, Logger)()
 
-        assertIs<Outcome.Ok<Unit>>(result)
-        assertEquals(listOf("sem2", "sem1"), mirror.syncedSemesters)
-    }
-
-    @Test
-    fun refresh_without_stale_semesters_only_pulls_the_active_one() = runTest {
-        val mirror = FakeMirrorRepository(summaries = listOf(newest, past), staleIds = emptyList())
-        val result = RefreshSessionUseCase(mirror, Logger)()
-
-        assertIs<Outcome.Ok<Unit>>(result)
-        assertEquals(listOf("sem2"), mirror.syncedSemesters)
-    }
+            assertIs<Outcome.Ok<Unit>>(result)
+            assertEquals(listOf("sem2", "sem1"), mirror.syncedSemesters)
+        }
 
     @Test
-    fun refresh_dedups_an_active_semester_that_is_also_stale() = runTest {
-        val mirror = FakeMirrorRepository(summaries = listOf(newest, past), staleIds = listOf("sem2"))
-        val result = RefreshSessionUseCase(mirror, Logger)()
+    fun refresh_without_stale_semesters_only_pulls_the_active_one() =
+        runTest {
+            val mirror = FakeMirrorRepository(summaries = listOf(newest, past), staleIds = emptyList())
+            val result = RefreshSessionUseCase(mirror, Logger)()
 
-        assertIs<Outcome.Ok<Unit>>(result)
-        assertEquals(listOf("sem2"), mirror.syncedSemesters)
-    }
+            assertIs<Outcome.Ok<Unit>>(result)
+            assertEquals(listOf("sem2"), mirror.syncedSemesters)
+        }
 
-    private fun summary(id: String, start: String, end: String, dirtyAt: String?) = SemesterSummary(
+    @Test
+    fun refresh_dedups_an_active_semester_that_is_also_stale() =
+        runTest {
+            val mirror = FakeMirrorRepository(summaries = listOf(newest, past), staleIds = listOf("sem2"))
+            val result = RefreshSessionUseCase(mirror, Logger)()
+
+            assertIs<Outcome.Ok<Unit>>(result)
+            assertEquals(listOf("sem2"), mirror.syncedSemesters)
+        }
+
+    private fun summary(
+        id: String,
+        start: String,
+        end: String,
+        dirtyAt: String?,
+    ) = SemesterSummary(
         id = id,
         code = id,
         desc = "Semestre $id",
@@ -81,8 +89,10 @@ private class FakeMirrorRepository(
     override suspend fun fetchOnboardingStatus(): Outcome<OnboardingStatus, SyncError> =
         Outcome.Err(SyncError.Unexpected)
 
-    override suspend fun syncMessages(since: String?, cursor: String?): Outcome<MessagePageResult, SyncError> =
-        Outcome.Ok(MessagePageResult(appliedCount = 0, nextCursor = null))
+    override suspend fun syncMessages(
+        since: String?,
+        cursor: String?,
+    ): Outcome<MessagePageResult, SyncError> = Outcome.Ok(MessagePageResult(appliedCount = 0, nextCursor = null))
 
     override suspend fun syncCalendarEvents(): Outcome<Int, SyncError> = Outcome.Ok(0)
 

@@ -10,7 +10,10 @@ import dev.zacsweers.metro.Inject
 class LoginUseCase internal constructor(
     private val repository: AuthRepository,
 ) {
-    suspend operator fun invoke(username: String, password: String): Outcome<User, LoginError> {
+    suspend operator fun invoke(
+        username: String,
+        password: String,
+    ): Outcome<User, LoginError> {
         return repository.login(username, password)
     }
 }

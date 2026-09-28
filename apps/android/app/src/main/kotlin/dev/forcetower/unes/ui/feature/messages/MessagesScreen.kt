@@ -52,6 +52,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.forcetower.melon.feature.messages.domain.model.MessageFeedItem as KmpMessageFeedItem
 import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.foundation.PinnedHeaderHairline
 import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
@@ -60,7 +61,6 @@ import dev.forcetower.unes.designsystem.theme.melon
 import dev.forcetower.unes.ui.feature.messages.components.FilterChipRow
 import dev.forcetower.unes.ui.feature.messages.components.MessageRow
 import java.time.LocalDateTime
-import dev.forcetower.melon.feature.messages.domain.model.MessageFeedItem as KmpMessageFeedItem
 
 // Messages ("Mensagens") inbox — 2026 redesign (dc project `UNES Mensagens -
 // Android`): M3 large-style app bar with the unread/total sub-line, the
@@ -195,7 +195,11 @@ private fun MessagesInbox(
 // ══════════ Large app bar ══════════
 
 @Composable
-private fun Header(unreadCount: Int, total: Int, modifier: Modifier = Modifier) {
+private fun Header(
+    unreadCount: Int,
+    total: Int,
+    modifier: Modifier = Modifier,
+) {
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -377,7 +381,10 @@ private fun CategorySegmentedBar(
 }
 
 @Composable
-private fun LegendEntry(category: MessageCategory, count: Int) {
+private fun LegendEntry(
+    category: MessageCategory,
+    count: Int,
+) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(7.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -408,7 +415,10 @@ private fun LegendEntry(category: MessageCategory, count: Int) {
 }
 
 @Composable
-private fun MarkAllReadButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
+private fun MarkAllReadButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     val accent = MaterialTheme.colorScheme.primary
     val tonal = accent.copy(alpha = 0.16f).compositeOver(MaterialTheme.melon.surface.card)
     val a11y = stringResource(R.string.messages_mark_all_read_a11y)
@@ -440,7 +450,11 @@ private fun MarkAllReadButton(onClick: () -> Unit, modifier: Modifier = Modifier
 // ══════════ Date buckets ══════════
 
 @Composable
-private fun BucketHeader(label: String, count: Int, modifier: Modifier = Modifier) {
+private fun BucketHeader(
+    label: String,
+    count: Int,
+    modifier: Modifier = Modifier,
+) {
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -505,9 +519,15 @@ private fun EmptyState() {
     }
 }
 
-internal data class BucketGroup(val bucket: MessageBucket, val items: List<Message>)
+internal data class BucketGroup(
+    val bucket: MessageBucket,
+    val items: List<Message>,
+)
 
-private fun groupByBucket(messages: List<Message>, now: LocalDateTime): List<BucketGroup> {
+private fun groupByBucket(
+    messages: List<Message>,
+    now: LocalDateTime,
+): List<BucketGroup> {
     val map = LinkedHashMap<MessageBucket, MutableList<Message>>()
     messages.forEach { m ->
         map.getOrPut(bucketOf(m.receivedAt, now)) { mutableListOf() }.add(m)

@@ -6,13 +6,14 @@ import dev.forcetower.melon.core.sync.data.dto.OnboardingSemestersStatusDto
 import dev.forcetower.melon.core.sync.data.dto.OnboardingStatusResponse
 import dev.forcetower.melon.core.sync.domain.model.OnboardingStatus
 
-internal fun OnboardingStatusResponse.toDomain(): OnboardingStatus = OnboardingStatus(
-    courseLinked = courseLinked,
-    initial = initial?.toDomain() ?: fallbackInitialStatus(activeSemesterReady),
-    semesters = semesters.toDomain(),
-    messages = messages.toDomain(),
-    activeSemesterReady = activeSemesterReady,
-)
+internal fun OnboardingStatusResponse.toDomain(): OnboardingStatus =
+    OnboardingStatus(
+        courseLinked = courseLinked,
+        initial = initial?.toDomain() ?: fallbackInitialStatus(activeSemesterReady),
+        semesters = semesters.toDomain(),
+        messages = messages.toDomain(),
+        activeSemesterReady = activeSemesterReady,
+    )
 
 private fun OnboardingInitialStatusDto.toDomain(): OnboardingStatus.InitialStatus =
     OnboardingStatus.InitialStatus(
@@ -46,11 +47,12 @@ private fun OnboardingSemestersStatusDto.toDomain(): OnboardingStatus.PhaseStatu
 private fun OnboardingMessagesStatusDto.toDomain(): OnboardingStatus.PhaseStatus =
     OnboardingStatus.PhaseStatus(state = parseState(status))
 
-private fun parseState(raw: String): OnboardingStatus.PhaseStatus.State = when (raw) {
-    "pending" -> OnboardingStatus.PhaseStatus.State.Pending
-    "running" -> OnboardingStatus.PhaseStatus.State.Running
-    "done" -> OnboardingStatus.PhaseStatus.State.Done
-    "partial" -> OnboardingStatus.PhaseStatus.State.Partial
-    "failed" -> OnboardingStatus.PhaseStatus.State.Failed
-    else -> OnboardingStatus.PhaseStatus.State.Unknown
-}
+private fun parseState(raw: String): OnboardingStatus.PhaseStatus.State =
+    when (raw) {
+        "pending" -> OnboardingStatus.PhaseStatus.State.Pending
+        "running" -> OnboardingStatus.PhaseStatus.State.Running
+        "done" -> OnboardingStatus.PhaseStatus.State.Done
+        "partial" -> OnboardingStatus.PhaseStatus.State.Partial
+        "failed" -> OnboardingStatus.PhaseStatus.State.Failed
+        else -> OnboardingStatus.PhaseStatus.State.Unknown
+    }

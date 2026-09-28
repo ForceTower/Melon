@@ -21,11 +21,12 @@ interface NetworkGraph {
     companion object {
         @Provides
         @SingleIn(AppScope::class)
-        fun json(): Json = Json {
-            ignoreUnknownKeys = true
-            isLenient = true
-            explicitNulls = false
-        }
+        fun json(): Json =
+            Json {
+                ignoreUnknownKeys = true
+                isLenient = true
+                explicitNulls = false
+            }
 
         @Provides
         @SingleIn(AppScope::class)
@@ -37,8 +38,7 @@ interface NetworkGraph {
             machineIdSource: MachineIdSource,
             json: Json,
             logger: Logger,
-        ): HttpClient =
-            buildHttpClient(engine, baseUrl, authTokenSource, tokenRefresher, machineIdSource, json, logger)
+        ): HttpClient = buildHttpClient(engine, baseUrl, authTokenSource, tokenRefresher, machineIdSource, json, logger)
 
         // Contributes the ApiLogWriter into Kermit's writer list — lives here
         // rather than in LoggingGraph because constructing the writer needs

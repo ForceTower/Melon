@@ -117,7 +117,10 @@ android {
     testBuildType = providers.gradleProperty("melon.testBuildType").getOrElse("debug")
 }
 
-tasks.matching { it.name in setOf("processScenarioGoogleServices", "processBenchmarkGoogleServices", "processProfileGoogleServices") }
+tasks.matching {
+    it.name in
+        setOf("processScenarioGoogleServices", "processBenchmarkGoogleServices", "processProfileGoogleServices")
+}
     .configureEach { enabled = false }
 val verificationBuild = providers.gradleProperty("melon.verification").map(String::toBoolean).getOrElse(false)
 tasks.matching {

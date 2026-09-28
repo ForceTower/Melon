@@ -7,19 +7,26 @@ import kotlin.test.assertNull
 
 class EvaluationReminderAlarmsTest {
 
-    private fun epochMs(year: Int, month: Int, day: Int, hour: Int, minute: Int = 0): Long {
+    private fun epochMs(
+        year: Int,
+        month: Int,
+        day: Int,
+        hour: Int,
+        minute: Int = 0,
+    ): Long {
         val cal = Calendar.getInstance()
         cal.clear()
         cal.set(year, month - 1, day, hour, minute, 0)
         return cal.timeInMillis
     }
 
-    private fun entry(dateIso: String) = EvaluationReminderSnapshot.Entry(
-        key = "disc/plat",
-        label = "P2",
-        disciplineName = "Cálculo II",
-        dateIso = dateIso,
-    )
+    private fun entry(dateIso: String) =
+        EvaluationReminderSnapshot.Entry(
+            key = "disc/plat",
+            label = "P2",
+            disciplineName = "Cálculo II",
+            dateIso = dateIso,
+        )
 
     @Test
     fun `fires at twenty on the eve`() {

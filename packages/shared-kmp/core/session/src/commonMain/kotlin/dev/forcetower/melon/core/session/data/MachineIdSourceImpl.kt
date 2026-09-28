@@ -7,10 +7,10 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 internal const val MACHINE_ID_KEY = "melon.machine_id"
 
@@ -31,11 +31,12 @@ internal class MachineIdSourceImpl(
     private val mutex = Mutex()
 
     @OptIn(ExperimentalUuidApi::class)
-    override suspend fun getMachineId(): String = mutex.withLock {
-        storage.get(MACHINE_ID_KEY) ?: run {
-            val id = platformDeviceId(appContext) ?: Uuid.random().toString().replace("-", "")
-            storage.put(MACHINE_ID_KEY, id)
-            id
+    override suspend fun getMachineId(): String =
+        mutex.withLock {
+            storage.get(MACHINE_ID_KEY) ?: run {
+                val id = platformDeviceId(appContext) ?: Uuid.random().toString().replace("-", "")
+                storage.put(MACHINE_ID_KEY, id)
+                id
+            }
         }
-    }
 }

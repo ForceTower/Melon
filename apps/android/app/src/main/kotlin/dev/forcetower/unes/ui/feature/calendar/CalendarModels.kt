@@ -7,7 +7,9 @@ import java.time.temporal.ChronoUnit
 
 // Audience the event reaches. Mirrors the upstream `scope` field returned by
 // the academic-calendar feed (KMP `CalendarFeedScope`).
-internal enum class CalendarScope(@StringRes val labelRes: Int) {
+internal enum class CalendarScope(
+    @StringRes val labelRes: Int,
+) {
     General(R.string.calendar_scope_general),
     Faculty(R.string.calendar_scope_faculty),
     Course(R.string.calendar_scope_course),
@@ -18,12 +20,18 @@ internal enum class CalendarScope(@StringRes val labelRes: Int) {
 // How the event ended up in the calendar — combined with `closed` to derive
 // the visual category.
 internal enum class CalendarOrigin {
-    Manual, Evaluation, FinalExam, SecondCall, SecondEpoch,
+    Manual,
+    Evaluation,
+    FinalExam,
+    SecondCall,
+    SecondEpoch,
 }
 
 // Visual category derived from `closed` + `origin`, or straight from the
 // student's own kind. The last three only ever come from personal entries.
-internal enum class CalendarCategory(@StringRes val labelRes: Int) {
+internal enum class CalendarCategory(
+    @StringRes val labelRes: Int,
+) {
     Holiday(R.string.calendar_category_holiday),
     Exam(R.string.calendar_category_exam),
     Deadline(R.string.calendar_category_deadline),
@@ -67,16 +75,23 @@ internal data class CalendarEvent(
 internal sealed interface CountdownToken {
     data object Today : CountdownToken
     data object Tomorrow : CountdownToken
-    data class Number(val value: Int) : CountdownToken
+    data class Number(
+        val value: Int,
+    ) : CountdownToken
 }
 
-internal data class CountdownParts(val number: CountdownToken, @StringRes val tailRes: Int? = null)
+internal data class CountdownParts(
+    val number: CountdownToken,
+    @StringRes val tailRes: Int? = null,
+)
 
 internal object CalendarMath {
     val today: LocalDate get() = LocalDate.now()
 
-    fun daysBetween(a: LocalDate, b: LocalDate): Int =
-        ChronoUnit.DAYS.between(a, b).toInt()
+    fun daysBetween(
+        a: LocalDate,
+        b: LocalDate,
+    ): Int = ChronoUnit.DAYS.between(a, b).toInt()
 
     fun categorize(ev: CalendarEvent): CalendarCategory {
         ev.personal?.let { return it.category.category }
@@ -85,12 +100,16 @@ internal object CalendarMath {
             CalendarOrigin.Evaluation,
             CalendarOrigin.FinalExam,
             CalendarOrigin.SecondCall,
-            CalendarOrigin.SecondEpoch -> CalendarCategory.Exam
+            CalendarOrigin.SecondEpoch,
+            -> CalendarCategory.Exam
             CalendarOrigin.Manual -> CalendarCategory.Deadline
         }
     }
 
-    fun status(ev: CalendarEvent, today: LocalDate = this.today): CalendarStatus {
+    fun status(
+        ev: CalendarEvent,
+        today: LocalDate = this.today,
+    ): CalendarStatus {
         val s = ev.start
         val e = ev.end ?: s
         val ds = daysBetween(today, s)
@@ -104,7 +123,10 @@ internal object CalendarMath {
 
     // Hero countdown — split into a big number and a tail label so the card
     // can typeset them at different sizes. Mirrors iOS `countdownParts`.
-    fun countdownParts(ev: CalendarEvent, today: LocalDate = this.today): CountdownParts {
+    fun countdownParts(
+        ev: CalendarEvent,
+        today: LocalDate = this.today,
+    ): CountdownParts {
         val s = ev.start
         val e = ev.end ?: s
         val ds = daysBetween(today, s)
@@ -117,13 +139,19 @@ internal object CalendarMath {
             ds > 0 -> CountdownParts(CountdownToken.Number(ds), R.string.calendar_countdown_tail_days)
             ds < 0 && de >= 0 ->
                 CountdownParts(CountdownToken.Number(de), R.string.calendar_countdown_tail_days_to_close)
-            else -> CountdownParts(CountdownToken.Number(kotlin.math.abs(ds)), R.string.calendar_countdown_tail_days_ago)
+            else -> CountdownParts(
+                CountdownToken.Number(kotlin.math.abs(ds)),
+                R.string.calendar_countdown_tail_days_ago,
+            )
         }
     }
 
     // Fraction of an active window already elapsed, or null when the event is
     // not an in-progress range — drives the hero progress bar.
-    fun progress(ev: CalendarEvent, today: LocalDate = this.today): Float? {
+    fun progress(
+        ev: CalendarEvent,
+        today: LocalDate = this.today,
+    ): Float? {
         if (ev.end == null || status(ev, today) != CalendarStatus.Active) return null
         val total = (daysBetween(ev.start, ev.end) + 1).coerceAtLeast(1)
         val elapsed = daysBetween(ev.start, today) + 1
@@ -131,15 +159,19 @@ internal object CalendarMath {
     }
 
     // Inclusive length of the event in days — 1 for single-day events.
-    fun spanDays(ev: CalendarEvent): Int =
-        if (ev.end == null) 1 else daysBetween(ev.start, ev.end) + 1
+    fun spanDays(ev: CalendarEvent): Int = if (ev.end == null) 1 else daysBetween(ev.start, ev.end) + 1
 
-    fun occursOn(ev: CalendarEvent, date: LocalDate): Boolean =
-        !date.isBefore(ev.start) && !date.isAfter(ev.endOrStart)
+    fun occursOn(
+        ev: CalendarEvent,
+        date: LocalDate,
+    ): Boolean = !date.isBefore(ev.start) && !date.isAfter(ev.endOrStart)
 
     // Pick the most actionable card for the hero. Active deadlines (closing
     // soonest) win, else the nearest upcoming event.
-    fun nextDeadline(events: List<CalendarEvent>, today: LocalDate = this.today): CalendarEvent? {
+    fun nextDeadline(
+        events: List<CalendarEvent>,
+        today: LocalDate = this.today,
+    ): CalendarEvent? {
         val active = events.filter { !it.closed && status(it, today) == CalendarStatus.Active }
         if (active.isNotEmpty()) {
             return active.minByOrNull { it.endOrStart }
@@ -154,13 +186,16 @@ internal object CalendarMath {
 
 // "Pessoal" entries get no segment of their own — they live under "Tudo" and
 // under the scope row's "Meus".
-internal enum class CalendarCategoryFilter(@StringRes val labelRes: Int) {
+internal enum class CalendarCategoryFilter(
+    @StringRes val labelRes: Int,
+) {
     All(R.string.calendar_filter_category_all),
     Deadline(R.string.calendar_filter_category_deadlines),
     Exam(R.string.calendar_filter_category_exams),
     Task(R.string.calendar_filter_category_tasks),
     Study(R.string.calendar_filter_category_study),
-    Holiday(R.string.calendar_filter_category_holidays);
+    Holiday(R.string.calendar_filter_category_holidays),
+    ;
 
     fun matches(ev: CalendarEvent): Boolean {
         val category = CalendarMath.categorize(ev)
@@ -177,22 +212,26 @@ internal enum class CalendarCategoryFilter(@StringRes val labelRes: Int) {
 
 // Personal entries carry a placeholder scope, so the institutional segments
 // have to exclude them explicitly.
-internal enum class CalendarScopeFilter(@StringRes val labelRes: Int) {
+internal enum class CalendarScopeFilter(
+    @StringRes val labelRes: Int,
+) {
     All(R.string.calendar_filter_scope_all),
     Personal(R.string.calendar_filter_scope_personal),
     General(R.string.calendar_scope_general),
     Faculty(R.string.calendar_scope_faculty),
     Course(R.string.calendar_scope_course),
-    ClassScope(R.string.calendar_scope_class);
+    ClassScope(R.string.calendar_scope_class),
+    ;
 
-    fun matches(ev: CalendarEvent): Boolean = when (this) {
-        All -> true
-        Personal -> ev.isPersonal
-        General -> !ev.isPersonal && ev.scope == CalendarScope.General
-        Faculty -> !ev.isPersonal && ev.scope == CalendarScope.Faculty
-        Course -> !ev.isPersonal && ev.scope == CalendarScope.Course
-        ClassScope -> !ev.isPersonal && ev.scope == CalendarScope.ClassScope
-    }
+    fun matches(ev: CalendarEvent): Boolean =
+        when (this) {
+            All -> true
+            Personal -> ev.isPersonal
+            General -> !ev.isPersonal && ev.scope == CalendarScope.General
+            Faculty -> !ev.isPersonal && ev.scope == CalendarScope.Faculty
+            Course -> !ev.isPersonal && ev.scope == CalendarScope.Course
+            ClassScope -> !ev.isPersonal && ev.scope == CalendarScope.ClassScope
+        }
 }
 
 internal data class CalendarMonthGroup(
@@ -237,7 +276,13 @@ internal object CalendarFormat {
 
     // Indexed 1..7 with `LocalDate.dayOfWeek.value`: 1=monday … 7=sunday.
     private val weekdaysShort: List<String> = listOf(
-        "seg", "ter", "qua", "qui", "sex", "sáb", "dom",
+        "seg",
+        "ter",
+        "qua",
+        "qui",
+        "sex",
+        "sáb",
+        "dom",
     )
 
     // Month-grid column headers, sunday-first — matches the dc grid layout.
@@ -245,7 +290,10 @@ internal object CalendarFormat {
 
     fun dateShort(d: LocalDate): String = "%02d %s".format(d.dayOfMonth, monthsShort[d.monthValue - 1])
 
-    fun dateRange(start: LocalDate, end: LocalDate?): String {
+    fun dateRange(
+        start: LocalDate,
+        end: LocalDate?,
+    ): String {
         if (end == null) return dateShort(start)
         return if (start.monthValue == end.monthValue) {
             "%02d – %02d %s".format(start.dayOfMonth, end.dayOfMonth, monthsShort[start.monthValue - 1])

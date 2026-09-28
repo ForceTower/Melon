@@ -102,12 +102,13 @@ private enum class IntroSlide(
 // Per-slide accent — tints the eyebrow and the headline's second line
 // (dc slide `accent`). Notifications uses the theme accent.
 @Composable
-private fun IntroSlide.accent(palette: MelonPaletteColors): Color = when (this) {
-    IntroSlide.Schedule -> palette.teal
-    IntroSlide.Grades -> palette.orange
-    IntroSlide.Messages -> palette.magenta
-    IntroSlide.Notifications -> MaterialTheme.colorScheme.primary
-}
+private fun IntroSlide.accent(palette: MelonPaletteColors): Color =
+    when (this) {
+        IntroSlide.Schedule -> palette.teal
+        IntroSlide.Grades -> palette.orange
+        IntroSlide.Messages -> palette.magenta
+        IntroSlide.Notifications -> MaterialTheme.colorScheme.primary
+    }
 
 @Composable
 internal fun IntroCarouselScreen(
@@ -347,7 +348,11 @@ private fun SlidePage(slide: IntroSlide) {
 }
 
 @Composable
-private fun slideHeadline(slide: IntroSlide, ink: Color, accent: Color): AnnotatedString {
+private fun slideHeadline(
+    slide: IntroSlide,
+    ink: Color,
+    accent: Color,
+): AnnotatedString {
     val top = stringResource(slide.headlineTopRes)
     val second = stringResource(slide.headlineAccentRes)
     return buildAnnotatedString {

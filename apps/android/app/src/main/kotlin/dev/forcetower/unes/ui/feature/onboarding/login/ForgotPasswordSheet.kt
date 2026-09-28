@@ -138,7 +138,10 @@ private fun IconTile() {
 }
 
 @Composable
-private fun Step(number: Int, text: String) {
+private fun Step(
+    number: Int,
+    text: String,
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()

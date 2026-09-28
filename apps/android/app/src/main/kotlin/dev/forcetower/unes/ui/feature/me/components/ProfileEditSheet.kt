@@ -563,7 +563,11 @@ private fun ErrorNote() {
 }
 
 @Composable
-private fun FooterRow(saving: Boolean, onCancel: () -> Unit, onSave: () -> Unit) {
+private fun FooterRow(
+    saving: Boolean,
+    onCancel: () -> Unit,
+    onSave: () -> Unit,
+) {
     val accent = MaterialTheme.colorScheme.primary
     val shape = RoundedCornerShape(50)
     Row(

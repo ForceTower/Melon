@@ -7,7 +7,12 @@ import kotlinx.serialization.Serializable
 // `MessagesRepository+Live.swift`.
 
 @Serializable
-internal data class MarkMessagesReadRequest(val ids: List<String>)
+internal data class MarkMessagesReadRequest(
+    val ids: List<String>,
+)
 
 @Serializable
-internal data class StarMessageRequest(val id: String, val starred: Boolean)
+internal data class StarMessageRequest(
+    val id: String,
+    val starred: Boolean,
+)

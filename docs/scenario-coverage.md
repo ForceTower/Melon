@@ -150,7 +150,7 @@ origin/version/storage/time/flags, state its expected visible outcome and action
 and wire a behavioral assertion before collecting its screenshot. Keep unknown
 HTTP requests failing and update this inventory in the same change.
 
-[a-routes]: ../apps/android/app/src/main/kotlin/dev/forcetower/unes/ui/navigation/AppRoutes.kt
+[a-routes]: ../apps/android/app/src/main/kotlin/dev/forcetower/unes/ui/navigation/AppRoute.kt
 [a-splash]: ../apps/android/app/src/main/kotlin/dev/forcetower/unes/ui/feature/splash/SplashViewModel.kt
 [a-onboarding]: ../apps/android/app/src/main/kotlin/dev/forcetower/unes/ui/feature/onboarding
 [a-login]: ../apps/android/app/src/main/kotlin/dev/forcetower/unes/ui/feature/onboarding/login/LoginViewModel.kt

@@ -27,11 +27,12 @@ class UpdateProfileUseCase internal constructor(
 
     // `mimeType` must be the actual encoding of `bytes` — the API accepts
     // jpeg/png/webp up to 5 MB and verifies magic numbers against the type.
-    suspend fun updatePicture(bytes: ByteArray, mimeType: String): Outcome<Unit, ProfileUpdateError> =
-        call("updatePicture") { service.uploadPicture(bytes, mimeType) }
+    suspend fun updatePicture(
+        bytes: ByteArray,
+        mimeType: String,
+    ): Outcome<Unit, ProfileUpdateError> = call("updatePicture") { service.uploadPicture(bytes, mimeType) }
 
-    suspend fun removePicture(): Outcome<Unit, ProfileUpdateError> =
-        call("removePicture") { service.deletePicture() }
+    suspend fun removePicture(): Outcome<Unit, ProfileUpdateError> = call("removePicture") { service.deletePicture() }
 
     private suspend fun call(
         label: String,

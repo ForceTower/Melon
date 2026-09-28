@@ -5,8 +5,8 @@ import co.touchlab.kermit.Severity
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.DefaultRequest
-import io.ktor.client.plugins.api.createClientPlugin
 import io.ktor.client.plugins.api.Send
+import io.ktor.client.plugins.api.createClientPlugin
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger as KtorLogger
@@ -76,25 +76,26 @@ fun buildHttpClient(
     machineIdSource: MachineIdSource,
     json: Json,
     logger: KermitLogger,
-): HttpClient = HttpClient(engine) {
-    expectSuccess = false
-    install(ContentNegotiation) { json(json) }
-    install(Logging) {
-        this.logger = logger.asKtorLogger()
-        level = LogLevel.INFO
+): HttpClient =
+    HttpClient(engine) {
+        expectSuccess = false
+        install(ContentNegotiation) { json(json) }
+        install(Logging) {
+            this.logger = logger.asKtorLogger()
+            level = LogLevel.INFO
+        }
+        install(DefaultRequest) {
+            url(baseUrl.value)
+        }
+        install(AuthInterceptor) {
+            this.authTokenSource = authTokenSource
+            this.tokenRefresher = tokenRefresher
+        }
+        install(MachineIdInterceptor) {
+            this.machineIdSource = machineIdSource
+        }
+        installTlsDiagnostics()
     }
-    install(DefaultRequest) {
-        url(baseUrl.value)
-    }
-    install(AuthInterceptor) {
-        this.authTokenSource = authTokenSource
-        this.tokenRefresher = tokenRefresher
-    }
-    install(MachineIdInterceptor) {
-        this.machineIdSource = machineIdSource
-    }
-    installTlsDiagnostics()
-}
 
 private fun KermitLogger.asKtorLogger(): KtorLogger {
     val scoped = this.withTag("ktor")

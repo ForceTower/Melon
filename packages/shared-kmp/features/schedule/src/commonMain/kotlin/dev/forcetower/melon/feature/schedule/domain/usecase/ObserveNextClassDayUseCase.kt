@@ -61,7 +61,10 @@ class ObserveNextClassDayUseCase internal constructor(
         }.distinctUntilChanged()
     }
 
-    private data class Key(val semester: SemesterEntity, val today: LocalDate)
+    private data class Key(
+        val semester: SemesterEntity,
+        val today: LocalDate,
+    )
 }
 
 private const val MAX_LOOKAHEAD_DAYS = 30
@@ -94,18 +97,19 @@ internal fun pickNextClassDay(
     return null
 }
 
-private fun SemesterAllocationRow.toScheduleClass(): ScheduleClass = ScheduleClass(
-    allocationId = allocationId,
-    classId = classId,
-    offerId = offerId,
-    disciplineId = disciplineId,
-    code = disciplineCode,
-    title = disciplineName,
-    startTime = startTime.orEmpty(),
-    endTime = endTime,
-    teacherName = teacherName,
-    modulo = spaceModulo,
-    room = spaceLocation,
-    campus = spaceCampus,
-    topic = null,
-)
+private fun SemesterAllocationRow.toScheduleClass(): ScheduleClass =
+    ScheduleClass(
+        allocationId = allocationId,
+        classId = classId,
+        offerId = offerId,
+        disciplineId = disciplineId,
+        code = disciplineCode,
+        title = disciplineName,
+        startTime = startTime.orEmpty(),
+        endTime = endTime,
+        teacherName = teacherName,
+        modulo = spaceModulo,
+        room = spaceLocation,
+        campus = spaceCampus,
+        topic = null,
+    )

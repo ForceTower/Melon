@@ -31,7 +31,11 @@ internal class TlsDiagnosticInterceptor : Interceptor {
         }
     }
 
-    private fun captureDiagnostic(host: String, port: Int, cause: SSLException) {
+    private fun captureDiagnostic(
+        host: String,
+        port: Int,
+        cause: SSLException,
+    ) {
         val chain = probeServerCertificateChain(host, port) ?: return
         val leaf = chain.firstOrNull() ?: return
         val issuerDn = leaf.issuerX500Principal.name
@@ -53,13 +57,22 @@ internal class TlsDiagnosticInterceptor : Interceptor {
     // (throws) so the connection never advances past the handshake. Hostname is the
     // SNI source. Caller times this out aggressively — the original request has
     // already failed, the user is waiting on an error.
-    private fun probeServerCertificateChain(host: String, port: Int): Array<X509Certificate>? {
+    private fun probeServerCertificateChain(
+        host: String,
+        port: Int,
+    ): Array<X509Certificate>? {
         var captured: Array<X509Certificate>? = null
         val probe = object : X509TrustManager {
-            override fun checkClientTrusted(chain: Array<X509Certificate>, authType: String) {
+            override fun checkClientTrusted(
+                chain: Array<X509Certificate>,
+                authType: String,
+            ) {
                 throw CertificateException("probe — never trusted")
             }
-            override fun checkServerTrusted(chain: Array<X509Certificate>, authType: String) {
+            override fun checkServerTrusted(
+                chain: Array<X509Certificate>,
+                authType: String,
+            ) {
                 captured = chain
                 throw CertificateException("probe — never trusted")
             }
@@ -104,7 +117,10 @@ internal class TlsDiagnosticInterceptor : Interceptor {
     // X500Principal.name is RFC 2253-style (e.g. "CN=FortiGate CA,O=Fortinet,C=US"),
     // with backslash-escaping for commas inside values. Small parser instead of a
     // full RDN library for one diagnostic call site.
-    private fun parseRdn(dn: String, attr: String): String? {
+    private fun parseRdn(
+        dn: String,
+        attr: String,
+    ): String? {
         val parts = mutableListOf<String>()
         val sb = StringBuilder()
         var i = 0

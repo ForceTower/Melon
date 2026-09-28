@@ -3,11 +3,11 @@ package dev.forcetower.melon.feature.overview.domain.usecase
 import dev.forcetower.melon.core.database.query.AttendanceSummaryRow
 import dev.forcetower.melon.core.database.query.SemesterAllocationRow
 import dev.forcetower.melon.feature.overview.domain.model.OverviewClassState
-import kotlinx.datetime.LocalDateTime
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import kotlinx.datetime.LocalDateTime
 
 internal class OverviewBehaviorTest {
     private val fridayClass = SemesterAllocationRow(

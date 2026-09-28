@@ -247,10 +247,11 @@ internal object MessagesFixtures {
         ),
     )
 
-    fun previewState(): MessagesUiState = MessagesUiState(
-        rawItems = items,
-        isLoading = false,
-    )
+    fun previewState(): MessagesUiState =
+        MessagesUiState(
+            rawItems = items,
+            isLoading = false,
+        )
 
     private fun item(
         id: String,
@@ -265,43 +266,45 @@ internal object MessagesFixtures {
         isStarred: Boolean = false,
         attachmentCount: Int = 0,
         imageCount: Int = 0,
-    ): MessageFeedItem = MessageFeedItem(
-        id = id,
-        source = MessageFeedSource.UPSTREAM,
-        origin = origin,
-        disciplineCode = disciplineCode,
-        disciplineName = disciplineName,
-        subject = subject,
-        content = content,
-        senderName = senderName,
-        senderType = null,
-        authorName = null,
-        timestamp = timestamp,
-        isUnread = isUnread,
-        isStarred = isStarred,
-        attachmentCount = attachmentCount,
-        imageCount = imageCount,
-    )
+    ): MessageFeedItem =
+        MessageFeedItem(
+            id = id,
+            source = MessageFeedSource.UPSTREAM,
+            origin = origin,
+            disciplineCode = disciplineCode,
+            disciplineName = disciplineName,
+            subject = subject,
+            content = content,
+            senderName = senderName,
+            senderType = null,
+            authorName = null,
+            timestamp = timestamp,
+            isUnread = isUnread,
+            isStarred = isStarred,
+            attachmentCount = attachmentCount,
+            imageCount = imageCount,
+        )
 
     private fun detail(
         base: MessageFeedItem,
         attachments: List<MessageFeedAttachment>,
-    ): MessageFeedDetail = MessageFeedDetail(
-        id = base.id,
-        source = base.source,
-        origin = base.origin,
-        disciplineCode = base.disciplineCode,
-        disciplineName = base.disciplineName,
-        subject = base.subject,
-        content = base.content,
-        senderName = base.senderName,
-        senderType = base.senderType,
-        authorName = base.authorName,
-        timestamp = base.timestamp,
-        isUnread = base.isUnread,
-        isStarred = base.isStarred,
-        attachments = attachments,
-    )
+    ): MessageFeedDetail =
+        MessageFeedDetail(
+            id = base.id,
+            source = base.source,
+            origin = base.origin,
+            disciplineCode = base.disciplineCode,
+            disciplineName = base.disciplineName,
+            subject = base.subject,
+            content = base.content,
+            senderName = base.senderName,
+            senderType = base.senderType,
+            authorName = base.authorName,
+            timestamp = base.timestamp,
+            isUnread = base.isUnread,
+            isStarred = base.isStarred,
+            attachments = attachments,
+        )
 
     private fun attachment(
         id: String,
@@ -309,11 +312,12 @@ internal object MessagesFixtures {
         name: String,
         url: String = "https://melon.example/$id",
         position: Int = 0,
-    ): MessageFeedAttachment = MessageFeedAttachment(
-        id = id,
-        kind = kind,
-        name = name,
-        url = url,
-        position = position,
-    )
+    ): MessageFeedAttachment =
+        MessageFeedAttachment(
+            id = id,
+            kind = kind,
+            name = name,
+            url = url,
+            position = position,
+        )
 }

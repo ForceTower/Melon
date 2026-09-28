@@ -41,7 +41,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import dev.forcetower.melon.core.analytics.Screens
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -73,6 +72,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.forcetower.melon.core.analytics.Screens
 import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.foundation.Mesh
 import dev.forcetower.unes.designsystem.foundation.MeshVariant
@@ -501,7 +501,10 @@ private fun LoginFieldRow(
 }
 
 @Composable
-private fun loginHeadline(ink: Color, accent: Color): AnnotatedString =
+private fun loginHeadline(
+    ink: Color,
+    accent: Color,
+): AnnotatedString =
     buildAnnotatedString {
         withStyle(SpanStyle(color = ink)) {
             append(stringResource(R.string.onboarding_login_headline_top))
@@ -515,7 +518,10 @@ private const val TERMS_URL = "https://unes.forcetower.dev/terms"
 private const val PRIVACY_URL = "https://unes.forcetower.dev/privacy"
 
 @Composable
-private fun termsFooter(subtle: Color, strong: Color): AnnotatedString {
+private fun termsFooter(
+    subtle: Color,
+    strong: Color,
+): AnnotatedString {
     val linkStyles = TextLinkStyles(
         style = SpanStyle(color = strong, fontWeight = FontWeight.Bold),
     )

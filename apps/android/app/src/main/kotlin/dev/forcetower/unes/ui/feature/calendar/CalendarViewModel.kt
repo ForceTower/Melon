@@ -74,7 +74,10 @@ internal class CalendarViewModel @Inject constructor(
 
     override fun onIntent(intent: CalendarIntent) = Unit
 
-    fun savePersonal(entry: PersonalEntry, isNew: Boolean) {
+    fun savePersonal(
+        entry: PersonalEntry,
+        isNew: Boolean,
+    ) {
         analytics.selectContent(
             contentType = ContentTypes.CALENDAR_EVENT,
             itemId = entry.id,

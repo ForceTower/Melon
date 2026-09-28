@@ -14,17 +14,21 @@ import io.ktor.http.contentType
 // and flips first; these calls just replay the state server-side so other
 // devices see it. Mirrors the ack trio in iOS `MessagesRepository+Live.swift`.
 @Inject
-internal class MessagesApi(private val client: HttpClient) {
+internal class MessagesApi(
+    private val client: HttpClient,
+) {
     suspend fun ackRead(ids: List<String>): HttpResponse =
         client.post("api/sync/messages/read") {
             contentType(ContentType.Application.Json)
             setBody(MarkMessagesReadRequest(ids))
         }
 
-    suspend fun ackReadAll(): HttpResponse =
-        client.post("api/sync/messages/read-all")
+    suspend fun ackReadAll(): HttpResponse = client.post("api/sync/messages/read-all")
 
-    suspend fun ackStar(id: String, starred: Boolean): HttpResponse =
+    suspend fun ackStar(
+        id: String,
+        starred: Boolean,
+    ): HttpResponse =
         client.post("api/sync/messages/star") {
             contentType(ContentType.Application.Json)
             setBody(StarMessageRequest(id = id, starred = starred))

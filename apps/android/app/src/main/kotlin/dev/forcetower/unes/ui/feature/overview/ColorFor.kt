@@ -19,7 +19,10 @@ internal object ColorFor {
     @ReadOnlyComposable
     fun discipline(code: String): Color = discipline(MaterialTheme.melon.palette, code)
 
-    fun discipline(palette: MelonPaletteColors, code: String): Color {
+    fun discipline(
+        palette: MelonPaletteColors,
+        code: String,
+    ): Color {
         val slots = listOf(
             palette.coral, palette.amber, palette.magenta, palette.teal, palette.plum,
             palette.rose, palette.sky, palette.emerald, palette.indigo, palette.mustard,

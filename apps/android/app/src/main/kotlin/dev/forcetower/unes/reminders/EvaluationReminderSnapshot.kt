@@ -43,7 +43,10 @@ internal data class EvaluationReminderSnapshot(
             }.getOrNull()
         }
 
-        fun save(context: Context, snapshot: EvaluationReminderSnapshot) {
+        fun save(
+            context: Context,
+            snapshot: EvaluationReminderSnapshot,
+        ) {
             val f = file(context)
             // Atomic replace, like WidgetSnapshot: tmp sibling + rename so a
             // half-written JSON never reaches the receiver.

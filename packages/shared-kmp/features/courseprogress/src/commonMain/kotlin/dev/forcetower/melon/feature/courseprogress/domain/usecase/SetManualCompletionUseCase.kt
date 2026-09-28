@@ -9,6 +9,8 @@ import dev.zacsweers.metro.Inject
 class SetManualCompletionUseCase internal constructor(
     private val repository: CourseProgressRepository,
 ) {
-    suspend operator fun invoke(code: String, completed: Boolean): Outcome<Unit, CourseProgressError> =
-        repository.setManuallyCompleted(code, completed)
+    suspend operator fun invoke(
+        code: String,
+        completed: Boolean,
+    ): Outcome<Unit, CourseProgressError> = repository.setManuallyCompleted(code, completed)
 }

@@ -38,17 +38,27 @@ sealed interface LoginIntent : UiIntent {
      * Reported by the host so the re-auth sheet, which reuses this ViewModel,
      * can't skew the onboarding sign-up funnel.
      */
-    data class Started(val screen: String) : LoginIntent
-    data class UsernameChanged(val value: String) : LoginIntent
-    data class PasswordChanged(val value: String) : LoginIntent
+    data class Started(
+        val screen: String,
+    ) : LoginIntent
+    data class UsernameChanged(
+        val value: String,
+    ) : LoginIntent
+    data class PasswordChanged(
+        val value: String,
+    ) : LoginIntent
     data object TogglePasswordVisibility : LoginIntent
     data object DismissError : LoginIntent
     data object Submit : LoginIntent
-    data class SubmitPasskey(val activity: Activity) : LoginIntent
+    data class SubmitPasskey(
+        val activity: Activity,
+    ) : LoginIntent
 }
 
 sealed interface LoginEffect : UiEffect {
-    data class Authenticated(val firstName: String) : LoginEffect
+    data class Authenticated(
+        val firstName: String,
+    ) : LoginEffect
 }
 
 @HiltViewModel
@@ -63,8 +73,12 @@ class LoginViewModel @Inject constructor(
     override fun onIntent(intent: LoginIntent) {
         when (intent) {
             is LoginIntent.Started -> analytics.screen(intent.screen)
-            is LoginIntent.UsernameChanged -> setState { copy(username = intent.value, errorRes = null, errorArg = null) }
-            is LoginIntent.PasswordChanged -> setState { copy(password = intent.value, errorRes = null, errorArg = null) }
+            is LoginIntent.UsernameChanged -> setState {
+                copy(username = intent.value, errorRes = null, errorArg = null)
+            }
+            is LoginIntent.PasswordChanged -> setState {
+                copy(password = intent.value, errorRes = null, errorArg = null)
+            }
             LoginIntent.TogglePasswordVisibility -> setState { copy(showPassword = !showPassword) }
             LoginIntent.DismissError -> setState { copy(errorRes = null, errorArg = null) }
             LoginIntent.Submit -> submit()
@@ -101,7 +115,11 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             when (val begin = beginPasskeyLogin(username = null)) {
                 is Outcome.Err -> setState {
-                    copy(isLoading = false, errorRes = begin.error.toMessageRes(), errorArg = begin.error.serverMessage())
+                    copy(
+                        isLoading = false,
+                        errorRes = begin.error.toMessageRes(),
+                        errorArg = begin.error.serverMessage(),
+                    )
                 }
                 is Outcome.Ok -> {
                     val assertion = try {
@@ -117,7 +135,9 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    private suspend fun handleLoginResult(result: Outcome<dev.forcetower.melon.core.session.domain.model.User, LoginError>) {
+    private suspend fun handleLoginResult(
+        result: Outcome<dev.forcetower.melon.core.session.domain.model.User, LoginError>,
+    ) {
         when (result) {
             is Outcome.Ok -> {
                 setState { copy(isLoading = false, errorRes = null, errorArg = null) }
@@ -130,30 +150,36 @@ class LoginViewModel @Inject constructor(
     }
 }
 
-private fun LoginError.toMessageRes(): Int = when (this) {
-    LoginError.Kind.NoConnection -> R.string.onboarding_login_error_no_connection
-    LoginError.Kind.InvalidCredentials -> R.string.onboarding_login_error_invalid_credentials
-    LoginError.Kind.Unexpected -> R.string.onboarding_login_error_unexpected
-    is LoginError.Server -> R.string.onboarding_login_error_server
-    is LoginError.TlsIntercepted ->
-        if (issuerName != null) R.string.onboarding_login_error_tls_intercepted_named
-        else R.string.onboarding_login_error_tls_intercepted_unnamed
-    LoginError.TlsClockSkew -> R.string.onboarding_login_error_tls_clock_skew
-    LoginError.TlsGeneric -> R.string.onboarding_login_error_tls_generic
-}
+private fun LoginError.toMessageRes(): Int =
+    when (this) {
+        LoginError.Kind.NoConnection -> R.string.onboarding_login_error_no_connection
+        LoginError.Kind.InvalidCredentials -> R.string.onboarding_login_error_invalid_credentials
+        LoginError.Kind.Unexpected -> R.string.onboarding_login_error_unexpected
+        is LoginError.Server -> R.string.onboarding_login_error_server
+        is LoginError.TlsIntercepted ->
+            if (issuerName != null) {
+                R.string.onboarding_login_error_tls_intercepted_named
+            } else {
+                R.string.onboarding_login_error_tls_intercepted_unnamed
+            }
+        LoginError.TlsClockSkew -> R.string.onboarding_login_error_tls_clock_skew
+        LoginError.TlsGeneric -> R.string.onboarding_login_error_tls_generic
+    }
 
-private fun LoginError.serverMessage(): String? = when (this) {
-    is LoginError.Server -> message
-    is LoginError.TlsIntercepted -> issuerName
-    else -> null
-}
+private fun LoginError.serverMessage(): String? =
+    when (this) {
+        is LoginError.Server -> message
+        is LoginError.TlsIntercepted -> issuerName
+        else -> null
+    }
 
-private fun PasskeyClient.PasskeyException.toMessageRes(): Int = when (this) {
-    is PasskeyClient.PasskeyException.NotSupported -> R.string.onboarding_login_passkey_not_supported
-    is PasskeyClient.PasskeyException.InvalidChallenge -> R.string.onboarding_login_passkey_invalid_challenge
-    is PasskeyClient.PasskeyException.NoCredential -> R.string.onboarding_login_passkey_no_credential
-    is PasskeyClient.PasskeyException.Cancelled -> R.string.onboarding_login_passkey_no_credential
-    is PasskeyClient.PasskeyException.Unknown -> R.string.onboarding_login_error_unexpected
-}
+private fun PasskeyClient.PasskeyException.toMessageRes(): Int =
+    when (this) {
+        is PasskeyClient.PasskeyException.NotSupported -> R.string.onboarding_login_passkey_not_supported
+        is PasskeyClient.PasskeyException.InvalidChallenge -> R.string.onboarding_login_passkey_invalid_challenge
+        is PasskeyClient.PasskeyException.NoCredential -> R.string.onboarding_login_passkey_no_credential
+        is PasskeyClient.PasskeyException.Cancelled -> R.string.onboarding_login_passkey_no_credential
+        is PasskeyClient.PasskeyException.Unknown -> R.string.onboarding_login_error_unexpected
+    }
 
 private fun String.firstName(): String = trim().split(' ', '\t', '\n').firstOrNull().orEmpty()

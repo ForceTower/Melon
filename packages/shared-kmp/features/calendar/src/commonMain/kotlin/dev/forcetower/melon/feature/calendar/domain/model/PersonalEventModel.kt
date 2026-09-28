@@ -18,7 +18,9 @@ data class PersonalEvent(
     val createdAt: Long,
 )
 
-enum class PersonalEventCategory(val wire: String) {
+enum class PersonalEventCategory(
+    val wire: String,
+) {
     Task("TASK"),
     Exam("EXAM"),
     Study("STUDY"),
@@ -28,13 +30,14 @@ enum class PersonalEventCategory(val wire: String) {
     companion object {
         // An unknown kind can only come from a newer build's row — the generic
         // tone beats dropping the entry.
-        fun fromWire(value: String): PersonalEventCategory =
-            entries.firstOrNull { it.wire == value } ?: Task
+        fun fromWire(value: String): PersonalEventCategory = entries.firstOrNull { it.wire == value } ?: Task
     }
 }
 
 // Days before the start date; `None` schedules nothing.
-enum class PersonalEventReminder(val days: Int) {
+enum class PersonalEventReminder(
+    val days: Int,
+) {
     None(0),
     DayBefore(1),
     ThreeDays(3),
@@ -42,8 +45,7 @@ enum class PersonalEventReminder(val days: Int) {
     ;
 
     companion object {
-        fun fromDays(days: Int): PersonalEventReminder =
-            entries.firstOrNull { it.days == days } ?: None
+        fun fromDays(days: Int): PersonalEventReminder = entries.firstOrNull { it.days == days } ?: None
     }
 }
 

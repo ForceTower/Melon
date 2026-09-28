@@ -5,6 +5,11 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.forcetower.melon.core.analytics.Analytics
 import dev.forcetower.melon.core.analytics.ContentTypes
 import dev.forcetower.melon.core.common.Outcome
+import dev.forcetower.melon.feature.disciplines.domain.model.DisciplineListItem as KmpListItem
+import dev.forcetower.melon.feature.disciplines.domain.model.DisciplinesListState as KmpState
+import dev.forcetower.melon.feature.disciplines.domain.model.ListGradeEntry as KmpGrade
+import dev.forcetower.melon.feature.disciplines.domain.model.PendingSemester as KmpPending
+import dev.forcetower.melon.feature.disciplines.domain.model.SemesterDisciplines as KmpSemester
 import dev.forcetower.melon.feature.disciplines.domain.usecase.CalculateOverallScoreUseCase
 import dev.forcetower.melon.feature.disciplines.domain.usecase.ObserveDisciplinesListUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.SyncSemesterUseCase
@@ -14,11 +19,6 @@ import dev.forcetower.unes.mvi.UiIntent
 import dev.forcetower.unes.mvi.UiState
 import javax.inject.Inject
 import kotlinx.coroutines.launch
-import dev.forcetower.melon.feature.disciplines.domain.model.DisciplineListItem as KmpListItem
-import dev.forcetower.melon.feature.disciplines.domain.model.DisciplinesListState as KmpState
-import dev.forcetower.melon.feature.disciplines.domain.model.ListGradeEntry as KmpGrade
-import dev.forcetower.melon.feature.disciplines.domain.model.PendingSemester as KmpPending
-import dev.forcetower.melon.feature.disciplines.domain.model.SemesterDisciplines as KmpSemester
 
 // Drives `DisciplinesScreen`. Subscribes to the same `ObserveDisciplinesList`
 // flow iOS uses (see `DisciplinesListViewModel.swift`); each emission maps the
@@ -45,8 +45,12 @@ internal data class DisciplinesUiState(
 ) : UiState
 
 internal sealed interface DisciplinesIntent : UiIntent {
-    data class Download(val semesterCode: String) : DisciplinesIntent
-    data class OpenDiscipline(val discipline: Discipline) : DisciplinesIntent
+    data class Download(
+        val semesterCode: String,
+    ) : DisciplinesIntent
+    data class OpenDiscipline(
+        val discipline: Discipline,
+    ) : DisciplinesIntent
     data object CloseDiscipline : DisciplinesIntent
 }
 
@@ -103,7 +107,9 @@ internal class DisciplinesListViewModel @Inject constructor(
         viewModelScope.launch {
             setState { copy(downloading = downloading + semesterCode, downloadError = null) }
             val outcome = runCatching { syncSemester(dbId) }.getOrElse {
-                setState { copy(downloading = downloading - semesterCode, downloadError = "Falha ao baixar o semestre.") }
+                setState {
+                    copy(downloading = downloading - semesterCode, downloadError = "Falha ao baixar o semestre.")
+                }
                 return@launch
             }
             val errorMessage = when (outcome) {
@@ -122,21 +128,23 @@ internal class DisciplinesListViewModel @Inject constructor(
 
 // ───────── KMP → UI projection ─────────
 
-private fun mapSemester(raw: KmpSemester): Semester = Semester(
-    id = raw.semesterCode,
-    disciplines = raw.disciplines.map(::mapItem),
-    isDownloaded = true,
-    estimatedCount = null,
-    dbSemesterId = raw.semesterId,
-)
+private fun mapSemester(raw: KmpSemester): Semester =
+    Semester(
+        id = raw.semesterCode,
+        disciplines = raw.disciplines.map(::mapItem),
+        isDownloaded = true,
+        estimatedCount = null,
+        dbSemesterId = raw.semesterId,
+    )
 
-private fun mapPending(raw: KmpPending): Semester = Semester(
-    id = raw.semesterCode,
-    disciplines = emptyList(),
-    isDownloaded = false,
-    estimatedCount = null,
-    dbSemesterId = raw.semesterId,
-)
+private fun mapPending(raw: KmpPending): Semester =
+    Semester(
+        id = raw.semesterCode,
+        disciplines = emptyList(),
+        isDownloaded = false,
+        estimatedCount = null,
+        dbSemesterId = raw.semesterId,
+    )
 
 // Per-evaluation detail from upstream lands in a single "Geral" section here —
 // section/group decomposition is a detail-view concern. Color is resolved at
@@ -173,13 +181,14 @@ private fun mapItem(raw: KmpListItem): Discipline {
     )
 }
 
-private fun mapGrade(raw: KmpGrade): GradeEntry = GradeEntry(
-    label = raw.nameShort ?: raw.name,
-    title = raw.name,
-    date = DisciplineDateFormatting.ddMmYyyy(raw.date),
-    score = raw.value,
-    weight = raw.weight,
-)
+private fun mapGrade(raw: KmpGrade): GradeEntry =
+    GradeEntry(
+        label = raw.nameShort ?: raw.name,
+        title = raw.name,
+        date = DisciplineDateFormatting.ddMmYyyy(raw.date),
+        score = raw.value,
+        weight = raw.weight,
+    )
 
 // "Te · Pr"-style label from the upstream slug. Empty/unknown labels become an
 // empty group list — `Discipline.hasMultipleGroups` then returns false.

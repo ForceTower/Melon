@@ -82,11 +82,17 @@ val LocalRevealWindow = staticCompositionLocalOf<RevealWindow?> { null }
  * window up through [LocalRevealWindow].
  */
 @Composable
-fun RevealWindowHost(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
+fun RevealWindowHost(
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit,
+) {
     val window = remember { RevealWindow() }
     val closeOnScroll = remember(window) {
         object : NestedScrollConnection {
-            override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
+            override fun onPreScroll(
+                available: Offset,
+                source: NestedScrollSource,
+            ): Offset {
                 if (source == NestedScrollSource.UserInput) window.close()
                 return Offset.Zero
             }
@@ -140,22 +146,22 @@ private fun Modifier.revealShadowLayer(
     shadow: RevealShadow,
     progress: () -> Float,
     geometry: GraphicsLayerScope.() -> Unit,
-): Modifier = graphicsLayer {
-    geometry()
-    val grown = ((progress() - ShadowHoldFraction) / (1f - ShadowHoldFraction))
-        .coerceIn(0f, 1f)
-        .let { it * it }
-    shadowElevation = shadow.elevation.toPx() * grown
-    shape = shadow.shape
-    spotShadowColor = shadow.spotColor.fadedBy(grown)
-    ambientShadowColor = shadow.ambientColor.fadedBy(grown)
-}
+): Modifier =
+    graphicsLayer {
+        geometry()
+        val grown = ((progress() - ShadowHoldFraction) / (1f - ShadowHoldFraction))
+            .coerceIn(0f, 1f)
+            .let { it * it }
+        shadowElevation = shadow.elevation.toPx() * grown
+        shape = shadow.shape
+        spotShadowColor = shadow.spotColor.fadedBy(grown)
+        ambientShadowColor = shadow.ambientColor.fadedBy(grown)
+    }
 
 /** Fraction of the reveal a shadow sits out before it starts growing. */
 private const val ShadowHoldFraction = 0.4f
 
-private fun Color.fadedBy(factor: Float): Color =
-    if (factor >= 1f) this else copy(alpha = alpha * factor)
+private fun Color.fadedBy(factor: Float): Color = if (factor >= 1f) this else copy(alpha = alpha * factor)
 
 /** Static stand-in for the [shadow] a card gave up, when the reveal is skipped. */
 private fun Modifier.staticShadowLayer(shadow: RevealShadow?): Modifier =
@@ -167,52 +173,54 @@ fun Modifier.fadeUpOnAppear(
     durationMs: Int = 600,
     fromOffset: Dp = 12.dp,
     shadow: RevealShadow? = null,
-): Modifier = composed {
-    if (!revealOnAppear()) return@composed Modifier.staticShadowLayer(shadow)
-    val alpha = remember { Animatable(0f) }
-    val translation = remember { Animatable(fromOffset.value) }
-    LaunchedEffect(Unit) {
-        delay(delayMs.toLong())
-        coroutineScope {
-            launch { alpha.animateTo(1f, tween(durationMs, easing = MelonMotion.EmphasizedEasing)) }
-            launch { translation.animateTo(0f, tween(durationMs, easing = MelonMotion.EmphasizedEasing)) }
+): Modifier =
+    composed {
+        if (!revealOnAppear()) return@composed Modifier.staticShadowLayer(shadow)
+        val alpha = remember { Animatable(0f) }
+        val translation = remember { Animatable(fromOffset.value) }
+        LaunchedEffect(Unit) {
+            delay(delayMs.toLong())
+            coroutineScope {
+                launch { alpha.animateTo(1f, tween(durationMs, easing = MelonMotion.EmphasizedEasing)) }
+                launch { translation.animateTo(0f, tween(durationMs, easing = MelonMotion.EmphasizedEasing)) }
+            }
+        }
+        // `translation.value` is a dp scalar (kept unitless on Animatable);
+        // multiply by `density` to convert to pixels inside the layer.
+        val slide: GraphicsLayerScope.() -> Unit = { translationY = translation.value * density }
+        if (shadow == null) {
+            Modifier.graphicsLayer {
+                this.alpha = alpha.value
+                slide()
+            }
+        } else {
+            Modifier
+                .revealShadowLayer(shadow, progress = { alpha.value }, geometry = slide)
+                .graphicsLayer { this.alpha = alpha.value }
         }
     }
-    // `translation.value` is a dp scalar (kept unitless on Animatable);
-    // multiply by `density` to convert to pixels inside the layer.
-    val slide: GraphicsLayerScope.() -> Unit = { translationY = translation.value * density }
-    if (shadow == null) {
-        Modifier.graphicsLayer {
-            this.alpha = alpha.value
-            slide()
-        }
-    } else {
-        Modifier
-            .revealShadowLayer(shadow, progress = { alpha.value }, geometry = slide)
-            .graphicsLayer { this.alpha = alpha.value }
-    }
-}
 
 /** Fade in only — no translation. */
 fun Modifier.fadeInOnAppear(
     delayMs: Int = 0,
     durationMs: Int = 600,
     shadow: RevealShadow? = null,
-): Modifier = composed {
-    if (!revealOnAppear()) return@composed Modifier.staticShadowLayer(shadow)
-    val alpha = remember { Animatable(0f) }
-    LaunchedEffect(Unit) {
-        delay(delayMs.toLong())
-        alpha.animateTo(1f, tween(durationMs, easing = MelonMotion.EmphasizedEasing))
+): Modifier =
+    composed {
+        if (!revealOnAppear()) return@composed Modifier.staticShadowLayer(shadow)
+        val alpha = remember { Animatable(0f) }
+        LaunchedEffect(Unit) {
+            delay(delayMs.toLong())
+            alpha.animateTo(1f, tween(durationMs, easing = MelonMotion.EmphasizedEasing))
+        }
+        if (shadow == null) {
+            Modifier.graphicsLayer { this.alpha = alpha.value }
+        } else {
+            Modifier
+                .revealShadowLayer(shadow, progress = { alpha.value }, geometry = {})
+                .graphicsLayer { this.alpha = alpha.value }
+        }
     }
-    if (shadow == null) {
-        Modifier.graphicsLayer { this.alpha = alpha.value }
-    } else {
-        Modifier
-            .revealShadowLayer(shadow, progress = { alpha.value }, geometry = {})
-            .graphicsLayer { this.alpha = alpha.value }
-    }
-}
 
 /** Scale in from `fromScale` while fading in. Mirrors iOS `scaleInOnAppear`. */
 fun Modifier.scaleInOnAppear(
@@ -220,29 +228,30 @@ fun Modifier.scaleInOnAppear(
     durationMs: Int = 500,
     fromScale: Float = 0.92f,
     shadow: RevealShadow? = null,
-): Modifier = composed {
-    if (!revealOnAppear()) return@composed Modifier.staticShadowLayer(shadow)
-    val alpha = remember { Animatable(0f) }
-    val scale = remember { Animatable(fromScale) }
-    LaunchedEffect(Unit) {
-        delay(delayMs.toLong())
-        coroutineScope {
-            launch { alpha.animateTo(1f, tween(durationMs, easing = MelonMotion.EmphasizedEasing)) }
-            launch { scale.animateTo(1f, tween(durationMs, easing = MelonMotion.PopEasing)) }
+): Modifier =
+    composed {
+        if (!revealOnAppear()) return@composed Modifier.staticShadowLayer(shadow)
+        val alpha = remember { Animatable(0f) }
+        val scale = remember { Animatable(fromScale) }
+        LaunchedEffect(Unit) {
+            delay(delayMs.toLong())
+            coroutineScope {
+                launch { alpha.animateTo(1f, tween(durationMs, easing = MelonMotion.EmphasizedEasing)) }
+                launch { scale.animateTo(1f, tween(durationMs, easing = MelonMotion.PopEasing)) }
+            }
+        }
+        val zoom: GraphicsLayerScope.() -> Unit = {
+            scaleX = scale.value
+            scaleY = scale.value
+        }
+        if (shadow == null) {
+            Modifier.graphicsLayer {
+                this.alpha = alpha.value
+                zoom()
+            }
+        } else {
+            Modifier
+                .revealShadowLayer(shadow, progress = { alpha.value }, geometry = zoom)
+                .graphicsLayer { this.alpha = alpha.value }
         }
     }
-    val zoom: GraphicsLayerScope.() -> Unit = {
-        scaleX = scale.value
-        scaleY = scale.value
-    }
-    if (shadow == null) {
-        Modifier.graphicsLayer {
-            this.alpha = alpha.value
-            zoom()
-        }
-    } else {
-        Modifier
-            .revealShadowLayer(shadow, progress = { alpha.value }, geometry = zoom)
-            .graphicsLayer { this.alpha = alpha.value }
-    }
-}

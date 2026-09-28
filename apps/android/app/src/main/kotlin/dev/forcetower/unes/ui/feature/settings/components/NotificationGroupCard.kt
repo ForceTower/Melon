@@ -60,7 +60,11 @@ internal fun NotificationGroupCard(
 }
 
 @Composable
-private fun GroupHeader(title: String, activeCount: Int, totalCount: Int) {
+private fun GroupHeader(
+    title: String,
+    activeCount: Int,
+    totalCount: Int,
+) {
     val accent = MaterialTheme.colorScheme.primary
     val allActive = activeCount == totalCount
 
@@ -91,8 +95,11 @@ private fun GroupHeader(title: String, activeCount: Int, totalCount: Int) {
             modifier = Modifier
                 .clip(CircleShape)
                 .background(
-                    if (allActive) accent.copy(alpha = 0.15f)
-                    else MaterialTheme.colorScheme.surfaceContainerHigh,
+                    if (allActive) {
+                        accent.copy(alpha = 0.15f)
+                    } else {
+                        MaterialTheme.colorScheme.surfaceContainerHigh
+                    },
                 )
                 .padding(horizontal = 10.dp, vertical = 3.dp),
         )
@@ -165,7 +172,10 @@ internal fun NotificationToggleRow(
 // thumb stays white in both themes (`fixed.onHero`) so the accent check
 // reads against it.
 @Composable
-private fun NotificationSwitch(on: Boolean, onToggle: (Boolean) -> Unit) {
+private fun NotificationSwitch(
+    on: Boolean,
+    onToggle: (Boolean) -> Unit,
+) {
     val accent = MaterialTheme.colorScheme.primary
     Switch(
         checked = on,

@@ -7,9 +7,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -335,7 +335,10 @@ private fun TeacherHero(
 }
 
 @Composable
-private fun TeacherStatTiles(detail: ParadoxoTeacherDetail, modifier: Modifier = Modifier) {
+private fun TeacherStatTiles(
+    detail: ParadoxoTeacherDetail,
+    modifier: Modifier = Modifier,
+) {
     val approval = ParadoxoStats.approvalPercent(detail.approved, detail.failed, detail.quit)
     val consistency = ParadoxoStats.consistency(detail.history.map { it.mean })
     val teal = MaterialTheme.melon.palette.teal
@@ -447,12 +450,13 @@ private fun ParadoxoTeacherScreenPreview() {
 }
 
 @Composable
-private fun statValueStyle() = MaterialTheme.typography.headlineSmall.copy(
-    fontSize = 24.sp,
-    lineHeight = 24.sp,
-    fontWeight = FontWeight.Bold,
-    letterSpacing = (-0.72).sp,
-)
+private fun statValueStyle() =
+    MaterialTheme.typography.headlineSmall.copy(
+        fontSize = 24.sp,
+        lineHeight = 24.sp,
+        fontWeight = FontWeight.Bold,
+        letterSpacing = (-0.72).sp,
+    )
 
 @Composable
 private fun StatTile(

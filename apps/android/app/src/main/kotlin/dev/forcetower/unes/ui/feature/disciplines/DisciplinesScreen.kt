@@ -220,7 +220,11 @@ private fun DisciplinesTab(
 }
 
 @Composable
-private fun Header(semesterCode: String?, isLive: Boolean, modifier: Modifier = Modifier) {
+private fun Header(
+    semesterCode: String?,
+    isLive: Boolean,
+    modifier: Modifier = Modifier,
+) {
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -329,7 +333,10 @@ private fun CurrentPane(
 }
 
 @Composable
-private fun SemesterSummaryStrip(disciplines: List<Discipline>, modifier: Modifier = Modifier) {
+private fun SemesterSummaryStrip(
+    disciplines: List<Discipline>,
+    modifier: Modifier = Modifier,
+) {
     val averages = disciplines.mapNotNull { it.partialAverage }
     val mean = if (averages.isEmpty()) null else averages.sum() / averages.size
 
@@ -372,14 +379,15 @@ private val Discipline.needsAttention: Boolean
     get() = status.key == DisciplineStatus.Key.Final || status.key == DisciplineStatus.Key.Low
 
 @Composable
-private fun attentionDetail(flagged: List<Discipline>): String = flagged
-    .map {
-        when (it.status.key) {
-            DisciplineStatus.Key.Final -> stringResource(R.string.disciplines_attention_final_format, it.title)
-            else -> stringResource(R.string.disciplines_attention_low_format, it.title)
+private fun attentionDetail(flagged: List<Discipline>): String =
+    flagged
+        .map {
+            when (it.status.key) {
+                DisciplineStatus.Key.Final -> stringResource(R.string.disciplines_attention_final_format, it.title)
+                else -> stringResource(R.string.disciplines_attention_low_format, it.title)
+            }
         }
-    }
-    .joinToString(" · ")
+        .joinToString(" · ")
 
 // ══════════ Histórico ══════════
 

@@ -18,7 +18,12 @@ interface PendingMutationDao {
     @Query(
         "UPDATE PendingMutation SET attempts = :attempts, lastError = :error, lastAttemptedAt = :attemptedAt WHERE id = :id",
     )
-    suspend fun markAttempt(id: String, attempts: Int, error: String?, attemptedAt: String)
+    suspend fun markAttempt(
+        id: String,
+        attempts: Int,
+        error: String?,
+        attemptedAt: String,
+    )
 
     @Query("DELETE FROM PendingMutation WHERE id = :id")
     suspend fun delete(id: String)
@@ -26,8 +31,14 @@ interface PendingMutationDao {
     // Read-your-writes guard: callers consult this before upserting a row from
     // incoming sync data, to avoid clobbering a locally-committed mutation the
     // server hasn't seen yet. Matches on a JSON-extracted field in payloadJson.
-    @Query("SELECT EXISTS(SELECT 1 FROM PendingMutation WHERE kind = :kind AND payloadJson LIKE '%\"' || :targetKey || '\":\"' || :targetValue || '\"%')")
-    suspend fun hasPendingForTarget(kind: String, targetKey: String, targetValue: String): Boolean
+    @Query(
+        "SELECT EXISTS(SELECT 1 FROM PendingMutation WHERE kind = :kind AND payloadJson LIKE '%\"' || :targetKey || '\":\"' || :targetValue || '\"%')",
+    )
+    suspend fun hasPendingForTarget(
+        kind: String,
+        targetKey: String,
+        targetValue: String,
+    ): Boolean
 
     @Query("DELETE FROM PendingMutation")
     suspend fun clear()

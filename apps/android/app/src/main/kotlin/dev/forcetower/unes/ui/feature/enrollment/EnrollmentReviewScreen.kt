@@ -240,15 +240,26 @@ private fun EnrollmentReviewContent(
                 maxHours = window.maxHours,
                 hoursColor = signal.color,
                 subText = if (state.conflicts.isNotEmpty()) {
-                    pluralStringResource(R.plurals.enrollment_dock_conflicts, state.conflicts.size, state.conflicts.size)
+                    pluralStringResource(
+                        R.plurals.enrollment_dock_conflicts,
+                        state.conflicts.size,
+                        state.conflicts.size,
+                    )
                 } else {
                     pluralStringResource(R.plurals.enrollment_dock_disciplines, picks.size, picks.size)
                 },
-                subColor = if (state.conflicts.isNotEmpty()) MaterialTheme.melon.status.bad else MaterialTheme.colorScheme.outline,
+                subColor = if (state.conflicts.isNotEmpty()) {
+                    MaterialTheme.melon.status.bad
+                } else {
+                    MaterialTheme.colorScheme.outline
+                },
                 primaryLabel = stringResource(
                     // A reopened proposal replaces the registered one wholesale.
-                    if (state.reopened) R.string.enrollment_dock_resubmit
-                    else R.string.enrollment_dock_submit,
+                    if (state.reopened) {
+                        R.string.enrollment_dock_resubmit
+                    } else {
+                        R.string.enrollment_dock_submit
+                    },
                 ),
                 primaryIcon = Icons.AutoMirrored.Filled.Send,
                 primaryEnabled = state.canSubmit,
@@ -294,7 +305,10 @@ private fun blockerLine(state: EnrollmentUiState): String =
     }.joinToString(" · ")
 
 @Composable
-private fun ReviewBanners(state: EnrollmentUiState, modifier: Modifier = Modifier) {
+private fun ReviewBanners(
+    state: EnrollmentUiState,
+    modifier: Modifier = Modifier,
+) {
     val window = state.window ?: return
     val conflicts = state.conflicts
     val unmet = state.resolvedPicks.filter { it.discipline.hasUnmetPrerequisite }
@@ -442,7 +456,10 @@ private fun ReviewCard(
                 )
                 Column(modifier = Modifier.padding(top = 9.dp), verticalArrangement = Arrangement.spacedBy(2.dp)) {
                     if (!pick.section.hasSchedule) {
-                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(6.dp),
+                        ) {
                             Icon(
                                 imageVector = Icons.Filled.Schedule,
                                 contentDescription = null,

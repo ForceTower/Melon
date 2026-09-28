@@ -131,7 +131,10 @@ internal fun buildScheduleWeek(
 
 // Populated week with 7 empty days anchored on today's Mon-Sun. Used when no
 // semester is active so the view still renders a valid frame.
-internal fun emptyWeek(today: LocalDate, monday: LocalDate): ScheduleWeek {
+internal fun emptyWeek(
+    today: LocalDate,
+    monday: LocalDate,
+): ScheduleWeek {
     val days = (0..6).map { idx ->
         val date = monday.plus(DatePeriod(days = idx))
         ScheduleDay(dayIndex = idx, dateIso = date.toString(), classes = emptyList())
@@ -150,7 +153,10 @@ internal fun emptyWeek(today: LocalDate, monday: LocalDate): ScheduleWeek {
 // clamped into the semester window so the fallback between-semesters path
 // (where the anchor sits at the semester's final week) still reports a
 // meaningful week number instead of 0.
-internal fun weekOfSemester(semester: SemesterEntity, reference: LocalDate): Int {
+internal fun weekOfSemester(
+    semester: SemesterEntity,
+    reference: LocalDate,
+): Int {
     val start = runCatching { LocalDate.parse(semester.startDate) }.getOrNull() ?: return 0
     val end = runCatching { LocalDate.parse(semester.endDate) }.getOrNull() ?: return 0
     val clamped = when {
@@ -162,21 +168,25 @@ internal fun weekOfSemester(semester: SemesterEntity, reference: LocalDate): Int
     return ((days / 7) + 1).toInt()
 }
 
-private fun topicFor(classId: String, dateIso: String, lectures: List<WeekLectureRow>): String? =
-    lectures.firstOrNull { it.classId == classId && it.date == dateIso }?.subject
+private fun topicFor(
+    classId: String,
+    dateIso: String,
+    lectures: List<WeekLectureRow>,
+): String? = lectures.firstOrNull { it.classId == classId && it.date == dateIso }?.subject
 
-private fun SemesterAllocationRow.toScheduleClass(topic: String?): ScheduleClass = ScheduleClass(
-    allocationId = allocationId,
-    classId = classId,
-    offerId = offerId,
-    disciplineId = disciplineId,
-    code = disciplineCode,
-    title = disciplineName,
-    startTime = startTime.orEmpty(),
-    endTime = endTime,
-    teacherName = teacherName,
-    modulo = spaceModulo,
-    room = spaceLocation,
-    campus = spaceCampus,
-    topic = topic,
-)
+private fun SemesterAllocationRow.toScheduleClass(topic: String?): ScheduleClass =
+    ScheduleClass(
+        allocationId = allocationId,
+        classId = classId,
+        offerId = offerId,
+        disciplineId = disciplineId,
+        code = disciplineCode,
+        title = disciplineName,
+        startTime = startTime.orEmpty(),
+        endTime = endTime,
+        teacherName = teacherName,
+        modulo = spaceModulo,
+        room = spaceLocation,
+        campus = spaceCampus,
+        topic = topic,
+    )

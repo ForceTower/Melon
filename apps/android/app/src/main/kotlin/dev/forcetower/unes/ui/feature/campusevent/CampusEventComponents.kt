@@ -145,7 +145,10 @@ internal fun CampusEventAudience.tone(): Color {
 
 // Deterministic per-name accent, stable across launches — drives avatar
 // gradients and venue/organization list tints.
-internal fun campusEventStableIndex(text: String, count: Int): Int {
+internal fun campusEventStableIndex(
+    text: String,
+    count: Int,
+): Int {
     if (count <= 0) return 0
     var hash = 0u
     for (char in text) {
@@ -159,8 +162,12 @@ internal fun campusEventStableIndex(text: String, count: Int): Int {
 internal fun campusEventPalette(): List<Color> {
     val palette = MaterialTheme.melon.palette
     return listOf(
-        palette.violet, palette.teal, palette.amber,
-        palette.magenta, palette.green, palette.coral,
+        palette.violet,
+        palette.teal,
+        palette.amber,
+        palette.magenta,
+        palette.green,
+        palette.coral,
     )
 }
 
@@ -346,7 +353,10 @@ internal fun campusEventInitials(name: String): String {
 
 // Faint tinted radial washing down from behind the top bar on detail screens.
 @Composable
-internal fun CampusEventDetailWash(tone: Color, modifier: Modifier = Modifier) {
+internal fun CampusEventDetailWash(
+    tone: Color,
+    modifier: Modifier = Modifier,
+) {
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -392,7 +402,10 @@ internal fun CampusEventLiveDot(
 
 // One D/H/M/S cell of the big countdown.
 @Composable
-private fun CampusEventCountCell(value: Int, label: String) {
+private fun CampusEventCountCell(
+    value: Int,
+    label: String,
+) {
     val onHero = MaterialTheme.melon.fixed.onHero
     Column(
         modifier = Modifier.widthIn(min = 46.dp),
@@ -528,7 +541,11 @@ internal fun CampusEventDayProgress(
 
 // Number + label stat in the ended hero.
 @Composable
-internal fun CampusEventHeroStat(value: Int, label: String, modifier: Modifier = Modifier) {
+internal fun CampusEventHeroStat(
+    value: Int,
+    label: String,
+    modifier: Modifier = Modifier,
+) {
     val onHero = MaterialTheme.melon.fixed.onHero
     Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(4.dp)) {
         Text(
@@ -546,7 +563,10 @@ internal fun CampusEventHeroStat(value: Int, label: String, modifier: Modifier =
 
 // Row separator inside grouped cards, indented past the leading tile.
 @Composable
-internal fun CampusEventRowDivider(startIndent: Dp, modifier: Modifier = Modifier) {
+internal fun CampusEventRowDivider(
+    startIndent: Dp,
+    modifier: Modifier = Modifier,
+) {
     Row(modifier = modifier.fillMaxWidth()) {
         Spacer(Modifier.width(startIndent))
         Box(

@@ -65,10 +65,18 @@ internal fun ScheduleScreen(
     ScheduleContent(
         state = state,
         week = week,
-        onOpenDiscipline = { cls -> vm.trackOpenDiscipline(cls); onOpenDiscipline(cls) },
+        onOpenDiscipline = { cls ->
+            vm.trackOpenDiscipline(cls)
+            onOpenDiscipline(cls)
+        },
         onOpenMaterials = if (state.materialsEnabled) {
-            { cls -> vm.trackOpenMaterials(cls); onOpenMaterials(cls) }
-        } else null,
+            { cls ->
+                vm.trackOpenMaterials(cls)
+                onOpenMaterials(cls)
+            }
+        } else {
+            null
+        },
         onDaySelect = vm::trackDaySelect,
         onOpenFolioRunner = onOpenFolioRunner,
         modifier = modifier,

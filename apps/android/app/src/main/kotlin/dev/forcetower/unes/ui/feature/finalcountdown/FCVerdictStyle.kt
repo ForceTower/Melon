@@ -30,7 +30,10 @@ internal data class FCVerdictStyle(
 
 @Composable
 @ReadOnlyComposable
-internal fun fcVerdictStyle(verdict: FCVerdict, nextSemesterLabel: String?): FCVerdictStyle {
+internal fun fcVerdictStyle(
+    verdict: FCVerdict,
+    nextSemesterLabel: String?,
+): FCVerdictStyle {
     val family = verdict.kind.family
     return when (verdict.kind) {
         FCVerdictKind.Passed -> FCVerdictStyle(
@@ -53,12 +56,18 @@ internal fun fcVerdictStyle(verdict: FCVerdict, nextSemesterLabel: String?): FCV
                 eyebrow = stringResource(R.string.final_countdown_verdict_ontrack_eyebrow),
                 title = stringResource(R.string.final_countdown_verdict_ontrack_title),
                 lead = stringResource(
-                    if (needed != null) R.string.final_countdown_verdict_ontrack_lead_need
-                    else R.string.final_countdown_verdict_ontrack_lead_no_need,
+                    if (needed != null) {
+                        R.string.final_countdown_verdict_ontrack_lead_need
+                    } else {
+                        R.string.final_countdown_verdict_ontrack_lead_no_need
+                    },
                 ),
                 statLabel = stringResource(
-                    if (needed != null) R.string.final_countdown_stat_needed_next
-                    else R.string.final_countdown_verdict_ontrack_stat_label_projection,
+                    if (needed != null) {
+                        R.string.final_countdown_stat_needed_next
+                    } else {
+                        R.string.final_countdown_verdict_ontrack_stat_label_projection
+                    },
                 ),
                 statValue = if (needed != null) {
                     stringResource(

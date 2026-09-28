@@ -51,7 +51,10 @@ internal class NextClassWidget : GlanceAppWidget() {
     // per-size rendering — exactly what the iOS WidgetFamily switch does.
     override val sizeMode: SizeMode = SizeMode.Exact
 
-    override suspend fun provideGlance(context: Context, id: GlanceId) {
+    override suspend fun provideGlance(
+        context: Context,
+        id: GlanceId,
+    ) {
         provideContent {
             NextClassWidgetContent()
         }
@@ -140,14 +143,17 @@ private fun NextClassWidgetContent() {
 // Medium is the vertical one).
 private enum class WidgetLayoutChoice { Small, Medium, Large }
 
-private fun chooseLayout(size: DpSize): WidgetLayoutChoice = when {
-    size.width < 250.dp -> WidgetLayoutChoice.Small
-    size.height < 250.dp -> WidgetLayoutChoice.Medium
-    else -> WidgetLayoutChoice.Large
-}
+private fun chooseLayout(size: DpSize): WidgetLayoutChoice =
+    when {
+        size.width < 250.dp -> WidgetLayoutChoice.Small
+        size.height < 250.dp -> WidgetLayoutChoice.Medium
+        else -> WidgetLayoutChoice.Large
+    }
 
-private fun resolveEntry(context: Context, isDark: Boolean): NextClassEntry =
-    loadCurrentEntry(context, isDark) ?: NextClassEntry.placeholder
+private fun resolveEntry(
+    context: Context,
+    isDark: Boolean,
+): NextClassEntry = loadCurrentEntry(context, isDark) ?: NextClassEntry.placeholder
 
 // Widgets follow the **system** appearance (not the app's theme override) per
 // the iOS handoff — read it from the host context's UI mode rather than

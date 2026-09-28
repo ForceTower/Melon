@@ -226,7 +226,10 @@ private fun FinalCountdownContent(
 }
 
 @Composable
-private fun FCAppBar(onBack: () -> Unit, modifier: Modifier = Modifier) {
+private fun FCAppBar(
+    onBack: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     val backLabel = stringResource(R.string.final_countdown_back)
     Row(
         modifier = modifier
@@ -297,7 +300,11 @@ private fun FCHeadline(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun EvaluationsHeader(filled: Int, total: Int, modifier: Modifier = Modifier) {
+private fun EvaluationsHeader(
+    filled: Int,
+    total: Int,
+    modifier: Modifier = Modifier,
+) {
     Row(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.Bottom,
@@ -369,8 +376,11 @@ private fun WeightedToggleCard(
             )
             Text(
                 text = stringResource(
-                    if (weighted) R.string.final_countdown_weighted_hint_on
-                    else R.string.final_countdown_weighted_hint_off,
+                    if (weighted) {
+                        R.string.final_countdown_weighted_hint_on
+                    } else {
+                        R.string.final_countdown_weighted_hint_off
+                    },
                 ),
                 style = MaterialTheme.typography.bodySmall.copy(
                     fontSize = 12.sp,
@@ -385,7 +395,10 @@ private fun WeightedToggleCard(
 }
 
 @Composable
-private fun ResetButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
+private fun ResetButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     val shape = RoundedCornerShape(16.dp)
     val label = stringResource(R.string.final_countdown_clear)
     Row(

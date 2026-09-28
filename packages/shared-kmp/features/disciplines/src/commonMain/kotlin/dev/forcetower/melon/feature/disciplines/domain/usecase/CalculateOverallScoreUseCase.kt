@@ -20,23 +20,25 @@ class CalculateOverallScoreUseCase internal constructor(
     private val semesterDao: SemesterDao,
     private val academicDao: AcademicDao,
 ) {
-    operator fun invoke(capSemesterId: String? = null): Flow<Double?> = combine(
-        semesterDao.observeAll(),
-        academicDao.observeAllEnrolledDisciplines(),
-    ) { semesters, enrollments ->
-        computeOverallScore(semesters, enrollments, capSemesterId)
-    }.distinctUntilChanged()
+    operator fun invoke(capSemesterId: String? = null): Flow<Double?> =
+        combine(
+            semesterDao.observeAll(),
+            academicDao.observeAllEnrolledDisciplines(),
+        ) { semesters, enrollments ->
+            computeOverallScore(semesters, enrollments, capSemesterId)
+        }.distinctUntilChanged()
 
     // Lifetime CR paired with its latest movement: `delta` = CR now − CR as
     // it stood before the most recent semester with closed grades. Same
     // semantics as the iOS sparkline delta (CoefficientHistory.swift); delta
     // stays null until two semesters have closed grades.
-    fun summary(): Flow<OverallScoreSummary> = combine(
-        semesterDao.observeAll(),
-        academicDao.observeAllEnrolledDisciplines(),
-    ) { semesters, enrollments ->
-        computeOverallScoreSummary(semesters, enrollments)
-    }.distinctUntilChanged()
+    fun summary(): Flow<OverallScoreSummary> =
+        combine(
+            semesterDao.observeAll(),
+            academicDao.observeAllEnrolledDisciplines(),
+        ) { semesters, enrollments ->
+            computeOverallScoreSummary(semesters, enrollments)
+        }.distinctUntilChanged()
 }
 
 data class OverallScoreSummary(

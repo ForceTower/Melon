@@ -27,7 +27,9 @@ import io.ktor.http.isSuccess
 // an error. Mirrors iOS `LibraryRepository+Live.swift`, which defined the
 // contract client-first.
 @Inject
-internal class LibraryService(private val client: HttpClient) {
+internal class LibraryService(
+    private val client: HttpClient,
+) {
 
     suspend fun overview(): Outcome<LibraryOverview, LibraryError> =
         envelope<LibraryOverviewBody> { client.get("api/library/overview") }
@@ -66,9 +68,11 @@ internal class LibraryService(private val client: HttpClient) {
     // Degradation is a state, not an error — the screens narrate it, so this
     // call never fails outward.
     suspend fun availability(workId: String): LibraryAvailabilitySnapshot =
-        when (val outcome = envelope<LibraryAvailabilityBody> {
-            client.get("api/library/works/$workId/availability")
-        }) {
+        when (
+            val outcome = envelope<LibraryAvailabilityBody> {
+                client.get("api/library/works/$workId/availability")
+            }
+        ) {
             is Outcome.Ok -> outcome.value.toDomain()
             is Outcome.Err -> LibraryAvailabilitySnapshot(
                 reading = LibraryReading.Unavailable,
@@ -76,15 +80,12 @@ internal class LibraryService(private val client: HttpClient) {
             )
         }
 
-    suspend fun clearRecents(): Outcome<Unit, LibraryError> =
-        confirm { client.delete("api/library/recents") }
+    suspend fun clearRecents(): Outcome<Unit, LibraryError> = confirm { client.delete("api/library/recents") }
 
     // Unwraps the `{ ok, data }` envelope; any transport/decoding hiccup or
     // `ok=false` collapses to Connection — the screens only distinguish
     // "worked" from "retry".
-    private suspend inline fun <reified T> envelope(
-        request: () -> HttpResponse,
-    ): Outcome<T, LibraryError> {
+    private suspend inline fun <reified T> envelope(request: () -> HttpResponse): Outcome<T, LibraryError> {
         val response = try {
             request()
         } catch (_: Exception) {
@@ -106,12 +107,16 @@ internal class LibraryService(private val client: HttpClient) {
         } catch (_: Exception) {
             return Outcome.Err(LibraryError.Connection)
         }
-        return if (response.status.isSuccess()) Outcome.Ok(Unit)
-        else Outcome.Err(LibraryError.Connection)
+        return if (response.status.isSuccess()) {
+            Outcome.Ok(Unit)
+        } else {
+            Outcome.Err(LibraryError.Connection)
+        }
     }
 }
 
-private fun <T, R, E> Outcome<T, E>.map(transform: (T) -> R): Outcome<R, E> = when (this) {
-    is Outcome.Ok -> Outcome.Ok(transform(value))
-    is Outcome.Err -> this
-}
+private fun <T, R, E> Outcome<T, E>.map(transform: (T) -> R): Outcome<R, E> =
+    when (this) {
+        is Outcome.Ok -> Outcome.Ok(transform(value))
+        is Outcome.Err -> this
+    }

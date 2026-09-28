@@ -10,6 +10,5 @@ import dev.zacsweers.metro.Inject
 class GetPasskeyRegistrationOptionsUseCase internal constructor(
     private val repository: PasskeyRepository,
 ) {
-    suspend operator fun invoke(): Outcome<PasskeyRegistrationOptions, PasskeyError> =
-        repository.registrationOptions()
+    suspend operator fun invoke(): Outcome<PasskeyRegistrationOptions, PasskeyError> = repository.registrationOptions()
 }

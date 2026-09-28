@@ -236,7 +236,11 @@ private fun EnrollmentTimetableContent(
                 } else {
                     pluralStringResource(R.plurals.enrollment_dock_disciplines, picks.size, picks.size)
                 },
-                subColor = if (conflicts.isNotEmpty()) MaterialTheme.melon.status.bad else MaterialTheme.colorScheme.outline,
+                subColor = if (conflicts.isNotEmpty()) {
+                    MaterialTheme.melon.status.bad
+                } else {
+                    MaterialTheme.colorScheme.outline
+                },
                 primaryLabel = stringResource(R.string.enrollment_dock_review),
                 primaryIcon = Icons.AutoMirrored.Filled.ArrowForward,
                 onPrimary = onOpenReview,

@@ -24,11 +24,13 @@ enum class CampusEventCategory { Quest, Workshop, Lecture, Presentation, GroupDy
 // Who an activity is aimed at. Events that don't split their audience send
 // `everyone` for every activity, which hides the filter entirely.
 enum class CampusEventAudience {
-    Everyone, Freshmen, Veterans;
+    Everyone,
+    Freshmen,
+    Veterans,
+    ;
 
     // Whether an activity aimed at `audience` shows under this filter.
-    fun includes(audience: CampusEventAudience): Boolean =
-        this == Everyone || audience == Everyone || audience == this
+    fun includes(audience: CampusEventAudience): Boolean = this == Everyone || audience == Everyone || audience == this
 }
 
 data class CampusEventActivity(
@@ -53,11 +55,12 @@ data class CampusEventActivity(
     // leave the "happening now" spot on their own.
     val effectiveEnd: Instant get() = endsAt ?: (startsAt + 90.minutes)
 
-    fun state(now: Instant): CampusEventActivityState = when {
-        now >= effectiveEnd -> CampusEventActivityState.Past
-        now >= startsAt -> CampusEventActivityState.Live
-        else -> CampusEventActivityState.Upcoming
-    }
+    fun state(now: Instant): CampusEventActivityState =
+        when {
+            now >= effectiveEnd -> CampusEventActivityState.Past
+            now >= startsAt -> CampusEventActivityState.Live
+            else -> CampusEventActivityState.Upcoming
+        }
 }
 
 data class CampusEventSpeaker(
@@ -141,11 +144,12 @@ data class CampusEvent(
             ?.let { id -> runCatching { TimeZone.of(id) }.getOrNull() }
             ?: TimeZone.currentSystemDefault()
 
-    fun phase(now: Instant): CampusEventPhase = when {
-        now >= endsAt -> CampusEventPhase.Ended
-        now >= startsAt -> CampusEventPhase.Live
-        else -> CampusEventPhase.Upcoming
-    }
+    fun phase(now: Instant): CampusEventPhase =
+        when {
+            now >= endsAt -> CampusEventPhase.Ended
+            now >= startsAt -> CampusEventPhase.Live
+            else -> CampusEventPhase.Upcoming
+        }
 
     // Activities grouped into calendar days (event zone), both levels
     // sorted by time.
@@ -183,27 +187,37 @@ data class CampusEvent(
     val dayCount: Int get() = days().size
 
     // Whether `instant` falls on `day` in the event zone.
-    fun isOnDay(instant: Instant, day: LocalDate): Boolean =
-        instant.toLocalDateTime(timeZone).date == day
+    fun isOnDay(
+        instant: Instant,
+        day: LocalDate,
+    ): Boolean = instant.toLocalDateTime(timeZone).date == day
 
     // The activity opening the event — the hero's "Abertura" block.
     val opener: CampusEventActivity? get() = activities.minByOrNull { it.startsAt }
 
-    fun activities(day: LocalDate, filter: CampusEventAudience): List<CampusEventActivity> =
+    fun activities(
+        day: LocalDate,
+        filter: CampusEventAudience,
+    ): List<CampusEventActivity> =
         days().firstOrNull { it.date == day }
             ?.activities
             ?.filter { filter.includes(it.audience) }
             .orEmpty()
 
-    fun activityCount(day: LocalDate, filter: CampusEventAudience): Int =
-        activities(day, filter).size
+    fun activityCount(
+        day: LocalDate,
+        filter: CampusEventAudience,
+    ): Int = activities(day, filter).size
 
     // Whether the schedule splits by audience at all; a single-audience
     // event renders without the filter.
     val hasAudienceSplit: Boolean
         get() = activities.any { it.audience != CampusEventAudience.Everyone }
 
-    fun liveActivityCount(filter: CampusEventAudience, now: Instant): Int =
+    fun liveActivityCount(
+        filter: CampusEventAudience,
+        now: Instant,
+    ): Int =
         activities.count {
             filter.includes(it.audience) && it.state(now) == CampusEventActivityState.Live
         }
@@ -226,7 +240,10 @@ data class CampusEvent(
 
     // Resolves one of an activity's hosts: by id when linked, by display
     // name otherwise (ad-hoc hosts have neither and return null).
-    fun speakerFor(activity: CampusEventActivity, index: Int): CampusEventSpeaker? {
+    fun speakerFor(
+        activity: CampusEventActivity,
+        index: Int,
+    ): CampusEventSpeaker? {
         if (index < activity.speakerIds.size) {
             speakers.firstOrNull { it.id == activity.speakerIds[index] }?.let { return it }
         }
@@ -243,6 +260,5 @@ data class CampusEvent(
         return venues.firstOrNull { it.name == activity.venueName }
     }
 
-    fun activityCount(venue: CampusEventVenue): Int =
-        activities.count { it.venueName == venue.name }
+    fun activityCount(venue: CampusEventVenue): Int = activities.count { it.venueName == venue.name }
 }

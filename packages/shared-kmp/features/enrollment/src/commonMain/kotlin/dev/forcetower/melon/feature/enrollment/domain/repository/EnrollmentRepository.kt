@@ -18,6 +18,8 @@ internal interface EnrollmentRepository {
 sealed interface EnrollmentError {
     data object Unauthorized : EnrollmentError
     data object NoConnection : EnrollmentError
-    data class Server(val message: String?) : EnrollmentError
+    data class Server(
+        val message: String?,
+    ) : EnrollmentError
     data object Unexpected : EnrollmentError
 }

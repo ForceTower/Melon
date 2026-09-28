@@ -33,10 +33,11 @@ class CampusEventRepository internal constructor(
     private val hydration = Mutex()
     private var hydrated = false
 
-    fun observe(): Flow<CampusEvent?> = flow {
-        hydrate()
-        emitAll(state)
-    }
+    fun observe(): Flow<CampusEvent?> =
+        flow {
+            hydrate()
+            emitAll(state)
+        }
 
     // Failures never surface — the stale offline payload is kept, exactly
     // like the iOS repository's silent refresh.

@@ -19,15 +19,23 @@ internal object FinalCountdownMath {
 
     // Simple or weighted mean of the rows whose score is set. Returns null
     // when nothing's been filled.
-    fun average(rows: List<FCRow>, weighted: Boolean): Double? =
-        mean(rows.mapNotNull { row -> row.score?.let { it to row.weight } }, weighted)
+    fun average(
+        rows: List<FCRow>,
+        weighted: Boolean,
+    ): Double? = mean(rows.mapNotNull { row -> row.score?.let { it to row.weight } }, weighted)
 
     // What would the average be if every missing score came back as
     // `wildcardValue`? Used for best- and worst-case projections.
-    fun projectAverage(rows: List<FCRow>, weighted: Boolean, wildcardValue: Double): Double? =
-        mean(rows.map { (it.score ?: wildcardValue) to it.weight }, weighted)
+    fun projectAverage(
+        rows: List<FCRow>,
+        weighted: Boolean,
+        wildcardValue: Double,
+    ): Double? = mean(rows.map { (it.score ?: wildcardValue) to it.weight }, weighted)
 
-    private fun mean(entries: List<Pair<Double, Int>>, weighted: Boolean): Double? {
+    private fun mean(
+        entries: List<Pair<Double, Int>>,
+        weighted: Boolean,
+    ): Double? {
         if (entries.isEmpty()) return null
         if (!weighted) {
             return entries.sumOf { it.first } / entries.size
@@ -55,7 +63,11 @@ internal object FinalCountdownMath {
     // If exactly one row is missing, the score it would need to hit `target`
     // overall. Returns null when the count doesn't match the single-empty
     // shape — the UI shows a projection range instead.
-    fun neededForPass(rows: List<FCRow>, weighted: Boolean, target: Double = PassThreshold): Double? {
+    fun neededForPass(
+        rows: List<FCRow>,
+        weighted: Boolean,
+        target: Double = PassThreshold,
+    ): Double? {
         val empties = rows.filter { it.score == null }
         if (empties.size != 1) return null
         if (!weighted) {
@@ -70,7 +82,10 @@ internal object FinalCountdownMath {
         return (target * wsum - sumKnown) / emptyWeight
     }
 
-    fun verdict(rows: List<FCRow>, weighted: Boolean): FCVerdict {
+    fun verdict(
+        rows: List<FCRow>,
+        weighted: Boolean,
+    ): FCVerdict {
         val allFilled = rows.isNotEmpty() && rows.all { it.score != null }
         val rawAvg = average(rows, weighted)
             ?: return FCVerdict(kind = FCVerdictKind.Empty, avg = null)

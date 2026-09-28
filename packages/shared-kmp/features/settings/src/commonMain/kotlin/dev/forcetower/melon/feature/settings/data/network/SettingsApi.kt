@@ -10,7 +10,9 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 
 @Inject
-internal class SettingsApi(private val client: HttpClient) {
+internal class SettingsApi(
+    private val client: HttpClient,
+) {
     suspend fun update(body: UpdateUserSettingsRequest): HttpResponse =
         client.patch("api/me/settings") {
             contentType(ContentType.Application.Json)

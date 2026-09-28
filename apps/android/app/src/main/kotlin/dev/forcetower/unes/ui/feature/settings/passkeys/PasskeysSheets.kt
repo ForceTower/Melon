@@ -422,7 +422,12 @@ private fun DetailInfoCard(item: PasskeyItem) {
 }
 
 @Composable
-private fun DetailInfoRow(icon: ImageVector, label: String, value: String, divider: Boolean) {
+private fun DetailInfoRow(
+    icon: ImageVector,
+    label: String,
+    value: String,
+    divider: Boolean,
+) {
     Column {
         Row(
             modifier = Modifier
@@ -572,7 +577,11 @@ internal fun DeletePasskeyDialog(
                     R.string.passkeys_delete_title,
                     item.name ?: stringResource(R.string.passkeys_name_fallback),
                 ),
-                style = MaterialTheme.typography.titleLarge.copy(fontSize = 20.sp, fontWeight = FontWeight.Bold, lineHeight = 24.sp),
+                style = MaterialTheme.typography.titleLarge.copy(
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    lineHeight = 24.sp,
+                ),
                 color = MaterialTheme.colorScheme.onBackground,
             )
             Spacer(Modifier.height(9.dp))
@@ -610,7 +619,10 @@ internal fun DeletePasskeyDialog(
                     } else {
                         Text(
                             text = stringResource(R.string.passkeys_delete_confirm),
-                            style = MaterialTheme.typography.labelLarge.copy(fontSize = 15.sp, fontWeight = FontWeight.Bold),
+                            style = MaterialTheme.typography.labelLarge.copy(
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight.Bold,
+                            ),
                             color = danger,
                         )
                     }
@@ -623,7 +635,11 @@ internal fun DeletePasskeyDialog(
 // ── Shared buttons ──
 
 @Composable
-private fun SheetPrimaryButton(text: String, enabled: Boolean, onClick: () -> Unit) {
+private fun SheetPrimaryButton(
+    text: String,
+    enabled: Boolean,
+    onClick: () -> Unit,
+) {
     val accent = MaterialTheme.colorScheme.primary
     Box(
         modifier = Modifier
@@ -681,7 +697,12 @@ private fun OutlinedActionButton(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Icon(imageVector = icon, contentDescription = null, tint = MaterialTheme.colorScheme.onBackground, modifier = Modifier.size(19.dp))
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onBackground,
+            modifier = Modifier.size(19.dp),
+        )
         Spacer(Modifier.width(7.dp))
         Text(
             text = text,

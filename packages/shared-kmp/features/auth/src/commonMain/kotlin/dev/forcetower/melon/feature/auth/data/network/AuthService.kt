@@ -12,7 +12,9 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 
 @Inject
-internal class AuthService(private val client: HttpClient) {
+internal class AuthService(
+    private val client: HttpClient,
+) {
     suspend fun login(body: LoginRequest): HttpResponse =
         client.post("api/auth/login") {
             contentType(ContentType.Application.Json)

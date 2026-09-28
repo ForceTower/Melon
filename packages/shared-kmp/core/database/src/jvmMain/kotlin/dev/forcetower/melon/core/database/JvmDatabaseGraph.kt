@@ -7,9 +7,9 @@ import dev.zacsweers.metro.BindingContainer
 import dev.zacsweers.metro.ContributesTo
 import dev.zacsweers.metro.Provides
 import dev.zacsweers.metro.SingleIn
-import kotlinx.coroutines.Dispatchers
 import java.io.File
 import java.nio.file.Files
+import kotlinx.coroutines.Dispatchers
 
 @ContributesTo(AppScope::class)
 @BindingContainer

@@ -170,7 +170,10 @@ internal fun LicensesHero(
 }
 
 @Composable
-private fun DistributionBar(breakdown: List<LicenseBreakdown>, grow: Float) {
+private fun DistributionBar(
+    breakdown: List<LicenseBreakdown>,
+    grow: Float,
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -194,7 +197,11 @@ private fun DistributionBar(breakdown: List<LicenseBreakdown>, grow: Float) {
 }
 
 @Composable
-private fun LegendItem(row: LicenseBreakdown, ink: Color, ink2: Color) {
+private fun LegendItem(
+    row: LicenseBreakdown,
+    ink: Color,
+    ink2: Color,
+) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Box(
             modifier = Modifier

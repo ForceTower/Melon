@@ -10,7 +10,10 @@ package dev.forcetower.melon.core.analytics
 // something genuinely isn't a screen view or a content selection.
 interface Analytics {
     // A screen was shown — "screen_view". `name` should come from [Screens].
-    fun screen(name: String, properties: Map<String, Any> = emptyMap())
+    fun screen(
+        name: String,
+        properties: Map<String, Any> = emptyMap(),
+    )
 
     // A tap/open on a thing (a hub, a material, a ranking entry…) —
     // "select_content". `contentType` should come from [ContentTypes].
@@ -29,16 +32,29 @@ interface Analytics {
     // Tie subsequent events to a person instead of just the device — call on
     // login. Without it, analytics counts devices, not users, and can't stitch
     // a person's phone + watch together.
-    fun identify(userId: String, properties: Map<String, Any> = emptyMap())
+    fun identify(
+        userId: String,
+        properties: Map<String, Any> = emptyMap(),
+    )
 
     // Unlink the device from the person — call on logout.
     fun reset()
 }
 
 object NoOpAnalytics : Analytics {
-    override fun screen(name: String, properties: Map<String, Any>) = Unit
-    override fun selectContent(contentType: String, itemId: String?, properties: Map<String, Any>) = Unit
+    override fun screen(
+        name: String,
+        properties: Map<String, Any>,
+    ) = Unit
+    override fun selectContent(
+        contentType: String,
+        itemId: String?,
+        properties: Map<String, Any>,
+    ) = Unit
     override fun register(properties: Map<String, Any>) = Unit
-    override fun identify(userId: String, properties: Map<String, Any>) = Unit
+    override fun identify(
+        userId: String,
+        properties: Map<String, Any>,
+    ) = Unit
     override fun reset() = Unit
 }

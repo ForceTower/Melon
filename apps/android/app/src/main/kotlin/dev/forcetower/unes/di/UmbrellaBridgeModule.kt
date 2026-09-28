@@ -1,12 +1,5 @@
 package dev.forcetower.unes.di
 
-import dev.forcetower.melon.core.common.AppClock
-import dev.forcetower.melon.core.analytics.NoOpAnalytics
-import dev.forcetower.melon.core.logging.LoggingConfig
-import kotlin.time.Clock
-import kotlin.time.Instant
-import kotlinx.datetime.TimeZone
-
 import android.content.Context
 import co.touchlab.kermit.Logger
 import dagger.Module
@@ -15,8 +8,11 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext as HiltApplicationContext
 import dagger.hilt.components.SingletonComponent
 import dev.forcetower.melon.core.analytics.Analytics
+import dev.forcetower.melon.core.analytics.NoOpAnalytics
+import dev.forcetower.melon.core.common.AppClock
 import dev.forcetower.melon.core.common.ApplicationContext
 import dev.forcetower.melon.core.common.ForegroundSignal
+import dev.forcetower.melon.core.logging.LoggingConfig
 import dev.forcetower.melon.core.network.MachineIdSource
 import dev.forcetower.melon.core.session.domain.SessionStore
 import dev.forcetower.melon.feature.auth.domain.usecase.BeginPasskeyLoginUseCase
@@ -27,8 +23,8 @@ import dev.forcetower.melon.feature.auth.domain.usecase.ListPasskeysUseCase
 import dev.forcetower.melon.feature.auth.domain.usecase.LoginUseCase
 import dev.forcetower.melon.feature.auth.domain.usecase.RegisterPasskeyUseCase
 import dev.forcetower.melon.feature.auth.domain.usecase.RenamePasskeyUseCase
-import dev.forcetower.melon.feature.calendar.domain.usecase.ObserveActiveSemesterCodeUseCase
 import dev.forcetower.melon.feature.calendar.domain.usecase.DeletePersonalEventUseCase
+import dev.forcetower.melon.feature.calendar.domain.usecase.ObserveActiveSemesterCodeUseCase
 import dev.forcetower.melon.feature.calendar.domain.usecase.ObserveCalendarEventsUseCase
 import dev.forcetower.melon.feature.calendar.domain.usecase.ObservePersonalEventsUseCase
 import dev.forcetower.melon.feature.calendar.domain.usecase.ReadPersonalEventsUseCase
@@ -48,11 +44,11 @@ import dev.forcetower.melon.feature.disciplines.domain.usecase.ObserveDiscipline
 import dev.forcetower.melon.feature.enrollment.domain.usecase.GetEnrollmentOffersUseCase
 import dev.forcetower.melon.feature.enrollment.domain.usecase.GetEnrollmentWindowUseCase
 import dev.forcetower.melon.feature.enrollment.domain.usecase.SubmitEnrollmentUseCase
-import dev.forcetower.melon.feature.materials.domain.usecase.GetMaterialUseCase
 import dev.forcetower.melon.feature.library.domain.usecase.CheckLibraryAvailabilityUseCase
 import dev.forcetower.melon.feature.library.domain.usecase.ClearLibraryRecentsUseCase
 import dev.forcetower.melon.feature.library.domain.usecase.GetLibraryOverviewUseCase
 import dev.forcetower.melon.feature.library.domain.usecase.SearchLibraryUseCase
+import dev.forcetower.melon.feature.materials.domain.usecase.GetMaterialUseCase
 import dev.forcetower.melon.feature.materials.domain.usecase.GetMaterialsDisciplineUseCase
 import dev.forcetower.melon.feature.materials.domain.usecase.GetMaterialsOverviewUseCase
 import dev.forcetower.melon.feature.materials.domain.usecase.GetSavedMaterialsUseCase
@@ -77,9 +73,9 @@ import dev.forcetower.melon.feature.notifications.domain.usecase.RegisterNotific
 import dev.forcetower.melon.feature.notifications.domain.usecase.UnregisterNotificationTokenUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveAttendanceTileUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveDisciplinesUseCase
+import dev.forcetower.melon.feature.overview.domain.usecase.ObserveEvaluationRemindersUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveGradeTileUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveLastSyncUseCase
-import dev.forcetower.melon.feature.overview.domain.usecase.ObserveEvaluationRemindersUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveNextTestTileUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveNowClassUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveOverviewHeaderUseCase
@@ -90,11 +86,11 @@ import dev.forcetower.melon.feature.paradoxo.domain.usecase.GetParadoxoDisciplin
 import dev.forcetower.melon.feature.paradoxo.domain.usecase.GetParadoxoIndexUseCase
 import dev.forcetower.melon.feature.paradoxo.domain.usecase.GetParadoxoOverviewUseCase
 import dev.forcetower.melon.feature.paradoxo.domain.usecase.GetParadoxoTeacherUseCase
-import dev.forcetower.melon.feature.sync.domain.usecase.BackfillMirrorUseCase
 import dev.forcetower.melon.feature.schedule.domain.usecase.ObserveNextClassDayUseCase
 import dev.forcetower.melon.feature.schedule.domain.usecase.ObserveScheduleWeekUseCase
 import dev.forcetower.melon.feature.settings.domain.usecase.ObserveSettingsUseCase
 import dev.forcetower.melon.feature.settings.domain.usecase.UpdateSettingsUseCase
+import dev.forcetower.melon.feature.sync.domain.usecase.BackfillMirrorUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.FetchOnboardingStatusUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.PingActivityUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.RefreshSessionUseCase
@@ -108,6 +104,9 @@ import dev.forcetower.unes.BuildConfig
 import dev.forcetower.unes.analytics.PostHogAnalytics
 import dev.forcetower.unes.firebase.FirebaseCrashReporter
 import javax.inject.Singleton
+import kotlin.time.Clock
+import kotlin.time.Instant
+import kotlinx.datetime.TimeZone
 
 // Bridges the Metro `UmbrellaGraph` from `:packages:shared-kmp:umbrella` into
 // Hilt's SingletonComponent. The graph is created once at app startup; each
@@ -123,7 +122,10 @@ object UmbrellaBridgeModule {
 
     @Provides
     @Singleton
-    fun provideUmbrellaGraph(@HiltApplicationContext context: Context, clock: AppClock): UmbrellaGraph =
+    fun provideUmbrellaGraph(
+        @HiltApplicationContext context: Context,
+        clock: AppClock,
+    ): UmbrellaGraph =
         UmbrellaGraph(
             UmbrellaConfig(
                 // Prod origin by default; debug builds can point at a local
@@ -136,265 +138,326 @@ object UmbrellaBridgeModule {
                 // PostHog product analytics. The SDK is initialized in MelonApp;
                 // this wrapper forwards typed events through the shared graph.
                 analytics = if (BuildConfig.SCENARIO) NoOpAnalytics else PostHogAnalytics(),
-                logging = LoggingConfig(enableRemote = !BuildConfig.SCENARIO, enableCrashReporting = !BuildConfig.SCENARIO),
+                logging = LoggingConfig(
+                    enableRemote = !BuildConfig.SCENARIO,
+                    enableCrashReporting = !BuildConfig.SCENARIO,
+                ),
                 clock = clock,
             ),
         )
 
     @Provides
     @Singleton
-    fun provideClock(): AppClock = if (BuildConfig.SCENARIO) {
-        AppClock(object : Clock {
-            override fun now(): Instant = Instant.parse("2026-10-02T13:00:00Z")
-        }, TimeZone.of("America/Bahia"))
-    } else AppClock()
+    fun provideClock(): AppClock =
+        if (BuildConfig.SCENARIO) {
+            AppClock(
+                object : Clock {
+                    override fun now(): Instant = Instant.parse("2026-10-02T13:00:00Z")
+                },
+                TimeZone.of("America/Bahia"),
+            )
+        } else {
+            AppClock()
+        }
 
-    @Provides fun provideSessionStore(graph: UmbrellaGraph): SessionStore = graph.sessionStore
-    @Provides fun provideLogger(graph: UmbrellaGraph): Logger = graph.logger
-    @Provides fun provideAnalytics(graph: UmbrellaGraph): Analytics = graph.analytics
-    @Provides fun provideMachineIdSource(graph: UmbrellaGraph): MachineIdSource =
-        graph.machineIdSource
-    @Provides fun provideForegroundSignal(graph: UmbrellaGraph): ForegroundSignal =
-        graph.foregroundSignal
+    @Provides
+    fun provideSessionStore(graph: UmbrellaGraph): SessionStore = graph.sessionStore
+    @Provides
+    fun provideLogger(graph: UmbrellaGraph): Logger = graph.logger
+    @Provides
+    fun provideAnalytics(graph: UmbrellaGraph): Analytics = graph.analytics
+    @Provides
+    fun provideMachineIdSource(graph: UmbrellaGraph): MachineIdSource = graph.machineIdSource
+    @Provides
+    fun provideForegroundSignal(graph: UmbrellaGraph): ForegroundSignal = graph.foregroundSignal
 
     // Auth
-    @Provides fun provideLoginUseCase(graph: UmbrellaGraph): LoginUseCase =
-        graph.loginUseCase
-    @Provides fun provideBeginPasskeyLoginUseCase(graph: UmbrellaGraph): BeginPasskeyLoginUseCase =
-        graph.beginPasskeyLoginUseCase
-    @Provides fun provideCompletePasskeyLoginUseCase(graph: UmbrellaGraph): CompletePasskeyLoginUseCase =
+    @Provides
+    fun provideLoginUseCase(graph: UmbrellaGraph): LoginUseCase = graph.loginUseCase
+    @Provides
+    fun provideBeginPasskeyLoginUseCase(graph: UmbrellaGraph): BeginPasskeyLoginUseCase = graph.beginPasskeyLoginUseCase
+    @Provides
+    fun provideCompletePasskeyLoginUseCase(graph: UmbrellaGraph): CompletePasskeyLoginUseCase =
         graph.completePasskeyLoginUseCase
 
     // Passkey management — Configurações → Chaves de acesso.
-    @Provides fun provideGetPasskeyRegistrationOptionsUseCase(graph: UmbrellaGraph): GetPasskeyRegistrationOptionsUseCase =
+    @Provides
+    fun provideGetPasskeyRegistrationOptionsUseCase(graph: UmbrellaGraph): GetPasskeyRegistrationOptionsUseCase =
         graph.getPasskeyRegistrationOptionsUseCase
-    @Provides fun provideRegisterPasskeyUseCase(graph: UmbrellaGraph): RegisterPasskeyUseCase =
-        graph.registerPasskeyUseCase
-    @Provides fun provideListPasskeysUseCase(graph: UmbrellaGraph): ListPasskeysUseCase =
-        graph.listPasskeysUseCase
-    @Provides fun provideRenamePasskeyUseCase(graph: UmbrellaGraph): RenamePasskeyUseCase =
-        graph.renamePasskeyUseCase
-    @Provides fun provideDeletePasskeyUseCase(graph: UmbrellaGraph): DeletePasskeyUseCase =
-        graph.deletePasskeyUseCase
+    @Provides
+    fun provideRegisterPasskeyUseCase(graph: UmbrellaGraph): RegisterPasskeyUseCase = graph.registerPasskeyUseCase
+    @Provides
+    fun provideListPasskeysUseCase(graph: UmbrellaGraph): ListPasskeysUseCase = graph.listPasskeysUseCase
+    @Provides
+    fun provideRenamePasskeyUseCase(graph: UmbrellaGraph): RenamePasskeyUseCase = graph.renamePasskeyUseCase
+    @Provides
+    fun provideDeletePasskeyUseCase(graph: UmbrellaGraph): DeletePasskeyUseCase = graph.deletePasskeyUseCase
 
     // Overview — nine flows that drive the "Hoje" tab.
-    @Provides fun provideObserveOverviewHeaderUseCase(graph: UmbrellaGraph): ObserveOverviewHeaderUseCase =
+    @Provides
+    fun provideObserveOverviewHeaderUseCase(graph: UmbrellaGraph): ObserveOverviewHeaderUseCase =
         graph.observeOverviewHeaderUseCase
-    @Provides fun provideObserveNowClassUseCase(graph: UmbrellaGraph): ObserveNowClassUseCase =
-        graph.observeNowClassUseCase
-    @Provides fun provideObserveTodayTimelineUseCase(graph: UmbrellaGraph): ObserveTodayTimelineUseCase =
+    @Provides
+    fun provideObserveNowClassUseCase(graph: UmbrellaGraph): ObserveNowClassUseCase = graph.observeNowClassUseCase
+    @Provides
+    fun provideObserveTodayTimelineUseCase(graph: UmbrellaGraph): ObserveTodayTimelineUseCase =
         graph.observeTodayTimelineUseCase
-    @Provides fun provideObserveTomorrowPreviewUseCase(graph: UmbrellaGraph): ObserveTomorrowPreviewUseCase =
+    @Provides
+    fun provideObserveTomorrowPreviewUseCase(graph: UmbrellaGraph): ObserveTomorrowPreviewUseCase =
         graph.observeTomorrowPreviewUseCase
-    @Provides fun provideObserveDisciplinesUseCase(graph: UmbrellaGraph): ObserveDisciplinesUseCase =
+    @Provides
+    fun provideObserveDisciplinesUseCase(graph: UmbrellaGraph): ObserveDisciplinesUseCase =
         graph.observeDisciplinesUseCase
-    @Provides fun provideObserveUnreadMessagesTileUseCase(graph: UmbrellaGraph): ObserveUnreadMessagesTileUseCase =
+    @Provides
+    fun provideObserveUnreadMessagesTileUseCase(graph: UmbrellaGraph): ObserveUnreadMessagesTileUseCase =
         graph.observeUnreadMessagesTileUseCase
-    @Provides fun provideObserveNextTestTileUseCase(graph: UmbrellaGraph): ObserveNextTestTileUseCase =
+    @Provides
+    fun provideObserveNextTestTileUseCase(graph: UmbrellaGraph): ObserveNextTestTileUseCase =
         graph.observeNextTestTileUseCase
-    @Provides fun provideObserveEvaluationRemindersUseCase(graph: UmbrellaGraph): ObserveEvaluationRemindersUseCase =
+    @Provides
+    fun provideObserveEvaluationRemindersUseCase(graph: UmbrellaGraph): ObserveEvaluationRemindersUseCase =
         graph.observeEvaluationRemindersUseCase
-    @Provides fun provideObserveAttendanceTileUseCase(graph: UmbrellaGraph): ObserveAttendanceTileUseCase =
+    @Provides
+    fun provideObserveAttendanceTileUseCase(graph: UmbrellaGraph): ObserveAttendanceTileUseCase =
         graph.observeAttendanceTileUseCase
-    @Provides fun provideObserveGradeTileUseCase(graph: UmbrellaGraph): ObserveGradeTileUseCase =
-        graph.observeGradeTileUseCase
-    @Provides fun provideObserveLastSyncUseCase(graph: UmbrellaGraph): ObserveLastSyncUseCase =
-        graph.observeLastSyncUseCase
+    @Provides
+    fun provideObserveGradeTileUseCase(graph: UmbrellaGraph): ObserveGradeTileUseCase = graph.observeGradeTileUseCase
+    @Provides
+    fun provideObserveLastSyncUseCase(graph: UmbrellaGraph): ObserveLastSyncUseCase = graph.observeLastSyncUseCase
 
     // Sync orchestration — six steps run by SyncViewModel during onboarding.
     // PingActivity is also fired by ConnectedViewModel on every authenticated
     // shell entry / foreground so the worker keeps the student on the hourly
     // cadence tier (see utils/cadence.ts on the API).
-    @Provides fun providePingActivityUseCase(graph: UmbrellaGraph): PingActivityUseCase =
-        graph.pingActivityUseCase
-    @Provides fun provideSyncProfileUseCase(graph: UmbrellaGraph): SyncProfileUseCase =
-        graph.syncProfileUseCase
-    @Provides fun provideSyncSemesterListUseCase(graph: UmbrellaGraph): SyncSemesterListUseCase =
-        graph.syncSemesterListUseCase
-    @Provides fun provideSyncSemesterUseCase(graph: UmbrellaGraph): SyncSemesterUseCase =
-        graph.syncSemesterUseCase
-    @Provides fun provideSyncMessagesUseCase(graph: UmbrellaGraph): SyncMessagesUseCase =
-        graph.syncMessagesUseCase
-    @Provides fun provideFetchOnboardingStatusUseCase(graph: UmbrellaGraph): FetchOnboardingStatusUseCase =
+    @Provides
+    fun providePingActivityUseCase(graph: UmbrellaGraph): PingActivityUseCase = graph.pingActivityUseCase
+    @Provides
+    fun provideSyncProfileUseCase(graph: UmbrellaGraph): SyncProfileUseCase = graph.syncProfileUseCase
+    @Provides
+    fun provideSyncSemesterListUseCase(graph: UmbrellaGraph): SyncSemesterListUseCase = graph.syncSemesterListUseCase
+    @Provides
+    fun provideSyncSemesterUseCase(graph: UmbrellaGraph): SyncSemesterUseCase = graph.syncSemesterUseCase
+    @Provides
+    fun provideSyncMessagesUseCase(graph: UmbrellaGraph): SyncMessagesUseCase = graph.syncMessagesUseCase
+    @Provides
+    fun provideFetchOnboardingStatusUseCase(graph: UmbrellaGraph): FetchOnboardingStatusUseCase =
         graph.fetchOnboardingStatusUseCase
 
     // Authenticated-shell sync — fired on every Connected entry and on
     // background → foreground transitions, mirroring iOS `ConnectedView`.
-    @Provides fun provideRefreshSessionUseCase(graph: UmbrellaGraph): RefreshSessionUseCase =
-        graph.refreshSessionUseCase
-    @Provides fun provideBackfillMirrorUseCase(graph: UmbrellaGraph): BackfillMirrorUseCase =
-        graph.backfillMirrorUseCase
+    @Provides
+    fun provideRefreshSessionUseCase(graph: UmbrellaGraph): RefreshSessionUseCase = graph.refreshSessionUseCase
+    @Provides
+    fun provideBackfillMirrorUseCase(graph: UmbrellaGraph): BackfillMirrorUseCase = graph.backfillMirrorUseCase
 
     // Dashboard — Ready screen snapshot at the end of onboarding.
-    @Provides fun provideGetReadyOverviewUseCase(graph: UmbrellaGraph): GetReadyOverviewUseCase =
-        graph.getReadyOverviewUseCase
+    @Provides
+    fun provideGetReadyOverviewUseCase(graph: UmbrellaGraph): GetReadyOverviewUseCase = graph.getReadyOverviewUseCase
 
     // Notifications — push identifier registration (reconcile + auth phase of
     // sync) and the owner-scoped removal used on identifier swaps and logout.
-    @Provides fun provideRegisterNotificationTokenUseCase(graph: UmbrellaGraph): RegisterNotificationTokenUseCase =
+    @Provides
+    fun provideRegisterNotificationTokenUseCase(graph: UmbrellaGraph): RegisterNotificationTokenUseCase =
         graph.registerNotificationTokenUseCase
 
-    @Provides fun provideUnregisterNotificationTokenUseCase(graph: UmbrellaGraph): UnregisterNotificationTokenUseCase =
+    @Provides
+    fun provideUnregisterNotificationTokenUseCase(graph: UmbrellaGraph): UnregisterNotificationTokenUseCase =
         graph.unregisterNotificationTokenUseCase
 
     // Me ("Eu") tab — single flow with the hero identity, semester strip data,
     // CR/hours rollup, and the closest upcoming evaluation. Lifetime CR (the
     // value rendered in the hero stat rail) comes from a separate use case
     // shared with the Overview grade tile.
-    @Provides fun provideRefreshCredentialStatusUseCase(graph: UmbrellaGraph): RefreshCredentialStatusUseCase =
+    @Provides
+    fun provideRefreshCredentialStatusUseCase(graph: UmbrellaGraph): RefreshCredentialStatusUseCase =
         graph.refreshCredentialStatusUseCase
 
-    @Provides fun provideReauthenticateUpstreamUseCase(graph: UmbrellaGraph): ReauthenticateUpstreamUseCase =
+    @Provides
+    fun provideReauthenticateUpstreamUseCase(graph: UmbrellaGraph): ReauthenticateUpstreamUseCase =
         graph.reauthenticateUpstreamUseCase
 
-    @Provides fun provideObserveMeProfileUseCase(graph: UmbrellaGraph): ObserveMeProfileUseCase =
-        graph.observeMeProfileUseCase
-    @Provides fun provideCalculateOverallScoreUseCase(graph: UmbrellaGraph): CalculateOverallScoreUseCase =
+    @Provides
+    fun provideObserveMeProfileUseCase(graph: UmbrellaGraph): ObserveMeProfileUseCase = graph.observeMeProfileUseCase
+    @Provides
+    fun provideCalculateOverallScoreUseCase(graph: UmbrellaGraph): CalculateOverallScoreUseCase =
         graph.calculateOverallScoreUseCase
-    @Provides fun provideFetchAcademicDocumentUseCase(graph: UmbrellaGraph): FetchAcademicDocumentUseCase =
+    @Provides
+    fun provideFetchAcademicDocumentUseCase(graph: UmbrellaGraph): FetchAcademicDocumentUseCase =
         graph.fetchAcademicDocumentUseCase
-    @Provides fun provideUpdateProfileUseCase(graph: UmbrellaGraph): UpdateProfileUseCase =
-        graph.updateProfileUseCase
+    @Provides
+    fun provideUpdateProfileUseCase(graph: UmbrellaGraph): UpdateProfileUseCase = graph.updateProfileUseCase
 
     // Disciplinas tab — list (current + past + pending semesters) and per-offer
     // detail. Pair with `SyncSemesterUseCase` (already provided above) for the
     // tap-to-fetch flow on pending placeholder cards. Mirrors iOS
     // `DisciplinesUseCases` in `DisciplinesFactory.swift`.
-    @Provides fun provideObserveDisciplinesListUseCase(graph: UmbrellaGraph): ObserveDisciplinesListUseCase =
+    @Provides
+    fun provideObserveDisciplinesListUseCase(graph: UmbrellaGraph): ObserveDisciplinesListUseCase =
         graph.observeDisciplinesListUseCase
-    @Provides fun provideObserveDisciplineDetailUseCase(graph: UmbrellaGraph): ObserveDisciplineDetailUseCase =
+    @Provides
+    fun provideObserveDisciplineDetailUseCase(graph: UmbrellaGraph): ObserveDisciplineDetailUseCase =
         graph.observeDisciplineDetailUseCase
 
     // Horário tab — single flow emitting the seven-day week, today index, and
     // the current week number; nowMin ticks in the ViewModel.
-    @Provides fun provideObserveScheduleWeekUseCase(graph: UmbrellaGraph): ObserveScheduleWeekUseCase =
+    @Provides
+    fun provideObserveScheduleWeekUseCase(graph: UmbrellaGraph): ObserveScheduleWeekUseCase =
         graph.observeScheduleWeekUseCase
 
     // First future day with at least one scheduled class. Drives the home
     // widget's `dayDone` copy so a Friday widget can name Monday's first
     // class even when the rest of the current week is empty.
-    @Provides fun provideObserveNextClassDayUseCase(graph: UmbrellaGraph): ObserveNextClassDayUseCase =
+    @Provides
+    fun provideObserveNextClassDayUseCase(graph: UmbrellaGraph): ObserveNextClassDayUseCase =
         graph.observeNextClassDayUseCase
 
     // Mensagens tab — inbox observation, per-message detail observation, and
     // the local mark-as-read mutation (idempotent, so list and detail can
     // both invoke it without coordinating).
-    @Provides fun provideObserveMessagesInboxUseCase(graph: UmbrellaGraph): ObserveMessagesInboxUseCase =
+    @Provides
+    fun provideObserveMessagesInboxUseCase(graph: UmbrellaGraph): ObserveMessagesInboxUseCase =
         graph.observeMessagesInboxUseCase
-    @Provides fun provideObserveMessageDetailUseCase(graph: UmbrellaGraph): ObserveMessageDetailUseCase =
+    @Provides
+    fun provideObserveMessageDetailUseCase(graph: UmbrellaGraph): ObserveMessageDetailUseCase =
         graph.observeMessageDetailUseCase
-    @Provides fun provideMarkMessageAsReadUseCase(graph: UmbrellaGraph): MarkMessageAsReadUseCase =
-        graph.markMessageAsReadUseCase
-    @Provides fun provideMarkAllMessagesAsReadUseCase(graph: UmbrellaGraph): MarkAllMessagesAsReadUseCase =
+    @Provides
+    fun provideMarkMessageAsReadUseCase(graph: UmbrellaGraph): MarkMessageAsReadUseCase = graph.markMessageAsReadUseCase
+    @Provides
+    fun provideMarkAllMessagesAsReadUseCase(graph: UmbrellaGraph): MarkAllMessagesAsReadUseCase =
         graph.markAllMessagesAsReadUseCase
-    @Provides fun provideToggleMessageStarUseCase(graph: UmbrellaGraph): ToggleMessageStarUseCase =
-        graph.toggleMessageStarUseCase
+    @Provides
+    fun provideToggleMessageStarUseCase(graph: UmbrellaGraph): ToggleMessageStarUseCase = graph.toggleMessageStarUseCase
 
     // Configurações — credential vault read flow lives in `feature/me`, the
     // user settings flow + patch live in `feature/settings`. `observeLastSync`
     // is already provided in the Overview block above and reused here.
-    @Provides fun provideObserveCurrentCredentialsUseCase(graph: UmbrellaGraph): ObserveCurrentCredentialsUseCase =
+    @Provides
+    fun provideObserveCurrentCredentialsUseCase(graph: UmbrellaGraph): ObserveCurrentCredentialsUseCase =
         graph.observeCurrentCredentialsUseCase
-    @Provides fun provideObserveSettingsUseCase(graph: UmbrellaGraph): ObserveSettingsUseCase =
-        graph.observeSettingsUseCase
-    @Provides fun provideUpdateSettingsUseCase(graph: UmbrellaGraph): UpdateSettingsUseCase =
-        graph.updateSettingsUseCase
+    @Provides
+    fun provideObserveSettingsUseCase(graph: UmbrellaGraph): ObserveSettingsUseCase = graph.observeSettingsUseCase
+    @Provides
+    fun provideUpdateSettingsUseCase(graph: UmbrellaGraph): UpdateSettingsUseCase = graph.updateSettingsUseCase
 
     // Paradoxo — grade-statistics explorer. Overview + index feed the home/
     // search screen (shared activity-scoped VM); discipline/teacher back the
     // detail pushes.
-    @Provides fun provideGetParadoxoOverviewUseCase(graph: UmbrellaGraph): GetParadoxoOverviewUseCase =
+    @Provides
+    fun provideGetParadoxoOverviewUseCase(graph: UmbrellaGraph): GetParadoxoOverviewUseCase =
         graph.getParadoxoOverviewUseCase
-    @Provides fun provideGetParadoxoIndexUseCase(graph: UmbrellaGraph): GetParadoxoIndexUseCase =
-        graph.getParadoxoIndexUseCase
-    @Provides fun provideGetParadoxoDisciplineUseCase(graph: UmbrellaGraph): GetParadoxoDisciplineUseCase =
+    @Provides
+    fun provideGetParadoxoIndexUseCase(graph: UmbrellaGraph): GetParadoxoIndexUseCase = graph.getParadoxoIndexUseCase
+    @Provides
+    fun provideGetParadoxoDisciplineUseCase(graph: UmbrellaGraph): GetParadoxoDisciplineUseCase =
         graph.getParadoxoDisciplineUseCase
-    @Provides fun provideGetParadoxoTeacherUseCase(graph: UmbrellaGraph): GetParadoxoTeacherUseCase =
+    @Provides
+    fun provideGetParadoxoTeacherUseCase(graph: UmbrellaGraph): GetParadoxoTeacherUseCase =
         graph.getParadoxoTeacherUseCase
 
     // Biblioteca — the Pergamum catalogue (online-only). Search is paginated
     // server-side; the per-work availability consultation runs lazily as rows
     // become visible and degrades to a narrated state instead of failing.
-    @Provides fun provideGetLibraryOverviewUseCase(graph: UmbrellaGraph): GetLibraryOverviewUseCase =
+    @Provides
+    fun provideGetLibraryOverviewUseCase(graph: UmbrellaGraph): GetLibraryOverviewUseCase =
         graph.getLibraryOverviewUseCase
-    @Provides fun provideSearchLibraryUseCase(graph: UmbrellaGraph): SearchLibraryUseCase =
-        graph.searchLibraryUseCase
-    @Provides fun provideCheckLibraryAvailabilityUseCase(graph: UmbrellaGraph): CheckLibraryAvailabilityUseCase =
+    @Provides
+    fun provideSearchLibraryUseCase(graph: UmbrellaGraph): SearchLibraryUseCase = graph.searchLibraryUseCase
+    @Provides
+    fun provideCheckLibraryAvailabilityUseCase(graph: UmbrellaGraph): CheckLibraryAvailabilityUseCase =
         graph.checkLibraryAvailabilityUseCase
-    @Provides fun provideClearLibraryRecentsUseCase(graph: UmbrellaGraph): ClearLibraryRecentsUseCase =
+    @Provides
+    fun provideClearLibraryRecentsUseCase(graph: UmbrellaGraph): ClearLibraryRecentsUseCase =
         graph.clearLibraryRecentsUseCase
 
     // Materiais — collaborative study-materials shelf (online-only). Reads
     // feed the hub/list/saved screens; the toggles back optimistic UI on the
     // detail screen; submit runs the presigned-slot upload transaction.
-    @Provides fun provideGetMaterialsOverviewUseCase(graph: UmbrellaGraph): GetMaterialsOverviewUseCase =
+    @Provides
+    fun provideGetMaterialsOverviewUseCase(graph: UmbrellaGraph): GetMaterialsOverviewUseCase =
         graph.getMaterialsOverviewUseCase
-    @Provides fun provideGetMaterialsDisciplineUseCase(graph: UmbrellaGraph): GetMaterialsDisciplineUseCase =
+    @Provides
+    fun provideGetMaterialsDisciplineUseCase(graph: UmbrellaGraph): GetMaterialsDisciplineUseCase =
         graph.getMaterialsDisciplineUseCase
-    @Provides fun provideGetMaterialUseCase(graph: UmbrellaGraph): GetMaterialUseCase =
-        graph.getMaterialUseCase
-    @Provides fun provideGetSavedMaterialsUseCase(graph: UmbrellaGraph): GetSavedMaterialsUseCase =
-        graph.getSavedMaterialsUseCase
-    @Provides fun provideGetUploadSemestersUseCase(graph: UmbrellaGraph): GetUploadSemestersUseCase =
+    @Provides
+    fun provideGetMaterialUseCase(graph: UmbrellaGraph): GetMaterialUseCase = graph.getMaterialUseCase
+    @Provides
+    fun provideGetSavedMaterialsUseCase(graph: UmbrellaGraph): GetSavedMaterialsUseCase = graph.getSavedMaterialsUseCase
+    @Provides
+    fun provideGetUploadSemestersUseCase(graph: UmbrellaGraph): GetUploadSemestersUseCase =
         graph.getUploadSemestersUseCase
-    @Provides fun provideSetMaterialUsefulUseCase(graph: UmbrellaGraph): SetMaterialUsefulUseCase =
-        graph.setMaterialUsefulUseCase
-    @Provides fun provideSetMaterialSavedUseCase(graph: UmbrellaGraph): SetMaterialSavedUseCase =
-        graph.setMaterialSavedUseCase
-    @Provides fun provideReportMaterialUseCase(graph: UmbrellaGraph): ReportMaterialUseCase =
-        graph.reportMaterialUseCase
-    @Provides fun provideOpenMaterialUseCase(graph: UmbrellaGraph): OpenMaterialUseCase =
-        graph.openMaterialUseCase
-    @Provides fun provideSubmitMaterialUseCase(graph: UmbrellaGraph): SubmitMaterialUseCase =
-        graph.submitMaterialUseCase
+    @Provides
+    fun provideSetMaterialUsefulUseCase(graph: UmbrellaGraph): SetMaterialUsefulUseCase = graph.setMaterialUsefulUseCase
+    @Provides
+    fun provideSetMaterialSavedUseCase(graph: UmbrellaGraph): SetMaterialSavedUseCase = graph.setMaterialSavedUseCase
+    @Provides
+    fun provideReportMaterialUseCase(graph: UmbrellaGraph): ReportMaterialUseCase = graph.reportMaterialUseCase
+    @Provides
+    fun provideOpenMaterialUseCase(graph: UmbrellaGraph): OpenMaterialUseCase = graph.openMaterialUseCase
+    @Provides
+    fun provideSubmitMaterialUseCase(graph: UmbrellaGraph): SubmitMaterialUseCase = graph.submitMaterialUseCase
+
     // Matrícula — live window/offers reads plus the wholesale-proposal submit.
     // Nothing is cached (vacancy counts shift by the second during a window).
-    @Provides fun provideGetEnrollmentWindowUseCase(graph: UmbrellaGraph): GetEnrollmentWindowUseCase =
+    @Provides
+    fun provideGetEnrollmentWindowUseCase(graph: UmbrellaGraph): GetEnrollmentWindowUseCase =
         graph.getEnrollmentWindowUseCase
-    @Provides fun provideGetEnrollmentOffersUseCase(graph: UmbrellaGraph): GetEnrollmentOffersUseCase =
+    @Provides
+    fun provideGetEnrollmentOffersUseCase(graph: UmbrellaGraph): GetEnrollmentOffersUseCase =
         graph.getEnrollmentOffersUseCase
-    @Provides fun provideSubmitEnrollmentUseCase(graph: UmbrellaGraph): SubmitEnrollmentUseCase =
-        graph.submitEnrollmentUseCase
+    @Provides
+    fun provideSubmitEnrollmentUseCase(graph: UmbrellaGraph): SubmitEnrollmentUseCase = graph.submitEnrollmentUseCase
 
     // Campus event — the featured-event snapshot behind the Hoje entrance
     // card and the event hub, plus its silent refresh.
-    @Provides fun provideObserveCampusEventUseCase(graph: UmbrellaGraph): ObserveCampusEventUseCase =
+    @Provides
+    fun provideObserveCampusEventUseCase(graph: UmbrellaGraph): ObserveCampusEventUseCase =
         graph.observeCampusEventUseCase
-    @Provides fun provideRefreshCampusEventUseCase(graph: UmbrellaGraph): RefreshCampusEventUseCase =
+    @Provides
+    fun provideRefreshCampusEventUseCase(graph: UmbrellaGraph): RefreshCampusEventUseCase =
         graph.refreshCampusEventUseCase
-    @Provides fun provideClearCampusEventUseCase(graph: UmbrellaGraph): ClearCampusEventUseCase =
-        graph.clearCampusEventUseCase
+    @Provides
+    fun provideClearCampusEventUseCase(graph: UmbrellaGraph): ClearCampusEventUseCase = graph.clearCampusEventUseCase
 
     // Progresso do curso — the mirrored curriculum payload behind the hours
     // gauge and the fluxograma. Offline-first: `observe` replays the mirror,
     // `refresh` re-pulls on every entry into the feature.
-    @Provides fun provideObserveCourseProgressUseCase(graph: UmbrellaGraph): ObserveCourseProgressUseCase =
+    @Provides
+    fun provideObserveCourseProgressUseCase(graph: UmbrellaGraph): ObserveCourseProgressUseCase =
         graph.observeCourseProgressUseCase
-    @Provides fun provideRefreshCourseProgressUseCase(graph: UmbrellaGraph): RefreshCourseProgressUseCase =
+    @Provides
+    fun provideRefreshCourseProgressUseCase(graph: UmbrellaGraph): RefreshCourseProgressUseCase =
         graph.refreshCourseProgressUseCase
-    @Provides fun provideSelectCurriculumVersionUseCase(graph: UmbrellaGraph): SelectCurriculumVersionUseCase =
+    @Provides
+    fun provideSelectCurriculumVersionUseCase(graph: UmbrellaGraph): SelectCurriculumVersionUseCase =
         graph.selectCurriculumVersionUseCase
-    @Provides fun provideResetCurriculumVersionUseCase(graph: UmbrellaGraph): ResetCurriculumVersionUseCase =
+    @Provides
+    fun provideResetCurriculumVersionUseCase(graph: UmbrellaGraph): ResetCurriculumVersionUseCase =
         graph.resetCurriculumVersionUseCase
-    @Provides fun provideSetManualCompletionUseCase(graph: UmbrellaGraph): SetManualCompletionUseCase =
+    @Provides
+    fun provideSetManualCompletionUseCase(graph: UmbrellaGraph): SetManualCompletionUseCase =
         graph.setManualCompletionUseCase
 
     // Calendário — academic-calendar events feed for the agenda + the
     // active-semester code that powers the header eyebrow. Mirrors iOS
     // `CalendarUseCases` in `CalendarFactory.swift`.
-    @Provides fun provideObserveCalendarEventsUseCase(graph: UmbrellaGraph): ObserveCalendarEventsUseCase =
+    @Provides
+    fun provideObserveCalendarEventsUseCase(graph: UmbrellaGraph): ObserveCalendarEventsUseCase =
         graph.observeCalendarEventsUseCase
-    @Provides fun provideObserveActiveSemesterCodeUseCase(graph: UmbrellaGraph): ObserveActiveSemesterCodeUseCase =
+    @Provides
+    fun provideObserveActiveSemesterCodeUseCase(graph: UmbrellaGraph): ObserveActiveSemesterCodeUseCase =
         graph.observeActiveSemesterCodeUseCase
 
     // The student's own calendar entries — observe for the screen, read for
     // the reminder snapshot, save/delete for the composer.
-    @Provides fun provideObservePersonalEventsUseCase(graph: UmbrellaGraph): ObservePersonalEventsUseCase =
+    @Provides
+    fun provideObservePersonalEventsUseCase(graph: UmbrellaGraph): ObservePersonalEventsUseCase =
         graph.observePersonalEventsUseCase
-    @Provides fun provideReadPersonalEventsUseCase(graph: UmbrellaGraph): ReadPersonalEventsUseCase =
+    @Provides
+    fun provideReadPersonalEventsUseCase(graph: UmbrellaGraph): ReadPersonalEventsUseCase =
         graph.readPersonalEventsUseCase
-    @Provides fun provideSavePersonalEventUseCase(graph: UmbrellaGraph): SavePersonalEventUseCase =
-        graph.savePersonalEventUseCase
-    @Provides fun provideDeletePersonalEventUseCase(graph: UmbrellaGraph): DeletePersonalEventUseCase =
+    @Provides
+    fun provideSavePersonalEventUseCase(graph: UmbrellaGraph): SavePersonalEventUseCase = graph.savePersonalEventUseCase
+    @Provides
+    fun provideDeletePersonalEventUseCase(graph: UmbrellaGraph): DeletePersonalEventUseCase =
         graph.deletePersonalEventUseCase
 }

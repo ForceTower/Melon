@@ -209,7 +209,10 @@ private fun TopBar(onBack: () -> Unit) {
 }
 
 @Composable
-private fun SectionOverline(text: String, modifier: Modifier = Modifier) {
+private fun SectionOverline(
+    text: String,
+    modifier: Modifier = Modifier,
+) {
     Box(modifier = modifier.padding(horizontal = 20.dp, vertical = 0.dp)) {
         Text(
             text = text.uppercase(Locale.ROOT),

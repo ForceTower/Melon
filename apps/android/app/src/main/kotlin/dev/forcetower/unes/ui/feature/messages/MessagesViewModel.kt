@@ -4,6 +4,8 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.forcetower.melon.core.analytics.Analytics
 import dev.forcetower.melon.core.analytics.ContentTypes
+import dev.forcetower.melon.feature.messages.domain.model.MessageFeedDetail as KmpMessageFeedDetail
+import dev.forcetower.melon.feature.messages.domain.model.MessageFeedItem as KmpMessageFeedItem
 import dev.forcetower.melon.feature.messages.domain.usecase.MarkAllMessagesAsReadUseCase
 import dev.forcetower.melon.feature.messages.domain.usecase.MarkMessageAsReadUseCase
 import dev.forcetower.melon.feature.messages.domain.usecase.ObserveMessageDetailUseCase
@@ -16,8 +18,6 @@ import dev.forcetower.unes.mvi.UiState
 import javax.inject.Inject
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import dev.forcetower.melon.feature.messages.domain.model.MessageFeedDetail as KmpMessageFeedDetail
-import dev.forcetower.melon.feature.messages.domain.model.MessageFeedItem as KmpMessageFeedItem
 
 // "Mensagens" tab. Mirrors `MessagesListViewModel` + `MessageDetailViewModel`
 // on iOS, collapsed into a single MVI VM: the inbox flow lives here, and the
@@ -29,12 +29,21 @@ import dev.forcetower.melon.feature.messages.domain.model.MessageFeedItem as Kmp
 // not stored in `SavedStateHandle` — the route itself lives on the Messages
 // tab's back stack and is restored across process death by Nav3.
 internal sealed interface MessagesIntent : UiIntent {
-    data class OpenMessage(val id: String, val seed: KmpMessageFeedItem) : MessagesIntent
+    data class OpenMessage(
+        val id: String,
+        val seed: KmpMessageFeedItem,
+    ) : MessagesIntent
     data object CloseMessage : MessagesIntent
-    data class SetFilter(val filter: MessageFilter) : MessagesIntent
-    data class MarkRead(val id: String) : MessagesIntent
+    data class SetFilter(
+        val filter: MessageFilter,
+    ) : MessagesIntent
+    data class MarkRead(
+        val id: String,
+    ) : MessagesIntent
     data object MarkAllRead : MessagesIntent
-    data class ToggleStar(val id: String) : MessagesIntent
+    data class ToggleStar(
+        val id: String,
+    ) : MessagesIntent
 }
 
 internal sealed interface MessagesEffect : UiEffect
@@ -79,7 +88,10 @@ internal class MessagesViewModel @Inject constructor(
         }
     }
 
-    private fun open(id: String, seed: KmpMessageFeedItem) {
+    private fun open(
+        id: String,
+        seed: KmpMessageFeedItem,
+    ) {
         analytics.selectContent(contentType = ContentTypes.MESSAGE, itemId = id)
         setState { copy(openMessageId = id, openSeed = seed, openDetail = null) }
         startDetail(id)

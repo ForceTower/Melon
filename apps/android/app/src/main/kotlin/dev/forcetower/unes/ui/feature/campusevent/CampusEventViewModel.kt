@@ -34,8 +34,12 @@ internal data class CampusEventUiState(
 }
 
 internal sealed interface CampusEventIntent : UiIntent {
-    data class DayTapped(val day: LocalDate) : CampusEventIntent
-    data class FilterChanged(val filter: CampusEventAudience) : CampusEventIntent
+    data class DayTapped(
+        val day: LocalDate,
+    ) : CampusEventIntent
+    data class FilterChanged(
+        val filter: CampusEventAudience,
+    ) : CampusEventIntent
     data object WelcomeContinueTapped : CampusEventIntent
     data object RefreshPulled : CampusEventIntent
 }

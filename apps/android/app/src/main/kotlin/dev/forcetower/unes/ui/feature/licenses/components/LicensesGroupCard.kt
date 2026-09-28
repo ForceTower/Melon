@@ -111,7 +111,11 @@ internal fun LicensesGroupCard(
 }
 
 @Composable
-private fun GroupHeader(family: LicenseFamily, matched: Int, total: Int) {
+private fun GroupHeader(
+    family: LicenseFamily,
+    matched: Int,
+    total: Int,
+) {
     val tone = family.toneBackground()
     val ink = MaterialTheme.colorScheme.onBackground
     val ink3 = MaterialTheme.colorScheme.onSurfaceVariant
@@ -270,7 +274,10 @@ private fun LicenseRow(
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun ExpandedDetail(pkg: LicensePackage, family: LicenseFamily) {
+private fun ExpandedDetail(
+    pkg: LicensePackage,
+    family: LicenseFamily,
+) {
     val context = LocalContext.current
     val tone = family.toneBackground()
     val card = MaterialTheme.melon.surface.card
@@ -330,7 +337,12 @@ private fun ExpandedDetail(pkg: LicensePackage, family: LicenseFamily) {
 }
 
 @Composable
-private fun RepoLink(host: String, tone: Color, onTone: Color, onClick: () -> Unit) {
+private fun RepoLink(
+    host: String,
+    tone: Color,
+    onTone: Color,
+    onClick: () -> Unit,
+) {
     Row(
         modifier = Modifier
             .clip(RoundedCornerShape(100))
@@ -362,7 +374,10 @@ private fun RepoLink(host: String, tone: Color, onTone: Color, onClick: () -> Un
 }
 
 @Composable
-private fun CopyChip(value: String, context: Context) {
+private fun CopyChip(
+    value: String,
+    context: Context,
+) {
     var copied by remember { mutableStateOf(false) }
     LaunchedEffect(copied) {
         if (copied) {
@@ -380,7 +395,11 @@ private fun CopyChip(value: String, context: Context) {
 }
 
 @Composable
-private fun MetaChip(icon: ImageVector, label: String, onClick: () -> Unit) {
+private fun MetaChip(
+    icon: ImageVector,
+    label: String,
+    onClick: () -> Unit,
+) {
     val surface2 = MaterialTheme.colorScheme.surfaceVariant
     val line = MaterialTheme.melon.surface.line
     val ink2 = MaterialTheme.colorScheme.onSurface
@@ -410,7 +429,10 @@ private fun MetaChip(icon: ImageVector, label: String, onClick: () -> Unit) {
     }
 }
 
-private fun openUrl(context: Context, url: String) {
+private fun openUrl(
+    context: Context,
+    url: String,
+) {
     val intent = Intent(Intent.ACTION_VIEW, url.toUri()).apply {
         addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
     }
@@ -422,7 +444,10 @@ private fun openUrl(context: Context, url: String) {
 // would force the click handler to launch a coroutine for what is a sync
 // operation. Returns false if the system service is unavailable so the
 // "copied" indicator only fires when the copy actually landed.
-private fun copyToClipboard(context: Context, text: String): Boolean {
+private fun copyToClipboard(
+    context: Context,
+    text: String,
+): Boolean {
     val manager = context.getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager
         ?: return false
     manager.setPrimaryClip(ClipData.newPlainText("license-coordinates", text))

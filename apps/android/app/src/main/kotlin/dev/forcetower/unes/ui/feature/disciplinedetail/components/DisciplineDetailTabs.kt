@@ -174,7 +174,10 @@ private fun MateriaisTab(
 }
 
 @Composable
-private fun AttachmentRow(attachment: Attachment, subject: Color) {
+private fun AttachmentRow(
+    attachment: Attachment,
+    subject: Color,
+) {
     val uriHandler = LocalUriHandler.current
     val url = attachment.url
     val openLabel = stringResource(R.string.discipline_detail_attachment_open)
@@ -337,7 +340,11 @@ private fun AulasTab(
                     text = if (expanded) {
                         stringResource(R.string.discipline_detail_classes_show_less)
                     } else {
-                        pluralStringResource(R.plurals.discipline_detail_classes_show_all_format, classes.size, classes.size)
+                        pluralStringResource(
+                            R.plurals.discipline_detail_classes_show_all_format,
+                            classes.size,
+                            classes.size,
+                        )
                     },
                     style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
                     color = MaterialTheme.colorScheme.onSurface,

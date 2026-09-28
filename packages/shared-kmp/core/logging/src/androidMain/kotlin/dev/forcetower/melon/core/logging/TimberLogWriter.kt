@@ -9,7 +9,12 @@ import timber.log.Timber
 // a Crashlytics tree for release, etc.) — this writer just forwards the
 // already-routed Kermit event to whichever trees are planted.
 internal class TimberLogWriter : LogWriter() {
-    override fun log(severity: Severity, message: String, tag: String, throwable: Throwable?) {
+    override fun log(
+        severity: Severity,
+        message: String,
+        tag: String,
+        throwable: Throwable?,
+    ) {
         val tree = Timber.tag(tag)
         when (severity) {
             Severity.Verbose -> tree.v(throwable, message)

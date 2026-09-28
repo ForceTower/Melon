@@ -180,7 +180,11 @@ private fun BrandRow(grid: ShareCardGrid) {
 }
 
 @Composable
-private fun Rule(grid: ShareCardGrid, top: Int, bottom: Int) {
+private fun Rule(
+    grid: ShareCardGrid,
+    top: Int,
+    bottom: Int,
+) {
     Box(
         modifier = Modifier
             .padding(top = grid.dp(top), bottom = grid.dp(bottom))
@@ -192,7 +196,10 @@ private fun Rule(grid: ShareCardGrid, top: Int, bottom: Int) {
 
 // Maps the dc's 1080-unit grid onto the width the card is drawn at. Styles are
 // derived from the theme's body role, so the card stays on Manrope.
-private class ShareCardGrid(width: Dp, private val base: TextStyle) {
+private class ShareCardGrid(
+    width: Dp,
+    private val base: TextStyle,
+) {
     private val scale = width.value / 1080f
 
     val hairline: Dp = maxOf(1f, 1.5f * scale).dp

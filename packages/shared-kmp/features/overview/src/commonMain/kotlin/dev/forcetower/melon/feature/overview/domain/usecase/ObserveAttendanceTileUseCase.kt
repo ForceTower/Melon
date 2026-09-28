@@ -71,9 +71,10 @@ internal fun buildAttendanceTile(
     )
 }
 
-private fun emptyAttendanceTile() = OverviewAttendanceTile(
-    percentage = null,
-    lastDays = emptyList(),
-    allowedAbsences = 0,
-    periodDays = STRIP_SIZE,
-)
+private fun emptyAttendanceTile() =
+    OverviewAttendanceTile(
+        percentage = null,
+        lastDays = emptyList(),
+        allowedAbsences = 0,
+        periodDays = STRIP_SIZE,
+    )

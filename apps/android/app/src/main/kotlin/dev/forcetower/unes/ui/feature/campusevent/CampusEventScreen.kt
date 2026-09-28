@@ -57,10 +57,10 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
@@ -297,7 +297,11 @@ private fun Hub(
 }
 
 @Composable
-private fun Header(event: CampusEvent, zone: ZoneId, modifier: Modifier = Modifier) {
+private fun Header(
+    event: CampusEvent,
+    zone: ZoneId,
+    modifier: Modifier = Modifier,
+) {
     val context = LocalContext.current
     val range = CampusEventFormat.dateRange(context, event.startsAt, event.endsAt, zone)
     Column(modifier = modifier) {
@@ -623,7 +627,10 @@ private data class QuickTileData(
 )
 
 @Composable
-private fun QuickTile(data: QuickTileData, modifier: Modifier = Modifier) {
+private fun QuickTile(
+    data: QuickTileData,
+    modifier: Modifier = Modifier,
+) {
     Box(
         modifier = modifier
             .campusEventCard()
@@ -667,12 +674,13 @@ private fun QuickTile(data: QuickTileData, modifier: Modifier = Modifier) {
     }
 }
 
-private fun Modifier.offsetGlow(tone: Color): Modifier = this
-    .background(
-        Brush.radialGradient(
-            colors = listOf(tone.copy(alpha = 0.13f), Color.Transparent),
-        ),
-    )
+private fun Modifier.offsetGlow(tone: Color): Modifier =
+    this
+        .background(
+            Brush.radialGradient(
+                colors = listOf(tone.copy(alpha = 0.13f), Color.Transparent),
+            ),
+        )
 
 // MARK: Schedule
 
@@ -958,7 +966,10 @@ private fun ActivityRow(
                 ) {
                     Text(
                         text = CampusEventFormat.time(activity.startsAt, zone),
-                        style = MaterialTheme.typography.titleSmall.copy(fontSize = 13.5.sp, fontWeight = FontWeight.Bold),
+                        style = MaterialTheme.typography.titleSmall.copy(
+                            fontSize = 13.5.sp,
+                            fontWeight = FontWeight.Bold,
+                        ),
                         color = MaterialTheme.colorScheme.onBackground,
                         maxLines = 1,
                     )

@@ -275,7 +275,10 @@ internal fun CurriculumEntryRow(
 // design uses for buckets the portal can't measure and for a curriculum with
 // no known total.
 @Composable
-internal fun HatchedTrack(modifier: Modifier = Modifier, height: Dp = 8.dp) {
+internal fun HatchedTrack(
+    modifier: Modifier = Modifier,
+    height: Dp = 8.dp,
+) {
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -286,16 +289,17 @@ internal fun HatchedTrack(modifier: Modifier = Modifier, height: Dp = 8.dp) {
     )
 }
 
-private fun Modifier.hatchStripes(color: Color): Modifier = drawBehind {
-    val step = 9.dp.toPx()
-    var x = -size.height
-    while (x < size.width) {
-        drawLine(
-            color = color,
-            start = Offset(x, size.height),
-            end = Offset(x + size.height, 0f),
-            strokeWidth = 4.dp.toPx(),
-        )
-        x += step
+private fun Modifier.hatchStripes(color: Color): Modifier =
+    drawBehind {
+        val step = 9.dp.toPx()
+        var x = -size.height
+        while (x < size.width) {
+            drawLine(
+                color = color,
+                start = Offset(x, size.height),
+                end = Offset(x + size.height, 0f),
+                strokeWidth = 4.dp.toPx(),
+            )
+            x += step
+        }
     }
-}

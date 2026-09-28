@@ -1,9 +1,9 @@
 package dev.forcetower.unes.ui.feature.paradoxo
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Canvas
@@ -165,7 +165,10 @@ internal fun ParadoxoDisciplineScreen(
 
 // Soft severity-tinted radial wash bleeding from the top edge (dc `wash`).
 @Composable
-internal fun ParadoxoWash(tone: Color, modifier: Modifier = Modifier) {
+internal fun ParadoxoWash(
+    tone: Color,
+    modifier: Modifier = Modifier,
+) {
     Canvas(
         modifier = modifier
             .fillMaxWidth()
@@ -245,9 +248,10 @@ private fun ParadoxoDisciplineContent(
         )
 
         if (detail.history.isNotEmpty()) {
-            ParadoxoCard(modifier = Modifier
-                .padding(top = 18.dp)
-                .fadeUpOnAppear(delayMs = 140),
+            ParadoxoCard(
+                modifier = Modifier
+                    .padding(top = 18.dp)
+                    .fadeUpOnAppear(delayMs = 140),
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
@@ -416,7 +420,10 @@ private fun DisciplineHero(
 }
 
 @Composable
-private fun PeakTroughTiles(detail: ParadoxoDisciplineDetail, modifier: Modifier = Modifier) {
+private fun PeakTroughTiles(
+    detail: ParadoxoDisciplineDetail,
+    modifier: Modifier = Modifier,
+) {
     val history = detail.history
     val peak = history.maxBy { it.mean }
     val trough = history.minBy { it.mean }
@@ -560,7 +567,10 @@ private fun DistributionCard(
 }
 
 @Composable
-private fun InsightsSection(detail: ParadoxoDisciplineDetail, modifier: Modifier = Modifier) {
+private fun InsightsSection(
+    detail: ParadoxoDisciplineDetail,
+    modifier: Modifier = Modifier,
+) {
     val history = detail.history
     val peak = history.maxBy { it.mean }
     val trough = history.minBy { it.mean }

@@ -7,6 +7,8 @@ import dev.forcetower.melon.core.database.entity.AcademicCalendarEventEntity
 import dev.forcetower.melon.core.database.entity.SettingsEntity
 import java.io.File
 import java.nio.file.Files
+import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -14,51 +16,55 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
-import kotlin.test.Test
-import kotlin.test.assertEquals
 
 internal class RoomMigrationTest {
     @Test
-    fun opensExistingRoom2DatabaseWithoutLosingData() = runBlocking {
-        withDatabase(14) { database ->
-            assertEquals("dark", database.settingsDao().get("theme"))
-            assertEquals("Study session", database.personalEventDao().all().single().title)
-            database.settingsDao().put(SettingsEntity("theme", "light"))
-            assertEquals("light", database.settingsDao().observe("theme").first())
-        }
-    }
-
-    @Test
-    fun migratesEverySupportedRoom2SchemaWithoutLosingData() = runBlocking {
-        for (version in 8..13) {
-            withDatabase(version) { database ->
-                assertEquals("dark", database.settingsDao().get("theme"), "Schema $version")
-                val personalEvents = database.personalEventDao().all()
-                if (version >= 9) {
-                    assertEquals("Study session", personalEvents.single().title, "Schema $version")
-                } else {
-                    assertEquals(emptyList(), personalEvents)
-                }
-                assertEquals(emptyList(), database.curriculumDao().observeVersions().first())
+    fun opensExistingRoom2DatabaseWithoutLosingData() =
+        runBlocking {
+            withDatabase(14) { database ->
+                assertEquals("dark", database.settingsDao().get("theme"))
+                assertEquals("Study session", database.personalEventDao().all().single().title)
+                database.settingsDao().put(SettingsEntity("theme", "light"))
+                assertEquals("light", database.settingsDao().observe("theme").first())
             }
         }
-    }
 
     @Test
-    fun replacesCalendarEventsWithinATransaction() = runBlocking {
-        withDatabase(14) { database ->
-            val dao = database.calendarEventDao()
-            val oldEvent = calendarEvent("old")
-            val newEvent = calendarEvent("new")
-            dao.replaceAll(listOf(oldEvent))
-            dao.replaceAll(listOf(newEvent))
-            assertEquals(listOf(newEvent), dao.observeAll().first())
-            dao.replaceAll(emptyList())
-            assertEquals(emptyList(), dao.observeAll().first())
+    fun migratesEverySupportedRoom2SchemaWithoutLosingData() =
+        runBlocking {
+            for (version in 8..13) {
+                withDatabase(version) { database ->
+                    assertEquals("dark", database.settingsDao().get("theme"), "Schema $version")
+                    val personalEvents = database.personalEventDao().all()
+                    if (version >= 9) {
+                        assertEquals("Study session", personalEvents.single().title, "Schema $version")
+                    } else {
+                        assertEquals(emptyList(), personalEvents)
+                    }
+                    assertEquals(emptyList(), database.curriculumDao().observeVersions().first())
+                }
+            }
         }
-    }
 
-    private suspend fun withDatabase(version: Int, block: suspend (MelonDatabase) -> Unit) {
+    @Test
+    fun replacesCalendarEventsWithinATransaction() =
+        runBlocking {
+            withDatabase(14) { database ->
+                val dao = database.calendarEventDao()
+                val oldEvent = calendarEvent("old")
+                val newEvent = calendarEvent("new")
+                dao.replaceAll(listOf(oldEvent))
+                dao.replaceAll(listOf(newEvent))
+                assertEquals(listOf(newEvent), dao.observeAll().first())
+                dao.replaceAll(emptyList())
+                assertEquals(emptyList(), dao.observeAll().first())
+            }
+        }
+
+    private suspend fun withDatabase(
+        version: Int,
+        block: suspend (MelonDatabase) -> Unit,
+    ) {
         val directory = Files.createTempDirectory("melon-room-migration").toFile()
         try {
             val file = File(directory, "melon.db")
@@ -77,7 +83,10 @@ internal class RoomMigrationTest {
         }
     }
 
-    private fun createRoom2Database(file: File, version: Int) {
+    private fun createRoom2Database(
+        file: File,
+        version: Int,
+    ) {
         val resource = "/dev.forcetower.melon.core.database.MelonDatabase/$version.json"
         val schema = requireNotNull(javaClass.getResourceAsStream(resource)).bufferedReader().use {
             Json.parseToJsonElement(it.readText()).jsonObject.getValue("database").jsonObject
@@ -109,15 +118,16 @@ internal class RoomMigrationTest {
         }
     }
 
-    private fun calendarEvent(id: String) = AcademicCalendarEventEntity(
-        id = id,
-        platformId = id,
-        description = "Academic event",
-        start = "2026-09-14",
-        end = null,
-        fixed = false,
-        closed = false,
-        scope = "GENERAL",
-        origin = "MANUAL",
-    )
+    private fun calendarEvent(id: String) =
+        AcademicCalendarEventEntity(
+            id = id,
+            platformId = id,
+            description = "Academic event",
+            start = "2026-09-14",
+            end = null,
+            fixed = false,
+            closed = false,
+            scope = "GENERAL",
+            origin = "MANUAL",
+        )
 }

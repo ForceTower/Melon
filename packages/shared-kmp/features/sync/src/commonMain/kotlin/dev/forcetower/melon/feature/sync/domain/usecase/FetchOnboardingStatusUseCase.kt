@@ -12,6 +12,5 @@ import dev.zacsweers.metro.Inject
 class FetchOnboardingStatusUseCase internal constructor(
     private val mirror: MirrorRepository,
 ) {
-    suspend operator fun invoke(): Outcome<OnboardingStatus, SyncError> =
-        mirror.fetchOnboardingStatus()
+    suspend operator fun invoke(): Outcome<OnboardingStatus, SyncError> = mirror.fetchOnboardingStatus()
 }

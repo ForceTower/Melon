@@ -51,7 +51,12 @@ internal data class ClassEntry(
 )
 
 internal enum class AttachmentKind {
-    Pdf, Slides, Link, Notes, Other;
+    Pdf,
+    Slides,
+    Link,
+    Notes,
+    Other,
+    ;
 
     val label: String
         get() = when (this) {
@@ -127,7 +132,10 @@ internal data class Semester(
 
 internal enum class AbsenceRisk { Ok, Warn, Risk }
 
-internal data class DisciplineStatus(val key: Key, val label: String) {
+internal data class DisciplineStatus(
+    val key: Key,
+    val label: String,
+) {
     enum class Key { Approved, Ongoing, Low, Failed, Final, Pending }
 }
 

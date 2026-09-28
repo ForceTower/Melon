@@ -7,8 +7,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -19,8 +19,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ChevronRight
 import androidx.compose.material.icons.rounded.CheckCircle
+import androidx.compose.material.icons.rounded.ChevronRight
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -139,7 +139,10 @@ private fun EmptyDayCard() {
 }
 
 @Composable
-private fun TimelineRow(item: OverviewTodayItem, onClick: () -> Unit) {
+private fun TimelineRow(
+    item: OverviewTodayItem,
+    onClick: () -> Unit,
+) {
     val highlighted = item.state == OverviewClassState.Next || item.state == OverviewClassState.Now
     Row(verticalAlignment = Alignment.Top) {
         Column(
@@ -263,7 +266,10 @@ private fun RowScopeCardBase(
 }
 
 @Composable
-private fun RowScope.DoneCard(item: OverviewTodayItem, onClick: () -> Unit) {
+private fun RowScope.DoneCard(
+    item: OverviewTodayItem,
+    onClick: () -> Unit,
+) {
     RowScopeCardBase(
         item = item,
         onClick = onClick,
@@ -286,7 +292,10 @@ private fun RowScope.DoneCard(item: OverviewTodayItem, onClick: () -> Unit) {
 }
 
 @Composable
-private fun RowScope.HighlightCard(item: OverviewTodayItem, onClick: () -> Unit) {
+private fun RowScope.HighlightCard(
+    item: OverviewTodayItem,
+    onClick: () -> Unit,
+) {
     val accent = MaterialTheme.colorScheme.primary
     val shape = RoundedCornerShape(16.dp)
     RowScopeCardBase(
@@ -319,7 +328,10 @@ private fun RowScope.HighlightCard(item: OverviewTodayItem, onClick: () -> Unit)
 }
 
 @Composable
-private fun RowScope.LaterCard(item: OverviewTodayItem, onClick: () -> Unit) {
+private fun RowScope.LaterCard(
+    item: OverviewTodayItem,
+    onClick: () -> Unit,
+) {
     RowScopeCardBase(
         item = item,
         onClick = onClick,

@@ -62,14 +62,15 @@ import dev.forcetower.unes.ui.feature.courseprogress.CourseProgressPreviewData
 // ───────── Standing vocabulary ─────────
 
 @Composable
-private fun CurriculumStanding.shortLabel(): String = stringResource(
-    when (this) {
-        CurriculumStanding.Current -> R.string.course_progress_version_standing_current
-        CurriculumStanding.Previous -> R.string.course_progress_version_standing_previous
-        CurriculumStanding.Retired -> R.string.course_progress_version_standing_retired
-        CurriculumStanding.Unplaced -> R.string.course_progress_version_standing_unplaced
-    },
-)
+private fun CurriculumStanding.shortLabel(): String =
+    stringResource(
+        when (this) {
+            CurriculumStanding.Current -> R.string.course_progress_version_standing_current
+            CurriculumStanding.Previous -> R.string.course_progress_version_standing_previous
+            CurriculumStanding.Retired -> R.string.course_progress_version_standing_retired
+            CurriculumStanding.Unplaced -> R.string.course_progress_version_standing_unplaced
+        },
+    )
 
 // The grid taking entrants today is "live"; everything else is history.
 @Composable
@@ -79,7 +80,10 @@ private fun CurriculumStanding.tone(): Color =
 // "VIGENTE" / "ANTERIOR" — the standing as a capsule tag; the current
 // version's is tinted, every other one reads as history.
 @Composable
-private fun CurriculumStandingChip(standing: CurriculumStanding, modifier: Modifier = Modifier) {
+private fun CurriculumStandingChip(
+    standing: CurriculumStanding,
+    modifier: Modifier = Modifier,
+) {
     val tone = standing.tone()
     Text(
         text = standing.shortLabel().uppercase(),
@@ -427,7 +431,10 @@ private fun CurriculumVersionRow(
                     stringResource(
                         R.string.course_progress_version_fit_format,
                         CourseProgressFormat.percent(fit, fractionDigits = 0),
-                        stringResource(R.string.course_progress_hours_format, CourseProgressFormat.count(approvedHours)),
+                        stringResource(
+                            R.string.course_progress_hours_format,
+                            CourseProgressFormat.count(approvedHours),
+                        ),
                     )
                 } ?: stringResource(R.string.course_progress_version_fit_unknown),
                 style = MaterialTheme.typography.labelSmall.copy(
@@ -444,7 +451,10 @@ private fun CurriculumVersionRow(
 // A thin filled track — the row's own gauge, tinted down on the versions the
 // student is not on.
 @Composable
-private fun CurriculumMeter(fraction: Float, tone: Color) {
+private fun CurriculumMeter(
+    fraction: Float,
+    tone: Color,
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -463,26 +473,30 @@ private fun CurriculumMeter(fraction: Float, tone: Color) {
 }
 
 @Composable
-private fun versionHint(version: CurriculumVersion, standing: CurriculumStanding): String = when (standing) {
-    CurriculumStanding.Current -> stringResource(R.string.course_progress_version_hint_current)
-    CurriculumStanding.Previous, CurriculumStanding.Retired -> {
-        val successor = version.supersededBy
-        val effective = successor?.effectiveFromLabel
-        when {
-            successor == null -> stringResource(R.string.course_progress_version_hint_unplaced)
-            effective != null -> stringResource(
-                R.string.course_progress_version_hint_superseded_format,
-                successor.codeLabel,
-                effective,
-            )
-            else -> stringResource(
-                R.string.course_progress_version_hint_superseded_undated_format,
-                successor.codeLabel,
-            )
+private fun versionHint(
+    version: CurriculumVersion,
+    standing: CurriculumStanding,
+): String =
+    when (standing) {
+        CurriculumStanding.Current -> stringResource(R.string.course_progress_version_hint_current)
+        CurriculumStanding.Previous, CurriculumStanding.Retired -> {
+            val successor = version.supersededBy
+            val effective = successor?.effectiveFromLabel
+            when {
+                successor == null -> stringResource(R.string.course_progress_version_hint_unplaced)
+                effective != null -> stringResource(
+                    R.string.course_progress_version_hint_superseded_format,
+                    successor.codeLabel,
+                    effective,
+                )
+                else -> stringResource(
+                    R.string.course_progress_version_hint_superseded_undated_format,
+                    successor.codeLabel,
+                )
+            }
         }
+        CurriculumStanding.Unplaced -> stringResource(R.string.course_progress_version_hint_unplaced)
     }
-    CurriculumStanding.Unplaced -> stringResource(R.string.course_progress_version_hint_unplaced)
-}
 
 // ───────── Previews ─────────
 

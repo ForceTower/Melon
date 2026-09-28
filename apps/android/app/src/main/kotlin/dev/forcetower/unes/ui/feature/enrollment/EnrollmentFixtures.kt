@@ -26,8 +26,11 @@ internal object EnrollmentFixtures {
         courseId = 42,
     )
 
-    private fun slot(day: Int, start: String, end: String) =
-        EnrollmentSlot(day = day, start = start, end = end)
+    private fun slot(
+        day: Int,
+        start: String,
+        end: String,
+    ) = EnrollmentSlot(day = day, start = start, end = end)
 
     val disciplines = listOf(
         EnrollmentDiscipline(
@@ -43,8 +46,10 @@ internal object EnrollmentFixtures {
                     waitlistCount = 0, selected = true,
                     meetings = listOf(
                         EnrollmentMeeting(
-                            kind = "Teórica", shift = EnrollmentShift.Afternoon,
-                            professors = listOf("Matheus Andrade"), room = "PAT76 · UEFS",
+                            kind = "Teórica",
+                            shift = EnrollmentShift.Afternoon,
+                            professors = listOf("Matheus Andrade"),
+                            room = "PAT76 · UEFS",
                             slots = listOf(slot(1, "13:30", "15:30"), slot(3, "13:30", "15:30")),
                         ),
                     ),
@@ -55,8 +60,10 @@ internal object EnrollmentFixtures {
                     waitlistCount = 0, selected = false,
                     meetings = listOf(
                         EnrollmentMeeting(
-                            kind = "Teórica", shift = EnrollmentShift.Night,
-                            professors = listOf("Cláudia Ribeiro"), room = "MA09 · UEFS",
+                            kind = "Teórica",
+                            shift = EnrollmentShift.Night,
+                            professors = listOf("Cláudia Ribeiro"),
+                            room = "MA09 · UEFS",
                             slots = listOf(slot(2, "18:50", "20:50"), slot(4, "18:50", "20:50")),
                         ),
                     ),
@@ -74,13 +81,17 @@ internal object EnrollmentFixtures {
                     waitlistCount = 0, selected = false,
                     meetings = listOf(
                         EnrollmentMeeting(
-                            kind = "Teórica", shift = EnrollmentShift.Afternoon,
-                            professors = listOf("Roberto Sales"), room = "PAT54 · UEFS",
+                            kind = "Teórica",
+                            shift = EnrollmentShift.Afternoon,
+                            professors = listOf("Roberto Sales"),
+                            room = "PAT54 · UEFS",
                             slots = listOf(slot(1, "13:30", "15:30")),
                         ),
                         EnrollmentMeeting(
-                            kind = "Prática", shift = EnrollmentShift.Afternoon,
-                            professors = listOf("Roberto Sales"), room = "Lab. Hardware · UEFS",
+                            kind = "Prática",
+                            shift = EnrollmentShift.Afternoon,
+                            professors = listOf("Roberto Sales"),
+                            room = "Lab. Hardware · UEFS",
                             slots = listOf(slot(5, "15:30", "17:30")),
                         ),
                     ),
@@ -98,8 +109,10 @@ internal object EnrollmentFixtures {
                     waitlistCount = 6, selected = true,
                     meetings = listOf(
                         EnrollmentMeeting(
-                            kind = "Teórica", shift = EnrollmentShift.Morning,
-                            professors = listOf("Sônia Vasconcelos"), room = "MA12 · UEFS",
+                            kind = "Teórica",
+                            shift = EnrollmentShift.Morning,
+                            professors = listOf("Sônia Vasconcelos"),
+                            room = "MA12 · UEFS",
                             slots = listOf(slot(2, "07:30", "09:30"), slot(4, "07:30", "09:30")),
                         ),
                     ),
@@ -117,8 +130,11 @@ internal object EnrollmentFixtures {
                     waitlistCount = 0, selected = false,
                     meetings = listOf(
                         EnrollmentMeeting(
-                            kind = "Teórica", shift = EnrollmentShift.Undefined,
-                            professors = emptyList(), room = null, slots = emptyList(),
+                            kind = "Teórica",
+                            shift = EnrollmentShift.Undefined,
+                            professors = emptyList(),
+                            room = null,
+                            slots = emptyList(),
                         ),
                     ),
                 ),
@@ -137,8 +153,10 @@ internal object EnrollmentFixtures {
                     waitlistCount = 0, selected = false,
                     meetings = listOf(
                         EnrollmentMeeting(
-                            kind = "Teórica", shift = EnrollmentShift.Afternoon,
-                            professors = listOf("Daniel Prado"), room = "LCC2 · UEFS",
+                            kind = "Teórica",
+                            shift = EnrollmentShift.Afternoon,
+                            professors = listOf("Daniel Prado"),
+                            room = "LCC2 · UEFS",
                             slots = listOf(slot(2, "15:30", "17:30"), slot(4, "15:30", "17:30")),
                         ),
                     ),

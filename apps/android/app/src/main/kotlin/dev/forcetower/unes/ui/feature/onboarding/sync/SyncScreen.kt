@@ -24,12 +24,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Cancel
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.Button
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -66,7 +66,10 @@ import dev.forcetower.unes.mvi.collectAsEffect
 import dev.forcetower.unes.ui.feature.onboarding.components.LivePulseDot
 import kotlin.math.roundToInt
 
-private data class SyncStepDisplay(val key: String, @StringRes val labelRes: Int)
+private data class SyncStepDisplay(
+    val key: String,
+    @StringRes val labelRes: Int,
+)
 
 // Display-only metadata — keys and order must match SyncViewModel.SYNC_STEPS
 // so the active-row indicator lines up with the animation driver.
@@ -104,7 +107,6 @@ private fun SyncContent(
     state: SyncUiState,
     onRetry: () -> Unit = {},
 ) {
-
     val night = MaterialTheme.melon.fixed.night
     val veil = MaterialTheme.melon.fixed.nightVeil
     val cream = MaterialTheme.melon.fixed.surfaceLight
@@ -266,7 +268,11 @@ private fun SyncContent(
 }
 
 @Composable
-private fun SyncProgressRing(progress: Float, doneCount: Int, totalCount: Int) {
+private fun SyncProgressRing(
+    progress: Float,
+    doneCount: Int,
+    totalCount: Int,
+) {
     val onHero = MaterialTheme.melon.fixed.onHero
     val accent = MaterialTheme.colorScheme.primary
 
@@ -355,7 +361,10 @@ private fun SyncProgressRing(progress: Float, doneCount: Int, totalCount: Int) {
 }
 
 @Composable
-private fun StepSpinner(accent: Color, track: Color) {
+private fun StepSpinner(
+    accent: Color,
+    track: Color,
+) {
     val transition = rememberInfiniteTransition(label = "step-spin")
     val rotation by transition.animateFloat(
         initialValue = 0f,
@@ -390,7 +399,11 @@ private fun StepSpinner(accent: Color, track: Color) {
 }
 
 @Composable
-private fun syncHeadline(firstName: String, cream: Color, accent: Color): AnnotatedString {
+private fun syncHeadline(
+    firstName: String,
+    cream: Color,
+    accent: Color,
+): AnnotatedString {
     val top = stringResource(R.string.onboarding_sync_headline_top)
     val fallback = stringResource(R.string.onboarding_sync_default_user)
     return buildAnnotatedString {

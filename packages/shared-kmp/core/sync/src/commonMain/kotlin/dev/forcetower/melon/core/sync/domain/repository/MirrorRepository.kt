@@ -25,7 +25,10 @@ interface MirrorRepository {
 
     // Pulls and applies one page of the inbox. Caller decides whether to
     // continue paging based on `nextCursor`.
-    suspend fun syncMessages(since: String?, cursor: String?): Outcome<MessagePageResult, SyncError>
+    suspend fun syncMessages(
+        since: String?,
+        cursor: String?,
+    ): Outcome<MessagePageResult, SyncError>
 
     // Pulls the canonical 90-day academic-calendar window and replaces the
     // local mirror wholesale. Returns the number of events applied.

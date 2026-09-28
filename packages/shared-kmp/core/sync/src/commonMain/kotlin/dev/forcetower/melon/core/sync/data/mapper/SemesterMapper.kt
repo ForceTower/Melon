@@ -83,8 +83,7 @@ internal fun ClassDto.toEntity(): ClassEntity =
         program = program,
     )
 
-internal fun TeacherDto.toEntity(): TeacherEntity =
-    TeacherEntity(id = id, platformId = platformId, name = name)
+internal fun TeacherDto.toEntity(): TeacherEntity = TeacherEntity(id = id, platformId = platformId, name = name)
 
 internal fun ClassTeacherDto.toEntity(): ClassTeacherEntity =
     ClassTeacherEntity(classId = classId, teacherId = teacherId)

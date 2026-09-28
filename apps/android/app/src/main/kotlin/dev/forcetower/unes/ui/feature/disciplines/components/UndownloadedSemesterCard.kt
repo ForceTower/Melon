@@ -27,11 +27,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
@@ -144,7 +144,10 @@ internal fun UndownloadedSemesterCard(
 }
 
 @Composable
-private fun countLabel(isLoading: Boolean, estimatedCount: Int?): String {
+private fun countLabel(
+    isLoading: Boolean,
+    estimatedCount: Int?,
+): String {
     if (isLoading) return stringResource(R.string.disciplines_undownloaded_count_loading)
     if (estimatedCount == null) return stringResource(R.string.disciplines_undownloaded_count_unknown)
     return pluralStringResource(
@@ -232,24 +235,25 @@ private fun DownloadIcon(color: Color) {
 private fun Modifier.dashedBorder(
     color: Color,
     @Suppress("UNUSED_PARAMETER") shape: RoundedCornerShape,
-): Modifier = this.then(
-    Modifier.drawWithCache {
-        val strokePx = 1.dp.toPx()
-        val dash = floatArrayOf(4.dp.toPx(), 4.dp.toPx())
-        val cornerPx = 18.dp.toPx()
-        val inset = strokePx / 2f
-        val rectSize = Size(size.width - strokePx, size.height - strokePx)
-        val topLeft = androidx.compose.ui.geometry.Offset(inset, inset)
-        val style = Stroke(width = strokePx, pathEffect = PathEffect.dashPathEffect(dash, 0f))
-        onDrawWithContent {
-            drawContent()
-            drawRoundRect(
-                color = color,
-                topLeft = topLeft,
-                size = rectSize,
-                cornerRadius = CornerRadius(cornerPx, cornerPx),
-                style = style,
-            )
-        }
-    },
-)
+): Modifier =
+    this.then(
+        Modifier.drawWithCache {
+            val strokePx = 1.dp.toPx()
+            val dash = floatArrayOf(4.dp.toPx(), 4.dp.toPx())
+            val cornerPx = 18.dp.toPx()
+            val inset = strokePx / 2f
+            val rectSize = Size(size.width - strokePx, size.height - strokePx)
+            val topLeft = androidx.compose.ui.geometry.Offset(inset, inset)
+            val style = Stroke(width = strokePx, pathEffect = PathEffect.dashPathEffect(dash, 0f))
+            onDrawWithContent {
+                drawContent()
+                drawRoundRect(
+                    color = color,
+                    topLeft = topLeft,
+                    size = rectSize,
+                    cornerRadius = CornerRadius(cornerPx, cornerPx),
+                    style = style,
+                )
+            }
+        },
+    )

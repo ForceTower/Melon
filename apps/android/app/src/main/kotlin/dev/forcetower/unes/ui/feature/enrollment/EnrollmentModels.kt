@@ -52,9 +52,15 @@ internal data class EnrollmentClash(
 
 internal sealed interface EnrollmentBlocker {
     data object Empty : EnrollmentBlocker
-    data class Conflicts(val count: Int) : EnrollmentBlocker
-    data class UnderMinimum(val missing: Int) : EnrollmentBlocker
-    data class OverMaximum(val excess: Int) : EnrollmentBlocker
+    data class Conflicts(
+        val count: Int,
+    ) : EnrollmentBlocker
+    data class UnderMinimum(
+        val missing: Int,
+    ) : EnrollmentBlocker
+    data class OverMaximum(
+        val excess: Int,
+    ) : EnrollmentBlocker
 }
 
 internal data class EnrollmentUiState(
@@ -157,7 +163,10 @@ internal data class EnrollmentUiState(
     }
 
     // First pick of a *different* discipline clashing with a candidate section.
-    fun clashFor(discipline: EnrollmentDiscipline, section: EnrollmentSection): EnrollmentClash? {
+    fun clashFor(
+        discipline: EnrollmentDiscipline,
+        section: EnrollmentSection,
+    ): EnrollmentClash? {
         for (pick in resolvedPicks) {
             if (pick.discipline.id == discipline.id) continue
             val day = conflictDay(section, pick.section) ?: continue
@@ -172,11 +181,24 @@ internal sealed interface EnrollmentIntent : UiIntent {
     // first entry, silently refreshes the catalogue afterwards.
     data object Enter : EnrollmentIntent
     data object Retry : EnrollmentIntent
-    data class QueryChanged(val query: String) : EnrollmentIntent
-    data class FilterChanged(val filter: EnrollmentFilter) : EnrollmentIntent
-    data class SectionTapped(val disciplineId: Long, val sectionId: Long) : EnrollmentIntent
-    data class RemovePick(val disciplineId: Long) : EnrollmentIntent
-    data class AllowsOtherChanged(val disciplineId: Long, val value: Boolean) : EnrollmentIntent
+    data class QueryChanged(
+        val query: String,
+    ) : EnrollmentIntent
+    data class FilterChanged(
+        val filter: EnrollmentFilter,
+    ) : EnrollmentIntent
+    data class SectionTapped(
+        val disciplineId: Long,
+        val sectionId: Long,
+    ) : EnrollmentIntent
+    data class RemovePick(
+        val disciplineId: Long,
+    ) : EnrollmentIntent
+    data class AllowsOtherChanged(
+        val disciplineId: Long,
+        val value: Boolean,
+    ) : EnrollmentIntent
+
     // "Reabrir matrícula" on the closed status hub.
     data object Reopen : EnrollmentIntent
     data object Submit : EnrollmentIntent
@@ -204,13 +226,19 @@ internal val EnrollmentSection.allSlots: List<EnrollmentSlot>
 // "A definir" sections have no slots — they never conflict.
 internal val EnrollmentSection.hasSchedule: Boolean get() = allSlots.isNotEmpty()
 
-internal fun slotsOverlap(a: EnrollmentSlot, b: EnrollmentSlot): Boolean =
+internal fun slotsOverlap(
+    a: EnrollmentSlot,
+    b: EnrollmentSlot,
+): Boolean =
     a.day == b.day &&
         slotMinutes(a.start) < slotMinutes(b.end) &&
         slotMinutes(b.start) < slotMinutes(a.end)
 
 // First weekday where any pair of slots overlaps, else null.
-internal fun conflictDay(a: EnrollmentSection, b: EnrollmentSection): Int? {
+internal fun conflictDay(
+    a: EnrollmentSection,
+    b: EnrollmentSection,
+): Int? {
     for (slotA in a.allSlots) {
         for (slotB in b.allSlots) {
             if (slotsOverlap(slotA, slotB)) return slotA.day
@@ -219,7 +247,10 @@ internal fun conflictDay(a: EnrollmentSection, b: EnrollmentSection): Int? {
     return null
 }
 
-internal data class EnrollmentSeats(val filled: Int, val total: Int) {
+internal data class EnrollmentSeats(
+    val filled: Int,
+    val total: Int,
+) {
     val fraction: Float get() = if (total > 0) filled.toFloat() / total else 0f
     val isFull: Boolean get() = filled >= total
     val isTight: Boolean get() = !isFull && fraction >= 0.85f
@@ -248,12 +279,13 @@ internal fun makePick(
     window: EnrollmentWindow?,
     discipline: EnrollmentDiscipline,
     section: EnrollmentSection,
-): EnrollmentPick = EnrollmentPick(
-    disciplineId = discipline.id,
-    sectionId = section.id,
-    allowsOther = section.allowsOtherDefault,
-    waitlist = section.seats.isFull && window?.useQueue == true,
-)
+): EnrollmentPick =
+    EnrollmentPick(
+        disciplineId = discipline.id,
+        sectionId = section.id,
+        allowsOther = section.allowsOtherDefault,
+        waitlist = section.seats.isFull && window?.useQueue == true,
+    )
 
 // Resume mechanism: rebuild picks from sections flagged `selected` by the
 // backend. The wire doesn't carry saved toggle values, so they reset to
@@ -261,6 +293,7 @@ internal fun makePick(
 internal fun preseedPicks(
     window: EnrollmentWindow?,
     disciplines: List<EnrollmentDiscipline>,
-): List<EnrollmentPick> = disciplines.mapNotNull { discipline ->
-    discipline.sections.firstOrNull { it.selected }?.let { makePick(window, discipline, it) }
-}
+): List<EnrollmentPick> =
+    disciplines.mapNotNull { discipline ->
+        discipline.sections.firstOrNull { it.selected }?.let { makePick(window, discipline, it) }
+    }

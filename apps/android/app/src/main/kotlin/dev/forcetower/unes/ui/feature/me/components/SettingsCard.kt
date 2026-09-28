@@ -66,7 +66,10 @@ internal fun SettingsCard(
 }
 
 @Composable
-private fun SettingsRowItem(row: SettingsRow, onClick: () -> Unit) {
+private fun SettingsRowItem(
+    row: SettingsRow,
+    onClick: () -> Unit,
+) {
     val label = stringResource(row.labelRes)
     val appInfo = rememberAppInfo()
     val hint = when (row.id) {

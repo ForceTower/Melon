@@ -19,7 +19,11 @@ import dev.forcetower.unes.R
 // `SettingsScreen` footer): "UNES vX · build N" over the reminder that sync
 // cadence lives on the server.
 @Composable
-internal fun SettingsFooter(appVersion: String, appBuild: String, modifier: Modifier = Modifier) {
+internal fun SettingsFooter(
+    appVersion: String,
+    appBuild: String,
+    modifier: Modifier = Modifier,
+) {
     val ink4 = MaterialTheme.colorScheme.outlineVariant
     val style = MaterialTheme.typography.bodySmall.copy(
         fontSize = 12.sp,

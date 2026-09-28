@@ -78,9 +78,10 @@ internal fun MeProfileToastOverlay(
 }
 
 @Composable
-private fun MeProfileToast.message(): String = when (this) {
-    is MeProfileToast.NameSaved -> stringResource(R.string.me_toast_name_saved_format, firstName)
-    MeProfileToast.NameRestored -> stringResource(R.string.me_toast_name_restored)
-    MeProfileToast.PhotoSaved -> stringResource(R.string.me_toast_photo_saved)
-    MeProfileToast.PhotoRemoved -> stringResource(R.string.me_toast_photo_removed)
-}
+private fun MeProfileToast.message(): String =
+    when (this) {
+        is MeProfileToast.NameSaved -> stringResource(R.string.me_toast_name_saved_format, firstName)
+        MeProfileToast.NameRestored -> stringResource(R.string.me_toast_name_restored)
+        MeProfileToast.PhotoSaved -> stringResource(R.string.me_toast_photo_saved)
+        MeProfileToast.PhotoRemoved -> stringResource(R.string.me_toast_photo_removed)
+    }

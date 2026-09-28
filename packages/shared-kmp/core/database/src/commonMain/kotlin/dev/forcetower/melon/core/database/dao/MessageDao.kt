@@ -44,7 +44,10 @@ abstract class MessageDao {
     // an unstar must also clear it or it would stay shadowed until the ack
     // round-trips through a refresh (matches iOS `setMessageStarred`).
     @Query("UPDATE Message SET starred = :starred WHERE id = :id")
-    abstract suspend fun updateMessageStarred(id: String, starred: Boolean)
+    abstract suspend fun updateMessageStarred(
+        id: String,
+        starred: Boolean,
+    )
 
     @Query("SELECT * FROM MessageState WHERE messageId IN (:ids)")
     abstract fun observeStates(ids: List<String>): Flow<List<MessageStateEntity>>

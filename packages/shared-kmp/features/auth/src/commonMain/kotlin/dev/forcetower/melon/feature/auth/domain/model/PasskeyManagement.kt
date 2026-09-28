@@ -48,6 +48,8 @@ data class PasskeyCredential(
 sealed interface PasskeyError {
     data object NoConnection : PasskeyError
     data object NotFound : PasskeyError
-    data class Server(val message: String?) : PasskeyError
+    data class Server(
+        val message: String?,
+    ) : PasskeyError
     data object Unexpected : PasskeyError
 }

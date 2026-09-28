@@ -23,31 +23,43 @@ data class CalendarEventFeed(
 )
 
 enum class CalendarFeedScope {
-    GENERAL, FACULTY, COURSE, CLASS, CAMPUS;
+    GENERAL,
+    FACULTY,
+    COURSE,
+    CLASS,
+    CAMPUS,
+    ;
 
     companion object {
-        fun fromWire(value: String): CalendarFeedScope? = when (value) {
-            "GENERAL" -> GENERAL
-            "FACULTY" -> FACULTY
-            "COURSE" -> COURSE
-            "CLASS" -> CLASS
-            "CAMPUS" -> CAMPUS
-            else -> null
-        }
+        fun fromWire(value: String): CalendarFeedScope? =
+            when (value) {
+                "GENERAL" -> GENERAL
+                "FACULTY" -> FACULTY
+                "COURSE" -> COURSE
+                "CLASS" -> CLASS
+                "CAMPUS" -> CAMPUS
+                else -> null
+            }
     }
 }
 
 enum class CalendarFeedOrigin {
-    MANUAL, EVALUATION, FINAL_EXAM, SECOND_CALL, SECOND_EPOCH;
+    MANUAL,
+    EVALUATION,
+    FINAL_EXAM,
+    SECOND_CALL,
+    SECOND_EPOCH,
+    ;
 
     companion object {
-        fun fromWire(value: String): CalendarFeedOrigin? = when (value) {
-            "MANUAL" -> MANUAL
-            "EVALUATION" -> EVALUATION
-            "FINAL_EXAM" -> FINAL_EXAM
-            "SECOND_CALL" -> SECOND_CALL
-            "SECOND_EPOCH" -> SECOND_EPOCH
-            else -> null
-        }
+        fun fromWire(value: String): CalendarFeedOrigin? =
+            when (value) {
+                "MANUAL" -> MANUAL
+                "EVALUATION" -> EVALUATION
+                "FINAL_EXAM" -> FINAL_EXAM
+                "SECOND_CALL" -> SECOND_CALL
+                "SECOND_EPOCH" -> SECOND_EPOCH
+                else -> null
+            }
     }
 }

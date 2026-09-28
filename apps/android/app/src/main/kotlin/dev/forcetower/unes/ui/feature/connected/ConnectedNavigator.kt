@@ -42,7 +42,10 @@ internal class ConnectedNavigator(
 
     // Deeplinks: atomically replace one tab's stack with a synthesized path
     // and bring that tab to front. `entries` must start at the tab's root.
-    fun setStack(tab: ConnectedTab, entries: List<NavKey>) {
+    fun setStack(
+        tab: ConnectedTab,
+        entries: List<NavKey>,
+    ) {
         val stack = stacks.getValue(tab)
         stack.clear()
         stack.addAll(entries)

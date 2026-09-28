@@ -22,6 +22,7 @@ import dev.forcetower.unes.mvi.UiEffect
 import dev.forcetower.unes.mvi.UiIntent
 import dev.forcetower.unes.mvi.UiState
 import javax.inject.Inject
+import kotlin.time.Clock
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -30,7 +31,6 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
-import kotlin.time.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import timber.log.Timber
@@ -55,7 +55,9 @@ private val SYNC_STEPS = listOf(
 
 internal sealed interface StepResult {
     data object Ok : StepResult
-    data class Fail(val authBroken: Boolean) : StepResult
+    data class Fail(
+        val authBroken: Boolean,
+    ) : StepResult
 }
 
 data class SyncUiState(
@@ -454,15 +456,16 @@ class SyncViewModel @Inject internal constructor(
         Timber.tag(TAG).i("readiness: done")
     }
 
-    private fun task(key: String): Deferred<StepResult>? = when (key) {
-        "auth" -> authTask
-        "profile" -> profileTask
-        "classes" -> classesTask
-        "schedule" -> scheduleTask
-        "grades" -> gradesTask
-        "msgs" -> msgsTask
-        else -> null
-    }
+    private fun task(key: String): Deferred<StepResult>? =
+        when (key) {
+            "auth" -> authTask
+            "profile" -> profileTask
+            "classes" -> classesTask
+            "schedule" -> scheduleTask
+            "grades" -> gradesTask
+            "msgs" -> msgsTask
+            else -> null
+        }
 
     // MARK: helpers
 
@@ -487,8 +490,10 @@ class SyncViewModel @Inject internal constructor(
     }
 }
 
-internal suspend fun awaitSyncStep(task: Deferred<StepResult>, timeoutMs: Long): StepResult =
-    withTimeoutOrNull(timeoutMs) { task.await() } ?: StepResult.Fail(false)
+internal suspend fun awaitSyncStep(
+    task: Deferred<StepResult>,
+    timeoutMs: Long,
+): StepResult = withTimeoutOrNull(timeoutMs) { task.await() } ?: StepResult.Fail(false)
 
 internal suspend fun runAuthStepWork(
     scope: CoroutineScope,
@@ -505,5 +510,7 @@ internal suspend fun runAuthStepWork(
     }
     return if (outcome is Outcome.Err && outcome.error is SyncError.Unauthorized) {
         StepResult.Fail(true)
-    } else StepResult.Ok
+    } else {
+        StepResult.Ok
+    }
 }

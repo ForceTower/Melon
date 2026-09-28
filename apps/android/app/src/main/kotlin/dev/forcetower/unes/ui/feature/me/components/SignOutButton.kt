@@ -31,7 +31,10 @@ import dev.forcetower.unes.designsystem.theme.melon
 // Sign-out pill at the bottom of the Eu screen — dc `EuScreen` logout button:
 // full-width 52dp pill washed in the status red at low alpha.
 @Composable
-internal fun MeSignOutButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
+internal fun MeSignOutButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     val bad = MaterialTheme.melon.status.bad
     val label = stringResource(R.string.me_sign_out_label)
     val shape = RoundedCornerShape(50)

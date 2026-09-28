@@ -105,7 +105,10 @@ internal fun EnrollmentTimetableGrid(
     }
 }
 
-private fun buildBlocks(picks: List<ResolvedPick>, hueFor: (String) -> Color): List<GridBlock> {
+private fun buildBlocks(
+    picks: List<ResolvedPick>,
+    hueFor: (String) -> Color,
+): List<GridBlock> {
     val blocks = picks
         .filter { it.section.hasSchedule }
         .flatMap { pick ->
@@ -176,7 +179,10 @@ private fun HourRail(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun DayColumn(blocks: List<GridBlock>, modifier: Modifier = Modifier) {
+private fun DayColumn(
+    blocks: List<GridBlock>,
+    modifier: Modifier = Modifier,
+) {
     val line = MaterialTheme.melon.surface.line
     val bad = MaterialTheme.melon.status.bad
     Box(

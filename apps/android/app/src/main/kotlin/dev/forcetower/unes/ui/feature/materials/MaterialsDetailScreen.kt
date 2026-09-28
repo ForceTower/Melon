@@ -342,8 +342,11 @@ private fun DetailContent(
                     )
                     ToggleActionButton(
                         label = stringResource(
-                            if (material.isSaved) R.string.materials_action_saved
-                            else R.string.materials_action_save,
+                            if (material.isSaved) {
+                                R.string.materials_action_saved
+                            } else {
+                                R.string.materials_action_save
+                            },
                         ),
                         icon = Icons.Filled.Bookmark,
                         active = material.isSaved,
@@ -666,7 +669,10 @@ private fun DetailMetaRow(
 
 // Semi-anonymous author: course + entry year, never a name.
 @Composable
-private fun UploaderCard(material: Material, modifier: Modifier = Modifier) {
+private fun UploaderCard(
+    material: Material,
+    modifier: Modifier = Modifier,
+) {
     val tint = ColorFor.discipline(material.discipline.code)
     MaterialsCard(cornerRadius = 18, modifier = modifier.fillMaxWidth()) {
         Row(
@@ -744,8 +750,11 @@ private fun ModerationStatusContent(
             MaterialsBackButton(onBack = onBack)
             Text(
                 text = stringResource(
-                    if (pending) R.string.materials_status_pending
-                    else R.string.materials_status_rejected,
+                    if (pending) {
+                        R.string.materials_status_pending
+                    } else {
+                        R.string.materials_status_rejected
+                    },
                 ),
                 style = MaterialTheme.typography.titleSmall.copy(
                     fontSize = 15.sp,
@@ -789,8 +798,11 @@ private fun ModerationStatusContent(
                 }
                 Text(
                     text = stringResource(
-                        if (pending) R.string.materials_moderation_pending_title
-                        else R.string.materials_moderation_rejected_title,
+                        if (pending) {
+                            R.string.materials_moderation_pending_title
+                        } else {
+                            R.string.materials_moderation_rejected_title
+                        },
                     ),
                     style = MaterialTheme.typography.titleLarge.copy(
                         fontSize = 25.sp,
@@ -804,8 +816,11 @@ private fun ModerationStatusContent(
                 )
                 Text(
                     text = stringResource(
-                        if (pending) R.string.materials_moderation_pending_body
-                        else R.string.materials_moderation_rejected_body,
+                        if (pending) {
+                            R.string.materials_moderation_pending_body
+                        } else {
+                            R.string.materials_moderation_rejected_body
+                        },
                     ),
                     style = MaterialTheme.typography.bodyMedium.copy(fontSize = 15.sp, lineHeight = 22.sp),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -1148,17 +1163,22 @@ private fun DetailUnavailable(onBack: () -> Unit) {
 
 // A rejected upload re-opens the wizard locked to its own discipline; the
 // counts don't matter for the flow, so an empty map suffices.
-private fun Material.asDiscipline() = MaterialsDiscipline(
-    id = discipline.id,
-    code = discipline.code,
-    name = discipline.name,
-    teacherName = teacherName,
-    counts = emptyMap(),
-)
+private fun Material.asDiscipline() =
+    MaterialsDiscipline(
+        id = discipline.id,
+        code = discipline.code,
+        name = discipline.name,
+        teacherName = teacherName,
+        counts = emptyMap(),
+    )
 
 // Hands the downloaded copy to the system viewer through the app's
 // FileProvider grant — same mechanism as the Me documents sheet.
-private fun viewFile(context: Context, file: File, mimeType: String) {
+private fun viewFile(
+    context: Context,
+    file: File,
+    mimeType: String,
+) {
     val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
     val intent = Intent(Intent.ACTION_VIEW).apply {
         setDataAndType(uri, mimeType)

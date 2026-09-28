@@ -83,24 +83,24 @@ import dev.forcetower.unes.designsystem.foundation.PinnedHeaderHairline
 import dev.forcetower.unes.designsystem.foundation.SkeletonBar
 import dev.forcetower.unes.designsystem.theme.MelonTheme
 import dev.forcetower.unes.designsystem.theme.melon
+import dev.forcetower.unes.ui.feature.library.LibraryIntent
+import dev.forcetower.unes.ui.feature.library.LibrarySearchSession
+import dev.forcetower.unes.ui.feature.library.LibraryUiState
+import dev.forcetower.unes.ui.feature.library.LibraryViewModel
 import dev.forcetower.unes.ui.feature.library.components.LibraryFreshnessRow
 import dev.forcetower.unes.ui.feature.library.components.LibraryRowAvailability
 import dev.forcetower.unes.ui.feature.library.components.LibrarySuggestionRow
 import dev.forcetower.unes.ui.feature.library.components.LibraryTypeTag
 import dev.forcetower.unes.ui.feature.library.components.LibraryWorkMark
+import dev.forcetower.unes.ui.feature.library.facetValueLabel
+import dev.forcetower.unes.ui.feature.library.formatLibraryAgo
+import dev.forcetower.unes.ui.feature.library.formatLibraryCount
+import dev.forcetower.unes.ui.feature.library.labelRes
+import dev.forcetower.unes.ui.feature.library.libraryPreviewWork
+import dev.forcetower.unes.ui.feature.library.pluralLabelRes
 import kotlin.time.Clock
 import kotlin.time.Instant
 import kotlinx.coroutines.delay
-import dev.forcetower.unes.ui.feature.library.LibraryViewModel
-import dev.forcetower.unes.ui.feature.library.LibraryIntent
-import dev.forcetower.unes.ui.feature.library.LibraryUiState
-import dev.forcetower.unes.ui.feature.library.LibrarySearchSession
-import dev.forcetower.unes.ui.feature.library.formatLibraryCount
-import dev.forcetower.unes.ui.feature.library.formatLibraryAgo
-import dev.forcetower.unes.ui.feature.library.labelRes
-import dev.forcetower.unes.ui.feature.library.pluralLabelRes
-import dev.forcetower.unes.ui.feature.library.facetValueLabel
-import dev.forcetower.unes.ui.feature.library.libraryPreviewWork
 
 // Paginated results (dc `BibliotecaScreen` "resultados" scenarios): server
 // total + aggregate freshness, degradation banners, sort/facet chips, and the
@@ -349,8 +349,14 @@ private fun ResultsTopBar(
 // One display entry of the list: a type-group header or a loaded row (its
 // paging index keeps append triggering even in grouped/filtered modes).
 private sealed interface ResultEntry {
-    data class Header(val type: LibraryWorkType, val count: Int) : ResultEntry
-    data class Row(val work: LibraryWork, val pagingIndex: Int) : ResultEntry
+    data class Header(
+        val type: LibraryWorkType,
+        val count: Int,
+    ) : ResultEntry
+    data class Row(
+        val work: LibraryWork,
+        val pagingIndex: Int,
+    ) : ResultEntry
 }
 
 @Composable
@@ -375,7 +381,12 @@ private fun ResultsList(
     // "Só com exemplar livre" filters what has already been read — a row only
     // survives once its consultation came back with a free copy.
     val entries = remember(
-        snapshot, session.groupByType, session.onlyAvailable, state.readings, state.liveCopies, now,
+        snapshot,
+        session.groupByType,
+        session.onlyAvailable,
+        state.readings,
+        state.liveCopies,
+        now,
     ) {
         val visible = snapshot.withIndex().filter { (_, work) ->
             if (!session.onlyAvailable) return@filter true

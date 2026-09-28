@@ -18,8 +18,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.AccountTree
 import androidx.compose.material.icons.filled.Description
-import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.Schedule
+import androidx.compose.material.icons.filled.School
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator

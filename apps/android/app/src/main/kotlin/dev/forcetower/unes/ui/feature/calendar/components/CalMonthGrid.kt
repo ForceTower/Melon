@@ -82,7 +82,11 @@ internal fun CalMonthGrid(
 }
 
 @Composable
-private fun MonthHeader(month: YearMonth, onPrevMonth: () -> Unit, onNextMonth: () -> Unit) {
+private fun MonthHeader(
+    month: YearMonth,
+    onPrevMonth: () -> Unit,
+    onNextMonth: () -> Unit,
+) {
     val monthLabel = CalendarFormat.monthsLong[month.monthValue - 1]
         .replaceFirstChar { it.titlecase(Locale.ROOT) } + " " + month.year
     Row(
@@ -271,4 +275,7 @@ private fun DayCell(
 
 // One decoration dot under a day: filled for the academic feed, a ring for the
 // student's own entries.
-private data class DayDot(val category: CalendarCategory, val isPersonal: Boolean)
+private data class DayDot(
+    val category: CalendarCategory,
+    val isPersonal: Boolean,
+)

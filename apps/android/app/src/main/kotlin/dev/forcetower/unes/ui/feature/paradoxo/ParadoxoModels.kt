@@ -24,7 +24,9 @@ internal data class ParadoxoIndexItem(
 internal sealed interface ParadoxoDetail<out T> {
     data object Loading : ParadoxoDetail<Nothing>
     data object Failed : ParadoxoDetail<Nothing>
-    data class Loaded<T>(val data: T) : ParadoxoDetail<T>
+    data class Loaded<T>(
+        val data: T,
+    ) : ParadoxoDetail<T>
 }
 
 internal data class ParadoxoUiState(
@@ -42,11 +44,21 @@ internal data class ParadoxoUiState(
 internal sealed interface ParadoxoIntent : UiIntent {
     data object Load : ParadoxoIntent
     data object Retry : ParadoxoIntent
-    data class QueryChanged(val query: String) : ParadoxoIntent
-    data class LoadDiscipline(val id: String) : ParadoxoIntent
-    data class RetryDiscipline(val id: String) : ParadoxoIntent
-    data class LoadTeacher(val id: String) : ParadoxoIntent
-    data class RetryTeacher(val id: String) : ParadoxoIntent
+    data class QueryChanged(
+        val query: String,
+    ) : ParadoxoIntent
+    data class LoadDiscipline(
+        val id: String,
+    ) : ParadoxoIntent
+    data class RetryDiscipline(
+        val id: String,
+    ) : ParadoxoIntent
+    data class LoadTeacher(
+        val id: String,
+    ) : ParadoxoIntent
+    data class RetryTeacher(
+        val id: String,
+    ) : ParadoxoIntent
 }
 
 internal sealed interface ParadoxoEffect : UiEffect

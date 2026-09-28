@@ -13,12 +13,17 @@ import kotlinx.datetime.LocalDateTime
 // when the DB hasn't changed — and, via `resume`, the instant the app returns
 // to the foreground rather than waiting on the delay timer, which doesn't
 // reliably fire after a long OS suspension. See [ForegroundSignal].
-fun tickerFlow(periodMs: Long, resume: Flow<Unit>, clock: AppClock = AppClock()): Flow<LocalDateTime> = merge(
-    flow {
-        while (true) {
-            emit(clock.localNow())
-            delay(periodMs)
-        }
-    },
-    resume.map { clock.localNow() },
-)
+fun tickerFlow(
+    periodMs: Long,
+    resume: Flow<Unit>,
+    clock: AppClock = AppClock(),
+): Flow<LocalDateTime> =
+    merge(
+        flow {
+            while (true) {
+                emit(clock.localNow())
+                delay(periodMs)
+            }
+        },
+        resume.map { clock.localNow() },
+    )

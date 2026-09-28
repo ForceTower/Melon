@@ -52,10 +52,10 @@ import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
 import dev.forcetower.unes.designsystem.theme.MelonTheme
 import dev.forcetower.unes.designsystem.theme.melon
+import dev.forcetower.unes.ui.feature.courseprogress.components.ComplementaryHoursSheet
 import dev.forcetower.unes.ui.feature.courseprogress.components.CourseProgressGaugeCard
 import dev.forcetower.unes.ui.feature.courseprogress.components.CourseProgressNotice
 import dev.forcetower.unes.ui.feature.courseprogress.components.CourseProgressSectionHeader
-import dev.forcetower.unes.ui.feature.courseprogress.components.ComplementaryHoursSheet
 import dev.forcetower.unes.ui.feature.courseprogress.components.CurriculumFlowCard
 import dev.forcetower.unes.ui.feature.courseprogress.components.CurriculumRemainingCard
 import dev.forcetower.unes.ui.feature.courseprogress.components.CurriculumRequirementsCard
@@ -354,7 +354,8 @@ private fun LoadedContent(
         val manualHours = progress.summary.manuallyCompletedHours
         Text(
             text = if (manualHours > 0) {
-                val hours = stringResource(R.string.course_progress_hours_format, CourseProgressFormat.count(manualHours))
+                val hours =
+                    stringResource(R.string.course_progress_hours_format, CourseProgressFormat.count(manualHours))
                 stringResource(R.string.course_progress_footer_manual_format, hours) + "\n" + syncedFooter
             } else {
                 syncedFooter
@@ -373,7 +374,10 @@ private fun LoadedContent(
 // "Psicologia · currículo 20232 · 3º semestre" — whichever of the three the
 // payload and profile actually know.
 @Composable
-private fun headerSubtitle(state: CourseProgressUiState, progress: CourseProgress): String? {
+private fun headerSubtitle(
+    state: CourseProgressUiState,
+    progress: CourseProgress,
+): String? {
     val parts = buildList {
         state.course?.takeIf { it.isNotBlank() }?.let { add(it) }
         progress.curriculum?.let {

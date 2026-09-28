@@ -62,7 +62,12 @@ internal class PasskeysViewModel @Inject constructor(
             }
             is PasskeysIntent.OpenDetail -> setState {
                 val item = items.firstOrNull { it.id == intent.id }
-                copy(sheet = PasskeySheet.Detail, detailId = intent.id, editing = false, editName = item?.name.orEmpty())
+                copy(
+                    sheet = PasskeySheet.Detail,
+                    detailId = intent.id,
+                    editing = false,
+                    editName = item?.name.orEmpty(),
+                )
             }
             PasskeysIntent.StartEdit -> setState { copy(editing = true, editName = detail?.name.orEmpty()) }
             is PasskeysIntent.EditNameChanged -> setState { copy(editName = intent.value) }
@@ -212,22 +217,23 @@ internal class PasskeysViewModel @Inject constructor(
         }
     }
 
-    private fun PasskeyCredential.toItem(): PasskeyItem = PasskeyItem(
-        id = id,
-        name = deviceName?.takeIf { it.isNotBlank() },
-        isSynced = isSynced,
-        createdAtLabel = formatCreated(createdAt),
-    )
+    private fun PasskeyCredential.toItem(): PasskeyItem =
+        PasskeyItem(
+            id = id,
+            name = deviceName?.takeIf { it.isNotBlank() },
+            isSynced = isSynced,
+            createdAtLabel = formatCreated(createdAt),
+        )
 
     // Locale-aware medium date; the wire value is an ISO-8601 instant.
-    private fun formatCreated(iso: String): String = try {
-        CreatedFormatter.format(Instant.parse(iso))
-    } catch (e: Exception) {
-        ""
-    }
+    private fun formatCreated(iso: String): String =
+        try {
+            CreatedFormatter.format(Instant.parse(iso))
+        } catch (e: Exception) {
+            ""
+        }
 
-    private fun defaultDeviceName(): String =
-        Build.MODEL?.takeIf { it.isNotBlank() } ?: Build.MANUFACTURER.orEmpty()
+    private fun defaultDeviceName(): String = Build.MODEL?.takeIf { it.isNotBlank() } ?: Build.MANUFACTURER.orEmpty()
 
     private companion object {
         const val SUCCESS_DWELL_MS = 1100L

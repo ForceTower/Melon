@@ -9,6 +9,5 @@ import dev.zacsweers.metro.Inject
 class DeletePasskeyUseCase internal constructor(
     private val repository: PasskeyRepository,
 ) {
-    suspend operator fun invoke(id: String): Outcome<Unit, PasskeyError> =
-        repository.delete(id)
+    suspend operator fun invoke(id: String): Outcome<Unit, PasskeyError> = repository.delete(id)
 }

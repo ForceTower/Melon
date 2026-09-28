@@ -177,7 +177,10 @@ internal fun CampusEventWelcome(
 }
 
 @Composable
-private fun SkipButton(onEnter: () -> Unit, modifier: Modifier = Modifier) {
+private fun SkipButton(
+    onEnter: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     val onHero = MaterialTheme.melon.fixed.onHero
     Text(
         text = stringResource(R.string.campus_event_welcome_skip),

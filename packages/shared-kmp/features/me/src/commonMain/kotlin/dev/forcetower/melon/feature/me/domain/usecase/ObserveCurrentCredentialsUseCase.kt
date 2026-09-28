@@ -16,9 +16,7 @@ import kotlinx.coroutines.flow.map
 class ObserveCurrentCredentialsUseCase internal constructor(
     private val credentialsDao: CredentialsDao,
 ) {
-    operator fun invoke(): Flow<UserCredentials?> =
-        credentialsDao.observeCurrent().map { it?.toDomain() }
+    operator fun invoke(): Flow<UserCredentials?> = credentialsDao.observeCurrent().map { it?.toDomain() }
 }
 
-private fun CredentialsEntity.toDomain() =
-    UserCredentials(username = username, password = password)
+private fun CredentialsEntity.toDomain() = UserCredentials(username = username, password = password)

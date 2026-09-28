@@ -33,9 +33,8 @@ class GetMaterialsOverviewUseCase internal constructor(
 class GetMaterialsDisciplineUseCase internal constructor(
     private val service: MaterialsService,
 ) {
-    suspend operator fun invoke(
-        disciplineId: String,
-    ): Outcome<MaterialsDisciplineDetails, MaterialsError> = service.discipline(disciplineId)
+    suspend operator fun invoke(disciplineId: String): Outcome<MaterialsDisciplineDetails, MaterialsError> =
+        service.discipline(disciplineId)
 }
 
 // One material by id — hydrates the detail screen from a `unes://materials/<id>`
@@ -44,9 +43,7 @@ class GetMaterialsDisciplineUseCase internal constructor(
 class GetMaterialUseCase internal constructor(
     private val service: MaterialsService,
 ) {
-    suspend operator fun invoke(
-        materialId: String,
-    ): Outcome<Material, MaterialsError> = service.material(materialId)
+    suspend operator fun invoke(materialId: String): Outcome<Material, MaterialsError> = service.material(materialId)
 }
 
 // The server-side bookmark shelf, in server order.
@@ -98,9 +95,8 @@ class ReportMaterialUseCase internal constructor(
 class OpenMaterialUseCase internal constructor(
     private val service: MaterialsService,
 ) {
-    suspend operator fun invoke(
-        materialId: String,
-    ): Outcome<FetchedMaterialFile, MaterialsError> = service.open(materialId)
+    suspend operator fun invoke(materialId: String): Outcome<FetchedMaterialFile, MaterialsError> =
+        service.open(materialId)
 }
 
 // Presigned-slot upload + metadata registration; returns the created material
@@ -109,9 +105,8 @@ class OpenMaterialUseCase internal constructor(
 class SubmitMaterialUseCase internal constructor(
     private val service: MaterialsService,
 ) {
-    suspend operator fun invoke(
-        submission: MaterialSubmission,
-    ): Outcome<Material, MaterialsError> = service.submit(submission)
+    suspend operator fun invoke(submission: MaterialSubmission): Outcome<Material, MaterialsError> =
+        service.submit(submission)
 }
 
 // The semester labels offered as quick-picks in the upload sheet, newest
@@ -125,8 +120,7 @@ class SubmitMaterialUseCase internal constructor(
 class GetUploadSemestersUseCase internal constructor(
     private val semesterDao: SemesterDao,
 ) {
-    suspend operator fun invoke(): List<String> =
-        semesterDao.listAll().map { semesterLabel(it.code) }.distinct()
+    suspend operator fun invoke(): List<String> = semesterDao.listAll().map { semesterLabel(it.code) }.distinct()
 }
 
 // "20261" → "2026.1". Everything else passes through as-is: postgrad

@@ -7,10 +7,13 @@ import dev.forcetower.unes.theme.ThemeMode
 // matches `user_settings.grade_spoiler` on the API and Room mirror; the
 // integers are the contract iOS `SpoilerMode.serverInt` writes. The dc
 // redesign labels them Valor / Resumo / Discreto.
-internal enum class SpoilerMode(val serverInt: Int) {
+internal enum class SpoilerMode(
+    val serverInt: Int,
+) {
     Value(0),
     Comment(1),
-    Posted(2);
+    Posted(2),
+    ;
 
     companion object {
         fun fromServerInt(value: Int): SpoilerMode? = entries.firstOrNull { it.serverInt == value }
@@ -64,7 +67,13 @@ private fun countOn(vararg values: Boolean): Int = values.count { it }
 // through one mutator instead of nine. Mapped to the corresponding KMP patch
 // field by `SettingsViewModel.toggle`.
 internal enum class NotifToggle {
-    MsgBroadcast, MsgClass, MsgDirect,
-    GradePosted, GradeChanged, GradeDateChanged,
-    ClassLocation, ClassMaterial, ClassSubject,
+    MsgBroadcast,
+    MsgClass,
+    MsgDirect,
+    GradePosted,
+    GradeChanged,
+    GradeDateChanged,
+    ClassLocation,
+    ClassMaterial,
+    ClassSubject,
 }

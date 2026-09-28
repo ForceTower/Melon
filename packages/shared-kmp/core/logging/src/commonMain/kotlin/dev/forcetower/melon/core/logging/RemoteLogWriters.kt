@@ -7,7 +7,9 @@ import co.touchlab.kermit.LogWriter
 // (the dep only runs network → logging, not the reverse), so it instead hands
 // back a RemoteLogWriters whose element type is the Kermit-provided LogWriter
 // interface that both modules already have on the classpath.
-class RemoteLogWriters(val writers: List<LogWriter>) {
+class RemoteLogWriters(
+    val writers: List<LogWriter>,
+) {
     companion object {
         val Empty = RemoteLogWriters(emptyList())
     }

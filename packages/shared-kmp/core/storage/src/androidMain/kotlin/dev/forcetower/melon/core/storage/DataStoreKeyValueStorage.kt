@@ -22,10 +22,12 @@ internal class DataStoreKeyValueStorage(
     private val dataStore: DataStore<Preferences>,
 ) : KeyValueStorage {
 
-    override suspend fun get(key: String): String? =
-        dataStore.data.first()[stringPreferencesKey(key)]
+    override suspend fun get(key: String): String? = dataStore.data.first()[stringPreferencesKey(key)]
 
-    override suspend fun put(key: String, value: String) {
+    override suspend fun put(
+        key: String,
+        value: String,
+    ) {
         dataStore.edit { it[stringPreferencesKey(key)] = value }
     }
 

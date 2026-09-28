@@ -10,6 +10,5 @@ import dev.zacsweers.metro.Inject
 class ListPasskeysUseCase internal constructor(
     private val repository: PasskeyRepository,
 ) {
-    suspend operator fun invoke(): Outcome<List<PasskeyCredential>, PasskeyError> =
-        repository.list()
+    suspend operator fun invoke(): Outcome<List<PasskeyCredential>, PasskeyError> = repository.list()
 }

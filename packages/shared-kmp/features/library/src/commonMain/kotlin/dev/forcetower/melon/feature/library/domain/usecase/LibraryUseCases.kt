@@ -28,9 +28,8 @@ class GetLibraryOverviewUseCase internal constructor(
 class SearchLibraryUseCase internal constructor(
     private val service: LibraryService,
 ) {
-    suspend operator fun invoke(
-        request: LibrarySearchRequest,
-    ): Outcome<LibrarySearchPage, LibraryError> = service.search(request)
+    suspend operator fun invoke(request: LibrarySearchRequest): Outcome<LibrarySearchPage, LibraryError> =
+        service.search(request)
 }
 
 // The per-work circulation consultation. Never fails: Pergamum going quiet
@@ -39,8 +38,7 @@ class SearchLibraryUseCase internal constructor(
 class CheckLibraryAvailabilityUseCase internal constructor(
     private val service: LibraryService,
 ) {
-    suspend operator fun invoke(workId: String): LibraryAvailabilitySnapshot =
-        service.availability(workId)
+    suspend operator fun invoke(workId: String): LibraryAvailabilitySnapshot = service.availability(workId)
 }
 
 // Wipes the server-kept recent searches; callers hide them optimistically.

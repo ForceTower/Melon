@@ -29,33 +29,39 @@ private const val MimeText = "text/plain"
 // the same composition the user is previewing. Replaying a Picture onto a
 // canvas we allocate looks equivalent but silently captures nothing: Compose's
 // `drawContent()` stays bound to the screen canvas.
-internal fun Modifier.recordShareCard(layer: GraphicsLayer): Modifier = drawWithContent {
-    layer.record { this@drawWithContent.drawContent() }
-    drawLayer(layer)
-}
+internal fun Modifier.recordShareCard(layer: GraphicsLayer): Modifier =
+    drawWithContent {
+        layer.record { this@drawWithContent.drawContent() }
+        drawLayer(layer)
+    }
 
 // The dp width to lay the card out at so its pixel size lands on the dc's 1080
 // grid — makes the export a 1:1 rasterization rather than a resample.
 internal fun exportCardWidth(density: Float): Float = ExportWidthPx / density
 
-internal suspend fun GraphicsLayer.toShareBitmap(): Bitmap? = runCatching {
-    val captured = toImageBitmap().asAndroidBitmap()
-    // Layer captures can come back hardware-backed, which neither scales nor
-    // compresses; copy down before touching it.
-    val software = if (captured.config == Bitmap.Config.HARDWARE) {
-        captured.copy(Bitmap.Config.ARGB_8888, false)
-    } else {
-        captured
-    }
-    if (software.width == ExportWidthPx) {
-        software
-    } else {
-        val height = (software.height * ExportWidthPx.toFloat() / software.width).toInt().coerceAtLeast(1)
-        Bitmap.createScaledBitmap(software, ExportWidthPx, height, true)
-    }
-}.getOrNull()
+internal suspend fun GraphicsLayer.toShareBitmap(): Bitmap? =
+    runCatching {
+        val captured = toImageBitmap().asAndroidBitmap()
+        // Layer captures can come back hardware-backed, which neither scales nor
+        // compresses; copy down before touching it.
+        val software = if (captured.config == Bitmap.Config.HARDWARE) {
+            captured.copy(Bitmap.Config.ARGB_8888, false)
+        } else {
+            captured
+        }
+        if (software.width == ExportWidthPx) {
+            software
+        } else {
+            val height = (software.height * ExportWidthPx.toFloat() / software.width).toInt().coerceAtLeast(1)
+            Bitmap.createScaledBitmap(software, ExportWidthPx, height, true)
+        }
+    }.getOrNull()
 
-internal fun shareImage(context: Context, bitmap: Bitmap, chooserTitle: String) {
+internal fun shareImage(
+    context: Context,
+    bitmap: Bitmap,
+    chooserTitle: String,
+) {
     val directory = File(context.cacheDir, ShareDirectory).apply { mkdirs() }
     val file = File(directory, ShareFileName)
     file.outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
@@ -69,7 +75,11 @@ internal fun shareImage(context: Context, bitmap: Bitmap, chooserTitle: String) 
     context.startActivity(Intent.createChooser(intent, chooserTitle))
 }
 
-internal fun shareText(context: Context, text: String, chooserTitle: String) {
+internal fun shareText(
+    context: Context,
+    text: String,
+    chooserTitle: String,
+) {
     val intent = Intent(Intent.ACTION_SEND).apply {
         type = MimeText
         putExtra(Intent.EXTRA_TEXT, text)
@@ -77,7 +87,10 @@ internal fun shareText(context: Context, text: String, chooserTitle: String) {
     context.startActivity(Intent.createChooser(intent, chooserTitle))
 }
 
-internal fun copyText(context: Context, text: String) {
+internal fun copyText(
+    context: Context,
+    text: String,
+) {
     context.getSystemService<ClipboardManager>()
         ?.setPrimaryClip(ClipData.newPlainText(null, text))
 }
@@ -93,7 +106,10 @@ internal val platformConfirmsCopy: Boolean
 internal val canSaveToDownloads: Boolean
     get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
 
-internal fun saveImageToDownloads(context: Context, bitmap: Bitmap): Boolean {
+internal fun saveImageToDownloads(
+    context: Context,
+    bitmap: Bitmap,
+): Boolean {
     if (!canSaveToDownloads) return false
     val values = ContentValues().apply {
         put(MediaStore.Downloads.DISPLAY_NAME, ShareFileName)

@@ -129,8 +129,11 @@ private fun EnrollmentDisciplineContent(
                             R.string.enrollment_discipline_eyebrow_format,
                             discipline.code,
                             stringResource(
-                                if (discipline.mandatory) R.string.enrollment_kind_mandatory
-                                else R.string.enrollment_kind_optional,
+                                if (discipline.mandatory) {
+                                    R.string.enrollment_kind_mandatory
+                                } else {
+                                    R.string.enrollment_kind_optional
+                                },
                             ),
                         ).uppercase(),
                         style = MaterialTheme.typography.labelMedium.copy(
@@ -183,8 +186,11 @@ private fun EnrollmentDisciplineContent(
                         tone = if (unmet) EnrollmentBannerTone.Danger else EnrollmentBannerTone.Ok,
                         icon = if (unmet) Icons.Filled.Warning else Icons.Filled.Check,
                         title = stringResource(
-                            if (unmet) R.string.enrollment_prereq_unmet_title
-                            else R.string.enrollment_prereq_met_title,
+                            if (unmet) {
+                                R.string.enrollment_prereq_unmet_title
+                            } else {
+                                R.string.enrollment_prereq_met_title
+                            },
                         ),
                         text = buildString {
                             append(

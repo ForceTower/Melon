@@ -27,7 +27,9 @@ import kotlin.random.Random
 // advance so the Canvas (whose draw closure has no other observable state to
 // read) re-runs every frame.
 @Stable
-internal class FolioRunnerEngine(initialBest: Int) {
+internal class FolioRunnerEngine(
+    initialBest: Int,
+) {
     enum class Phase { Ready, Playing, GameOver }
 
     var phase by mutableStateOf(Phase.Ready)
@@ -56,7 +58,10 @@ internal class FolioRunnerEngine(initialBest: Int) {
     private var runFlipIn = 0.13
     private var restartLockUntilMs: Long? = null
 
-    private data class Obstacle(var x: Float, val kind: Kind) {
+    private data class Obstacle(
+        var x: Float,
+        val kind: Kind,
+    ) {
         enum class Kind { Books, Plane }
     }
 
@@ -110,7 +115,10 @@ internal class FolioRunnerEngine(initialBest: Int) {
 
     // MARK: Tick
 
-    fun advance(dtSeconds: Double, size: Size) {
+    fun advance(
+        dtSeconds: Double,
+        size: Size,
+    ) {
         sceneTick++
         if (phase != Phase.Playing) return
         // Cap dt so a stutter doesn't teleport obstacles through Folio.
@@ -203,7 +211,10 @@ internal class FolioRunnerEngine(initialBest: Int) {
         }
     }
 
-    private fun obstacleCollisionRect(obs: Obstacle, size: Size): Rect {
+    private fun obstacleCollisionRect(
+        obs: Obstacle,
+        size: Size,
+    ): Rect {
         val footY = groundLine(size)
         return when (obs.kind) {
             Obstacle.Kind.Books -> Rect(obs.x - 14f, footY - 42f, obs.x + 14f, footY)
@@ -217,7 +228,11 @@ internal class FolioRunnerEngine(initialBest: Int) {
     // Canvas draw block so the snapshot system observes `sceneTick` and
     // reschedules a redraw on each advance. Forwarding it through the call
     // keeps the read side-effect-free at the call site.
-    fun render(scope: DrawScope, size: Size, tick: Int = 0) {
+    fun render(
+        scope: DrawScope,
+        size: Size,
+        tick: Int = 0,
+    ) {
         check(tick >= 0)
         val footY = groundLine(size)
         drawClouds(scope, size)
@@ -274,18 +289,22 @@ internal class FolioRunnerEngine(initialBest: Int) {
         )
     }
 
-    private fun currentPose(): FolioPose = when (phase) {
-        Phase.Ready -> FolioPose.Idle
-        Phase.GameOver -> FolioPose.Duck
-        Phase.Playing -> when {
-            folioY > 0f -> FolioPose.Jump
-            isDucking -> FolioPose.Duck
-            runFrame -> FolioPose.RunA
-            else -> FolioPose.RunB
+    private fun currentPose(): FolioPose =
+        when (phase) {
+            Phase.Ready -> FolioPose.Idle
+            Phase.GameOver -> FolioPose.Duck
+            Phase.Playing -> when {
+                folioY > 0f -> FolioPose.Jump
+                isDucking -> FolioPose.Duck
+                runFrame -> FolioPose.RunA
+                else -> FolioPose.RunB
+            }
         }
-    }
 
-    private fun drawClouds(scope: DrawScope, size: Size) {
+    private fun drawClouds(
+        scope: DrawScope,
+        size: Size,
+    ) {
         // Two slow-moving paper-cutout clouds. The shape is a single bumpy
         // curve closed along the bottom — cheap and reads as a friendly cloud
         // at small sizes.
@@ -305,18 +324,26 @@ internal class FolioRunnerEngine(initialBest: Int) {
         )
     }
 
-    private fun cloudPath(origin: Offset, scale: Float): Path = Path().apply {
-        val x = origin.x
-        val y = origin.y
-        moveTo(x + 6f * scale, y + 14f * scale)
-        quadraticTo(x + 4f * scale, y + 4f * scale, x + 14f * scale, y + 6f * scale)
-        quadraticTo(x + 20f * scale, y - 2f * scale, x + 28f * scale, y + 4f * scale)
-        quadraticTo(x + 40f * scale, y - 1f * scale, x + 44f * scale, y + 8f * scale)
-        quadraticTo(x + 52f * scale, y + 8f * scale, x + 50f * scale, y + 14f * scale)
-        close()
-    }
+    private fun cloudPath(
+        origin: Offset,
+        scale: Float,
+    ): Path =
+        Path().apply {
+            val x = origin.x
+            val y = origin.y
+            moveTo(x + 6f * scale, y + 14f * scale)
+            quadraticTo(x + 4f * scale, y + 4f * scale, x + 14f * scale, y + 6f * scale)
+            quadraticTo(x + 20f * scale, y - 2f * scale, x + 28f * scale, y + 4f * scale)
+            quadraticTo(x + 40f * scale, y - 1f * scale, x + 44f * scale, y + 8f * scale)
+            quadraticTo(x + 52f * scale, y + 8f * scale, x + 50f * scale, y + 14f * scale)
+            close()
+        }
 
-    private fun drawObstacle(scope: DrawScope, obs: Obstacle, size: Size) {
+    private fun drawObstacle(
+        scope: DrawScope,
+        obs: Obstacle,
+        size: Size,
+    ) {
         val footY = groundLine(size)
         val inkStroke = Stroke(width = 1.5f, join = StrokeJoin.Round)
         when (obs.kind) {

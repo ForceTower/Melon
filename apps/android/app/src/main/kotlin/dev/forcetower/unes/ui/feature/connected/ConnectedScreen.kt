@@ -32,10 +32,12 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberDecoratedNavEntries
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
+import dev.forcetower.melon.feature.paradoxo.domain.model.ParadoxoExploreKind
 import dev.forcetower.unes.designsystem.foundation.RevealWindowHost
 import dev.forcetower.unes.designsystem.theme.MelonMotion
 import dev.forcetower.unes.designsystem.theme.MelonTheme
 import dev.forcetower.unes.designsystem.theme.melon
+import dev.forcetower.unes.ui.feature.calendar.CalendarScreen
 import dev.forcetower.unes.ui.feature.campusevent.CampusEventActivityScreen
 import dev.forcetower.unes.ui.feature.campusevent.CampusEventOrganizationsScreen
 import dev.forcetower.unes.ui.feature.campusevent.CampusEventScreen
@@ -50,17 +52,6 @@ import dev.forcetower.unes.ui.feature.disciplines.Discipline
 import dev.forcetower.unes.ui.feature.disciplines.DisciplinesIntent
 import dev.forcetower.unes.ui.feature.disciplines.DisciplinesListViewModel
 import dev.forcetower.unes.ui.feature.disciplines.DisciplinesScreen
-import dev.forcetower.unes.ui.feature.me.MeScreen
-import dev.forcetower.unes.ui.feature.messages.MessageDetailRoute
-import dev.forcetower.unes.ui.feature.messages.MessagesIntent
-import dev.forcetower.unes.ui.feature.messages.MessagesScreen
-import dev.forcetower.unes.ui.feature.messages.MessagesViewModel
-import dev.forcetower.unes.ui.feature.onboarding.components.SystemBarIconsEffect
-import dev.forcetower.unes.ui.feature.overview.ColorFor
-import dev.forcetower.unes.ui.feature.overview.OverviewScreen
-import dev.forcetower.unes.ui.feature.schedule.ScheduleRoute
-import dev.forcetower.unes.ui.feature.calendar.CalendarScreen
-import dev.forcetower.melon.feature.paradoxo.domain.model.ParadoxoExploreKind
 import dev.forcetower.unes.ui.feature.enrollment.EnrollmentDisciplineScreen
 import dev.forcetower.unes.ui.feature.enrollment.EnrollmentOffersScreen
 import dev.forcetower.unes.ui.feature.enrollment.EnrollmentReviewScreen
@@ -78,10 +69,19 @@ import dev.forcetower.unes.ui.feature.materials.MaterialsDetailViewModel
 import dev.forcetower.unes.ui.feature.materials.MaterialsHubScreen
 import dev.forcetower.unes.ui.feature.materials.MaterialsListScreen
 import dev.forcetower.unes.ui.feature.materials.MaterialsSavedScreen
+import dev.forcetower.unes.ui.feature.me.MeScreen
+import dev.forcetower.unes.ui.feature.messages.MessageDetailRoute
+import dev.forcetower.unes.ui.feature.messages.MessagesIntent
+import dev.forcetower.unes.ui.feature.messages.MessagesScreen
+import dev.forcetower.unes.ui.feature.messages.MessagesViewModel
+import dev.forcetower.unes.ui.feature.onboarding.components.SystemBarIconsEffect
+import dev.forcetower.unes.ui.feature.overview.ColorFor
+import dev.forcetower.unes.ui.feature.overview.OverviewScreen
 import dev.forcetower.unes.ui.feature.paradoxo.ParadoxoDisciplineScreen
 import dev.forcetower.unes.ui.feature.paradoxo.ParadoxoExploreScreen
 import dev.forcetower.unes.ui.feature.paradoxo.ParadoxoScreen
 import dev.forcetower.unes.ui.feature.paradoxo.ParadoxoTeacherScreen
+import dev.forcetower.unes.ui.feature.schedule.ScheduleRoute
 import dev.forcetower.unes.ui.feature.settings.SettingsScreen
 import dev.forcetower.unes.ui.feature.settings.passkeys.PasskeysScreen
 
@@ -619,19 +619,20 @@ private fun seedDiscipline(
     prof: String,
     color: Color,
     offerId: String,
-): Discipline = Discipline(
-    code = code,
-    fullCode = code,
-    title = title,
-    dept = "",
-    prof = prof,
-    color = color,
-    hours = 0,
-    absences = 0,
-    allowedAbsences = 0,
-    sections = emptyList(),
-    offerId = offerId,
-)
+): Discipline =
+    Discipline(
+        code = code,
+        fullCode = code,
+        title = title,
+        dept = "",
+        prof = prof,
+        color = color,
+        hours = 0,
+        absences = 0,
+        allowedAbsences = 0,
+        sections = emptyList(),
+        offerId = offerId,
+    )
 
 @Preview
 @Composable

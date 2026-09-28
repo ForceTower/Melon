@@ -7,7 +7,10 @@ import dev.forcetower.melon.feature.auth.domain.model.PasskeyAssertion
 import dev.forcetower.melon.feature.auth.domain.model.PasskeyChallenge
 
 internal interface AuthRepository {
-    suspend fun login(username: String, password: String): Outcome<User, LoginError>
+    suspend fun login(
+        username: String,
+        password: String,
+    ): Outcome<User, LoginError>
 
     suspend fun beginPasskeyLogin(username: String?): Outcome<PasskeyChallenge, LoginError>
 

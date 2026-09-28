@@ -15,8 +15,7 @@ import kotlinx.datetime.LocalDate
 class ObservePersonalEventsUseCase internal constructor(
     private val dao: PersonalEventDao,
 ) {
-    operator fun invoke(): Flow<List<PersonalEvent>> =
-        dao.observeAll().map { rows -> rows.mapNotNull { it.project() } }
+    operator fun invoke(): Flow<List<PersonalEvent>> = dao.observeAll().map { rows -> rows.mapNotNull { it.project() } }
 }
 
 // One-shot read for the reminder snapshot, which runs outside composition.
@@ -66,16 +65,17 @@ private fun PersonalEventEntity.discipline(): PersonalEventDiscipline? {
     return PersonalEventDiscipline(id = id, code = code, name = name)
 }
 
-private fun PersonalEvent.toEntity(): PersonalEventEntity = PersonalEventEntity(
-    id = id,
-    title = title,
-    start = start.toString(),
-    end = end?.toString(),
-    category = category.wire,
-    disciplineId = discipline?.id,
-    disciplineCode = discipline?.code,
-    disciplineName = discipline?.name,
-    reminderDays = reminder.days,
-    notes = notes,
-    createdAt = createdAt,
-)
+private fun PersonalEvent.toEntity(): PersonalEventEntity =
+    PersonalEventEntity(
+        id = id,
+        title = title,
+        start = start.toString(),
+        end = end?.toString(),
+        category = category.wire,
+        disciplineId = discipline?.id,
+        disciplineCode = discipline?.code,
+        disciplineName = discipline?.name,
+        reminderDays = reminder.days,
+        notes = notes,
+        createdAt = createdAt,
+    )

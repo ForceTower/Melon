@@ -19,9 +19,10 @@ import io.ktor.http.contentType
 // which run before a session exists). Rename/delete address a credential by
 // id in the query string (`?id=…`), matching the API contract.
 @Inject
-internal class PasskeyService(private val client: HttpClient) {
-    suspend fun registerOptions(): HttpResponse =
-        client.post("api/passkey/register/options")
+internal class PasskeyService(
+    private val client: HttpClient,
+) {
+    suspend fun registerOptions(): HttpResponse = client.post("api/passkey/register/options")
 
     suspend fun registerVerify(body: PasskeyRegisterVerifyRequest): HttpResponse =
         client.post("api/passkey/register/verify") {
@@ -29,10 +30,12 @@ internal class PasskeyService(private val client: HttpClient) {
             setBody(body)
         }
 
-    suspend fun credentials(): HttpResponse =
-        client.get("api/passkey/credentials")
+    suspend fun credentials(): HttpResponse = client.get("api/passkey/credentials")
 
-    suspend fun rename(id: String, body: PasskeyRenameRequest): HttpResponse =
+    suspend fun rename(
+        id: String,
+        body: PasskeyRenameRequest,
+    ): HttpResponse =
         client.patch("api/passkey/credentials") {
             parameter("id", id)
             contentType(ContentType.Application.Json)

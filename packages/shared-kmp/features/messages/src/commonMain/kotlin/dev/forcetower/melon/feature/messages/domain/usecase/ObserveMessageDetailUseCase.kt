@@ -17,14 +17,15 @@ import kotlinx.coroutines.flow.combine
 class ObserveMessageDetailUseCase internal constructor(
     private val messageDao: MessageDao,
 ) {
-    operator fun invoke(messageId: String): Flow<MessageFeedDetail?> = combine(
-        messageDao.observeMessage(messageId),
-        messageDao.observeScopesFor(messageId),
-        messageDao.observeAttachmentsFor(messageId),
-        messageDao.observeStates(listOf(messageId)),
-    ) { message, scopes, attachments, states ->
-        message?.let { build(it, scopes, attachments, states.firstOrNull()) }
-    }
+    operator fun invoke(messageId: String): Flow<MessageFeedDetail?> =
+        combine(
+            messageDao.observeMessage(messageId),
+            messageDao.observeScopesFor(messageId),
+            messageDao.observeAttachmentsFor(messageId),
+            messageDao.observeStates(listOf(messageId)),
+        ) { message, scopes, attachments, states ->
+            message?.let { build(it, scopes, attachments, states.firstOrNull()) }
+        }
 
     private fun build(
         entity: MessageEntity,
@@ -53,11 +54,12 @@ class ObserveMessageDetailUseCase internal constructor(
         )
     }
 
-    private fun MessageAttachmentEntity.toModel(): MessageFeedAttachment = MessageFeedAttachment(
-        id = id,
-        kind = kind.toMessageFeedAttachmentKind(),
-        name = name,
-        url = url,
-        position = position,
-    )
+    private fun MessageAttachmentEntity.toModel(): MessageFeedAttachment =
+        MessageFeedAttachment(
+            id = id,
+            kind = kind.toMessageFeedAttachmentKind(),
+            name = name,
+            url = url,
+            position = position,
+        )
 }

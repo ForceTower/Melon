@@ -57,16 +57,17 @@ internal class TokenRefresherImpl(
         install(DefaultRequest) { url(baseUrl.value) }
     }
 
-    override suspend fun refresh(staleAccessToken: String): Boolean = mutex.withLock {
-        val current = sessionStore.getAccessToken()
-        when {
-            current == null -> false
-            // Another caller rotated the pair while this request sat on its 401.
-            current != staleAccessToken -> true
-            burnedAccessToken == staleAccessToken -> false
-            else -> rotate(staleAccessToken)
+    override suspend fun refresh(staleAccessToken: String): Boolean =
+        mutex.withLock {
+            val current = sessionStore.getAccessToken()
+            when {
+                current == null -> false
+                // Another caller rotated the pair while this request sat on its 401.
+                current != staleAccessToken -> true
+                burnedAccessToken == staleAccessToken -> false
+                else -> rotate(staleAccessToken)
+            }
         }
-    }
 
     private suspend fun rotate(staleAccessToken: String): Boolean {
         val refreshToken = sessionStore.getRefreshToken()

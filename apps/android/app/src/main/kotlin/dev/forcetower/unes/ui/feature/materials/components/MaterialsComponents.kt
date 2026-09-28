@@ -53,7 +53,10 @@ import dev.forcetower.unes.ui.feature.materials.labelRes
 // Shared building blocks for the Materiais screens (dc `MateriaisScreen`).
 
 @Composable
-internal fun MaterialsBackButton(onBack: () -> Unit, modifier: Modifier = Modifier) {
+internal fun MaterialsBackButton(
+    onBack: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     IconButton(onClick = onBack, modifier = modifier) {
         Icon(
             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -65,7 +68,10 @@ internal fun MaterialsBackButton(onBack: () -> Unit, modifier: Modifier = Modifi
 
 // "MEUS ENVIOS" / "ACERVO" / "SUAS DISCIPLINAS" eyebrow.
 @Composable
-internal fun MaterialsSectionLabel(text: String, modifier: Modifier = Modifier) {
+internal fun MaterialsSectionLabel(
+    text: String,
+    modifier: Modifier = Modifier,
+) {
     Text(
         text = text.uppercase(),
         style = MaterialTheme.typography.labelSmall.copy(
@@ -81,7 +87,10 @@ internal fun MaterialsSectionLabel(text: String, modifier: Modifier = Modifier) 
 // White-on-tint rounded square with the type glyph — the leading badge on
 // every material row.
 @Composable
-internal fun MaterialTypeBadge(material: Material, modifier: Modifier = Modifier) {
+internal fun MaterialTypeBadge(
+    material: Material,
+    modifier: Modifier = Modifier,
+) {
     Box(
         modifier = modifier
             .size(44.dp)
@@ -239,7 +248,10 @@ internal fun MineMaterialRow(
 
 // "Em análise" (amber schedule) / "Não aprovado" (coral warning) chip.
 @Composable
-internal fun MaterialStatusPill(status: MaterialStatus, modifier: Modifier = Modifier) {
+internal fun MaterialStatusPill(
+    status: MaterialStatus,
+    modifier: Modifier = Modifier,
+) {
     val pending = status == MaterialStatus.Pending
     val tone = if (pending) MaterialTheme.melon.status.warn else MaterialTheme.melon.status.bad
     Row(
@@ -323,18 +335,20 @@ private fun Material.rowMeta(): String {
     return listOfNotNull(semester, pages, prof).joinToString(" · ")
 }
 
-internal fun MaterialFileKind.icon() = when (this) {
-    MaterialFileKind.Pdf -> Icons.Filled.Description
-    MaterialFileKind.Photo -> Icons.Filled.PhotoCamera
-}
+internal fun MaterialFileKind.icon() =
+    when (this) {
+        MaterialFileKind.Pdf -> Icons.Filled.Description
+        MaterialFileKind.Photo -> Icons.Filled.PhotoCamera
+    }
 
 @Composable
-internal fun MaterialFileKind.label(): String = stringResource(
-    when (this) {
-        MaterialFileKind.Pdf -> R.string.materials_file_kind_pdf
-        MaterialFileKind.Photo -> R.string.materials_file_kind_photo
-    },
-)
+internal fun MaterialFileKind.label(): String =
+    stringResource(
+        when (this) {
+            MaterialFileKind.Pdf -> R.string.materials_file_kind_pdf
+            MaterialFileKind.Photo -> R.string.materials_file_kind_photo
+        },
+    )
 
 // Compact download tally with locale-aware thousands ("1,2 mil").
 internal fun formatDownloads(count: Int): String = MaterialsFormat.compactCount(count)

@@ -14,6 +14,5 @@ import dev.zacsweers.metro.Inject
 class SyncSemesterListUseCase internal constructor(
     private val mirror: MirrorRepository,
 ) {
-    suspend operator fun invoke(): Outcome<List<SemesterSummary>, SyncError> =
-        mirror.syncSemesterList()
+    suspend operator fun invoke(): Outcome<List<SemesterSummary>, SyncError> = mirror.syncSemesterList()
 }

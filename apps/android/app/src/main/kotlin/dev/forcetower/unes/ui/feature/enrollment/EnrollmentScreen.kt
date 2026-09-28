@@ -206,7 +206,11 @@ private fun EnrollmentStatusContent(
                 subText = if (conflictCount > 0) {
                     pluralStringResource(R.plurals.enrollment_dock_conflicts, conflictCount, conflictCount)
                 } else {
-                    pluralStringResource(R.plurals.enrollment_dock_disciplines, state.resolvedPicks.size, state.resolvedPicks.size)
+                    pluralStringResource(
+                        R.plurals.enrollment_dock_disciplines,
+                        state.resolvedPicks.size,
+                        state.resolvedPicks.size,
+                    )
                 },
                 subColor = if (conflictCount > 0) MaterialTheme.melon.status.bad else MaterialTheme.colorScheme.outline,
                 primaryLabel = stringResource(
@@ -235,9 +239,15 @@ private fun EnrollmentStatusContent(
 }
 
 @Composable
-private fun StatTiles(state: EnrollmentUiState, modifier: Modifier = Modifier) {
+private fun StatTiles(
+    state: EnrollmentUiState,
+    modifier: Modifier = Modifier,
+) {
     val conflicts = state.conflicts.size
-    Row(modifier = modifier.fillMaxWidth().fadeUpOnAppear(delayMs = 160), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+    Row(
+        modifier = modifier.fillMaxWidth().fadeUpOnAppear(delayMs = 160),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
         EnrollmentStatTile(
             label = stringResource(R.string.enrollment_stat_disciplines),
             value = state.resolvedPicks.size.toString(),
@@ -248,8 +258,11 @@ private fun StatTiles(state: EnrollmentUiState, modifier: Modifier = Modifier) {
             label = stringResource(R.string.enrollment_stat_conflicts),
             value = conflicts.toString(),
             hint = stringResource(
-                if (conflicts > 0) R.string.enrollment_stat_conflicts_fix
-                else R.string.enrollment_stat_conflicts_ok,
+                if (conflicts > 0) {
+                    R.string.enrollment_stat_conflicts_fix
+                } else {
+                    R.string.enrollment_stat_conflicts_ok
+                },
             ),
             valueColor = if (conflicts > 0) MaterialTheme.melon.status.bad else MaterialTheme.melon.status.ok,
             modifier = Modifier.weight(1f),
@@ -471,7 +484,10 @@ private fun ErrorState(
 }
 
 @Composable
-private fun OffersFailedCard(onRetry: () -> Unit, modifier: Modifier = Modifier) {
+private fun OffersFailedCard(
+    onRetry: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     val shape = RoundedCornerShape(20.dp)
     Column(
         modifier = modifier

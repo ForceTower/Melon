@@ -14,7 +14,9 @@ import kotlinx.serialization.Serializable
 // the server syncs with; `POST api/me/credentials` replaces the password after
 // it stops working. Mirrors iOS `CredentialStatusRepository`.
 @Inject
-internal class CredentialStatusService(private val client: HttpClient) {
+internal class CredentialStatusService(
+    private val client: HttpClient,
+) {
     suspend fun status(): HttpResponse = client.get("api/me/status")
 
     suspend fun reauthenticate(body: ReauthRequest): HttpResponse =
@@ -25,7 +27,9 @@ internal class CredentialStatusService(private val client: HttpClient) {
 }
 
 @Serializable
-internal data class CredentialStatusResponse(val credentials: CredentialHealthDto)
+internal data class CredentialStatusResponse(
+    val credentials: CredentialHealthDto,
+)
 
 @Serializable
 internal data class CredentialHealthDto(

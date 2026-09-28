@@ -13,7 +13,9 @@ import io.ktor.http.contentType
 // The bearer token is attached by the shared client's AuthInterceptor, so these
 // need no auth handling. Paths are relative to the configured base URL.
 @Inject
-internal class EnrollmentApi(private val client: HttpClient) {
+internal class EnrollmentApi(
+    private val client: HttpClient,
+) {
     suspend fun window(): HttpResponse = client.get("api/enrollment/window")
 
     suspend fun offers(): HttpResponse = client.get("api/enrollment/offers")

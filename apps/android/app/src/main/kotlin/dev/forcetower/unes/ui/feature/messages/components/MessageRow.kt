@@ -156,10 +156,19 @@ internal fun MessageRow(
 }
 
 @Composable
-private fun RelTimeLabel(time: RelativeTime, unread: Boolean) {
+private fun RelTimeLabel(
+    time: RelativeTime,
+    unread: Boolean,
+) {
     val text = when (time) {
         is RelativeTime.Literal -> time.text
-        is RelativeTime.Resource -> if (time.arg != null) stringResource(time.res, time.arg) else stringResource(time.res)
+        is RelativeTime.Resource -> if (time.arg !=
+            null
+        ) {
+            stringResource(time.res, time.arg)
+        } else {
+            stringResource(time.res)
+        }
     }
     Text(
         text = text,

@@ -18,7 +18,12 @@ interface UserDao {
     suspend fun upsert(user: UserEntity)
 
     @Query("UPDATE User SET name = :name, imageUrl = :imageUrl, email = :email WHERE id = :id")
-    suspend fun updateProfile(id: String, name: String, imageUrl: String?, email: String?)
+    suspend fun updateProfile(
+        id: String,
+        name: String,
+        imageUrl: String?,
+        email: String?,
+    )
 
     @Query("DELETE FROM User")
     suspend fun clear()

@@ -35,8 +35,7 @@ internal class SettingsRepositoryImpl(
 
     private val log = logger.withTag("SettingsRepositoryImpl")
 
-    override fun observe(): Flow<UserSettings?> =
-        dao.observeCurrent().map { it?.toDomain() }
+    override fun observe(): Flow<UserSettings?> = dao.observeCurrent().map { it?.toDomain() }
 
     override suspend fun update(patch: UserSettingsPatch): Outcome<UserSettings, SettingsError> {
         val current = dao.getCurrent()

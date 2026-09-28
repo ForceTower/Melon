@@ -193,7 +193,11 @@ internal class LibraryViewModel @Inject constructor(
     }
 
     // Rebuilds a session lost to process death from the route's primary term.
-    fun restoreSession(sessionId: Int, query: String, scope: LibrarySearchScope) {
+    fun restoreSession(
+        sessionId: Int,
+        query: String,
+        scope: LibrarySearchScope,
+    ) {
         if (currentState.sessions.containsKey(sessionId)) return
         nextSessionId = max(nextSessionId, sessionId + 1)
         setState {
@@ -217,7 +221,11 @@ internal class LibraryViewModel @Inject constructor(
         }
     }
 
-    private fun toggleFacet(sessionId: Int, group: LibraryFacetGroup, key: String) {
+    private fun toggleFacet(
+        sessionId: Int,
+        group: LibraryFacetGroup,
+        key: String,
+    ) {
         updateSession(sessionId) {
             val current = facets[group].orEmpty()
             val next = if (key in current) current - key else current + key
@@ -239,7 +247,10 @@ internal class LibraryViewModel @Inject constructor(
     // Called by the paging source as each page lands: the total and the facet
     // counts are identical on every page of the same query, so last-write-wins
     // is safe; every served work seeds the in-memory record map for detail.
-    private fun onPageLoaded(sessionId: Int, page: LibrarySearchPage) {
+    private fun onPageLoaded(
+        sessionId: Int,
+        page: LibrarySearchPage,
+    ) {
         setState {
             val session = sessions[sessionId]
             copy(
@@ -261,7 +272,10 @@ internal class LibraryViewModel @Inject constructor(
     // One consultation per work: skip if a reading exists or one is in
     // flight. `checkAvailability` never throws — Pergamum going quiet comes
     // back as `Unavailable`, which the rows narrate.
-    private fun ensureReading(workId: String, force: Boolean) {
+    private fun ensureReading(
+        workId: String,
+        force: Boolean,
+    ) {
         if (!force && currentState.readings.containsKey(workId)) return
         if (!checking.add(workId)) return
         viewModelScope.launch {

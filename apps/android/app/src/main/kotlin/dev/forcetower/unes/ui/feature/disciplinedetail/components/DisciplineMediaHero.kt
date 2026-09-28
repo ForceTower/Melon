@@ -12,6 +12,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.TrendingUp
+import androidx.compose.material.icons.filled.Cancel
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Flag
+import androidx.compose.material.icons.filled.HourglassEmpty
+import androidx.compose.material.icons.filled.WarningAmber
+import androidx.compose.material.icons.filled.WorkspacePremium
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -30,14 +38,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.TrendingUp
-import androidx.compose.material.icons.filled.Cancel
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Flag
-import androidx.compose.material.icons.filled.HourglassEmpty
-import androidx.compose.material.icons.filled.WarningAmber
-import androidx.compose.material.icons.filled.WorkspacePremium
 import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.theme.melon
 import dev.forcetower.unes.ui.feature.disciplines.Discipline
@@ -102,7 +102,11 @@ internal fun DisciplineMediaHero(
             ) {
                 Text(
                     text = stringResource(
-                        if (closed) R.string.discipline_detail_media_final else R.string.discipline_detail_media_partial,
+                        if (closed) {
+                            R.string.discipline_detail_media_final
+                        } else {
+                            R.string.discipline_detail_media_partial
+                        },
                     ).uppercase(Locale.ROOT),
                     style = MaterialTheme.typography.labelMedium.copy(
                         fontWeight = FontWeight.ExtraBold,
@@ -156,7 +160,10 @@ internal fun DisciplineMediaHero(
 // M3 determinate circular indicator with the mean centered — the ring fills
 // mean/10.
 @Composable
-private fun MediaRing(value: Double?, subject: Color) {
+private fun MediaRing(
+    value: Double?,
+    subject: Color,
+) {
     Box(contentAlignment = Alignment.Center) {
         CircularProgressIndicator(
             progress = { ((value ?: 0.0) / 10.0).toFloat().coerceIn(0f, 1f) },
@@ -180,12 +187,19 @@ private fun MediaRing(value: Double?, subject: Color) {
 // Verdict pill. Upstream `approved` is authoritative; "Prova final" while the
 // exam is pending; grade-threshold statuses only while in progress.
 @Composable
-private fun StatusPill(discipline: Discipline, modifier: Modifier = Modifier) {
+private fun StatusPill(
+    discipline: Discipline,
+    modifier: Modifier = Modifier,
+) {
     val ok = MaterialTheme.melon.status.ok
     val warn = MaterialTheme.melon.status.warn
     val bad = MaterialTheme.melon.status.bad
 
-    data class Pill(val label: String, val color: Color, val icon: ImageVector)
+    data class Pill(
+        val label: String,
+        val color: Color,
+        val icon: ImageVector,
+    )
     val pill = when {
         discipline.approved == true && (discipline.wentToFinals || discipline.finalExam != null) -> Pill(
             stringResource(R.string.discipline_detail_status_approved_final),

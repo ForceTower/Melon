@@ -4,6 +4,8 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.forcetower.melon.core.analytics.Analytics
 import dev.forcetower.melon.core.analytics.ContentTypes
+import dev.forcetower.melon.feature.disciplines.domain.model.DisciplineListItem as KmpListItem
+import dev.forcetower.melon.feature.disciplines.domain.model.ListGradeEntry as KmpGrade
 import dev.forcetower.melon.feature.disciplines.domain.usecase.ObserveDisciplinesListUseCase
 import dev.forcetower.unes.mvi.MviViewModel
 import dev.forcetower.unes.mvi.UiEffect
@@ -16,8 +18,6 @@ import kotlin.math.roundToInt
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import dev.forcetower.melon.feature.disciplines.domain.model.DisciplineListItem as KmpListItem
-import dev.forcetower.melon.feature.disciplines.domain.model.ListGradeEntry as KmpGrade
 
 // Drives the Final Countdown screen. Mirrors iOS `FinalCountdownFeature`: the
 // picker choices come from the current semester of the same disciplines flow
@@ -34,27 +34,45 @@ internal data class FinalCountdownUiState(
 ) : UiState {
     companion object {
         // Blank trio for modo livre — labels match the dc default rows.
-        fun freeRows(): List<FCRow> = listOf(
-            FCRow(label = "VA1"),
-            FCRow(label = "VA2"),
-            FCRow(label = "Trab"),
-        )
+        fun freeRows(): List<FCRow> =
+            listOf(
+                FCRow(label = "VA1"),
+                FCRow(label = "VA2"),
+                FCRow(label = "Trab"),
+            )
     }
 }
 
 internal sealed interface FinalCountdownIntent : UiIntent {
-    data class RowLabelChanged(val id: String, val label: String) : FinalCountdownIntent
-    data class RowScoreChanged(val id: String, val text: String) : FinalCountdownIntent
-    data class RowWeightChanged(val id: String, val delta: Int) : FinalCountdownIntent
-    data class RemoveRow(val id: String) : FinalCountdownIntent
+    data class RowLabelChanged(
+        val id: String,
+        val label: String,
+    ) : FinalCountdownIntent
+    data class RowScoreChanged(
+        val id: String,
+        val text: String,
+    ) : FinalCountdownIntent
+    data class RowWeightChanged(
+        val id: String,
+        val delta: Int,
+    ) : FinalCountdownIntent
+    data class RemoveRow(
+        val id: String,
+    ) : FinalCountdownIntent
     data object AddRow : FinalCountdownIntent
     data object ToggleWeighted : FinalCountdownIntent
     data object Reset : FinalCountdownIntent
+
     // Null is "modo livre" — hypotheticals with no discipline attached.
-    data class PickDiscipline(val offerId: String?) : FinalCountdownIntent
+    data class PickDiscipline(
+        val offerId: String?,
+    ) : FinalCountdownIntent
+
     // Route payload — pre-selects a discipline when the screen is pushed from
     // a context that already has one (e.g. a discipline detail CTA).
-    data class SeedFromRoute(val offerId: String?) : FinalCountdownIntent
+    data class SeedFromRoute(
+        val offerId: String?,
+    ) : FinalCountdownIntent
 }
 
 internal sealed interface FinalCountdownEffect : UiEffect
@@ -164,7 +182,10 @@ internal class FinalCountdownViewModel @Inject constructor(
         setState { copy(discipline = choice, rows = seededRows(choice)) }
     }
 
-    private fun updateRow(id: String, transform: FCRow.() -> FCRow) {
+    private fun updateRow(
+        id: String,
+        transform: FCRow.() -> FCRow,
+    ) {
         setState { copy(rows = rows.map { if (it.id == id) it.transform() else it }) }
     }
 }
@@ -176,20 +197,24 @@ private val FinalCountdownIntent.editsRows: Boolean
 
 // ───────── KMP → UI projection + seeding ─────────
 
-private fun mapChoice(raw: KmpListItem, semesterLabel: String): FCDiscipline = FCDiscipline(
-    offerId = raw.offerId,
-    code = raw.code,
-    name = raw.name,
-    teacher = raw.teacherName?.takeIf { it.isNotBlank() },
-    semesterLabel = semesterLabel,
-    seedGrades = raw.grades.filterNot(::isProvaFinal).map { grade ->
-        FCSeedGrade(
-            label = (grade.nameShort ?: grade.name).take(6),
-            value = grade.value,
-            weight = grade.weight,
-        )
-    },
-)
+private fun mapChoice(
+    raw: KmpListItem,
+    semesterLabel: String,
+): FCDiscipline =
+    FCDiscipline(
+        offerId = raw.offerId,
+        code = raw.code,
+        name = raw.name,
+        teacher = raw.teacherName?.takeIf { it.isNotBlank() },
+        semesterLabel = semesterLabel,
+        seedGrades = raw.grades.filterNot(::isProvaFinal).map { grade ->
+            FCSeedGrade(
+                label = (grade.nameShort ?: grade.name).take(6),
+                value = grade.value,
+                weight = grade.weight,
+            )
+        },
+    )
 
 // The Prova Final slot (upstream "Notas Complementares", name "Prova Final",
 // short name "Adicional") must never seed the calculator — it would count as
@@ -212,8 +237,7 @@ private fun seededRows(choice: FCDiscipline): List<FCRow> {
 
 // "Limpar tudo" with a discipline attached keeps its evaluation structure
 // (labels + weights) and clears only the typed scores.
-private fun blankSeededRows(choice: FCDiscipline): List<FCRow> =
-    seededRows(choice).map { it.copy(scoreText = "") }
+private fun blankSeededRows(choice: FCDiscipline): List<FCRow> = seededRows(choice).map { it.copy(scoreText = "") }
 
 // "20261" → "2026.2", "20262" → "2027.1". Mirrors iOS
 // `FCDiscipline.nextSemesterLabel`.

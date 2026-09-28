@@ -103,7 +103,10 @@ internal fun DayDoneMediumContent(
 // a single inline-styled run that wraps naturally — same shape as iOS's
 // `Text("Sem aulas até ") + Text(head).foregroundStyle(coral).italic()`.
 @Composable
-private fun TomorrowLine(line: String?, theme: WidgetTheme) {
+private fun TomorrowLine(
+    line: String?,
+    theme: WidgetTheme,
+) {
     val head: String? = line?.let {
         val sep = it.indexOf(" · ")
         if (sep < 0) null else it.substring(0, sep)
@@ -126,11 +129,15 @@ private fun TomorrowLine(line: String?, theme: WidgetTheme) {
         append(head)
         setSpan(
             ForegroundColorSpan(WidgetBrand.coral.toArgb()),
-            start, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE,
+            start,
+            length,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE,
         )
         setSpan(
             StyleSpan(Typeface.ITALIC),
-            start, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE,
+            start,
+            length,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE,
         )
     }
 

@@ -45,7 +45,10 @@ internal object MeshBackgroundBitmap {
         // text. Same stop set as iOS `WidgetTheme.veilTop/Bottom`.
         val veilPaint = Paint().apply {
             shader = LinearGradient(
-                0f, 0f, 0f, CANVAS_PX.toFloat(),
+                0f,
+                0f,
+                0f,
+                CANVAS_PX.toFloat(),
                 theme.veilTop.toArgb(),
                 theme.veilBottom.toArgb(),
                 Shader.TileMode.CLAMP,
@@ -70,7 +73,11 @@ internal object MeshBackgroundBitmap {
         return bmp
     }
 
-    private fun drawBlob(canvas: Canvas, blob: Blob, intensity: Float) {
+    private fun drawBlob(
+        canvas: Canvas,
+        blob: Blob,
+        intensity: Float,
+    ) {
         val sizePx = blob.sizeFraction * CANVAS_PX
         val left = blob.originX * CANVAS_PX
         val top = blob.originY * CANVAS_PX
@@ -83,7 +90,9 @@ internal object MeshBackgroundBitmap {
         // `0.85 * intensity` falloff (light dampens, dark plays at full).
         val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
             shader = RadialGradient(
-                cx, cy, radius,
+                cx,
+                cy,
+                radius,
                 intArrayOf(
                     blob.colorArgb.withAlpha(0.85f * intensity),
                     blob.colorArgb.withAlpha(0.78f * intensity),
@@ -103,18 +112,19 @@ internal object MeshBackgroundBitmap {
     // a 158pt card → 2× canvas; we use 1.4–1.6× here, slightly tighter so
     // the blob silhouettes stay distinguishable when the canvas stretches
     // into a wider Medium / Large footprint).
-    private fun blobsFor(kind: MeshKind): List<Blob> = when (kind) {
-        MeshKind.Sun -> listOf(
-            Blob(0xFFC94538.toInt(), -0.10f, -0.15f, 1.6f),
-            Blob(0xFFF4A23C.toInt(),  0.50f,  0.35f, 1.5f),
-            Blob(0xFFFBD9A8.toInt(), -0.05f,  0.55f, 1.4f),
-        )
-        MeshKind.Cool -> listOf(
-            Blob(0xFF1E3A5F.toInt(), -0.10f, -0.10f, 1.6f),
-            Blob(0xFF3B9EAE.toInt(),  0.55f,  0.40f, 1.4f),
-            Blob(0xFF88D4C1.toInt(), -0.15f,  0.60f, 1.3f),
-        )
-    }
+    private fun blobsFor(kind: MeshKind): List<Blob> =
+        when (kind) {
+            MeshKind.Sun -> listOf(
+                Blob(0xFFC94538.toInt(), -0.10f, -0.15f, 1.6f),
+                Blob(0xFFF4A23C.toInt(), 0.50f, 0.35f, 1.5f),
+                Blob(0xFFFBD9A8.toInt(), -0.05f, 0.55f, 1.4f),
+            )
+            MeshKind.Cool -> listOf(
+                Blob(0xFF1E3A5F.toInt(), -0.10f, -0.10f, 1.6f),
+                Blob(0xFF3B9EAE.toInt(), 0.55f, 0.40f, 1.4f),
+                Blob(0xFF88D4C1.toInt(), -0.15f, 0.60f, 1.3f),
+            )
+        }
 
     private fun Int.withAlpha(fraction: Float): Int {
         val alpha = (fraction.coerceIn(0f, 1f) * 0xFF).toInt()

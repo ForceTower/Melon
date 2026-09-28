@@ -138,7 +138,11 @@ internal fun ScheduleGridWeek(
 }
 
 @Composable
-private fun HourRail(startHour: Int, endHour: Int, modifier: Modifier = Modifier) {
+private fun HourRail(
+    startHour: Int,
+    endHour: Int,
+    modifier: Modifier = Modifier,
+) {
     val line = MaterialTheme.melon.surface.line
     Box(
         modifier = modifier.drawBehind {
@@ -349,7 +353,10 @@ private fun GridClassBlock(
 }
 
 @Composable
-private fun NowLine(offsetY: Dp, modifier: Modifier = Modifier) {
+private fun NowLine(
+    offsetY: Dp,
+    modifier: Modifier = Modifier,
+) {
     val accent = MaterialTheme.colorScheme.primary
     Box(
         // Centers the 8dp dot (and the 2dp line) on the current minute.
@@ -379,5 +386,4 @@ private fun NowLine(offsetY: Dp, modifier: Modifier = Modifier) {
 // Tonal block fill = discipline hue mixed into the page background, matching
 // the dc `color-mix(…)` recipe.
 @Composable
-private fun Color.compositeOverBackground(): Color =
-    compositeOver(MaterialTheme.colorScheme.background)
+private fun Color.compositeOverBackground(): Color = compositeOver(MaterialTheme.colorScheme.background)

@@ -20,6 +20,8 @@ sealed interface SettingsError {
     data object NoLocalUser : SettingsError
     data object Unauthorized : SettingsError
     data object NoConnection : SettingsError
-    data class Server(val message: String?) : SettingsError
+    data class Server(
+        val message: String?,
+    ) : SettingsError
     data object Unexpected : SettingsError
 }

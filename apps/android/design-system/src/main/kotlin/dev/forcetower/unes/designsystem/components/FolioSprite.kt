@@ -21,8 +21,8 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.delay
 import kotlin.random.Random
+import kotlinx.coroutines.delay
 
 // Folio — the paper-corner mascot from the iOS `FolioSprite` (Concept 02 in
 // `mascot-concepts.jsx`), translated into a Compose Canvas drawer. Five poses
@@ -53,13 +53,14 @@ private data class FolioConfig(
     val earR: Float,
 )
 
-private fun configFor(pose: FolioPose): FolioConfig = when (pose) {
-    FolioPose.Idle -> FolioConfig(0f, 0f, 0f, 1.0f, 0f)
-    FolioPose.RunA -> FolioConfig(-2f, -2f, 6f, 1.02f, -3f)
-    FolioPose.RunB -> FolioConfig(-2f, 2f, -6f, 1.02f, 3f)
-    FolioPose.Jump -> FolioConfig(-22f, -6f, 0f, 1.06f, -8f)
-    FolioPose.Duck -> FolioConfig(12f, 0f, 0f, 0.6f, 0f)
-}
+private fun configFor(pose: FolioPose): FolioConfig =
+    when (pose) {
+        FolioPose.Idle -> FolioConfig(0f, 0f, 0f, 1.0f, 0f)
+        FolioPose.RunA -> FolioConfig(-2f, -2f, 6f, 1.02f, -3f)
+        FolioPose.RunB -> FolioConfig(-2f, 2f, -6f, 1.02f, 3f)
+        FolioPose.Jump -> FolioConfig(-22f, -6f, 0f, 1.06f, -8f)
+        FolioPose.Duck -> FolioConfig(12f, 0f, 0f, 0.6f, 0f)
+    }
 
 // Canvas drawer used both by the runner's main scene canvas and by the static
 // `FolioSpriteView`. `frame` is in the parent canvas's coordinate space.

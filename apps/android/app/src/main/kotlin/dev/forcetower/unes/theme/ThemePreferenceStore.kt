@@ -13,14 +13,16 @@ import kotlinx.coroutines.flow.map
 // How the app resolves light/dark (dc `SettingsScreen` "Tema" segmented
 // control). Device-local by design — unlike `user_settings` this never syncs:
 // the same account on phone and tablet can disagree about darkness.
-internal enum class ThemeMode(val storageKey: String) {
+internal enum class ThemeMode(
+    val storageKey: String,
+) {
     Light("light"),
     System("system"),
-    Dark("dark");
+    Dark("dark"),
+    ;
 
     companion object {
-        fun fromStorageKey(value: String?): ThemeMode =
-            entries.firstOrNull { it.storageKey == value } ?: System
+        fun fromStorageKey(value: String?): ThemeMode = entries.firstOrNull { it.storageKey == value } ?: System
     }
 }
 

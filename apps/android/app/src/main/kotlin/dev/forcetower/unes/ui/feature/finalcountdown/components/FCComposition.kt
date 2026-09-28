@@ -74,8 +74,11 @@ internal fun FCComposition(
             )
             Text(
                 text = stringResource(
-                    if (weighted) R.string.final_countdown_composition_header_weighted
-                    else R.string.final_countdown_composition_header_simple,
+                    if (weighted) {
+                        R.string.final_countdown_composition_header_weighted
+                    } else {
+                        R.string.final_countdown_composition_header_simple
+                    },
                 ).uppercase(),
                 style = MaterialTheme.typography.labelSmall.copy(
                     fontSize = 11.5.sp,
@@ -130,7 +133,10 @@ internal fun FCComposition(
 }
 
 @Composable
-private fun CompositionBar(row: FCRow, weighted: Boolean) {
+private fun CompositionBar(
+    row: FCRow,
+    weighted: Boolean,
+) {
     val status = MaterialTheme.melon.status
     val surface3 = MaterialTheme.colorScheme.surfaceContainerHigh
     val ink = MaterialTheme.colorScheme.onBackground
@@ -217,7 +223,10 @@ private fun CompositionBar(row: FCRow, weighted: Boolean) {
 // 45° hatch for evaluations that haven't happened yet (dc's repeating
 // linear-gradient placeholder).
 @Composable
-private fun PendingHatch(color: Color, modifier: Modifier = Modifier) {
+private fun PendingHatch(
+    color: Color,
+    modifier: Modifier = Modifier,
+) {
     Box(
         modifier = modifier.drawBehind {
             val step = 8.dp.toPx()

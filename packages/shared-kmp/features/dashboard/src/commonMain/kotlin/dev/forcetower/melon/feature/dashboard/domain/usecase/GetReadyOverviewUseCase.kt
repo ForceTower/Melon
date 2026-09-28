@@ -41,7 +41,10 @@ class GetReadyOverviewUseCase internal constructor(
     // Same rule used by iOS SyncViewModel: first semester whose [startDate,
     // endDate] contains today; otherwise the most recent one. Lex compare of
     // yyyy-MM-dd matches calendar order.
-    private fun pickActiveSemester(all: List<SemesterEntity>, timeZone: TimeZone): SemesterEntity? {
+    private fun pickActiveSemester(
+        all: List<SemesterEntity>,
+        timeZone: TimeZone,
+    ): SemesterEntity? {
         if (all.isEmpty()) return null
         val today = clock.now().toLocalDateTime(timeZone).date.toString()
         val active = all.firstOrNull { it.startDate <= today && today <= it.endDate }
@@ -49,7 +52,10 @@ class GetReadyOverviewUseCase internal constructor(
         return all.maxByOrNull { it.startDate }
     }
 
-    private fun pickNextClass(rows: List<SemesterAllocationRow>, timeZone: TimeZone): NextClassInfo? {
+    private fun pickNextClass(
+        rows: List<SemesterAllocationRow>,
+        timeZone: TimeZone,
+    ): NextClassInfo? {
         if (rows.isEmpty()) return null
         val now = clock.now().toLocalDateTime(timeZone)
         val nowSlot = weekSlot(now.dayOfWeek.toUpstreamDay(), now.hour * 60 + now.minute)

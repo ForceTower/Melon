@@ -376,10 +376,18 @@ private fun EntryNotice(
     )
 }
 
-private data class Notice(val tone: Color, val icon: ImageVector, val title: String, val body: String)
+private data class Notice(
+    val tone: Color,
+    val icon: ImageVector,
+    val title: String,
+    val body: String,
+)
 
 @Composable
-private fun observedNotice(entry: CurriculumEntry, pending: List<CurriculumEntry>): Notice? =
+private fun observedNotice(
+    entry: CurriculumEntry,
+    pending: List<CurriculumEntry>,
+): Notice? =
     when (entry.status) {
         CurriculumEntryStatus.Withdrawn -> Notice(
             tone = MaterialTheme.melon.palette.orange,
@@ -466,7 +474,11 @@ private fun EntryFacts(
 }
 
 @Composable
-private fun FactTile(key: String, value: String, modifier: Modifier = Modifier) {
+private fun FactTile(
+    key: String,
+    value: String,
+    modifier: Modifier = Modifier,
+) {
     Column(
         modifier = modifier
             .clip(RoundedCornerShape(16.dp))
@@ -539,7 +551,10 @@ private fun EntryRelationSection(
 
 // "CHF344 · 3º semestre · Cumprida" — the one line every related row carries.
 @Composable
-internal fun curriculumEntryMeta(entry: CurriculumEntry, progress: CourseProgress): String {
+internal fun curriculumEntryMeta(
+    entry: CurriculumEntry,
+    progress: CourseProgress,
+): String {
     val style = curriculumStatusStyle(entry.status)
     val period = entry.period?.let {
         stringResource(

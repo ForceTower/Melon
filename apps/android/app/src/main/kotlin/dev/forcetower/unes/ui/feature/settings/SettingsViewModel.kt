@@ -10,19 +10,19 @@ import dev.forcetower.melon.feature.me.domain.usecase.ObserveCurrentCredentialsU
 import dev.forcetower.melon.feature.me.domain.usecase.ObserveMeProfileUseCase
 import dev.forcetower.melon.feature.settings.domain.usecase.ObserveSettingsUseCase
 import dev.forcetower.melon.feature.settings.domain.usecase.UpdateSettingsUseCase
-import dev.forcetower.unes.remote.FeatureFlags
 import dev.forcetower.unes.mvi.MviViewModel
 import dev.forcetower.unes.mvi.UiEffect
 import dev.forcetower.unes.mvi.UiIntent
 import dev.forcetower.unes.reminders.EvaluationReminderPreferenceStore
+import dev.forcetower.unes.remote.FeatureFlags
 import dev.forcetower.unes.theme.ThemeMode
 import dev.forcetower.unes.theme.ThemePreferenceStore
 import dev.forcetower.unes.ui.feature.schedule.SchedulePreferenceStore
 import javax.inject.Inject
+import kotlin.time.Clock
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlin.time.Clock
 
 // Drives `SettingsScreen` (dc `UNES Configurações - Android`). Subscribes to
 // the profile identity (vault name/avatar), the credentials flow, the theme
@@ -33,11 +33,22 @@ import kotlin.time.Clock
 // value with the canonical server value. The theme mode is device-local and
 // goes to DataStore instead.
 internal sealed interface SettingsIntent : UiIntent {
-    data class SetTheme(val value: ThemeMode) : SettingsIntent
-    data class SetScheduleGrid(val value: Boolean) : SettingsIntent
-    data class SetSpoiler(val value: SpoilerMode) : SettingsIntent
-    data class SetToggle(val toggle: NotifToggle, val value: Boolean) : SettingsIntent
-    data class SetEvaluationReminders(val value: Boolean) : SettingsIntent
+    data class SetTheme(
+        val value: ThemeMode,
+    ) : SettingsIntent
+    data class SetScheduleGrid(
+        val value: Boolean,
+    ) : SettingsIntent
+    data class SetSpoiler(
+        val value: SpoilerMode,
+    ) : SettingsIntent
+    data class SetToggle(
+        val toggle: NotifToggle,
+        val value: Boolean,
+    ) : SettingsIntent
+    data class SetEvaluationReminders(
+        val value: Boolean,
+    ) : SettingsIntent
 }
 
 internal sealed interface SettingsEffect : UiEffect
@@ -183,7 +194,10 @@ internal class SettingsViewModel @Inject constructor(
         }
     }
 
-    private fun setToggle(toggle: NotifToggle, value: Boolean) {
+    private fun setToggle(
+        toggle: NotifToggle,
+        value: Boolean,
+    ) {
         analytics.selectContent(
             ContentTypes.SETTING,
             toggle.analyticsKey,
@@ -213,7 +227,10 @@ internal class SettingsViewModel @Inject constructor(
     }
 }
 
-private fun SettingsUiState.applyToggle(toggle: NotifToggle, value: Boolean): SettingsUiState =
+private fun SettingsUiState.applyToggle(
+    toggle: NotifToggle,
+    value: Boolean,
+): SettingsUiState =
     when (toggle) {
         NotifToggle.MsgBroadcast -> copy(notifMsgBroadcast = value)
         NotifToggle.MsgClass -> copy(notifMsgClass = value)

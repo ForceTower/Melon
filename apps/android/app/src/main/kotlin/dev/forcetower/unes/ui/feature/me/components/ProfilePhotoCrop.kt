@@ -193,7 +193,10 @@ private fun CropStage(
     val circle = min(areaSize.width, areaSize.height) * CircleFraction
     val baseScale = if (circle > 0f) circle / min(bitmap.width, bitmap.height) else 0f
 
-    fun clampOffset(candidate: Offset, atZoom: Float): Offset {
+    fun clampOffset(
+        candidate: Offset,
+        atZoom: Float,
+    ): Offset {
         val scale = baseScale * atZoom
         val maxX = max(0f, (bitmap.width * scale - circle) / 2f)
         val maxY = max(0f, (bitmap.height * scale - circle) / 2f)
@@ -369,7 +372,12 @@ private const val CircleFraction = 0.72f
 private const val MaxDecodeSide = 2048
 private const val OutputSide = 640
 
-private fun exportCrop(bitmap: Bitmap, circle: Float, zoom: Float, offset: Offset): ByteArray {
+private fun exportCrop(
+    bitmap: Bitmap,
+    circle: Float,
+    zoom: Float,
+    offset: Offset,
+): ByteArray {
     val out = createBitmap(OutputSide, OutputSide)
     val canvas = android.graphics.Canvas(out)
     val paint = Paint(Paint.FILTER_BITMAP_FLAG or Paint.ANTI_ALIAS_FLAG)

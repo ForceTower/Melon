@@ -15,16 +15,20 @@ import dev.forcetower.unes.ui.feature.licenses.LicenseFamily
 // palette tokens so every group still reads distinctly.
 @Composable
 @ReadOnlyComposable
-internal fun LicenseFamily.toneBackground(): Color = when (this) {
-    LicenseFamily.Mit -> MaterialTheme.colorScheme.primary
-    LicenseFamily.Apache2 -> MaterialTheme.melon.palette.jade
-    LicenseFamily.Bsd3,
-    LicenseFamily.Bsd2,
-    LicenseFamily.Other -> MaterialTheme.melon.brand.plum
-    LicenseFamily.Isc,
-    LicenseFamily.Cc0,
-    LicenseFamily.Unlicense -> MaterialTheme.melon.fixed.ok
-    LicenseFamily.Mpl2,
-    LicenseFamily.Epl1 -> MaterialTheme.melon.brand.magenta
-    LicenseFamily.CcBy4 -> MaterialTheme.melon.brand.coral
-}
+internal fun LicenseFamily.toneBackground(): Color =
+    when (this) {
+        LicenseFamily.Mit -> MaterialTheme.colorScheme.primary
+        LicenseFamily.Apache2 -> MaterialTheme.melon.palette.jade
+        LicenseFamily.Bsd3,
+        LicenseFamily.Bsd2,
+        LicenseFamily.Other,
+        -> MaterialTheme.melon.brand.plum
+        LicenseFamily.Isc,
+        LicenseFamily.Cc0,
+        LicenseFamily.Unlicense,
+        -> MaterialTheme.melon.fixed.ok
+        LicenseFamily.Mpl2,
+        LicenseFamily.Epl1,
+        -> MaterialTheme.melon.brand.magenta
+        LicenseFamily.CcBy4 -> MaterialTheme.melon.brand.coral
+    }

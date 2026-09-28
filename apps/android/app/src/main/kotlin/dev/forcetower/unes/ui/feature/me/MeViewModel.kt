@@ -16,13 +16,13 @@ import dev.forcetower.melon.feature.me.domain.usecase.FetchAcademicDocumentUseCa
 import dev.forcetower.melon.feature.me.domain.usecase.ObserveMeProfileUseCase
 import dev.forcetower.melon.feature.me.domain.usecase.UpdateProfileUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.SyncProfileUseCase
-import dev.forcetower.unes.remote.FeatureFlags
-import dev.forcetower.unes.remote.FeatureGates
 import dev.forcetower.unes.firebase.PushRegistrar
 import dev.forcetower.unes.mvi.MviViewModel
 import dev.forcetower.unes.mvi.UiEffect
 import dev.forcetower.unes.mvi.UiIntent
 import dev.forcetower.unes.mvi.UiState
+import dev.forcetower.unes.remote.FeatureFlags
+import dev.forcetower.unes.remote.FeatureGates
 import dev.forcetower.unes.ui.feature.me.documents.LocalDocumentStore
 import dev.forcetower.unes.ui.feature.me.documents.StoredAcademicDocument
 import java.time.Instant
@@ -48,24 +48,36 @@ import kotlinx.coroutines.withContext
 // with `Welcome` — matching iOS, where `RootView` flips to `OnboardingFlow`
 // on `AuthState.Unauthenticated`.
 internal sealed interface MeIntent : UiIntent {
-    data class OpenDocument(val document: AcademicDocument) : MeIntent
+    data class OpenDocument(
+        val document: AcademicDocument,
+    ) : MeIntent
     data object CloseDocument : MeIntent
+
     // Fired by the download CTA, the refresh ghost button, and the retry
     // button alike — the stage decides what it means.
     data object RequestDocument : MeIntent
-    data class CaptchaSolved(val token: String) : MeIntent
+    data class CaptchaSolved(
+        val token: String,
+    ) : MeIntent
     data object CaptchaCanceled : MeIntent
+
     // ── profile customization (dc `EuScreen` "Editar perfil" sheet) ──
     data object OpenEditProfile : MeIntent
     data object CloseEditProfile : MeIntent
-    data class EditNameChanged(val value: String) : MeIntent
+    data class EditNameChanged(
+        val value: String,
+    ) : MeIntent
+
     // JPEG bytes produced by the circular crop step.
-    data class EditPhotoPicked(val bytes: ByteArray) : MeIntent
+    data class EditPhotoPicked(
+        val bytes: ByteArray,
+    ) : MeIntent
     data object EditPhotoRemoved : MeIntent
     data object SaveProfile : MeIntent
     data object BeginLogout : MeIntent
     data object CancelLogout : MeIntent
     data object ConfirmLogout : MeIntent
+
     // Bounces the state machine back to Idle. The screen fires this when the
     // goodbye view's CTA is tapped — Hilt scopes this VM to the Activity, so
     // without an explicit reset the next time the Me tab mounts (after the
@@ -99,10 +111,14 @@ internal sealed interface DocumentStage {
     // Refresh failed — showing the offline copy. The stamp is the server
     // copy's generation date when its fallback answered, or the local save
     // date when nothing did.
-    data class Stale(val savedAtMs: Long) : DocumentStage
+    data class Stale(
+        val savedAtMs: Long,
+    ) : DocumentStage
 
     // Nothing to show, and no saved copy to fall back on.
-    data class Failed(val reason: DocumentFetchError) : DocumentStage
+    data class Failed(
+        val reason: DocumentFetchError,
+    ) : DocumentStage
 }
 
 internal data class DocumentSheetState(
@@ -130,7 +146,9 @@ internal data class ProfileEditState(
 // the dc sheet's snackbar: photo-only changes narrate the photo, otherwise the
 // name outcome wins.
 internal sealed interface MeProfileToast {
-    data class NameSaved(val firstName: String) : MeProfileToast
+    data class NameSaved(
+        val firstName: String,
+    ) : MeProfileToast
     data object NameRestored : MeProfileToast
     data object PhotoSaved : MeProfileToast
     data object PhotoRemoved : MeProfileToast
@@ -379,8 +397,11 @@ internal class MeViewModel @Inject constructor(
         val document = currentState.documentSheet?.document ?: return
         setState {
             val sheet = documentSheet
-            if (sheet == null || sheet.document != document) this
-            else copy(documentSheet = transform(sheet))
+            if (sheet == null || sheet.document != document) {
+                this
+            } else {
+                copy(documentSheet = transform(sheet))
+            }
         }
     }
 
@@ -403,6 +424,7 @@ internal class MeViewModel @Inject constructor(
 
     private companion object {
         const val LogoutFlashMs = 900L
+
         // dc snackbar lifetime (2.6s).
         const val ToastLifetimeMs = 2600L
     }
@@ -421,7 +443,10 @@ private val AcademicDocument.shortcutItemId: String
 private val ShortDateFormatter: DateTimeFormatter
     get() = DateTimeFormatter.ofPattern("d MMM", Locale.getDefault())
 
-private fun mapIdentity(raw: MeProfile, score: OverallScoreSummary?): ProfileIdentity {
+private fun mapIdentity(
+    raw: MeProfile,
+    score: OverallScoreSummary?,
+): ProfileIdentity {
     val canonical = raw.identity.userName.ifBlank { raw.identity.firstName }
     val first = raw.identity.firstName.ifBlank { canonical.substringBefore(' ') }
     val initial = first.firstOrNull()?.uppercaseChar()?.toString() ?: "?"
@@ -457,5 +482,4 @@ private fun formatShortDate(iso: String?): String {
 
 // ISO8601 with fractional seconds (the backend's `createdAt` convention) →
 // epoch millis; null when the stamp doesn't parse.
-private fun parseIsoMs(iso: String): Long? =
-    runCatching { Instant.parse(iso).toEpochMilli() }.getOrNull()
+private fun parseIsoMs(iso: String): Long? = runCatching { Instant.parse(iso).toEpochMilli() }.getOrNull()

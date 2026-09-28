@@ -124,7 +124,10 @@ private fun Description() {
 }
 
 @Composable
-private fun FooterRow(onCancel: () -> Unit, onConfirm: () -> Unit) {
+private fun FooterRow(
+    onCancel: () -> Unit,
+    onConfirm: () -> Unit,
+) {
     val err = MaterialTheme.melon.status.bad
     val onErr = MaterialTheme.melon.fixed.onHero
     val shape = RoundedCornerShape(50)

@@ -1,13 +1,13 @@
 package dev.forcetower.unes
 
 import android.content.Intent
-import android.net.Uri
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.ParcelFileDescriptor
 import android.os.Process
 import androidx.compose.ui.graphics.asAndroidBitmap
-import androidx.compose.ui.test.captureToImage
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.captureToImage
 import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
@@ -81,17 +81,25 @@ internal class ScenarioJourneyTest {
             open("unes://messages")
             waitFor(R.string.messages_empty_title)
         }
-        assertEquals("Unmocked requests must fail the journey", 0,
-            serverState().getJSONArray("unexpectedRequests").length())
+        assertEquals(
+            "Unmocked requests must fail the journey",
+            0,
+            serverState().getJSONArray("unexpectedRequests").length(),
+        )
     }
 
     @After
     fun collectEvidence() = capture("result")
 
-    private fun open(uri: String, refresh: Boolean = false) {
-        compose.activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(uri), compose.activity, MainActivity::class.java).apply {
-            if (refresh) putExtra("kind", "scenario-refresh")
-        })
+    private fun open(
+        uri: String,
+        refresh: Boolean = false,
+    ) {
+        compose.activity.startActivity(
+            Intent(Intent.ACTION_VIEW, Uri.parse(uri), compose.activity, MainActivity::class.java).apply {
+                if (refresh) putExtra("kind", "scenario-refresh")
+            },
+        )
     }
 
     private fun waitFor(resource: Int) = waitForText(compose.activity.getString(resource))
@@ -108,16 +116,27 @@ internal class ScenarioJourneyTest {
 
     private fun selectScenario(id: String) {
         connection("/debug/scenario/$id", "POST").apply {
-            try { assertEquals(200, responseCode) } finally { disconnect() }
+            try {
+                assertEquals(200, responseCode)
+            } finally {
+                disconnect()
+            }
         }
     }
 
-    private fun serverState(): JSONObject = connection("/debug/state", "GET").run {
-        try { JSONObject(inputStream.bufferedReader().use { it.readText() }).getJSONObject("data") }
-        finally { disconnect() }
-    }
+    private fun serverState(): JSONObject =
+        connection("/debug/state", "GET").run {
+            try {
+                JSONObject(inputStream.bufferedReader().use { it.readText() }).getJSONObject("data")
+            } finally {
+                disconnect()
+            }
+        }
 
-    private fun connection(path: String, method: String): HttpURLConnection =
+    private fun connection(
+        path: String,
+        method: String,
+    ): HttpURLConnection =
         (URI("http://127.0.0.1:8787$path").toURL().openConnection() as HttpURLConnection).apply {
             requestMethod = method
             connectTimeout = 5_000
@@ -125,7 +144,9 @@ internal class ScenarioJourneyTest {
         }
 
     private fun capture(name: String) {
-        val directory = File(instrumentation.targetContext.getExternalFilesDir(null), "scenario-evidence").apply { mkdirs() }
+        val directory = File(instrumentation.targetContext.getExternalFilesDir(null), "scenario-evidence").apply {
+            mkdirs()
+        }
         compose.mainClock.advanceTimeBy(2_000)
         compose.waitForIdle()
         File(directory, "$name.png").outputStream().use {
@@ -133,7 +154,9 @@ internal class ScenarioJourneyTest {
         }
         device.dumpWindowHierarchy(File(directory, "$name.xml"))
         File(directory, "$name-semantics.txt").writeText(compose.onRoot(useUnmergedTree = true).printToString())
-        ParcelFileDescriptor.AutoCloseInputStream(instrumentation.uiAutomation.executeShellCommand("logcat -d --pid ${Process.myPid()} -v threadtime")).use { input ->
+        ParcelFileDescriptor.AutoCloseInputStream(
+            instrumentation.uiAutomation.executeShellCommand("logcat -d --pid ${Process.myPid()} -v threadtime"),
+        ).use { input ->
             File(directory, "logcat.txt").outputStream().use { input.copyTo(it) }
         }
     }

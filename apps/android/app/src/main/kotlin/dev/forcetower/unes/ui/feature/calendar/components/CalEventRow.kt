@@ -1,6 +1,7 @@
 package dev.forcetower.unes.ui.feature.calendar.components
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
@@ -24,7 +25,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -174,12 +174,18 @@ internal fun CalEventRow(
                         DropdownMenuItem(
                             text = { Text(stringResource(R.string.calendar_personal_edit_action)) },
                             leadingIcon = { Icon(Icons.Filled.Edit, contentDescription = null) },
-                            onClick = { menuOpen = false; onEdit(personal) },
+                            onClick = {
+                                menuOpen = false
+                                onEdit(personal)
+                            },
                         )
                         DropdownMenuItem(
                             text = { Text(stringResource(R.string.calendar_personal_delete_action)) },
                             leadingIcon = { Icon(Icons.Filled.Delete, contentDescription = null) },
-                            onClick = { menuOpen = false; onDelete(personal) },
+                            onClick = {
+                                menuOpen = false
+                                onDelete(personal)
+                            },
                         )
                     }
                 }

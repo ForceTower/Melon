@@ -28,11 +28,11 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.LibraryBooks
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.CloudOff
 import androidx.compose.material.icons.filled.ContentCopy
-import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.ExpandMore
-import androidx.compose.material.icons.automirrored.filled.LibraryBooks
 import androidx.compose.material.icons.filled.HourglassTop
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.LocationOn
@@ -90,6 +90,8 @@ import dev.forcetower.unes.designsystem.foundation.PinnedHeaderHairline
 import dev.forcetower.unes.designsystem.foundation.SkeletonBar
 import dev.forcetower.unes.designsystem.theme.MelonTheme
 import dev.forcetower.unes.designsystem.theme.melon
+import dev.forcetower.unes.ui.feature.library.LibraryIntent
+import dev.forcetower.unes.ui.feature.library.LibraryViewModel
 import dev.forcetower.unes.ui.feature.library.components.LibraryBackButton
 import dev.forcetower.unes.ui.feature.library.components.LibraryCard
 import dev.forcetower.unes.ui.feature.library.components.LibraryFreshnessRow
@@ -98,16 +100,14 @@ import dev.forcetower.unes.ui.feature.library.components.LibrarySectionLabel
 import dev.forcetower.unes.ui.feature.library.components.LibraryTypeTag
 import dev.forcetower.unes.ui.feature.library.components.color
 import dev.forcetower.unes.ui.feature.library.components.verdictTone
-import kotlin.time.Clock
-import kotlin.time.Instant
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import dev.forcetower.unes.ui.feature.library.LibraryViewModel
-import dev.forcetower.unes.ui.feature.library.LibraryIntent
 import dev.forcetower.unes.ui.feature.library.formatLibraryAgo
 import dev.forcetower.unes.ui.feature.library.formatLibraryDate
 import dev.forcetower.unes.ui.feature.library.formatLibraryYear
 import dev.forcetower.unes.ui.feature.library.libraryPreviewWork
+import kotlin.time.Clock
+import kotlin.time.Instant
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 // Work detail (dc `BibliotecaScreen` "detalhe" scenarios): the availability
 // answer card, where-on-the-shelf with the copyable call number, copies
@@ -939,7 +939,11 @@ private fun groupCopies(work: LibraryWork): List<CopyGroup> {
 }
 
 @Composable
-private fun CopyGroupCard(group: CopyGroup, down: Boolean, now: Instant) {
+private fun CopyGroupCard(
+    group: CopyGroup,
+    down: Boolean,
+    now: Instant,
+) {
     val volume = Regex("""v\.\s?\d+""", RegexOption.IGNORE_CASE)
         .find(group.callNumber)?.value
     // Loans split into credible (future due) and stale (past due — records
@@ -1189,7 +1193,11 @@ private fun CopyStatusRow(
 }
 
 @Composable
-private fun IdChip(label: String, value: String, onTap: () -> Unit) {
+private fun IdChip(
+    label: String,
+    value: String,
+    onTap: () -> Unit,
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -1220,29 +1228,33 @@ private fun IdChip(label: String, value: String, onTap: () -> Unit) {
 }
 
 // Server sends the ABNT citation with `**bold**` runs — render them.
-private fun boldMarkdown(source: String): AnnotatedString = buildAnnotatedString {
-    var remaining = source
-    while (true) {
-        val start = remaining.indexOf("**")
-        if (start < 0) {
-            append(remaining)
-            break
+private fun boldMarkdown(source: String): AnnotatedString =
+    buildAnnotatedString {
+        var remaining = source
+        while (true) {
+            val start = remaining.indexOf("**")
+            if (start < 0) {
+                append(remaining)
+                break
+            }
+            val end = remaining.indexOf("**", start + 2)
+            if (end < 0) {
+                append(remaining)
+                break
+            }
+            append(remaining.substring(0, start))
+            withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
+                append(remaining.substring(start + 2, end))
+            }
+            remaining = remaining.substring(end + 2)
         }
-        val end = remaining.indexOf("**", start + 2)
-        if (end < 0) {
-            append(remaining)
-            break
-        }
-        append(remaining.substring(0, start))
-        withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
-            append(remaining.substring(start + 2, end))
-        }
-        remaining = remaining.substring(end + 2)
     }
-}
 
 @Composable
-private fun MissingRecordState(seedTitle: String?, onBack: () -> Unit) {
+private fun MissingRecordState(
+    seedTitle: String?,
+    onBack: () -> Unit,
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier

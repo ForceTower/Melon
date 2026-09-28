@@ -11,9 +11,11 @@ import kotlin.time.Instant
 
 enum class LibraryError { Connection }
 
-/// Work types as the catalogue classifies them. Books are the overwhelming
-/// majority, so an unmapped upstream type reads as the neutral case.
-enum class LibraryWorkType(val wire: String) {
+// / Work types as the catalogue classifies them. Books are the overwhelming
+// / majority, so an unmapped upstream type reads as the neutral case.
+enum class LibraryWorkType(
+    val wire: String,
+) {
     Book("livro"),
     Pamphlet("folheto"),
     Cordel("cordel"),
@@ -29,9 +31,9 @@ enum class LibraryWorkType(val wire: String) {
     }
 }
 
-/// A campus library. The backend maps upstream branches to the known slugs
-/// where it can; anything it cannot map still arrives with its code and name,
-/// so this is a data class rather than a closed enum.
+// / A campus library. The backend maps upstream branches to the known slugs
+// / where it can; anything it cannot map still arrives with its code and name,
+// / so this is a data class rather than a closed enum.
 data class LibraryBranch(
     /** Stable identity — the app slug when known, else the upstream code. */
     val id: String,
@@ -49,20 +51,32 @@ data class LibraryBranch(
 
     companion object {
         val central = LibraryBranch(
-            id = "bcjc", sigla = "BCJC", name = "Biblioteca Central Julieta Carteado",
-            campus = "Feira de Santana", isNear = true,
+            id = "bcjc",
+            sigla = "BCJC",
+            name = "Biblioteca Central Julieta Carteado",
+            campus = "Feira de Santana",
+            isNear = true,
         )
         val health = LibraryBranch(
-            id = "saude", sigla = "BSS", name = "Biblioteca Setorial de Saúde",
-            campus = "Feira de Santana", isNear = true,
+            id = "saude",
+            sigla = "BSS",
+            name = "Biblioteca Setorial de Saúde",
+            campus = "Feira de Santana",
+            isNear = true,
         )
         val lencois = LibraryBranch(
-            id = "lencois", sigla = "BAL", name = "Biblioteca do Campus Avançado",
-            campus = "Lençóis", isNear = false,
+            id = "lencois",
+            sigla = "BAL",
+            name = "Biblioteca do Campus Avançado",
+            campus = "Lençóis",
+            isNear = false,
         )
         val santoAntonio = LibraryBranch(
-            id = "saj", sigla = "BSAJ", name = "Biblioteca do Campus Avançado",
-            campus = "Santo Antônio de Jesus", isNear = false,
+            id = "saj",
+            sigla = "BSAJ",
+            name = "Biblioteca do Campus Avançado",
+            campus = "Santo Antônio de Jesus",
+            isNear = false,
         )
 
         /** The mapped campus libraries, in display order. */
@@ -77,7 +91,7 @@ data class LibraryBranch(
     }
 }
 
-/// One physical copy's circulation status.
+// / One physical copy's circulation status.
 sealed interface LibraryCopyStatus {
     data object Available : LibraryCopyStatus
 
@@ -85,13 +99,17 @@ sealed interface LibraryCopyStatus {
      * [due] is null when the loan record carries no credible return date —
      * the backend nulls decades-old dues rather than forecasting the past.
      */
-    data class OnLoan(val due: Instant?) : LibraryCopyStatus
+    data class OnLoan(
+        val due: Instant?,
+    ) : LibraryCopyStatus
 
     /** In the catalogue but not on the shelf — excluded from every count. */
     data object Missing : LibraryCopyStatus
 
     /** Reference-only material that never leaves the building. */
-    data class LocalUse(val note: String) : LibraryCopyStatus
+    data class LocalUse(
+        val note: String,
+    ) : LibraryCopyStatus
 }
 
 data class LibraryCopy(
@@ -103,15 +121,15 @@ data class LibraryCopy(
     val status: LibraryCopyStatus,
 )
 
-/// One label/value row of the catalogue record ("ficha"). Labels come from
-/// the catalogue itself — an ordered listing, not a schema.
+// / One label/value row of the catalogue record ("ficha"). Labels come from
+// / the catalogue itself — an ordered listing, not a schema.
 data class LibraryRecordField(
     val label: String,
     val value: String,
 )
 
-/// The `obra` string decomposed: title, subtitle, inline edition, and the
-/// trailing "/ 0000" junk the catalogue appends.
+// / The `obra` string decomposed: title, subtitle, inline edition, and the
+// / trailing "/ 0000" junk the catalogue appends.
 data class LibraryWorkTitle(
     val title: String,
     val subtitle: String? = null,
@@ -120,10 +138,14 @@ data class LibraryWorkTitle(
     val junkYear: String? = null,
 )
 
-/// `ano_publicacao` is text in the source; sometimes it isn't a year at all.
+// / `ano_publicacao` is text in the source; sometimes it isn't a year at all.
 sealed interface LibraryYear {
-    data class Year(val text: String) : LibraryYear
-    data class Illegible(val text: String) : LibraryYear
+    data class Year(
+        val text: String,
+    ) : LibraryYear
+    data class Illegible(
+        val text: String,
+    ) : LibraryYear
     data object None : LibraryYear
 }
 
@@ -136,7 +158,7 @@ data class LibraryIsbn(
     val note: String?,
 )
 
-/// One catalogue work, keeping the record's dirty raw strings.
+// / One catalogue work, keeping the record's dirty raw strings.
 data class LibraryWork(
     /** The catalogue's `cod_acervo`. */
     val id: String,
@@ -316,9 +338,9 @@ data class LibraryWork(
     }
 }
 
-/// Copy counts with missing copies excluded from every denominator: a title
-/// with 122 catalogued copies and 22 missing reads "51 de 100", never
-/// "51 de 122".
+// / Copy counts with missing copies excluded from every denominator: a title
+// / with 122 catalogued copies and 22 missing reads "51 de 100", never
+// / "51 de 122".
 data class LibraryAvailability(
     val available: Int,
     val onLoan: Int,
@@ -367,26 +389,32 @@ data class LibraryAvailability(
         get() = branches.any { it.branch.isNear && it.available > 0 }
 }
 
-/// One consultation of the circulation system. The catalogue itself is
-/// reliable; the copy counts are only as good as the last time Pergamum
-/// answered — the UI always says when that was.
+// / One consultation of the circulation system. The catalogue itself is
+// / reliable; the copy counts are only as good as the last time Pergamum
+// / answered — the UI always says when that was.
 sealed interface LibraryReading {
-    data class Fresh(val checkedAt: Instant) : LibraryReading
+    data class Fresh(
+        val checkedAt: Instant,
+    ) : LibraryReading
 
     /** Pergamum stopped answering; this is the last known reading. */
-    data class Stale(val checkedAt: Instant) : LibraryReading
+    data class Stale(
+        val checkedAt: Instant,
+    ) : LibraryReading
 
     /** Pergamum is down and there is no reading to fall back to. */
     data object Unavailable : LibraryReading
 }
 
-/// The availability endpoint's answer: the reading plus the live copies.
+// / The availability endpoint's answer: the reading plus the live copies.
 data class LibraryAvailabilitySnapshot(
     val reading: LibraryReading,
     val copies: List<LibraryCopy>,
 )
 
-enum class LibrarySearchScope(val wire: String) {
+enum class LibrarySearchScope(
+    val wire: String,
+) {
     All("all"),
     Title("titulo"),
     Author("autor"),
@@ -400,16 +428,18 @@ enum class LibrarySearchScope(val wire: String) {
     }
 }
 
-/// How an advanced-search term joins the one before it — E / OU / NÃO.
-/// Wire values are the contract.
-enum class LibrarySearchOperator(val wire: String) {
+// / How an advanced-search term joins the one before it — E / OU / NÃO.
+// / Wire values are the contract.
+enum class LibrarySearchOperator(
+    val wire: String,
+) {
     And("and"),
     Or("or"),
     Not("not"),
 }
 
-/// One term of a (possibly boolean) catalogue search. A plain search is a
-/// single term; the advanced sheet sends up to three.
+// / One term of a (possibly boolean) catalogue search. A plain search is a
+// / single term; the advanced sheet sends up to three.
 data class LibrarySearchTerm(
     val query: String,
     val scope: LibrarySearchScope,
@@ -417,7 +447,7 @@ data class LibrarySearchTerm(
     val op: LibrarySearchOperator = LibrarySearchOperator.And,
 )
 
-/// Compact one-line rendering — "cálculo + guidorizzi − geometria".
+// / Compact one-line rendering — "cálculo + guidorizzi − geometria".
 fun List<LibrarySearchTerm>.displayQuery(): String {
     val first = firstOrNull() ?: return ""
     return drop(1).fold(first.query) { text, term ->
@@ -430,14 +460,18 @@ fun List<LibrarySearchTerm>.displayQuery(): String {
     }
 }
 
-enum class LibrarySort(val wire: String) {
+enum class LibrarySort(
+    val wire: String,
+) {
     Relevance("relevance"),
     Newest("newest"),
     Oldest("oldest"),
     TitleAZ("title"),
 }
 
-enum class LibraryFacetGroup(val wire: String) {
+enum class LibraryFacetGroup(
+    val wire: String,
+) {
     Type("type"),
     Branch("branch"),
     Subject("subject"),
@@ -451,19 +485,21 @@ enum class LibraryFacetGroup(val wire: String) {
     }
 }
 
-/// One refine option with its count over the unfiltered result set.
+// / One refine option with its count over the unfiltered result set.
 data class LibraryFacetValue(
     val key: String,
     val label: String,
     val count: Int,
 )
 
-/// Selected facet keys per group. Within a group selections add up (OR);
-/// across groups they narrow (AND).
+// / Selected facet keys per group. Within a group selections add up (OR);
+// / across groups they narrow (AND).
 typealias LibraryFacetSelection = Map<LibraryFacetGroup, Set<String>>
 
-/// Publication-decade buckets for the year facet.
-enum class LibraryYearBucket(val wire: String) {
+// / Publication-decade buckets for the year facet.
+enum class LibraryYearBucket(
+    val wire: String,
+) {
     From2020("2020"),
     Decade2010("2010"),
     Decade2000("2000"),
@@ -477,9 +513,9 @@ enum class LibraryYearBucket(val wire: String) {
     }
 }
 
-/// One page of a search response. Sorting, faceting and pagination run
-/// server-side over the full result set; [facets] counts the unfaceted set
-/// and is identical on every page of the same query.
+// / One page of a search response. Sorting, faceting and pagination run
+// / server-side over the full result set; [facets] counts the unfaceted set
+// / and is identical on every page of the same query.
 data class LibrarySearchPage(
     val works: List<LibraryWork>,
     val total: Int,
@@ -487,7 +523,7 @@ data class LibrarySearchPage(
     val facets: Map<LibraryFacetGroup, List<LibraryFacetValue>>,
 )
 
-/// One search call: the terms plus the server-side page/sort/facet options.
+// / One search call: the terms plus the server-side page/sort/facet options.
 data class LibrarySearchRequest(
     val terms: List<LibrarySearchTerm>,
     val sort: LibrarySort = LibrarySort.Relevance,
@@ -504,8 +540,8 @@ data class LibraryRecentSearch(
     val id: String get() = "${scope.wire}|$query"
 }
 
-/// The search-entry payload: recent searches plus the "novas no acervo"
-/// shelf (which arrives in the degraded record shape).
+// / The search-entry payload: recent searches plus the "novas no acervo"
+// / shelf (which arrives in the degraded record shape).
 data class LibraryOverview(
     val recents: List<LibraryRecentSearch>,
     val newAcquisitions: List<LibraryWork>,

@@ -12,6 +12,5 @@ import dev.zacsweers.metro.Inject
 class GetParadoxoIndexUseCase internal constructor(
     private val service: ParadoxoService,
 ) {
-    suspend operator fun invoke(): Outcome<List<ParadoxoIndexEntry>, ParadoxoError> =
-        service.index()
+    suspend operator fun invoke(): Outcome<List<ParadoxoIndexEntry>, ParadoxoError> = service.index()
 }

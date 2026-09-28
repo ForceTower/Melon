@@ -12,7 +12,9 @@ import kotlin.time.Instant
 //
 // `Available` / `Blocked` only ever arrive when the payload says prerequisites
 // are known; otherwise untouched slots come back as `NotTaken`.
-enum class CurriculumEntryStatus(val wire: String) {
+enum class CurriculumEntryStatus(
+    val wire: String,
+) {
     Completed("completed"),
     InProgress("in_progress"),
     Available("available"),
@@ -24,14 +26,15 @@ enum class CurriculumEntryStatus(val wire: String) {
 
     companion object {
         // Anything this build can't name is, at most, not completed.
-        fun fromWire(raw: String?): CurriculumEntryStatus =
-            entries.firstOrNull { it.wire == raw } ?: NotTaken
+        fun fromWire(raw: String?): CurriculumEntryStatus = entries.firstOrNull { it.wire == raw } ?: NotTaken
     }
 }
 
 // The hour-type bucket a requirement belongs to. The university's own label
 // travels alongside it and is what the UI shows.
-enum class CurriculumRequirementKind(val wire: String) {
+enum class CurriculumRequirementKind(
+    val wire: String,
+) {
     Required("required"),
     Elective("elective"),
     Complementary("complementary"),
@@ -44,15 +47,16 @@ enum class CurriculumRequirementKind(val wire: String) {
     companion object {
         // A kind this build doesn't know is a newer server bucket — generic,
         // not dropped.
-        fun fromWire(raw: String?): CurriculumRequirementKind =
-            entries.firstOrNull { it.wire == raw } ?: Other
+        fun fromWire(raw: String?): CurriculumRequirementKind = entries.firstOrNull { it.wire == raw } ?: Other
     }
 }
 
 // How the student came to be on a curriculum version. `Manual` is their own
 // pick and outranks resolution; `Resolved` is the server's guess from the
 // entry semester; `Upstream` would be SAGRES saying so (it doesn't yet).
-enum class CurriculumBindingSource(val wire: String) {
+enum class CurriculumBindingSource(
+    val wire: String,
+) {
     Resolved("resolved"),
     Manual("manual"),
     Upstream("upstream"),
@@ -81,10 +85,13 @@ data class CurriculumSupersession(
 enum class CurriculumStanding {
     // The newest grid — what a calouro enters on today.
     Current,
+
     // The grid right before the current one; students were migrated off it.
     Previous,
+
     // Older than that: nobody has entered on it in a long while.
     Retired,
+
     // Outside the course's own list (a manual pick after a transfer).
     Unplaced,
 }
@@ -126,11 +133,12 @@ data class CurriculumVersion(
     val isManualPick: Boolean get() = source == CurriculumBindingSource.Manual
 
     companion object {
-        fun codeLabel(code: String): String = if (code.length == 5 && code.all { it.isDigit() }) {
-            "${code.take(4)}.${code.last()}"
-        } else {
-            code
-        }
+        fun codeLabel(code: String): String =
+            if (code.length == 5 && code.all { it.isDigit() }) {
+                "${code.take(4)}.${code.last()}"
+            } else {
+                code
+            }
     }
 }
 
@@ -301,8 +309,7 @@ data class CourseProgress(
         get() = currentPeriod ?: scheduledPeriods.firstOrNull()?.period ?: 1
 
     // Entries that list `code` as a prerequisite — what completing it unlocks.
-    fun unlocks(code: String): List<CurriculumEntry> =
-        unlocksByCode[code].orEmpty().mapNotNull(::entry)
+    fun unlocks(code: String): List<CurriculumEntry> = unlocksByCode[code].orEmpty().mapNotNull(::entry)
 
     // Disciplines to be taken alongside `code` — its own list plus every entry
     // that names it, since the relation is symmetric in practice but upstream
@@ -325,8 +332,7 @@ data class CourseProgress(
     fun trail(code: String): Set<String> = upstream(code) + downstream(code) + code
 
     // Everything `code` transitively depends on — what must be done first.
-    fun upstream(code: String): Set<String> =
-        reach(code) { entriesByCode[it]?.prerequisites.orEmpty() }
+    fun upstream(code: String): Set<String> = reach(code) { entriesByCode[it]?.prerequisites.orEmpty() }
 
     // Everything `code` transitively unlocks — what it eventually opens.
     fun downstream(code: String): Set<String> = reach(code) { unlocksByCode[it].orEmpty() }
@@ -344,7 +350,10 @@ data class CourseProgress(
     }
 
     // Transitive closure from `code` along `next`, excluding `code` itself.
-    private fun reach(code: String, next: (String) -> List<String>): Set<String> {
+    private fun reach(
+        code: String,
+        next: (String) -> List<String>,
+    ): Set<String> {
         val visited = mutableSetOf(code)
         val frontier = ArrayDeque(listOf(code))
         while (frontier.isNotEmpty()) {

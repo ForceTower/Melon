@@ -90,7 +90,10 @@ internal class ParadoxoViewModel @Inject constructor(
         }
     }
 
-    private fun loadDiscipline(id: String, force: Boolean) {
+    private fun loadDiscipline(
+        id: String,
+        force: Boolean,
+    ) {
         val current = currentState.disciplines[id]
         if (!force && current != null && current !is ParadoxoDetail.Failed) return
         setState { copy(disciplines = disciplines + (id to ParadoxoDetail.Loading)) }
@@ -103,7 +106,10 @@ internal class ParadoxoViewModel @Inject constructor(
         }
     }
 
-    private fun loadTeacher(id: String, force: Boolean) {
+    private fun loadTeacher(
+        id: String,
+        force: Boolean,
+    ) {
         val current = currentState.teachers[id]
         if (!force && current != null && current !is ParadoxoDetail.Failed) return
         setState { copy(teachers = teachers + (id to ParadoxoDetail.Loading)) }

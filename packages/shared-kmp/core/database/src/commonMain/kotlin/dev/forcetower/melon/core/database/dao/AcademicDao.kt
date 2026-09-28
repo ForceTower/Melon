@@ -489,9 +489,7 @@ abstract class AcademicDao {
          ORDER BY c.type ASC, c.groupName ASC
         """,
     )
-    abstract fun observeDisciplineOfferEnrollments(
-        offerId: String,
-    ): Flow<List<DisciplineDetailEnrollmentRow>>
+    abstract fun observeDisciplineOfferEnrollments(offerId: String): Flow<List<DisciplineDetailEnrollmentRow>>
 
     // Per-evaluation grade rows scoped to the offer, carrying evaluation name +
     // position and the upstream `gradePlatformId`. `gradePlatformId` is stable
@@ -522,9 +520,7 @@ abstract class AcademicDao {
          ORDER BY c.id ASC, e.position ASC, sg.ordinal ASC
         """,
     )
-    abstract fun observeDisciplineOfferGrades(
-        offerId: String,
-    ): Flow<List<DisciplineDetailGradeRow>>
+    abstract fun observeDisciplineOfferGrades(offerId: String): Flow<List<DisciplineDetailGradeRow>>
 
     // ClassLecture rows for every class under the offer. Attachment count uses
     // a correlated subquery so the result stays one-row-per-lecture; joining
@@ -548,9 +544,7 @@ abstract class AcademicDao {
          ORDER BY cl.date ASC, cl.ordinal ASC
         """,
     )
-    abstract fun observeDisciplineOfferLectures(
-        offerId: String,
-    ): Flow<List<DisciplineDetailLectureRow>>
+    abstract fun observeDisciplineOfferLectures(offerId: String): Flow<List<DisciplineDetailLectureRow>>
 
     // LectureMaterial rows for the offer, carrying the enclosing classId + the
     // lecture's date so the UI can group by class and label each with "added
@@ -571,9 +565,7 @@ abstract class AcademicDao {
          ORDER BY cl.date DESC, lm.position ASC
         """,
     )
-    abstract fun observeDisciplineOfferMaterials(
-        offerId: String,
-    ): Flow<List<DisciplineDetailMaterialRow>>
+    abstract fun observeDisciplineOfferMaterials(offerId: String): Flow<List<DisciplineDetailMaterialRow>>
 
     private companion object {
         const val ALLOCATIONS_SQL = """

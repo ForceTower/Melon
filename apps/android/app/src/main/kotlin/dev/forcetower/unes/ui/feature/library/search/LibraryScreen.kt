@@ -75,6 +75,8 @@ import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.foundation.PinnedHeaderHairline
 import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
 import dev.forcetower.unes.designsystem.theme.MelonTheme
+import dev.forcetower.unes.ui.feature.library.LibraryIntent
+import dev.forcetower.unes.ui.feature.library.LibraryViewModel
 import dev.forcetower.unes.ui.feature.library.components.LibraryBackButton
 import dev.forcetower.unes.ui.feature.library.components.LibraryCard
 import dev.forcetower.unes.ui.feature.library.components.LibraryFilterChip
@@ -82,8 +84,6 @@ import dev.forcetower.unes.ui.feature.library.components.LibraryInfoNote
 import dev.forcetower.unes.ui.feature.library.components.LibrarySectionLabel
 import dev.forcetower.unes.ui.feature.library.components.LibraryTypeTag
 import dev.forcetower.unes.ui.feature.library.components.LibraryWorkMark
-import dev.forcetower.unes.ui.feature.library.LibraryViewModel
-import dev.forcetower.unes.ui.feature.library.LibraryIntent
 import dev.forcetower.unes.ui.feature.library.formatLibraryCount
 import dev.forcetower.unes.ui.feature.library.labelRes
 import dev.forcetower.unes.ui.feature.library.libraryPreviewWork
@@ -362,7 +362,10 @@ private fun LibrarySearchField(
 }
 
 @Composable
-private fun AdvancedSearchEntryCard(onTap: () -> Unit, modifier: Modifier = Modifier) {
+private fun AdvancedSearchEntryCard(
+    onTap: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     LibraryCard(modifier = modifier.fillMaxWidth()) {
         Row(
             verticalAlignment = Alignment.CenterVertically,

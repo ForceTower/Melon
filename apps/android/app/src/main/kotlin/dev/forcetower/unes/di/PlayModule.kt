@@ -25,6 +25,5 @@ object PlayModule {
 
     @Provides
     @Singleton
-    fun provideReviewManager(@ApplicationContext context: Context): ReviewManager =
-        ReviewManagerFactory.create(context)
+    fun provideReviewManager(@ApplicationContext context: Context): ReviewManager = ReviewManagerFactory.create(context)
 }

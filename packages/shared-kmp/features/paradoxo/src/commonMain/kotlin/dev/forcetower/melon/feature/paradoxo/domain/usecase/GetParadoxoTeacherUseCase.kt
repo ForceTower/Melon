@@ -10,6 +10,5 @@ import dev.zacsweers.metro.Inject
 class GetParadoxoTeacherUseCase internal constructor(
     private val service: ParadoxoService,
 ) {
-    suspend operator fun invoke(id: String): Outcome<ParadoxoTeacherDetail, ParadoxoError> =
-        service.teacher(id)
+    suspend operator fun invoke(id: String): Outcome<ParadoxoTeacherDetail, ParadoxoError> = service.teacher(id)
 }

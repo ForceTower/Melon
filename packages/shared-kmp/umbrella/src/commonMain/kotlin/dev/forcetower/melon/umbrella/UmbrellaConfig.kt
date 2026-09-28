@@ -2,8 +2,8 @@ package dev.forcetower.melon.umbrella
 
 import dev.forcetower.melon.core.analytics.Analytics
 import dev.forcetower.melon.core.analytics.NoOpAnalytics
-import dev.forcetower.melon.core.common.ApplicationContext
 import dev.forcetower.melon.core.common.AppClock
+import dev.forcetower.melon.core.common.ApplicationContext
 import dev.forcetower.melon.core.logging.CrashReporter
 import dev.forcetower.melon.core.logging.LoggingConfig
 

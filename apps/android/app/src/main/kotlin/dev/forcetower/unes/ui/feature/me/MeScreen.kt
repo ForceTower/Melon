@@ -282,7 +282,11 @@ internal fun MeScreen(
 }
 
 @Composable
-private fun Footer(version: String, build: String, modifier: Modifier = Modifier) {
+private fun Footer(
+    version: String,
+    build: String,
+    modifier: Modifier = Modifier,
+) {
     val credit = stringResource(R.string.me_footer_credit)
     val heart = "♥"
     Text(

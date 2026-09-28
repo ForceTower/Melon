@@ -28,7 +28,10 @@ internal enum class CurriculumLens { Periods, Map, Grid }
 
 // The prerequisite chain being highlighted: everything outside `codes` dims,
 // `focus` gets the ring.
-internal data class CurriculumTrail(val focus: String, val codes: Set<String>)
+internal data class CurriculumTrail(
+    val focus: String,
+    val codes: Set<String>,
+)
 
 internal data class CourseProgressUiState(
     val progress: CourseProgress? = null,
@@ -71,20 +74,32 @@ internal const val AUTOMATIC_VERSION_SWITCH = "automatic"
 internal sealed interface CourseProgressIntent : UiIntent {
     data object Load : CourseProgressIntent
     data object Retry : CourseProgressIntent
-    data class LensChanged(val lens: CurriculumLens) : CourseProgressIntent
-    data class PeriodSelected(val period: Int) : CourseProgressIntent
-    data class EntryTapped(val code: String) : CourseProgressIntent
+    data class LensChanged(
+        val lens: CurriculumLens,
+    ) : CourseProgressIntent
+    data class PeriodSelected(
+        val period: Int,
+    ) : CourseProgressIntent
+    data class EntryTapped(
+        val code: String,
+    ) : CourseProgressIntent
     data object EntrySheetDismissed : CourseProgressIntent
-    data class TrailRequested(val code: String) : CourseProgressIntent
+    data class TrailRequested(
+        val code: String,
+    ) : CourseProgressIntent
     data object TrailCleared : CourseProgressIntent
     data object ExplainerTapped : CourseProgressIntent
     data object ExplainerDismissed : CourseProgressIntent
     data object VersionPickerTapped : CourseProgressIntent
     data object VersionPickerDismissed : CourseProgressIntent
-    data class VersionSelected(val curriculumId: String) : CourseProgressIntent
+    data class VersionSelected(
+        val curriculumId: String,
+    ) : CourseProgressIntent
     data object AutomaticVersionTapped : CourseProgressIntent
     data object VersionSwitchFailureDismissed : CourseProgressIntent
-    data class CompletionToggled(val code: String) : CourseProgressIntent
+    data class CompletionToggled(
+        val code: String,
+    ) : CourseProgressIntent
     data object CompletionToggleFailureDismissed : CourseProgressIntent
 }
 
@@ -159,33 +174,35 @@ internal class CourseProgressViewModel @Inject constructor(
         analytics.selectContent(ContentTypes.HUB, "curriculum_flow")
     }
 
-    private fun onProgress(value: CourseProgress?) = setState {
-        if (value == null) return@setState this
-        copy(
-            progress = value,
-            loading = false,
-            failed = false,
-            // Keep the student's own choice as long as it still exists in the
-            // refreshed grid; otherwise land on their período.
-            selectedPeriod = selectedPeriod?.takeIf { value.period(it) != null }
-                ?: value.landingPeriod,
-            trail = trail?.takeIf { value.entry(it.focus) != null },
-            openedEntryCode = openedEntryCode?.takeIf { value.entry(it) != null },
-        )
-    }
-
-    private fun refresh() = viewModelScope.launch {
-        if (!refreshMutex.tryLock()) return@launch
-        try {
-            val outcome = refreshCourseProgress()
-            setState {
-                // A stale screen beats an error screen.
-                copy(loading = false, failed = outcome is Outcome.Err && progress == null)
-            }
-        } finally {
-            refreshMutex.unlock()
+    private fun onProgress(value: CourseProgress?) =
+        setState {
+            if (value == null) return@setState this
+            copy(
+                progress = value,
+                loading = false,
+                failed = false,
+                // Keep the student's own choice as long as it still exists in the
+                // refreshed grid; otherwise land on their período.
+                selectedPeriod = selectedPeriod?.takeIf { value.period(it) != null }
+                    ?: value.landingPeriod,
+                trail = trail?.takeIf { value.entry(it.focus) != null },
+                openedEntryCode = openedEntryCode?.takeIf { value.entry(it) != null },
+            )
         }
-    }
+
+    private fun refresh() =
+        viewModelScope.launch {
+            if (!refreshMutex.tryLock()) return@launch
+            try {
+                val outcome = refreshCourseProgress()
+                setState {
+                    // A stale screen beats an error screen.
+                    copy(loading = false, failed = outcome is Outcome.Err && progress == null)
+                }
+            } finally {
+                refreshMutex.unlock()
+            }
+        }
 
     private fun openVersionPicker() {
         if (currentState.progress?.canPickVersion != true) return
@@ -259,11 +276,12 @@ internal class CourseProgressViewModel @Inject constructor(
         setState { copy(lens = lens) }
     }
 
-    private fun selectPeriod(period: Int) = setState {
-        if (progress?.period(period) == null) return@setState this
-        // Jumping to a período from the map is a request to read its names.
-        copy(selectedPeriod = period, lens = if (lens == CurriculumLens.Map) CurriculumLens.Periods else lens)
-    }
+    private fun selectPeriod(period: Int) =
+        setState {
+            if (progress?.period(period) == null) return@setState this
+            // Jumping to a período from the map is a request to read its names.
+            copy(selectedPeriod = period, lens = if (lens == CurriculumLens.Map) CurriculumLens.Periods else lens)
+        }
 
     private fun openEntry(code: String) {
         if (currentState.progress?.entry(code) == null) return

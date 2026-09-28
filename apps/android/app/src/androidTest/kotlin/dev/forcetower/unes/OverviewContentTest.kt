@@ -6,8 +6,8 @@ import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.captureToImage
-import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
 import androidx.compose.ui.test.junit4.accessibility.enableAccessibilityChecks
+import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
@@ -19,8 +19,8 @@ import dev.forcetower.unes.ui.feature.overview.OverviewIntent
 import dev.forcetower.unes.ui.feature.overview.OverviewUiState
 import java.io.File
 import java.util.Locale
-import kotlinx.datetime.TimeZone
 import kotlin.time.Instant
+import kotlinx.datetime.TimeZone
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -28,7 +28,10 @@ import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 
 @RunWith(Parameterized::class)
-internal class OverviewContentTest(private val dark: Boolean, private val fontScale: Float) {
+internal class OverviewContentTest(
+    private val dark: Boolean,
+    private val fontScale: Float,
+) {
     @get:Rule
     val compose = createAndroidComposeRule<ScenarioRenderActivity>()
 

@@ -32,6 +32,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -41,7 +42,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
-import androidx.compose.ui.layout.ContentScale
 import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.foundation.Mesh
 import dev.forcetower.unes.designsystem.foundation.MeshVariant
@@ -117,7 +117,10 @@ internal fun IdentityCard(
 }
 
 @Composable
-private fun IdentityRow(identity: ProfileIdentity, onEditProfile: (() -> Unit)?) {
+private fun IdentityRow(
+    identity: ProfileIdentity,
+    onEditProfile: (() -> Unit)?,
+) {
     val onHero = MaterialTheme.melon.fixed.onHero
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -198,7 +201,11 @@ private fun CampusChip(label: String) {
 }
 
 @Composable
-private fun Avatar(initial: String, avatarUrl: String?, showEditBadge: Boolean) {
+private fun Avatar(
+    initial: String,
+    avatarUrl: String?,
+    showEditBadge: Boolean,
+) {
     val brand = MaterialTheme.melon.brand
     val fixed = MaterialTheme.melon.fixed
     Box(modifier = Modifier.size(66.dp)) {

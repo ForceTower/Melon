@@ -37,7 +37,10 @@ class NextClassWidgetReceiver : GlanceAppWidgetReceiver() {
         super.onDisabled(context)
     }
 
-    override fun onReceive(context: Context, intent: Intent) {
+    override fun onReceive(
+        context: Context,
+        intent: Intent,
+    ) {
         super.onReceive(context, intent)
         when (intent.action) {
             // Our self-scheduled minute/passive tick. Refan to onUpdate so
@@ -50,7 +53,8 @@ class NextClassWidgetReceiver : GlanceAppWidgetReceiver() {
             // also reschedules, which re-anchors the tick chain to the new
             // wall clock.
             Intent.ACTION_TIME_CHANGED,
-            Intent.ACTION_TIMEZONE_CHANGED -> {
+            Intent.ACTION_TIMEZONE_CHANGED,
+            -> {
                 val mgr = AppWidgetManager.getInstance(context)
                 val ids = mgr.getAppWidgetIds(
                     ComponentName(context, NextClassWidgetReceiver::class.java),
@@ -121,7 +125,10 @@ private const val PASSIVE_TICK_MS = 2L * 60_000L
 // moment as the user's system clock).
 private const val MINUTE_MS = 60_000L
 
-internal fun nextTickEpochMs(entry: NextClassEntry?, nowMs: Long): Long {
+internal fun nextTickEpochMs(
+    entry: NextClassEntry?,
+    nowMs: Long,
+): Long {
     // No snapshot yet (first install, before the publisher ran). Default to
     // per-minute so the widget self-heals as soon as a snapshot lands.
     if (entry == null) return alignToNextMinute(nowMs)
@@ -134,8 +141,11 @@ internal fun nextTickEpochMs(entry: NextClassEntry?, nowMs: Long): Long {
         // shows up on the eyebrow ("em 23 min"). Earlier than that the
         // eyebrow reads in hours+minutes and per-minute deltas are invisible.
         NextClassState.Upcoming ->
-            if (entry.startsIn <= 60) alignToNextMinute(nowMs)
-            else alignToNextMinute(nowMs + PASSIVE_TICK_MS)
+            if (entry.startsIn <= 60) {
+                alignToNextMinute(nowMs)
+            } else {
+                alignToNextMinute(nowMs + PASSIVE_TICK_MS)
+            }
         // Day done. If there's still a next-day class to count down to, use
         // the same Upcoming cadence (per-minute in the last hour, 15-min
         // before that). If there's nothing — empty entry, no bars, no next
@@ -152,8 +162,7 @@ internal fun nextTickEpochMs(entry: NextClassEntry?, nowMs: Long): Long {
 // First wall-clock minute boundary strictly after `epochMs`. Always lands the
 // alarm on a HH:MM:00 instant so the countdown rolls in lockstep with the
 // user's clock instead of drifting by the few seconds of broadcast latency.
-private fun alignToNextMinute(epochMs: Long): Long =
-    ((epochMs / MINUTE_MS) + 1L) * MINUTE_MS
+private fun alignToNextMinute(epochMs: Long): Long = ((epochMs / MINUTE_MS) + 1L) * MINUTE_MS
 
 private fun nextMidnightEpochMs(nowMs: Long): Long {
     val cal = Calendar.getInstance()

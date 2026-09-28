@@ -48,7 +48,10 @@ import dev.forcetower.unes.ui.feature.me.ProfileIdentity
 // flag chip on the closing week, and the elapsed percent; the bar fills in
 // on entrance; the footer pins the semester's start/end dates.
 @Composable
-internal fun SemesterProgressCard(identity: ProfileIdentity, modifier: Modifier = Modifier) {
+internal fun SemesterProgressCard(
+    identity: ProfileIdentity,
+    modifier: Modifier = Modifier,
+) {
     val shape = RoundedCornerShape(24.dp)
     Column(
         modifier = modifier
@@ -200,7 +203,10 @@ private fun Footer(identity: ProfileIdentity) {
 }
 
 @Composable
-private fun BoundaryLabel(prefix: String, date: String) {
+private fun BoundaryLabel(
+    prefix: String,
+    date: String,
+) {
     Text(
         text = buildAnnotatedString {
             append(prefix)

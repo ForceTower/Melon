@@ -27,15 +27,17 @@ import kotlin.math.floor
 // follow the dc `UNES Mensagens - Android` redesign, which tints every row by
 // one of three top-level categories (Disciplinas · Universidade · App).
 internal enum class MessageOrigin {
-    Discipline,   // from a specific enrolled discipline (sender is the prof)
-    Secretariat,  // from Secretaria Acadêmica
-    Campus,       // campus-wide announcement
-    App,          // from the UNES team
-    Module,       // from an extra module (intercâmbio, biblioteca, RU)
-    Direct,       // direct message addressed to THIS student personally
+    Discipline, // from a specific enrolled discipline (sender is the prof)
+    Secretariat, // from Secretaria Acadêmica
+    Campus, // campus-wide announcement
+    App, // from the UNES team
+    Module, // from an extra module (intercâmbio, biblioteca, RU)
+    Direct, // direct message addressed to THIS student personally
 }
 
-internal enum class MessageAttachmentKind(val label: String) {
+internal enum class MessageAttachmentKind(
+    val label: String,
+) {
     Pdf("PDF"),
     Slides("SLIDES"),
     Image("IMAGE"),
@@ -52,7 +54,10 @@ internal data class MessageAttachment(
     val url: String? = null,
 )
 
-internal data class MessageSender(val name: String, val role: String)
+internal data class MessageSender(
+    val name: String,
+    val role: String,
+)
 
 // Paragraphs are separated by blank lines in the upstream body text.
 internal val MessageParagraphBreak = Regex("\\n\\s*\\n")
@@ -77,7 +82,9 @@ internal data class Message(
 
 // Top-level category the dc redesign groups origins into — drives the tonal
 // avatar hue, the hero segmented bar, and the legend.
-internal enum class MessageCategory(@StringRes val labelRes: Int) {
+internal enum class MessageCategory(
+    @StringRes val labelRes: Int,
+) {
     Disciplines(R.string.messages_category_disciplines),
     University(R.string.messages_category_university),
     App(R.string.messages_category_app),
@@ -94,54 +101,63 @@ internal val Message.category: MessageCategory
 // Universidade = amber (status.warn), App = violet.
 @Composable
 @ReadOnlyComposable
-internal fun categoryColor(category: MessageCategory): Color = when (category) {
-    MessageCategory.Disciplines -> MaterialTheme.melon.palette.jade
-    MessageCategory.University -> MaterialTheme.melon.status.warn
-    MessageCategory.App -> MaterialTheme.melon.palette.violet
-}
+internal fun categoryColor(category: MessageCategory): Color =
+    when (category) {
+        MessageCategory.Disciplines -> MaterialTheme.melon.palette.jade
+        MessageCategory.University -> MaterialTheme.melon.status.warn
+        MessageCategory.App -> MaterialTheme.melon.palette.violet
+    }
 
 // Leading avatar glyph — per origin, so a secretaria row still reads
 // differently from a comunicado even though both tint amber.
-internal fun originIcon(origin: MessageOrigin): ImageVector = when (origin) {
-    MessageOrigin.Discipline -> Icons.AutoMirrored.Filled.MenuBook
-    MessageOrigin.Secretariat -> Icons.Filled.AccountBalance
-    MessageOrigin.Campus -> Icons.Filled.Campaign
-    MessageOrigin.App -> Icons.Filled.AutoAwesome
-    MessageOrigin.Module -> Icons.Filled.Widgets
-    MessageOrigin.Direct -> Icons.Filled.Person
-}
+internal fun originIcon(origin: MessageOrigin): ImageVector =
+    when (origin) {
+        MessageOrigin.Discipline -> Icons.AutoMirrored.Filled.MenuBook
+        MessageOrigin.Secretariat -> Icons.Filled.AccountBalance
+        MessageOrigin.Campus -> Icons.Filled.Campaign
+        MessageOrigin.App -> Icons.Filled.AutoAwesome
+        MessageOrigin.Module -> Icons.Filled.Widgets
+        MessageOrigin.Direct -> Icons.Filled.Person
+    }
 
 @StringRes
-internal fun originKindRes(origin: MessageOrigin): Int = when (origin) {
-    MessageOrigin.Discipline -> R.string.messages_origin_kind_discipline
-    MessageOrigin.Secretariat -> R.string.messages_origin_kind_secretariat
-    MessageOrigin.Campus -> R.string.messages_origin_kind_campus
-    MessageOrigin.App -> R.string.messages_origin_kind_app
-    MessageOrigin.Module -> R.string.messages_origin_kind_module
-    MessageOrigin.Direct -> R.string.messages_origin_kind_direct
-}
+internal fun originKindRes(origin: MessageOrigin): Int =
+    when (origin) {
+        MessageOrigin.Discipline -> R.string.messages_origin_kind_discipline
+        MessageOrigin.Secretariat -> R.string.messages_origin_kind_secretariat
+        MessageOrigin.Campus -> R.string.messages_origin_kind_campus
+        MessageOrigin.App -> R.string.messages_origin_kind_app
+        MessageOrigin.Module -> R.string.messages_origin_kind_module
+        MessageOrigin.Direct -> R.string.messages_origin_kind_direct
+    }
 
 // Filter chips across the top of the inbox.
-internal enum class MessageFilter(@StringRes val labelRes: Int) {
+internal enum class MessageFilter(
+    @StringRes val labelRes: Int,
+) {
     All(R.string.messages_filter_all),
     Unread(R.string.messages_filter_unread),
     Starred(R.string.messages_filter_starred),
     Disc(R.string.messages_filter_disciplines),
     Univ(R.string.messages_filter_university),
-    App(R.string.messages_filter_app);
+    App(R.string.messages_filter_app),
+    ;
 
-    fun matches(m: Message): Boolean = when (this) {
-        All -> true
-        Unread -> m.unread
-        Starred -> m.starred
-        Disc -> m.category == MessageCategory.Disciplines
-        Univ -> m.category == MessageCategory.University
-        App -> m.category == MessageCategory.App
-    }
+    fun matches(m: Message): Boolean =
+        when (this) {
+            All -> true
+            Unread -> m.unread
+            Starred -> m.starred
+            Disc -> m.category == MessageCategory.Disciplines
+            Univ -> m.category == MessageCategory.University
+            App -> m.category == MessageCategory.App
+        }
 }
 
 // Date bucket headers in the list. Order matches iOS `MessageDate.Bucket`.
-internal enum class MessageBucket(@StringRes val labelRes: Int) {
+internal enum class MessageBucket(
+    @StringRes val labelRes: Int,
+) {
     Today(R.string.messages_bucket_today),
     Yesterday(R.string.messages_bucket_yesterday),
     ThisWeek(R.string.messages_bucket_this_week),
@@ -149,7 +165,10 @@ internal enum class MessageBucket(@StringRes val labelRes: Int) {
     Older(R.string.messages_bucket_older),
 }
 
-internal fun bucketOf(received: LocalDateTime, now: LocalDateTime = LocalDateTime.now()): MessageBucket {
+internal fun bucketOf(
+    received: LocalDateTime,
+    now: LocalDateTime = LocalDateTime.now(),
+): MessageBucket {
     val days = floor(secondsBetween(received, now) / 86_400.0).toInt()
     return when {
         days <= 0 -> MessageBucket.Today
@@ -164,14 +183,22 @@ internal fun bucketOf(received: LocalDateTime, now: LocalDateTime = LocalDateTim
 // `screens-messages-data.jsx` and `MessageDate.relativeTime` on iOS. The
 // `Literal` variant carries a pre-built short date ("10 abr").
 internal sealed class RelativeTime {
-    data class Resource(@StringRes val res: Int, val arg: Int? = null) : RelativeTime()
-    data class Literal(val text: String) : RelativeTime()
+    data class Resource(
+        @StringRes val res: Int,
+        val arg: Int? = null,
+    ) : RelativeTime()
+    data class Literal(
+        val text: String,
+    ) : RelativeTime()
 }
 
 private val ShortDateFormatter: DateTimeFormatter
     get() = DateTimeFormatter.ofPattern("d MMM", Locale.getDefault())
 
-internal fun relativeTime(received: LocalDateTime, now: LocalDateTime = LocalDateTime.now()): RelativeTime {
+internal fun relativeTime(
+    received: LocalDateTime,
+    now: LocalDateTime = LocalDateTime.now(),
+): RelativeTime {
     val mins = floor(secondsBetween(received, now) / 60.0).toInt()
     if (mins < 1) return RelativeTime.Resource(R.string.messages_rel_time_now)
     if (mins < 60) return RelativeTime.Resource(R.string.messages_rel_time_minutes, arg = mins)
@@ -193,7 +220,10 @@ internal fun fullTime(received: LocalDateTime): String {
     return "${LongDateFormatter.format(received)} · $hh:$mm"
 }
 
-private fun secondsBetween(start: LocalDateTime, end: LocalDateTime): Double {
+private fun secondsBetween(
+    start: LocalDateTime,
+    end: LocalDateTime,
+): Double {
     val zone = ZoneId.systemDefault()
     return (end.atZone(zone).toEpochSecond() - start.atZone(zone).toEpochSecond()).toDouble()
 }

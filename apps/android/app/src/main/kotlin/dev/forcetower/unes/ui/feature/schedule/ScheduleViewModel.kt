@@ -4,15 +4,15 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.forcetower.melon.core.analytics.Analytics
 import dev.forcetower.melon.core.analytics.ContentTypes
+import dev.forcetower.melon.feature.schedule.domain.model.ScheduleWeek as KmpScheduleWeek
 import dev.forcetower.melon.feature.schedule.domain.usecase.ObserveScheduleWeekUseCase
-import dev.forcetower.unes.remote.FeatureFlags
 import dev.forcetower.unes.mvi.MviViewModel
 import dev.forcetower.unes.mvi.UiEffect
 import dev.forcetower.unes.mvi.UiIntent
 import dev.forcetower.unes.mvi.UiState
+import dev.forcetower.unes.remote.FeatureFlags
 import javax.inject.Inject
 import kotlinx.coroutines.launch
-import dev.forcetower.melon.feature.schedule.domain.model.ScheduleWeek as KmpScheduleWeek
 
 internal data class ScheduleUiState(
     val raw: KmpScheduleWeek? = null,
@@ -106,7 +106,10 @@ internal class ScheduleViewModel @Inject constructor(
         )
     }
 
-    fun trackDaySelect(dateIso: String?, dayIndex: Int) {
+    fun trackDaySelect(
+        dateIso: String?,
+        dayIndex: Int,
+    ) {
         if (dateIso == null) return
         analytics.selectContent(
             contentType = ContentTypes.SCHEDULE_DAY,

@@ -29,34 +29,38 @@ internal fun MaterialType.hue(): Color {
     }
 }
 
-internal fun MaterialType.icon(): ImageVector = when (this) {
-    MaterialType.Exam -> Icons.Filled.Quiz
-    MaterialType.SolvedList -> Icons.Filled.Checklist
-    MaterialType.Summary -> Icons.AutoMirrored.Filled.StickyNote2
-    MaterialType.FormulaSheet -> Icons.Filled.Functions
-}
+internal fun MaterialType.icon(): ImageVector =
+    when (this) {
+        MaterialType.Exam -> Icons.Filled.Quiz
+        MaterialType.SolvedList -> Icons.Filled.Checklist
+        MaterialType.Summary -> Icons.AutoMirrored.Filled.StickyNote2
+        MaterialType.FormulaSheet -> Icons.Filled.Functions
+    }
 
-internal fun MaterialType.labelRes(): Int = when (this) {
-    MaterialType.Exam -> R.string.materials_type_exam
-    MaterialType.SolvedList -> R.string.materials_type_list
-    MaterialType.Summary -> R.string.materials_type_summary
-    MaterialType.FormulaSheet -> R.string.materials_type_formula
-}
+internal fun MaterialType.labelRes(): Int =
+    when (this) {
+        MaterialType.Exam -> R.string.materials_type_exam
+        MaterialType.SolvedList -> R.string.materials_type_list
+        MaterialType.Summary -> R.string.materials_type_summary
+        MaterialType.FormulaSheet -> R.string.materials_type_formula
+    }
 
-internal fun MaterialType.pluralLabelRes(): Int = when (this) {
-    MaterialType.Exam -> R.string.materials_type_exam_plural
-    MaterialType.SolvedList -> R.string.materials_type_list_plural
-    MaterialType.Summary -> R.string.materials_type_summary_plural
-    MaterialType.FormulaSheet -> R.string.materials_type_formula_plural
-}
+internal fun MaterialType.pluralLabelRes(): Int =
+    when (this) {
+        MaterialType.Exam -> R.string.materials_type_exam_plural
+        MaterialType.SolvedList -> R.string.materials_type_list_plural
+        MaterialType.Summary -> R.string.materials_type_summary_plural
+        MaterialType.FormulaSheet -> R.string.materials_type_formula_plural
+    }
 
 // "3 provas" / "1 lista" — the lowercase tally chips on the hub cards.
-internal fun MaterialType.tallyRes(): Int = when (this) {
-    MaterialType.Exam -> R.plurals.materials_tally_exam
-    MaterialType.SolvedList -> R.plurals.materials_tally_list
-    MaterialType.Summary -> R.plurals.materials_tally_summary
-    MaterialType.FormulaSheet -> R.plurals.materials_tally_formula
-}
+internal fun MaterialType.tallyRes(): Int =
+    when (this) {
+        MaterialType.Exam -> R.plurals.materials_tally_exam
+        MaterialType.SolvedList -> R.plurals.materials_tally_list
+        MaterialType.Summary -> R.plurals.materials_tally_summary
+        MaterialType.FormulaSheet -> R.plurals.materials_tally_formula
+    }
 
 // Stable presentation order everywhere types are enumerated (tallies, filter
 // chips, the upload type grid) — mirrors the dc ORDER array.

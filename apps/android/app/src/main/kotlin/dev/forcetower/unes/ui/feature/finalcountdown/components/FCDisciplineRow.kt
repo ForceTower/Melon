@@ -276,8 +276,9 @@ private fun DisciplineTile(
 
 // "Adriana Matos · 2026.1" / "2026.1" when the teacher is unknown.
 @Composable
-private fun FCDiscipline.subLabel(): String = if (teacher != null) {
-    stringResource(R.string.final_countdown_disc_sub_format, teacher, semesterLabel)
-} else {
-    semesterLabel
-}
+private fun FCDiscipline.subLabel(): String =
+    if (teacher != null) {
+        stringResource(R.string.final_countdown_disc_sub_format, teacher, semesterLabel)
+    } else {
+        semesterLabel
+    }

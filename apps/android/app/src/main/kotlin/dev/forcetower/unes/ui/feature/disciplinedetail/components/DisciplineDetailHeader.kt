@@ -99,7 +99,10 @@ internal fun DisciplineDetailHeader(
 }
 
 @Composable
-private fun CodeChip(text: String, accent: Color) {
+private fun CodeChip(
+    text: String,
+    accent: Color,
+) {
     Box(
         modifier = Modifier
             .clip(RoundedCornerShape(8.dp))
@@ -127,7 +130,10 @@ private fun TeacherRows(
 ) {
     val role = stringResource(R.string.discipline_detail_teacher_role)
     val multi = discipline.hasMultipleGroups
-    data class TeacherLine(val name: String, val meta: String)
+    data class TeacherLine(
+        val name: String,
+        val meta: String,
+    )
     val lines = if (discipline.groups.isNotEmpty()) {
         discipline.groups
             .filter { it.prof.isNotEmpty() || it.code.isNotEmpty() }
@@ -178,7 +184,10 @@ private fun TeacherRows(
 }
 
 @Composable
-private fun InitialsAvatar(name: String, accent: Color) {
+private fun InitialsAvatar(
+    name: String,
+    accent: Color,
+) {
     Box(
         modifier = Modifier
             .size(36.dp)
@@ -221,7 +230,10 @@ private fun GroupFilter(
         inactiveBorderColor = border,
     )
 
-    data class Option(val code: String?, val label: String)
+    data class Option(
+        val code: String?,
+        val label: String,
+    )
     val options = listOf(Option(null, stringResource(R.string.discipline_detail_group_all))) +
         discipline.groups.map { Option(it.code, it.kind.ifEmpty { it.code }) }
 

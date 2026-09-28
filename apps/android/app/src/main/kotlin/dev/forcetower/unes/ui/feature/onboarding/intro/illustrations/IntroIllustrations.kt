@@ -209,7 +209,10 @@ private fun ScheduleBlock(
 
 // ──────────────── 2 · Notas (coefficient + bars) ────────────────
 
-private data class GradeBar(val labelRes: Int, val height: Dp)
+private data class GradeBar(
+    val labelRes: Int,
+    val height: Dp,
+)
 
 @Composable
 internal fun GradesIllustration() {
@@ -291,7 +294,11 @@ internal fun GradesIllustration() {
 }
 
 @Composable
-private fun GrowingBar(color: Color, targetHeight: Dp, delayMs: Int) {
+private fun GrowingBar(
+    color: Color,
+    targetHeight: Dp,
+    delayMs: Int,
+) {
     var grown by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) {
         delay(delayMs.toLong())

@@ -12,7 +12,9 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 
 @Inject
-internal class NotificationTokenService(private val client: HttpClient) {
+internal class NotificationTokenService(
+    private val client: HttpClient,
+) {
     suspend fun registerToken(body: RegisterNotificationTokenRequest): HttpResponse =
         client.post("api/notifications/token") {
             contentType(ContentType.Application.Json)

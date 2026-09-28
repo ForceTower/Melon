@@ -104,7 +104,10 @@ internal class ReviewPrompter @Inject constructor(
         if (depth >= PARADOXO_DEPTH) report(ReviewTrigger.ParadoxoDepth)
     }
 
-    suspend fun present(activity: Activity, trigger: ReviewTrigger) {
+    suspend fun present(
+        activity: Activity,
+        trigger: ReviewTrigger,
+    ) {
         val info = try {
             reviewManager.requestReview()
         } catch (e: CancellationException) {

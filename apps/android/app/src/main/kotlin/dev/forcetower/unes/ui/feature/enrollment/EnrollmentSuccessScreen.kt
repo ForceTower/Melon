@@ -214,7 +214,12 @@ private fun EnrollmentSuccessContent(
 }
 
 @Composable
-private fun SuccessBody(totalHours: Int, pickCount: Int, onHero: Color, modifier: Modifier = Modifier) {
+private fun SuccessBody(
+    totalHours: Int,
+    pickCount: Int,
+    onHero: Color,
+    modifier: Modifier = Modifier,
+) {
     val bold = SpanStyle(color = onHero, fontWeight = FontWeight.Bold)
     val hoursText = stringResource(R.string.enrollment_hours_format, totalHours)
     Text(
@@ -222,7 +227,9 @@ private fun SuccessBody(totalHours: Int, pickCount: Int, onHero: Color, modifier
             append(stringResource(R.string.enrollment_success_body_intro))
             withStyle(bold) { append(hoursText) }
             append(stringResource(R.string.enrollment_success_body_middle))
-            withStyle(bold) { append(pluralStringResource(R.plurals.enrollment_success_body_count_format, pickCount, pickCount)) }
+            withStyle(bold) {
+                append(pluralStringResource(R.plurals.enrollment_success_body_count_format, pickCount, pickCount))
+            }
             append(stringResource(R.string.enrollment_success_body_outro))
         },
         style = MaterialTheme.typography.bodyMedium.copy(fontSize = 15.sp, lineHeight = 22.sp),
@@ -233,7 +240,12 @@ private fun SuccessBody(totalHours: Int, pickCount: Int, onHero: Color, modifier
 }
 
 @Composable
-private fun SuccessTile(value: String, label: String, onHero: Color, modifier: Modifier = Modifier) {
+private fun SuccessTile(
+    value: String,
+    label: String,
+    onHero: Color,
+    modifier: Modifier = Modifier,
+) {
     Column(
         modifier = modifier
             .clip(RoundedCornerShape(18.dp))

@@ -111,7 +111,11 @@ private fun EyebrowRow(phase: CampusEventPhase) {
 // The phase block shares a row with the tagline only, so the title keeps the
 // full card width instead of wrapping around the block's reserved column.
 @Composable
-private fun IdentityRow(event: CampusEvent, phase: CampusEventPhase, now: Instant) {
+private fun IdentityRow(
+    event: CampusEvent,
+    phase: CampusEventPhase,
+    now: Instant,
+) {
     val onHero = MaterialTheme.melon.fixed.onHero
     Column(modifier = Modifier.fillMaxWidth()) {
         if (event.edition != null) {
@@ -157,7 +161,11 @@ private fun IdentityRow(event: CampusEvent, phase: CampusEventPhase, now: Instan
 }
 
 @Composable
-private fun PhaseBlock(event: CampusEvent, phase: CampusEventPhase, now: Instant) {
+private fun PhaseBlock(
+    event: CampusEvent,
+    phase: CampusEventPhase,
+    now: Instant,
+) {
     val onHero = MaterialTheme.melon.fixed.onHero
     Column(horizontalAlignment = Alignment.End, verticalArrangement = Arrangement.spacedBy(4.dp)) {
         when (phase) {
@@ -214,7 +222,10 @@ private fun BigValue(text: String) {
 }
 
 @Composable
-private fun Footer(event: CampusEvent, phase: CampusEventPhase) {
+private fun Footer(
+    event: CampusEvent,
+    phase: CampusEventPhase,
+) {
     val onHero = MaterialTheme.melon.fixed.onHero
     val context = LocalContext.current
     val zone = CampusEventFormat.zoneId(event.timeZoneIdentifier)

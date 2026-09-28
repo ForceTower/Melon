@@ -160,7 +160,10 @@ internal fun FolioRunnerScreen(
 }
 
 @Composable
-private fun BoxScope.Hud(score: Int, bestScore: Int) {
+private fun BoxScope.Hud(
+    score: Int,
+    bestScore: Int,
+) {
     Column(
         modifier = Modifier
             .align(Alignment.TopEnd)

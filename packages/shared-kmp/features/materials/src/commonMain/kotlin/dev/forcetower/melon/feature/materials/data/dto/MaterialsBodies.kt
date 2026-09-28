@@ -75,16 +75,24 @@ internal data class MaterialUploaderBody(
 )
 
 @Serializable
-internal data class MaterialUsefulRequest(val useful: Boolean)
+internal data class MaterialUsefulRequest(
+    val useful: Boolean,
+)
 
 @Serializable
-internal data class MaterialUsefulBody(val count: Int)
+internal data class MaterialUsefulBody(
+    val count: Int,
+)
 
 @Serializable
-internal data class MaterialSavedRequest(val saved: Boolean)
+internal data class MaterialSavedRequest(
+    val saved: Boolean,
+)
 
 @Serializable
-internal data class MaterialReportRequest(val reason: String)
+internal data class MaterialReportRequest(
+    val reason: String,
+)
 
 @Serializable
 internal data class MaterialDownloadBody(
@@ -151,12 +159,13 @@ internal fun MaterialBody.toDomain(): Material? {
     )
 }
 
-internal fun MaterialsDisciplineBody.toDomain(): MaterialsDiscipline = MaterialsDiscipline(
-    id = id,
-    code = code,
-    name = name,
-    teacherName = teacherName?.takeIf { it.isNotBlank() },
-    counts = counts.orEmpty().mapNotNull { (key, value) ->
-        MaterialType.fromWire(key)?.let { it to value }
-    }.toMap(),
-)
+internal fun MaterialsDisciplineBody.toDomain(): MaterialsDiscipline =
+    MaterialsDiscipline(
+        id = id,
+        code = code,
+        name = name,
+        teacherName = teacherName?.takeIf { it.isNotBlank() },
+        counts = counts.orEmpty().mapNotNull { (key, value) ->
+            MaterialType.fromWire(key)?.let { it to value }
+        }.toMap(),
+    )

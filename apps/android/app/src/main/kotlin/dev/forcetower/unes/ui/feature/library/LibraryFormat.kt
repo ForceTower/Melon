@@ -38,7 +38,10 @@ internal fun formatLibraryYear(instant: Instant): Int =
         .year
 
 @Composable
-internal fun formatLibraryAgo(checkedAt: Instant, now: Instant): String {
+internal fun formatLibraryAgo(
+    checkedAt: Instant,
+    now: Instant,
+): String {
     val minutes = ((now - checkedAt).inWholeMinutes).coerceAtLeast(0)
     return when {
         minutes < 1 -> stringResource(R.string.library_ago_now)

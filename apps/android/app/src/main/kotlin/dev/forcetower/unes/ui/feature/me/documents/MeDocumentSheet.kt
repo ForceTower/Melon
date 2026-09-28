@@ -127,7 +127,11 @@ internal fun MeDocumentSheet(
 }
 
 @Composable
-private fun Header(document: AcademicDocument, hue: Color, onClose: () -> Unit) {
+private fun Header(
+    document: AcademicDocument,
+    hue: Color,
+    onClose: () -> Unit,
+) {
     Row(horizontalArrangement = Arrangement.spacedBy(14.dp)) {
         Box(
             modifier = Modifier
@@ -184,7 +188,11 @@ private fun CloseButton(onClose: () -> Unit) {
 }
 
 @Composable
-private fun SummaryRows(document: AcademicDocument, identity: ProfileIdentity?, hue: Color) {
+private fun SummaryRows(
+    document: AcademicDocument,
+    identity: ProfileIdentity?,
+    hue: Color,
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -213,7 +221,11 @@ private fun SummaryRows(document: AcademicDocument, identity: ProfileIdentity?, 
 }
 
 @Composable
-private fun SummaryRow(label: String, value: String?, hue: Color) {
+private fun SummaryRow(
+    label: String,
+    value: String?,
+    hue: Color,
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -253,7 +265,10 @@ private fun RowDivider() {
 // ───────── Stages ─────────
 
 @Composable
-private fun Intro(hue: Color, onDownload: () -> Unit) {
+private fun Intro(
+    hue: Color,
+    onDownload: () -> Unit,
+) {
     Column {
         Spacer(Modifier.height(16.dp))
         PrimaryButton(
@@ -310,7 +325,10 @@ private fun Captcha(
 }
 
 @Composable
-private fun Generating(sheet: DocumentSheetState, hue: Color) {
+private fun Generating(
+    sheet: DocumentSheetState,
+    hue: Color,
+) {
     val refreshing = sheet.stored != null
     val title = when {
         refreshing -> stringResource(R.string.me_document_refreshing)
@@ -384,7 +402,11 @@ private fun DocumentReady(
 }
 
 @Composable
-private fun FileCard(stored: StoredAcademicDocument, stage: DocumentStage, hue: Color) {
+private fun FileCard(
+    stored: StoredAcademicDocument,
+    stage: DocumentStage,
+    hue: Color,
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -441,11 +463,15 @@ private fun FileCard(stored: StoredAcademicDocument, stage: DocumentStage, hue: 
 }
 
 @Composable
-private fun statusLine(stage: DocumentStage, stored: StoredAcademicDocument): String = when (stage) {
-    DocumentStage.Fresh -> stringResource(R.string.me_document_status_fresh)
-    is DocumentStage.Stale -> stringResource(R.string.me_document_status_stale)
-    else -> stringResource(R.string.me_document_status_saved_format, formatSavedAt(stored.savedAtMs))
-}
+private fun statusLine(
+    stage: DocumentStage,
+    stored: StoredAcademicDocument,
+): String =
+    when (stage) {
+        DocumentStage.Fresh -> stringResource(R.string.me_document_status_fresh)
+        is DocumentStage.Stale -> stringResource(R.string.me_document_status_stale)
+        else -> stringResource(R.string.me_document_status_saved_format, formatSavedAt(stored.savedAtMs))
+    }
 
 @Composable
 private fun PdfChip(hue: Color) {
@@ -503,7 +529,10 @@ private fun StaleBanner() {
 }
 
 @Composable
-private fun Failed(reason: DocumentFetchError, onRetry: () -> Unit) {
+private fun Failed(
+    reason: DocumentFetchError,
+    onRetry: () -> Unit,
+) {
     val bad = MaterialTheme.melon.status.bad
     Column {
         Spacer(Modifier.height(14.dp))
@@ -624,25 +653,29 @@ private fun GhostButton(
 
 // ───────── Helpers ─────────
 
-internal fun AcademicDocument.tone(): ShortcutTone = when (this) {
-    AcademicDocument.EnrollmentCertificate -> ShortcutTone.Indigo
-    AcademicDocument.AcademicHistory -> ShortcutTone.Violet
-}
+internal fun AcademicDocument.tone(): ShortcutTone =
+    when (this) {
+        AcademicDocument.EnrollmentCertificate -> ShortcutTone.Indigo
+        AcademicDocument.AcademicHistory -> ShortcutTone.Violet
+    }
 
-private fun AcademicDocument.icon(): ImageVector = when (this) {
-    AcademicDocument.EnrollmentCertificate -> Icons.Filled.Description
-    AcademicDocument.AcademicHistory -> Icons.AutoMirrored.Filled.ReceiptLong
-}
+private fun AcademicDocument.icon(): ImageVector =
+    when (this) {
+        AcademicDocument.EnrollmentCertificate -> Icons.Filled.Description
+        AcademicDocument.AcademicHistory -> Icons.AutoMirrored.Filled.ReceiptLong
+    }
 
-private fun AcademicDocument.titleRes(): Int = when (this) {
-    AcademicDocument.EnrollmentCertificate -> R.string.me_document_certificate_title
-    AcademicDocument.AcademicHistory -> R.string.me_document_history_title
-}
+private fun AcademicDocument.titleRes(): Int =
+    when (this) {
+        AcademicDocument.EnrollmentCertificate -> R.string.me_document_certificate_title
+        AcademicDocument.AcademicHistory -> R.string.me_document_history_title
+    }
 
-private fun AcademicDocument.subtitleRes(): Int = when (this) {
-    AcademicDocument.EnrollmentCertificate -> R.string.me_document_certificate_subtitle
-    AcademicDocument.AcademicHistory -> R.string.me_document_history_subtitle
-}
+private fun AcademicDocument.subtitleRes(): Int =
+    when (this) {
+        AcademicDocument.EnrollmentCertificate -> R.string.me_document_certificate_subtitle
+        AcademicDocument.AcademicHistory -> R.string.me_document_history_subtitle
+    }
 
 // "10 jul 2026" — month abbreviation dot stripped, matching the dc file card.
 private fun formatSavedAt(savedAtMs: Long): String {
@@ -653,7 +686,10 @@ private fun formatSavedAt(savedAtMs: Long): String {
 
 // Hands the offline copy to the system PDF viewer through the app's
 // FileProvider grant.
-private fun openPdf(context: Context, file: File) {
+private fun openPdf(
+    context: Context,
+    file: File,
+) {
     val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
     val intent = Intent(Intent.ACTION_VIEW).apply {
         setDataAndType(uri, "application/pdf")

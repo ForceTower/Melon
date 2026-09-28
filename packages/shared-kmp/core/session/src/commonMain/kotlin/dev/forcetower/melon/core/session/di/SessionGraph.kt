@@ -15,7 +15,6 @@ interface SessionGraph {
     companion object {
         @Provides
         @SingleIn(AppScope::class)
-        fun applicationScope(): CoroutineScope =
-            CoroutineScope(SupervisorJob() + Dispatchers.Default)
+        fun applicationScope(): CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
     }
 }

@@ -29,8 +29,9 @@ internal object ParadoxoFormat {
 
     // Trend/rising pulse cards show a signed delta; every other kind shows a
     // plain grade.
-    fun metric(fact: ParadoxoPulseFact): String = when (fact.kind) {
-        ParadoxoPulseKind.Trend, ParadoxoPulseKind.Rising -> signedGrade(fact.metric)
-        else -> grade(fact.metric)
-    }
+    fun metric(fact: ParadoxoPulseFact): String =
+        when (fact.kind) {
+            ParadoxoPulseKind.Trend, ParadoxoPulseKind.Rising -> signedGrade(fact.metric)
+            else -> grade(fact.metric)
+        }
 }

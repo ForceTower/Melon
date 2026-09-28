@@ -25,7 +25,10 @@ internal data class LicensePackage(
 // strict SPDX, but the unknown-licenses bucket and the occasional declared
 // "Apache 2" / "BSD 3-Clause" variant still leak through, so we normalise the
 // same way iOS does.
-internal enum class LicenseFamily(val displayName: String, val blurb: String) {
+internal enum class LicenseFamily(
+    val displayName: String,
+    val blurb: String,
+) {
     Mit(displayName = "MIT", blurb = "permissiva · atribuição · sem garantia"),
     Apache2(displayName = "Apache-2.0", blurb = "permissiva · patentes · atribuição"),
     Bsd3(displayName = "BSD-3-Clause", blurb = "permissiva · atribuição · sem endosso"),
@@ -36,7 +39,8 @@ internal enum class LicenseFamily(val displayName: String, val blurb: String) {
     CcBy4(displayName = "CC-BY-4.0", blurb = "creative commons · atribuição"),
     Cc0(displayName = "CC0-1.0", blurb = "domínio público · cc zero"),
     Unlicense(displayName = "Unlicense", blurb = "domínio público · sem reserva"),
-    Other(displayName = "Outras", blurb = "licença declarada");
+    Other(displayName = "Outras", blurb = "licença declarada"),
+    ;
 
     companion object {
         fun from(identifier: String?): LicenseFamily {
@@ -60,12 +64,20 @@ internal enum class LicenseFamily(val displayName: String, val blurb: String) {
     }
 }
 
-internal data class LicenseBreakdown(val family: LicenseFamily, val count: Int)
+internal data class LicenseBreakdown(
+    val family: LicenseFamily,
+    val count: Int,
+)
 
-internal data class LicenseGroup(val family: LicenseFamily, val items: List<LicensePackage>)
+internal data class LicenseGroup(
+    val family: LicenseFamily,
+    val items: List<LicensePackage>,
+)
 
 // "todos" or one specific family. Mirrors iOS `LicenseFilter`.
 internal sealed interface LicenseFilter {
     data object All : LicenseFilter
-    data class Family(val value: LicenseFamily) : LicenseFilter
+    data class Family(
+        val value: LicenseFamily,
+    ) : LicenseFilter
 }

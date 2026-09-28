@@ -17,8 +17,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
@@ -93,11 +93,13 @@ internal fun ParadoxoHistoryChart(
         val plotRight = size.width - rightPad
 
         fun px(i: Int): Float =
-            if (n == 1) (plotLeft + plotRight) / 2f
-            else plotLeft + (i.toFloat() / (n - 1)) * (plotRight - plotLeft)
+            if (n == 1) {
+                (plotLeft + plotRight) / 2f
+            } else {
+                plotLeft + (i.toFloat() / (n - 1)) * (plotRight - plotLeft)
+            }
 
-        fun py(v: Double): Float =
-            bottomY - ((v / ChartMaxGrade).toFloat() * (bottomY - topY))
+        fun py(v: Double): Float = bottomY - ((v / ChartMaxGrade).toFloat() * (bottomY - topY))
 
         // Gridlines + right-edge tick labels for 10 / 5 / 0.
         val dash = PathEffect.dashPathEffect(floatArrayOf(1.dp.toPx(), 4.dp.toPx()))

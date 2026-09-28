@@ -18,7 +18,9 @@ internal data class PasskeyItem(
 // Where a new passkey is saved. Pins the system picker's
 // `authenticatorAttachment` so "Este dispositivo" enrolls a platform passkey
 // and "Chave de segurança" targets a roaming security key.
-internal enum class PasskeyTarget(val attachment: String) {
+internal enum class PasskeyTarget(
+    val attachment: String,
+) {
     ThisDevice("platform"),
     SecurityKey("cross-platform"),
 }
@@ -56,12 +58,20 @@ internal sealed interface PasskeysIntent : UiIntent {
     data object Load : PasskeysIntent
     data object Refresh : PasskeysIntent
     data object OpenAdd : PasskeysIntent
-    data class SelectTarget(val target: PasskeyTarget) : PasskeysIntent
-    data class ContinueAdd(val activity: Activity) : PasskeysIntent
+    data class SelectTarget(
+        val target: PasskeyTarget,
+    ) : PasskeysIntent
+    data class ContinueAdd(
+        val activity: Activity,
+    ) : PasskeysIntent
     data object CloseSheet : PasskeysIntent
-    data class OpenDetail(val id: String) : PasskeysIntent
+    data class OpenDetail(
+        val id: String,
+    ) : PasskeysIntent
     data object StartEdit : PasskeysIntent
-    data class EditNameChanged(val value: String) : PasskeysIntent
+    data class EditNameChanged(
+        val value: String,
+    ) : PasskeysIntent
     data object SaveName : PasskeysIntent
     data object RequestDelete : PasskeysIntent
     data object CancelDelete : PasskeysIntent

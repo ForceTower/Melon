@@ -16,6 +16,5 @@ class FetchAcademicDocumentUseCase internal constructor(
     suspend operator fun invoke(
         document: AcademicDocument,
         captchaToken: String? = null,
-    ): Outcome<FetchedAcademicDocument, DocumentFetchError> =
-        service.fetch(document, captchaToken)
+    ): Outcome<FetchedAcademicDocument, DocumentFetchError> = service.fetch(document, captchaToken)
 }

@@ -67,7 +67,10 @@ interface SessionStore : AuthTokenSource {
      * `api/auth/token/refresh` returns no user, so [persist] would have
      * nothing to write there.
      */
-    suspend fun replaceTokens(accessToken: String, refreshToken: String)
+    suspend fun replaceTokens(
+        accessToken: String,
+        refreshToken: String,
+    )
 
     suspend fun setSessionInvalid(invalid: Boolean)
 
@@ -85,7 +88,10 @@ interface SessionStore : AuthTokenSource {
      * so background syncs have something to re-authenticate with. No-op if
      * there is no current user (called outside an authenticated session).
      */
-    suspend fun updateUpstreamCredentials(username: String, password: String)
+    suspend fun updateUpstreamCredentials(
+        username: String,
+        password: String,
+    )
 
     suspend fun logout()
 }

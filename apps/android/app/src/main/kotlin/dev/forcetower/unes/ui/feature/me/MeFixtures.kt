@@ -115,18 +115,19 @@ internal object MeFixtures {
         ),
     )
 
-    fun gridShortcuts(gates: FeatureGates): List<Shortcut> = gridLibrary.filter {
-        when (it.id) {
-            ShortcutKind.Enrollment -> gates.enrollment
-            ShortcutKind.CourseProgress -> gates.courseProgress
-            ShortcutKind.Certificate -> gates.enrollmentCertificate
-            ShortcutKind.History -> gates.academicHistory
-            ShortcutKind.Paradoxo -> gates.paradoxo
-            ShortcutKind.Library -> gates.library
-            ShortcutKind.Materials -> gates.materials
-            else -> true
+    fun gridShortcuts(gates: FeatureGates): List<Shortcut> =
+        gridLibrary.filter {
+            when (it.id) {
+                ShortcutKind.Enrollment -> gates.enrollment
+                ShortcutKind.CourseProgress -> gates.courseProgress
+                ShortcutKind.Certificate -> gates.enrollmentCertificate
+                ShortcutKind.History -> gates.academicHistory
+                ShortcutKind.Paradoxo -> gates.paradoxo
+                ShortcutKind.Library -> gates.library
+                ShortcutKind.Materials -> gates.materials
+                else -> true
+            }
         }
-    }
 
     val settingsRows: List<SettingsRow> = listOf(
         SettingsRow(

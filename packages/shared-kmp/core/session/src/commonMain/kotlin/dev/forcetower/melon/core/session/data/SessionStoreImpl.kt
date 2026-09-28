@@ -15,8 +15,8 @@ import dev.forcetower.melon.core.database.dao.UserSettingsDao
 import dev.forcetower.melon.core.database.entity.CredentialsEntity
 import dev.forcetower.melon.core.database.entity.UserEntity
 import dev.forcetower.melon.core.network.AuthTokenSource
-import dev.forcetower.melon.core.session.domain.model.AuthState
 import dev.forcetower.melon.core.session.domain.SessionStore
+import dev.forcetower.melon.core.session.domain.model.AuthState
 import dev.forcetower.melon.core.session.domain.model.User
 import dev.forcetower.melon.core.session.domain.model.UserCredentials
 import dev.forcetower.melon.core.storage.KeyValueStorage
@@ -25,6 +25,7 @@ import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
 import dev.zacsweers.metro.binding
+import kotlin.time.Clock
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,7 +35,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlin.time.Clock
 
 internal const val ACCESS_TOKEN_KEY = "melon.access_token"
 internal const val REFRESH_TOKEN_KEY = "melon.refresh_token"
@@ -71,8 +71,11 @@ internal class SessionStoreImpl(
 
     override val authState: StateFlow<AuthState> =
         combine(tokenPresent, userDao.observeCurrent()) { hasToken, entity ->
-            if (hasToken && entity != null) AuthState.Authenticated(entity.toDomain())
-            else AuthState.Unauthenticated
+            if (hasToken && entity != null) {
+                AuthState.Authenticated(entity.toDomain())
+            } else {
+                AuthState.Unauthenticated
+            }
         }.stateIn(scope, SharingStarted.Eagerly, AuthState.Unauthenticated)
 
     override val sessionInvalid: StateFlow<Boolean> = sessionInvalidState
@@ -100,7 +103,10 @@ internal class SessionStoreImpl(
 
     override suspend fun getRefreshToken(): String? = storage.get(REFRESH_TOKEN_KEY)
 
-    override suspend fun replaceTokens(accessToken: String, refreshToken: String) {
+    override suspend fun replaceTokens(
+        accessToken: String,
+        refreshToken: String,
+    ) {
         storage.put(ACCESS_TOKEN_KEY, accessToken)
         storage.put(REFRESH_TOKEN_KEY, refreshToken)
         log.i { "token pair rotated" }
@@ -153,7 +159,7 @@ internal class SessionStoreImpl(
                     username = username,
                     password = password,
                     updatedAt = Clock.System.now().toString(),
-                )
+                ),
             )
         }
         tokenPresent.value = true
@@ -161,13 +167,14 @@ internal class SessionStoreImpl(
         log.i { "session persisted userId=${user.id} hasUpstreamCreds=${username != null && password != null}" }
     }
 
-    override suspend fun getCredentials(): UserCredentials? =
-        credentialsDao.getCurrent()?.toDomain()
+    override suspend fun getCredentials(): UserCredentials? = credentialsDao.getCurrent()?.toDomain()
 
-    override fun observeCredentials(): Flow<UserCredentials?> =
-        credentialsDao.observeCurrent().map { it?.toDomain() }
+    override fun observeCredentials(): Flow<UserCredentials?> = credentialsDao.observeCurrent().map { it?.toDomain() }
 
-    override suspend fun updateUpstreamCredentials(username: String, password: String) {
+    override suspend fun updateUpstreamCredentials(
+        username: String,
+        password: String,
+    ) {
         val current = userDao.getCurrent() ?: run {
             log.w { "updateUpstreamCredentials skipped: no current user" }
             return
@@ -178,7 +185,7 @@ internal class SessionStoreImpl(
                 username = username,
                 password = password,
                 updatedAt = Clock.System.now().toString(),
-            )
+            ),
         )
         log.i { "upstream credentials backfilled userId=${current.id}" }
     }

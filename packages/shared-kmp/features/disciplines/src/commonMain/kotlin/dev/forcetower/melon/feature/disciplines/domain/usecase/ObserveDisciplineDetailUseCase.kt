@@ -13,10 +13,10 @@ import dev.forcetower.melon.feature.disciplines.domain.model.DisciplineDetailLec
 import dev.forcetower.melon.feature.disciplines.domain.model.DisciplineDetailSection
 import dev.zacsweers.metro.Inject
 import kotlin.math.ceil
+import kotlin.time.Clock
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlin.time.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
@@ -34,15 +34,19 @@ import kotlinx.datetime.toLocalDateTime
 class ObserveDisciplineDetailUseCase internal constructor(
     private val academicDao: AcademicDao,
 ) {
-    operator fun invoke(offerId: String): Flow<DisciplineDetail?> = combine(
-        academicDao.observeDisciplineOfferEnrollments(offerId),
-        academicDao.observeDisciplineOfferGrades(offerId),
-        academicDao.observeDisciplineOfferLectures(offerId),
-        academicDao.observeDisciplineOfferMaterials(offerId),
-    ) { enrollments, grades, lectures, materials ->
-        if (enrollments.isEmpty()) null
-        else build(enrollments, grades, lectures, materials)
-    }.distinctUntilChanged()
+    operator fun invoke(offerId: String): Flow<DisciplineDetail?> =
+        combine(
+            academicDao.observeDisciplineOfferEnrollments(offerId),
+            academicDao.observeDisciplineOfferGrades(offerId),
+            academicDao.observeDisciplineOfferLectures(offerId),
+            academicDao.observeDisciplineOfferMaterials(offerId),
+        ) { enrollments, grades, lectures, materials ->
+            if (enrollments.isEmpty()) {
+                null
+            } else {
+                build(enrollments, grades, lectures, materials)
+            }
+        }.distinctUntilChanged()
 }
 
 private fun build(

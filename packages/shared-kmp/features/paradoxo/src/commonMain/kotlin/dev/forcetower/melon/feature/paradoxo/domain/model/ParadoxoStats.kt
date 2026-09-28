@@ -15,13 +15,14 @@ enum class ParadoxoTier {
     ;
 
     companion object {
-        fun of(mean: Double): ParadoxoTier = when {
-            mean >= 8.5 -> Generous
-            mean >= 7.0 -> Fair
-            mean >= 5.5 -> Balanced
-            mean >= 3.5 -> Demanding
-            else -> Strict
-        }
+        fun of(mean: Double): ParadoxoTier =
+            when {
+                mean >= 8.5 -> Generous
+                mean >= 7.0 -> Fair
+                mean >= 5.5 -> Balanced
+                mean >= 3.5 -> Demanding
+                else -> Strict
+            }
     }
 }
 
@@ -64,7 +65,10 @@ object ParadoxoStats {
 
     // Share of students scoring strictly below the bucket `grade` rounds
     // into, as a whole percent. Callers display the inverse ("top X%").
-    fun percentile(distribution: List<Double>, grade: Double): Int {
+    fun percentile(
+        distribution: List<Double>,
+        grade: Double,
+    ): Int {
         if (distribution.isEmpty()) return 0
         val bucket = grade.roundToInt().coerceIn(0, distribution.size - 1)
         val below = distribution.take(bucket).sum()
@@ -82,7 +86,11 @@ object ParadoxoStats {
         return score.roundToInt().coerceIn(0, 100)
     }
 
-    fun approvalPercent(approved: Int, failed: Int, quit: Int): Int {
+    fun approvalPercent(
+        approved: Int,
+        failed: Int,
+        quit: Int,
+    ): Int {
         val total = approved + failed + quit
         if (total == 0) return 0
         return (approved * 100.0 / total).roundToInt()

@@ -40,7 +40,10 @@ internal data class WorkloadSignal(
 )
 
 @Composable
-internal fun workloadSignal(totalHours: Int, window: EnrollmentWindow): WorkloadSignal {
+internal fun workloadSignal(
+    totalHours: Int,
+    window: EnrollmentWindow,
+): WorkloadSignal {
     val under = totalHours < window.minHours
     val over = totalHours > window.maxHours
     return WorkloadSignal(

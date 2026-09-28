@@ -12,10 +12,18 @@ import kotlinx.coroutines.flow.receiveAsFlow
 // the matching tab's back stack. Nav3 has no URI routing of its own, so this
 // parser is the whole mapping surface.
 internal sealed interface DeepLinkTarget {
-    data class Tab(val tab: ConnectedTab) : DeepLinkTarget
-    data class Message(val id: String) : DeepLinkTarget
-    data class MaterialsDiscipline(val disciplineId: String) : DeepLinkTarget
-    data class MaterialDetail(val materialId: String) : DeepLinkTarget
+    data class Tab(
+        val tab: ConnectedTab,
+    ) : DeepLinkTarget
+    data class Message(
+        val id: String,
+    ) : DeepLinkTarget
+    data class MaterialsDiscipline(
+        val disciplineId: String,
+    ) : DeepLinkTarget
+    data class MaterialDetail(
+        val materialId: String,
+    ) : DeepLinkTarget
 
     /** `unes://reauth` — the credentials-invalid push. Lands on Hoje, which
      *  opens the portal-password sheet. */
@@ -49,14 +57,15 @@ internal fun parseDeepLink(url: String): DeepLinkTarget? {
     }
 }
 
-private fun tabFor(host: String): ConnectedTab? = when (host) {
-    "home" -> ConnectedTab.Overview
-    "schedule" -> ConnectedTab.Schedule
-    "classes" -> ConnectedTab.Classes
-    "messages" -> ConnectedTab.Messages
-    "me" -> ConnectedTab.Me
-    else -> null
-}
+private fun tabFor(host: String): ConnectedTab? =
+    when (host) {
+        "home" -> ConnectedTab.Overview
+        "schedule" -> ConnectedTab.Schedule
+        "classes" -> ConnectedTab.Classes
+        "messages" -> ConnectedTab.Messages
+        "me" -> ConnectedTab.Me
+        else -> null
+    }
 
 // Rewrites the target tab's stack to the synthesized path a user would have
 // walked organically, so back behaves as if they had. Reset-to-root on

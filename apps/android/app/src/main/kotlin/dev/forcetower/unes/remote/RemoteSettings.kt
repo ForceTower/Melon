@@ -1,13 +1,13 @@
 package dev.forcetower.unes.remote
 
+import dagger.Lazy
 import dev.forcetower.lever.LeverClient
 import dev.forcetower.lever.LeverKey
+import dev.forcetower.unes.BuildConfig
 import javax.inject.Inject
 import javax.inject.Singleton
-import dagger.Lazy
-import dev.forcetower.unes.BuildConfig
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.map
 
 // Our remote config (https://github.com/ForceTower/lever), and the only source
@@ -20,7 +20,9 @@ import kotlinx.coroutines.flow.map
 // and keeps the last activated values on disk, so gates hold their state
 // offline and across launches.
 @Singleton
-internal class RemoteSettings @Inject constructor(private val client: Lazy<LeverClient>) {
+internal class RemoteSettings @Inject constructor(
+    private val client: Lazy<LeverClient>,
+) {
     private val boolKeys = RemoteBoolKey.entries.associateWith { LeverKey.boolean(it.key, false) }
     private val stringKeys = RemoteStringKey.entries.associateWith { LeverKey.string(it.key, "") }
 
@@ -31,13 +33,16 @@ internal class RemoteSettings @Inject constructor(private val client: Lazy<Lever
 
     fun bool(key: RemoteBoolKey): Boolean = !BuildConfig.SCENARIO && client.get().value(boolKeys.getValue(key))
 
-    fun string(key: RemoteStringKey): String = if (BuildConfig.SCENARIO) "" else client.get().value(stringKeys.getValue(key))
+    fun string(key: RemoteStringKey): String =
+        if (BuildConfig.SCENARIO) "" else client.get().value(stringKeys.getValue(key))
 }
 
 // Parameter names are the keys shared with iOS. Android and iOS resolve them
 // from the same lever environment, so a gate that should differ between the two
 // is a platform condition on the parameter — not a second key.
-internal enum class RemoteBoolKey(val key: String) {
+internal enum class RemoteBoolKey(
+    val key: String,
+) {
     ENROLLMENT("enable_enrollment"),
     ENROLLMENT_CERTIFICATE("enable_enrollment_certificate"),
     ACADEMIC_HISTORY("enable_academic_history"),
@@ -51,7 +56,9 @@ internal enum class RemoteBoolKey(val key: String) {
     IN_APP_REVIEW("enable_in_app_review"),
 }
 
-internal enum class RemoteStringKey(val key: String) {
+internal enum class RemoteStringKey(
+    val key: String,
+) {
     DOCUMENT_CAPTCHA_SITE_KEY("document_captcha_site_key"),
     DOCUMENT_CAPTCHA_BASE_URL("document_captcha_base_url"),
 

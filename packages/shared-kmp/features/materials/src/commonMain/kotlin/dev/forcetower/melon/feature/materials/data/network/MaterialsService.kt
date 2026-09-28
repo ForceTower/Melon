@@ -79,9 +79,11 @@ internal class MaterialsService(
     // context exists yet. A payload with unknown enums decodes but maps to
     // null, which collapses to Connection like any other unusable response.
     suspend fun material(id: String): Outcome<Material, MaterialsError> =
-        when (val outcome = envelope<MaterialBody> {
-            client.get("api/materials/material") { parameter("id", id) }
-        }) {
+        when (
+            val outcome = envelope<MaterialBody> {
+                client.get("api/materials/material") { parameter("id", id) }
+            }
+        ) {
             is Outcome.Ok -> outcome.value.toDomain()
                 ?.let { Outcome.Ok(it) }
                 ?: Outcome.Err(MaterialsError.Connection)
@@ -93,7 +95,10 @@ internal class MaterialsService(
             .map { body -> body.materials.mapNotNull { it.toDomain() } }
 
     // Returns the authoritative new count.
-    suspend fun setUseful(materialId: String, useful: Boolean): Outcome<Int, MaterialsError> =
+    suspend fun setUseful(
+        materialId: String,
+        useful: Boolean,
+    ): Outcome<Int, MaterialsError> =
         envelope<MaterialUsefulBody> {
             client.post("api/materials/useful") {
                 parameter("id", materialId)
@@ -102,7 +107,10 @@ internal class MaterialsService(
             }
         }.map { it.count }
 
-    suspend fun setSaved(materialId: String, saved: Boolean): Outcome<Unit, MaterialsError> =
+    suspend fun setSaved(
+        materialId: String,
+        saved: Boolean,
+    ): Outcome<Unit, MaterialsError> =
         confirm {
             client.post("api/materials/save") {
                 parameter("id", materialId)
@@ -114,13 +122,14 @@ internal class MaterialsService(
     suspend fun report(
         materialId: String,
         reason: MaterialReportReason,
-    ): Outcome<Unit, MaterialsError> = confirm {
-        client.post("api/materials/report") {
-            parameter("id", materialId)
-            contentType(ContentType.Application.Json)
-            setBody(MaterialReportRequest(reason.wire))
+    ): Outcome<Unit, MaterialsError> =
+        confirm {
+            client.post("api/materials/report") {
+                parameter("id", materialId)
+                contentType(ContentType.Application.Json)
+                setBody(MaterialReportRequest(reason.wire))
+            }
         }
-    }
 
     // Two hops: the API mints a short-lived presigned URL (counting the
     // download server-side), then the bytes come straight from storage.
@@ -224,9 +233,7 @@ internal class MaterialsService(
     // Unwraps the `{ ok, data }` envelope; any transport/decoding hiccup or
     // `ok=false` collapses to Connection — the screens only distinguish
     // "worked" from "retry".
-    private suspend inline fun <reified T> envelope(
-        request: () -> HttpResponse,
-    ): Outcome<T, MaterialsError> {
+    private suspend inline fun <reified T> envelope(request: () -> HttpResponse): Outcome<T, MaterialsError> {
         val response = try {
             request()
         } catch (_: Exception) {
@@ -248,15 +255,19 @@ internal class MaterialsService(
         } catch (_: Exception) {
             return Outcome.Err(MaterialsError.Connection)
         }
-        return if (response.status.isSuccess()) Outcome.Ok(Unit)
-        else Outcome.Err(MaterialsError.Connection)
+        return if (response.status.isSuccess()) {
+            Outcome.Ok(Unit)
+        } else {
+            Outcome.Err(MaterialsError.Connection)
+        }
     }
 }
 
-private fun <T, R, E> Outcome<T, E>.map(transform: (T) -> R): Outcome<R, E> = when (this) {
-    is Outcome.Ok -> Outcome.Ok(transform(value))
-    is Outcome.Err -> this
-}
+private fun <T, R, E> Outcome<T, E>.map(transform: (T) -> R): Outcome<R, E> =
+    when (this) {
+        is Outcome.Ok -> Outcome.Ok(transform(value))
+        is Outcome.Err -> this
+    }
 
 @kotlinx.serialization.Serializable
 private object EmptyRequest

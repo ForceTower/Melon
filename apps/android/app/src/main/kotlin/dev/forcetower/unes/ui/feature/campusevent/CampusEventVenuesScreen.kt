@@ -255,10 +255,15 @@ private fun CampusMap(
 }
 
 // Keeps the scaled map covering the whole viewport (no gaps at the edges).
-private fun clampMapPan(pan: Offset, zoom: Float, size: IntSize): Offset = Offset(
-    x = pan.x.coerceIn(size.width * (1f - zoom), 0f),
-    y = pan.y.coerceIn(size.height * (1f - zoom), 0f),
-)
+private fun clampMapPan(
+    pan: Offset,
+    zoom: Float,
+    size: IntSize,
+): Offset =
+    Offset(
+        x = pan.x.coerceIn(size.width * (1f - zoom), 0f),
+        y = pan.y.coerceIn(size.height * (1f - zoom), 0f),
+    )
 
 // MARK: Venue list
 
@@ -341,7 +346,10 @@ private fun VenueList(
 }
 
 @Composable
-private fun venueTone(venues: List<CampusEventVenue>, venue: CampusEventVenue): Color {
+private fun venueTone(
+    venues: List<CampusEventVenue>,
+    venue: CampusEventVenue,
+): Color {
     val palette = campusEventPalette()
     val index = venues.indexOfFirst { it.id == venue.id }.coerceAtLeast(0)
     return palette[index % palette.size]

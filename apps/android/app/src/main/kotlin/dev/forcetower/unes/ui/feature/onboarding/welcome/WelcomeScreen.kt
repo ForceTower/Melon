@@ -59,7 +59,6 @@ private fun WelcomeContent(
     onNext: () -> Unit,
     onLogin: () -> Unit,
 ) {
-
     val night = MaterialTheme.melon.fixed.night
     val veil = MaterialTheme.melon.fixed.nightVeil
     val cream = MaterialTheme.melon.fixed.surfaceLight
@@ -158,7 +157,10 @@ private fun WelcomeContent(
 }
 
 @Composable
-private fun welcomeHeadline(accent: Color, cream: Color): AnnotatedString {
+private fun welcomeHeadline(
+    accent: Color,
+    cream: Color,
+): AnnotatedString {
     val top = stringResource(R.string.onboarding_welcome_headline_top)
     val middle = stringResource(R.string.onboarding_welcome_headline_accent)
     val bottom = stringResource(R.string.onboarding_welcome_headline_bottom)

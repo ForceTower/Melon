@@ -40,9 +40,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.foundation.Mesh
+import dev.forcetower.unes.designsystem.foundation.MeshVariant
 import dev.forcetower.unes.designsystem.foundation.RevealShadow
 import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
-import dev.forcetower.unes.designsystem.foundation.MeshVariant
 import dev.forcetower.unes.designsystem.theme.MelonMotion
 import dev.forcetower.unes.designsystem.theme.melon
 import dev.forcetower.unes.ui.feature.calendar.CalendarEvent
@@ -130,7 +130,12 @@ internal fun CalHeroCard(
 }
 
 @Composable
-private fun StatusRow(event: CalendarEvent, accent: Color, isActive: Boolean, onHero: Color) {
+private fun StatusRow(
+    event: CalendarEvent,
+    accent: Color,
+    isActive: Boolean,
+    onHero: Color,
+) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
@@ -142,8 +147,11 @@ private fun StatusRow(event: CalendarEvent, accent: Color, isActive: Boolean, on
             PulseDot(accent = accent, animate = isActive)
             Text(
                 text = stringResource(
-                    if (isActive) R.string.calendar_hero_eyebrow_now
-                    else R.string.calendar_hero_eyebrow_next,
+                    if (isActive) {
+                        R.string.calendar_hero_eyebrow_now
+                    } else {
+                        R.string.calendar_hero_eyebrow_next
+                    },
                 ),
                 style = MaterialTheme.typography.labelMedium.copy(
                     fontSize = 12.sp,
@@ -165,7 +173,11 @@ private fun StatusRow(event: CalendarEvent, accent: Color, isActive: Boolean, on
 }
 
 @Composable
-private fun CategoryChip(event: CalendarEvent, accent: Color, onHero: Color) {
+private fun CategoryChip(
+    event: CalendarEvent,
+    accent: Color,
+    onHero: Color,
+) {
     val category = remember(event) { CalendarMath.categorize(event) }
     Row(
         modifier = Modifier
@@ -201,7 +213,10 @@ private fun CategoryChip(event: CalendarEvent, accent: Color, onHero: Color) {
 }
 
 @Composable
-private fun CountdownRow(event: CalendarEvent, onHero: Color) {
+private fun CountdownRow(
+    event: CalendarEvent,
+    onHero: Color,
+) {
     val parts = remember(event) { CalendarMath.countdownParts(event) }
     val numberLabel = when (val n = parts.number) {
         CountdownToken.Today -> stringResource(R.string.calendar_countdown_today)
@@ -290,7 +305,10 @@ private fun ProgressStrip(
 }
 
 @Composable
-private fun PulseDot(accent: Color, animate: Boolean) {
+private fun PulseDot(
+    accent: Color,
+    animate: Boolean,
+) {
     val alpha = if (animate) {
         val transition = rememberInfiniteTransition(label = "hero-pulse")
         val a by transition.animateFloat(
@@ -303,7 +321,9 @@ private fun PulseDot(accent: Color, animate: Boolean) {
             label = "hero-alpha",
         )
         a
-    } else 1f
+    } else {
+        1f
+    }
     Box(
         modifier = Modifier.size(14.dp),
         contentAlignment = Alignment.Center,

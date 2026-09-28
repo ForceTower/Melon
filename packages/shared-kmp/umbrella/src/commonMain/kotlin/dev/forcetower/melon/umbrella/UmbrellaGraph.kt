@@ -1,9 +1,8 @@
 package dev.forcetower.melon.umbrella
 
-import dev.forcetower.melon.core.common.AppClock
-
 import co.touchlab.kermit.Logger
 import dev.forcetower.melon.core.analytics.Analytics
+import dev.forcetower.melon.core.common.AppClock
 import dev.forcetower.melon.core.common.ApplicationContext
 import dev.forcetower.melon.core.common.ForegroundSignal
 import dev.forcetower.melon.core.logging.CrashReporter
@@ -20,8 +19,8 @@ import dev.forcetower.melon.feature.auth.domain.usecase.ListPasskeysUseCase
 import dev.forcetower.melon.feature.auth.domain.usecase.LoginUseCase
 import dev.forcetower.melon.feature.auth.domain.usecase.RegisterPasskeyUseCase
 import dev.forcetower.melon.feature.auth.domain.usecase.RenamePasskeyUseCase
-import dev.forcetower.melon.feature.calendar.domain.usecase.ObserveActiveSemesterCodeUseCase
 import dev.forcetower.melon.feature.calendar.domain.usecase.DeletePersonalEventUseCase
+import dev.forcetower.melon.feature.calendar.domain.usecase.ObserveActiveSemesterCodeUseCase
 import dev.forcetower.melon.feature.calendar.domain.usecase.ObserveCalendarEventsUseCase
 import dev.forcetower.melon.feature.calendar.domain.usecase.ObservePersonalEventsUseCase
 import dev.forcetower.melon.feature.calendar.domain.usecase.ReadPersonalEventsUseCase
@@ -70,9 +69,9 @@ import dev.forcetower.melon.feature.notifications.domain.usecase.RegisterNotific
 import dev.forcetower.melon.feature.notifications.domain.usecase.UnregisterNotificationTokenUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveAttendanceTileUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveDisciplinesUseCase
+import dev.forcetower.melon.feature.overview.domain.usecase.ObserveEvaluationRemindersUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveGradeTileUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveLastSyncUseCase
-import dev.forcetower.melon.feature.overview.domain.usecase.ObserveEvaluationRemindersUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveNextTestTileUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveNowClassUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveOverviewHeaderUseCase
@@ -265,6 +264,7 @@ interface UmbrellaGraph {
     // fired on every entry and lands back through the same stream.
     val observeCourseProgressUseCase: ObserveCourseProgressUseCase
     val refreshCourseProgressUseCase: RefreshCourseProgressUseCase
+
     // The curriculum picker: bind to one version by hand, or back to automatic.
     val selectCurriculumVersionUseCase: SelectCurriculumVersionUseCase
     val resetCurriculumVersionUseCase: ResetCurriculumVersionUseCase

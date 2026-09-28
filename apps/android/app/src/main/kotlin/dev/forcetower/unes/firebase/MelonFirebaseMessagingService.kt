@@ -18,7 +18,8 @@ internal class MelonFirebaseMessagingService : FirebaseMessagingService() {
 
     @Inject lateinit var pushRegistrar: PushRegistrar
     @Inject lateinit var pushSyncCoordinator: PushSyncCoordinator
-    @Inject @ApplicationScope lateinit var applicationScope: CoroutineScope
+    @Inject @ApplicationScope
+    lateinit var applicationScope: CoroutineScope
 
     // Deprecated in favor of FID targeting, but FID-targeted sends stopped
     // reaching some devices — the clients are fully back on registration

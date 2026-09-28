@@ -22,12 +22,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ChevronRight
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Schedule
 import androidx.compose.material.icons.outlined.TaskAlt
 import androidx.compose.material.icons.outlined.Timelapse
+import androidx.compose.material.icons.rounded.ChevronRight
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -240,8 +240,11 @@ private fun DayDoneContent(
         Spacer(Modifier.height(8.dp))
         Text(
             text = stringResource(
-                if (isEvening) R.string.overview_hero_done_rest_evening
-                else R.string.overview_hero_done_rest_day,
+                if (isEvening) {
+                    R.string.overview_hero_done_rest_evening
+                } else {
+                    R.string.overview_hero_done_rest_day
+                },
                 firstName,
             ),
             style = MaterialTheme.typography.bodyMedium,
@@ -328,7 +331,9 @@ private fun TomorrowRow(tomorrow: OverviewTomorrowUi) {
                     tomorrow.extraCount,
                     tomorrow.extraCount,
                 )
-            } else null
+            } else {
+                null
+            }
             Text(
                 text = listOfNotNull(tomorrow.room, extras).joinToString(" · "),
                 style = MaterialTheme.typography.bodySmall,
@@ -349,11 +354,12 @@ private fun HeroTitle(title: String) {
 }
 
 @Composable
-private fun heroTextShadow(): Shadow = Shadow(
-    color = MaterialTheme.melon.fixed.heroVeil.copy(alpha = 0.35f),
-    offset = Offset(0f, 2f),
-    blurRadius = 24f,
-)
+private fun heroTextShadow(): Shadow =
+    Shadow(
+        color = MaterialTheme.melon.fixed.heroVeil.copy(alpha = 0.35f),
+        offset = Offset(0f, 2f),
+        blurRadius = 24f,
+    )
 
 @Composable
 private fun HeroInfoRows(klass: OverviewHeroClass) {
@@ -365,7 +371,10 @@ private fun HeroInfoRows(klass: OverviewHeroClass) {
 }
 
 @Composable
-private fun HeroInfoRow(icon: ImageVector, label: String) {
+private fun HeroInfoRow(
+    icon: ImageVector,
+    label: String,
+) {
     val onHero = MaterialTheme.melon.fixed.onHero
     Row(verticalAlignment = Alignment.CenterVertically) {
         Icon(
@@ -385,7 +394,10 @@ private fun HeroInfoRow(icon: ImageVector, label: String) {
 }
 
 @Composable
-private fun HeroChip(icon: ImageVector, label: String) {
+private fun HeroChip(
+    icon: ImageVector,
+    label: String,
+) {
     val onHero = MaterialTheme.melon.fixed.onHero
     Row(
         modifier = Modifier
@@ -410,7 +422,10 @@ private fun HeroChip(icon: ImageVector, label: String) {
 }
 
 @Composable
-private fun HeroCtaButton(enabled: Boolean, onClick: () -> Unit) {
+private fun HeroCtaButton(
+    enabled: Boolean,
+    onClick: () -> Unit,
+) {
     val onHero = MaterialTheme.melon.fixed.onHero
     Row(
         modifier = Modifier

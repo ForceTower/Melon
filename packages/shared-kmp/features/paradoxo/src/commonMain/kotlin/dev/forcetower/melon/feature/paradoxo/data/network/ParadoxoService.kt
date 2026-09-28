@@ -65,30 +65,33 @@ internal class ParadoxoService(
     }
 }
 
-private fun ParadoxoRefDTO.toDomain(): ParadoxoRef? = when (kind) {
-    "discipline" -> ParadoxoRef.Discipline(id)
-    "teacher" -> ParadoxoRef.Teacher(id)
-    else -> null
-}
+private fun ParadoxoRefDTO.toDomain(): ParadoxoRef? =
+    when (kind) {
+        "discipline" -> ParadoxoRef.Discipline(id)
+        "teacher" -> ParadoxoRef.Teacher(id)
+        else -> null
+    }
 
-private fun pulseKindOf(raw: String): ParadoxoPulseKind? = when (raw) {
-    "brutal" -> ParadoxoPulseKind.Brutal
-    "kind" -> ParadoxoPulseKind.Kind
-    "trend" -> ParadoxoPulseKind.Trend
-    "gap" -> ParadoxoPulseKind.Gap
-    "rising" -> ParadoxoPulseKind.Rising
-    "surprise" -> ParadoxoPulseKind.Surprise
-    "signature" -> ParadoxoPulseKind.Signature
-    else -> null
-}
+private fun pulseKindOf(raw: String): ParadoxoPulseKind? =
+    when (raw) {
+        "brutal" -> ParadoxoPulseKind.Brutal
+        "kind" -> ParadoxoPulseKind.Kind
+        "trend" -> ParadoxoPulseKind.Trend
+        "gap" -> ParadoxoPulseKind.Gap
+        "rising" -> ParadoxoPulseKind.Rising
+        "surprise" -> ParadoxoPulseKind.Surprise
+        "signature" -> ParadoxoPulseKind.Signature
+        else -> null
+    }
 
-private fun exploreKindOf(raw: String): ParadoxoExploreKind? = when (raw) {
-    "brutal" -> ParadoxoExploreKind.Brutal
-    "kind" -> ParadoxoExploreKind.Kind
-    "rising" -> ParadoxoExploreKind.Rising
-    "gap" -> ParadoxoExploreKind.Gap
-    else -> null
-}
+private fun exploreKindOf(raw: String): ParadoxoExploreKind? =
+    when (raw) {
+        "brutal" -> ParadoxoExploreKind.Brutal
+        "kind" -> ParadoxoExploreKind.Kind
+        "rising" -> ParadoxoExploreKind.Rising
+        "gap" -> ParadoxoExploreKind.Gap
+        else -> null
+    }
 
 @Serializable
 internal data class ParadoxoRefDTO(
@@ -149,50 +152,51 @@ internal data class ParadoxoOverviewDTO(
         )
     }
 
-    fun toDomain() = ParadoxoOverview(
-        pulse = pulse.mapNotNull { fact ->
-            val kind = pulseKindOf(fact.kind) ?: return@mapNotNull null
-            val ref = fact.ref.toDomain() ?: return@mapNotNull null
-            ParadoxoPulseFact(
-                id = fact.id,
-                kind = kind,
-                metric = fact.metric,
-                title = fact.title,
-                subtitle = fact.subtitle,
-                ref = ref,
-            )
-        },
-        myDisciplines = myDisciplines.orEmpty().map {
-            ParadoxoMyDiscipline(
-                id = it.id,
-                code = it.code,
-                name = it.name,
-                mean = it.mean,
-                sampleCount = it.sampleCount,
-                spark = it.spark.orEmpty(),
-                myPercentile = it.myPercentile,
-            )
-        },
-        rankings = rankings.orEmpty().mapNotNull { ranking ->
-            val kind = exploreKindOf(ranking.kind) ?: return@mapNotNull null
-            ParadoxoRanking(
-                kind = kind,
-                entries = ranking.entries.mapNotNull { entry ->
-                    val ref = entry.ref.toDomain() ?: return@mapNotNull null
-                    ParadoxoRankingEntry(
-                        ref = ref,
-                        name = entry.name,
-                        code = entry.code,
-                        mean = entry.mean,
-                        studentCount = entry.studentCount,
-                        delta = entry.delta,
-                    )
-                },
-            )
-        },
-        studentCount = studentCount ?: 0,
-        meanCount = meanCount ?: 0,
-    )
+    fun toDomain() =
+        ParadoxoOverview(
+            pulse = pulse.mapNotNull { fact ->
+                val kind = pulseKindOf(fact.kind) ?: return@mapNotNull null
+                val ref = fact.ref.toDomain() ?: return@mapNotNull null
+                ParadoxoPulseFact(
+                    id = fact.id,
+                    kind = kind,
+                    metric = fact.metric,
+                    title = fact.title,
+                    subtitle = fact.subtitle,
+                    ref = ref,
+                )
+            },
+            myDisciplines = myDisciplines.orEmpty().map {
+                ParadoxoMyDiscipline(
+                    id = it.id,
+                    code = it.code,
+                    name = it.name,
+                    mean = it.mean,
+                    sampleCount = it.sampleCount,
+                    spark = it.spark.orEmpty(),
+                    myPercentile = it.myPercentile,
+                )
+            },
+            rankings = rankings.orEmpty().mapNotNull { ranking ->
+                val kind = exploreKindOf(ranking.kind) ?: return@mapNotNull null
+                ParadoxoRanking(
+                    kind = kind,
+                    entries = ranking.entries.mapNotNull { entry ->
+                        val ref = entry.ref.toDomain() ?: return@mapNotNull null
+                        ParadoxoRankingEntry(
+                            ref = ref,
+                            name = entry.name,
+                            code = entry.code,
+                            mean = entry.mean,
+                            studentCount = entry.studentCount,
+                            delta = entry.delta,
+                        )
+                    },
+                )
+            },
+            studentCount = studentCount ?: 0,
+            meanCount = meanCount ?: 0,
+        )
 }
 
 @Serializable
@@ -246,30 +250,31 @@ internal data class ParadoxoDisciplineDTO(
         val history: List<ParadoxoSemesterMeanDTO>? = null,
     )
 
-    fun toDomain() = ParadoxoDisciplineDetail(
-        id = id,
-        code = code,
-        name = name,
-        department = department,
-        mean = mean,
-        studentCount = studentCount,
-        approved = approved,
-        failed = failed,
-        quit = quit,
-        history = history.map { it.toDomain() },
-        distribution = distribution.orEmpty(),
-        myGrade = myGrade,
-        teachers = teachers.orEmpty().map { teacher ->
-            ParadoxoDisciplineTeacher(
-                id = teacher.id,
-                name = teacher.name,
-                mean = teacher.mean,
-                sampleCount = teacher.sampleCount,
-                lastSemester = teacher.lastSemester,
-                history = teacher.history.orEmpty().map { it.toDomain() },
-            )
-        },
-    )
+    fun toDomain() =
+        ParadoxoDisciplineDetail(
+            id = id,
+            code = code,
+            name = name,
+            department = department,
+            mean = mean,
+            studentCount = studentCount,
+            approved = approved,
+            failed = failed,
+            quit = quit,
+            history = history.map { it.toDomain() },
+            distribution = distribution.orEmpty(),
+            myGrade = myGrade,
+            teachers = teachers.orEmpty().map { teacher ->
+                ParadoxoDisciplineTeacher(
+                    id = teacher.id,
+                    name = teacher.name,
+                    mean = teacher.mean,
+                    sampleCount = teacher.sampleCount,
+                    lastSemester = teacher.lastSemester,
+                    history = teacher.history.orEmpty().map { it.toDomain() },
+                )
+            },
+        )
 }
 
 @Serializable
@@ -295,25 +300,26 @@ internal data class ParadoxoTeacherDTO(
         val sampleCount: Int,
     )
 
-    fun toDomain() = ParadoxoTeacherDetail(
-        id = id,
-        name = name,
-        mean = mean,
-        studentCount = studentCount,
-        approved = approved,
-        failed = failed,
-        quit = quit,
-        lastSemester = lastSemester,
-        history = history.orEmpty().map { it.toDomain() },
-        distribution = distribution.orEmpty(),
-        disciplines = disciplines.orEmpty().map {
-            ParadoxoTaughtDiscipline(
-                id = it.id,
-                code = it.code,
-                name = it.name,
-                mean = it.mean,
-                sampleCount = it.sampleCount,
-            )
-        },
-    )
+    fun toDomain() =
+        ParadoxoTeacherDetail(
+            id = id,
+            name = name,
+            mean = mean,
+            studentCount = studentCount,
+            approved = approved,
+            failed = failed,
+            quit = quit,
+            lastSemester = lastSemester,
+            history = history.orEmpty().map { it.toDomain() },
+            distribution = distribution.orEmpty(),
+            disciplines = disciplines.orEmpty().map {
+                ParadoxoTaughtDiscipline(
+                    id = it.id,
+                    code = it.code,
+                    name = it.name,
+                    mean = it.mean,
+                    sampleCount = it.sampleCount,
+                )
+            },
+        )
 }

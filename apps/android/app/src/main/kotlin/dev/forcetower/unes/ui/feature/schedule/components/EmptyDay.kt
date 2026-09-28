@@ -54,7 +54,8 @@ internal fun ScheduleEmptyDay(
                                 ?: return@withTimeoutOrNull true
                             if (!change.pressed) return@withTimeoutOrNull true
                         }
-                        @Suppress("UNREACHABLE_CODE") true
+                        @Suppress("UNREACHABLE_CODE")
+                        true
                     }
                     if (released == null) {
                         haptics.performHapticFeedback(HapticFeedbackType.LongPress)
