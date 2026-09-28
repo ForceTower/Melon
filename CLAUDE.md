@@ -17,6 +17,14 @@
 - `oxlint` is used for linting, `oxfmt` for formatting (we do NOT use `prettier`,
   `eslint`, or anything else). Run `bun run fix` to format + lint with fixes.
 - `gradle` is used for the JVM side (Android app + Kotlin Multiplatform shared package).
+- `ktlint` formats and lints all Kotlin (`*.kt`, `*.kts`) with the rules in `.editorconfig`,
+  run through plain `JavaExec` tasks in the root `build.gradle.kts` — no Gradle plugin.
+  Run `./gradlew ktlintFormat` before finishing Kotlin changes; `./gradlew ktlintCheck`
+  (part of `bun run android:check`) must pass. ktlint can't split long strings or calls
+  with 8+ arguments, and it measures a function signature from `fun`, ignoring a
+  same-line annotation — wrap those by hand and keep annotations on their own line.
+  Never disable `max-line-length`: that also turns off line-length-aware wrapping in
+  every other rule.
 - Native iOS is a standard Xcode project (`apps/ios`).
 
 ## Monorepo Structure

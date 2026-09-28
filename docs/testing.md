@@ -14,7 +14,7 @@ Dedicated-device measurement and profile generation are in
 | --- | --- |
 | `bun run check` | Oxlint and Oxfmt checks for the TypeScript repository. |
 | `bun run verify:repository` | Verification-tool tests, Android conventions, fixture/credential checks and hermetic mock-server tests. |
-| `bun run android:check` | Release and benchmark test-APK assembly, Android debug unit tests, KMP JVM tests, Android lint. |
+| `bun run android:check` | ktlint, release and benchmark test-APK assembly, Android debug unit tests, KMP JVM tests, Android lint. |
 | `bun run android:scenario home.populated --serial emulator-5554` | Installed scenario build, synthetic-account journey and captured device evidence. |
 | `bun run landing:check` | Astro type checking and production build. |
 
@@ -30,7 +30,11 @@ example:
 ./gradlew :packages:shared-kmp:features:auth:jvmTest
 ```
 
-Use `bun run fix` for formatting and lint fixes. Do not use root Gradle `build`
+Use `bun run fix` for TypeScript formatting and lint fixes, and
+`./gradlew ktlintFormat` for Kotlin. `ktlintCheck` covers every `*.kt`/`*.kts` file
+in the repository (including `build-logic`) against the rules in `.editorconfig`,
+which Android Studio also reads, and writes a checkstyle report to
+`build/reports/ktlint/ktlint.xml`. Do not use root Gradle `build`
 or `check` in the Linux lane: those aggregate tasks can select Apple targets.
 Both Android and iOS KMP targets remain configured; native iOS itself does not
 consume KMP.

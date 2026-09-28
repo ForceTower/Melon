@@ -9,6 +9,7 @@ kotlinx-coroutines = "1.11.0"
 kotlinx-serialization = "1.11.0"
 kotlinx-datetime = "0.8.0"
 kermit = "2.2.0"
+ktlint = "1.8.0"
 
 # Android
 agp = "9.4.0"
@@ -65,6 +66,9 @@ agp-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "
 hilt-gradle-plugin = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "android-hilt" }
 google-services-gradle-plugin = { module = "com.google.gms:google-services", version.ref = "google-services" }
 firebase-crashlytics-gradle-plugin = { module = "com.google.firebase:firebase-crashlytics-gradle", version.ref = "firebase-crashlytics-gradle" }
+
+# ktlint (run by the root project's ktlintCheck / ktlintFormat tasks)
+ktlint-cli = { module = "com.pinterest.ktlint:ktlint-cli", version.ref = "ktlint" }
 
 # Ktor
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }

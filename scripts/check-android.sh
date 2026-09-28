@@ -7,6 +7,7 @@ java scripts/CompareScreenshots.java --self-test
 # Generic build/check tasks also select Apple KMP targets and cannot run on Linux.
 ./gradlew \
     -Pmelon.verification=true \
+    ktlintCheck \
     :apps:android:app:assembleRelease \
     :apps:android:benchmark:assembleBenchmark \
     :apps:android:benchmark:assembleProfile \
