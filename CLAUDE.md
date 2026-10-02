@@ -81,7 +81,8 @@
 components, or screens must come from the theme — `MaterialTheme.colorScheme.*`,
 `MaterialTheme.melon.brand.*`, or `MaterialTheme.melon.surface.*`. Raw `Color(0x…)`
 literals, `Color.Red`/`Color.White`/etc., and direct references to backing constants are
-forbidden in feature code. If a color you need does not exist in the theme, add it to the
+forbidden in feature code. `Color.Transparent` and `Color.Unspecified` are the exceptions —
+they mean "no fill" and "use the default", not a color. If a color you need does not exist in the theme, add it to the
 design system first, then consume it via the theme. The same rule applies to typography
 (`MaterialTheme.typography.*`, never `FontFamily.Default`) and motion (`MelonMotion.*`,
 never magic spring values).

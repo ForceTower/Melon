@@ -52,6 +52,8 @@ internal data class Example(val name: String) {
     Text(stringResource(R.string.hello))
     Icon(contentDescription = null)
     val color = MaterialTheme.colorScheme.primary
+    val clear = Color.Transparent
+    val inherit = Color.Unspecified
     val font = MaterialTheme.typography.bodyLarge
     val motion = MelonMotion.spring()
   }

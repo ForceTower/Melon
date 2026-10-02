@@ -98,9 +98,11 @@ export function inspectKotlin(source: string, backingTokens = new Set<string>())
       if (next?.value === "(" && /^(0x[\da-f]+|\d)/i.test(after?.value ?? "")) {
         add("theme-color", token);
       }
+      // Transparent and Unspecified are allowed: they mean "no fill" and "use the default",
+      // not colors a theme could own.
       if (
         next?.value === "." &&
-        /^(Black|White|Red|Green|Blue|Yellow|Cyan|Magenta|Gray|LightGray|DarkGray|Transparent|Unspecified)$/.test(
+        /^(Black|White|Red|Green|Blue|Yellow|Cyan|Magenta|Gray|LightGray|DarkGray)$/.test(
           after?.value ?? "",
         )
       ) {
