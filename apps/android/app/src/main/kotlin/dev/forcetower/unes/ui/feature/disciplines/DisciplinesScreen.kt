@@ -96,6 +96,7 @@ internal fun DisciplinesScreen(
     // card stack. The promoted semester keeps its place on the Histórico tab,
     // which always lists every downloaded past semester.
     val effectiveCurrent = current ?: past.firstOrNull()
+    val programTracks = remember(state.past, state.pending) { programTracks(state) }
 
     DisciplinesContent(
         current = effectiveCurrent,
@@ -103,12 +104,23 @@ internal fun DisciplinesScreen(
         past = past,
         pending = state.pending,
         downloading = state.downloading,
-        overallScore = state.overallScore,
+        programTracks = programTracks,
+        selectedTrack = state.shownTrack,
+        overallScore = state.shownProgram?.value,
+        onSelectProgram = { vm.onIntent(DisciplinesIntent.SelectProgram(it)) },
         onOpenDiscipline = onOpenDiscipline,
         onDownload = { vm.onIntent(DisciplinesIntent.Download(it)) },
         bottomInset = bottomInset,
         modifier = modifier,
     )
+}
+
+// The programs present in the history, newest first. Empty for the students
+// who only ever took graduação disciplines — the Histórico keeps its
+// single-program layout instead of offering a choice of one.
+private fun programTracks(state: DisciplinesUiState): List<String?> {
+    val tracks = (state.past + state.pending).map { it.track }.distinct()
+    return if (tracks.size <= 1) emptyList() else tracks
 }
 
 private const val PAGE_CURRENT = 0
@@ -122,7 +134,10 @@ private fun DisciplinesContent(
     past: List<Semester>,
     pending: List<Semester>,
     downloading: Set<String>,
+    programTracks: List<String?>,
+    selectedTrack: String?,
     overallScore: Double?,
+    onSelectProgram: (String?) -> Unit,
     onOpenDiscipline: (Discipline) -> Unit,
     onDownload: (String) -> Unit,
     bottomInset: Dp,
@@ -178,7 +193,10 @@ private fun DisciplinesContent(
                     past = past,
                     pending = pending,
                     downloading = downloading,
+                    programTracks = programTracks,
+                    selectedTrack = selectedTrack,
                     overallScore = overallScore,
+                    onSelectProgram = onSelectProgram,
                     onOpenDiscipline = onOpenDiscipline,
                     onDownload = onDownload,
                     bottomInset = bottomInset,
@@ -396,15 +414,28 @@ private fun HistoryPane(
     past: List<Semester>,
     pending: List<Semester>,
     downloading: Set<String>,
+    programTracks: List<String?>,
+    selectedTrack: String?,
     overallScore: Double?,
+    onSelectProgram: (String?) -> Unit,
     onOpenDiscipline: (Discipline) -> Unit,
     onDownload: (String) -> Unit,
     bottomInset: Dp,
 ) {
+    // A student enrolled in more than one program (a mestrado after the
+    // graduação, say) reads one program at a time: mixing their semesters
+    // into a single list is what made the accumulated CR meaningless.
+    val visiblePast = remember(past, programTracks, selectedTrack) {
+        if (programTracks.isEmpty()) past else past.filter { it.track == selectedTrack }
+    }
+    val visiblePending = remember(pending, programTracks, selectedTrack) {
+        if (programTracks.isEmpty()) pending else pending.filter { it.track == selectedTrack }
+    }
+
     // Single-open accordion — the most recent semester starts expanded,
     // matching the dc prototype's `openSem` behavior.
-    var openSemester by rememberSaveable(past.firstOrNull()?.id) {
-        mutableStateOf(past.firstOrNull()?.id)
+    var openSemester by rememberSaveable(visiblePast.firstOrNull()?.id) {
+        mutableStateOf(visiblePast.firstOrNull()?.id)
     }
 
     LazyColumn(
@@ -412,14 +443,14 @@ private fun HistoryPane(
         contentPadding = PaddingValues(start = 16.dp, top = 16.dp, end = 16.dp, bottom = bottomInset + 24.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        if (past.isEmpty() && pending.isEmpty()) {
+        if (visiblePast.isEmpty() && visiblePending.isEmpty()) {
             item("history-empty") { EmptyPaneMessage(text = stringResource(R.string.disciplines_history_empty)) }
             return@LazyColumn
         }
 
-        if (past.isNotEmpty()) {
+        if (visiblePast.isNotEmpty()) {
             item("history-summary") {
-                val all = past.flatMap { it.disciplines }
+                val all = visiblePast.flatMap { it.disciplines }
                 val decided = all.count { it.approved != null }
                 val approvalPercent = if (decided > 0) {
                     (all.count { it.approved == true } * 100.0 / decided).roundToInt()
@@ -430,6 +461,9 @@ private fun HistoryPane(
                     overallMean = overallScore,
                     taken = all.size,
                     approvalPercent = approvalPercent,
+                    programTracks = programTracks,
+                    selectedTrack = selectedTrack,
+                    onSelectProgram = onSelectProgram,
                     modifier = Modifier
                         .fadeUpOnAppear(delayMs = 120)
                         .padding(bottom = 6.dp),
@@ -437,7 +471,7 @@ private fun HistoryPane(
             }
         }
         itemsIndexed(
-            items = past,
+            items = visiblePast,
             key = { _, sem -> "past-${sem.id}" },
         ) { index, semester ->
             HistorySemesterCard(
@@ -454,7 +488,7 @@ private fun HistoryPane(
         // re-emits with the semester moved into `past`, so the placeholder
         // disappears once the fetch lands.
         itemsIndexed(
-            items = pending,
+            items = visiblePending,
             key = { _, sem -> "pending-${sem.id}" },
         ) { index, semester ->
             UndownloadedSemesterCard(
@@ -495,7 +529,10 @@ private fun DisciplinesContentPreview() {
             past = DisciplinesFixtures.PAST.map { it.tinted(palette) },
             pending = DisciplinesFixtures.PENDING,
             downloading = emptySet(),
+            programTracks = emptyList(),
+            selectedTrack = null,
             overallScore = DisciplinesFixtures.OVERALL_SCORE,
+            onSelectProgram = {},
             onOpenDiscipline = {},
             onDownload = {},
             bottomInset = 0.dp,

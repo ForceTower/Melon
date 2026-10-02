@@ -9,9 +9,16 @@ struct MeIdentityHero: View {
     var campus: String?
     var imageUrl: String?
     var coefficient: CoefficientSummary?
+    /// Program the coefficient belongs to ("Graduação", "RUE"). Non-nil only
+    /// when the student has more than one, in which case it replaces the
+    /// generic "Score" label — an unlabelled CR is unreadable once two
+    /// degrees are in play.
+    var programLabel: String?
     var attendancePercent: Int?
     var progress: SemesterProgress?
     var onEditProfile: (() -> Void)?
+    /// Walks to the next program. Nil keeps the stat untappable.
+    var onCycleProgram: (() -> Void)?
 
     /// The mesh backdrop, matching the design's `#160E1F`.
     private static let backdrop = Color(hex: 0x160E1F)
@@ -154,18 +161,38 @@ struct MeIdentityHero: View {
 
     private var statsRow: some View {
         HStack(alignment: .top, spacing: 4) {
-            stat(label: .meStatScore, value: formatGrade(coefficient?.value), delta: delta)
-            stat(label: .meStatAttendance, value: attendancePercent.map { "\($0)" } ?? "—",
+            scoreStat
+            stat(label: String.localized(.meStatAttendance), value: attendancePercent.map { "\($0)" } ?? "—",
                  sub: attendancePercent != nil ? "%" : nil)
-            stat(label: .meStatSemester, value: progress.map { "\($0.week)" } ?? "—",
+            stat(label: String.localized(.meStatSemester), value: progress.map { "\($0.week)" } ?? "—",
                  sub: progress.map { String.localized(.meStatWeeksShort($0.totalWeeks)) })
         }
     }
 
+    @ViewBuilder
+    private var scoreStat: some View {
+        let content = stat(
+            label: programLabel ?? String.localized(.meStatScore),
+            value: formatGrade(coefficient?.value),
+            trailingIcon: onCycleProgram == nil ? nil : "arrow.trianglehead.2.clockwise",
+            delta: delta
+        )
+        if let onCycleProgram {
+            Button(action: onCycleProgram) {
+                content.contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityHint(Text(.meStatScoreCycle))
+        } else {
+            content
+        }
+    }
+
     private func stat(
-        label: LocalizedStringResource,
+        label: String,
         value: String,
         sub: String? = nil,
+        trailingIcon: String? = nil,
         delta: (text: String, rising: Bool)? = nil
     ) -> some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -185,6 +212,11 @@ struct MeIdentityHero: View {
                     Text(sub)
                         .font(.system(size: 11.5, weight: .medium))
                         .monospacedDigit()
+                        .foregroundStyle(.white.opacity(0.55))
+                }
+                if let trailingIcon {
+                    Image(systemName: trailingIcon)
+                        .font(.system(size: 10, weight: .semibold))
                         .foregroundStyle(.white.opacity(0.55))
                 }
             }
@@ -216,9 +248,11 @@ struct MeIdentityHero: View {
         course: "Engenharia de Computação",
         campus: "UEFS · Módulo 5",
         coefficient: MeOverview.preview.coefficient,
+        programLabel: "RUE",
         attendancePercent: 96,
         progress: MeOverview.preview.progress,
-        onEditProfile: {}
+        onEditProfile: {},
+        onCycleProgram: {}
     )
     .padding(16)
     .frame(maxHeight: .infinity)

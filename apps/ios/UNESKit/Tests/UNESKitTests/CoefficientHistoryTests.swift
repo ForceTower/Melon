@@ -6,8 +6,21 @@ import Testing
 /// The cross-semester coefficient: hours-weighted mean of every discipline
 /// taken, one cumulative spark point per semester.
 struct CoefficientHistoryTests {
-    private func semester(_ id: String, code: String, start: String, end: String) -> SemesterRecord {
-        SemesterRecord(id: id, code: code, description: "Semestre \(code)", startDate: start, endDate: end)
+    private func semester(
+        _ id: String,
+        code: String,
+        start: String,
+        end: String,
+        track: String? = nil
+    ) -> SemesterRecord {
+        SemesterRecord(
+            id: id,
+            code: code,
+            description: "Semestre \(code)",
+            startDate: start,
+            endDate: end,
+            track: track
+        )
     }
 
     @Test
@@ -174,6 +187,67 @@ struct CoefficientHistoryTests {
         #expect(summary.value == 8.5)
         #expect(summary.spark == [8.5])
         #expect(summary.delta == nil)
+    }
+
+    /// Issue #55: a mestrado runs on its own semester calendar under the same
+    /// login. Its grades belong to its own CR, not to the graduação's.
+    @Test
+    func eachProgramKeepsItsOwnCoefficient() throws {
+        let history = mixedProgramHistory(mastersGrade: "10.0")
+
+        let undergrad = try #require(history.summary(track: nil))
+        #expect(undergrad.value == 7.0)
+        #expect(undergrad.spark == [8.0, 7.0])
+
+        let masters = try #require(history.summary(track: "RUE"))
+        #expect(masters.value == 10.0)
+        #expect(masters.spark == [10.0])
+
+        // The single-number surfaces speak for the newest program.
+        #expect(history.summary()?.value == 10.0)
+    }
+
+    /// A program in its first semester has no closed grades yet — the hero
+    /// falls back to the previous program instead of going blank.
+    @Test
+    func aProgramWithoutClosedGradesFallsBackToThePreviousOne() throws {
+        let history = mixedProgramHistory(mastersGrade: nil)
+
+        #expect(history.summary(track: "RUE") == nil)
+        #expect(history.summary()?.value == 7.0)
+    }
+
+    /// A finished graduação (two semesters) followed by a mestrado, which
+    /// runs on its own calendar. Blended, the mestrado's 10.0 would drag the
+    /// graduação's 7.0 up to 8.0.
+    private func mixedProgramHistory(mastersGrade: String?) -> CoefficientHistory {
+        CoefficientHistory(
+            semesters: [
+                semester("ug1", code: "20251", start: "2025-02-01", end: "2025-06-30"),
+                semester("ug2", code: "20252", start: "2025-08-01", end: "2025-12-15"),
+                semester("ms1", code: "26.1RUE", start: "2026-03-01", end: "2026-07-30", track: "RUE"),
+            ],
+            disciplines: [
+                DisciplineRecord(id: "d1", semesterId: "ug1", code: "ALGI", name: "Algoritmos I", hours: 60),
+                DisciplineRecord(id: "d2", semesterId: "ms1", code: "RUE1", name: "Seminários", hours: 60),
+                DisciplineRecord(id: "d3", semesterId: "ug2", code: "LPOO", name: "POO", hours: 60),
+            ],
+            disciplineOffers: [
+                DisciplineOfferRecord(id: "o1", semesterId: "ug1", disciplineId: "d1"),
+                DisciplineOfferRecord(id: "o2", semesterId: "ms1", disciplineId: "d2"),
+                DisciplineOfferRecord(id: "o3", semesterId: "ug2", disciplineId: "d3"),
+            ],
+            classes: [
+                ClassRecord(id: "c1", semesterId: "ug1", offerId: "o1", hours: 60),
+                ClassRecord(id: "c2", semesterId: "ms1", offerId: "o2", hours: 60),
+                ClassRecord(id: "c3", semesterId: "ug2", offerId: "o3", hours: 60),
+            ],
+            studentClasses: [
+                StudentClassRecord(id: "sc1", semesterId: "ug1", classId: "c1", finalGrade: "8.0"),
+                StudentClassRecord(id: "sc2", semesterId: "ms1", classId: "c2", finalGrade: mastersGrade),
+                StudentClassRecord(id: "sc3", semesterId: "ug2", classId: "c3", finalGrade: "6.0"),
+            ]
+        )
     }
 
     @Test
