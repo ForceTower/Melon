@@ -12,6 +12,7 @@ metro {
 
 kotlin {
     sourceSets {
+        jvmTest { resources.srcDir(rootProject.file("contracts")) }
         commonMain.dependencies {
             api(project(":packages:shared-kmp:core:common"))
             implementation(project(":packages:shared-kmp:core:network"))

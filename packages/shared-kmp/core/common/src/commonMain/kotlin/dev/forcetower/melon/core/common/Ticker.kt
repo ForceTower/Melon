@@ -6,9 +6,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
-import kotlin.time.Clock
 
 // Emits the current LocalDateTime immediately, then every `periodMs`, and again
 // whenever `resume` fires. Time-derived flows combine with this so derived
@@ -16,15 +13,12 @@ import kotlin.time.Clock
 // when the DB hasn't changed — and, via `resume`, the instant the app returns
 // to the foreground rather than waiting on the delay timer, which doesn't
 // reliably fire after a long OS suspension. See [ForegroundSignal].
-fun tickerFlow(periodMs: Long, resume: Flow<Unit>): Flow<LocalDateTime> = merge(
+fun tickerFlow(periodMs: Long, resume: Flow<Unit>, clock: AppClock = AppClock()): Flow<LocalDateTime> = merge(
     flow {
         while (true) {
-            emit(nowLocalDateTime())
+            emit(clock.localNow())
             delay(periodMs)
         }
     },
-    resume.map { nowLocalDateTime() },
+    resume.map { clock.localNow() },
 )
-
-private fun nowLocalDateTime(): LocalDateTime =
-    Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())

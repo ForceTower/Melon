@@ -1,5 +1,6 @@
 package dev.forcetower.melon.feature.overview.domain.usecase
 
+import dev.forcetower.melon.core.common.AppClock
 import dev.forcetower.melon.core.common.ForegroundSignal
 import dev.forcetower.melon.core.common.tickerFlow
 import dev.forcetower.melon.core.database.dao.AcademicDao
@@ -22,6 +23,7 @@ import kotlinx.coroutines.flow.map
 @OptIn(ExperimentalCoroutinesApi::class)
 @Inject
 class ObserveEvaluationRemindersUseCase internal constructor(
+    private val clock: AppClock,
     private val semesterDao: SemesterDao,
     private val academicDao: AcademicDao,
     private val foreground: ForegroundSignal,
@@ -29,7 +31,7 @@ class ObserveEvaluationRemindersUseCase internal constructor(
     operator fun invoke(): Flow<List<OverviewEvaluationReminder>> {
         val keyFlow: Flow<Pair<String, String>?> = combine(
             semesterDao.observeAll(),
-            tickerFlow(30_000, foreground.pulses),
+            tickerFlow(30_000, foreground.pulses, clock),
         ) { semesters, now ->
             val dateIso = now.date.toString()
             pickActiveSemester(semesters, dateIso)?.let { it.id to dateIso }

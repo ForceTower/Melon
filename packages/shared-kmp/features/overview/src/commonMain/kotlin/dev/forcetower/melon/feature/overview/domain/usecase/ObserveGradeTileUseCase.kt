@@ -1,5 +1,6 @@
 package dev.forcetower.melon.feature.overview.domain.usecase
 
+import dev.forcetower.melon.core.common.AppClock
 import dev.forcetower.melon.core.database.dao.AcademicDao
 import dev.forcetower.melon.core.database.dao.SemesterDao
 import dev.forcetower.melon.core.database.entity.SemesterEntity
@@ -10,8 +11,6 @@ import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlin.time.Clock
-import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
 // Lifetime CR for the grade tile, plus a delta showing how much the active
@@ -23,16 +22,17 @@ import kotlinx.datetime.toLocalDateTime
 // the codebase already prefers small local copies over a shared module).
 @Inject
 class ObserveGradeTileUseCase internal constructor(
+    private val clock: AppClock,
     private val semesterDao: SemesterDao,
     private val academicDao: AcademicDao,
 ) {
-    private val timeZone = TimeZone.currentSystemDefault()
+    private val timeZone = clock.timeZone
 
     operator fun invoke(): Flow<OverviewGradeTile?> = combine(
         semesterDao.observeAll(),
         academicDao.observeAllEnrolledDisciplines(),
     ) { semesters, enrollments ->
-        val today = Clock.System.now().toLocalDateTime(timeZone).date.toString()
+        val today = clock.now().toLocalDateTime(timeZone).date.toString()
         buildTile(semesters, enrollments, today)
     }.distinctUntilChanged()
 }

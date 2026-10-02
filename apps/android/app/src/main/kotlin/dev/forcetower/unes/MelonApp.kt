@@ -68,20 +68,21 @@ internal class MelonApp : Application() {
         // which calls `setCrashlyticsCollectionEnabled(false)` under #if DEBUG.
         // Firebase itself auto-initializes via FirebaseInitProvider, so we
         // don't need to call FirebaseApp.initializeApp() here.
-        FirebaseCrashlytics.getInstance().isCrashlyticsCollectionEnabled = !BuildConfig.DEBUG
-
-        PostHogAndroid.setup(
-            this,
-            PostHogAndroidConfig(
-                apiKey = BuildConfig.POSTHOG_API_KEY,
-                host = BuildConfig.POSTHOG_HOST,
-            ).apply {
-                debug = BuildConfig.DEBUG
-                optOut = BuildConfig.DEBUG
-                captureScreenViews = false
-                sessionReplay = false
-            },
-        )
+        if (!BuildConfig.SCENARIO) {
+            FirebaseCrashlytics.getInstance().isCrashlyticsCollectionEnabled = !BuildConfig.DEBUG
+            PostHogAndroid.setup(
+                this,
+                PostHogAndroidConfig(
+                    apiKey = BuildConfig.POSTHOG_API_KEY,
+                    host = BuildConfig.POSTHOG_HOST,
+                ).apply {
+                    debug = BuildConfig.DEBUG
+                    optOut = BuildConfig.DEBUG
+                    captureScreenViews = false
+                    sessionReplay = false
+                },
+            )
+        }
         // Analytics identity: stamp the device machine_id on every event (so
         // PostHog lines up with the OTel logs, which key on the same id), then
         // follow the session from one place — identify on login, reset on
@@ -111,8 +112,8 @@ internal class MelonApp : Application() {
                 }
         }
         featureFlags.start()
-        reviewPrompter.start()
-        applicationScope.launch {
+        if (!BuildConfig.SCENARIO) reviewPrompter.start()
+        if (!BuildConfig.SCENARIO) applicationScope.launch {
             // A crash last run is the loudest possible "not now".
             if (FirebaseCrashlytics.getInstance().didCrashOnPreviousExecution()) {
                 reviewPrompter.noteTrouble("crash")
@@ -120,8 +121,10 @@ internal class MelonApp : Application() {
         }
         // App-lifetime like the analytics collector: also runs when a boot
         // broadcast spins the process up, so alarms re-anchor to fresh data.
-        evaluationReminders.start()
-        personalEventReminders.start()
+        if (!BuildConfig.SCENARIO) {
+            evaluationReminders.start()
+            personalEventReminders.start()
+        }
         // Process-wide (not per-Activity) so time-derived KMP flows recompute
         // "today" the instant the app resumes, mirroring iOS `.sceneActivated`.
         // Every app open also re-sends the push registration, so the backend

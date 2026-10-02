@@ -1,5 +1,6 @@
 package dev.forcetower.melon.feature.schedule.domain.usecase
 
+import dev.forcetower.melon.core.common.AppClock
 import dev.forcetower.melon.core.common.ForegroundSignal
 import dev.forcetower.melon.core.common.parseHhMm
 import dev.forcetower.melon.core.common.tickerFlow
@@ -34,6 +35,7 @@ import kotlinx.datetime.plus
 @OptIn(ExperimentalCoroutinesApi::class)
 @Inject
 class ObserveScheduleWeekUseCase internal constructor(
+    private val clock: AppClock,
     private val semesterDao: SemesterDao,
     private val academicDao: AcademicDao,
     private val foreground: ForegroundSignal,
@@ -41,7 +43,7 @@ class ObserveScheduleWeekUseCase internal constructor(
     operator fun invoke(): Flow<ScheduleWeek> {
         val keyFlow: Flow<WeekKey> = combine(
             semesterDao.observeAll(),
-            tickerFlow(60_000, foreground.pulses),
+            tickerFlow(60_000, foreground.pulses, clock),
         ) { semesters, now ->
             val today = now.date
             val todayIso = today.toString()
@@ -101,7 +103,7 @@ internal fun buildScheduleWeek(
                 val day = row.day ?: return@mapNotNull null
                 // ClassAllocation.day is 0=Sunday..6=Saturday (see
                 // ClassAllocationEntity.day — upstream Snowpiercer
-                // `time.day` is persisted untransformed by apps/api).
+                // `time.day` is persisted untransformed by the backend).
                 // Schedule's UI indexes Monday..Sunday, so shift by 6:
                 //   1 (Mon) → 0, 2 (Tue) → 1, ..., 6 (Sat) → 5, 0 (Sun) → 6.
                 val rowIdx = (day + 6) % 7

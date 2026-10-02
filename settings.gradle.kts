@@ -18,6 +18,7 @@ dependencyResolutionManagement {
 rootProject.name = "Melon"
 
 include(":apps:android:app")
+include(":apps:android:benchmark")
 include(":apps:android:design-system")
 include(":apps:android:mvi")
 

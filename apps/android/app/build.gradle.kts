@@ -34,6 +34,8 @@ android {
         applicationId = "com.forcetower.uefs"
         versionCode = 2130000 + gitVersionCode
         versionName = marketingVersion
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField("boolean", "SCENARIO", "false")
 
         // API origin the UmbrellaGraph is built with. Override for a local
         // mock/proxy via `-Pmelon.apiBaseUrl=http://127.0.0.1:8787` (pair
@@ -90,8 +92,38 @@ android {
                 "proguard-rules.pro",
             )
         }
+        create("scenario") {
+            initWith(getByName("debug"))
+            applicationIdSuffix = ".scenario"
+            matchingFallbacks += "debug"
+            buildConfigField("boolean", "SCENARIO", "true")
+            buildConfigField("String", "API_BASE_URL", "\"http://127.0.0.1:8787\"")
+        }
+        create("benchmark") {
+            initWith(getByName("release"))
+            applicationIdSuffix = ".benchmark"
+            matchingFallbacks += "release"
+            signingConfig = signingConfigs.getByName("debug")
+            buildConfigField("boolean", "SCENARIO", "true")
+            buildConfigField("String", "API_BASE_URL", "\"http://127.0.0.1:8787\"")
+        }
+        create("profile") {
+            initWith(getByName("benchmark"))
+            isMinifyEnabled = false
+            isShrinkResources = false
+            matchingFallbacks += "release"
+        }
     }
+    testBuildType = providers.gradleProperty("melon.testBuildType").getOrElse("debug")
 }
+
+tasks.matching { it.name in setOf("processScenarioGoogleServices", "processBenchmarkGoogleServices", "processProfileGoogleServices") }
+    .configureEach { enabled = false }
+val verificationBuild = providers.gradleProperty("melon.verification").map(String::toBoolean).getOrElse(false)
+tasks.matching {
+    it.name.startsWith("uploadCrashlytics") &&
+        (verificationBuild || listOf("Scenario", "Benchmark", "Profile").any(it.name::endsWith))
+}.configureEach { enabled = false }
 
 // Licensee scans the runtime classpath at build time and emits an
 // `artifacts.json` listing every dependency's coordinates, license, and
@@ -159,6 +191,14 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
     debugImplementation(libs.androidx.compose.ui.tooling)
+    "scenarioImplementation"(libs.androidx.compose.ui.tooling)
+    androidTestImplementation(composeBom)
+    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+    androidTestImplementation(libs.androidx.compose.ui.test.accessibility)
+    androidTestImplementation(libs.androidx.test.runner)
+    androidTestImplementation(libs.androidx.test.rules)
+    androidTestImplementation(libs.androidx.test.espresso)
+    androidTestImplementation(libs.androidx.test.uiautomator)
 
     implementation(libs.androidx.navigation3.runtime)
     implementation(libs.androidx.navigation3.ui)

@@ -1,0 +1,155 @@
+{
+  "version": 1,
+  "origin": "Hand-authored synthetic account; no production records or credentials.",
+  "clock": "2026-10-02T13:00:00Z",
+  "timezone": "America/Bahia",
+  "account": { "username": "scenario", "password": "synthetic-only" },
+  "login": {
+    "accessToken": "synthetic-access-0",
+    "refreshToken": "synthetic-refresh-0",
+    "user": {
+      "id": "00000000-0000-4000-8000-000000000001",
+      "name": "Estudante Exemplo",
+      "alternateName": null,
+      "imageUrl": null
+    }
+  },
+  "profile": {
+    "user": {
+      "id": "00000000-0000-4000-8000-000000000001",
+      "name": "Estudante Exemplo",
+      "alternateName": null,
+      "email": "student@example.invalid",
+      "imageUrl": null
+    },
+    "student": {
+      "id": "00000000-0000-4000-8000-000000000002",
+      "platformId": 1,
+      "name": "Estudante Exemplo",
+      "courseId": "00000000-0000-4000-8000-000000000003"
+    },
+    "course": {
+      "id": "00000000-0000-4000-8000-000000000003",
+      "platformId": 1,
+      "name": "Engenharia de Computação",
+      "resumedName": "ECOMP"
+    },
+    "lastSyncCompletedAt": "2026-10-02T13:00:00Z",
+    "settings": {
+      "gradeSpoiler": 1,
+      "unlockedAppIcons": [],
+      "notifMsgBroadcast": true,
+      "notifMsgClass": true,
+      "notifMsgDirect": true,
+      "notifGradePosted": true,
+      "notifGradeChanged": true,
+      "notifGradeDateChanged": false,
+      "notifClassLocation": true,
+      "notifClassMaterial": true,
+      "notifClassSubject": false
+    }
+  },
+  "onboarding": {
+    "courseLinked": true,
+    "initial": { "status": "done", "appliedSemesters": 1 },
+    "semesters": { "status": "done", "total": 1, "done": 1, "failed": 0 },
+    "messages": { "status": "done" },
+    "activeSemesterReady": true
+  },
+  "semester": {
+    "semester": {
+      "id": "00000000-0000-4000-8000-000000000004",
+      "platformId": 1,
+      "code": "2026.2",
+      "description": "Semestre de demonstração",
+      "startDate": "2026-08-01",
+      "endDate": "2026-12-20",
+      "track": null
+    },
+    "disciplines": [
+      {
+        "id": "00000000-0000-4000-8000-000000000005",
+        "platformId": 1,
+        "code": "DEMO101",
+        "name": "Algoritmos de Exemplo",
+        "hours": 60,
+        "department": null,
+        "program": null
+      }
+    ],
+    "disciplineOffers": [
+      {
+        "id": "00000000-0000-4000-8000-000000000006",
+        "disciplineId": "00000000-0000-4000-8000-000000000005",
+        "semesterId": "00000000-0000-4000-8000-000000000004",
+        "platformId": 1,
+        "hours": 60,
+        "program": null
+      }
+    ],
+    "classes": [
+      {
+        "id": "00000000-0000-4000-8000-000000000007",
+        "offerId": "00000000-0000-4000-8000-000000000006",
+        "platformId": 1,
+        "groupName": "T01",
+        "type": "T",
+        "hours": 60,
+        "program": null
+      }
+    ],
+    "teachers": [
+      {
+        "id": "00000000-0000-4000-8000-000000000008",
+        "platformId": 1,
+        "name": "Docente Exemplo"
+      }
+    ],
+    "classTeachers": [
+      {
+        "classId": "00000000-0000-4000-8000-000000000007",
+        "teacherId": "00000000-0000-4000-8000-000000000008"
+      }
+    ],
+    "spaces": [
+      {
+        "id": "00000000-0000-4000-8000-000000000009",
+        "platformId": 1,
+        "type": null,
+        "campus": "Campus Exemplo",
+        "location": "Exemplo",
+        "modulo": "Módulo Exemplo"
+      }
+    ],
+    "allocations": [
+      {
+        "id": "00000000-0000-4000-8000-000000000010",
+        "classId": "00000000-0000-4000-8000-000000000007",
+        "spaceId": "00000000-0000-4000-8000-000000000009",
+        "timePlatformId": 1,
+        "day": 5,
+        "startTime": "10:00",
+        "endTime": "12:00"
+      }
+    ],
+    "studentClasses": [
+      {
+        "id": "00000000-0000-4000-8000-000000000011",
+        "classId": "00000000-0000-4000-8000-000000000007",
+        "finalGrade": null,
+        "missedClasses": 2,
+        "resultDescription": null,
+        "approved": null,
+        "underRevision": false,
+        "wentToFinals": false,
+        "resultSyncedAt": null
+      }
+    ],
+    "evaluations": [],
+    "studentGrades": [],
+    "lectures": [],
+    "lectureMaterials": []
+  },
+  "messages": { "messages": [], "nextCursor": null },
+  "events": { "events": [] }
+}

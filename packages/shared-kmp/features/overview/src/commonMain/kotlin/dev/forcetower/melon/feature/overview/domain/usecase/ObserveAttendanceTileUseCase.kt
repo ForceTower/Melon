@@ -1,5 +1,6 @@
 package dev.forcetower.melon.feature.overview.domain.usecase
 
+import dev.forcetower.melon.core.common.AppClock
 import dev.forcetower.melon.core.database.dao.AcademicDao
 import dev.forcetower.melon.core.database.dao.SemesterDao
 import dev.forcetower.melon.core.database.query.AttendanceSummaryRow
@@ -14,8 +15,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
-import kotlin.time.Clock
-import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
 // Upstream `situation` code convention: 0 == present, everything else is some
@@ -31,14 +30,15 @@ private const val STRIP_SIZE = 14
 @OptIn(ExperimentalCoroutinesApi::class)
 @Inject
 class ObserveAttendanceTileUseCase internal constructor(
+    private val clock: AppClock,
     private val semesterDao: SemesterDao,
     private val academicDao: AcademicDao,
 ) {
-    private val timeZone = TimeZone.currentSystemDefault()
+    private val timeZone = clock.timeZone
 
     operator fun invoke(): Flow<OverviewAttendanceTile> =
         semesterDao.observeAll().flatMapLatest { semesters ->
-            val today = Clock.System.now().toLocalDateTime(timeZone).date.toString()
+            val today = clock.now().toLocalDateTime(timeZone).date.toString()
             val semester = pickActiveSemester(semesters, today)
                 ?: return@flatMapLatest flowOf(emptyAttendanceTile())
 

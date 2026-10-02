@@ -1,5 +1,12 @@
 package dev.forcetower.unes.di
 
+import dev.forcetower.melon.core.common.AppClock
+import dev.forcetower.melon.core.analytics.NoOpAnalytics
+import dev.forcetower.melon.core.logging.LoggingConfig
+import kotlin.time.Clock
+import kotlin.time.Instant
+import kotlinx.datetime.TimeZone
+
 import android.content.Context
 import co.touchlab.kermit.Logger
 import dagger.Module
@@ -116,7 +123,7 @@ object UmbrellaBridgeModule {
 
     @Provides
     @Singleton
-    fun provideUmbrellaGraph(@HiltApplicationContext context: Context): UmbrellaGraph =
+    fun provideUmbrellaGraph(@HiltApplicationContext context: Context, clock: AppClock): UmbrellaGraph =
         UmbrellaGraph(
             UmbrellaConfig(
                 // Prod origin by default; debug builds can point at a local
@@ -125,12 +132,22 @@ object UmbrellaBridgeModule {
                 appContext = ApplicationContext(context),
                 // Routes KMP logger non-fatals + breadcrumbs into Crashlytics.
                 // iOS wires its equivalent in AppDelegate.swift.
-                crashReporter = FirebaseCrashReporter(),
+                crashReporter = if (BuildConfig.SCENARIO) null else FirebaseCrashReporter(),
                 // PostHog product analytics. The SDK is initialized in MelonApp;
                 // this wrapper forwards typed events through the shared graph.
-                analytics = PostHogAnalytics(),
+                analytics = if (BuildConfig.SCENARIO) NoOpAnalytics else PostHogAnalytics(),
+                logging = LoggingConfig(enableRemote = !BuildConfig.SCENARIO, enableCrashReporting = !BuildConfig.SCENARIO),
+                clock = clock,
             ),
         )
+
+    @Provides
+    @Singleton
+    fun provideClock(): AppClock = if (BuildConfig.SCENARIO) {
+        AppClock(object : Clock {
+            override fun now(): Instant = Instant.parse("2026-10-02T13:00:00Z")
+        }, TimeZone.of("America/Bahia"))
+    } else AppClock()
 
     @Provides fun provideSessionStore(graph: UmbrellaGraph): SessionStore = graph.sessionStore
     @Provides fun provideLogger(graph: UmbrellaGraph): Logger = graph.logger

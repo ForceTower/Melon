@@ -1,5 +1,7 @@
 package dev.forcetower.melon.umbrella
 
+import dev.forcetower.melon.core.common.AppClock
+
 import co.touchlab.kermit.Logger
 import dev.forcetower.melon.core.analytics.Analytics
 import dev.forcetower.melon.core.common.ApplicationContext
@@ -286,6 +288,7 @@ interface UmbrellaGraph {
             @Provides crashReporter: CrashReporter,
             @Provides appContext: ApplicationContext,
             @Provides analytics: Analytics,
+            @Provides clock: AppClock,
         ): UmbrellaGraph
     }
 }
@@ -301,5 +304,6 @@ fun UmbrellaGraph(config: UmbrellaConfig): UmbrellaGraph {
             config.crashReporter ?: NoopCrashReporter,
             config.appContext,
             config.analytics,
+            config.clock,
         )
 }

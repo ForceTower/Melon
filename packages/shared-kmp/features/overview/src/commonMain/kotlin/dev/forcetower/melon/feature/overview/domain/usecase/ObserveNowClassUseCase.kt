@@ -1,5 +1,6 @@
 package dev.forcetower.melon.feature.overview.domain.usecase
 
+import dev.forcetower.melon.core.common.AppClock
 import dev.forcetower.melon.core.common.ForegroundSignal
 import dev.forcetower.melon.core.common.parseHhMm
 import dev.forcetower.melon.core.common.tickerFlow
@@ -28,6 +29,7 @@ import kotlinx.datetime.LocalDateTime
 @OptIn(ExperimentalCoroutinesApi::class)
 @Inject
 class ObserveNowClassUseCase internal constructor(
+    private val clock: AppClock,
     private val semesterDao: SemesterDao,
     private val academicDao: AcademicDao,
     private val foreground: ForegroundSignal,
@@ -37,7 +39,7 @@ class ObserveNowClassUseCase internal constructor(
         // changes or the local day rolls over, not on every ticker beat.
         val keyFlow: Flow<Pair<String, String>?> = combine(
             semesterDao.observeAll(),
-            tickerFlow(30_000, foreground.pulses),
+            tickerFlow(30_000, foreground.pulses, clock),
         ) { semesters, now ->
             val dateIso = now.date.toString()
             pickActiveSemester(semesters, dateIso)?.let { it.id to dateIso }
@@ -48,7 +50,7 @@ class ObserveNowClassUseCase internal constructor(
             combine(
                 academicDao.observeSemesterAllocations(key.first),
                 academicDao.observeTodayLecturesForSemester(key.first, key.second),
-                tickerFlow(30_000, foreground.pulses),
+                tickerFlow(30_000, foreground.pulses, clock),
             ) { allocations, lectures, now -> pickNowClass(allocations, lectures, now) }
                 .distinctUntilChanged()
         }
