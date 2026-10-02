@@ -1,32 +1,11 @@
 name: Android
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - "apps/android/**"
-      - "packages/shared-kmp/**"
-      - "build-logic/**"
-      - "gradle/**"
-      - "settings.gradle.kts"
-      - "build.gradle.kts"
-      - "gradle.properties"
-      - ".github/workflows/android.yml"
-  pull_request:
-    paths:
-      - "apps/android/**"
-      - "packages/shared-kmp/**"
-      - "build-logic/**"
-      - "gradle/**"
-      - "settings.gradle.kts"
-      - "build.gradle.kts"
-      - "gradle.properties"
-      - ".github/workflows/android.yml"
+  workflow_call:
   workflow_dispatch:
 
-concurrency:
-  group: android-${{ github.ref }}
-  cancel-in-progress: true
+permissions:
+  contents: read
 
 jobs:
   build:
@@ -35,6 +14,10 @@ jobs:
     timeout-minutes: 40
     steps:
       - uses: actions/checkout@v7
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "1.3.12"
 
       - name: Set up JDK 21
         uses: actions/setup-java@v4
@@ -45,22 +28,63 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      # Never `build`/`check`: they pull in the KMP iOS targets, which can't compile on Linux.
-      - name: Assemble release + run unit tests
-        run: >-
-          ./gradlew
-          :apps:android:app:assembleRelease
-          testDebugUnitTest
-          jvmTest
-          --stacktrace
+      - name: Android and JVM verification
+        run: bun run android:check
 
-      - name: Android Lint
-        run: ./gradlew lintDebug --stacktrace
-
-      - name: Upload lint reports
+      - name: Upload test and lint evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: lint-reports
-          path: "**/build/reports/lint-results-*.html"
-          if-no-files-found: ignore
+          name: android-test-and-lint-reports
+          retention-days: 14
+          path: |
+            **/build/reports/tests/**
+            **/build/test-results/**
+            **/build/reports/lint-results-*
+          if-no-files-found: warn
+
+  smoke:
+    name: Synthetic account emulator journey
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v7
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "1.3.12"
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Enable emulator acceleration
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Run installed app with hermetic fixtures
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 36
+          arch: x86_64
+          profile: pixel_6
+          disable-animations: true
+          script: |
+            bun run android:scenario home.populated --serial emulator-5554
+            bun run android:scenario home.populated --serial emulator-5554 --no-build --render
+            bun run android:scenario auth.invalid-credentials --serial emulator-5554 --no-build
+            bun run android:scenario sync.unavailable --serial emulator-5554 --no-build
+            bun run android:scenario home.offline-with-cache --serial emulator-5554 --no-build
+            bun run android:scenario auth.session-expired --serial emulator-5554 --no-build
+            bun run android:scenario messages.empty --serial emulator-5554 --no-build
+      - name: Upload journey evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-scenario-evidence
+          retention-days: 14
+          path: |
+            artifacts/android/**
+            apps/android/app/build/reports/androidTests/**
+            apps/android/app/build/outputs/androidTest-results/**
+          if-no-files-found: warn
