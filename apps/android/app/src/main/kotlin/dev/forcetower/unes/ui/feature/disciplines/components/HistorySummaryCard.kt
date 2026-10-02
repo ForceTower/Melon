@@ -123,7 +123,6 @@ private fun ProgramChips(
                     )
                 },
                 colors = FilterChipDefaults.filterChipColors(
-                    containerColor = Color.Transparent,
                     labelColor = MaterialTheme.colorScheme.onSurfaceVariant,
                     selectedContainerColor = MaterialTheme.colorScheme.primary,
                     selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
