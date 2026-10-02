@@ -10,6 +10,7 @@ kotlinx-serialization = "1.11.0"
 kotlinx-datetime = "0.8.0"
 kermit = "2.2.0"
 ktlint = "1.8.0"
+mockk = "1.14.11"
 
 # Android
 agp = "9.4.0"
@@ -48,6 +49,7 @@ android-espresso = "3.7.0"
 android-uiautomator = "2.3.0"
 
 [libraries]
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 androidx-test-runner = { module = "androidx.test:runner", version.ref = "android-test" }
 androidx-test-rules = { module = "androidx.test:rules", version.ref = "android-test" }
 androidx-test-junit = { module = "androidx.test.ext:junit", version.ref = "android-test-junit" }

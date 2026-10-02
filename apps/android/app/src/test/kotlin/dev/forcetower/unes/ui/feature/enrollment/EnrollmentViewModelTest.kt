@@ -12,9 +12,17 @@ import dev.forcetower.melon.feature.enrollment.domain.model.EnrollmentSlot
 import dev.forcetower.melon.feature.enrollment.domain.model.EnrollmentWindow
 import dev.forcetower.melon.feature.enrollment.domain.model.EnrollmentWindowState
 import dev.forcetower.melon.feature.enrollment.domain.repository.EnrollmentError
+import dev.forcetower.melon.feature.enrollment.domain.usecase.GetEnrollmentOffersUseCase
+import dev.forcetower.melon.feature.enrollment.domain.usecase.GetEnrollmentWindowUseCase
+import dev.forcetower.melon.feature.enrollment.domain.usecase.SubmitEnrollmentUseCase
+import dev.forcetower.melon.feature.me.domain.usecase.ObserveMeProfileUseCase
 import dev.forcetower.unes.ui.feature.enrollment.EnrollmentTestFixtures.discipline
 import dev.forcetower.unes.ui.feature.enrollment.EnrollmentTestFixtures.section
 import dev.forcetower.unes.ui.feature.enrollment.EnrollmentTestFixtures.window
+import io.mockk.coEvery
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.unmockkAll
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -44,6 +52,7 @@ internal class EnrollmentViewModelTest {
 
     @AfterTest
     fun tearDown() {
+        unmockkAll()
         Dispatchers.resetMain()
     }
 
@@ -162,14 +171,24 @@ internal class EnrollmentViewModelTest {
         window: EnrollmentWindow = window(),
         clock: Clock = MutableClock(Instant.parse("2026-10-02T12:00:00Z")),
         submit: suspend (List<EnrollmentSelection>) -> Outcome<Unit, EnrollmentError> = { Outcome.Ok(Unit) },
-    ) = EnrollmentViewModel(
-        getWindow = { Outcome.Ok(EnrollmentAvailability(true, window)) },
-        getOffers = { Outcome.Ok(EnrollmentOffers(catalogue)) },
-        submitEnrollment = submit,
-        analytics = NoOpAnalytics,
-        profile = emptyFlow(),
-        appClock = AppClock(clock),
-    )
+    ): EnrollmentViewModel {
+        val getWindow = mockk<GetEnrollmentWindowUseCase>()
+        val getOffers = mockk<GetEnrollmentOffersUseCase>()
+        val submitEnrollment = mockk<SubmitEnrollmentUseCase>()
+        val observeMeProfile = mockk<ObserveMeProfileUseCase>()
+        coEvery { getWindow() } returns Outcome.Ok(EnrollmentAvailability(true, window))
+        coEvery { getOffers() } returns Outcome.Ok(EnrollmentOffers(catalogue))
+        coEvery { submitEnrollment(any()) } coAnswers { submit(firstArg()) }
+        every { observeMeProfile() } returns emptyFlow()
+        return EnrollmentViewModel(
+            getWindow = getWindow,
+            getOffers = getOffers,
+            submitEnrollment = submitEnrollment,
+            analytics = NoOpAnalytics,
+            observeMeProfile = observeMeProfile,
+            appClock = AppClock(clock),
+        )
+    }
 }
 
 private class MutableClock(

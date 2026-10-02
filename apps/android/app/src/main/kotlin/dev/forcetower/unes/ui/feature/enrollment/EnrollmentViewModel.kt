@@ -6,20 +6,14 @@ import dev.forcetower.melon.core.analytics.Analytics
 import dev.forcetower.melon.core.analytics.ContentTypes
 import dev.forcetower.melon.core.common.AppClock
 import dev.forcetower.melon.core.common.Outcome
-import dev.forcetower.melon.feature.enrollment.domain.model.EnrollmentAvailability
-import dev.forcetower.melon.feature.enrollment.domain.model.EnrollmentOffers
-import dev.forcetower.melon.feature.enrollment.domain.model.EnrollmentSelection
 import dev.forcetower.melon.feature.enrollment.domain.model.EnrollmentWindowState
-import dev.forcetower.melon.feature.enrollment.domain.repository.EnrollmentError
 import dev.forcetower.melon.feature.enrollment.domain.usecase.GetEnrollmentOffersUseCase
 import dev.forcetower.melon.feature.enrollment.domain.usecase.GetEnrollmentWindowUseCase
 import dev.forcetower.melon.feature.enrollment.domain.usecase.SubmitEnrollmentUseCase
-import dev.forcetower.melon.feature.me.domain.model.MeProfile
 import dev.forcetower.melon.feature.me.domain.usecase.ObserveMeProfileUseCase
 import dev.forcetower.unes.mvi.MviViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 // One activity-scoped ViewModel for the whole matrícula stack (status →
@@ -28,24 +22,14 @@ import kotlinx.coroutines.launch
 // session (picks + catalogue) survives pushes without serialized payloads.
 // Data is live/uncached: vacancy counts shift by the second during a window.
 @HiltViewModel
-internal class EnrollmentViewModel(
-    private val getWindow: suspend () -> Outcome<EnrollmentAvailability, EnrollmentError>,
-    private val getOffers: suspend () -> Outcome<EnrollmentOffers, EnrollmentError>,
-    private val submitEnrollment: suspend (List<EnrollmentSelection>) -> Outcome<Unit, EnrollmentError>,
+internal class EnrollmentViewModel @Inject constructor(
+    private val getWindow: GetEnrollmentWindowUseCase,
+    private val getOffers: GetEnrollmentOffersUseCase,
+    private val submitEnrollment: SubmitEnrollmentUseCase,
     private val analytics: Analytics,
-    profile: Flow<MeProfile>,
+    observeMeProfile: ObserveMeProfileUseCase,
     private val appClock: AppClock,
 ) : MviViewModel<EnrollmentUiState, EnrollmentIntent, EnrollmentEffect>(EnrollmentUiState()) {
-
-    @Inject
-    constructor(
-        getWindow: GetEnrollmentWindowUseCase,
-        getOffers: GetEnrollmentOffersUseCase,
-        submitEnrollment: SubmitEnrollmentUseCase,
-        analytics: Analytics,
-        observeMeProfile: ObserveMeProfileUseCase,
-        appClock: AppClock,
-    ) : this(getWindow::invoke, getOffers::invoke, submitEnrollment::invoke, analytics, observeMeProfile(), appClock)
 
     private var loadJob: Job? = null
     private var submitJob: Job? = null
@@ -53,7 +37,7 @@ internal class EnrollmentViewModel(
     init {
         // Identity strip garnish on the status header; failures are ignored.
         viewModelScope.launch {
-            profile.collect { profile ->
+            observeMeProfile().collect { profile ->
                 setState {
                     copy(
                         studentName = profile.identity.userName.ifBlank { profile.identity.firstName },
