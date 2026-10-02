@@ -1,35 +1,30 @@
 name: iOS
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - "apps/ios/**"
-      - ".github/workflows/ios.yml"
-  pull_request:
-    paths:
-      - "apps/ios/**"
-      - ".github/workflows/ios.yml"
+  workflow_call:
   workflow_dispatch:
 
-concurrency:
-  group: ios-${{ github.ref }}
-  cancel-in-progress: true
+permissions:
+  contents: read
 
 jobs:
   build-app:
-    name: Build app (UNES)
+    name: App, intents, and scenario journeys
     # Siri entity schemas and onscreen annotations require the Xcode 27 SDKs.
     runs-on: xcode-27
-    timeout-minutes: 40
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v7
+
+      - uses: jdx/mise-action@v3
+        with:
+          install_args: bun
 
       - name: Select Xcode
         uses: maxim-lobanov/setup-xcode@v1
         with:
           # Return to latest after Xcode 27.2 leaves beta.
-          xcode-version: '27.1'
+          xcode-version: "27.1"
 
       - name: Show toolchain
         run: xcodebuild -version && swift --version
@@ -44,33 +39,36 @@ jobs:
           restore-keys: swiftpm-${{ runner.os }}-
 
       - name: Build for iOS Simulator
-        working-directory: apps/ios
-        run: |
-          set -o pipefail
-          xcodebuild build \
-            -project UNES.xcodeproj \
-            -scheme UNES \
-            -configuration Debug \
-            -destination 'generic/platform=iOS Simulator' \
-            -derivedDataPath .derivedData \
-            -skipMacroValidation \
-            -skipPackagePluginValidation \
-            CODE_SIGNING_ALLOWED=NO \
-            CODE_SIGNING_REQUIRED=NO \
-            -quiet
+        run: bash apps/ios/verify.sh app
+
+      - name: Run intents and hermetic UI journeys
+        run: bash apps/ios/verify.sh ui
+
+      - name: Upload app test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-app-evidence
+          path: artifacts/ios/
+          if-no-files-found: warn
+          retention-days: 14
 
   test-kit:
-    name: Test UNESKit
+    name: UNESKit and shared contracts
     runs-on: xcode-27
     timeout-minutes: 40
     steps:
       - uses: actions/checkout@v7
 
+      - uses: jdx/mise-action@v3
+        with:
+          install_args: bun
+
       - name: Select Xcode
         uses: maxim-lobanov/setup-xcode@v1
         with:
           # Return to latest after Xcode 27.2 leaves beta.
-          xcode-version: '27.1'
+          xcode-version: "27.1"
 
       - name: Show toolchain
         run: xcodebuild -version && swift --version
@@ -87,13 +85,13 @@ jobs:
       # iOS Simulator, not macOS: UNESKit has iOS-only SwiftUI (navigationBar*) that won't build for macOS.
       # Pin pt-BR: alert-copy assertions expect the app's primary language, not the sim default (en).
       - name: Run UNESKit tests
-        working-directory: apps/ios/UNESKit
-        run: |
-          set -o pipefail
-          xcodebuild test \
-            -scheme UNESKit \
-            -destination 'platform=iOS Simulator,name=iPhone 17,OS=latest' \
-            -testLanguage pt-BR \
-            -testRegion BR \
-            -skipMacroValidation \
-            -skipPackagePluginValidation
+        run: bash apps/ios/verify.sh kit
+
+      - name: Upload package test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-kit-evidence
+          path: artifacts/ios/
+          if-no-files-found: warn
+          retention-days: 14

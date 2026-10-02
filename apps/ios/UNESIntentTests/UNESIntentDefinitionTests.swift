@@ -5,6 +5,7 @@ import XCTest
 /// the way Siri and Shortcuts do, and asserts what the app declares and
 /// returns. No doubles: data comes from the app's own mirror, so the
 /// data-dependent checks skip on a signed-out simulator.
+@MainActor
 final class UNESIntentDefinitionTests: XCTestCase {
     private let definitions = IntentDefinitions(bundleIdentifier: "dev.forcetower.unes.ios")
 
@@ -14,7 +15,9 @@ final class UNESIntentDefinitionTests: XCTestCase {
     override func setUpWithError() throws {
         try super.setUpWithError()
         continueAfterFailure = false
-        XCUIApplication().launch()
+        let app = XCUIApplication()
+        app.launchEnvironment["MELON_SCENARIO"] = "auth.login"
+        app.launch()
     }
 
     private static let intentNames = [
@@ -42,28 +45,42 @@ final class UNESIntentDefinitionTests: XCTestCase {
     /// Signed out they answer the sign-in dialog, signed in the schedule;
     /// either way `perform()` completes without throwing.
     func testScheduleIntentsAnswer() async throws {
-        _ = try await definitions.intents["NextClassIntent"].makeIntent().run()
-        _ = try await definitions.intents["TodayScheduleIntent"].makeIntent().run()
+        try await withSupportedRuntime {
+            _ = try await definitions.intents["NextClassIntent"].makeIntent().run()
+            _ = try await definitions.intents["TodayScheduleIntent"].makeIntent().run()
+        }
     }
 
     func testDisciplineQueriesResolve() async throws {
-        let discipline = definitions.entities["DisciplineEntity"]
-        let suggested = try await discipline.suggestedEntities()
-        let matching = try await discipline.entities(matching: "zzz-no-such-discipline")
-        XCTAssertTrue(matching.isEmpty)
-        try XCTSkipIf(suggested.isEmpty, "Needs a signed-in simulator with a mirrored semester.")
-        // A discipline the picker offers must also resolve by name.
-        let title: String = try suggested[0].title
-        let found = try await discipline.entities(matching: title)
-        XCTAssertFalse(found.isEmpty)
+        try await withSupportedRuntime {
+            let discipline = definitions.entities["DisciplineEntity"]
+            let suggested = try await discipline.suggestedEntities()
+            let matching = try await discipline.entities(matching: "zzz-no-such-discipline")
+            XCTAssertTrue(matching.isEmpty)
+            try XCTSkipIf(suggested.isEmpty, "Needs a signed-in simulator with a mirrored semester.")
+            // A discipline the picker offers must also resolve by name.
+            let title: String = try suggested[0].title
+            let found = try await discipline.entities(matching: title)
+            XCTAssertFalse(found.isEmpty)
+        }
     }
 
     /// The first automated answer to "is it really in the index".
     func testSpotlightHoldsTheSuggestedDisciplines() async throws {
-        let discipline = definitions.entities["DisciplineEntity"]
-        let suggested = try await discipline.suggestedEntities()
-        try XCTSkipIf(suggested.isEmpty, "Needs a signed-in simulator with a mirrored semester.")
-        let indexed = try await discipline.spotlightQuery()
-        XCTAssertGreaterThanOrEqual(indexed.count, suggested.count)
+        try await withSupportedRuntime {
+            let discipline = definitions.entities["DisciplineEntity"]
+            let suggested = try await discipline.suggestedEntities()
+            try XCTSkipIf(suggested.isEmpty, "Needs a signed-in simulator with a mirrored semester.")
+            let indexed = try await discipline.spotlightQuery()
+            XCTAssertGreaterThanOrEqual(indexed.count, suggested.count)
+        }
+    }
+
+    private func withSupportedRuntime(_ operation: @MainActor () async throws -> Void) async throws {
+        do {
+            try await operation()
+        } catch let error as NSError where error.domain == "AppIntentsServicesSecurityErrorDomain" && error.code == 803 {
+            throw XCTSkip("This Apple runtime rejects AppIntentsTesting execution on Customer builds (803). Declaration tests still run.")
+        }
     }
 }

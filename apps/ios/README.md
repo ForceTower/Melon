@@ -3,7 +3,7 @@
 The redesigned, **fully native** iOS app built with [The Composable Architecture](https://github.com/pointfreeco/swift-composable-architecture)
 and the **Swift 6 language mode with complete strict concurrency**. This replaces
 the KMP-backed `apps/ios` — the data layer is reimplemented in Swift against
-`apps/api` so every native integration (Widgets, Live Activities, Siri / App
+the separate `unes-backrooms` backend so every native integration (Widgets, Live Activities, Siri / App
 Intents, notifications) can link plain Swift instead of a shared XCFramework.
 
 ## Architecture
@@ -19,11 +19,11 @@ apps/ios/
         Models/          domain models (Profile, …) — what reducers and views speak
         Repositories/    repository interfaces as TCA dependency clients (+ test/preview values)
       Data/              implements the Domain interfaces
-        DTO/             Codable wire models (mirror packages/shared-types) + mapping to domain
+        DTO/             Codable wire models (backend contracts) + mapping to domain
         Network/         APIClient (URLSession data source) + APIError
         Database/        GRDB SQLite mirror — schema (AppDatabase), records, SemesterSnapshot + mappings, MirrorStore
         Repositories/    live repository values (liveValue) — HTTP + mirror + DTO→domain mapping
-      Logging/           Log facade (Log.scoped) — OSLog locally + batched shipping to apps/api /api/logs → OTel
+      Logging/           Log facade (Log.scoped) — OSLog locally + batched shipping to the backend /api/logs → OTel
       Features/          UI — one folder per tab: <Feature>Feature.swift (@Reducer) + <Feature>View.swift
       App/               AppFeature (root @Reducer) + AppView (tab shell) + RootView (public entry)
       Components/        shared, design-agnostic views
@@ -58,6 +58,9 @@ and sidesteps a `@Reducer` + default-MainActor compiler issue. The app shell kee
 complete concurrency.
 
 ## Build & test
+
+See [the iOS verification guide](../../docs/ios-testing.md) for the shared contract,
+hermetic UI journey, accessibility checks, and CI artifact commands.
 
 Xcode 27 or newer is required for the Siri entity schemas and onscreen
 annotations. CI uses the `xcode-27` runner, including prerelease toolchains.

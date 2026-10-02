@@ -186,6 +186,7 @@ struct MessagesView: View {
     private var emptyState: some View {
         VStack(spacing: 8) {
             Text(.homeMessagesEmpty)
+                .accessibilityIdentifier("messages.empty")
                 .font(.system(size: 17, weight: .semibold))
                 .tracking(-0.34)
                 .foregroundStyle(UNESColor.ink)

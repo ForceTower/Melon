@@ -26,6 +26,9 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
     ) -> Bool {
         log.info("app launching preview=\(isPreview)")
         guard !isPreview else { return true }
+        #if DEBUG
+        guard !DevelopmentScenario.isEnabled else { return true }
+        #endif
 
         // Before any scene task reads dependencies — the indexer's entity
         // types live in this target, so the package can't install it itself.

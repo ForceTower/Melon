@@ -124,6 +124,7 @@ struct ReadyView: View {
             UNESButtonLabel(text: .onboardingReadyEnter)
         }
         .buttonStyle(.unesDark)
+        .accessibilityIdentifier("sync.enter")
         .padding(.horizontal, 20)
         .padding(.top, 8)
         .padding(.bottom, 12)
