@@ -1,0 +1,120 @@
+{
+  "version": 1,
+  "origin": "Hand-authored synthetic enrollment; no production records, credentials, or private integration details.",
+  "clock": "2026-10-02T13:00:00Z",
+  "timezone": "America/Bahia",
+  "window": {
+    "available": true,
+    "window": {
+      "semester": "2026.2",
+      "state": "OPEN",
+      "startDate": "2026-10-01T00:00:00-03:00",
+      "endDate": "2026-10-10T23:59:00-03:00",
+      "minHours": 60,
+      "maxHours": 120,
+      "useQueue": true,
+      "courseId": 1
+    }
+  },
+  "offers": {
+    "disciplines": [
+      {
+        "id": 201,
+        "code": "DEMO201",
+        "name": "Algoritmos de Exemplo",
+        "workload": 60,
+        "mandatory": true,
+        "gradePeriod": 2,
+        "suggestion": true,
+        "prereqs": [],
+        "sections": [
+          {
+            "id": 2011,
+            "label": "T01",
+            "coursePreferential": true,
+            "suggestion": true,
+            "vacancies": 20,
+            "proposalsCount": 10,
+            "allowsOtherDefault": true,
+            "waitlistCount": 0,
+            "selected": true,
+            "meetings": [
+              {
+                "kind": "T",
+                "shift": "MORNING",
+                "professors": ["Docente Exemplo"],
+                "room": "Módulo Exemplo 101",
+                "slots": [{ "day": 1, "start": "08:00", "end": "10:00" }]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 202,
+        "code": "DEMO202",
+        "name": "Estruturas de Exemplo",
+        "workload": 60,
+        "mandatory": true,
+        "gradePeriod": 2,
+        "suggestion": false,
+        "prereqs": [],
+        "sections": [
+          {
+            "id": 2021,
+            "label": "T01",
+            "coursePreferential": true,
+            "suggestion": false,
+            "vacancies": 20,
+            "proposalsCount": 10,
+            "allowsOtherDefault": false,
+            "waitlistCount": 0,
+            "selected": false,
+            "meetings": [
+              {
+                "kind": "T",
+                "shift": "MORNING",
+                "professors": ["Docente Exemplo"],
+                "room": "Módulo Exemplo 101",
+                "slots": [{ "day": 1, "start": "09:00", "end": "11:00" }]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 203,
+        "code": "DEMO203",
+        "name": "Redes de Exemplo",
+        "workload": 60,
+        "mandatory": true,
+        "gradePeriod": 2,
+        "suggestion": false,
+        "prereqs": [{ "code": "DEMO101", "name": "Fundamentos de Exemplo", "met": true }],
+        "sections": [
+          {
+            "id": 2031,
+            "label": "T01",
+            "coursePreferential": true,
+            "suggestion": false,
+            "vacancies": 0,
+            "proposalsCount": 20,
+            "allowsOtherDefault": false,
+            "waitlistCount": 4,
+            "selected": false,
+            "meetings": [
+              {
+                "kind": "T",
+                "shift": "MORNING",
+                "professors": ["Docente Exemplo"],
+                "room": "Módulo Exemplo 101",
+                "slots": [{ "day": 2, "start": "10:00", "end": "12:00" }]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "submission": { "selections": [{ "sectionId": 2031, "allowsOther": false, "waitlist": true }] }
+}
