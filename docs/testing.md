@@ -60,6 +60,12 @@ skipped. It rejects failures, cancellations, missing results and skipped lanes
 that were selected. Its selection and gate logic have tests, including negative
 cases. The job summary records selected platforms and final lane results.
 
+On pushes to `main`, a passing **Required verification** hands the selected iOS and
+Android lanes to the `Distribute` workflow, which uploads them to TestFlight and the
+Play internal track; see [internal distribution](distribution.md). A newer push
+cancels superseded PR runs but queues behind a running `main` run, so uploads are
+never interrupted.
+
 On October 2, 2026, `main` protection was configured to require **Required
 verification** from the GitHub Actions app (ID `15368`). Strict checking requires
 the branch to be current with `main`; administrators are included. Existing

@@ -11,7 +11,8 @@ permissions:
 
 concurrency:
   group: verify-${{ github.ref }}
-  cancel-in-progress: true
+  # A newer push to main must not abort a store upload that is already running.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   changes:
@@ -93,3 +94,14 @@ jobs:
           IOS_RESULT: ${{ needs.ios.result }}
           LANDING_RESULT: ${{ needs.landing.result }}
         run: bun run scripts/ci-required.ts
+
+  distribute:
+    name: Internal distribution
+    needs: [changes, required]
+    if: >-
+      github.event_name == 'push' &&
+      (needs.changes.outputs.ios == 'true' || needs.changes.outputs.android == 'true')
+    uses: ./.github/workflows/distribute.yml
+    with:
+      ios: ${{ needs.changes.outputs.ios == 'true' }}
+      android: ${{ needs.changes.outputs.android == 'true' }}

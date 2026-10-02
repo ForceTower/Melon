@@ -26,6 +26,9 @@
   Never disable `max-line-length`: that also turns off line-length-aware wrapping in
   every other rule.
 - Native iOS is a standard Xcode project (`apps/ios`).
+- `fastlane` (Ruby from `.mise.toml`, gems via `bundle install`) handles store signing and
+  uploads only; see `docs/distribution.md`. Keep the Xcode project on automatic signing —
+  CI applies fastlane match signing itself.
 
 ## Monorepo Structure
 
