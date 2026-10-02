@@ -43,7 +43,7 @@ jobs:
           # Build numbers are the commit count, which needs the full history.
           fetch-depth: 0
 
-      - uses: jdx/mise-action@v3
+      - uses: jdx/mise-action@v5
         with:
           install_args: ruby
 
@@ -54,7 +54,7 @@ jobs:
           xcode-version: latest-stable
 
       - name: Cache SwiftPM
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: |
             ~/Library/Caches/org.swift.swiftpm
@@ -63,7 +63,7 @@ jobs:
           restore-keys: swiftpm-${{ runner.os }}-
 
       - name: Cache gems
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: vendor/bundle
           key: gems-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'Gemfile.lock') }}
@@ -81,7 +81,7 @@ jobs:
 
       - name: Upload build logs
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: testflight-logs
           path: ~/Library/Logs/gym
@@ -104,19 +104,19 @@ jobs:
           fetch-depth: 0
 
       - name: Set up JDK 21
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: "21"
 
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v5
 
-      - uses: jdx/mise-action@v3
+      - uses: jdx/mise-action@v5
         with:
           install_args: ruby
 
       - name: Cache gems
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: vendor/bundle
           key: gems-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'Gemfile.lock') }}
