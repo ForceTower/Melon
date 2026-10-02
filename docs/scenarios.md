@@ -24,6 +24,8 @@ profile and ready projections. Analytics, crash reporting, remote logging,
 remote configuration, push registration, reminders and store prompts are disabled
 in the scenario build; normal release builds cannot select the scenario mode.
 Scenario feature gates use their false defaults instead of debug's all-on policy.
+The enrollment journeys explicitly enable only the enrollment gate through an
+override guarded by the isolated build flag; ordinary builds cannot activate it.
 
 | ID | Assertion / transition |
 | --- | --- |
@@ -34,6 +36,20 @@ Scenario feature gates use their false defaults instead of debug's all-on policy
 | `home.offline-with-cache` | A forced refresh reaches the unavailable server; the saved class remains visible. |
 | `auth.session-expired` | Rejected refresh shows the session banner while keeping cached content. |
 | `messages.empty` | A successful empty inbox is shown without a network error. |
+| `enrollment.schedule-conflict` | Conflicting saved selections disable submission and produce no submit request. |
+| `enrollment.under-minimum` | Below-minimum workload disables submission and produces no submit request. |
+| `enrollment.over-maximum` | Above-maximum workload disables submission and produces no submit request. |
+| `enrollment.deadline-expired` | A stale OPEN window cannot permit submission after the deadline. |
+| `enrollment.submit-retry` | Select a full waitlisted section with a prerequisite warning, remove the previous selection, and recover from failed submission without changing the complete desired set. |
+
+Enrollment uses the additional shared provider example `contracts/v1/enrollment.json`.
+The mock records attempted and accepted selections separately. Its named variants
+change constraints, selected sections or prerequisite metadata, preserving the
+same synthetic people. Prerequisites remain informational; the unmet prerequisite
+variant deliberately exercises the supported client warning shape even though
+the current provider marks returned prerequisites as met. Deadline variants keep
+OPEN to reproduce a stale response. Exact deadline equality is accepted, and an
+OPEN window is not rejected merely because its published start is in the future.
 
 `artifacts/android/<id>/index.html` links the latest immutable run directory with screenshots, hierarchy, Compose semantics,
 instrumentation assertions, available app logcat, mock request counts, device,

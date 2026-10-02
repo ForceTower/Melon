@@ -60,14 +60,22 @@ skipped. It rejects failures, cancellations, missing results and skipped lanes
 that were selected. Its selection and gate logic have tests, including negative
 cases. The job summary records selected platforms and final lane results.
 
-After the workflow is merged and has produced a run, the repository maintainer
-must select **Required verification** as a required status check in the relevant
-ruleset/branch protection. Adding workflow source does not activate that setting.
-The existing iOS `xcode-27` runner label also needs an available runner; changing
-these files cannot provision or verify one. No remote repository settings are
-changed by this implementation.
+On October 2, 2026, `main` protection was configured to require **Required
+verification** from the GitHub Actions app (ID `15368`). Strict checking requires
+the branch to be current with `main`; administrators are included. Existing
+signature, linear-history, force-push and deletion settings were preserved.
+This follows successful remote runs of every selected lane, including native
+iOS on the existing `xcode-27` runner. The setting is repository configuration,
+not something a workflow file activates by itself.
 
-Android CI uploads HTML unit-test and lint reports plus XML test results, even
+Inspect the active requirement with:
+
+```sh
+gh api repos/ForceTower/Melon/branches/main/protection/required_status_checks
+gh api repos/ForceTower/Melon/branches/main/protection/enforce_admins
+```
+
+Android CI uploads HTML unit-test and lint reports, ktlint checkstyle, and XML test results, even
 after failure, with 14-day retention. The emulator lane uploads screenshots,
 hierarchy/log evidence and instrumentation results. Native iOS uploads its test
 results through its reusable workflow. Failed setup can leave no reports; an
@@ -75,7 +83,10 @@ artifact warning is not a successful test result.
 
 The emulator lane runs synthetic Home startup, Home rendering/accessibility,
 invalid credentials with retry, failed initial sync with retry, cached offline
-Home, expired-session recovery UI and the empty inbox. It builds the scenario
+Home, expired-session recovery UI and the empty inbox. Enrollment journeys cover
+conflicts, minimum/maximum hours, expired deadlines, and a failed submission
+followed by a successful full-proposal replacement with waitlist/prerequisite
+warning behavior. It builds the scenario
 app once and reuses that APK while clearing its isolated state between journeys.
 
 Repository tooling/mock tests also emit JUnit XML at

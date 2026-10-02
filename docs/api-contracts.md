@@ -13,6 +13,14 @@ to public wire shapes should update both copies and both pipelines in one task.
 Provider checks are maintained in the private repository and do not require
 credentials or a real university account.
 
+`contracts/v1/enrollment.json` adds the live window, offers and complete desired
+submission set. Provider tests exercise actual serializers and the service's
+open/publish/close sequence, omission of removed sections, waitlist/toggle mapping,
+error handling and audit records using synthetic dependencies. KMP decodes the
+same example and tests the real repository's HTTP body and error mapping. The
+mock's named variants alter constraints or metadata to reproduce client failures;
+they do not claim those invalid proposals are safe to submit to the real portal.
+
 Keep nullable fields distinct from missing required fields. Opaque IDs remain
 strings, platform numeric IDs retain 64-bit capacity, and schedule weekdays stay
 Sunday=0 through Saturday=6. Date-only semester boundaries differ from timestamped
