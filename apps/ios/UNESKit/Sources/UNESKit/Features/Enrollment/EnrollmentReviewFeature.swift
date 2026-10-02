@@ -8,6 +8,7 @@ struct EnrollmentReviewFeature {
     @ObservableState
     struct State: Equatable {
         @Shared(.enrollmentSession) var session
+        var referenceDate = Date.distantPast
         var isSubmitting = false
         @Presents var alert: AlertState<Never>?
 
@@ -21,8 +22,12 @@ struct EnrollmentReviewFeature {
             session.isReadonly
         }
 
+        var blockers: [EnrollmentBlocker] {
+            session.blockers(at: referenceDate)
+        }
+
         var canSubmit: Bool {
-            session.blockers.isEmpty && session.canEdit
+            blockers.isEmpty && session.canEdit
         }
     }
 
@@ -48,6 +53,7 @@ struct EnrollmentReviewFeature {
     @Dependency(\.enrollmentRepository) var enrollmentRepository
     @Dependency(\.dismiss) var dismiss
     @Dependency(\.analytics) var analytics
+    @Dependency(\.date.now) var now
 
     private let log = Log.scoped("EnrollmentReviewFeature")
 
@@ -57,6 +63,7 @@ struct EnrollmentReviewFeature {
         Reduce { state, action in
             switch action {
             case .task:
+                state.referenceDate = now
                 analytics.screen(Screens.enrollmentReview)
                 return .none
 
@@ -88,7 +95,9 @@ struct EnrollmentReviewFeature {
                 return .run { _ in await dismiss() }
 
             case .submitTapped:
-                guard state.canSubmit, !state.isSubmitting else { return .none }
+                guard !state.isSubmitting else { return .none }
+                state.referenceDate = now
+                guard state.canSubmit else { return .none }
                 state.isSubmitting = true
                 log.info("enrollment submit tapped picks=\(state.session.selections.count)")
                 return .run { [selections = state.session.selections, log] send in

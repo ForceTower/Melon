@@ -4,15 +4,22 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.forcetower.melon.core.analytics.Analytics
 import dev.forcetower.melon.core.analytics.ContentTypes
+import dev.forcetower.melon.core.common.AppClock
 import dev.forcetower.melon.core.common.Outcome
+import dev.forcetower.melon.feature.enrollment.domain.model.EnrollmentAvailability
+import dev.forcetower.melon.feature.enrollment.domain.model.EnrollmentOffers
+import dev.forcetower.melon.feature.enrollment.domain.model.EnrollmentSelection
 import dev.forcetower.melon.feature.enrollment.domain.model.EnrollmentWindowState
+import dev.forcetower.melon.feature.enrollment.domain.repository.EnrollmentError
 import dev.forcetower.melon.feature.enrollment.domain.usecase.GetEnrollmentOffersUseCase
 import dev.forcetower.melon.feature.enrollment.domain.usecase.GetEnrollmentWindowUseCase
 import dev.forcetower.melon.feature.enrollment.domain.usecase.SubmitEnrollmentUseCase
+import dev.forcetower.melon.feature.me.domain.model.MeProfile
 import dev.forcetower.melon.feature.me.domain.usecase.ObserveMeProfileUseCase
 import dev.forcetower.unes.mvi.MviViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 // One activity-scoped ViewModel for the whole matrícula stack (status →
@@ -21,13 +28,24 @@ import kotlinx.coroutines.launch
 // session (picks + catalogue) survives pushes without serialized payloads.
 // Data is live/uncached: vacancy counts shift by the second during a window.
 @HiltViewModel
-internal class EnrollmentViewModel @Inject constructor(
-    private val getWindow: GetEnrollmentWindowUseCase,
-    private val getOffers: GetEnrollmentOffersUseCase,
-    private val submitEnrollment: SubmitEnrollmentUseCase,
+internal class EnrollmentViewModel(
+    private val getWindow: suspend () -> Outcome<EnrollmentAvailability, EnrollmentError>,
+    private val getOffers: suspend () -> Outcome<EnrollmentOffers, EnrollmentError>,
+    private val submitEnrollment: suspend (List<EnrollmentSelection>) -> Outcome<Unit, EnrollmentError>,
     private val analytics: Analytics,
-    observeMeProfile: ObserveMeProfileUseCase,
+    profile: Flow<MeProfile>,
+    private val appClock: AppClock,
 ) : MviViewModel<EnrollmentUiState, EnrollmentIntent, EnrollmentEffect>(EnrollmentUiState()) {
+
+    @Inject
+    constructor(
+        getWindow: GetEnrollmentWindowUseCase,
+        getOffers: GetEnrollmentOffersUseCase,
+        submitEnrollment: SubmitEnrollmentUseCase,
+        analytics: Analytics,
+        observeMeProfile: ObserveMeProfileUseCase,
+        appClock: AppClock,
+    ) : this(getWindow::invoke, getOffers::invoke, submitEnrollment::invoke, analytics, observeMeProfile(), appClock)
 
     private var loadJob: Job? = null
     private var submitJob: Job? = null
@@ -35,7 +53,7 @@ internal class EnrollmentViewModel @Inject constructor(
     init {
         // Identity strip garnish on the status header; failures are ignored.
         viewModelScope.launch {
-            observeMeProfile().collect { profile ->
+            profile.collect { profile ->
                 setState {
                     copy(
                         studentName = profile.identity.userName.ifBlank { profile.identity.firstName },
@@ -85,7 +103,7 @@ internal class EnrollmentViewModel @Inject constructor(
     }
 
     private fun enter() {
-        setState { copy(referenceNowMillis = System.currentTimeMillis()) }
+        setState { copy(referenceNowMillis = appClock.now().toEpochMilliseconds()) }
         when (currentState.phase) {
             EnrollmentPhase.Loading -> Unit
             EnrollmentPhase.Idle, EnrollmentPhase.Failed -> load(initial = true)
@@ -198,6 +216,7 @@ internal class EnrollmentViewModel @Inject constructor(
     // success the window flips to Closed locally so the status hub shows the
     // comprovante state without a refetch.
     private fun submit() {
+        setState { copy(referenceNowMillis = appClock.now().toEpochMilliseconds()) }
         val state = currentState
         if (!state.canSubmit) return
         submitJob?.cancel()

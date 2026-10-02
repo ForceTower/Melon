@@ -70,6 +70,7 @@ enum EnrollmentFormat {
 
     static func blockerLabel(_ blocker: EnrollmentBlocker) -> String {
         switch blocker {
+        case .deadlinePassed: .localized(.enrollmentBlockerDeadline)
         case let .conflicts(count): conflictCountLabel(count)
         case let .underMinimum(missing): .localized(.enrollmentBlockerUnderMin(missing))
         case let .overMaximum(excess): .localized(.enrollmentBlockerOverMax(excess))

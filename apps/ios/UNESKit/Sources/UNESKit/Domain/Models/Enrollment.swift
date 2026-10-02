@@ -185,6 +185,7 @@ struct EnrollmentSelection: Equatable, Sendable {
 
 /// Everything gating the submit button, ordered by severity.
 enum EnrollmentBlocker: Equatable, Sendable {
+    case deadlinePassed
     case conflicts(Int)
     case underMinimum(missing: Int)
     case overMaximum(excess: Int)
@@ -294,6 +295,11 @@ struct EnrollmentSession: Equatable, Sendable {
         if total < window.minHours { out.append(.underMinimum(missing: window.minHours - total)) }
         if total > window.maxHours { out.append(.overMaximum(excess: total - window.maxHours)) }
         return out
+    }
+
+    func blockers(at now: Date) -> [EnrollmentBlocker] {
+        guard !picks.isEmpty, let deadline = window?.endDate, now > deadline else { return blockers }
+        return [.deadlinePassed] + blockers
     }
 
     var selections: [EnrollmentSelection] {

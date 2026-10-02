@@ -196,7 +196,7 @@ struct EnrollmentReviewView: View {
     // MARK: Dock
 
     private var submitDock: some View {
-        let blockers = store.session.blockers
+        let blockers = store.blockers
         return VStack(spacing: 10) {
             if !store.session.picks.isEmpty, !blockers.isEmpty {
                 HStack(spacing: 7) {

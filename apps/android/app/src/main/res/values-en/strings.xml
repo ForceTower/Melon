@@ -1816,6 +1816,7 @@
     <string name="enrollment_blocker_under_format">%1$dh below the minimum</string>
     <string name="enrollment_blocker_over_format">%1$dh above the maximum</string>
     <string name="enrollment_blocker_empty">no courses</string>
+    <string name="enrollment_blocker_deadline">enrollment deadline passed</string>
     <!-- endregion -->
 
     <!-- region Matrícula · Enviado -->

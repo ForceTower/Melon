@@ -253,6 +253,7 @@ struct EnrollmentReviewFeatureTests {
         let store = TestStore(initialState: EnrollmentReviewFeature.State()) {
             EnrollmentReviewFeature()
         } withDependencies: {
+            $0.date = .constant(EnrollmentFeatureTests.referenceDate)
             $0.enrollmentRepository.submit = { selections in
                 submitted.setValue(selections)
                 for await _ in submitGate { break }
@@ -260,6 +261,7 @@ struct EnrollmentReviewFeatureTests {
         }
 
         await store.send(.submitTapped) {
+            $0.referenceDate = EnrollmentFeatureTests.referenceDate
             $0.isSubmitting = true
         }
 
@@ -282,10 +284,12 @@ struct EnrollmentReviewFeatureTests {
         let store = TestStore(initialState: EnrollmentReviewFeature.State()) {
             EnrollmentReviewFeature()
         } withDependencies: {
+            $0.date = .constant(EnrollmentFeatureTests.referenceDate)
             $0.enrollmentRepository.submit = { _ in throw EnrollmentFailure.server("O SAGRES recusou a proposta") }
         }
 
         await store.send(.submitTapped) {
+            $0.referenceDate = EnrollmentFeatureTests.referenceDate
             $0.isSubmitting = true
         }
         await store.receive(.submitFailed("O SAGRES recusou a proposta")) {
@@ -306,10 +310,14 @@ struct EnrollmentReviewFeatureTests {
         @Shared(.enrollmentSession) var session = blocked
         let store = TestStore(initialState: EnrollmentReviewFeature.State()) {
             EnrollmentReviewFeature()
+        } withDependencies: {
+            $0.date = .constant(EnrollmentFeatureTests.referenceDate)
         }
 
         #expect(!store.state.canSubmit)
-        await store.send(.submitTapped)
+        await store.send(.submitTapped) {
+            $0.referenceDate = EnrollmentFeatureTests.referenceDate
+        }
     }
 
     @Test
@@ -334,12 +342,16 @@ struct EnrollmentReviewFeatureTests {
         @Shared(.enrollmentSession) var session = closed
         let store = TestStore(initialState: EnrollmentReviewFeature.State()) {
             EnrollmentReviewFeature()
+        } withDependencies: {
+            $0.date = .constant(EnrollmentFeatureTests.referenceDate)
         }
 
         #expect(store.state.isReadonly)
         #expect(!store.state.canSubmit)
         await store.send(.removeTapped(201))
-        await store.send(.submitTapped)
+        await store.send(.submitTapped) {
+            $0.referenceDate = EnrollmentFeatureTests.referenceDate
+        }
     }
 
     @Test
@@ -351,12 +363,14 @@ struct EnrollmentReviewFeatureTests {
         let store = TestStore(initialState: EnrollmentReviewFeature.State()) {
             EnrollmentReviewFeature()
         } withDependencies: {
+            $0.date = .constant(EnrollmentFeatureTests.referenceDate)
             $0.enrollmentRepository.submit = { _ in }
         }
 
         #expect(!store.state.isReadonly)
         #expect(store.state.canSubmit)
         await store.send(.submitTapped) {
+            $0.referenceDate = EnrollmentFeatureTests.referenceDate
             $0.isSubmitting = true
         }
         await store.receive(.submitSucceeded) {
