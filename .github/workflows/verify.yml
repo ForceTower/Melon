@@ -105,3 +105,6 @@ jobs:
     with:
       ios: ${{ needs.changes.outputs.ios == 'true' }}
       android: ${{ needs.changes.outputs.android == 'true' }}
+    # Without this, the called jobs' `stores` environment secrets resolve empty
+    # (actions/runner#4453). Distribute only runs for pushes to main.
+    secrets: inherit

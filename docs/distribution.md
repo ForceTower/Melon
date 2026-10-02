@@ -37,6 +37,17 @@ Android release builds are signed with the upload key only when
 release builds stay unsigned, as before, and local store builds are signed from
 Android Studio.
 
+## Secret exposure
+
+Store credentials live only in the `stores` environment, which deploys from `main`
+alone, so PR branches and manual runs elsewhere cannot read them. Pull requests
+from forks never receive secrets, and no workflow uses `pull_request_target` or
+`workflow_run`. `Verify` passes `secrets: inherit` to `Distribute` because called
+workflows otherwise see environment secrets as empty
+([actions/runner#4453](https://github.com/actions/runner/issues/4453)); that also
+hands over repository-level secrets, so keep credentials out of the repository
+scope and in `stores`.
+
 ## One-time setup
 
 1. Install the repository Ruby and gems with `mise install` and `bundle install`.
