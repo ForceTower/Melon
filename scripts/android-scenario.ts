@@ -136,6 +136,10 @@ try {
         failure,
         captureErrors,
         fixtureVersion: pilot.version,
+        fixtureFiles: id.startsWith("enrollment.")
+          ? ["contracts/v1/pilot.json", "contracts/v1/enrollment.json"]
+          : ["contracts/v1/pilot.json"],
+        featureFlags: { enrollment: id.startsWith("enrollment.") },
         clock: pilot.clock,
         timezone: pilot.timezone,
         serial,

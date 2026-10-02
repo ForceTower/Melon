@@ -34,6 +34,27 @@ when the proposal:
 The portal opening submissions **early** is not blocked — the official system
 defines the window, and the apps match it.
 
+Both clients refresh their injected clock immediately before submission, so a window
+that expired while Review was open cannot pass the guard. The exact deadline
+instant remains valid; strictly later is blocked. Prerequisites are warnings,
+not submission blockers, because the provider filters the offered catalogue.
+
+## Verification
+
+`EnrollmentRulesTest`, `EnrollmentViewModelTest` and the KMP enrollment suite
+cover conflict boundaries, hour limits, deadline crossing, waitlist/toggle
+mapping, cancellation, and retry of the complete desired proposal. The shared
+example is `contracts/v1/enrollment.json`; provider serializer/service tests in
+the private backend verify it and the replace/open/publish/close boundary.
+The five `enrollment.*` scenarios in [the catalog](scenarios.md) exercise the
+installed app with synthetic responses and capture screenshots and request
+evidence. No scenario submits to a real enrollment service.
+
+Native `EnrollmentDeadlineTests` exercise expired OPEN/reopened proposals,
+crossing the cutoff while Review stays open, exact-deadline acceptance and early
+OPEN submission. The installed-app enrollment journeys currently run on Android;
+native UI parity remains tracked in [the screen inventory](scenario-coverage.md).
+
 ## Audit
 
 Every submit attempt — success or failure — is recorded server-side with the

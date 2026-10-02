@@ -2,6 +2,11 @@
 // Run bun run mock. See docs/scenarios.md for controls and device launch commands.
 
 import { isScenarioId, pilot, scenarioCatalog, type ScenarioId } from "./scenarios";
+import {
+  enrollmentFixture,
+  parseEnrollmentSelections,
+  type EnrollmentSelection,
+} from "./enrollment-scenarios";
 
 const UPSTREAM = "https://melon.forcetower.dev";
 
@@ -26,6 +31,7 @@ export function createMockHandler(options: { proxy?: boolean; now?: string } = {
 
   // ── enrollment fixture state ──
   let submitted: { sectionId: number; allowsOther: boolean; waitlist: boolean }[] | null = null;
+  const submissionAttempts: EnrollmentSelection[][] = [];
 
   const slot = (day: number, start: string, end: string) => ({ day, start, end });
   const meeting = (
@@ -854,6 +860,7 @@ export function createMockHandler(options: { proxy?: boolean; now?: string } = {
   }
 
   function windowPayload() {
+    if (!options.proxy) return enrollmentFixture(scenario, now(), submitted).window;
     return {
       available: true,
       window: {
@@ -870,6 +877,7 @@ export function createMockHandler(options: { proxy?: boolean; now?: string } = {
   }
 
   function offersPayload() {
+    if (!options.proxy) return enrollmentFixture(scenario, now(), submitted).offers;
     const submittedIds = new Set((submitted ?? []).map((s) => s.sectionId));
     return {
       disciplines: disciplines.map((d) => ({
@@ -944,6 +952,7 @@ export function createMockHandler(options: { proxy?: boolean; now?: string } = {
 
   function reset(next: ScenarioId = "home.populated", clearEvidence = true) {
     submitted = null;
+    submissionAttempts.length = 0;
     campusPhase = "upcoming";
     campusRevision = Math.floor(now() / 60_000) % 1_000_000;
     sessionExpired = next === "auth.session-expired";
@@ -976,6 +985,7 @@ export function createMockHandler(options: { proxy?: boolean; now?: string } = {
         campusPhase,
         campusRevision,
         submitted,
+        submissionAttempts,
         unexpectedRequests,
         requestCounts,
       });
@@ -1184,14 +1194,29 @@ export function createMockHandler(options: { proxy?: boolean; now?: string } = {
       return ok(offersPayload());
     }
     if (url.pathname === "/api/enrollment/submit" && req.method === "POST") {
-      const body = (await req.json().catch(() => null)) as {
-        selections?: { sectionId: number; allowsOther: boolean; waitlist: boolean }[];
-      } | null;
-      if (!body?.selections?.length) {
-        console.log(`[mock] ${tag} → 400 (bad payload)`, body);
+      const selections = parseEnrollmentSelections(await req.json().catch(() => null));
+      if (selections === null) {
         return Response.json({ ok: false, message: "Proposta vazia", data: null }, { status: 400 });
       }
-      submitted = body.selections;
+      const knownSections = new Set(
+        offersPayload().disciplines.flatMap((discipline) =>
+          discipline.sections.map((section) => section.id),
+        ),
+      );
+      if (selections.some((selection) => !knownSections.has(selection.sectionId))) {
+        return Response.json(
+          { ok: false, message: "Turma desconhecida", data: null },
+          { status: 422 },
+        );
+      }
+      submissionAttempts.push(selections);
+      if (scenario === "enrollment.submit-retry" && submissionAttempts.length === 1) {
+        return Response.json(
+          { ok: false, message: "Synthetic enrollment unavailable", data: null },
+          { status: 503 },
+        );
+      }
+      submitted = selections;
       console.log(`[mock] ${tag} → accepted`, JSON.stringify(submitted));
       return ok({});
     }

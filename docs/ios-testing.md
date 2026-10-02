@@ -71,6 +71,24 @@ reducer time; SwiftUI timeline animations still use the system display clock.
 
 ## Current coverage boundaries
 
+Enrollment Review checks its injected clock when it opens and again on each
+submit attempt. A known `endDate` blocks submission only after the cutoff;
+the exact cutoff is allowed, and an `OPEN` portal remains authoritative when its
+published `startDate` is still ahead. Reopening a submitted proposal does not
+bypass its deadline. The existing blocker dock explains an expired deadline;
+the flow does not add a continuous timer or submit real enrollment data in tests.
+
+`EnrollmentDeadlineTests` protects expired open/reopened proposals and a cutoff
+crossed while Review stays open, plus the two allowed boundary cases. The red
+run reproduced repository submit calls after expiration; after the fix, all six
+enrollment suites pass, including existing conflict, queue, workload, draft,
+whole-proposal submission, retry, and wire-mapping tests. Run the package suite
+with `bash apps/ios/verify.sh kit`, or, from `apps/ios/UNESKit`, filter `xcodebuild test -scheme UNESKit`
+with `-only-testing:UNESKitTests/EnrollmentDeadlineTests` and an installed
+simulator destination for the focused regression. Native enrollment still needs
+an installed-app journey and decoding coverage for the shared enrollment JSON;
+these reducer/mapping tests use synthetic in-process fixtures.
+
 The [screen inventory](scenario-coverage.md) maps remaining native and Android
 states to their source models and distinguishes executable pilot cases from
 planned fixtures, states that do not apply, and states the UI does not model.

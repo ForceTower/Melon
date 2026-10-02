@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.forcetower.melon.core.analytics.Analytics
 import dev.forcetower.melon.core.analytics.ContentTypes
+import dev.forcetower.melon.core.common.AppClock
 import dev.forcetower.melon.core.common.Outcome
 import dev.forcetower.melon.feature.enrollment.domain.model.EnrollmentWindowState
 import dev.forcetower.melon.feature.enrollment.domain.usecase.GetEnrollmentOffersUseCase
@@ -27,6 +28,7 @@ internal class EnrollmentViewModel @Inject constructor(
     private val submitEnrollment: SubmitEnrollmentUseCase,
     private val analytics: Analytics,
     observeMeProfile: ObserveMeProfileUseCase,
+    private val appClock: AppClock,
 ) : MviViewModel<EnrollmentUiState, EnrollmentIntent, EnrollmentEffect>(EnrollmentUiState()) {
 
     private var loadJob: Job? = null
@@ -85,7 +87,7 @@ internal class EnrollmentViewModel @Inject constructor(
     }
 
     private fun enter() {
-        setState { copy(referenceNowMillis = System.currentTimeMillis()) }
+        setState { copy(referenceNowMillis = appClock.now().toEpochMilliseconds()) }
         when (currentState.phase) {
             EnrollmentPhase.Loading -> Unit
             EnrollmentPhase.Idle, EnrollmentPhase.Failed -> load(initial = true)
@@ -198,6 +200,7 @@ internal class EnrollmentViewModel @Inject constructor(
     // success the window flips to Closed locally so the status hub shows the
     // comprovante state without a refetch.
     private fun submit() {
+        setState { copy(referenceNowMillis = appClock.now().toEpochMilliseconds()) }
         val state = currentState
         if (!state.canSubmit) return
         submitJob?.cancel()

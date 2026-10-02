@@ -48,6 +48,11 @@ internal class FeatureFlags @Inject constructor(
     private val gatesFlow = MutableStateFlow(readGates())
     val gates: StateFlow<FeatureGates> = gatesFlow
 
+    fun useScenarioGates(gates: FeatureGates) {
+        check(BuildConfig.SCENARIO) { "Feature overrides require an isolated scenario build" }
+        gatesFlow.value = gates
+    }
+
     fun start() {
         scope.launch {
             // The `onStart` recompute covers anything that activated between

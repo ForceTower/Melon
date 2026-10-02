@@ -7628,6 +7628,23 @@
         }
       }
     },
+    "enrollment.blocker.deadline" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "enrollment deadline passed"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "prazo de matrícula encerrado"
+          }
+        }
+      }
+    },
     "enrollment.blocker.empty" : {
       "extractionState" : "manual",
       "localizations" : {

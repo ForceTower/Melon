@@ -52,6 +52,7 @@ internal data class EnrollmentClash(
 
 internal sealed interface EnrollmentBlocker {
     data object Empty : EnrollmentBlocker
+    data object DeadlinePassed : EnrollmentBlocker
     data class Conflicts(
         val count: Int,
     ) : EnrollmentBlocker
@@ -87,7 +88,7 @@ internal data class EnrollmentUiState(
     // the step automatically on the next submit, which replaces the saved
     // proposal wholesale.
     val reopened: Boolean = false,
-    // Pinned at flow entry so the hero countdown doesn't tick live.
+    // Refreshed at entry and submit; the hero countdown does not tick live.
     val referenceNowMillis: Long = 0L,
 ) : UiState {
 
@@ -127,6 +128,8 @@ internal data class EnrollmentUiState(
             if (picks.isEmpty()) return listOf(EnrollmentBlocker.Empty)
             val window = window ?: return emptyList()
             val out = mutableListOf<EnrollmentBlocker>()
+            val deadline = EnrollmentFormat.parseDate(window.endDate)?.toInstant()?.toEpochMilli()
+            if (deadline != null && referenceNowMillis > deadline) out += EnrollmentBlocker.DeadlinePassed
             val clashes = conflicts.size
             if (clashes > 0) out += EnrollmentBlocker.Conflicts(clashes)
             val total = totalHours

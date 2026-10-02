@@ -1,8 +1,8 @@
 # AI friendly development and reliability plan
 
 **Status: implementation in progress (October 2, 2026). Android and native iOS
-verification pilots are implemented; service activation and full feature coverage
-remain open.**
+verification pilots and enrollment coverage are implemented; required CI is
+enforced on `main`. Service activation and full feature coverage remain open.**
 
 This plan describes how Melon can give coding agents enough context, reproducible
 app states, and verification tools to make changes with confidence. It also
@@ -11,11 +11,12 @@ backlog. The goal is to make each merge come with evidence that important behavi
 still works, then verify that evidence against the released app.
 
 The repository-local implementation described below is now underway. It does not
-activate production integrations, schedules, repository protection, public issue
+activate production integrations, schedules, public issue
 posting, customer replies, merging or releases. The agreed direction remains
 Android first, with a nightly Firebase issue check as the initial monitoring
 approach. The maintainer can provide a Google Play service account for review
 access. Credentials and operational policies remain separate setup work.
+Repository protection now enforces the verified CI result, as recorded below.
 
 ## Implementation ledger
 
@@ -28,11 +29,11 @@ backlog, not a claim that every item is finished.
 
 | Area | Repository-local implementation | Remaining evidence or setup |
 | --- | --- | --- |
-| Merge verification | Always-running dispatcher and stable required result; builds, unit/JVM tests, lint, landing checks, test artifacts and issue/PR templates. | Enable the required check in repository protection after a remote workflow run. |
-| Mechanical rules | Tested Kotlin convention lexer with an explicit existing-debt baseline; fixture provenance and credential-pattern checks. | Compiler-aware lint, removal of existing convention debt, hosting-provider/history secret scanning. |
-| Android scenarios | Hermetic synthetic login/sync/Home/empty messages, resettable failures, fixed projection clock, isolated app, real device journeys and evidence gallery. | Extend the catalog to remaining screens, flag combinations and device/permission configurations. |
+| Merge verification | All foundation lanes passed remotely. `main` now requires the GitHub Actions **Required verification** check, with strict freshness and administrator enforcement. Builds, lint, test artifacts and templates are in place. | Keep the single required result stable; monitor duration, flakes and evidence availability. |
+| Mechanical rules | ktlint check/format tasks are part of Android verification. The semantic convention lexer still protects theme/string/visibility rules, with 113 known findings at this update. Fixture provenance and credential-pattern checks also run. | Compiler-aware semantic lint, removal of remaining convention debt, hosting-provider/history secret scanning. |
+| Android scenarios | Hermetic login/sync/Home/empty messages plus five enrollment journeys, resettable failures, fixed projection clock, controlled enrollment flag, isolated app and device evidence gallery. | Extend the catalog to remaining screens, flag combinations and device/permission configurations. |
 | Rendering | Home state/callback rendering, light/default and dark/large-text accessibility checks, deterministic Compose captures and an explicit screenshot comparison command. | Review and establish device-specific visual baselines; broaden accessibility coverage and manual assistive-technology review. |
-| Behavioral coverage | Shared Kotlin/Swift wire decoding, backend serializer verification, Home time/attendance boundaries and initial-sync failure/retry regression coverage. | Remaining enrollment, grade-calculation and full feature integration cases from milestone 3. |
+| Behavioral coverage | Shared contracts, Home time/attendance boundaries, initial-sync recovery, and per-program CR regressions. Enrollment now covers conflicts, hours, deadline boundaries, prerequisite warnings, waitlists, full replacement and retry in Android/KMP/provider tests. | Broader feature integration, persistence/lifecycle, platform parity and device configurations from milestone 3. |
 | Performance | Physical-device Macrobenchmark and profile-generation suites passed; isolated release-like app and manual physical-device workflow. | Review generated rules before shipping, choose a consistent measurement device, establish repeatability and trend thresholds. |
 | Native iOS | Synthetic TCA/HTTP/GRDB pilot, full package lane, explicit intent/UI target, screenshots/hierarchies and accessibility checks. | Three out-of-process AppIntents tests require a runtime that supports Apple's internal execution APIs; full visual/device coverage remains open. |
 | Private repair tooling | In `unes-backrooms`: bounded Crashlytics queries, Play reviews/vitals adapters, durable draft queue, normalized log input, allowlisted GitHub digest/outcome metrics, request correlation and provider tests. | Real service identities, export/store access, schedule/host configuration, diagnostics policy and publishing policy; no live incident or release verification yet. |
@@ -52,13 +53,33 @@ two rendering/accessibility checks were rerun after review fixes. The physical
 benchmark and profile suites each passed two tests. Repository tooling passed
 24 tests plus formatting, convention and fixture checks; landing typecheck/build
 passed. The private backend passed 34 tests, type checking and formatting/lint.
-These are local results, not a claim that the newly written CI workflows have
-already run remotely or that production integrations are active.
+Those are the original local pilot results. Client PR #106 and backend PR #16
+were subsequently merged with green remote checks, and the ktlint integration
+also passed Verify. No production monitoring integrations are active.
 
-## Current foundations
+The enrollment follow-up added 22 Android rules/ViewModel tests and 11 KMP
+transport/contract tests. Two Android deadline tests failed before the fix and
+passed afterward. Five installed-app scenarios verify blocked submissions send
+zero requests and failed submission retries the identical complete selection
+set. The provider added 24 serializer/service tests without production source
+changes. Native iOS reproduced the same defect: three expired/crossed-deadline
+cases submitted before the fix while exact-cutoff and early-OPEN controls passed.
+After correction, all six native enrollment suites passed (37 test methods,
+39 parameterized executions). The full Android check, all five new physical-device
+journeys, 28 repository-tooling tests, and 58 provider/reliability tests passed.
+See [enrollment](enrollment.md) for boundaries and reproduction commands.
 
-Repository inspection on October 2, 2026 found the following. These are source
-observations, not test execution results or measurements of coverage.
+On October 2, 2026, GitHub protection for `main` was read back after activation:
+`Required verification`, GitHub Actions app `15368`, strict/up-to-date checking,
+and administrator enforcement are enabled. Existing signature, linear-history,
+force-push and deletion settings were preserved. The latest main verification
+at `8ae16ade3` was successful before enabling this requirement.
+
+## Original repository inspection
+
+Repository inspection before the first implementation batch on October 2, 2026
+found the following. These are historical source observations, not current test
+results; the implementation ledger above records subsequent work.
 
 | Area | Current state | Main opportunity |
 | --- | --- | --- |

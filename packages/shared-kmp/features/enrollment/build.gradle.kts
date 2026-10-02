@@ -12,6 +12,7 @@ metro {
 
 kotlin {
     sourceSets {
+        jvmTest { resources.srcDir(rootProject.file("contracts")) }
         commonMain.dependencies {
             api(project(":packages:shared-kmp:core:common"))
             implementation(project(":packages:shared-kmp:core:network"))
@@ -20,6 +21,12 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.content.negotiation)
+        }
+        commonTest.dependencies {
+            implementation(kotlin("test"))
+            implementation(libs.kotlinx.coroutines.test)
+            implementation(libs.ktor.client.mock)
+            implementation(libs.ktor.serialization.kotlinx.json)
         }
     }
 }

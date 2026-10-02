@@ -7,19 +7,27 @@ import android.os.ParcelFileDescriptor
 import android.os.Process
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsEnabled
+import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.captureToImage
+import androidx.compose.ui.test.click
 import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.isRoot
 import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
+import androidx.compose.ui.test.onAllNodesWithContentDescription
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTextInput
+import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.printToString
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
+import dev.forcetower.unes.remote.FeatureGates
 import java.io.File
 import java.net.HttpURLConnection
 import java.net.URI
@@ -41,11 +49,20 @@ internal class ScenarioJourneyTest {
     @Test
     fun runScenario() {
         check(BuildConfig.SCENARIO) { "Journeys require the isolated scenario build" }
-        val initial = when (scenario) {
-            "auth.invalid-credentials", "sync.unavailable" -> scenario
-            else -> "home.populated"
+        val isEnrollment = scenario.startsWith("enrollment.")
+        val initial = if (isEnrollment) {
+            scenario
+        } else {
+            when (scenario) {
+                "auth.invalid-credentials", "sync.unavailable" -> scenario
+                else -> "home.populated"
+            }
         }
         selectScenario(initial)
+        if (isEnrollment) {
+            val app = instrumentation.targetContext.applicationContext as MelonApp
+            app.featureFlags.useScenarioGates(FeatureGates(enrollment = true))
+        }
         click(R.string.onboarding_welcome_secondary_cta)
         waitFor(R.string.onboarding_login_submit)
         if (scenario == "auth.login") return
@@ -81,6 +98,7 @@ internal class ScenarioJourneyTest {
             open("unes://messages")
             waitFor(R.string.messages_empty_title)
         }
+        if (isEnrollment) runEnrollment()
         assertEquals(
             "Unmocked requests must fail the journey",
             0,
@@ -90,6 +108,72 @@ internal class ScenarioJourneyTest {
 
     @After
     fun collectEvidence() = capture("result")
+
+    private fun runEnrollment() {
+        open("unes://me")
+        scrollClick(compose.activity.getString(R.string.me_shortcut_enrollment_label))
+        click(R.string.enrollment_cta_continue)
+        waitFor(R.string.enrollment_offers_title)
+        if (scenario == "enrollment.submit-retry") {
+            scrollClick("Redes de Exemplo")
+            scrollToText(compose.activity.getString(R.string.enrollment_prereq_unmet_title))
+            scrollClick(compose.activity.getString(R.string.enrollment_section_queue))
+            waitFor(R.string.enrollment_section_selected)
+            device.pressBack()
+            click(R.string.enrollment_dock_review)
+            compose.onAllNodesWithContentDescription(compose.activity.getString(R.string.enrollment_remove))
+                .onFirst().performScrollTo().performClick()
+            compose.onNodeWithText("Algoritmos de Exemplo").assertDoesNotExist()
+            scrollToText(compose.activity.getString(R.string.enrollment_review_prereq_title))
+            compose.onNodeWithText(compose.activity.getString(R.string.enrollment_dock_submit)).assertIsEnabled()
+            click(R.string.enrollment_dock_submit)
+            waitFor(R.string.enrollment_submit_error_title)
+            capture("submit-failure")
+            assertTrue(serverState().isNull("submitted"))
+            assertEquals(1, serverState().getJSONArray("submissionAttempts").length())
+            click(R.string.enrollment_ok)
+            click(R.string.enrollment_dock_submit)
+            waitFor(R.string.enrollment_success_title)
+            val state = serverState()
+            val submitted = state.getJSONArray("submitted")
+            assertEquals(1, submitted.length())
+            assertEquals(2031, submitted.getJSONObject(0).getInt("sectionId"))
+            assertEquals(false, submitted.getJSONObject(0).getBoolean("allowsOther"))
+            assertEquals(true, submitted.getJSONObject(0).getBoolean("waitlist"))
+            val attempts = state.getJSONArray("submissionAttempts")
+            assertEquals(2, attempts.length())
+            assertEquals(attempts.getJSONArray(0).toString(), attempts.getJSONArray(1).toString())
+        } else {
+            click(R.string.enrollment_dock_review)
+            val explanation = when (scenario) {
+                "enrollment.schedule-conflict" -> R.string.enrollment_review_conflicts_title
+                "enrollment.under-minimum" -> R.string.enrollment_review_under_title
+                "enrollment.over-maximum" -> R.string.enrollment_review_over_title
+                "enrollment.deadline-expired" -> R.string.enrollment_blocker_deadline
+                else -> error("Unsupported enrollment scenario: $scenario")
+            }
+            if (scenario == "enrollment.deadline-expired") {
+                waitFor(explanation)
+            } else {
+                scrollToText(compose.activity.getString(explanation))
+            }
+            val submit = compose.onNodeWithText(compose.activity.getString(R.string.enrollment_dock_submit))
+            submit.assertIsNotEnabled().performTouchInput { click() }
+            compose.waitForIdle()
+            assertEquals(0, serverState().getJSONObject("requestCounts").optInt("POST /api/enrollment/submit"))
+            assertTrue(serverState().isNull("submitted"))
+        }
+    }
+
+    private fun scrollToText(text: String) {
+        compose.waitUntil(30_000) { compose.onAllNodes(hasText(text)).fetchSemanticsNodes().isNotEmpty() }
+        compose.onAllNodesWithText(text).onFirst().performScrollTo().assertIsDisplayed()
+    }
+
+    private fun scrollClick(text: String) {
+        scrollToText(text)
+        compose.onAllNodesWithText(text).onFirst().performClick()
+    }
 
     private fun open(
         uri: String,
@@ -149,11 +233,23 @@ internal class ScenarioJourneyTest {
         }
         compose.mainClock.advanceTimeBy(2_000)
         compose.waitForIdle()
-        File(directory, "$name.png").outputStream().use {
-            assertTrue(compose.onRoot().captureToImage().asAndroidBitmap().compress(Bitmap.CompressFormat.PNG, 100, it))
+        val roots = compose.onAllNodes(isRoot(), useUnmergedTree = true)
+        val rootCount = roots.fetchSemanticsNodes().size
+        if (rootCount == 1) {
+            File(directory, "$name.png").outputStream().use {
+                assertTrue(
+                    compose.onRoot().captureToImage().asAndroidBitmap().compress(Bitmap.CompressFormat.PNG, 100, it),
+                )
+            }
+        } else {
+            assertTrue(device.takeScreenshot(File(directory, "$name.png")))
         }
         device.dumpWindowHierarchy(File(directory, "$name.xml"))
-        File(directory, "$name-semantics.txt").writeText(compose.onRoot(useUnmergedTree = true).printToString())
+        File(directory, "$name-semantics.txt").writeText(
+            (0 until rootCount).joinToString("\n") {
+                roots[it].printToString()
+            },
+        )
         ParcelFileDescriptor.AutoCloseInputStream(
             instrumentation.uiAutomation.executeShellCommand("logcat -d --pid ${Process.myPid()} -v threadtime"),
         ).use { input ->

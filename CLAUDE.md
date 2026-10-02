@@ -74,6 +74,9 @@
 - **Visibility**: declare classes, functions, and top-level properties as `internal` by
   default. Widen to `public` only when the symbol is genuinely consumed from another
   Gradle module. Use `private` when the symbol stays inside a single file.
+- **ViewModel dependencies**: inject typed use cases through the normal constructor.
+  Do not replace use cases with lambda parameters or add alternate constructors for
+  tests. Keep mocks and test-specific adapters in test sources.
 
 ## Android Design System (`apps/android/design-system`)
 

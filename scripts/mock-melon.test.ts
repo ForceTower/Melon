@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { createMockHandler } from "./mock-melon";
 import { pilot } from "./scenarios";
+import enrollment from "../contracts/v1/enrollment.json";
 
 function request(path: string, method: "GET" | "POST" = "GET", body?: unknown) {
   const headers = {
@@ -146,5 +147,95 @@ describe("hermetic scenario server", () => {
     expect((await refresh(0)).status).toBe(200);
     expect((await refresh(0)).status).toBe(400);
     expect((await refresh(1)).status).toBe(200);
+  });
+});
+
+describe("synthetic enrollment", () => {
+  test("serves the provider example without accessing a real account", async () => {
+    const handle = createMockHandler();
+    expect(await (await handle(request("/api/enrollment/window"))).json()).toMatchObject({
+      data: enrollment.window,
+    });
+    expect(await (await handle(request("/api/enrollment/offers"))).json()).toMatchObject({
+      data: enrollment.offers,
+    });
+  });
+
+  test("failed submission preserves the saved proposal and retry replaces the complete set", async () => {
+    const handle = createMockHandler();
+    await handle(request("/debug/scenario/enrollment.submit-retry", "POST"));
+    const submit = () => handle(request("/api/enrollment/submit", "POST", enrollment.submission));
+    expect((await submit()).status).toBe(503);
+    expect(await (await handle(request("/debug/state"))).json()).toMatchObject({
+      data: {
+        submitted: null,
+        submissionAttempts: [enrollment.submission.selections],
+      },
+    });
+    const before = await (await handle(request("/api/enrollment/offers"))).json();
+    expect(before.data.disciplines[0].sections[0].selected).toBe(true);
+    expect(before.data.disciplines[2].sections[0].selected).toBe(false);
+    expect((await submit()).status).toBe(200);
+    const after = await (await handle(request("/api/enrollment/offers"))).json();
+    expect(after.data.disciplines[0].sections[0].selected).toBe(false);
+    expect(after.data.disciplines[2].sections[0].selected).toBe(true);
+    expect(await (await handle(request("/debug/state"))).json()).toMatchObject({
+      data: {
+        submitted: enrollment.submission.selections,
+        submissionAttempts: [enrollment.submission.selections, enrollment.submission.selections],
+      },
+    });
+    expect(await (await handle(request("/api/enrollment/window"))).json()).toMatchObject({
+      data: { window: { state: "CLOSED" } },
+    });
+    await handle(request("/debug/reset", "POST"));
+    expect(await (await handle(request("/debug/state"))).json()).toMatchObject({
+      data: { submitted: null, submissionAttempts: [] },
+    });
+    expect(await (await handle(request("/api/enrollment/offers"))).json()).toMatchObject({
+      data: enrollment.offers,
+    });
+  });
+
+  test("malformed or unknown sections cannot mutate the proposal", async () => {
+    const handle = createMockHandler();
+    for (const body of [
+      null,
+      {},
+      { selections: [] },
+      { selections: [{ sectionId: 2011, allowsOther: "true", waitlist: false }] },
+    ]) {
+      expect((await handle(request("/api/enrollment/submit", "POST", body))).status).toBe(400);
+    }
+    expect(
+      (
+        await handle(
+          request("/api/enrollment/submit", "POST", {
+            selections: [{ sectionId: 9999, allowsOther: false, waitlist: false }],
+          }),
+        )
+      ).status,
+    ).toBe(422);
+    expect(await (await handle(request("/debug/state"))).json()).toMatchObject({
+      data: { submitted: null, submissionAttempts: [] },
+    });
+  });
+
+  test("failure fixtures are deterministic variations rather than different people", async () => {
+    const handle = createMockHandler();
+    for (const [id, field, value] of [
+      ["enrollment.under-minimum", "minHours", 120],
+      ["enrollment.over-maximum", "maxHours", 30],
+      ["enrollment.deadline-expired", "endDate", "2026-10-02T12:59:59.000Z"],
+    ] as const) {
+      await handle(request(`/debug/scenario/${id}`, "POST"));
+      const result = await (await handle(request("/api/enrollment/window"))).json();
+      expect(result.data.window[field]).toBe(value);
+      expect(result.data.window.state).toBe("OPEN");
+    }
+    await handle(request("/debug/scenario/enrollment.schedule-conflict", "POST"));
+    const result = await (await handle(request("/api/enrollment/offers"))).json();
+    expect(result.data.disciplines[0].sections[0].selected).toBe(true);
+    expect(result.data.disciplines[1].sections[0].selected).toBe(true);
   });
 });

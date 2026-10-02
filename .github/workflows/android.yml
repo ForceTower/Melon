@@ -41,6 +41,7 @@ jobs:
             **/build/reports/tests/**
             **/build/test-results/**
             **/build/reports/lint-results-*
+            build/reports/ktlint/**
           if-no-files-found: warn
 
   smoke:
@@ -77,6 +78,11 @@ jobs:
             bun run android:scenario home.offline-with-cache --serial emulator-5554 --no-build
             bun run android:scenario auth.session-expired --serial emulator-5554 --no-build
             bun run android:scenario messages.empty --serial emulator-5554 --no-build
+            bun run android:scenario enrollment.schedule-conflict --serial emulator-5554 --no-build
+            bun run android:scenario enrollment.under-minimum --serial emulator-5554 --no-build
+            bun run android:scenario enrollment.over-maximum --serial emulator-5554 --no-build
+            bun run android:scenario enrollment.deadline-expired --serial emulator-5554 --no-build
+            bun run android:scenario enrollment.submit-retry --serial emulator-5554 --no-build
       - name: Upload journey evidence
         if: always()
         uses: actions/upload-artifact@v4

@@ -30,6 +30,11 @@ login and initial sync with an in-memory GRDB mirror in the
 | `home.offline-with-cache` | Device journey executed; counted failed HTTP refresh before checking cache. | XCUITest waits for a refresh request against the unavailable server before checking retained content; a shared-contract repository test verifies the GRDB cache and sync timestamp survive failure. |
 | `auth.session-expired` | Device journey executed; 401, rejected refresh, and recovery banner checked. | Reducer/token-refresh tests exist, but the native UI harness does not yet reproduce the expired-session banner from a rejected HTTP refresh. |
 | `messages.empty` | Device journey executed; successful empty inbox checked. | XCUITest opens Messages, confirms an actual request, and checks the successful empty-state label. |
+| `enrollment.schedule-conflict` | Device journey checks the conflict explanation, disabled submit and zero submission requests. | Installed-app enrollment scenarios remain planned. |
+| `enrollment.under-minimum` | Device journey checks minimum hours block submission without a request. | Installed-app enrollment scenarios remain planned. |
+| `enrollment.over-maximum` | Device journey checks maximum hours block submission without a request. | Installed-app enrollment scenarios remain planned. |
+| `enrollment.deadline-expired` | Device journey checks stale OPEN data cannot submit beyond the cutoff. Rules/ViewModel tests cover exact cutoff, reopening and crossing while Review is open. | Native reducer regressions cover expired OPEN/reopened, deadline crossing, inclusive cutoff and early OPEN; installed-app enrollment remains planned. |
+| `enrollment.submit-retry` | Device journey selects a full waitlisted section with a prerequisite warning, removes the prior selection, and checks identical failed/retried full replacement payloads and success. | Installed-app enrollment scenarios remain planned. |
 
 `sync.ready` is an iOS screenshot attachment name reached by the login journey,
 not an independently registered backend scenario. Native artifacts contain seven

@@ -259,5 +259,6 @@ dependencies {
     implementation(libs.posthog.android)
 
     testImplementation(kotlin("test-junit"))
+    testImplementation(libs.mockk)
     testImplementation(libs.kotlinx.coroutines.test)
 }

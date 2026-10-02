@@ -295,6 +295,7 @@ private fun blockerLine(state: EnrollmentUiState): String =
     state.blockers.map { blocker ->
         when (blocker) {
             EnrollmentBlocker.Empty -> stringResource(R.string.enrollment_blocker_empty)
+            EnrollmentBlocker.DeadlinePassed -> stringResource(R.string.enrollment_blocker_deadline)
             is EnrollmentBlocker.Conflicts ->
                 pluralStringResource(R.plurals.enrollment_blocker_conflicts, blocker.count, blocker.count)
             is EnrollmentBlocker.UnderMinimum ->

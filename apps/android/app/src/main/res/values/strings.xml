@@ -1876,6 +1876,7 @@
     <string name="enrollment_blocker_under_format">%1$dh abaixo do mínimo</string>
     <string name="enrollment_blocker_over_format">%1$dh acima do máximo</string>
     <string name="enrollment_blocker_empty">nenhuma disciplina</string>
+    <string name="enrollment_blocker_deadline">prazo de matrícula encerrado</string>
     <!-- endregion -->
 
     <!-- region Matrícula · Enviado -->
