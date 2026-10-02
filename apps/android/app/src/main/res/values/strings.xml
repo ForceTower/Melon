@@ -156,6 +156,9 @@
     <string name="onboarding_sync_step_count" translatable="false">%1$d/%2$d</string>
     <string name="onboarding_sync_percent_sign" translatable="false" formatted="false">%</string>
     <string name="onboarding_sync_auth_failed">Sua sessão expirou. Entre novamente.</string>
+    <string name="onboarding_sync_failed">Não foi possível preparar seu semestre. Verifique sua conexão e tente novamente.</string>
+    <string name="onboarding_sync_step_failed">Falha nesta etapa</string>
+    <string name="onboarding_sync_retry">Tentar novamente</string>
     <!-- endregion -->
 
     <!-- region Onboarding · Ready -->

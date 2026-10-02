@@ -1,5 +1,7 @@
 package dev.forcetower.unes.update
 
+import dev.forcetower.unes.BuildConfig
+
 import android.app.Activity
 import android.content.Context
 import androidx.activity.result.ActivityResultLauncher
@@ -74,6 +76,7 @@ internal class InAppUpdater @Inject constructor(
     private var startedImmediate = false
 
     suspend fun checkOnLaunch(launcher: ActivityResultLauncher<IntentSenderRequest>) {
+        if (BuildConfig.SCENARIO) return
         // Once per process, not per activity: config changes and activity
         // recreation don't re-prompt, while a process-death restore (non-null
         // savedInstanceState) still gets its check — that restore path is what

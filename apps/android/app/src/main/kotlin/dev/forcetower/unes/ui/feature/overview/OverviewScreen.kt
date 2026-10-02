@@ -74,27 +74,6 @@ internal fun OverviewScreen(
     val vm: OverviewViewModel = hiltViewModel()
     val state by vm.state.collectAsStateWithLifecycle()
 
-    val hero = deriveHeroState(state)
-    val finalStretch = deriveFinalStretch(state)
-    val today = state.todayRaw.map(::mapTodayItem)
-    val messages = state.messagesTileRaw?.let { mapMessages(it, state.clock) }
-
-    val name = state.firstName ?: stringResource(R.string.overview_default_user)
-    val greeting = stringResource(
-        R.string.overview_greeting_format,
-        stringResource(
-            when (state.greetingKind) {
-                GreetingKind.Morning -> R.string.overview_greeting_morning
-                GreetingKind.Afternoon -> R.string.overview_greeting_afternoon
-                GreetingKind.Evening -> R.string.overview_greeting_evening
-            },
-        ),
-        name,
-    )
-
-    val scrollState = rememberScrollState()
-    val scrolled by remember { derivedStateOf { scrollState.value > 0 } }
-
     var showReloginSheet by remember { mutableStateOf(false) }
     var showReauthSheet by remember { mutableStateOf(false) }
     val context = LocalContext.current
@@ -128,6 +107,54 @@ internal fun OverviewScreen(
             onSignedIn = { showReloginSheet = false },
         )
     }
+
+    OverviewContent(
+        state = state,
+        modifier = modifier,
+        bottomInset = bottomInset,
+        onIntent = vm::onIntent,
+        onOpenDiscipline = { vm.trackDisciplineTap(it.offerId); onOpenDiscipline(it) },
+        onOpenNowClass = { vm.trackNowClassTap(it.offerId); onOpenDiscipline(it) },
+        onOpenMessages = { vm.trackMessagesTileTap(); onOpenMessages() },
+        onOpenSchedule = { vm.trackScheduleTileTap(); onOpenSchedule() },
+        onOpenProfile = onOpenProfile,
+        onOpenCampusEvent = { vm.trackCampusEventTap(); onOpenCampusEvent() },
+    )
+}
+
+@Composable
+internal fun OverviewContent(
+    state: OverviewUiState,
+    modifier: Modifier = Modifier,
+    bottomInset: Dp = 0.dp,
+    onIntent: (OverviewIntent) -> Unit = {},
+    onOpenDiscipline: (OverviewDiscipline) -> Unit = {},
+    onOpenNowClass: (OverviewDiscipline) -> Unit = onOpenDiscipline,
+    onOpenMessages: () -> Unit = {},
+    onOpenSchedule: () -> Unit = {},
+    onOpenProfile: () -> Unit = {},
+    onOpenCampusEvent: () -> Unit = {},
+) {
+    val hero = deriveHeroState(state)
+    val finalStretch = deriveFinalStretch(state)
+    val today = state.todayRaw.map(::mapTodayItem)
+    val messages = state.messagesTileRaw?.let { mapMessages(it, state.clock) }
+
+    val name = state.firstName ?: stringResource(R.string.overview_default_user)
+    val greeting = stringResource(
+        R.string.overview_greeting_format,
+        stringResource(
+            when (state.greetingKind) {
+                GreetingKind.Morning -> R.string.overview_greeting_morning
+                GreetingKind.Afternoon -> R.string.overview_greeting_afternoon
+                GreetingKind.Evening -> R.string.overview_greeting_evening
+            },
+        ),
+        name,
+    )
+
+    val scrollState = rememberScrollState()
+    val scrolled by remember { derivedStateOf { scrollState.value > 0 } }
 
     // The greeting header stays pinned; the hero and the cards below scroll
     // beneath it.
@@ -169,7 +196,7 @@ internal fun OverviewScreen(
                     title = stringResource(R.string.session_expired_banner_title),
                     detail = stringResource(R.string.session_expired_banner_body),
                     tone = MaterialTheme.melon.status.bad,
-                    onClick = { vm.onIntent(OverviewIntent.ReloginTapped) },
+                    onClick = { onIntent(OverviewIntent.ReloginTapped) },
                 )
                 Spacer(Modifier.height(22.dp))
             } else if (state.credentialsInvalid) {
@@ -179,7 +206,7 @@ internal fun OverviewScreen(
                     title = stringResource(R.string.credentials_banner_title),
                     detail = stringResource(R.string.credentials_banner_body),
                     tone = MaterialTheme.melon.status.warn,
-                    onClick = { vm.onIntent(OverviewIntent.ReauthTapped) },
+                    onClick = { onIntent(OverviewIntent.ReauthTapped) },
                 )
                 Spacer(Modifier.height(22.dp))
             }
@@ -192,7 +219,6 @@ internal fun OverviewScreen(
                 CampusEventHomeCard(
                     event = campusEvent,
                     onOpen = {
-                        vm.trackCampusEventTap()
                         onOpenCampusEvent()
                     },
                     modifier = Modifier.scaleInOnAppear(delayMs = 60, fromScale = 0.97f),
@@ -207,8 +233,7 @@ internal fun OverviewScreen(
                     tomorrowEyebrow = state.tomorrowEyebrow,
                     isEvening = state.greetingKind == GreetingKind.Evening,
                     onOpenClassDetails = { klass ->
-                        vm.trackNowClassTap(klass.offerId)
-                        onOpenDiscipline(
+                        onOpenNowClass(
                             OverviewDiscipline(
                                 code = klass.code,
                                 title = klass.title,
@@ -233,7 +258,6 @@ internal fun OverviewScreen(
                 items = today,
                 weekdayLabel = state.weekdayLabel,
                 onOpenClass = { item ->
-                    vm.trackDisciplineTap(item.offerId)
                     onOpenDiscipline(
                         OverviewDiscipline(
                             code = item.code,
@@ -243,7 +267,6 @@ internal fun OverviewScreen(
                     )
                 },
                 onOpenSchedule = {
-                    vm.trackScheduleTileTap()
                     onOpenSchedule()
                 },
                 modifier = Modifier.fadeUpOnAppear(delayMs = 640),
@@ -254,7 +277,6 @@ internal fun OverviewScreen(
                 MessagesPreview(
                     data = messages,
                     onOpenMessages = {
-                        vm.trackMessagesTileTap()
                         onOpenMessages()
                     },
                 )

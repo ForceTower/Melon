@@ -9,6 +9,13 @@ public struct RootView: View {
     @State private var launchCover: Bool
 
     public init() {
+        #if DEBUG
+        if DevelopmentScenario.isEnabled {
+            _store = State(initialValue: DevelopmentScenario.makeStore())
+            _launchCover = State(initialValue: false)
+            return
+        }
+        #endif
         let initial = RootFeature.State.bootstrap()
         _store = State(initialValue: Store(initialState: initial) { RootFeature() })
         _launchCover = State(initialValue: initial.isConnected)

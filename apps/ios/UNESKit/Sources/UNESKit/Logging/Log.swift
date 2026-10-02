@@ -81,9 +81,14 @@ struct LogPipeline: Sendable {
         let env = ProcessInfo.processInfo.environment
         let isPreview = env["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
         let isTest = env["XCTestConfigurationFilePath"] != nil || env["XCTestSessionIdentifier"] != nil
+        #if DEBUG
+        let isScenario = DevelopmentScenario.isEnabled
+        #else
+        let isScenario = false
+        #endif
         return LogPipeline(
             local: OSLogSink(),
-            remote: isPreview || isTest ? nil : RemoteLogSink(),
+            remote: isPreview || isTest || isScenario ? nil : RemoteLogSink(),
             remoteFloor: .info
         )
     }

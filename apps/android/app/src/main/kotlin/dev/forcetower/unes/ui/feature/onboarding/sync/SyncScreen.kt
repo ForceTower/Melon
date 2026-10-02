@@ -25,9 +25,11 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.Button
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -47,6 +49,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -92,13 +95,14 @@ fun SyncScreen(
         }
     }
 
-    SyncContent(firstName = firstName, state = state)
+    SyncContent(firstName = firstName, state = state, onRetry = { vm.onIntent(SyncIntent.Retry) })
 }
 
 @Composable
 private fun SyncContent(
     firstName: String,
     state: SyncUiState,
+    onRetry: () -> Unit = {},
 ) {
 
     val night = MaterialTheme.melon.fixed.night
@@ -190,8 +194,10 @@ private fun SyncContent(
             ) {
                 SYNC_STEPS.forEachIndexed { i, step ->
                     val isDone = done.contains(step.key)
-                    val isActive = stepIdx == i && !isDone
-                    val isPending = !isDone && !isActive
+                    val isCurrent = stepIdx == i && !isDone
+                    val isFailed = isCurrent && state.failed
+                    val isActive = isCurrent && !state.failed
+                    val isPending = !isDone && !isCurrent
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -208,6 +214,12 @@ private fun SyncContent(
                                     tint = accent,
                                     modifier = Modifier.size(20.dp),
                                 )
+                                isFailed -> Icon(
+                                    imageVector = Icons.Filled.Cancel,
+                                    contentDescription = stringResource(R.string.onboarding_sync_step_failed),
+                                    tint = MaterialTheme.melon.status.bad,
+                                    modifier = Modifier.size(20.dp),
+                                )
                                 isActive -> StepSpinner(accent = accent, track = onHero.copy(alpha = 0.3f))
                                 else -> Box(
                                     Modifier
@@ -221,11 +233,31 @@ private fun SyncContent(
                             text = stringResource(step.labelRes),
                             style = MaterialTheme.typography.bodyLarge.copy(
                                 fontSize = 15.sp,
-                                fontWeight = if (isActive) FontWeight.Bold else FontWeight.Medium,
+                                fontWeight = if (isCurrent) FontWeight.Bold else FontWeight.Medium,
                                 letterSpacing = (-0.15).sp,
                             ),
                             color = if (isDone) onHero.copy(alpha = 0.5f) else onHero,
                         )
+                    }
+                }
+            }
+
+            if (state.failed) {
+                Spacer(Modifier.height(24.dp))
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    Text(
+                        text = stringResource(R.string.onboarding_sync_failed),
+                        modifier = Modifier.fillMaxWidth(),
+                        style = MaterialTheme.typography.bodyLarge,
+                        textAlign = TextAlign.Center,
+                        color = onHero,
+                    )
+                    Button(onClick = onRetry) {
+                        Text(stringResource(R.string.onboarding_sync_retry))
                     }
                 }
             }

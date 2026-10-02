@@ -3,7 +3,7 @@ import Foundation
 
 private let log = Log.scoped("APIClient")
 
-/// Production origin of the Melon API (`apps/api`).
+/// Production origin of the separate Melon backend (`unes-backrooms`).
 enum MelonAPI {
     /// Debug builds honor a `debug_api_base_url` UserDefaults override so a
     /// simulator can point at a local api/proxy:
@@ -31,7 +31,7 @@ struct APIRequest: Sendable {
     var authorization: APIAuthorization = .session
 }
 
-/// How a request authenticates against apps/api.
+/// How a request authenticates against the Melon backend.
 enum APIAuthorization: Equatable, Sendable {
     /// Bearer token from the persisted session — the default.
     case session
@@ -47,7 +47,7 @@ struct APIClient: Sendable {
     var send: @Sendable (_ request: APIRequest) async throws -> Data
 }
 
-/// Every apps/api response is wrapped in `{ ok, message, data, error }`.
+/// Every API response is wrapped in `{ ok, message, data, error }`.
 private struct APIEnvelope<T: Decodable>: Decodable {
     let ok: Bool
     let message: String?

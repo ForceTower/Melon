@@ -63,7 +63,7 @@ internal class FeatureFlags @Inject constructor(
         val captchaSiteKey = settings.string(RemoteStringKey.DOCUMENT_CAPTCHA_SITE_KEY)
         val captchaBaseUrl = settings.string(RemoteStringKey.DOCUMENT_CAPTCHA_BASE_URL)
         val reviewTriggers = settings.string(RemoteStringKey.IN_APP_REVIEW_TRIGGERS)
-        if (BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG && !BuildConfig.SCENARIO) {
             return FeatureGates(
                 enrollment = true,
                 enrollmentCertificate = true,

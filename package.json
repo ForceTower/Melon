@@ -1,12 +1,23 @@
 {
   "name": "melon-clients",
   "private": true,
-  "workspaces": ["apps/landing"],
+  "workspaces": [
+    "apps/landing"
+  ],
   "scripts": {
     "check": "oxlint --deny-warnings --type-aware && oxfmt --check",
     "fix": "oxfmt --write && oxlint --deny-warnings --fix --type-aware",
     "fmt": "oxfmt --write",
     "lint": "oxlint --type-aware",
+    "verify:repository": "bun run scripts/verify-repository.ts",
+    "check:conventions": "bun run scripts/check-android-conventions.ts",
+    "check:fixtures": "bun run scripts/check-fixtures.ts",
+    "android:check": "bash scripts/check-android.sh",
+    "android:performance": "bun run scripts/android-performance.ts",
+    "android:scenario": "bun run scripts/android-scenario.ts",
+    "landing:check": "bun run --filter @melon/landing typecheck && bun run --filter @melon/landing build",
+    "mock": "bun run scripts/mock-melon.ts",
+    "mock:test": "bun test scripts/mock-melon.test.ts",
     "kmp:xcframework": "./gradlew :packages:shared-kmp:umbrella:assembleUmbrellaReleaseXCFramework"
   },
   "devDependencies": {

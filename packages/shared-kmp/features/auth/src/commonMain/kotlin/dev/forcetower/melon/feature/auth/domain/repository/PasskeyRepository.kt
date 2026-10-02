@@ -6,7 +6,7 @@ import dev.forcetower.melon.feature.auth.domain.model.PasskeyCredential
 import dev.forcetower.melon.feature.auth.domain.model.PasskeyError
 import dev.forcetower.melon.feature.auth.domain.model.PasskeyRegistrationOptions
 
-// Manages the signed-in account's passkeys against apps/api: lists them,
+// Manages the signed-in account's passkeys against the backend: lists them,
 // fetches WebAuthn creation options, enrolls a freshly minted credential, and
 // renames/revokes existing ones. Distinct from `AuthRepository`, which owns
 // the pre-session login (assertion) flow.

@@ -58,6 +58,8 @@ gen/
 # ---------- iOS / Xcode / Swift ----------
 xcuserdata/
 DerivedData/
+.derivedData/
+*.xcresult/
 *.xcuserstate
 *.xcscmblueprint
 *.xccheckout
@@ -77,6 +79,7 @@ apps/ios/UNES/Resources/Licenses/
 *.pid
 
 # ---------- Misc ----------
+artifacts/
 tmp/
 .temp/
 

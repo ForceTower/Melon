@@ -41,6 +41,14 @@ The apps expect their own Firebase configuration and a backend endpoint. If you 
 building your own fork, supply your own `google-services.json` /
 `GoogleService-Info.plist` and point the apps at your own server.
 
+## Verification
+
+See [verification commands and merge evidence](docs/testing.md) for repository,
+Android, native iOS and landing checks. Agents can run the isolated synthetic
+account with `bun run android:scenario home.populated --serial DEVICE_SERIAL`;
+no production account is needed. [Android performance](docs/android-performance.md)
+documents the separate physical-device benchmark and Baseline Profile commands.
+
 ## Legacy
 
 The original single-app Android incarnation is also preserved as standalone refs:

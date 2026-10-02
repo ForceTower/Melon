@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./gradlew *)",
+      "Bash(bun run android:check)",
+      "Bash(bun run verify:repository)",
+      "Bash(bun run mock:test)",
+      "Bash(bun run android:scenario *)",
+      "Bash(adb devices*)",
+      "Bash(xcrun simctl list*)"
+    ]
+  }
+}

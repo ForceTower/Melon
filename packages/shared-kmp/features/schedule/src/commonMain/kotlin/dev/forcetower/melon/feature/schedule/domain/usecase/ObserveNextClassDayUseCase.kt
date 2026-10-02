@@ -1,5 +1,6 @@
 package dev.forcetower.melon.feature.schedule.domain.usecase
 
+import dev.forcetower.melon.core.common.AppClock
 import dev.forcetower.melon.core.common.ForegroundSignal
 import dev.forcetower.melon.core.common.parseHhMm
 import dev.forcetower.melon.core.common.tickerFlow
@@ -37,6 +38,7 @@ import kotlinx.datetime.plus
 @OptIn(ExperimentalCoroutinesApi::class)
 @Inject
 class ObserveNextClassDayUseCase internal constructor(
+    private val clock: AppClock,
     private val semesterDao: SemesterDao,
     private val academicDao: AcademicDao,
     private val foreground: ForegroundSignal,
@@ -44,7 +46,7 @@ class ObserveNextClassDayUseCase internal constructor(
     operator fun invoke(): Flow<NextClassDay?> {
         val keyFlow: Flow<Key?> = combine(
             semesterDao.observeAll(),
-            tickerFlow(60_000, foreground.pulses),
+            tickerFlow(60_000, foreground.pulses, clock),
         ) { semesters, now ->
             val today = now.date
             val semester = pickActiveSemester(semesters, today.toString())

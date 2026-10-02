@@ -1,0 +1,33 @@
+name: Bug report
+description: Report a reproducible failure using synthetic or redacted evidence.
+body:
+  - type: input
+    id: release
+    attributes:
+      label: Platform and app version
+      placeholder: Android 16, Melon 12.7.0
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Expected and actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction steps or scenario ID
+      description: Include frequency and whether the failure survives a restart.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Sanitized evidence
+      description: Do not include credentials, student records, personal messages or private logs. Describe where authorized maintainers can find restricted evidence instead.
+  - type: input
+    id: correlation
+    attributes:
+      label: Existing issue or sanitized correlation key
+      description: Link related reports so the same failure can be tracked together.

@@ -6,6 +6,7 @@ import dev.forcetower.melon.core.analytics.Analytics
 import dev.forcetower.melon.core.analytics.ContentTypes
 import androidx.annotation.StringRes
 import dev.forcetower.melon.core.common.ForegroundSignal
+import dev.forcetower.melon.core.common.AppClock
 import dev.forcetower.melon.core.common.Outcome
 import dev.forcetower.melon.feature.me.domain.model.ReauthError
 import dev.forcetower.melon.core.session.domain.SessionStore
@@ -73,6 +74,8 @@ internal data class OverviewUiState(
     val reauthLoading: Boolean = false,
     @StringRes val reauthErrorRes: Int? = null,
     val clock: Instant = Clock.System.now(),
+    val timeZone: TimeZone = TimeZone.currentSystemDefault(),
+    val locale: Locale = Locale.getDefault(),
 ) : UiState {
     // Both gates must open, exactly like iOS: the Remote Config flag AND a
     // non-null featured event from the server.
@@ -95,7 +98,7 @@ internal data class OverviewUiState(
 
     val greetingKind: GreetingKind
         get() {
-            val hour = clock.toLocalDateTime(TimeZone.currentSystemDefault()).hour
+            val hour = clock.toLocalDateTime(timeZone).hour
             return when {
                 hour < 12 -> GreetingKind.Morning
                 hour < 18 -> GreetingKind.Afternoon
@@ -105,15 +108,15 @@ internal data class OverviewUiState(
 
     // "Ter, 11 mar" — rendered uppercase by the header per the design spec.
     val dateEyebrow: String
-        get() = formatDayEyebrow(localDate(clock))
+        get() = formatDayEyebrow(localDate(clock, timeZone), locale)
 
     // Weekday name for the "Seu dia" summary ("Terça · 4 aulas").
     val weekdayLabel: String
-        get() = formatWeekday(localDate(clock))
+        get() = formatWeekday(localDate(clock, timeZone), locale)
 
     // Tomorrow's eyebrow inside the day-done hero ("Qua, 12 mar").
     val tomorrowEyebrow: String
-        get() = formatDayEyebrow(localDate(clock).plusDays(1))
+        get() = formatDayEyebrow(localDate(clock, timeZone).plusDays(1), locale)
 
     // Days until the active semester ends — the "Reta final" countdown. Null
     // until the profile lands or once the end date has passed.
@@ -121,7 +124,7 @@ internal data class OverviewUiState(
         get() {
             val endIso = semesterEndIso ?: return null
             val end = runCatching { LocalDate.parse(endIso.take(10)) }.getOrNull() ?: return null
-            val days = ChronoUnit.DAYS.between(localDate(clock), end)
+            val days = ChronoUnit.DAYS.between(localDate(clock, timeZone), end)
             return if (days >= 0) days.toInt() else null
         }
 }
@@ -141,6 +144,7 @@ internal sealed interface OverviewEffect : UiEffect {
 
 @HiltViewModel
 internal class OverviewViewModel @Inject constructor(
+    private val appClock: AppClock,
     observeHeader: ObserveOverviewHeaderUseCase,
     observeMeProfile: ObserveMeProfileUseCase,
     observeNowClass: ObserveNowClassUseCase,
@@ -156,7 +160,9 @@ internal class OverviewViewModel @Inject constructor(
     private val refreshCredentialStatus: RefreshCredentialStatusUseCase,
     private val reauthenticateUpstream: ReauthenticateUpstreamUseCase,
     private val analytics: Analytics,
-) : MviViewModel<OverviewUiState, OverviewIntent, OverviewEffect>(OverviewUiState()) {
+) : MviViewModel<OverviewUiState, OverviewIntent, OverviewEffect>(
+    OverviewUiState(clock = appClock.now(), timeZone = appClock.timeZone),
+) {
 
     init {
         viewModelScope.launch {
@@ -231,7 +237,7 @@ internal class OverviewViewModel @Inject constructor(
         // forcing KMP flows to re-emit. Mirrors iOS `runClockTicker`.
         viewModelScope.launch {
             while (isActive) {
-                setState { copy(clock = Clock.System.now()) }
+                setState { copy(clock = appClock.now(), timeZone = appClock.timeZone, locale = Locale.getDefault()) }
                 delay(CLOCK_TICK_MS.milliseconds)
             }
         }
@@ -301,24 +307,24 @@ internal class OverviewViewModel @Inject constructor(
     }
 }
 
-private fun localDate(now: Instant): LocalDate =
+private fun localDate(now: Instant, timeZone: TimeZone): LocalDate =
     java.time.Instant.ofEpochMilli(now.toEpochMilliseconds())
-        .atZone(ZoneId.systemDefault())
+        .atZone(ZoneId.of(timeZone.id))
         .toLocalDate()
 
 // "ter, 11 mar" in pt-BR — device-locale formatted; the header renders it
 // uppercase ("TER, 11 MAR") per the design. Abbreviation dots are dropped to
 // match the design's compact eyebrow.
-private fun formatDayEyebrow(date: LocalDate): String =
-    DateTimeFormatter.ofPattern("EEE, d MMM", Locale.getDefault())
+private fun formatDayEyebrow(date: LocalDate, locale: Locale): String =
+    DateTimeFormatter.ofPattern("EEE, d MMM", locale)
         .format(date)
         .replace(".", "")
 
 // "Terça-feira" — capitalized full weekday for the "Seu dia" summary.
-private fun formatWeekday(date: LocalDate): String =
-    DateTimeFormatter.ofPattern("EEEE", Locale.getDefault())
+private fun formatWeekday(date: LocalDate, locale: Locale): String =
+    DateTimeFormatter.ofPattern("EEEE", locale)
         .format(date)
-        .replaceFirstChar { it.titlecase(Locale.getDefault()) }
+        .replaceFirstChar { it.titlecase(locale) }
 
 private fun ReauthError.toMessageRes(): Int = when (this) {
     ReauthError.InvalidPassword -> R.string.reauth_error_invalid

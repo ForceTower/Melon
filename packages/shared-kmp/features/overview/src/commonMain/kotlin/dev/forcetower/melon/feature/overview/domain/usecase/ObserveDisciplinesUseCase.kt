@@ -1,5 +1,6 @@
 package dev.forcetower.melon.feature.overview.domain.usecase
 
+import dev.forcetower.melon.core.common.AppClock
 import dev.forcetower.melon.core.database.dao.AcademicDao
 import dev.forcetower.melon.core.database.dao.SemesterDao
 import dev.forcetower.melon.core.database.query.StudentDisciplineRow
@@ -13,21 +14,20 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
-import kotlin.time.Clock
-import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @Inject
 class ObserveDisciplinesUseCase internal constructor(
+    private val clock: AppClock,
     private val semesterDao: SemesterDao,
     private val academicDao: AcademicDao,
 ) {
-    private val timeZone = TimeZone.currentSystemDefault()
+    private val timeZone = clock.timeZone
 
     operator fun invoke(): Flow<List<OverviewDiscipline>> =
         semesterDao.observeAll().flatMapLatest { semesters ->
-            val today = Clock.System.now().toLocalDateTime(timeZone).date.toString()
+            val today = clock.now().toLocalDateTime(timeZone).date.toString()
             val semester = pickActiveSemester(semesters, today)
                 ?: return@flatMapLatest flowOf(emptyList())
             academicDao.observeStudentDisciplines(semester.id).map { rows ->

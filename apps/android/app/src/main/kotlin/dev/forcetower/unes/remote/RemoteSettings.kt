@@ -4,6 +4,9 @@ import dev.forcetower.lever.LeverClient
 import dev.forcetower.lever.LeverKey
 import javax.inject.Inject
 import javax.inject.Singleton
+import dagger.Lazy
+import dev.forcetower.unes.BuildConfig
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -17,18 +20,18 @@ import kotlinx.coroutines.flow.map
 // and keeps the last activated values on disk, so gates hold their state
 // offline and across launches.
 @Singleton
-internal class RemoteSettings @Inject constructor(private val client: LeverClient) {
+internal class RemoteSettings @Inject constructor(private val client: Lazy<LeverClient>) {
     private val boolKeys = RemoteBoolKey.entries.associateWith { LeverKey.boolean(it.key, false) }
     private val stringKeys = RemoteStringKey.entries.associateWith { LeverKey.string(it.key, "") }
 
     // Emits on every value-changing activation — the launch fetch, the polling
     // floor, and the SSE nudge that lands a console publish while the app is
     // open, all through one channel.
-    val changes: Flow<Unit> = client.updates.map { }
+    val changes: Flow<Unit> = if (BuildConfig.SCENARIO) emptyFlow() else client.get().updates.map { }
 
-    fun bool(key: RemoteBoolKey): Boolean = client.value(boolKeys.getValue(key))
+    fun bool(key: RemoteBoolKey): Boolean = !BuildConfig.SCENARIO && client.get().value(boolKeys.getValue(key))
 
-    fun string(key: RemoteStringKey): String = client.value(stringKeys.getValue(key))
+    fun string(key: RemoteStringKey): String = if (BuildConfig.SCENARIO) "" else client.get().value(stringKeys.getValue(key))
 }
 
 // Parameter names are the keys shared with iOS. Android and iOS resolve them

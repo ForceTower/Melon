@@ -38,7 +38,6 @@ import timber.log.Timber
 private data class SyncStep(
     val key: String,
     val minDurationMs: Long,
-    val maxDurationMs: Long,
 )
 
 // Per-step durations mirror iOS `SYNC_STEPS` (apps/ios/.../SyncViewModel.swift).
@@ -46,15 +45,15 @@ private data class SyncStep(
 // visibly rather than bailing. The visible order follows the dc onboarding
 // spec (horário before turmas); every task runs concurrently regardless.
 private val SYNC_STEPS = listOf(
-    SyncStep(key = "auth", minDurationMs = 1_200, maxDurationMs = 3_000),
-    SyncStep(key = "profile", minDurationMs = 800, maxDurationMs = 4_000),
-    SyncStep(key = "schedule", minDurationMs = 800, maxDurationMs = 30_000),
-    SyncStep(key = "classes", minDurationMs = 800, maxDurationMs = 30_000),
-    SyncStep(key = "grades", minDurationMs = 800, maxDurationMs = 60_000),
-    SyncStep(key = "msgs", minDurationMs = 800, maxDurationMs = 90_000),
+    SyncStep(key = "auth", minDurationMs = 1_200),
+    SyncStep(key = "profile", minDurationMs = 800),
+    SyncStep(key = "schedule", minDurationMs = 800),
+    SyncStep(key = "classes", minDurationMs = 800),
+    SyncStep(key = "grades", minDurationMs = 800),
+    SyncStep(key = "msgs", minDurationMs = 800),
 )
 
-private sealed interface StepResult {
+internal sealed interface StepResult {
     data object Ok : StepResult
     data class Fail(val authBroken: Boolean) : StepResult
 }
@@ -62,9 +61,12 @@ private sealed interface StepResult {
 data class SyncUiState(
     val currentStepIdx: Int = 0,
     val doneKeys: Set<String> = emptySet(),
+    val failed: Boolean = false,
 ) : UiState
 
-sealed interface SyncIntent : UiIntent
+sealed interface SyncIntent : UiIntent {
+    data object Retry : SyncIntent
+}
 
 sealed interface SyncEffect : UiEffect {
     data object Done : SyncEffect
@@ -101,7 +103,15 @@ class SyncViewModel @Inject internal constructor(
         start()
     }
 
-    override fun onIntent(intent: SyncIntent) = Unit
+    override fun onIntent(intent: SyncIntent) {
+        if (intent == SyncIntent.Retry && currentState.failed) {
+            didStart = false
+            anyAuthBroken = false
+            summaries = emptyList()
+            setState { SyncUiState() }
+            start()
+        }
+    }
 
     private fun start() {
         if (didStart) return
@@ -123,12 +133,9 @@ class SyncViewModel @Inject internal constructor(
     // MARK: auth
 
     private suspend fun runAuthStep(): StepResult {
-        runCatching { recordAuthIfFailed(pingActivity()) }
-            .onFailure { Timber.tag(TAG).w(it, "ping failed") }
-        // The FID usually lands before login and sits cached, unregistered —
-        // reconcile now that the session exists.
-        pushRegistrar.reconcile()
-        return StepResult.Ok
+        val result = runAuthStepWork(applicationScope, { pingActivity() }, { pushRegistrar.reconcile() })
+        if (result is StepResult.Fail && result.authBroken) anyAuthBroken = true
+        return result
     }
 
     // MARK: profile
@@ -299,10 +306,7 @@ class SyncViewModel @Inject internal constructor(
 
     // MARK: grades
 
-    // Polls indefinitely on 1.5s intervals until the backend reports
-    // appliedSemesters > 0 (or Phase 1 permanently failed). The only early
-    // exit is initial.state == Failed — advancing onto empty data is worse
-    // than a longer sync view.
+    // The animation driver bounds this poll and cancels it on timeout.
     private suspend fun runGradesStep(): StepResult {
         var iter = 0
         while (true) {
@@ -314,7 +318,7 @@ class SyncViewModel @Inject internal constructor(
                         Timber.tag(TAG).i("grades: iter=$iter initial=$state applied=$applied")
                         if (applied > 0) return StepResult.Ok
                         if (state == OnboardingStatus.PhaseStatus.State.Failed) {
-                            return StepResult.Ok
+                            return StepResult.Fail(false)
                         }
                     }
                     is Outcome.Err -> {
@@ -400,7 +404,17 @@ class SyncViewModel @Inject internal constructor(
     private suspend fun driveAnimation() {
         SYNC_STEPS.forEachIndexed { idx, step ->
             setState { copy(currentStepIdx = idx) }
-            waitForStep(step)
+            if (waitForStep(step) is StepResult.Fail) {
+                stopWork()
+                if (anyAuthBroken) {
+                    runCatching { pushRegistrar.unregisterAll() }
+                    sessionStore.logout()
+                    emitEffect(SyncEffect.AuthFailed)
+                } else {
+                    setState { copy(failed = true) }
+                }
+                return
+            }
             setState { copy(doneKeys = doneKeys + step.key) }
         }
         waitForReadiness()
@@ -415,18 +429,20 @@ class SyncViewModel @Inject internal constructor(
         }
     }
 
-    private suspend fun waitForStep(step: SyncStep) {
+    private suspend fun waitForStep(step: SyncStep): StepResult {
         val task = task(step.key)
         val started = nowMs()
-        if (task != null) {
-            withTimeoutOrNull(step.maxDurationMs) { task.await() }
-        }
+        val result = task?.let { awaitSyncStep(it, REQUIRED_STEP_TIMEOUT_MS) } ?: StepResult.Fail(false)
+        if (result is StepResult.Fail) return result
         val elapsed = nowMs() - started
-        if (elapsed >= step.maxDurationMs) {
-            Timber.tag(TAG).i("anim: step=${step.key} TIMED_OUT after ${elapsed}ms")
-        }
         val remaining = step.minDurationMs - elapsed
         if (remaining > 0) delay(remaining)
+        return result
+    }
+
+    private fun stopWork() {
+        listOf(authTask, profileTask, classesTask, scheduleTask, gradesTask, msgsTask)
+            .forEach { it?.cancel() }
     }
 
     private suspend fun waitForReadiness() {
@@ -463,15 +479,31 @@ class SyncViewModel @Inject internal constructor(
 
     private fun nowMs(): Long = System.currentTimeMillis()
 
-    private fun recordAuthIfFailed(outcome: Outcome<Unit, SyncError>) {
-        if (outcome is Outcome.Err && outcome.error.isUnauthorized()) {
-            anyAuthBroken = true
-        }
-    }
-
     private fun SyncError.isUnauthorized(): Boolean = this is SyncError.Unauthorized
 
     private companion object {
         const val TAG = "SyncViewModel"
+        const val REQUIRED_STEP_TIMEOUT_MS = 120_000L
     }
+}
+
+internal suspend fun awaitSyncStep(task: Deferred<StepResult>, timeoutMs: Long): StepResult =
+    withTimeoutOrNull(timeoutMs) { task.await() } ?: StepResult.Fail(false)
+
+internal suspend fun runAuthStepWork(
+    scope: CoroutineScope,
+    ping: suspend () -> Outcome<Unit, SyncError>,
+    registerPush: suspend () -> Unit,
+): StepResult {
+    scope.launch { registerPush() }
+    val outcome = try {
+        withTimeoutOrNull(2_000) { ping() }
+    } catch (cancel: CancellationException) {
+        throw cancel
+    } catch (_: Exception) {
+        null
+    }
+    return if (outcome is Outcome.Err && outcome.error is SyncError.Unauthorized) {
+        StepResult.Fail(true)
+    } else StepResult.Ok
 }

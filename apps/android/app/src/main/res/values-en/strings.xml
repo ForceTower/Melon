@@ -134,6 +134,9 @@
     <string name="onboarding_sync_step_grades">Downloading this semester\'s grades</string>
     <string name="onboarding_sync_step_messages">Syncing notices</string>
     <string name="onboarding_sync_auth_failed">Your session expired. Sign in again.</string>
+    <string name="onboarding_sync_failed">Could not prepare your semester. Check your connection and try again.</string>
+    <string name="onboarding_sync_step_failed">This step failed</string>
+    <string name="onboarding_sync_retry">Try again</string>
     <!-- endregion -->
 
     <!-- region Onboarding · Ready -->

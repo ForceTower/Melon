@@ -1,0 +1,35 @@
+name: Test quarantine
+description: Track an explicitly time-limited test quarantine and its coverage gap.
+body:
+  - type: input
+    id: test
+    attributes:
+      label: Test and reproduction command
+    validations:
+      required: true
+  - type: input
+    id: owner
+    attributes:
+      label: Owner
+    validations:
+      required: true
+  - type: input
+    id: expiry
+    attributes:
+      label: Expiry date (YYYY-MM-DD)
+    validations:
+      required: true
+  - type: textarea
+    id: failures
+    attributes:
+      label: First-attempt failure evidence
+      description: Link the original failing run and any diagnostic rerun; a passing rerun does not erase the first failure.
+    validations:
+      required: true
+  - type: textarea
+    id: gap
+    attributes:
+      label: Coverage gap and temporary verification
+      description: Identify any critical journey that loses coverage and how it will be verified until the test is restored.
+    validations:
+      required: true

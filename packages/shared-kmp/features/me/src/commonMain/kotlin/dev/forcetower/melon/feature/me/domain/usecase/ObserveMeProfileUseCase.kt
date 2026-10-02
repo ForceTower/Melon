@@ -1,5 +1,6 @@
 package dev.forcetower.melon.feature.me.domain.usecase
 
+import dev.forcetower.melon.core.common.AppClock
 import dev.forcetower.melon.core.database.dao.AcademicDao
 import dev.forcetower.melon.core.database.dao.CredentialsDao
 import dev.forcetower.melon.core.database.dao.SemesterDao
@@ -27,9 +28,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
-import kotlin.time.Clock
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.TimeZone
 import kotlinx.datetime.daysUntil
 import kotlinx.datetime.toLocalDateTime
 
@@ -42,13 +41,14 @@ import kotlinx.datetime.toLocalDateTime
 @OptIn(ExperimentalCoroutinesApi::class)
 @Inject
 class ObserveMeProfileUseCase internal constructor(
+    private val clock: AppClock,
     private val userDao: UserDao,
     private val studentDao: StudentDao,
     private val semesterDao: SemesterDao,
     private val academicDao: AcademicDao,
     private val credentialsDao: CredentialsDao,
 ) {
-    private val timeZone = TimeZone.currentSystemDefault()
+    private val timeZone = clock.timeZone
 
     operator fun invoke(): Flow<MeProfile> {
         val baseProfile = combine(
@@ -60,7 +60,7 @@ class ObserveMeProfileUseCase internal constructor(
         ) { user, student, semesters, enrollments, grades ->
             ProfileSlice(user, student, semesters, enrollments, grades)
         }.flatMapLatest { slice ->
-            val today = Clock.System.now().toLocalDateTime(timeZone).date.toString()
+            val today = clock.now().toLocalDateTime(timeZone).date.toString()
             val active = pickActiveSemester(slice.semesters, today)
             if (active == null) {
                 flow {

@@ -146,6 +146,7 @@ struct LoginView: View {
 
             if let error = store.errorMessage {
                 Text(error)
+                    .accessibilityIdentifier("auth.error")
                     .font(.system(size: 13, weight: .medium))
                     .foregroundStyle(UNESColor.coral)
                     .padding(.top, 10)
@@ -172,6 +173,8 @@ struct LoginView: View {
                 isFocused: focus == .username
             ) {
                 TextField(String(""), text: $store.username, prompt: Text(.onboardingLoginUsernamePlaceholder))
+                    .accessibilityIdentifier("auth.username")
+                    .accessibilityLabel(Text(.commonUsername))
                     .textContentType(.username)
                     .noAutocapitalization()
                     .autocorrectionDisabled()
@@ -199,6 +202,8 @@ struct LoginView: View {
                     }
                 }
                 .textContentType(.password)
+                .accessibilityIdentifier("auth.password")
+                .accessibilityLabel(Text(.commonPassword))
                 .submitLabel(.go)
                 .focused($focus, equals: .password)
                 .onSubmit { store.send(.submitTapped) }
@@ -273,6 +278,7 @@ struct LoginView: View {
                 }
             }
             .buttonStyle(.unesDark)
+            .accessibilityIdentifier("auth.submit")
             .disabled(!store.canSubmit)
             .fadeUp(delay: 0.4, duration: 0.6)
 

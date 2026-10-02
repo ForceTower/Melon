@@ -1,5 +1,6 @@
 package dev.forcetower.melon.feature.dashboard.domain.usecase
 
+import dev.forcetower.melon.core.common.AppClock
 import dev.forcetower.melon.core.common.parseHhMm
 import dev.forcetower.melon.core.common.toUpstreamDay
 import dev.forcetower.melon.core.common.weekSlot
@@ -11,17 +12,17 @@ import dev.forcetower.melon.core.database.query.SemesterAllocationRow
 import dev.forcetower.melon.feature.dashboard.domain.model.NextClassInfo
 import dev.forcetower.melon.feature.dashboard.domain.model.ReadyOverview
 import dev.zacsweers.metro.Inject
-import kotlin.time.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
 @Inject
 class GetReadyOverviewUseCase internal constructor(
+    private val clock: AppClock,
     private val semesterDao: SemesterDao,
     private val academicDao: AcademicDao,
 ) {
     suspend operator fun invoke(): ReadyOverview {
-        val timeZone = TimeZone.currentSystemDefault()
+        val timeZone = clock.timeZone
         val semester = pickActiveSemester(semesterDao.listAll(), timeZone)
             ?: return ReadyOverview(semesterCode = null, classCount = 0, totalCredits = 0, nextClass = null)
 
@@ -42,7 +43,7 @@ class GetReadyOverviewUseCase internal constructor(
     // yyyy-MM-dd matches calendar order.
     private fun pickActiveSemester(all: List<SemesterEntity>, timeZone: TimeZone): SemesterEntity? {
         if (all.isEmpty()) return null
-        val today = Clock.System.now().toLocalDateTime(timeZone).date.toString()
+        val today = clock.now().toLocalDateTime(timeZone).date.toString()
         val active = all.firstOrNull { it.startDate <= today && today <= it.endDate }
         if (active != null) return active
         return all.maxByOrNull { it.startDate }
@@ -50,7 +51,7 @@ class GetReadyOverviewUseCase internal constructor(
 
     private fun pickNextClass(rows: List<SemesterAllocationRow>, timeZone: TimeZone): NextClassInfo? {
         if (rows.isEmpty()) return null
-        val now = Clock.System.now().toLocalDateTime(timeZone)
+        val now = clock.now().toLocalDateTime(timeZone)
         val nowSlot = weekSlot(now.dayOfWeek.toUpstreamDay(), now.hour * 60 + now.minute)
 
         val winner = rows

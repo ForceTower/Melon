@@ -34,6 +34,7 @@ internal class PushRegistrar @Inject constructor(
     private val mutex = Mutex()
 
     suspend fun reconcile() {
+        if (BuildConfig.SCENARIO) return
         try {
             mutex.withLock { reconcileLocked() }
         } catch (cancellation: CancellationException) {
@@ -47,6 +48,7 @@ internal class PushRegistrar @Inject constructor(
     // token is registered, never before — deleting first would leave a push
     // gap.
     suspend fun tokenReceived(token: String) {
+        if (BuildConfig.SCENARIO) return
         mutex.withLock {
             val previous = identifierStore.token()
             if (previous != null && previous != token) {
