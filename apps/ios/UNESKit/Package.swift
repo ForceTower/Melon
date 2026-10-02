@@ -9,9 +9,11 @@ let package = Package(
         .library(name: "UNESKit", targets: ["UNESKit"]),
     ],
     dependencies: [
+        // Exact: 1.26.0 breaks the watchOS 27 SDK build and 1.26.2 moves to
+        // swift-issue-reporting 2.x, which clashes with the other pointfree pins.
         .package(
             url: "https://github.com/pointfreeco/swift-composable-architecture",
-            from: "1.26.0"
+            exact: "1.26.1"
         ),
         .package(
             url: "https://github.com/groue/GRDB.swift",
