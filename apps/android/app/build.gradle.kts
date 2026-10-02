@@ -25,7 +25,10 @@ fun gitOutput(vararg args: String): String? {
 // Bumped by hand on every release.
 val marketingVersion = "12.7.0"
 
-val gitVersionCode = gitOutput("rev-list", "--count", "main")?.toIntOrNull() ?: 1
+val gitVersionCode = gitOutput("rev-list", "--count", "HEAD")?.toIntOrNull() ?: 1
+
+// Set by CI for store uploads; local release builds are signed from Android Studio.
+val uploadKeystore = providers.environmentVariable("ANDROID_UPLOAD_KEYSTORE_FILE").orNull
 
 android {
     namespace = "dev.forcetower.unes"
@@ -76,6 +79,14 @@ android {
             keyAlias = "androiddebugkey"
             keyPassword = "android"
         }
+        if (uploadKeystore != null) {
+            create("upload") {
+                storeFile = file(uploadKeystore)
+                storePassword = providers.environmentVariable("ANDROID_UPLOAD_KEYSTORE_PASSWORD").get()
+                keyAlias = providers.environmentVariable("ANDROID_UPLOAD_KEY_ALIAS").get()
+                keyPassword = providers.environmentVariable("ANDROID_UPLOAD_KEY_PASSWORD").get()
+            }
+        }
     }
 
     buildTypes {
@@ -91,6 +102,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
             )
+            signingConfig = signingConfigs.findByName("upload")
         }
         create("scenario") {
             initWith(getByName("debug"))

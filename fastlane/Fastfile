@@ -1,0 +1,66 @@
+skip_docs
+
+IOS_BUNDLE_IDS = %w[
+  dev.forcetower.unes.ios
+  dev.forcetower.unes.ios.widgets
+  dev.forcetower.unes.ios.watchkitapp
+  dev.forcetower.unes.ios.watchkitapp.widgets
+].freeze
+
+platform :ios do
+  desc "Create or renew the App Store certificate and profiles in the match repository"
+  lane :certificates do
+    match(app_identifier: IOS_BUNDLE_IDS)
+  end
+
+  desc "Archive with the match identity and upload the build to TestFlight"
+  lane :beta do
+    setup_ci
+    app_store_connect_api_key(
+      key_id: ENV.fetch("ASC_KEY_ID"),
+      issuer_id: ENV.fetch("ASC_ISSUER_ID"),
+      key_content: ENV.fetch("ASC_KEY_P8"),
+    )
+    match(app_identifier: IOS_BUNDLE_IDS, readonly: true)
+
+    # The project stays on automatic signing for local work. This override gives each target
+    # the match profile for its bundle ID; package targets have none and resolve to empty.
+    profiles = lane_context[SharedValues::MATCH_PROVISIONING_PROFILE_MAPPING]
+    signing = File.join(Dir.tmpdir, "match-signing.xcconfig")
+    File.write(signing, <<~XCCONFIG)
+      CODE_SIGN_STYLE = Manual
+      CODE_SIGN_IDENTITY = Apple Distribution
+      PROVISIONING_PROFILE_SPECIFIER = $(MATCH_PROFILE_$(PRODUCT_BUNDLE_IDENTIFIER:c99extidentifier))
+      #{profiles.map { |bundle_id, profile| "MATCH_PROFILE_#{bundle_id.tr('.', '_')} = #{profile}" }.join("\n")}
+    XCCONFIG
+
+    build_app(
+      project: "apps/ios/UNES.xcodeproj",
+      scheme: "UNES",
+      configuration: "Release",
+      export_method: "app-store",
+      export_options: { manageAppVersionAndBuildNumber: false },
+      xcargs: "-xcconfig #{signing.shellescape} CURRENT_PROJECT_VERSION=#{number_of_commits} " \
+              "-skipMacroValidation -skipPackagePluginValidation",
+      output_directory: "artifacts/ios-release",
+    )
+    upload_to_testflight(skip_waiting_for_build_processing: true)
+  end
+end
+
+platform :android do
+  desc "Build the release bundle signed with the upload key and send it to the Play internal track"
+  lane :beta do
+    gradle(task: ":apps:android:app:bundleRelease")
+    upload_to_play_store(
+      package_name: "com.forcetower.uefs",
+      json_key_data: ENV.fetch("PLAY_SERVICE_ACCOUNT_JSON"),
+      track: "internal",
+      aab: "apps/android/app/build/outputs/bundle/release/app-release.aab",
+      skip_upload_metadata: true,
+      skip_upload_changelogs: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+    )
+  end
+end

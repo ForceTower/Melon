@@ -71,6 +71,10 @@ Carthage/Build/
 # KMP XCFramework build outputs (regenerated from sources)
 *.xcframework/
 
+# ---------- fastlane ----------
+vendor/bundle/
+fastlane/report.xml
+
 # ---------- Docker / infra ----------
 *.pid
 

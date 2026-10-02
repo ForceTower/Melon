@@ -1,0 +1,4 @@
+git_url("git@github.com:ForceTower/melon-certificates.git")
+storage_mode("git")
+type("appstore")
+team_id("5GH6Q6KS69")
