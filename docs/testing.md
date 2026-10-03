@@ -68,8 +68,10 @@ never interrupted.
 
 On October 2, 2026, `main` protection was configured to require **Required
 verification** from the GitHub Actions app (ID `15368`). Strict checking requires
-the branch to be current with `main`; administrators are included. Existing
-signature, linear-history, force-push and deletion settings were preserved.
+the branch to be current with `main`. Existing signature, linear-history,
+force-push and deletion settings were preserved. Administrators can bypass the
+protection and push to `main` directly; those pushes still run **Verify**, and
+`Distribute` only uploads once **Required verification** passes.
 This follows successful remote runs of every selected lane, including native
 iOS on the existing `xcode-27` runner. The setting is repository configuration,
 not something a workflow file activates by itself.
