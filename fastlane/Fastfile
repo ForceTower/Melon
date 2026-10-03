@@ -1,5 +1,11 @@
+require "plist"
+
 skip_docs
 
+# Lane code runs inside fastlane/; actions run from the repository root.
+REPO = File.expand_path("..")
+
+IOS_TEAM_ID = "5GH6Q6KS69"
 IOS_BUNDLE_IDS = %w[
   dev.forcetower.unes.ios
   dev.forcetower.unes.ios.widgets
@@ -10,7 +16,7 @@ IOS_BUNDLE_IDS = %w[
 platform :ios do
   desc "Create or renew the App Store certificate and profiles in the match repository"
   lane :certificates do
-    match(app_identifier: IOS_BUNDLE_IDS)
+    match(team_id: IOS_TEAM_ID, app_identifier: IOS_BUNDLE_IDS)
   end
 
   desc "Archive with the match identity and upload the build to TestFlight"
@@ -21,30 +27,52 @@ platform :ios do
       issuer_id: ENV.fetch("ASC_ISSUER_ID"),
       key_content: ENV.fetch("ASC_KEY_P8"),
     )
-    match(app_identifier: IOS_BUNDLE_IDS, readonly: true)
+    match(team_id: IOS_TEAM_ID, app_identifier: IOS_BUNDLE_IDS, readonly: true)
 
-    # The project stays on automatic signing for local work. This override gives each target
-    # the match profile for its bundle ID; package targets have none and resolve to empty.
+    # The project stays on automatic signing for local work. This override applies to every
+    # target, Swift package bundles included, so they also need the team. Each target gets the
+    # match profile for its bundle ID; package targets have none and resolve to empty.
     profiles = lane_context[SharedValues::MATCH_PROVISIONING_PROFILE_MAPPING]
     signing = File.join(Dir.tmpdir, "match-signing.xcconfig")
     File.write(signing, <<~XCCONFIG)
       CODE_SIGN_STYLE = Manual
       CODE_SIGN_IDENTITY = Apple Distribution
+      DEVELOPMENT_TEAM = #{IOS_TEAM_ID}
       PROVISIONING_PROFILE_SPECIFIER = $(MATCH_PROFILE_$(PRODUCT_BUNDLE_IDENTIFIER:c99extidentifier))
       #{profiles.map { |bundle_id, profile| "MATCH_PROFILE_#{bundle_id.tr('.', '_')} = #{profile}" }.join("\n")}
     XCCONFIG
 
-    build_app(
-      project: "apps/ios/UNES.xcodeproj",
-      scheme: "UNES",
-      configuration: "Release",
-      export_method: "app-store",
-      export_options: { manageAppVersionAndBuildNumber: false },
-      xcargs: "-xcconfig #{signing.shellescape} CURRENT_PROJECT_VERSION=#{number_of_commits} " \
-              "-skipMacroValidation -skipPackagePluginValidation",
-      output_directory: "artifacts/ios-release",
+    # build_app (gym) opens the project with the xcodeproj gem, which can't read Xcode 27
+    # projects, so archive and export with xcodebuild directly.
+    output = File.join(REPO, "artifacts/ios-release")
+    archive = File.join(output, "UNES.xcarchive")
+    export_options = File.join(output, "ExportOptions.plist")
+    FileUtils.mkdir_p(output)
+    File.write(export_options, {
+      "method" => "app-store-connect",
+      "signingStyle" => "manual",
+      "provisioningProfiles" => profiles,
+      "manageAppVersionAndBuildNumber" => false,
+    }.to_plist)
+
+    sh("xcodebuild", "archive", "-quiet",
+       "-project", File.join(REPO, "apps/ios/UNES.xcodeproj"),
+       "-scheme", "UNES",
+       "-configuration", "Release",
+       "-destination", "generic/platform=iOS",
+       "-archivePath", archive,
+       "-xcconfig", signing,
+       "-skipMacroValidation", "-skipPackagePluginValidation",
+       "CURRENT_PROJECT_VERSION=#{number_of_commits}")
+    sh("xcodebuild", "-exportArchive", "-quiet",
+       "-archivePath", archive,
+       "-exportOptionsPlist", export_options,
+       "-exportPath", output)
+
+    upload_to_testflight(
+      ipa: Dir[File.join(output, "*.ipa")].first,
+      skip_waiting_for_build_processing: true,
     )
-    upload_to_testflight(skip_waiting_for_build_processing: true)
   end
 end
 

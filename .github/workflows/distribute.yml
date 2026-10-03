@@ -79,15 +79,6 @@ jobs:
           MATCH_GIT_PRIVATE_KEY: ${{ secrets.MATCH_GIT_PRIVATE_KEY }}
         run: bundle exec fastlane ios beta
 
-      - name: Upload build logs
-        if: failure()
-        uses: actions/upload-artifact@v7
-        with:
-          name: testflight-logs
-          path: ~/Library/Logs/gym
-          retention-days: 14
-          if-no-files-found: ignore
-
   play-internal:
     name: Play internal testing
     if: inputs.android
