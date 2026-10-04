@@ -25,6 +25,7 @@ import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.printToString
+import androidx.test.espresso.Espresso
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
 import dev.forcetower.unes.remote.FeatureGates
@@ -119,7 +120,8 @@ internal class ScenarioJourneyTest {
             scrollToText(compose.activity.getString(R.string.enrollment_prereq_unmet_title))
             scrollClick(compose.activity.getString(R.string.enrollment_section_queue))
             waitFor(R.string.enrollment_section_selected)
-            device.pressBack()
+            Espresso.pressBack()
+            waitFor(R.string.enrollment_offers_title)
             click(R.string.enrollment_dock_review)
             compose.onAllNodesWithContentDescription(compose.activity.getString(R.string.enrollment_remove))
                 .onFirst().performScrollTo().performClick()
