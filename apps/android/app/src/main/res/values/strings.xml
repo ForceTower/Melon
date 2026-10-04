@@ -278,6 +278,8 @@
         <item quantity="one">+%1$d aula</item>
         <item quantity="other">+%1$d aulas</item>
     </plurals>
+    <!-- ":30" — minutes under the hour in the tomorrow row's clock tile. -->
+    <string name="overview_hero_tomorrow_minute_format" translatable="false">:%1$s</string>
     <!-- endregion -->
 
     <!-- region Overview · Reta final card -->
@@ -437,6 +439,8 @@
     <string name="disciplines_card_hours_format">%1$dh</string>
     <string name="disciplines_card_footer_absences">Faltas</string>
     <string name="disciplines_card_evaluations_label">Avaliações</string>
+    <!-- "/3" — evaluations total, after the tinted done count. -->
+    <string name="disciplines_card_evaluations_total_format">/%1$d</string>
     <!-- Tail of "9 faltas livres" — the number is rendered separately so it can be tinted. -->
     <plurals name="disciplines_card_free_absences_label">
         <item quantity="one">falta livre</item>
@@ -470,6 +474,8 @@
     <string name="disciplines_past_mean_label">média</string>
     <!-- "5/6 aprovadas" — past semester pass count over total. -->
     <string name="disciplines_past_approved_format" tools:ignore="PluralsCandidate">%1$d/%2$d aprovadas</string>
+    <!-- "· 5/6 aprovadas" — trails the semester mean on the summary line. -->
+    <string name="disciplines_past_approved_tail_format">· %1$s</string>
     <!-- endregion -->
 
     <!-- region Disciplinas · Undownloaded placeholder -->
@@ -661,6 +667,9 @@
     <string name="folio_runner_hint">toque para pular · arraste pra baixo para abaixar</string>
     <string name="folio_runner_game_over">acabou</string>
     <string name="folio_runner_retry_hint">toque para tentar de novo</string>
+    <!-- "HI 00420" — best score in the HUD. -->
+    <string name="folio_runner_best_score_format">HI %1$s</string>
+    <string name="folio_runner_close_glyph" translatable="false">✕</string>
     <!-- endregion -->
 
     <!-- region Me · Header -->
@@ -956,6 +965,7 @@
     <string name="passkeys_name_fallback">Chave de acesso</string>
     <string name="passkeys_sync_synced">Senhas do Google</string>
     <string name="passkeys_sync_local">Só neste aparelho</string>
+    <string name="passkeys_sync_separator" translatable="false">·</string>
 
     <!-- Add sheet -->
     <string name="passkeys_add_title">Criar chave de acesso</string>
@@ -1174,6 +1184,8 @@
         <item quantity="one">há %1$d dia</item>
         <item quantity="other">há %1$d dias</item>
     </plurals>
+    <!-- "· Universidade" / "· meu" — trails the category label on a row. -->
+    <string name="calendar_row_tag_tail_format">· %1$s</string>
     <string name="calendar_sync_footer">Sincronizado com o SAGRES</string>
     <string name="calendar_empty_state">Nada por aqui com esses filtros.</string>
     <!-- endregion -->
@@ -1399,6 +1411,7 @@
     <string name="campus_event_countdown_hours">horas</string>
     <string name="campus_event_countdown_minutes">min</string>
     <string name="campus_event_countdown_seconds">seg</string>
+    <string name="campus_event_countdown_separator" translatable="false">:</string>
     <!-- endregion -->
 
     <!-- region Campus event · Categories -->
@@ -1429,6 +1442,8 @@
         <item quantity="one">%1$d atividade</item>
         <item quantity="other">%1$d atividades</item>
     </plurals>
+    <!-- "Sexta-feira · 5 atividades" — selected day header above the activity list. -->
+    <string name="campus_event_hub_day_summary_format">%1$s · %2$s</string>
     <string name="campus_event_hub_ended_title">Foi incrível!</string>
     <string name="campus_event_hub_ended_body">Obrigado por construir este evento com a gente.</string>
     <string name="campus_event_hub_stat_activities">atividades</string>
@@ -1504,6 +1519,19 @@
     <!-- region Widget · "Próxima aula" -->
     <string name="widget_next_class_title">Próxima aula</string>
     <string name="widget_next_class_description">A próxima aula do dia, com horário, sala e topo de prioridades.</string>
+    <string name="widget_next_class_time_range" translatable="false">%1$s – %2$s</string>
+    <string name="widget_next_class_room_format">◦ Sala %1$s</string>
+    <!-- "◦ Prof. Adriana" — footer item after the room. -->
+    <string name="widget_next_class_meta_item_format">◦ %1$s</string>
+    <string name="widget_next_class_today_eyebrow">◦ SEU DIA</string>
+    <!-- "07:30 · iniciada" / "09:30 · final" — labels under the in-class progress bar. -->
+    <string name="widget_in_class_started_format">%1$s · iniciada</string>
+    <string name="widget_in_class_end_format">%1$s · final</string>
+    <string name="widget_day_done_eyebrow">◦ TUDO CERTO POR HOJE</string>
+    <plurals name="widget_day_done_completed_count">
+        <item quantity="one">%1$d aula concluída</item>
+        <item quantity="other">%1$d aulas concluídas</item>
+    </plurals>
     <!-- endregion -->
 
     <!-- region Materiais · Hub -->
@@ -1565,6 +1593,8 @@
         <item quantity="one">%d item</item>
         <item quantity="other">%d itens</item>
     </plurals>
+    <!-- "Provas 3" — type filter chip label and its count. -->
+    <string name="materials_filter_chip_format">%1$s %2$d</string>
     <string name="materials_no_results_title">Nada encontrado</string>
     <string name="materials_no_results_subtitle">Ajuste os filtros ou envie você mesmo esse material.</string>
     <string name="materials_contribute_cta">Contribuir com material</string>
@@ -1597,6 +1627,9 @@
         <item quantity="one">%d pág</item>
         <item quantity="other">%d págs</item>
     </plurals>
+    <string name="materials_detail_stats_separator" translatable="false">·</string>
+    <!-- "PDF · 12" — file kind (uppercased at render) and page count on the preview card. -->
+    <string name="materials_detail_preview_meta_format">%1$s · %2$d</string>
     <string name="materials_uploader_name">Colega de %1$s</string>
     <string name="materials_uploader_sub">Entrou em %1$d · identidade preservada</string>
     <string name="materials_detail_disclaimer">Respeite direitos autorais e restrições do professor ao usar este material.</string>
@@ -1622,6 +1655,8 @@
     <string name="materials_moderation_step_review_sub">em até 48h</string>
     <string name="materials_moderation_step_published">Publicado no acervo</string>
     <string name="materials_moderation_step_published_sub">visível para a turma</string>
+    <!-- "Prova · 2025.2 · 4 págs" — type, semester and page count under the title. -->
+    <string name="materials_moderation_summary_format">%1$s · %2$s · %3$s</string>
     <!-- endregion -->
 
     <!-- region Materiais · Denúncia -->
@@ -1648,6 +1683,8 @@
     <string name="materials_upload_title_details">Detalhes do material</string>
     <string name="materials_upload_title_guidelines">Diretrizes da comunidade</string>
     <string name="materials_upload_disc_prompt">Para qual disciplina é este material?</string>
+    <!-- "EXA101 · Cálculo I" / "EXA101 · 3 materiais" — discipline code plus its name or material count. -->
+    <string name="materials_upload_discipline_meta_format">%1$s · %2$s</string>
     <plurals name="materials_count">
         <item quantity="one">%d material</item>
         <item quantity="other">%d materiais</item>
@@ -1666,7 +1703,8 @@
     <string name="materials_upload_semester_placeholder">Ex: 2025.2</string>
     <string name="materials_upload_semester_hint">Use o semestre como ele aparece nas suas turmas.</string>
     <string name="materials_upload_field_teacher">Professor</string>
-    <string name="materials_upload_optional">opcional</string>
+    <!-- Trails the field label; quoted so the leading space survives the resource trim. -->
+    <string name="materials_upload_optional">" opcional"</string>
     <string name="materials_upload_teacher_placeholder">Nome do professor</string>
     <string name="materials_upload_continue">Continuar</string>
     <string name="materials_upload_guidelines_prompt">Antes de publicar, confirme que seu envio segue as diretrizes da comunidade.</string>
@@ -1681,6 +1719,8 @@
     <string name="materials_upload_submit_failed">Não foi possível enviar. Verifique a conexão e tente de novo.</string>
     <string name="materials_upload_success_title">Enviado! Agora é com a moderação</string>
     <string name="materials_upload_success_body">Seu material está em análise e aparece no acervo assim que for aprovado — normalmente em até 48h.</string>
+    <!-- "Prova · 2025.2" — type and semester on the submitted card. -->
+    <string name="materials_upload_submitted_meta_format">%1$s · %2$s</string>
     <string name="materials_upload_done">Concluir</string>
     <!-- endregion -->
 
@@ -1759,6 +1799,7 @@
         <item quantity="one">%1$d turma</item>
         <item quantity="other">%1$d turmas</item>
     </plurals>
+    <string name="enrollment_offer_meta_separator" translatable="false">·</string>
     <!-- endregion -->
 
     <!-- region Matrícula · Turmas -->
@@ -1840,6 +1881,8 @@
         <item quantity="other">%1$s dependem de análise do colegiado.</item>
     </plurals>
     <string name="enrollment_prereq_pending_tag">Pré-req. pendente</string>
+    <!-- "· 60h" — trails the section label on a picked discipline. -->
+    <string name="enrollment_review_hours_tail_format">· %1$s</string>
     <string name="enrollment_waitlist_position_format">Fila · %1$dº</string>
     <string name="enrollment_waitlist_waiting">Fila · na espera</string>
     <string name="enrollment_allows_review_format">Sem vaga na %1$s? Me aloque em outra turma de %2$s.</string>
@@ -2040,6 +2083,8 @@
         <item quantity="other">obras após filtros</item>
     </plurals>
     <string name="library_year_illegible">ano ilegível</string>
+    <!-- "· 3. ed." — edition after the year on a result row. -->
+    <string name="library_results_edition_format">· %1$s</string>
     <string name="library_filters_clear">Limpar filtros</string>
     <string name="library_facet_remove">Remover filtro</string>
     <string name="library_results_loaded_format" tools:ignore="PluralsCandidate">%1$s de %2$s carregadas</string>

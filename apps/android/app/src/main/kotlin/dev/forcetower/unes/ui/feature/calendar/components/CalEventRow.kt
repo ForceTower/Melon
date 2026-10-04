@@ -131,12 +131,18 @@ internal fun CalEventRow(
                                 .padding(horizontal = 6.dp, vertical = 2.dp),
                         )
                         personal != null -> Text(
-                            text = "· " + stringResource(R.string.calendar_personal_badge),
+                            text = stringResource(
+                                R.string.calendar_row_tag_tail_format,
+                                stringResource(R.string.calendar_personal_badge),
+                            ),
                             style = MaterialTheme.typography.labelSmall.copy(fontSize = 11.sp),
                             color = ink4,
                         )
                         else -> Text(
-                            text = "· " + stringResource(event.scope.labelRes),
+                            text = stringResource(
+                                R.string.calendar_row_tag_tail_format,
+                                stringResource(event.scope.labelRes),
+                            ),
                             style = MaterialTheme.typography.labelSmall.copy(fontSize = 11.sp),
                             color = ink4,
                         )
@@ -210,7 +216,7 @@ private fun DateColumn(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
-            text = "%02d".format(event.start.dayOfMonth),
+            text = event.start.dayOfMonth.toString().padStart(2, '0'),
             style = MaterialTheme.typography.headlineSmall.copy(
                 fontSize = 21.sp,
                 lineHeight = 21.sp,

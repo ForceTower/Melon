@@ -8,6 +8,8 @@ import android.graphics.RadialGradient
 import android.graphics.Shader
 import androidx.compose.ui.graphics.toArgb
 import androidx.core.graphics.createBitmap
+import dev.forcetower.unes.designsystem.theme.MelonWidgetMeshKind
+import dev.forcetower.unes.designsystem.theme.MelonWidgetTheme
 
 // Static mesh-background bitmap used as the widget's hero surface. Glance's
 // `Image` lets us pass an `ImageProvider(Bitmap)` and have the system widget
@@ -30,7 +32,7 @@ import androidx.core.graphics.createBitmap
 internal object MeshBackgroundBitmap {
     private const val CANVAS_PX = 400
 
-    fun render(theme: WidgetTheme): Bitmap {
+    fun render(theme: MelonWidgetTheme): Bitmap {
         val bmp = createBitmap(CANVAS_PX, CANVAS_PX, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bmp)
         val surfacePaint = Paint().apply { color = theme.surface.toArgb() }
@@ -42,7 +44,7 @@ internal object MeshBackgroundBitmap {
         }
 
         // Top → bottom plum/cream wash that lifts contrast for foreground
-        // text. Same stop set as iOS `WidgetTheme.veilTop/Bottom`.
+        // text, from `MelonWidgetTheme.veilTop/Bottom`.
         val veilPaint = Paint().apply {
             shader = LinearGradient(
                 0f,
@@ -112,14 +114,14 @@ internal object MeshBackgroundBitmap {
     // a 158pt card → 2× canvas; we use 1.4–1.6× here, slightly tighter so
     // the blob silhouettes stay distinguishable when the canvas stretches
     // into a wider Medium / Large footprint).
-    private fun blobsFor(kind: MeshKind): List<Blob> =
+    private fun blobsFor(kind: MelonWidgetMeshKind): List<Blob> =
         when (kind) {
-            MeshKind.Sun -> listOf(
+            MelonWidgetMeshKind.Sun -> listOf(
                 Blob(0xFFC94538.toInt(), -0.10f, -0.15f, 1.6f),
                 Blob(0xFFF4A23C.toInt(), 0.50f, 0.35f, 1.5f),
                 Blob(0xFFFBD9A8.toInt(), -0.05f, 0.55f, 1.4f),
             )
-            MeshKind.Cool -> listOf(
+            MelonWidgetMeshKind.Cool -> listOf(
                 Blob(0xFF1E3A5F.toInt(), -0.10f, -0.10f, 1.6f),
                 Blob(0xFF3B9EAE.toInt(), 0.55f, 0.40f, 1.4f),
                 Blob(0xFF88D4C1.toInt(), -0.15f, 0.60f, 1.3f),

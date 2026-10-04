@@ -13,9 +13,9 @@ import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.padding
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
+import dev.forcetower.unes.designsystem.theme.MelonWidgetTheme
 import dev.forcetower.unes.widgets.NextClassEntry
 import dev.forcetower.unes.widgets.NextClassState
-import dev.forcetower.unes.widgets.WidgetTheme
 import dev.forcetower.unes.widgets.countdownEyebrow
 
 // 158×158dp · Android Small. Padded mesh card with code, short title, and the
@@ -37,7 +37,7 @@ import dev.forcetower.unes.widgets.countdownEyebrow
 @Composable
 internal fun NextClassSmallContent(
     entry: NextClassEntry,
-    theme: WidgetTheme,
+    theme: MelonWidgetTheme,
 ) {
     val subjectColor = Color(entry.subjectColorArgb)
     val height = LocalSize.current.height

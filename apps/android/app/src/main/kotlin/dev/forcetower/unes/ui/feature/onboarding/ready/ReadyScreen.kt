@@ -76,7 +76,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun ReadyScreen(
+internal fun ReadyScreen(
     firstName: String,
     onEnter: () -> Unit,
     vm: ReadyViewModel = hiltViewModel(),

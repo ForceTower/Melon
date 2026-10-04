@@ -37,13 +37,13 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.theme.MelonMotion
 import dev.forcetower.unes.designsystem.theme.melon
+import dev.forcetower.unes.designsystem.theme.monoFontFamily
 import dev.forcetower.unes.ui.feature.licenses.LicenseBreakdown
 
 // "Código aberto" hero — the M3 container that opens the screen: total package
@@ -213,7 +213,7 @@ private fun LegendItem(
         Text(
             text = row.family.displayName,
             style = MaterialTheme.typography.bodySmall.copy(
-                fontFamily = FontFamily.Monospace,
+                fontFamily = MaterialTheme.typography.monoFontFamily,
                 fontSize = 13.sp,
             ),
             color = ink2,

@@ -2,6 +2,7 @@ package dev.forcetower.unes.designsystem.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
@@ -115,3 +116,9 @@ val MelonTypography = Typography(
         letterSpacing = 1.1.sp,
     ),
 )
+
+// iOS `UNESFont.mono`: codes, versions and tabular numbers keep a role's size
+// and weight but swap in the monospaced face, e.g.
+// `typography.labelSmall.copy(fontFamily = typography.monoFontFamily)`.
+val Typography.monoFontFamily: FontFamily
+    get() = MelonMono

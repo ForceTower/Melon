@@ -451,7 +451,7 @@ internal fun CampusEventCountdownRow(
 @Composable
 private fun CountSeparator() {
     Text(
-        text = ":",
+        text = stringResource(R.string.campus_event_countdown_separator),
         style = MaterialTheme.typography.displaySmall.copy(fontSize = 28.sp),
         color = MaterialTheme.melon.fixed.onHero.copy(alpha = 0.32f),
         modifier = Modifier.padding(top = 1.dp),

@@ -22,6 +22,7 @@ import androidx.glance.appwidget.provideContent
 import androidx.glance.layout.Box
 import androidx.glance.layout.fillMaxSize
 import dev.forcetower.unes.MainActivity
+import dev.forcetower.unes.designsystem.theme.MelonWidgetTheme
 import dev.forcetower.unes.widgets.views.DayDoneMediumContent
 import dev.forcetower.unes.widgets.views.InClassMediumContent
 import dev.forcetower.unes.widgets.views.NextClassLargeContent
@@ -72,7 +73,7 @@ private fun NextClassWidgetContent() {
     // and avoiding caching keeps the widget honest about clock drift between
     // pushes from the host.
     val theme = remember { resolveTheme(context) }
-    val isDark = theme === WidgetTheme.dark
+    val isDark = theme === MelonWidgetTheme.dark
     val entry = remember(size, isDark) { resolveEntry(context, isDark) }
     val background = remember(theme) { MeshBackgroundBitmap.render(theme) }
 
@@ -159,7 +160,7 @@ private fun resolveEntry(
 // the iOS handoff — read it from the host context's UI mode rather than
 // relying on a Compose theme that doesn't reach across the RemoteViews
 // boundary.
-private fun resolveTheme(context: Context): WidgetTheme {
+private fun resolveTheme(context: Context): MelonWidgetTheme {
     val mode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-    return if (mode == Configuration.UI_MODE_NIGHT_YES) WidgetTheme.dark else WidgetTheme.light
+    return if (mode == Configuration.UI_MODE_NIGHT_YES) MelonWidgetTheme.dark else MelonWidgetTheme.light
 }

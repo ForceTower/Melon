@@ -394,7 +394,7 @@ private fun EvaluationsCount(
                 color = MaterialTheme.colorScheme.onBackground,
             )
             Text(
-                text = "/$total",
+                text = stringResource(R.string.disciplines_card_evaluations_total_format, total),
                 style = MaterialTheme.typography.titleLarge.copy(
                     fontWeight = FontWeight.ExtraBold,
                     lineHeight = 22.sp,

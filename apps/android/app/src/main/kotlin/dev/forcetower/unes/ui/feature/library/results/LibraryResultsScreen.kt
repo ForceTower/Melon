@@ -812,7 +812,7 @@ private fun WorkRow(
                     )
                     work.edition?.let { edition ->
                         Text(
-                            text = "· $edition",
+                            text = stringResource(R.string.library_results_edition_format, edition),
                             style = MaterialTheme.typography.labelSmall.copy(fontSize = 11.sp),
                             color = MaterialTheme.colorScheme.outline,
                             maxLines = 1,

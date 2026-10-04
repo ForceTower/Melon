@@ -86,7 +86,7 @@ import dev.forcetower.unes.ui.feature.onboarding.components.OnboardingPillButton
 private enum class LoginField { Id, Password }
 
 @Composable
-fun LoginScreen(
+internal fun LoginScreen(
     onSubmit: (String) -> Unit,
     onBack: () -> Unit,
     vm: LoginViewModel = hiltViewModel(),

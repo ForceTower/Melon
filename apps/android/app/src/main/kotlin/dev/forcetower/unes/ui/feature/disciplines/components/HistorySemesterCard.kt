@@ -192,10 +192,13 @@ private fun SummaryLine(semester: Semester) {
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
         Text(
-            text = "· " + stringResource(
-                R.string.disciplines_past_approved_format,
-                approved,
-                disciplines.size,
+            text = stringResource(
+                R.string.disciplines_past_approved_tail_format,
+                stringResource(
+                    R.string.disciplines_past_approved_format,
+                    approved,
+                    disciplines.size,
+                ),
             ),
             style = MaterialTheme.typography.bodySmall.copy(fontSize = 13.sp),
             color = MaterialTheme.colorScheme.outline,

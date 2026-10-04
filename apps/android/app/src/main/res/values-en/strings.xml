@@ -411,6 +411,8 @@
     <string name="disciplines_card_hours_format">%1$dh</string>
     <string name="disciplines_card_footer_absences">Absences</string>
     <string name="disciplines_card_evaluations_label">Evaluations</string>
+    <!-- "/3" — evaluations total, after the tinted done count. -->
+    <string name="disciplines_card_evaluations_total_format">/%1$d</string>
     <!-- Tail of "9 faltas livres" — the number is rendered separately so it can be tinted. -->
     <plurals name="disciplines_card_free_absences_label">
         <item quantity="one">free absence</item>
@@ -444,6 +446,8 @@
     <string name="disciplines_past_mean_label">average</string>
     <!-- "5/6 aprovadas" — past semester pass count over total. -->
     <string name="disciplines_past_approved_format" tools:ignore="PluralsCandidate">%1$d/%2$d passed</string>
+    <!-- "· 5/6 aprovadas" — trails the semester mean on the summary line. -->
+    <string name="disciplines_past_approved_tail_format">· %1$s</string>
     <!-- endregion -->
 
     <!-- region Disciplinas · Undownloaded placeholder -->
@@ -629,6 +633,8 @@
     <string name="folio_runner_hint">tap to jump · swipe down to duck</string>
     <string name="folio_runner_game_over">game over</string>
     <string name="folio_runner_retry_hint">tap to try again</string>
+    <!-- "HI 00420" — best score in the HUD. -->
+    <string name="folio_runner_best_score_format">HI %1$s</string>
     <!-- endregion -->
 
     <!-- region Me · Header -->
@@ -1116,6 +1122,8 @@
         <item quantity="one">%1$d day ago</item>
         <item quantity="other">%1$d days ago</item>
     </plurals>
+    <!-- "· Universidade" / "· meu" — trails the category label on a row. -->
+    <string name="calendar_row_tag_tail_format">· %1$s</string>
     <string name="calendar_sync_footer">Synced with SAGRES</string>
     <string name="calendar_empty_state">Nothing here with these filters.</string>
     <!-- endregion -->
@@ -1369,6 +1377,8 @@
         <item quantity="one">%1$d activity</item>
         <item quantity="other">%1$d activities</item>
     </plurals>
+    <!-- "Sexta-feira · 5 atividades" — selected day header above the activity list. -->
+    <string name="campus_event_hub_day_summary_format">%1$s · %2$s</string>
     <string name="campus_event_hub_ended_title">That was amazing!</string>
     <string name="campus_event_hub_ended_body">Thanks for building this event with us.</string>
     <string name="campus_event_hub_stat_activities">activities</string>
@@ -1444,6 +1454,18 @@
     <!-- region Widget · "Próxima aula" -->
     <string name="widget_next_class_title">Next class</string>
     <string name="widget_next_class_description">Today\'s next class, with time, room, and top priorities.</string>
+    <string name="widget_next_class_room_format">◦ Room %1$s</string>
+    <!-- "◦ Prof. Adriana" — footer item after the room. -->
+    <string name="widget_next_class_meta_item_format">◦ %1$s</string>
+    <string name="widget_next_class_today_eyebrow">◦ YOUR DAY</string>
+    <!-- "07:30 · iniciada" / "09:30 · final" — labels under the in-class progress bar. -->
+    <string name="widget_in_class_started_format">%1$s · started</string>
+    <string name="widget_in_class_end_format">%1$s · end</string>
+    <string name="widget_day_done_eyebrow">◦ ALL SET FOR TODAY</string>
+    <plurals name="widget_day_done_completed_count">
+        <item quantity="one">%1$d class completed</item>
+        <item quantity="other">%1$d classes completed</item>
+    </plurals>
     <!-- endregion -->
 
     <!-- region Materiais · Hub -->
@@ -1505,6 +1527,8 @@
         <item quantity="one">%d item</item>
         <item quantity="other">%d items</item>
     </plurals>
+    <!-- "Provas 3" — type filter chip label and its count. -->
+    <string name="materials_filter_chip_format">%1$s %2$d</string>
     <string name="materials_no_results_title">Nothing found</string>
     <string name="materials_no_results_subtitle">Adjust the filters or submit that material yourself.</string>
     <string name="materials_contribute_cta">Contribute material</string>
@@ -1537,6 +1561,8 @@
         <item quantity="one">%d pg</item>
         <item quantity="other">%d pgs</item>
     </plurals>
+    <!-- "PDF · 12" — file kind (uppercased at render) and page count on the preview card. -->
+    <string name="materials_detail_preview_meta_format">%1$s · %2$d</string>
     <string name="materials_uploader_name">Classmate from %1$s</string>
     <string name="materials_uploader_sub">Joined in %1$d · identity preserved</string>
     <string name="materials_detail_disclaimer">Respect copyright and any professor restrictions when using this material.</string>
@@ -1562,6 +1588,8 @@
     <string name="materials_moderation_step_review_sub">within 48h</string>
     <string name="materials_moderation_step_published">Published in the collection</string>
     <string name="materials_moderation_step_published_sub">visible to the class</string>
+    <!-- "Prova · 2025.2 · 4 págs" — type, semester and page count under the title. -->
+    <string name="materials_moderation_summary_format">%1$s · %2$s · %3$s</string>
     <!-- endregion -->
 
     <!-- region Materiais · Denúncia -->
@@ -1588,6 +1616,8 @@
     <string name="materials_upload_title_details">Material details</string>
     <string name="materials_upload_title_guidelines">Community guidelines</string>
     <string name="materials_upload_disc_prompt">Which course is this material for?</string>
+    <!-- "EXA101 · Cálculo I" / "EXA101 · 3 materiais" — discipline code plus its name or material count. -->
+    <string name="materials_upload_discipline_meta_format">%1$s · %2$s</string>
     <plurals name="materials_count">
         <item quantity="one">%d material</item>
         <item quantity="other">%d materials</item>
@@ -1606,7 +1636,8 @@
     <string name="materials_upload_semester_placeholder">E.g.: 2025.2</string>
     <string name="materials_upload_semester_hint">Use the semester as it appears in your classes.</string>
     <string name="materials_upload_field_teacher">Professor</string>
-    <string name="materials_upload_optional">optional</string>
+    <!-- Trails the field label; quoted so the leading space survives the resource trim. -->
+    <string name="materials_upload_optional">" optional"</string>
     <string name="materials_upload_teacher_placeholder">Professor\'s name</string>
     <string name="materials_upload_continue">Continue</string>
     <string name="materials_upload_guidelines_prompt">Before publishing, confirm your submission follows the community guidelines.</string>
@@ -1621,6 +1652,8 @@
     <string name="materials_upload_submit_failed">Couldn\'t submit. Check your connection and try again.</string>
     <string name="materials_upload_success_title">Submitted! Now it\'s up to moderation</string>
     <string name="materials_upload_success_body">Your material is under review and will appear in the collection once approved — usually within 48h.</string>
+    <!-- "Prova · 2025.2" — type and semester on the submitted card. -->
+    <string name="materials_upload_submitted_meta_format">%1$s · %2$s</string>
     <string name="materials_upload_done">Done</string>
     <!-- endregion -->
 
@@ -1780,6 +1813,8 @@
         <item quantity="other">%1$s are subject to committee review.</item>
     </plurals>
     <string name="enrollment_prereq_pending_tag">Prereq. pending</string>
+    <!-- "· 60h" — trails the section label on a picked discipline. -->
+    <string name="enrollment_review_hours_tail_format">· %1$s</string>
     <string name="enrollment_waitlist_position_format">Waitlist · #%1$d</string>
     <string name="enrollment_waitlist_waiting">Waitlist · waiting</string>
     <string name="enrollment_allows_review_format">No seat in %1$s? Place me in another class of %2$s.</string>
@@ -1981,6 +2016,8 @@
         <item quantity="other">works after filters</item>
     </plurals>
     <string name="library_year_illegible">illegible year</string>
+    <!-- "· 3. ed." — edition after the year on a result row. -->
+    <string name="library_results_edition_format">· %1$s</string>
     <string name="library_filters_clear">Clear filters</string>
     <string name="library_facet_remove">Remove filter</string>
     <string name="library_results_loaded_format" tools:ignore="PluralsCandidate">%1$s of %2$s loaded</string>

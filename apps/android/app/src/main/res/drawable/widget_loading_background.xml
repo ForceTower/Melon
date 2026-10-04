@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
     Drawable used as the initial widget surface. Solid plum (matches
-    `WidgetTheme.dark.surface`) with rounded corners that match the system
+    `MelonWidgetTheme.dark.surface`) with rounded corners that match the system
     widget frame radius. Replaced by the Glance composition on first render.
 -->
 <shape

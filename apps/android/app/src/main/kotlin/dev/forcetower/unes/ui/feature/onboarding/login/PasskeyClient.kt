@@ -39,7 +39,7 @@ import kotlinx.serialization.json.put
  * binary fields, which is exactly what the server expects, so we just forward.
  */
 @Singleton
-class PasskeyClient @Inject constructor(
+internal class PasskeyClient @Inject constructor(
     @ApplicationContext private val context: Context,
     logger: Logger,
 ) {

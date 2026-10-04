@@ -108,11 +108,17 @@ equivalent token; if it doesn't exist yet, add it to the design system first.
 3. **`MaterialTheme.melon.surface.<token>`** — adaptive iOS tokens without a Material 3
    ColorScheme slot: `card`, `cardLine`, `line`, `pressedAccent`.
 
+Glance widgets can't read `MaterialTheme`. They take colors from `MelonWidgetTheme`
+(`light`/`dark`, picked from the host's UI mode) and `MelonWidgetBrand`, and font
+families from `MelonWidgetFonts`.
+
 ### Typography
 
 `MaterialTheme.typography` mirrors `UNESFont`: display + headline roles use **Fraunces**
 (iOS "serif moments"), title/body/label roles use **Inter** (iOS sans). Do not declare
-ad-hoc `TextStyle(fontFamily = FontFamily.Default, …)` in feature code.
+ad-hoc `TextStyle(fontFamily = FontFamily.Default, …)` in feature code. Monospaced text
+(codes, versions, tabular numbers) keeps its role and swaps the family:
+`MaterialTheme.typography.labelSmall.copy(fontFamily = MaterialTheme.typography.monoFontFamily)`.
 
 ### Strings
 

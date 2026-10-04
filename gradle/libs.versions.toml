@@ -141,6 +141,7 @@ androidx-credentials-play-services-auth = { module = "androidx.credentials:crede
 androidx-biometric = { module = "androidx.biometric:biometric", version.ref = "android-biometric" }
 
 # Glance (App widgets — Compose-style API that compiles to RemoteViews)
+androidx-glance = { module = "androidx.glance:glance", version.ref = "android-glance" }
 androidx-glance-appwidget = { module = "androidx.glance:glance-appwidget", version.ref = "android-glance" }
 androidx-glance-material3 = { module = "androidx.glance:glance-material3", version.ref = "android-glance" }
 

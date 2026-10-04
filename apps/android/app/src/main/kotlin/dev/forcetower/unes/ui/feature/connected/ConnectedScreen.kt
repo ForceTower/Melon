@@ -93,7 +93,7 @@ import dev.forcetower.unes.ui.feature.settings.passkeys.PasskeysScreen
 // message detail) is popped by the system back gesture without leaving the
 // tab. The bar stays composed across all routes.
 @Composable
-fun ConnectedScreen(
+internal fun ConnectedScreen(
     onLoggedOut: () -> Unit,
     modifier: Modifier = Modifier,
     onOpenFolioRunner: () -> Unit = {},

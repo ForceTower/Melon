@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.glance.GlanceModifier
+import androidx.glance.LocalContext
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Column
 import androidx.glance.layout.Row
@@ -13,8 +14,9 @@ import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.padding
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
+import dev.forcetower.unes.R
+import dev.forcetower.unes.designsystem.theme.MelonWidgetTheme
 import dev.forcetower.unes.widgets.NextClassEntry
-import dev.forcetower.unes.widgets.WidgetTheme
 import dev.forcetower.unes.widgets.countdownEyebrow
 
 // 338×354dp · Android Large. Adds the today timeline strip and a longer topic
@@ -26,8 +28,9 @@ import dev.forcetower.unes.widgets.countdownEyebrow
 @Composable
 internal fun NextClassLargeContent(
     entry: NextClassEntry,
-    theme: WidgetTheme,
+    theme: MelonWidgetTheme,
 ) {
+    val context = LocalContext.current
     val subjectColor = Color(entry.subjectColorArgb)
     Column(
         modifier = GlanceModifier
@@ -45,7 +48,7 @@ internal fun NextClassLargeContent(
             )
             Spacer(modifier = GlanceModifier.defaultWeight())
             Text(
-                text = "${entry.startTime} – ${entry.endTime}",
+                text = context.getString(R.string.widget_next_class_time_range, entry.startTime, entry.endTime),
                 style = WidgetText.mono(10f, FontWeight.Normal, theme.ink4),
                 maxLines = 1,
             )

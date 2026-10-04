@@ -14,7 +14,7 @@ import java.util.Calendar
 // `GlanceAppWidgetReceiver` plumbing — `NextClassWidget` does the rendering;
 // this class handles bind/unbind and tick scheduling so the countdown keeps
 // rolling even when no fresh snapshot landed from the host process.
-class NextClassWidgetReceiver : GlanceAppWidgetReceiver() {
+internal class NextClassWidgetReceiver : GlanceAppWidgetReceiver() {
 
     override val glanceAppWidget: GlanceAppWidget = NextClassWidget()
 

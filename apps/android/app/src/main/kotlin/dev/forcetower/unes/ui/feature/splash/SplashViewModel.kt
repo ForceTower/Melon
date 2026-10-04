@@ -11,17 +11,17 @@ import dev.forcetower.unes.mvi.UiState
 import javax.inject.Inject
 import kotlinx.coroutines.launch
 
-data object SplashState : UiState
+internal data object SplashState : UiState
 
-sealed interface SplashIntent : UiIntent
+internal sealed interface SplashIntent : UiIntent
 
-sealed interface SplashEffect : UiEffect {
+internal sealed interface SplashEffect : UiEffect {
     data object GoHome : SplashEffect
     data object GoOnboarding : SplashEffect
 }
 
 @HiltViewModel
-class SplashViewModel @Inject constructor(
+internal class SplashViewModel @Inject constructor(
     private val sessionStore: SessionStore,
 ) : MviViewModel<SplashState, SplashIntent, SplashEffect>(SplashState) {
 

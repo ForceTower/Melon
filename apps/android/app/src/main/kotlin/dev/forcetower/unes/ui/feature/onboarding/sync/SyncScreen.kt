@@ -83,7 +83,7 @@ private val SYNC_STEPS = listOf(
 )
 
 @Composable
-fun SyncScreen(
+internal fun SyncScreen(
     firstName: String,
     onDone: () -> Unit,
     onAuthFailed: () -> Unit,

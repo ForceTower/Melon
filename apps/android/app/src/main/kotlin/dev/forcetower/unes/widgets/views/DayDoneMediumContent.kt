@@ -27,9 +27,9 @@ import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.unit.ColorProvider
 import dev.forcetower.unes.R
+import dev.forcetower.unes.designsystem.theme.MelonWidgetBrand
+import dev.forcetower.unes.designsystem.theme.MelonWidgetTheme
 import dev.forcetower.unes.widgets.NextClassEntry
-import dev.forcetower.unes.widgets.WidgetBrand
-import dev.forcetower.unes.widgets.WidgetTheme
 
 // 338×158dp "Dia concluído" — flat surface (no mesh), accent-colored "amanhã,
 // hh:mm" callout, dotted count of finished classes. Mirrors `StateDayDone` /
@@ -43,15 +43,16 @@ import dev.forcetower.unes.widgets.WidgetTheme
 @Composable
 internal fun DayDoneMediumContent(
     entry: NextClassEntry,
-    theme: WidgetTheme,
+    theme: MelonWidgetTheme,
 ) {
+    val context = LocalContext.current
     Column(
         modifier = GlanceModifier
             .fillMaxSize()
             .padding(16.dp),
     ) {
         Text(
-            text = "◦ TUDO CERTO POR HOJE",
+            text = context.getString(R.string.widget_day_done_eyebrow),
             style = WidgetText.mono(9.5f, FontWeight.Normal, theme.ink3),
             maxLines = 1,
         )
@@ -85,7 +86,11 @@ internal fun DayDoneMediumContent(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    text = "${entry.completedTodayCount} aulas concluídas",
+                    text = context.resources.getQuantityString(
+                        R.plurals.widget_day_done_completed_count,
+                        entry.completedTodayCount,
+                        entry.completedTodayCount,
+                    ),
                     style = WidgetText.sans(11f, theme.ink3),
                     maxLines = 1,
                 )
@@ -105,7 +110,7 @@ internal fun DayDoneMediumContent(
 @Composable
 private fun TomorrowLine(
     line: String?,
-    theme: WidgetTheme,
+    theme: MelonWidgetTheme,
 ) {
     val head: String? = line?.let {
         val sep = it.indexOf(" · ")
@@ -115,7 +120,7 @@ private fun TomorrowLine(
 
     if (head == null) {
         Text(
-            text = "Sem aulas hoje",
+            text = context.getString(R.string.overview_today_empty),
             style = WidgetText.serif(26f, theme.ink),
             maxLines = 2,
         )
@@ -128,7 +133,7 @@ private fun TomorrowLine(
         val start = length
         append(head)
         setSpan(
-            ForegroundColorSpan(WidgetBrand.coral.toArgb()),
+            ForegroundColorSpan(MelonWidgetBrand.coral.toArgb()),
             start,
             length,
             Spanned.SPAN_EXCLUSIVE_EXCLUSIVE,
@@ -175,7 +180,7 @@ private fun CompletedDots(count: Int) {
             Box(
                 modifier = GlanceModifier
                     .size(6.dp)
-                    .background(ColorProvider(WidgetBrand.ok))
+                    .background(ColorProvider(MelonWidgetBrand.ok))
                     .cornerRadiusCompat(3.dp),
             ) {}
         }

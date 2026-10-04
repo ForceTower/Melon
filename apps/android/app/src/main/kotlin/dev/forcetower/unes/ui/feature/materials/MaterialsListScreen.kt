@@ -441,7 +441,7 @@ private fun TypeFilterChip(
         shape = CircleShape,
         label = {
             Text(
-                text = "$label $count",
+                text = stringResource(R.string.materials_filter_chip_format, label, count),
                 style = MaterialTheme.typography.labelMedium.copy(
                     fontSize = 12.5.sp,
                     fontWeight = FontWeight.SemiBold,

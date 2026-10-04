@@ -34,12 +34,12 @@ import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.theme.melon
+import dev.forcetower.unes.designsystem.theme.monoFontFamily
 
 // Dashed placeholder card for a semester whose data hasn't been fetched yet.
 // Tapping starts `SyncSemesterUseCase`; while in flight it shows a spinning
@@ -104,7 +104,7 @@ internal fun UndownloadedSemesterCard(
                 Text(
                     text = countLabel(isLoading = isLoading, estimatedCount = estimatedCount),
                     style = MaterialTheme.typography.labelSmall.copy(
-                        fontFamily = FontFamily.Monospace,
+                        fontFamily = MaterialTheme.typography.monoFontFamily,
                         fontSize = 10.sp,
                         letterSpacing = 0.8.sp,
                     ),
@@ -131,7 +131,7 @@ internal fun UndownloadedSemesterCard(
                 Text(
                     text = stringResource(R.string.disciplines_undownloaded_cta),
                     style = MaterialTheme.typography.labelSmall.copy(
-                        fontFamily = FontFamily.Monospace,
+                        fontFamily = MaterialTheme.typography.monoFontFamily,
                         fontSize = 10.sp,
                         fontWeight = FontWeight.SemiBold,
                         letterSpacing = 1.sp,

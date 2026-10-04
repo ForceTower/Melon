@@ -16,7 +16,7 @@ import javax.inject.Singleton
 // Play's `FakeAppUpdateManager` / `FakeReviewManager`.
 @Module
 @InstallIn(SingletonComponent::class)
-object PlayModule {
+internal object PlayModule {
 
     @Provides
     @Singleton

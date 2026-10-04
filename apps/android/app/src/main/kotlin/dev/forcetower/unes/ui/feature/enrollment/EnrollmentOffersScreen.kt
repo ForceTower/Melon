@@ -457,7 +457,7 @@ private fun OfferCard(
                     color = MaterialTheme.colorScheme.outline,
                 )
                 Text(
-                    text = "·",
+                    text = stringResource(R.string.enrollment_offer_meta_separator),
                     style = MaterialTheme.typography.bodySmall.copy(fontSize = 13.sp),
                     color = MaterialTheme.colorScheme.outlineVariant,
                 )

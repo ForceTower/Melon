@@ -417,7 +417,10 @@ private fun ReviewCard(
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                     Text(
-                        text = "· " + stringResource(R.string.enrollment_hours_format, pick.discipline.workload),
+                        text = stringResource(
+                            R.string.enrollment_review_hours_tail_format,
+                            stringResource(R.string.enrollment_hours_format, pick.discipline.workload),
+                        ),
                         style = MaterialTheme.typography.labelSmall.copy(fontSize = 11.sp),
                         color = MaterialTheme.colorScheme.outlineVariant,
                     )

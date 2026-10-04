@@ -51,7 +51,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -60,6 +59,7 @@ import androidx.core.net.toUri
 import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.theme.MelonMotion
 import dev.forcetower.unes.designsystem.theme.melon
+import dev.forcetower.unes.designsystem.theme.monoFontFamily
 import dev.forcetower.unes.ui.feature.licenses.LicenseFamily
 import dev.forcetower.unes.ui.feature.licenses.LicensePackage
 import kotlinx.coroutines.delay
@@ -146,7 +146,7 @@ private fun GroupHeader(
             Text(
                 text = family.displayName,
                 style = MaterialTheme.typography.titleMedium.copy(
-                    fontFamily = FontFamily.Monospace,
+                    fontFamily = MaterialTheme.typography.monoFontFamily,
                     fontSize = 19.sp,
                     fontWeight = FontWeight.Bold,
                     letterSpacing = (-0.19).sp,
@@ -168,7 +168,7 @@ private fun GroupHeader(
         Text(
             text = stringResource(R.string.licenses_group_count_format, matched, total),
             style = MaterialTheme.typography.labelSmall.copy(
-                fontFamily = FontFamily.Monospace,
+                fontFamily = MaterialTheme.typography.monoFontFamily,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Bold,
                 letterSpacing = 0.sp,
@@ -218,7 +218,7 @@ private fun LicenseRow(
                     Text(
                         text = pkg.artifact,
                         style = MaterialTheme.typography.bodyMedium.copy(
-                            fontFamily = FontFamily.Monospace,
+                            fontFamily = MaterialTheme.typography.monoFontFamily,
                             fontSize = 14.sp,
                             fontWeight = FontWeight.SemiBold,
                         ),
@@ -232,7 +232,7 @@ private fun LicenseRow(
                         Text(
                             text = pkg.version,
                             style = MaterialTheme.typography.bodySmall.copy(
-                                fontFamily = FontFamily.Monospace,
+                                fontFamily = MaterialTheme.typography.monoFontFamily,
                                 fontSize = 12.sp,
                             ),
                             color = ink4,
@@ -362,7 +362,7 @@ private fun RepoLink(
         Text(
             text = host,
             style = MaterialTheme.typography.labelLarge.copy(
-                fontFamily = FontFamily.Monospace,
+                fontFamily = MaterialTheme.typography.monoFontFamily,
                 fontSize = 13.sp,
                 fontWeight = FontWeight.Bold,
             ),

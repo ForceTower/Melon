@@ -2,7 +2,6 @@ package dev.forcetower.unes.ui.feature.onboarding.intro
 
 import androidx.annotation.StringRes
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -52,6 +51,7 @@ import dev.forcetower.unes.designsystem.foundation.Mesh
 import dev.forcetower.unes.designsystem.foundation.MeshVariant
 import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
 import dev.forcetower.unes.designsystem.foundation.scaleInOnAppear
+import dev.forcetower.unes.designsystem.theme.MelonMotion
 import dev.forcetower.unes.designsystem.theme.MelonPaletteColors
 import dev.forcetower.unes.designsystem.theme.MelonTheme
 import dev.forcetower.unes.designsystem.theme.melon
@@ -199,7 +199,7 @@ private fun IntroCarouselContent(
                     val active = i == pagerState.currentPage
                     val width by animateDpAsState(
                         targetValue = if (active) 22.dp else 6.dp,
-                        animationSpec = spring(dampingRatio = 0.7f, stiffness = 400f),
+                        animationSpec = MelonMotion.spring(),
                         label = "dot-w",
                     )
                     Box(

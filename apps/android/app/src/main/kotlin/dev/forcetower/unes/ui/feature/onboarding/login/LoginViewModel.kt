@@ -20,7 +20,7 @@ import dev.forcetower.unes.mvi.UiState
 import javax.inject.Inject
 import kotlinx.coroutines.launch
 
-data class LoginUiState(
+internal data class LoginUiState(
     val username: String = "",
     val password: String = "",
     val showPassword: Boolean = false,
@@ -33,7 +33,7 @@ data class LoginUiState(
         get() = !isLoading && username.isNotBlank() && password.isNotBlank()
 }
 
-sealed interface LoginIntent : UiIntent {
+internal sealed interface LoginIntent : UiIntent {
     /**
      * Reported by the host so the re-auth sheet, which reuses this ViewModel,
      * can't skew the onboarding sign-up funnel.
@@ -55,14 +55,14 @@ sealed interface LoginIntent : UiIntent {
     ) : LoginIntent
 }
 
-sealed interface LoginEffect : UiEffect {
+internal sealed interface LoginEffect : UiEffect {
     data class Authenticated(
         val firstName: String,
     ) : LoginEffect
 }
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(
+internal class LoginViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase,
     private val beginPasskeyLogin: BeginPasskeyLoginUseCase,
     private val completePasskeyLogin: CompletePasskeyLoginUseCase,

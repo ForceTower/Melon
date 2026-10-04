@@ -21,7 +21,7 @@ import dev.forcetower.unes.ui.feature.onboarding.welcome.WelcomeScreen
 import dev.forcetower.unes.ui.feature.splash.SplashScreen
 
 @Composable
-fun AppNavHost() {
+internal fun AppNavHost() {
     val backStack = rememberNavBackStack(AppRoute.Splash)
     val context = LocalContext.current
     val authFailedToast = stringResource(R.string.onboarding_sync_auth_failed)

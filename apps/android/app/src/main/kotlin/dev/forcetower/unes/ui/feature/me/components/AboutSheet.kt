@@ -49,7 +49,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -60,6 +59,7 @@ import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.foundation.Mesh
 import dev.forcetower.unes.designsystem.foundation.MeshVariant
 import dev.forcetower.unes.designsystem.theme.melon
+import dev.forcetower.unes.designsystem.theme.monoFontFamily
 import java.util.Locale
 import kotlinx.coroutines.delay
 
@@ -369,7 +369,7 @@ private fun InfoTile(
             style = MaterialTheme.typography.titleSmall.copy(
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
-                fontFamily = if (mono) FontFamily.Monospace else null,
+                fontFamily = if (mono) MaterialTheme.typography.monoFontFamily else null,
             ),
             color = MaterialTheme.colorScheme.onBackground,
             maxLines = 1,

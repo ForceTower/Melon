@@ -20,7 +20,7 @@ import androidx.core.content.ContextCompat
  * this from a no-op state (already-granted or previously-denied) is safe.
  */
 @Composable
-fun rememberRequestNotificationPermission(): () -> Unit {
+internal fun rememberRequestNotificationPermission(): () -> Unit {
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
         return remember { {} }
     }

@@ -347,7 +347,7 @@ internal fun SyncLine(
         )
         if (!trailing.isNullOrBlank()) {
             Text(
-                text = "·",
+                text = stringResource(R.string.passkeys_sync_separator),
                 style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
                 color = MaterialTheme.colorScheme.outlineVariant,
             )

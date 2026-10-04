@@ -61,7 +61,7 @@ import kotlinx.coroutines.launch
 private const val SplashHoldMillis = 2_600L
 
 @Composable
-fun SplashScreen(
+internal fun SplashScreen(
     onGoHome: () -> Unit,
     onGoOnboarding: () -> Unit,
     vm: SplashViewModel = hiltViewModel(),

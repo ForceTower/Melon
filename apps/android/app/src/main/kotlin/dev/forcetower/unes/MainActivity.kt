@@ -35,7 +35,7 @@ import kotlinx.coroutines.launch
 // settings credential card can host an `androidx.biometric.BiometricPrompt` —
 // the prompt is implemented as a fragment under the hood.
 @AndroidEntryPoint
-class MainActivity : FragmentActivity() {
+internal class MainActivity : FragmentActivity() {
 
     @Inject
     internal lateinit var themePreferences: ThemePreferenceStore

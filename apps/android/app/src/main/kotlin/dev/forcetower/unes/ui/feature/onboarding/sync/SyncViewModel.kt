@@ -60,23 +60,23 @@ internal sealed interface StepResult {
     ) : StepResult
 }
 
-data class SyncUiState(
+internal data class SyncUiState(
     val currentStepIdx: Int = 0,
     val doneKeys: Set<String> = emptySet(),
     val failed: Boolean = false,
 ) : UiState
 
-sealed interface SyncIntent : UiIntent {
+internal sealed interface SyncIntent : UiIntent {
     data object Retry : SyncIntent
 }
 
-sealed interface SyncEffect : UiEffect {
+internal sealed interface SyncEffect : UiEffect {
     data object Done : SyncEffect
     data object AuthFailed : SyncEffect
 }
 
 @HiltViewModel
-class SyncViewModel @Inject internal constructor(
+internal class SyncViewModel @Inject constructor(
     private val pingActivity: PingActivityUseCase,
     private val syncProfile: SyncProfileUseCase,
     private val syncSemesterList: SyncSemesterListUseCase,

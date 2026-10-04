@@ -19,7 +19,7 @@ import kotlin.math.floor
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
-data class ReadyUiState(
+internal data class ReadyUiState(
     val loading: Boolean = true,
     val semesterCode: String? = null,
     val classCount: Int = 0,
@@ -35,7 +35,7 @@ data class ReadyUiState(
     val attendancePercent: Int? = null,
 ) : UiState
 
-data class NextClassDisplay(
+internal data class NextClassDisplay(
     val disciplineName: String,
     val startRaw: String,
     val endRaw: String?,
@@ -44,12 +44,12 @@ data class NextClassDisplay(
     val startsInMinutes: Int,
 )
 
-sealed interface ReadyIntent : UiIntent
+internal sealed interface ReadyIntent : UiIntent
 
-sealed interface ReadyEffect : UiEffect
+internal sealed interface ReadyEffect : UiEffect
 
 @HiltViewModel
-class ReadyViewModel @Inject constructor(
+internal class ReadyViewModel @Inject constructor(
     private val getReadyOverview: GetReadyOverviewUseCase,
     private val calculateOverallScore: CalculateOverallScoreUseCase,
     private val observeDisciplinesList: ObserveDisciplinesListUseCase,

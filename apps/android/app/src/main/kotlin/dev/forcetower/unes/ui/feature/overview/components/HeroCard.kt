@@ -306,7 +306,7 @@ private fun TomorrowRow(tomorrow: OverviewTomorrowUi) {
             )
             if (minute.isNotEmpty()) {
                 Text(
-                    text = ":$minute",
+                    text = stringResource(R.string.overview_hero_tomorrow_minute_format, minute),
                     style = MaterialTheme.typography.bodySmall.copy(
                         fontSize = 10.sp,
                         lineHeight = 12.sp,

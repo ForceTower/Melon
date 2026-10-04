@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.glance.GlanceModifier
+import androidx.glance.LocalContext
 import androidx.glance.background
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Box
@@ -19,9 +20,10 @@ import androidx.glance.layout.width
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.unit.ColorProvider
+import dev.forcetower.unes.R
+import dev.forcetower.unes.designsystem.theme.MelonWidgetBrand
+import dev.forcetower.unes.designsystem.theme.MelonWidgetTheme
 import dev.forcetower.unes.widgets.NextClassEntry
-import dev.forcetower.unes.widgets.WidgetBrand
-import dev.forcetower.unes.widgets.WidgetTheme
 import dev.forcetower.unes.widgets.countdownEyebrow
 
 // 338×158dp "Aula em andamento" — same hero as Medium but the eyebrow flips
@@ -36,8 +38,9 @@ import dev.forcetower.unes.widgets.countdownEyebrow
 @Composable
 internal fun InClassMediumContent(
     entry: NextClassEntry,
-    theme: WidgetTheme,
+    theme: MelonWidgetTheme,
 ) {
+    val context = LocalContext.current
     val subjectColor = Color(entry.subjectColorArgb)
     val progress: Float = run {
         val total = entry.totalDurationMin.coerceAtLeast(1)
@@ -57,12 +60,12 @@ internal fun InClassMediumContent(
             EyebrowRow(
                 text = countdownEyebrow(entry),
                 fontSize = 9.5f,
-                color = WidgetBrand.amber,
+                color = MelonWidgetBrand.amber,
                 weight = FontWeight.Medium,
             )
             Spacer(modifier = GlanceModifier.defaultWeight())
             Text(
-                text = "${entry.startTime} – ${entry.endTime}",
+                text = context.getString(R.string.widget_next_class_time_range, entry.startTime, entry.endTime),
                 style = WidgetText.mono(9.5f, FontWeight.Normal, theme.ink4),
                 maxLines = 1,
             )
@@ -92,13 +95,13 @@ internal fun InClassMediumContent(
             ProgressTrack(progress = progress, theme = theme)
             Row(modifier = GlanceModifier.fillMaxWidth().padding(top = 6.dp)) {
                 Text(
-                    text = "${entry.startTime} · iniciada",
+                    text = context.getString(R.string.widget_in_class_started_format, entry.startTime),
                     style = WidgetText.mono(9.5f, FontWeight.Normal, theme.ink3),
                     maxLines = 1,
                 )
                 Spacer(modifier = GlanceModifier.defaultWeight())
                 Text(
-                    text = "${entry.endTime} · final",
+                    text = context.getString(R.string.widget_in_class_end_format, entry.endTime),
                     style = WidgetText.mono(9.5f, FontWeight.Normal, theme.ink3),
                     maxLines = 1,
                 )
@@ -116,7 +119,7 @@ internal fun InClassMediumContent(
 @Composable
 private fun ProgressTrack(
     progress: Float,
-    theme: WidgetTheme,
+    theme: MelonWidgetTheme,
 ) {
     val trackDp = 306
     val fillDp = (trackDp * progress).toInt().coerceIn(0, trackDp)
@@ -132,7 +135,7 @@ private fun ProgressTrack(
                 modifier = GlanceModifier
                     .fillMaxHeight()
                     .width(fillDp.dp)
-                    .background(ColorProvider(WidgetBrand.amber))
+                    .background(ColorProvider(MelonWidgetBrand.amber))
                     .cornerRadiusCompat(3.dp),
             )
         }

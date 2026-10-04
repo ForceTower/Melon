@@ -759,12 +759,15 @@ private fun Schedule(
         if (selected != null) {
             val activities = event.activities(selected, filter)
             Text(
-                text = "${CampusEventFormat.weekdayLong(selected)} · " +
+                text = stringResource(
+                    R.string.campus_event_hub_day_summary_format,
+                    CampusEventFormat.weekdayLong(selected),
                     pluralStringResource(
                         R.plurals.campus_event_hub_activity_count,
                         activities.size,
                         activities.size,
                     ),
+                ),
                 style = MaterialTheme.typography.titleSmall.copy(fontSize = 13.sp),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 14.dp, bottom = 10.dp),

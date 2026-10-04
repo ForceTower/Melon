@@ -25,7 +25,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -34,10 +33,11 @@ import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.components.MelonGhostButton
 import dev.forcetower.unes.designsystem.components.MelonPrimaryButton
 import dev.forcetower.unes.designsystem.theme.melon
+import dev.forcetower.unes.designsystem.theme.monoFontFamily
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ForgotPasswordSheet(onDismiss: () -> Unit) {
+internal fun ForgotPasswordSheet(onDismiss: () -> Unit) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val context = LocalContext.current
     val portalUrl = stringResource(R.string.onboarding_forgot_password_portal_url)
@@ -61,7 +61,7 @@ fun ForgotPasswordSheet(onDismiss: () -> Unit) {
                         style = MaterialTheme.typography.labelSmall.copy(
                             fontSize = 10.sp,
                             letterSpacing = 0.8.sp,
-                            fontFamily = FontFamily.Monospace,
+                            fontFamily = MaterialTheme.typography.monoFontFamily,
                         ),
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -153,7 +153,7 @@ private fun Step(
             style = MaterialTheme.typography.labelSmall.copy(
                 fontSize = 11.sp,
                 fontWeight = FontWeight.SemiBold,
-                fontFamily = FontFamily.Monospace,
+                fontFamily = MaterialTheme.typography.monoFontFamily,
             ),
             color = MaterialTheme.melon.brand.amber,
             modifier = Modifier

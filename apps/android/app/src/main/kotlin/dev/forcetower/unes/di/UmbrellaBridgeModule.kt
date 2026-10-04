@@ -118,7 +118,7 @@ import kotlinx.datetime.TimeZone
 // (or split into a per-feature bridge module if this file gets large).
 @Module
 @InstallIn(SingletonComponent::class)
-object UmbrellaBridgeModule {
+internal object UmbrellaBridgeModule {
 
     @Provides
     @Singleton

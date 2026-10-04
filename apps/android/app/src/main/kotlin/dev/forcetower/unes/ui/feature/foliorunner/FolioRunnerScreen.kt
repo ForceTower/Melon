@@ -40,7 +40,6 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -50,6 +49,7 @@ import androidx.core.content.edit
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.components.FolioPalette
+import dev.forcetower.unes.designsystem.theme.monoFontFamily
 import kotlin.math.sqrt
 
 // Easter-egg Chrome-dino style runner starring Folio. Reachable from the
@@ -174,9 +174,9 @@ private fun BoxScope.Hud(
     ) {
         if (bestScore > 0) {
             Text(
-                text = "HI ${formatScore(bestScore)}",
+                text = stringResource(R.string.folio_runner_best_score_format, formatScore(bestScore)),
                 style = MaterialTheme.typography.bodySmall.copy(
-                    fontFamily = FontFamily.Monospace,
+                    fontFamily = MaterialTheme.typography.monoFontFamily,
                     fontSize = 11.sp,
                     fontWeight = FontWeight.Medium,
                 ),
@@ -186,7 +186,7 @@ private fun BoxScope.Hud(
         Text(
             text = formatScore(score),
             style = MaterialTheme.typography.bodyMedium.copy(
-                fontFamily = FontFamily.Monospace,
+                fontFamily = MaterialTheme.typography.monoFontFamily,
                 fontSize = 13.sp,
                 fontWeight = FontWeight.Medium,
             ),
@@ -246,7 +246,7 @@ private fun BoxScope.GameOverOverlay(score: Int) {
         Text(
             text = formatScore(score),
             style = MaterialTheme.typography.bodyLarge.copy(
-                fontFamily = FontFamily.Monospace,
+                fontFamily = MaterialTheme.typography.monoFontFamily,
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Medium,
             ),
@@ -283,7 +283,7 @@ private fun CloseButton(
         contentAlignment = Alignment.Center,
     ) {
         Text(
-            text = "✕",
+            text = stringResource(R.string.folio_runner_close_glyph),
             style = MaterialTheme.typography.labelMedium.copy(
                 fontSize = 12.sp,
                 fontWeight = FontWeight.SemiBold,

@@ -40,7 +40,7 @@ import kotlinx.datetime.toLocalDateTime
 // `start()` is called from `ConnectedViewModel` once the user lands on the
 // authenticated shell.
 @Singleton
-class WidgetSnapshotPublisher @Inject constructor(
+internal class WidgetSnapshotPublisher @Inject constructor(
     @param:ApplicationContext private val context: Context,
     private val week: ObserveScheduleWeekUseCase,
     private val nextDay: ObserveNextClassDayUseCase,

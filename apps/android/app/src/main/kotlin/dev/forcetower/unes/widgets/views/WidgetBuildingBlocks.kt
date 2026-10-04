@@ -11,6 +11,7 @@ import androidx.compose.ui.unit.sp
 import androidx.glance.GlanceModifier
 import androidx.glance.Image
 import androidx.glance.ImageProvider
+import androidx.glance.LocalContext
 import androidx.glance.appwidget.cornerRadius
 import androidx.glance.background
 import androidx.glance.layout.Alignment
@@ -25,15 +26,16 @@ import androidx.glance.layout.height
 import androidx.glance.layout.padding
 import androidx.glance.layout.size
 import androidx.glance.layout.width
-import androidx.glance.text.FontFamily
 import androidx.glance.text.FontStyle
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import androidx.glance.unit.ColorProvider
+import dev.forcetower.unes.R
+import dev.forcetower.unes.designsystem.theme.MelonWidgetBrand
+import dev.forcetower.unes.designsystem.theme.MelonWidgetFonts
+import dev.forcetower.unes.designsystem.theme.MelonWidgetTheme
 import dev.forcetower.unes.widgets.NextClassEntry
-import dev.forcetower.unes.widgets.WidgetBrand
-import dev.forcetower.unes.widgets.WidgetTheme
 
 // Glance ships two overloads named `ColorProvider`: a `(Color)` factory in
 // `androidx.glance.unit` for fixed colors, and a `(day, night)` factory in
@@ -55,7 +57,7 @@ internal object WidgetText {
             color = ColorProvider(color),
             fontSize = size.sp,
             fontWeight = weight,
-            fontFamily = FontFamily.Monospace,
+            fontFamily = MelonWidgetFonts.mono,
         )
 
     fun serif(
@@ -67,7 +69,7 @@ internal object WidgetText {
             color = ColorProvider(color),
             fontSize = size.sp,
             fontWeight = FontWeight.Normal,
-            fontFamily = FontFamily.Serif,
+            fontFamily = MelonWidgetFonts.serif,
             fontStyle = if (italic) FontStyle.Italic else FontStyle.Normal,
         )
 
@@ -81,7 +83,7 @@ internal object WidgetText {
             color = ColorProvider(color),
             fontSize = size.sp,
             fontWeight = weight,
-            fontFamily = FontFamily.SansSerif,
+            fontFamily = MelonWidgetFonts.sans,
             fontStyle = if (italic) FontStyle.Italic else FontStyle.Normal,
         )
 }
@@ -126,7 +128,7 @@ internal enum class PillSize { Sm, Lg }
 // weight at the small dot scale.
 @Composable
 internal fun LiveDot(
-    color: Color = WidgetBrand.amber,
+    color: Color = MelonWidgetBrand.amber,
     dotSize: Int = 5,
 ) {
     Box(
@@ -139,7 +141,7 @@ internal fun LiveDot(
 
 // Hairline divider matching the iOS `Divider().overlay(theme.line)` pattern.
 @Composable
-internal fun HairlineDivider(theme: WidgetTheme) {
+internal fun HairlineDivider(theme: MelonWidgetTheme) {
     Spacer(
         modifier = GlanceModifier
             .fillMaxWidth()
@@ -151,7 +153,7 @@ internal fun HairlineDivider(theme: WidgetTheme) {
 // Vertical 1×10 dp divider used between footer chips. Mirrors iOS
 // `theme.divider`.
 @Composable
-internal fun FooterDot(theme: WidgetTheme) {
+internal fun FooterDot(theme: MelonWidgetTheme) {
     Spacer(
         modifier = GlanceModifier
             .width(1.dp)
@@ -207,7 +209,7 @@ internal fun WidgetCardSurface(
                     modifier = GlanceModifier
                         .width(3.dp)
                         .height(size.height)
-                        .background(ColorProvider(WidgetBrand.accentStripe)),
+                        .background(ColorProvider(MelonWidgetBrand.accentStripe)),
                 )
             }
         }
@@ -225,7 +227,7 @@ internal fun EyebrowRow(
     text: String,
     fontSize: Float,
     color: Color,
-    dotColor: Color = WidgetBrand.amber,
+    dotColor: Color = MelonWidgetBrand.amber,
     weight: FontWeight = FontWeight.Normal,
 ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -246,13 +248,14 @@ internal fun EyebrowRow(
 internal fun MetaPair(
     room: String,
     prof: String,
-    theme: WidgetTheme,
+    theme: MelonWidgetTheme,
     fontSize: Float,
 ) {
+    val context = LocalContext.current
     Row(verticalAlignment = Alignment.CenterVertically) {
         if (room.isNotBlank()) {
             Text(
-                text = "◦ Sala $room",
+                text = context.getString(R.string.widget_next_class_room_format, room),
                 style = WidgetText.sans(fontSize, theme.ink2),
                 maxLines = 1,
             )
@@ -264,7 +267,7 @@ internal fun MetaPair(
         }
         if (prof.isNotBlank()) {
             Text(
-                text = "◦ $prof",
+                text = context.getString(R.string.widget_next_class_meta_item_format, prof),
                 style = WidgetText.sans(fontSize, theme.ink2),
                 maxLines = 1,
             )
@@ -281,7 +284,7 @@ internal fun MetaPair(
 @Composable
 internal fun TodayStrip(
     bars: List<NextClassEntry.TodayBar>,
-    theme: WidgetTheme,
+    theme: MelonWidgetTheme,
 ) {
     if (bars.isEmpty()) return
     // Cap at 5 cells: with N bars the row emits 2N-1 children
@@ -291,7 +294,7 @@ internal fun TodayStrip(
     val visible = if (bars.size > 5) bars.take(5) else bars
     Column {
         Text(
-            text = "◦ SEU DIA",
+            text = LocalContext.current.getString(R.string.widget_next_class_today_eyebrow),
             style = WidgetText.mono(9f, FontWeight.Normal, theme.ink3),
         )
         Spacer(modifier = GlanceModifier.height(8.dp))
@@ -307,7 +310,7 @@ internal fun TodayStrip(
 @Composable
 private fun TodayCell(
     bar: NextClassEntry.TodayBar,
-    theme: WidgetTheme,
+    theme: MelonWidgetTheme,
 ) {
     val color = Color(bar.colorArgb)
     val isNext = bar.state == NextClassEntry.TodayBar.State.Next

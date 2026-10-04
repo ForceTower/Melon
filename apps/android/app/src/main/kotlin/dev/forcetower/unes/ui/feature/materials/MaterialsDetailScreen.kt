@@ -303,7 +303,7 @@ private fun DetailContent(
                                 )
                             }
                             Text(
-                                text = "·",
+                                text = stringResource(R.string.materials_detail_stats_separator),
                                 color = MaterialTheme.colorScheme.outline,
                             )
                             Row(
@@ -570,7 +570,11 @@ private fun PreviewCard(material: Material) {
                     modifier = Modifier.size(13.dp),
                 )
                 Text(
-                    text = "${material.fileKind.label().uppercase()} · ${material.pages}",
+                    text = stringResource(
+                        R.string.materials_detail_preview_meta_format,
+                        material.fileKind.label().uppercase(),
+                        material.pages,
+                    ),
                     style = MaterialTheme.typography.labelSmall.copy(
                         fontSize = 10.sp,
                         fontWeight = FontWeight.Bold,
@@ -853,12 +857,16 @@ private fun ModerationStatusContent(
                                 color = MaterialTheme.colorScheme.onBackground,
                             )
                             Text(
-                                text = "${stringResource(material.type.labelRes())} · ${material.semester} · " +
+                                text = stringResource(
+                                    R.string.materials_moderation_summary_format,
+                                    stringResource(material.type.labelRes()),
+                                    material.semester,
                                     pluralStringResource(
                                         R.plurals.materials_pages_short,
                                         material.pages,
                                         material.pages,
                                     ),
+                                ),
                                 style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.5.sp),
                                 color = MaterialTheme.colorScheme.outline,
                                 modifier = Modifier.padding(top = 3.dp),

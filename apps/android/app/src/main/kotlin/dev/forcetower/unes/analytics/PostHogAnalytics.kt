@@ -6,7 +6,7 @@ import dev.forcetower.melon.core.analytics.Analytics
 // PostHog-backed Analytics. The SDK is initialized once in MelonApp; this only
 // forwards to the global client. Capture is fire-and-forget (the SDK queues and
 // batches off the caller), so it's safe to call on the UI thread.
-class PostHogAnalytics : Analytics {
+internal class PostHogAnalytics : Analytics {
     override fun screen(
         name: String,
         properties: Map<String, Any>,

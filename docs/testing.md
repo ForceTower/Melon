@@ -124,15 +124,13 @@ propagated string values, arbitrary wrappers or all Kotlin syntax. Framework
 Android lint remains part of `android:check`. Human review still applies the full
 rules in `CLAUDE.md`, including other modules and API visibility decisions.
 
-`scripts/verification/android-conventions-baseline.json` records existing debt by
-path, rule, offending source and count. New findings fail. Existing baseline
-entries are not blanket exemptions for their files; changing a literal or adding
-another instance also fails. Remove entries as debt is fixed. The initial
-inventory includes legacy widget colors, transparency/unspecified sentinels,
-monospace typography, literal labels and public app declarations. Those require
-deliberate cleanup, not automatic rewrites that could alter UI or framework entry
-points. `bun run scripts/check-android-conventions.ts --inventory` prints the
-current inventory for review; do not regenerate the baseline to hide new debt.
+`scripts/verification/android-conventions-baseline.json` records accepted debt by
+path, rule, offending source and count. It is empty: the original 113 findings were
+fixed, so any finding fails. Fix new findings through the design system, string
+resources or visibility modifiers instead of adding baseline entries; an entry is
+not a blanket exemption for its file, and changing its literal or adding another
+instance also fails. `bun run scripts/check-android-conventions.ts --inventory`
+prints the current findings for review; do not regenerate the baseline to hide debt.
 
 ## Synthetic fixtures and credential checks
 

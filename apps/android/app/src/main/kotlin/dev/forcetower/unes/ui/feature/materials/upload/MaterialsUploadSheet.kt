@@ -176,7 +176,11 @@ private fun SheetHeader(
             val discipline = state.discipline
             if (discipline != null && state.step != MaterialsUploadStep.PickDiscipline) {
                 Text(
-                    text = "${discipline.code} · ${discipline.name}",
+                    text = stringResource(
+                        R.string.materials_upload_discipline_meta_format,
+                        discipline.code,
+                        discipline.name,
+                    ),
                     style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
                     color = MaterialTheme.colorScheme.outline,
                     maxLines = 1,
@@ -270,10 +274,14 @@ private fun DisciplineOption(
                     overflow = TextOverflow.Ellipsis,
                 )
                 Text(
-                    text = "${discipline.code} · " + pluralStringResource(
-                        R.plurals.materials_count,
-                        discipline.total,
-                        discipline.total,
+                    text = stringResource(
+                        R.string.materials_upload_discipline_meta_format,
+                        discipline.code,
+                        pluralStringResource(
+                            R.plurals.materials_count,
+                            discipline.total,
+                            discipline.total,
+                        ),
                     ),
                     style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.5.sp),
                     color = MaterialTheme.colorScheme.outline,
@@ -598,7 +606,7 @@ private fun DetailsStep(
             Row(verticalAlignment = Alignment.Bottom) {
                 FieldLabel(text = stringResource(R.string.materials_upload_field_teacher))
                 Text(
-                    text = " " + stringResource(R.string.materials_upload_optional),
+                    text = stringResource(R.string.materials_upload_optional),
                     style = MaterialTheme.typography.labelSmall.copy(fontSize = 11.sp),
                     color = MaterialTheme.colorScheme.outline,
                 )
@@ -958,7 +966,11 @@ private fun SuccessStep(
                             overflow = TextOverflow.Ellipsis,
                         )
                         Text(
-                            text = "${stringResource(submitted.type.labelRes())} · ${submitted.semester}",
+                            text = stringResource(
+                                R.string.materials_upload_submitted_meta_format,
+                                stringResource(submitted.type.labelRes()),
+                                submitted.semester,
+                            ),
                             style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.5.sp),
                             color = MaterialTheme.colorScheme.outline,
                             modifier = Modifier.padding(top = 2.dp),
