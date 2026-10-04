@@ -69,7 +69,7 @@ internal class ScenarioJourneyTest {
         if (scenario == "auth.login") return
         compose.onAllNodes(hasSetTextAction())[0].performTextInput("scenario")
         compose.onAllNodes(hasSetTextAction())[1].performTextInput("synthetic-only")
-        device.pressBack()
+        Espresso.closeSoftKeyboard()
         click(R.string.onboarding_login_submit)
         if (scenario == "auth.invalid-credentials") {
             waitFor(R.string.onboarding_login_error_invalid_credentials)
