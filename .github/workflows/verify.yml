@@ -98,7 +98,10 @@ jobs:
   distribute:
     name: Internal distribution
     needs: [changes, required]
+    # The implicit success() also checks indirect needs, so a skipped lane
+    # behind `required` would skip distribution. Gate on `required` instead.
     if: >-
+      !cancelled() && needs.required.result == 'success' &&
       github.event_name == 'push' &&
       (needs.changes.outputs.ios == 'true' || needs.changes.outputs.android == 'true')
     uses: ./.github/workflows/distribute.yml
