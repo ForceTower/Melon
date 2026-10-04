@@ -4,7 +4,7 @@ set -euo pipefail
 root=$(cd "$(dirname "$0")/../.." && pwd)
 lane=${1:-kit}
 destination=${IOS_DESTINATION:-}
-if [[ "$lane" != app && -z "$destination" ]]; then
+if [[ -z "$destination" ]]; then
   simulator_id=$(xcrun simctl list devices available --json | bun -e '
     const { devices } = await Bun.stdin.json();
     const simulator = Object.entries(devices)
@@ -24,9 +24,10 @@ tests=(-testLanguage pt-BR -testRegion BR -parallel-testing-enabled NO)
 case "$lane" in
   app)
     cd "$root/apps/ios"
-    xcodebuild build -project UNES.xcodeproj -scheme UNES -configuration Debug \
-      -destination 'generic/platform=iOS Simulator' -derivedDataPath .derivedData \
-      -skipMacroValidation -skipPackagePluginValidation -quiet \
+    # Same simulator and derived data as `ui`, so the journeys reuse this build
+    # instead of recompiling (a generic destination also builds x86_64).
+    xcodebuild build -project UNES.xcodeproj -scheme UNES -configuration Debug "${common[@]}" \
+      -derivedDataPath .derivedData \
       CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO 2>&1 | tee "$artifacts/app.log"
     ;;
   kit)
