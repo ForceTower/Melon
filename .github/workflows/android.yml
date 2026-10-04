@@ -70,7 +70,10 @@ jobs:
           arch: x86_64
           profile: pixel_6
           disable-animations: true
+          # The launcher can stop responding while the scenario build starves the
+          # emulator, and its ANR dialog takes window focus from the app under test.
           script: |
+            adb -s emulator-5554 shell settings put global hide_error_dialogs 1
             bun run android:scenario home.populated --serial emulator-5554
             bun run android:scenario home.populated --serial emulator-5554 --no-build --render
             bun run android:scenario auth.invalid-credentials --serial emulator-5554 --no-build
