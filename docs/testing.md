@@ -3,8 +3,8 @@
 Run commands from the repository root. Install the versions in `.mise.toml`
 (`mise install`, then `mise exec -- <command>`) and run
 `bun install --frozen-lockfile` for TypeScript checks. Android also needs its SDK,
-accepted SDK licenses, and JDK 21. Native iOS needs the Xcode version and simulator
-configured in `.github/workflows/ios.yml`.
+accepted SDK licenses, and JDK 21. Native iOS needs the Xcode build pinned in
+`apps/ios/select-xcode.sh` and an iOS 27 iPhone simulator.
 
 Native app, package and UI commands are documented in [iOS testing](ios-testing.md).
 Dedicated-device measurement and profile generation are in

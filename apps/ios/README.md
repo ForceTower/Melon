@@ -63,7 +63,8 @@ See [the iOS verification guide](../../docs/ios-testing.md) for the shared contr
 hermetic UI journey, accessibility checks, and CI artifact commands.
 
 Xcode 27 or newer is required for the Siri entity schemas and onscreen
-annotations. CI uses the `xcode-27` runner, including prerelease toolchains.
+annotations. CI uses the `xcode-27` runner with the Xcode build pinned in
+`select-xcode.sh`.
 
 ```sh
 # Build the app for a simulator

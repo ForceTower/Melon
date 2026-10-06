@@ -97,5 +97,7 @@ its profiles with:
 MATCH_RENEW_EXPIRED_CERTS=true MATCH_FORCE=true bundle exec fastlane ios certificates
 ```
 
-The archive job selects the newest stable Xcode on the `xcode-27` runner, because
-App Store Connect rejects builds made with a beta Xcode.
+The archive job, like every iOS job, selects the Xcode build pinned in
+`apps/ios/select-xcode.sh`, because App Store Connect rejects builds made with a beta
+Xcode and a version number can't tell a beta from a release. Install a new Xcode on the
+`xcode-27` runner before bumping the pin.
