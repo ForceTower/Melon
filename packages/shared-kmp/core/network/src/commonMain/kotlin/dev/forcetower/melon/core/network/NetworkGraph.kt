@@ -30,15 +30,30 @@ interface NetworkGraph {
 
         @Provides
         @SingleIn(AppScope::class)
+        fun tlsInterceptionMonitor(): TlsInterceptionMonitor = TlsInterceptionMonitor()
+
+        @Provides
+        @SingleIn(AppScope::class)
         fun httpClient(
             engine: HttpClientEngine,
             baseUrl: BaseUrl,
             authTokenSource: AuthTokenSource,
             tokenRefresher: TokenRefresher,
             machineIdSource: MachineIdSource,
+            tlsInterceptionMonitor: TlsInterceptionMonitor,
             json: Json,
             logger: Logger,
-        ): HttpClient = buildHttpClient(engine, baseUrl, authTokenSource, tokenRefresher, machineIdSource, json, logger)
+        ): HttpClient =
+            buildHttpClient(
+                engine,
+                baseUrl,
+                authTokenSource,
+                tokenRefresher,
+                machineIdSource,
+                tlsInterceptionMonitor,
+                json,
+                logger,
+            )
 
         // Contributes the ApiLogWriter into Kermit's writer list — lives here
         // rather than in LoggingGraph because constructing the writer needs
