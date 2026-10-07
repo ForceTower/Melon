@@ -15,6 +15,7 @@ struct HomeFeature {
         var path = StackState<Path.State>()
         @Presents var relogin: LoginFeature.State?
         @Presents var reauth: ReauthFeature.State?
+        @Presents var interception: InterceptionFeature.State?
 
         @ObservationStateIgnored
         /// Raised by the token refresher when the refresh token is spent — the
@@ -27,6 +28,9 @@ struct HomeFeature {
         /// Server-reported SAGRES username, persisted so the sheet can show it
         /// on a cold start with no network.
         @Shared(.appStorage(CredentialInvalidation.usernameKey)) var upstreamUsername = ""
+        /// Set by `APIClient` while the network re-signs the API's TLS; the
+        /// next response that gets through clears it.
+        @Shared(.tlsInterception) var tlsInterception
         @Shared(.appStorage(FeatureFlags.campusEventEnabledKey)) var isCampusEventEnabled = false
         @Shared(.appStorage(FeatureFlags.retrospectiveEnabledKey)) var isRetrospectiveEnabled = false
         @Shared(.appStorage(RetrospectiveFeature.seenSemesterKey)) var retrospectiveSeenSemester = ""
@@ -79,8 +83,11 @@ struct HomeFeature {
         case avatarTapped
         case sessionExpiredTapped
         case credentialsBannerTapped
+        case interceptionBannerTapped
+        case interceptionCleared
         case relogin(PresentationAction<LoginFeature.Action>)
         case reauth(PresentationAction<ReauthFeature.Action>)
+        case interception(PresentationAction<InterceptionFeature.Action>)
         case path(StackActionOf<Path>)
         case delegate(Delegate)
 
@@ -251,6 +258,18 @@ struct HomeFeature {
             case .reauth:
                 return .none
 
+            case .interceptionBannerTapped:
+                analytics.selectContent(contentType: ContentTypes.cta, itemId: "tls_intercepted")
+                state.interception = InterceptionFeature.State()
+                return .none
+
+            case .interceptionCleared, .interception(.presented(.delegate(.connectionRestored))):
+                state.interception = nil
+                return .none
+
+            case .interception:
+                return .none
+
             case .relogin(.presented(.delegate(.loggedIn))):
                 log.info("session recovered in place, resuming sync")
                 state.relogin = nil
@@ -276,6 +295,7 @@ struct HomeFeature {
         }
         .ifLet(\.$relogin, action: \.relogin) { LoginFeature() }
         .ifLet(\.$reauth, action: \.reauth) { ReauthFeature() }
+        .ifLet(\.$interception, action: \.interception) { InterceptionFeature() }
         .forEach(\.path, action: \.path)
     }
 
