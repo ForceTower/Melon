@@ -8,6 +8,8 @@ import dev.forcetower.melon.core.analytics.ContentTypes
 import dev.forcetower.melon.core.common.AppClock
 import dev.forcetower.melon.core.common.ForegroundSignal
 import dev.forcetower.melon.core.common.Outcome
+import dev.forcetower.melon.core.network.TlsInterception
+import dev.forcetower.melon.core.network.TlsInterceptionMonitor
 import dev.forcetower.melon.core.session.domain.SessionStore
 import dev.forcetower.melon.feature.campusevent.domain.model.CampusEvent
 import dev.forcetower.melon.feature.campusevent.domain.usecase.ObserveCampusEventUseCase
@@ -28,6 +30,7 @@ import dev.forcetower.melon.feature.overview.domain.usecase.ObserveOverviewHeade
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveTodayTimelineUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveTomorrowPreviewUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveUnreadMessagesTileUseCase
+import dev.forcetower.melon.feature.sync.domain.usecase.RefreshSessionUseCase
 import dev.forcetower.unes.R
 import dev.forcetower.unes.mvi.MviViewModel
 import dev.forcetower.unes.mvi.UiEffect
@@ -73,6 +76,10 @@ internal data class OverviewUiState(
     val upstreamUsername: String? = null,
     val reauthLoading: Boolean = false,
     @StringRes val reauthErrorRes: Int? = null,
+    /** Set while the network re-signs the API's TLS, so nothing syncs from here. */
+    val tlsInterception: TlsInterception? = null,
+    val interceptionRetrying: Boolean = false,
+    val interceptionStillBlocked: Boolean = false,
     val clock: Instant = Clock.System.now(),
     val timeZone: TimeZone = TimeZone.currentSystemDefault(),
     val locale: Locale = Locale.getDefault(),
@@ -136,12 +143,16 @@ internal sealed interface OverviewIntent : UiIntent {
         val password: String,
     ) : OverviewIntent
     data object ReauthDismissed : OverviewIntent
+    data object InterceptionTapped : OverviewIntent
+    data object InterceptionRetryTapped : OverviewIntent
+    data object InterceptionDismissed : OverviewIntent
 }
 
 internal sealed interface OverviewEffect : UiEffect {
     data object ShowRelogin : OverviewEffect
     data object ShowReauth : OverviewEffect
     data object ReauthSucceeded : OverviewEffect
+    data object ShowInterception : OverviewEffect
 }
 
 @HiltViewModel
@@ -159,6 +170,8 @@ internal class OverviewViewModel @Inject constructor(
     featureFlags: FeatureFlags,
     foregroundSignal: ForegroundSignal,
     sessionStore: SessionStore,
+    private val tlsInterceptionMonitor: TlsInterceptionMonitor,
+    private val refreshSession: RefreshSessionUseCase,
     private val refreshCredentialStatus: RefreshCredentialStatusUseCase,
     private val reauthenticateUpstream: ReauthenticateUpstreamUseCase,
     private val analytics: Analytics,
@@ -229,6 +242,9 @@ internal class OverviewViewModel @Inject constructor(
         viewModelScope.launch {
             sessionStore.upstreamUsername.collect { name -> setState { copy(upstreamUsername = name) } }
         }
+        viewModelScope.launch {
+            tlsInterceptionMonitor.interception.collect { value -> setState { copy(tlsInterception = value) } }
+        }
         // Polled on the same foreground pulse as the campus-event refresh, so
         // the banner clears on its own when the password is fixed elsewhere.
         viewModelScope.launch { refreshCredentialStatus() }
@@ -258,6 +274,26 @@ internal class OverviewViewModel @Inject constructor(
             }
             OverviewIntent.ReauthDismissed -> setState { copy(reauthErrorRes = null, reauthLoading = false) }
             is OverviewIntent.ReauthSubmitted -> submitReauth(intent.password)
+            OverviewIntent.InterceptionTapped -> {
+                analytics.selectContent(contentType = ContentTypes.CTA, itemId = "tls_intercepted")
+                setState { copy(interceptionStillBlocked = false) }
+                emitEffect(OverviewEffect.ShowInterception)
+            }
+            OverviewIntent.InterceptionRetryTapped -> retryAfterInterception()
+            OverviewIntent.InterceptionDismissed -> setState { copy(interceptionStillBlocked = false) }
+        }
+    }
+
+    // Success is judged by the monitor, not the refresh outcome: any response
+    // from the API host clears it, even if the sync itself fails for an
+    // unrelated reason.
+    private fun retryAfterInterception() {
+        if (currentState.interceptionRetrying) return
+        setState { copy(interceptionRetrying = true, interceptionStillBlocked = false) }
+        viewModelScope.launch {
+            refreshSession()
+            val stillBlocked = tlsInterceptionMonitor.interception.value != null
+            setState { copy(interceptionRetrying = false, interceptionStillBlocked = stillBlocked) }
         }
     }
 

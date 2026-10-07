@@ -10,6 +10,7 @@ import dev.forcetower.melon.core.logging.LoggingConfig
 import dev.forcetower.melon.core.logging.NoopCrashReporter
 import dev.forcetower.melon.core.network.BaseUrl
 import dev.forcetower.melon.core.network.MachineIdSource
+import dev.forcetower.melon.core.network.TlsInterceptionMonitor
 import dev.forcetower.melon.core.session.domain.SessionStore
 import dev.forcetower.melon.feature.auth.domain.usecase.BeginPasskeyLoginUseCase
 import dev.forcetower.melon.feature.auth.domain.usecase.CompletePasskeyLoginUseCase
@@ -121,6 +122,7 @@ interface UmbrellaGraph {
     val logger: Logger
     val analytics: Analytics
     val machineIdSource: MachineIdSource
+    val tlsInterceptionMonitor: TlsInterceptionMonitor
 
     // App-lifecycle foreground pulse. The native shell calls pulse() on resume;
     // time-derived flows (today/now class, schedule week, next class, next test)

@@ -16,8 +16,11 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.GppMaybe
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -46,6 +49,7 @@ import dev.forcetower.unes.ui.feature.campusevent.CampusEventHomeCard
 import dev.forcetower.unes.ui.feature.disciplines.formatSemesterCode
 import dev.forcetower.unes.ui.feature.overview.components.FinalStretchCard
 import dev.forcetower.unes.ui.feature.overview.components.HeroCard
+import dev.forcetower.unes.ui.feature.overview.components.InterceptionSheet
 import dev.forcetower.unes.ui.feature.overview.components.MessagesPreview
 import dev.forcetower.unes.ui.feature.overview.components.OverviewHeader
 import dev.forcetower.unes.ui.feature.overview.components.ReauthSheet
@@ -76,6 +80,7 @@ internal fun OverviewScreen(
 
     var showReloginSheet by remember { mutableStateOf(false) }
     var showReauthSheet by remember { mutableStateOf(false) }
+    var showInterceptionSheet by remember { mutableStateOf(false) }
     val context = LocalContext.current
     vm.effects.collectAsEffect { effect ->
         when (effect) {
@@ -85,7 +90,26 @@ internal fun OverviewScreen(
                 showReauthSheet = false
                 Toast.makeText(context, R.string.reauth_success_toast, Toast.LENGTH_LONG).show()
             }
+            OverviewEffect.ShowInterception -> showInterceptionSheet = true
         }
+    }
+    val interception = state.tlsInterception
+    // Closes the sheet once any response gets through — the retry or a
+    // background sync alike.
+    LaunchedEffect(interception == null) {
+        if (interception == null) showInterceptionSheet = false
+    }
+    if (showInterceptionSheet && interception != null) {
+        InterceptionSheet(
+            issuerName = interception.issuerName,
+            isRetrying = state.interceptionRetrying,
+            stillBlocked = state.interceptionStillBlocked,
+            onRetry = { vm.onIntent(OverviewIntent.InterceptionRetryTapped) },
+            onDismiss = {
+                showInterceptionSheet = false
+                vm.onIntent(OverviewIntent.InterceptionDismissed)
+            },
+        )
     }
     if (showReauthSheet) {
         ReauthSheet(
@@ -212,6 +236,22 @@ internal fun OverviewContent(
                     detail = stringResource(R.string.session_expired_banner_body),
                     tone = MaterialTheme.melon.status.bad,
                     onClick = { onIntent(OverviewIntent.ReloginTapped) },
+                )
+                Spacer(Modifier.height(22.dp))
+            } else if (state.tlsInterception != null) {
+                // Ahead of the password banner: the reauth request can't get
+                // through the interception either.
+                val issuerName = state.tlsInterception.issuerName
+                MelonBanner(
+                    title = if (issuerName != null) {
+                        stringResource(R.string.interception_banner_title_named, issuerName)
+                    } else {
+                        stringResource(R.string.interception_banner_title_unnamed)
+                    },
+                    detail = stringResource(R.string.interception_banner_body),
+                    tone = MaterialTheme.melon.status.warn,
+                    icon = Icons.Filled.GppMaybe,
+                    onClick = { onIntent(OverviewIntent.InterceptionTapped) },
                 )
                 Spacer(Modifier.height(22.dp))
             } else if (state.credentialsInvalid) {

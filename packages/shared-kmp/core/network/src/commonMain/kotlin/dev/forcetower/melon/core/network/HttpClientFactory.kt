@@ -74,6 +74,7 @@ fun buildHttpClient(
     authTokenSource: AuthTokenSource,
     tokenRefresher: TokenRefresher,
     machineIdSource: MachineIdSource,
+    tlsInterceptionMonitor: TlsInterceptionMonitor,
     json: Json,
     logger: KermitLogger,
 ): HttpClient =
@@ -94,7 +95,7 @@ fun buildHttpClient(
         install(MachineIdInterceptor) {
             this.machineIdSource = machineIdSource
         }
-        installTlsDiagnostics()
+        installTlsDiagnostics(tlsInterceptionMonitor)
     }
 
 private fun KermitLogger.asKtorLogger(): KtorLogger {

@@ -217,6 +217,16 @@
     <string name="reauth_error_unavailable">The portal didn\'t respond. Try again in a moment.</string>
     <string name="reauth_error_network">No connection. Check your internet and try again.</string>
     <string name="reauth_success_toast">Password updated — syncing your data</string>
+    <string name="interception_banner_title_named">%1$s is blocking sync</string>
+    <string name="interception_banner_title_unnamed">Your network is blocking sync</string>
+    <string name="interception_banner_body">Showing saved data. Switch to mobile data or another Wi-Fi network.</string>
+    <string name="interception_sheet_title">Your network is inspecting traffic</string>
+    <string name="interception_sheet_description_named">%1$s, common on university and corporate networks, is intercepting UNES\'s secure connection. Your data is still saved, but it won\'t update while you\'re on this network.</string>
+    <string name="interception_sheet_description_unnamed">A filter on this network, common at universities and companies, is intercepting UNES\'s secure connection. Your data is still saved, but it won\'t update while you\'re on this network.</string>
+    <string name="interception_sheet_hint">Switch to mobile data or another network and try again.</string>
+    <string name="interception_sheet_still_blocked">The connection is still blocked. Make sure you switched networks.</string>
+    <string name="interception_sheet_retry">Try again</string>
+    <string name="interception_sheet_dismiss">Not now</string>
     <!-- endregion -->
 
     <!-- region Overview · Header -->

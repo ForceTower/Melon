@@ -241,6 +241,16 @@
     <string name="reauth_error_unavailable">O portal não respondeu. Tente novamente em instantes.</string>
     <string name="reauth_error_network">Sem conexão. Verifique sua internet e tente de novo.</string>
     <string name="reauth_success_toast">Senha atualizada — sincronizando seus dados</string>
+    <string name="interception_banner_title_named">%1$s está bloqueando a sincronização</string>
+    <string name="interception_banner_title_unnamed">Sua rede está bloqueando a sincronização</string>
+    <string name="interception_banner_body">Mostrando dados salvos. Use dados móveis ou outra rede Wi-Fi.</string>
+    <string name="interception_sheet_title">Sua rede está inspecionando o tráfego</string>
+    <string name="interception_sheet_description_named">%1$s, comum em redes de universidades e empresas, está interceptando a conexão segura com o UNES. Seus dados continuam salvos, mas não atualizam enquanto você estiver nessa rede.</string>
+    <string name="interception_sheet_description_unnamed">Um filtro desta rede, comum em universidades e empresas, está interceptando a conexão segura com o UNES. Seus dados continuam salvos, mas não atualizam enquanto você estiver nessa rede.</string>
+    <string name="interception_sheet_hint">Troque para dados móveis ou outra rede e tente de novo.</string>
+    <string name="interception_sheet_still_blocked">A conexão ainda está bloqueada. Confira se você trocou de rede.</string>
+    <string name="interception_sheet_retry">Tentar novamente</string>
+    <string name="interception_sheet_dismiss">Agora não</string>
     <!-- endregion -->
 
     <!-- region Overview · Header -->

@@ -14,6 +14,7 @@ import dev.forcetower.melon.core.common.ApplicationContext
 import dev.forcetower.melon.core.common.ForegroundSignal
 import dev.forcetower.melon.core.logging.LoggingConfig
 import dev.forcetower.melon.core.network.MachineIdSource
+import dev.forcetower.melon.core.network.TlsInterceptionMonitor
 import dev.forcetower.melon.core.session.domain.SessionStore
 import dev.forcetower.melon.feature.auth.domain.usecase.BeginPasskeyLoginUseCase
 import dev.forcetower.melon.feature.auth.domain.usecase.CompletePasskeyLoginUseCase
@@ -168,6 +169,8 @@ internal object UmbrellaBridgeModule {
     fun provideAnalytics(graph: UmbrellaGraph): Analytics = graph.analytics
     @Provides
     fun provideMachineIdSource(graph: UmbrellaGraph): MachineIdSource = graph.machineIdSource
+    @Provides
+    fun provideTlsInterceptionMonitor(graph: UmbrellaGraph): TlsInterceptionMonitor = graph.tlsInterceptionMonitor
     @Provides
     fun provideForegroundSignal(graph: UmbrellaGraph): ForegroundSignal = graph.foregroundSignal
 
