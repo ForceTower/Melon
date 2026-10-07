@@ -331,6 +331,176 @@
         }
       }
     },
+    "interception.banner.titleNamed" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ is blocking sync"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ está bloqueando a sincronização"
+          }
+        }
+      }
+    },
+    "interception.banner.titleUnnamed" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your network is blocking sync"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sua rede está bloqueando a sincronização"
+          }
+        }
+      }
+    },
+    "interception.banner.body" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Showing saved data. Switch to mobile data or another Wi-Fi network."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrando dados salvos. Use dados móveis ou outra rede Wi-Fi."
+          }
+        }
+      }
+    },
+    "interception.banner.action" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Learn more"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saiba mais"
+          }
+        }
+      }
+    },
+    "interception.sheet.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your network is inspecting traffic"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sua rede está inspecionando o tráfego"
+          }
+        }
+      }
+    },
+    "interception.sheet.bodyNamed" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@, common on university and corporate networks, is intercepting UNES's secure connection. Your data is still saved, but it won't update while you're on this network."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@, comum em redes de universidades e empresas, está interceptando a conexão segura com o UNES. Seus dados continuam salvos, mas não atualizam enquanto você estiver nessa rede."
+          }
+        }
+      }
+    },
+    "interception.sheet.bodyUnnamed" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A filter on this network, common at universities and companies, is intercepting UNES's secure connection. Your data is still saved, but it won't update while you're on this network."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um filtro desta rede, comum em universidades e empresas, está interceptando a conexão segura com o UNES. Seus dados continuam salvos, mas não atualizam enquanto você estiver nessa rede."
+          }
+        }
+      }
+    },
+    "interception.sheet.hint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Switch to mobile data or another network and try again."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Troque para dados móveis ou outra rede e tente de novo."
+          }
+        }
+      }
+    },
+    "interception.sheet.stillBlocked" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The connection is still blocked. Make sure you switched networks."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A conexão ainda está bloqueada. Confira se você trocou de rede."
+          }
+        }
+      }
+    },
+    "interception.sheet.cancel" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not now"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Agora não"
+          }
+        }
+      }
+    },
     "reauth.sheet.title" : {
       "extractionState" : "manual",
       "localizations" : {

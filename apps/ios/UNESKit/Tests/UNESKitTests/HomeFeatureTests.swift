@@ -354,4 +354,72 @@ struct HomeFeatureTests {
             $0.relogin = nil
         }
     }
+
+    @Test
+    func theInterceptionBannerOpensTheExplanation() async {
+        let store = TestStore(initialState: HomeFeature.State()) {
+            HomeFeature()
+        }
+
+        await store.send(.interceptionBannerTapped) {
+            $0.interception = InterceptionFeature.State()
+        }
+    }
+
+    @Test
+    func retryingOnTheSameNetworkSaysItIsStillBlocked() async {
+        @Shared(.tlsInterception) var interception
+        $interception.withLock { $0 = TLSInterception(issuerName: "Fortinet") }
+
+        let store = TestStore(initialState: HomeFeature.State(interception: InterceptionFeature.State())) {
+            HomeFeature()
+        } withDependencies: {
+            $0.date = .constant(Self.referenceDate)
+            $0.homeRepository.refresh = { _ in }
+        }
+
+        await store.send(.interception(.presented(.retryTapped))) {
+            $0.interception?.isRetrying = true
+        }
+        await store.receive(.interception(.presented(.retryFinished))) {
+            $0.interception?.isRetrying = false
+            $0.interception?.isStillBlocked = true
+        }
+    }
+
+    @Test
+    func aRetryThatGetsThroughClosesTheExplanation() async {
+        let interception = Shared<TLSInterception?>(.tlsInterception)
+        interception.withLock { $0 = TLSInterception(issuerName: "Fortinet") }
+
+        let store = TestStore(initialState: HomeFeature.State(interception: InterceptionFeature.State())) {
+            HomeFeature()
+        } withDependencies: {
+            $0.date = .constant(Self.referenceDate)
+            // The first response through `APIClient` clears it mid-refresh.
+            $0.homeRepository.refresh = { _ in interception.withLock { $0 = nil } }
+        }
+
+        await store.send(.interception(.presented(.retryTapped))) {
+            $0.interception?.isRetrying = true
+        }
+        await store.receive(.interception(.presented(.retryFinished))) {
+            $0.$tlsInterception.withLock { $0 = nil }
+            $0.interception?.isRetrying = false
+        }
+        await store.receive(.interception(.presented(.delegate(.connectionRestored)))) {
+            $0.interception = nil
+        }
+    }
+
+    @Test
+    func aResponseFromElsewhereClosesTheExplanation() async {
+        let store = TestStore(initialState: HomeFeature.State(interception: InterceptionFeature.State())) {
+            HomeFeature()
+        }
+
+        await store.send(.interceptionCleared) {
+            $0.interception = nil
+        }
+    }
 }

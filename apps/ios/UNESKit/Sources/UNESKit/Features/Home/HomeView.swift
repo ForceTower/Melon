@@ -27,6 +27,10 @@ struct HomeView: View {
                 VStack(spacing: 8) {
                     if store.isSessionInvalid {
                         sessionExpiredBanner
+                    } else if let interception = store.tlsInterception {
+                        // Ahead of the password banner: the reauth request
+                        // can't get through the interception either.
+                        interceptionBanner(interception)
                     } else if store.areCredentialsInvalid {
                         // Only one at a time: a dead Melon session is the more
                         // fundamental problem, and fixing it re-polls status.
@@ -34,7 +38,7 @@ struct HomeView: View {
                     }
                 }
                 .padding(.horizontal, 16)
-                .padding(.bottom, store.isSessionInvalid || store.areCredentialsInvalid ? 10 : 0)
+                .padding(.bottom, showsNotice ? 10 : 0)
             }
             .navigationTitle(Text(.commonToday))
             .toolbar {
@@ -47,6 +51,13 @@ struct HomeView: View {
             }
             .sheet(item: $store.scope(state: \.reauth, action: \.reauth)) { reauthStore in
                 ReauthSheet(store: reauthStore)
+            }
+            .sheet(item: $store.scope(state: \.interception, action: \.interception)) { interceptionStore in
+                InterceptionSheet(store: interceptionStore)
+            }
+            // A background sync can get through while the sheet is open.
+            .onChange(of: store.tlsInterception == nil) { _, cleared in
+                if cleared { store.send(.interceptionCleared) }
             }
         } overview: {
             dayPage
@@ -87,6 +98,22 @@ struct HomeView: View {
             onAction: { store.send(.sessionExpiredTapped) }
         ) {
             Text(.sessionExpiredBannerBody)
+        }
+    }
+
+    private var showsNotice: Bool {
+        store.isSessionInvalid || store.tlsInterception != nil || store.areCredentialsInvalid
+    }
+
+    private func interceptionBanner(_ interception: TLSInterception) -> some View {
+        UNESBanner(
+            tone: .warn,
+            title: interception.issuerName.map { String.localized(.interceptionBannerTitleNamed($0)) }
+                ?? .localized(.interceptionBannerTitleUnnamed),
+            action: .localized(.interceptionBannerAction),
+            onAction: { store.send(.interceptionBannerTapped) }
+        ) {
+            Text(.interceptionBannerBody)
         }
     }
 

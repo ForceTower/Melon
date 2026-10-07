@@ -187,6 +187,7 @@ extension APIClient {
         let refresher = TokenRefresher(baseURL: baseURL, session: session)
         return APIClient(send: { apiRequest in
             @Dependency(\.sessionStore) var sessionStore
+            @Shared(.tlsInterception) var tlsInterception
 
             var url = baseURL.appending(path: apiRequest.path)
             if !apiRequest.query.isEmpty {
@@ -212,7 +213,20 @@ extension APIClient {
                     request.setValue("Bearer \(sentToken)", forHTTPHeaderField: "Authorization")
                 }
 
-                let (data, response) = try await session.data(for: request)
+                let (data, response): (Data, URLResponse)
+                do {
+                    (data, response) = try await session.data(for: request)
+                } catch {
+                    if let interception = TLSInterception(error) {
+                        log.warn("tls intercepted path=\(apiRequest.path) issuer=\(interception.issuerName ?? "unknown")")
+                        $tlsInterception.withLock { $0 = interception }
+                    }
+                    throw error
+                }
+                // Any answer means the handshake went through this time.
+                if tlsInterception != nil {
+                    $tlsInterception.withLock { $0 = nil }
+                }
                 guard let http = response as? HTTPURLResponse else {
                     log.warn("request failed method=\(apiRequest.method) path=\(apiRequest.path): invalid response")
                     throw APIError.invalidResponse
