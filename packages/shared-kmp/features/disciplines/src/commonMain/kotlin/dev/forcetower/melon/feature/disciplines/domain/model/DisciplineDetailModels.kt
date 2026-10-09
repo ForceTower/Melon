@@ -20,7 +20,7 @@ data class DisciplineDetail(
     val ementa: String?,
     val hours: Int,
     val missedHours: Int,
-    // Derived `ceil(hours * 0.25)` — matches the list-view rule.
+    // Derived by `allowedMissedHours(hours)` — matches the list and Home tile.
     val allowedMissedHours: Int,
     // LIVE while the Prova Final is pending — never infer a verdict from it.
     val finalGrade: Double?,

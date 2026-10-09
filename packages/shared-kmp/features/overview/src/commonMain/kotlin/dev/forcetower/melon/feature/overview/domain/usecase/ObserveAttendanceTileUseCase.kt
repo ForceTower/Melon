@@ -1,6 +1,7 @@
 package dev.forcetower.melon.feature.overview.domain.usecase
 
 import dev.forcetower.melon.core.common.AppClock
+import dev.forcetower.melon.core.common.allowedMissedHours
 import dev.forcetower.melon.core.database.dao.AcademicDao
 import dev.forcetower.melon.core.database.dao.SemesterDao
 import dev.forcetower.melon.core.database.query.AttendanceSummaryRow
@@ -8,7 +9,6 @@ import dev.forcetower.melon.core.database.query.RecentLectureRow
 import dev.forcetower.melon.feature.overview.domain.internal.pickActiveSemester
 import dev.forcetower.melon.feature.overview.domain.model.OverviewAttendanceTile
 import dev.zacsweers.metro.Inject
-import kotlin.math.floor
 import kotlin.math.roundToInt
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -20,9 +20,6 @@ import kotlinx.datetime.toLocalDateTime
 // Upstream `situation` code convention: 0 == present, everything else is some
 // flavor of absence / justified / pending. The strip shows "present vs not".
 private const val PRESENT_SITUATION = 0
-
-// 75% attendance rule — SAGRES allows at most 25% misses.
-private const val ALLOWED_MISS_FRACTION = 0.25
 
 // Last N lecture rows used to build the strip. Matches the fixture's 14 cells.
 private const val STRIP_SIZE = 14
@@ -59,7 +56,7 @@ internal fun buildAttendanceTile(
     } else {
         null
     }
-    val allowed = floor(summary.totalHours * ALLOWED_MISS_FRACTION).toInt()
+    val allowed = allowedMissedHours(summary.totalHours)
     // Most-recent-first in the query; reverse so the strip reads oldest → newest,
     // which matches the ascending visual intensity in the fixture.
     val days = recent.map { it.situation == PRESENT_SITUATION }.reversed()

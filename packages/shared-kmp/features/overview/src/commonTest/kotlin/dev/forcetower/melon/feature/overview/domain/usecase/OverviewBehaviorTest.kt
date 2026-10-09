@@ -46,6 +46,7 @@ internal class OverviewBehaviorTest {
     fun attendanceUsesCourseHoursAndClampsBadInputs() {
         assertEquals(97, buildAttendanceTile(AttendanceSummaryRow(2, 60), emptyList()).percentage)
         assertEquals(15, buildAttendanceTile(AttendanceSummaryRow(2, 60), emptyList()).allowedAbsences)
+        assertEquals(7, buildAttendanceTile(AttendanceSummaryRow(0, 30), emptyList()).allowedAbsences)
         assertEquals(0, buildAttendanceTile(AttendanceSummaryRow(90, 60), emptyList()).percentage)
         assertEquals(null, buildAttendanceTile(AttendanceSummaryRow(0, 0), emptyList()).percentage)
     }
