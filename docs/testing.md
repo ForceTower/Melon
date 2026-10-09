@@ -91,7 +91,8 @@ artifact warning is not a successful test result.
 
 The emulator lane runs synthetic Home startup, Home rendering/accessibility,
 invalid credentials with retry, failed initial sync with retry, cached offline
-Home, expired-session recovery UI and the empty inbox. Enrollment journeys cover
+Home, expired-session recovery UI, the empty inbox and message-push taps that
+outrun the mirror or point at a missing message. Enrollment journeys cover
 conflicts, minimum/maximum hours, expired deadlines, and a failed submission
 followed by a successful full-proposal replacement with waitlist/prerequisite
 warning behavior. It builds the scenario

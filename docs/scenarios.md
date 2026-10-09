@@ -36,11 +36,19 @@ override guarded by the isolated build flag; ordinary builds cannot activate it.
 | `home.offline-with-cache` | A forced refresh reaches the unavailable server; the saved class remains visible. |
 | `auth.session-expired` | Rejected refresh shows the session banner while keeping cached content. |
 | `messages.empty` | A successful empty inbox is shown without a network error. |
+| `notification.message-missing` | Tapping a message push whose message the server never returns refreshes the inbox and lands on it, not on an endless loading screen. |
+| `notification.message-after-refresh` | Tapping a message push that outran the mirror refreshes the inbox once and opens the synthetic message. |
 | `enrollment.schedule-conflict` | Conflicting saved selections disable submission and produce no submit request. |
 | `enrollment.under-minimum` | Below-minimum workload disables submission and produces no submit request. |
 | `enrollment.over-maximum` | Above-maximum workload disables submission and produces no submit request. |
 | `enrollment.deadline-expired` | A stale OPEN window cannot permit submission after the deadline. |
 | `enrollment.submit-retry` | Select a full waitlisted section with a prerequisite warning, remove the previous selection, and recover from failed submission without changing the complete desired set. |
+
+The notification journeys deliver the tap as a backend message push does: an
+intent to the running app carrying `kind`, `messageId` and `url` extras. The
+after-refresh variant serves the one-message page in `contracts/v1/messages.json`,
+which KMP decodes in `MessagesContractTest`; the mock also answers the read
+acknowledgment that opening the message sends.
 
 Enrollment uses the additional shared provider example `contracts/v1/enrollment.json`.
 The mock records attempted and accepted selections separately. Its named variants

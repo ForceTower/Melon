@@ -31,9 +31,9 @@ backlog, not a claim that every item is finished.
 | --- | --- | --- |
 | Merge verification | All foundation lanes passed remotely. `main` now requires the GitHub Actions **Required verification** check, with strict freshness and administrator enforcement. Builds, lint, test artifacts and templates are in place. | Keep the single required result stable; monitor duration, flakes and evidence availability. |
 | Mechanical rules | ktlint check/format tasks are part of Android verification. The semantic convention lexer protects theme/string/visibility rules; its baseline of 113 known findings was cleared on October 3, 2026, so any finding now fails. Fixture provenance and credential-pattern checks also run. | Compiler-aware semantic lint, hosting-provider/history secret scanning. |
-| Android scenarios | Hermetic login/sync/Home/empty messages plus five enrollment journeys, resettable failures, fixed projection clock, controlled enrollment flag, isolated app and device evidence gallery. | Extend the catalog to remaining screens, flag combinations and device/permission configurations. |
+| Android scenarios | Hermetic login/sync/Home/empty messages, two message-push taps and five enrollment journeys, resettable failures, fixed projection clock, controlled enrollment flag, isolated app and device evidence gallery. | Extend the catalog to remaining screens, flag combinations and device/permission configurations. |
 | Rendering | Home state/callback rendering, light/default and dark/large-text accessibility checks, deterministic Compose captures and an explicit screenshot comparison command. | Review and establish device-specific visual baselines; broaden accessibility coverage and manual assistive-technology review. |
-| Behavioral coverage | Shared contracts, Home time/attendance boundaries, initial-sync recovery, and per-program CR regressions. Enrollment now covers conflicts, hours, deadline boundaries, prerequisite warnings, waitlists, full replacement and retry in Android/KMP/provider tests. Grade and attendance rules (Final Countdown verdicts, final-exam requirement, status precedence, absence allowance and risk) assert the same examples on Android and iOS. | Broader feature integration, persistence/lifecycle, the hours-source parity gap below, notification navigation and device configurations from milestone 3. |
+| Behavioral coverage | Shared contracts, Home time/attendance boundaries, initial-sync recovery, and per-program CR regressions. Enrollment now covers conflicts, hours, deadline boundaries, prerequisite warnings, waitlists, full replacement and retry in Android/KMP/provider tests. Grade and attendance rules (Final Countdown verdicts, final-exam requirement, status precedence, absence allowance and risk) assert the same examples on Android and iOS. Android notification links are covered from the URI table through routing to message resolution. | Broader feature integration, persistence/lifecycle, the hours-source parity gap below and device configurations from milestone 3. |
 | Performance | Physical-device Macrobenchmark and profile-generation suites passed; isolated release-like app and manual physical-device workflow. | Review generated rules before shipping, choose a consistent measurement device, establish repeatability and trend thresholds. |
 | Native iOS | Synthetic TCA/HTTP/GRDB pilot, full package lane, explicit intent/UI target, screenshots/hierarchies and accessibility checks. | Three out-of-process AppIntents tests require a runtime that supports Apple's internal execution APIs; full visual/device coverage remains open. |
 | Private repair tooling | In `unes-backrooms`: bounded Crashlytics queries, Play reviews/vitals adapters, durable draft queue, normalized log input, allowlisted GitHub digest/outcome metrics, request correlation and provider tests. | Real service identities, export/store access, schedule/host configuration, diagnostics policy and publishing policy; no live incident or release verification yet. |
@@ -98,6 +98,19 @@ evaluation a teacher named "Prova Final"; that regression also failed first.
 Android prefers offer hours over catalog hours and iOS the reverse, which matters
 only if they differ. KMP's `DisciplineListItem.status` disagrees with both
 clients but no screen reads it.
+
+The notification navigation follow-up (October 9, 2026) traced a message push
+from tap to screen. When the tapped message was not on the device yet, Android
+opened its detail with a spinner and relied on a later sync to fill it. If the
+message never arrived (offline, a failed sync, a message the server no longer
+returns), the spinner never ended. iOS instead refreshes once and falls back to
+the inbox. Android now does the same before navigating. The new
+`notification.message-missing` journey reproduced the stuck spinner on a Pixel
+9 Pro XL before the fix and passes afterwards; three of the five new ViewModel
+cases also failed first. `notification.message-after-refresh` covers
+the common race, and a routing-table test pins how each link rebuilds its tab.
+A push that arrives while the app is open stays silent on Android by design for
+now (it only refreshes the mirror), while iOS presents a banner.
 
 On October 2, 2026, GitHub protection for `main` was read back after activation:
 `Required verification`, GitHub Actions app `15368`, strict/up-to-date checking,

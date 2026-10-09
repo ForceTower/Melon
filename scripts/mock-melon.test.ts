@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { createMockHandler } from "./mock-melon";
-import { pilot } from "./scenarios";
+import { messages, pilot } from "./scenarios";
 import enrollment from "../contracts/v1/enrollment.json";
 
 function request(path: string, method: "GET" | "POST" = "GET", body?: unknown) {
@@ -116,6 +116,18 @@ describe("hermetic scenario server", () => {
     expect((await refresh()).status).toBe(400);
     await handle(request("/debug/scenario/auth.session-expired", "POST"));
     expect((await refresh()).status).toBe(400);
+  });
+
+  test("a message announced by a push appears only after the scenario switch", async () => {
+    const handle = createMockHandler();
+    const inbox = async () => (await (await handle(request("/api/sync/messages"))).json()).data;
+    expect(await inbox()).toEqual(pilot.messages);
+    await handle(request("/debug/scenario/notification.message-after-refresh", "POST"));
+    expect(await inbox()).toEqual(messages.page);
+    const ack = await handle(request("/api/sync/messages/read", "POST", { ids: ["a", "b"] }));
+    expect(await ack.json()).toEqual({ ok: true, message: null, data: { updated: 2 } });
+    await handle(request("/debug/scenario/notification.message-missing", "POST"));
+    expect(await inbox()).toEqual(pilot.messages);
   });
 
   test("malformed clock fails before serving", () => {

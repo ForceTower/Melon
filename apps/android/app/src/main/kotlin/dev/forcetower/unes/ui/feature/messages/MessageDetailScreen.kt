@@ -129,10 +129,10 @@ internal fun MessageDetailRoute(
             bottomInset = bottomInset,
         )
     } else {
-        // Deeplink race: the push usually lands before the device has synced
-        // the message it points at. `ConnectedViewModel.onAppeared` is already
-        // pulling; once the inbox flow emits the id, the branch above takes
-        // over. Until then, back chrome + a spinner instead of a blank frame.
+        // The inbox flow hasn't emitted this id yet, e.g. right after a
+        // process-death restore. Deeplinks only open a message that is already
+        // mirrored (`ConnectedViewModel.resolve`), so this is brief: back
+        // chrome + a spinner instead of a blank frame.
         MessageDetailLoading(onBack = onBack)
     }
 }
