@@ -5,7 +5,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.forcetower.melon.core.analytics.Analytics
 import dev.forcetower.melon.core.analytics.ContentTypes
 import dev.forcetower.melon.feature.disciplines.domain.model.DisciplineListItem as KmpListItem
-import dev.forcetower.melon.feature.disciplines.domain.model.ListGradeEntry as KmpGrade
+import dev.forcetower.melon.feature.disciplines.domain.model.isFinalExam
 import dev.forcetower.melon.feature.disciplines.domain.usecase.ObserveDisciplinesListUseCase
 import dev.forcetower.unes.mvi.MviViewModel
 import dev.forcetower.unes.mvi.UiEffect
@@ -197,7 +197,7 @@ private val FinalCountdownIntent.editsRows: Boolean
 
 // ───────── KMP → UI projection + seeding ─────────
 
-private fun mapChoice(
+internal fun mapChoice(
     raw: KmpListItem,
     semesterLabel: String,
 ): FCDiscipline =
@@ -207,7 +207,9 @@ private fun mapChoice(
         name = raw.name,
         teacher = raw.teacherName?.takeIf { it.isNotBlank() },
         semesterLabel = semesterLabel,
-        seedGrades = raw.grades.filterNot(::isProvaFinal).map { grade ->
+        // The final exam must never seed the calculator: it would count as a
+        // pending evaluation and drag every projection down.
+        seedGrades = raw.grades.filterNot { isFinalExam(it.name, it.nameShort) }.map { grade ->
             FCSeedGrade(
                 label = (grade.nameShort ?: grade.name).take(6),
                 value = grade.value,
@@ -215,14 +217,6 @@ private fun mapChoice(
             )
         },
     )
-
-// The Prova Final slot (upstream "Notas Complementares", name "Prova Final",
-// short name "Adicional") must never seed the calculator — it would count as
-// a pending evaluation and drag every projection down. Same exclusion iOS
-// applies at the model layer (`DisciplineDetail.finalExam`).
-private fun isProvaFinal(grade: KmpGrade): Boolean =
-    grade.name.trim().equals("Prova Final", ignoreCase = true) ||
-        grade.nameShort?.trim().equals("Adicional", ignoreCase = true)
 
 private fun seededRows(choice: FCDiscipline): List<FCRow> {
     if (choice.seedGrades.isEmpty()) return FinalCountdownUiState.freeRows()

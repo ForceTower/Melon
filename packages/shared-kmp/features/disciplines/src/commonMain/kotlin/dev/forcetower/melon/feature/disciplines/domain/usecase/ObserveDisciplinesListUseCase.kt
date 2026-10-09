@@ -12,6 +12,7 @@ import dev.forcetower.melon.feature.disciplines.domain.model.DisciplinesListStat
 import dev.forcetower.melon.feature.disciplines.domain.model.ListGradeEntry
 import dev.forcetower.melon.feature.disciplines.domain.model.PendingSemester
 import dev.forcetower.melon.feature.disciplines.domain.model.SemesterDisciplines
+import dev.forcetower.melon.feature.disciplines.domain.model.isFinalExam
 import dev.zacsweers.metro.Inject
 import kotlin.time.Clock
 import kotlinx.coroutines.flow.Flow
@@ -113,7 +114,7 @@ private fun buildItem(
         .flatMap { gradesByStudentClass[it].orEmpty() }
         .distinctBy { it.gradePlatformId }
         .sortedBy { it.ordinal }
-    val partialAverage = weightedAverage(allGrades)
+    val partialAverage = weightedAverage(allGrades.filterNot { isFinalExam(it.name, it.nameShort) })
 
     // finalGrade / approved typically land on one of the StudentClass rows
     // (the discipline's main group). Take the first non-null.
