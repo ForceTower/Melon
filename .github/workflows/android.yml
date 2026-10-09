@@ -81,6 +81,8 @@ jobs:
             bun run android:scenario home.offline-with-cache --serial emulator-5554 --no-build
             bun run android:scenario auth.session-expired --serial emulator-5554 --no-build
             bun run android:scenario messages.empty --serial emulator-5554 --no-build
+            bun run android:scenario notification.message-missing --serial emulator-5554 --no-build
+            bun run android:scenario notification.message-after-refresh --serial emulator-5554 --no-build
             bun run android:scenario enrollment.schedule-conflict --serial emulator-5554 --no-build
             bun run android:scenario enrollment.under-minimum --serial emulator-5554 --no-build
             bun run android:scenario enrollment.over-maximum --serial emulator-5554 --no-build

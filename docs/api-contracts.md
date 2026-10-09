@@ -13,6 +13,10 @@ to public wire shapes should update both copies and both pipelines in one task.
 Provider checks are maintained in the private repository and do not require
 credentials or a real university account.
 
+`contracts/v1/messages.json` is a populated one-message inbox page (response
+**data** for `GET /api/sync/messages`) used by the notification journeys and
+decoded by KMP. The provider does not yet verify a populated message against it.
+
 `contracts/v1/enrollment.json` adds the live window, offers and complete desired
 submission set. Provider tests exercise actual serializers and the service's
 open/publish/close sequence, omission of removed sections, waitlist/toggle mapping,

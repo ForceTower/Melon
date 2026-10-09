@@ -1,7 +1,7 @@
 // Hermetic API by default; --proxy explicitly enables production passthrough.
 // Run bun run mock. See docs/scenarios.md for controls and device launch commands.
 
-import { isScenarioId, pilot, scenarioCatalog, type ScenarioId } from "./scenarios";
+import { isScenarioId, messages, pilot, scenarioCatalog, type ScenarioId } from "./scenarios";
 import {
   enrollmentFixture,
   parseEnrollmentSelections,
@@ -1013,6 +1013,7 @@ export function createMockHandler(options: { proxy?: boolean; now?: string } = {
       `GET /api/sync/semesters/${pilot.semester.semester.id}`,
       "GET /api/sync/onboarding-status",
       "GET /api/sync/messages",
+      "POST /api/sync/messages/read",
       "GET /api/sync/events",
       "GET /api/me/status",
       "GET /api/me/credentials",
@@ -1081,13 +1082,21 @@ export function createMockHandler(options: { proxy?: boolean; now?: string } = {
         if (url.pathname === `/api/sync/semesters/${pilot.semester.semester.id}`)
           return ok(pilot.semester);
         if (url.pathname === "/api/sync/onboarding-status") return ok(pilot.onboarding);
-        if (url.pathname === "/api/sync/messages") return ok(pilot.messages);
+        if (url.pathname === "/api/sync/messages")
+          return ok(
+            scenario === "notification.message-after-refresh" ? messages.page : pilot.messages,
+          );
         if (url.pathname === "/api/sync/events") return ok(pilot.events);
         if (url.pathname === "/api/me/credentials")
           return ok({ credentials: credentialsStatus === "ok" ? pilot.account : null });
         if (url.pathname === "/api/campus-events/current") return ok({ event: null });
       }
       if (url.pathname === "/api/me/ping" && req.method === "POST") return ok({});
+      if (url.pathname === "/api/sync/messages/read" && req.method === "POST") {
+        const body: unknown = await req.json().catch(() => null);
+        const ids = isRecord(body) && Array.isArray(body.ids) ? body.ids : [];
+        return ok({ updated: ids.length });
+      }
     }
 
     if (url.pathname === "/api/me/status") {

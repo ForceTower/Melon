@@ -17,10 +17,17 @@ Evolve by addition only — never repurpose an existing URI.
 | `unes://classes` | Disciplinas / Turmas tab |
 | `unes://messages` | Mensagens tab (inbox) |
 | `unes://me` | Eu tab |
-| `unes://calendar` | Calendário, pushed on the Eu tab |
-| `unes://messages/{messageId}` | Message detail |
+| `unes://calendar` | Calendário, pushed on the Eu tab (personal-event reminders) |
+| `unes://reauth` | Home / Hoje tab, which opens the portal-password sheet (credentials-invalid push) |
+| `unes://messages/{messageId}` | Message detail, or the inbox when the message can't be found (below) |
 | `unes://materials/{materialId}` | Material detail |
 | `unes://materials/discipline/{disciplineId}` | Materials shelf of one discipline |
+
+A message push can be tapped before the device has mirrored the message. Both
+apps then refresh the inbox once and open the message only if it has arrived;
+otherwise they open the inbox, never an endless loading screen. Android covers
+this with `ConnectedViewModelDeepLinkTest` and the `notification.*` journeys in
+[scenarios](scenarios.md).
 
 ## watchOS
 

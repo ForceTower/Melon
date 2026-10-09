@@ -9,13 +9,18 @@ import dev.forcetower.melon.core.analytics.Analytics
 import dev.forcetower.melon.core.analytics.Screens
 import dev.forcetower.melon.core.common.Outcome
 import dev.forcetower.melon.core.sync.domain.model.SyncError
+import dev.forcetower.melon.feature.messages.domain.usecase.ObserveMessageDetailUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.BackfillMirrorUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.PingActivityUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.RefreshSessionUseCase
+import dev.forcetower.melon.feature.sync.domain.usecase.SyncMessagesUseCase
 import dev.forcetower.unes.review.ReviewPrompter
 import dev.forcetower.unes.update.InAppUpdater
 import dev.forcetower.unes.widgets.WidgetSnapshotPublisher
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 
@@ -33,6 +38,8 @@ internal class ConnectedViewModel @Inject constructor(
     private val refreshSession: RefreshSessionUseCase,
     private val backfillMirror: BackfillMirrorUseCase,
     private val pingActivity: PingActivityUseCase,
+    private val observeMessageDetail: ObserveMessageDetailUseCase,
+    private val syncMessages: SyncMessagesUseCase,
     private val widgetSnapshotPublisher: WidgetSnapshotPublisher,
     private val analytics: Analytics,
     deepLinkHandler: DeepLinkHandler,
@@ -43,7 +50,7 @@ internal class ConnectedViewModel @Inject constructor(
     // Deeplink targets buffered since the notification tap (or VIEW intent).
     // Surfaces here because the screen already holds this VM — the handler
     // itself stays an activity-agnostic singleton.
-    val deepLinks = deepLinkHandler.targets
+    val deepLinks: Flow<DeepLinkTarget> = deepLinkHandler.targets.map(::resolve)
 
     // Same surfacing trick as deeplinks: a flexible in-app update finished
     // downloading and the shell should offer the restart banner.
@@ -58,6 +65,20 @@ internal class ConnectedViewModel @Inject constructor(
     private val pingMutex = Mutex()
     private var backfillStarted = false
     private var lastReportedRoute: ConnectedRoute? = null
+
+    // A message push can outrun the mirror. Refresh the inbox once and open
+    // the message only if it is then on the device; otherwise land on the
+    // inbox rather than a detail that may never load. Mirrors iOS
+    // `AppFeature.intentOpenMessage`.
+    private suspend fun resolve(target: DeepLinkTarget): DeepLinkTarget {
+        if (target !is DeepLinkTarget.Message || isMirrored(target.id)) return target
+        val refresh = syncMessages(since = null, cursor = null)
+        if (isMirrored(target.id)) return target
+        log.i { "message link fell back to the inbox refreshOk=${refresh is Outcome.Ok}" }
+        return DeepLinkTarget.Tab(ConnectedTab.Messages)
+    }
+
+    private suspend fun isMirrored(id: String): Boolean = observeMessageDetail(id).first() != null
 
     // Called from the screen on every `Lifecycle.Event.ON_START` — covers
     // first composition AND background → foreground transitions in one path.

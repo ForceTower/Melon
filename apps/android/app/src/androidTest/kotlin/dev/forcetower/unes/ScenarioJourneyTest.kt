@@ -99,6 +99,7 @@ internal class ScenarioJourneyTest {
             open("unes://messages")
             waitFor(R.string.messages_empty_title)
         }
+        if (scenario.startsWith("notification.")) runNotification()
         if (isEnrollment) runEnrollment()
         assertEquals(
             "Unmocked requests must fail the journey",
@@ -109,6 +110,32 @@ internal class ScenarioJourneyTest {
 
     @After
     fun collectEvidence() = capture("result")
+
+    // Switching the server scenario zeroes its request counts, so any inbox
+    // request afterwards was caused by the tap.
+    private fun runNotification() {
+        selectScenario(scenario)
+        if (scenario == "notification.message-missing") {
+            tapMessageNotification("00000000-0000-4000-8000-000000000404")
+            waitFor(R.string.messages_empty_title)
+        } else {
+            tapMessageNotification("6d5c4b3a-2f1e-4d0c-9b8a-7f6e5d4c3b2a")
+            waitForText("Aviso de Exemplo")
+            waitForText("Mensagem sintética usada nas jornadas de notificação.")
+        }
+        assertTrue(serverState().getJSONObject("requestCounts").optInt("GET /api/sync/messages") > 0)
+    }
+
+    // The extras a backend message push carries into the tap intent, delivered
+    // to the running app through onNewIntent.
+    private fun tapMessageNotification(id: String) {
+        compose.activity.startActivity(
+            Intent(compose.activity, MainActivity::class.java)
+                .putExtra("kind", "message")
+                .putExtra("messageId", id)
+                .putExtra("url", "unes://messages/$id"),
+        )
+    }
 
     private fun runEnrollment() {
         open("unes://me")

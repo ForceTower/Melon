@@ -1,4 +1,7 @@
+import messages from "../contracts/v1/messages.json";
 import pilot from "../contracts/v1/pilot.json";
+
+const missingMessageId = "00000000-0000-4000-8000-000000000404";
 
 export const scenarioCatalog = [
   {
@@ -44,6 +47,19 @@ export const scenarioCatalog = [
     expected: "Successful empty inbox",
   },
   {
+    id: "notification.message-missing",
+    route: `unes://messages/${missingMessageId}`,
+    stage: "home",
+    expected:
+      "A link to a message the server never returns falls back to the inbox after one refresh",
+  },
+  {
+    id: "notification.message-after-refresh",
+    route: `unes://messages/${messages.page.messages[0].id}`,
+    stage: "home",
+    expected: "A link that outruns the mirror refreshes once and opens the message",
+  },
+  {
     id: "enrollment.schedule-conflict",
     route: "unes://me",
     stage: "enrollment",
@@ -82,4 +98,4 @@ export function isScenarioId(value: string): value is ScenarioId {
   return scenarioCatalog.some((scenario) => scenario.id === value);
 }
 
-export { pilot };
+export { messages, pilot };

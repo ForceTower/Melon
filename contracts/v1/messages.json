@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "origin": "Hand-authored synthetic inbox page for notification journeys; no production records or message contents.",
+  "page": {
+    "messages": [
+      {
+        "id": "6d5c4b3a-2f1e-4d0c-9b8a-7f6e5d4c3b2a",
+        "source": "app",
+        "platformId": null,
+        "subject": "Aviso de Exemplo",
+        "content": "Mensagem sintética usada nas jornadas de notificação.",
+        "senderName": "Coordenação de Exemplo",
+        "senderType": null,
+        "authorName": null,
+        "timestamp": "2026-10-02T12:30:00Z",
+        "createdAt": "2026-10-02T12:30:00Z",
+        "read": false,
+        "readAt": null,
+        "starred": false,
+        "scopes": [],
+        "attachments": []
+      }
+    ],
+    "nextCursor": null
+  }
+}
