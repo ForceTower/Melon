@@ -326,7 +326,7 @@ abstract class AcademicDao {
     ): Flow<SemesterHoursProgressRow>
 
     // Semester-wide miss/hours aggregate. Percentage (100 - missed/hours*100)
-    // and allowed-absences (hours * 0.25) are derived on the client.
+    // and allowed absences (`allowedMissedHours`) are derived on the client.
     //
     // Aggregates per DisciplineOffer (one row per discipline) — `applyResult`
     // replicates `missedClasses` onto every StudentClass row in the offer and

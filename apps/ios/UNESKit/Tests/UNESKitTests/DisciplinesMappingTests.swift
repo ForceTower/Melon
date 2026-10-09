@@ -193,6 +193,16 @@ struct DisciplinesMappingTests {
     }
 
     @Test
+    func absenceRiskWarnsAtHalfTheAllowanceAndTurnsCriticalAtThreeQuarters() {
+        #expect(DisciplineRules.absenceRisk(missed: 3, allowed: 8) == .ok)
+        #expect(DisciplineRules.absenceRisk(missed: 4, allowed: 8) == .warning)
+        #expect(DisciplineRules.absenceRisk(missed: 6, allowed: 8) == .critical)
+        // Nothing can be missed, so any absence is already critical.
+        #expect(DisciplineRules.absenceRisk(missed: 0, allowed: 0) == .ok)
+        #expect(DisciplineRules.absenceRisk(missed: 1, allowed: 0) == .critical)
+    }
+
+    @Test
     func attendanceDoesNotDoubleCountMultiGroupAbsences() {
         let overview = DisciplinesFixtures.payload().snapshot.homeOverview(now: now, calendar: calendar)
 

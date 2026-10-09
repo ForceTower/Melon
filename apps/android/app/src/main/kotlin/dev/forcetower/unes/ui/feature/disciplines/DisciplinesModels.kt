@@ -202,7 +202,7 @@ internal fun Discipline.needed(target: Double = 7.0): NeededProjection? {
 
 internal val Discipline.absenceRisk: AbsenceRisk
     get() {
-        if (allowedAbsences <= 0) return AbsenceRisk.Ok
+        if (allowedAbsences <= 0) return if (absences > 0) AbsenceRisk.Risk else AbsenceRisk.Ok
         val ratio = absences.toDouble() / allowedAbsences.toDouble()
         return when {
             ratio >= 0.75 -> AbsenceRisk.Risk

@@ -1,5 +1,6 @@
 package dev.forcetower.melon.feature.disciplines.domain.usecase
 
+import dev.forcetower.melon.core.common.allowedMissedHours
 import dev.forcetower.melon.core.database.dao.AcademicDao
 import dev.forcetower.melon.core.database.query.DisciplineDetailEnrollmentRow
 import dev.forcetower.melon.core.database.query.DisciplineDetailGradeRow
@@ -12,7 +13,6 @@ import dev.forcetower.melon.feature.disciplines.domain.model.DisciplineDetailGro
 import dev.forcetower.melon.feature.disciplines.domain.model.DisciplineDetailLecture
 import dev.forcetower.melon.feature.disciplines.domain.model.DisciplineDetailSection
 import dev.zacsweers.metro.Inject
-import kotlin.math.ceil
 import kotlin.time.Clock
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -44,12 +44,12 @@ class ObserveDisciplineDetailUseCase internal constructor(
             if (enrollments.isEmpty()) {
                 null
             } else {
-                build(enrollments, grades, lectures, materials)
+                buildDisciplineDetail(enrollments, grades, lectures, materials)
             }
         }.distinctUntilChanged()
 }
 
-private fun build(
+internal fun buildDisciplineDetail(
     enrollments: List<DisciplineDetailEnrollmentRow>,
     grades: List<DisciplineDetailGradeRow>,
     lectures: List<DisciplineDetailLectureRow>,
@@ -69,7 +69,6 @@ private fun build(
     // StudentClass row by `applyResult`; take the first non-null instead of
     // summing so multi-group disciplines don't double-count.
     val missedHours = enrollments.firstNotNullOfOrNull { it.missedClasses } ?: 0
-    val allowedMissedHours = ceil(hours * 0.25).toInt()
     val finalGradeString = enrollments.firstOrNull { !it.finalGrade.isNullOrBlank() }?.finalGrade
     val finalGrade = finalGradeString?.replace(",", ".")?.toDoubleOrNull()
     val approved = enrollments.firstOrNull { it.approved != null }?.approved
@@ -168,7 +167,7 @@ private fun build(
         ementa = head.disciplineProgram,
         hours = hours,
         missedHours = missedHours,
-        allowedMissedHours = allowedMissedHours,
+        allowedMissedHours = allowedMissedHours(hours),
         finalGrade = finalGrade,
         approved = approved,
         wentToFinals = wentToFinals,

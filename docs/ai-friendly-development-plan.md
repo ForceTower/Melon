@@ -33,7 +33,7 @@ backlog, not a claim that every item is finished.
 | Mechanical rules | ktlint check/format tasks are part of Android verification. The semantic convention lexer protects theme/string/visibility rules; its baseline of 113 known findings was cleared on October 3, 2026, so any finding now fails. Fixture provenance and credential-pattern checks also run. | Compiler-aware semantic lint, hosting-provider/history secret scanning. |
 | Android scenarios | Hermetic login/sync/Home/empty messages plus five enrollment journeys, resettable failures, fixed projection clock, controlled enrollment flag, isolated app and device evidence gallery. | Extend the catalog to remaining screens, flag combinations and device/permission configurations. |
 | Rendering | Home state/callback rendering, light/default and dark/large-text accessibility checks, deterministic Compose captures and an explicit screenshot comparison command. | Review and establish device-specific visual baselines; broaden accessibility coverage and manual assistive-technology review. |
-| Behavioral coverage | Shared contracts, Home time/attendance boundaries, initial-sync recovery, and per-program CR regressions. Enrollment now covers conflicts, hours, deadline boundaries, prerequisite warnings, waitlists, full replacement and retry in Android/KMP/provider tests. | Broader feature integration, persistence/lifecycle, platform parity and device configurations from milestone 3. |
+| Behavioral coverage | Shared contracts, Home time/attendance boundaries, initial-sync recovery, and per-program CR regressions. Enrollment now covers conflicts, hours, deadline boundaries, prerequisite warnings, waitlists, full replacement and retry in Android/KMP/provider tests. Grade and attendance rules (Final Countdown verdicts, Prova Final requirement, status precedence, absence allowance and risk) assert the same examples on Android and iOS. | Broader feature integration, persistence/lifecycle, the partial-mean and hours-source parity gaps below, notification navigation and device configurations from milestone 3. |
 | Performance | Physical-device Macrobenchmark and profile-generation suites passed; isolated release-like app and manual physical-device workflow. | Review generated rules before shipping, choose a consistent measurement device, establish repeatability and trend thresholds. |
 | Native iOS | Synthetic TCA/HTTP/GRDB pilot, full package lane, explicit intent/UI target, screenshots/hierarchies and accessibility checks. | Three out-of-process AppIntents tests require a runtime that supports Apple's internal execution APIs; full visual/device coverage remains open. |
 | Private repair tooling | In `unes-backrooms`: bounded Crashlytics queries, Play reviews/vitals adapters, durable draft queue, normalized log input, allowlisted GitHub digest/outcome metrics, request correlation and provider tests. | Real service identities, export/store access, schedule/host configuration, diagnostics policy and publishing policy; no live incident or release verification yet. |
@@ -68,6 +68,27 @@ After correction, all six native enrollment suites passed (37 test methods,
 39 parameterized executions). The full Android check, all five new physical-device
 journeys, 28 repository-tooling tests, and 58 provider/reliability tests passed.
 See [enrollment](enrollment.md) for boundaries and reproduction commands.
+
+The grades and attendance follow-up (October 9, 2026) compared Android/KMP
+academic rules with native iOS. KMP rounded the Disciplines list and detail
+absence allowance up (`ceil(hours × 0.25)`), while iOS and Android's own Home
+tile floor it: a 30h discipline offered 8 missable hours, although missing 8
+leaves 73.3% attendance. All three KMP call sites now share
+`allowedMissedHours`. Its two regressions failed first (`expected 7 but was 8`,
+and a 1h discipline allowing 1) and now pass, including a 75% invariant over
+1–200 hours. Android also called absences against a zero allowance safe, which
+iOS treats as critical; that test failed first and now passes. Android gained 21
+calculation tests reusing the iOS Final Countdown, status and partial-mean
+examples, and iOS gained a direct absence-risk test. Reproduce with
+`./gradlew :packages:shared-kmp:features:disciplines:jvmTest` and
+`./gradlew :apps:android:app:testDebugUnitTest --tests '*DisciplineRulesTest'`.
+
+Remaining parity gaps, unverified against real data: KMP's list mean skips a
+released grade without a parseable weight, where iOS and Android's detail fall
+back to the plain mean; Android's detail uses the plain mean when a weight is
+zero, where iOS and the KMP list weigh it out. Android prefers offer hours over
+catalog hours and iOS the reverse, which matters only if they differ. KMP's
+`DisciplineListItem.status` disagrees with both clients but no screen reads it.
 
 On October 2, 2026, GitHub protection for `main` was read back after activation:
 `Required verification`, GitHub Actions app `15368`, strict/up-to-date checking,

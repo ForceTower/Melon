@@ -1,5 +1,6 @@
 package dev.forcetower.melon.feature.disciplines.domain.usecase
 
+import dev.forcetower.melon.core.common.allowedMissedHours
 import dev.forcetower.melon.core.database.dao.AcademicDao
 import dev.forcetower.melon.core.database.dao.SemesterDao
 import dev.forcetower.melon.core.database.entity.SemesterEntity
@@ -12,7 +13,6 @@ import dev.forcetower.melon.feature.disciplines.domain.model.ListGradeEntry
 import dev.forcetower.melon.feature.disciplines.domain.model.PendingSemester
 import dev.forcetower.melon.feature.disciplines.domain.model.SemesterDisciplines
 import dev.zacsweers.metro.Inject
-import kotlin.math.ceil
 import kotlin.time.Clock
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -39,11 +39,11 @@ class ObserveDisciplinesListUseCase internal constructor(
             academicDao.observeAllPartialGrades(),
         ) { semesters, enrollments, grades ->
             val today = Clock.System.now().toLocalDateTime(timeZone).date.toString()
-            buildState(semesters, enrollments, grades, today)
+            buildDisciplinesListState(semesters, enrollments, grades, today)
         }.distinctUntilChanged()
 }
 
-private fun buildState(
+internal fun buildDisciplinesListState(
     semesters: List<SemesterEntity>,
     enrollments: List<EnrolledDisciplineRow>,
     grades: List<PartialGradeRow>,
@@ -104,7 +104,6 @@ private fun buildItem(
     // the first non-null value instead of summing so multi-group disciplines
     // (theory + practice) don't double-count.
     val missedHours = rows.firstNotNullOfOrNull { it.missedClasses } ?: 0
-    val allowedMissedHours = ceil(hours * 0.25).toInt()
 
     // Dedup by upstream id: multi-group disciplines have the same grade set
     // replicated into every StudentClass (see `applyDiscipline`), so without
@@ -136,7 +135,7 @@ private fun buildItem(
         teacherName = rows.firstNotNullOfOrNull { it.teacherName },
         hours = hours,
         missedHours = missedHours,
-        allowedMissedHours = allowedMissedHours,
+        allowedMissedHours = allowedMissedHours(hours),
         partialAverage = partialAverage,
         finalGrade = finalGrade,
         approved = approved,
