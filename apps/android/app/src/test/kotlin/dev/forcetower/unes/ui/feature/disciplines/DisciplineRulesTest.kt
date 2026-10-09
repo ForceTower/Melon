@@ -60,6 +60,13 @@ internal class DisciplineRulesTest {
     }
 
     @Test
+    fun partialAverageNeverCountsTheFinalExam() {
+        val finalExam = GradeEntry(label = "Adicional", title = "Prova Final", date = null, score = 9.0)
+        assertEquals(6.0, discipline(grades = listOf(grade(score = 6.0), finalExam)).partialAverage)
+        assertNull(discipline(grades = listOf(grade(score = null), finalExam)).partialAverage)
+    }
+
+    @Test
     fun displayedGradesTruncateInsteadOfRounding() {
         assertEquals("6,9", formatGrade(6.95))
         assertEquals("8,7", formatGrade(8.7))

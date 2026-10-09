@@ -1,6 +1,7 @@
 package dev.forcetower.unes.ui.feature.disciplines
 
 import androidx.compose.ui.graphics.Color
+import dev.forcetower.melon.feature.disciplines.domain.model.isFinalExam
 import dev.forcetower.unes.designsystem.theme.MelonPaletteColors
 import dev.forcetower.unes.ui.feature.overview.ColorFor
 
@@ -155,7 +156,8 @@ internal val Discipline.allGrades: List<GradeEntry>
 internal val Discipline.partialAverage: Double?
     get() {
         storedPartialAverage?.let { return it }
-        val released = allGrades.filter { it.score != null }
+        // `label` carries the short name ("Adicional"), `title` the full one.
+        val released = allGrades.filter { it.score != null && !isFinalExam(it.title, it.label) }
         if (released.isEmpty()) return null
         // Weight-aware when every released grade carries a positive weight
         // (mirrors iOS `DisciplineRules.partialAverage`); plain mean otherwise.

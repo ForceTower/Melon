@@ -6,6 +6,7 @@ import dev.forcetower.melon.feature.disciplines.domain.model.DisciplineDetailGra
 import dev.forcetower.melon.feature.disciplines.domain.model.DisciplineDetailGroup as KmpGroup
 import dev.forcetower.melon.feature.disciplines.domain.model.DisciplineDetailLecture as KmpLecture
 import dev.forcetower.melon.feature.disciplines.domain.model.DisciplineDetailSection as KmpSection
+import dev.forcetower.melon.feature.disciplines.domain.model.isFinalExam
 import dev.forcetower.unes.ui.feature.disciplines.Attachment
 import dev.forcetower.unes.ui.feature.disciplines.AttachmentKind
 import dev.forcetower.unes.ui.feature.disciplines.ClassEntry
@@ -79,12 +80,7 @@ private fun mapGroup(raw: KmpGroup) =
         prof = raw.teacherName.orEmpty(),
     )
 
-// Both halves must match — "Prova Final" evaluations named by the teacher
-// carry AV-style shorts and stay in the regular list. Mirrors iOS
-// `isFinalExamRow`.
-private fun isFinalExamGrade(raw: KmpGrade): Boolean =
-    raw.gradeName.trim().equals("prova final", ignoreCase = true) &&
-        raw.gradeNameShort?.trim().equals("adicional", ignoreCase = true)
+private fun isFinalExamGrade(raw: KmpGrade): Boolean = isFinalExam(raw.gradeName, raw.gradeNameShort)
 
 // KMP emits a single merged section per discipline (groupName null, kind ""
 // on multi-group). The UI's section header reads `name`, so a blank kind

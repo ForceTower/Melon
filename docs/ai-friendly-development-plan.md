@@ -33,7 +33,7 @@ backlog, not a claim that every item is finished.
 | Mechanical rules | ktlint check/format tasks are part of Android verification. The semantic convention lexer protects theme/string/visibility rules; its baseline of 113 known findings was cleared on October 3, 2026, so any finding now fails. Fixture provenance and credential-pattern checks also run. | Compiler-aware semantic lint, hosting-provider/history secret scanning. |
 | Android scenarios | Hermetic login/sync/Home/empty messages plus five enrollment journeys, resettable failures, fixed projection clock, controlled enrollment flag, isolated app and device evidence gallery. | Extend the catalog to remaining screens, flag combinations and device/permission configurations. |
 | Rendering | Home state/callback rendering, light/default and dark/large-text accessibility checks, deterministic Compose captures and an explicit screenshot comparison command. | Review and establish device-specific visual baselines; broaden accessibility coverage and manual assistive-technology review. |
-| Behavioral coverage | Shared contracts, Home time/attendance boundaries, initial-sync recovery, and per-program CR regressions. Enrollment now covers conflicts, hours, deadline boundaries, prerequisite warnings, waitlists, full replacement and retry in Android/KMP/provider tests. Grade and attendance rules (Final Countdown verdicts, Prova Final requirement, status precedence, absence allowance and risk) assert the same examples on Android and iOS. | Broader feature integration, persistence/lifecycle, the Prova Final list-mean and hours-source parity gaps below, notification navigation and device configurations from milestone 3. |
+| Behavioral coverage | Shared contracts, Home time/attendance boundaries, initial-sync recovery, and per-program CR regressions. Enrollment now covers conflicts, hours, deadline boundaries, prerequisite warnings, waitlists, full replacement and retry in Android/KMP/provider tests. Grade and attendance rules (Final Countdown verdicts, final-exam requirement, status precedence, absence allowance and risk) assert the same examples on Android and iOS. | Broader feature integration, persistence/lifecycle, the hours-source parity gap below, notification navigation and device configurations from milestone 3. |
 | Performance | Physical-device Macrobenchmark and profile-generation suites passed; isolated release-like app and manual physical-device workflow. | Review generated rules before shipping, choose a consistent measurement device, establish repeatability and trend thresholds. |
 | Native iOS | Synthetic TCA/HTTP/GRDB pilot, full package lane, explicit intent/UI target, screenshots/hierarchies and accessibility checks. | Three out-of-process AppIntents tests require a runtime that supports Apple's internal execution APIs; full visual/device coverage remains open. |
 | Private repair tooling | In `unes-backrooms`: bounded Crashlytics queries, Play reviews/vitals adapters, durable draft queue, normalized log input, allowlisted GitHub digest/outcome metrics, request correlation and provider tests. | Real service identities, export/store access, schedule/host configuration, diagnostics policy and publishing policy; no live incident or release verification yet. |
@@ -87,12 +87,17 @@ A read-only, aggregate production check settled the grade-weight questions: no
 stored grade has a zero or negative weight, and ingestion skips weightless rows
 because the column is `NOT NULL`. The clients' differing zero- and
 missing-weight fallbacks therefore cannot reach a student today. The same check
-found a larger gap: the KMP list mean includes a published Prova Final, which iOS
-and Android's detail exclude. About 92% of disciplines with a published Prova
-Final showed a different Android list average, shifted by 0.75 points on
-average. Android prefers offer hours over catalog hours and iOS the reverse,
-which matters only if they differ. KMP's `DisciplineListItem.status` disagrees
-with both clients but no screen reads it.
+found a larger gap: the KMP list mean included a published final exam, which iOS
+and Android's detail exclude. About 92% of disciplines with a published final
+exam showed a different Android list average, shifted by 0.75 points on
+average. One shared `isFinalExam` rule now keeps it out of every Android partial
+mean; its regressions failed first (5.75 instead of 4.67, and a mean from the
+final alone) and now pass. It also replaces Final Countdown's looser copy, which
+matched the name or the short label alone and so dropped the rare regular
+evaluation a teacher named "Prova Final"; that regression also failed first.
+Android prefers offer hours over catalog hours and iOS the reverse, which matters
+only if they differ. KMP's `DisciplineListItem.status` disagrees with both
+clients but no screen reads it.
 
 On October 2, 2026, GitHub protection for `main` was read back after activation:
 `Required verification`, GitHub Actions app `15368`, strict/up-to-date checking,
