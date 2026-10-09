@@ -3,7 +3,7 @@ package dev.forcetower.unes.ui.feature.disciplinedetail
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-// The Prova Final closes at 0,6·média + 0,4·final ≥ 5, with the média
+// The final exam closes at 0.6 × mean + 0.4 × exam ≥ 5, with the mean
 // truncated to a tenth first and the requirement rounded up afterwards.
 internal class DisciplineFinalsMathTest {
     @Test
