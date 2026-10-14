@@ -77,6 +77,7 @@ jobs:
           profile: pixel_6
           disable-animations: true
           script: |
+            adb -s emulator-5554 shell settings put global hide_error_dialogs 1
             adb -s emulator-5554 shell am broadcast -a android.intent.action.CLOSE_SYSTEM_DIALOGS
             bun run android:scenario home.populated --serial emulator-5554 --no-build
             bun run android:scenario home.populated --serial emulator-5554 --no-build --render

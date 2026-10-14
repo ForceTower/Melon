@@ -110,11 +110,13 @@ followed by a successful full-proposal replacement with waitlist/prerequisite
 warning behavior. It builds the scenario app and instrumentation APK before
 booting the emulator, using a single-use Gradle daemon so compilation does not
 compete with the emulator for resources. Before installing the scenario app, CI
-sends `CLOSE_SYSTEM_DIALOGS` once to dismiss any launcher error dialog left by
-boot. Every journey uses `--no-build` and clears its isolated state. Error dialogs
-are not suppressed during the tests: a blocked or unresponsive app must still
-fail the journey. The original failed run's hierarchy identified a Quickstep ANR
-that was already stealing focus when the login test tried to close its keyboard.
+sets `hide_error_dialogs` and sends `CLOSE_SYSTEM_DIALOGS` once, following Android's
+CTS setup. The setting prevents new dialogs but does not dismiss ones already
+shown during boot. Android terminates an unresponsive app when its error dialog
+is suppressed; failed instrumentation still fails the journey. Every journey uses
+`--no-build` and clears its isolated state. The original failed run's hierarchy
+identified a Quickstep ANR that was already stealing focus when the login test
+tried to close its keyboard.
 
 Repository tooling/mock tests also emit JUnit XML at
 `artifacts/repository-tests.xml`, uploaded by the always-running repository lane.
