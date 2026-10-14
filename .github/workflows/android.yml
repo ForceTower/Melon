@@ -59,6 +59,11 @@ jobs:
           distribution: temurin
           java-version: "21"
       - uses: gradle/actions/setup-gradle@v5
+      - name: Build scenario APKs before starting the emulator
+        run: >-
+          ./gradlew :apps:android:app:assembleScenario
+          :apps:android:app:assembleScenarioAndroidTest
+          -Pmelon.testBuildType=scenario --no-daemon --console=plain
       - name: Enable emulator acceleration
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
@@ -71,11 +76,8 @@ jobs:
           arch: x86_64
           profile: pixel_6
           disable-animations: true
-          # The launcher can stop responding while the scenario build starves the
-          # emulator, and its ANR dialog takes window focus from the app under test.
           script: |
-            adb -s emulator-5554 shell settings put global hide_error_dialogs 1
-            bun run android:scenario home.populated --serial emulator-5554
+            bun run android:scenario home.populated --serial emulator-5554 --no-build
             bun run android:scenario home.populated --serial emulator-5554 --no-build --render
             bun run android:scenario auth.invalid-credentials --serial emulator-5554 --no-build
             bun run android:scenario sync.unavailable --serial emulator-5554 --no-build
