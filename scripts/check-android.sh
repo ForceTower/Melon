@@ -8,7 +8,8 @@ java scripts/CompareScreenshots.java --self-test
 ./gradlew \
     -Pmelon.verification=true \
     ktlintCheck \
+    :apps:android:lint-checks:test \
     :apps:android:app:assembleRelease \
     :apps:android:benchmark:assembleBenchmark \
     :apps:android:benchmark:assembleProfile \
-    testDebugUnitTest jvmTest lintDebug --stacktrace "$@"
+    testDebugUnitTest jvmTest lintDebug --stacktrace --profile "$@"

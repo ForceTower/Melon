@@ -1,6 +1,6 @@
 # AI friendly development and reliability plan
 
-**Status: implementation in progress (October 2, 2026). Android and native iOS
+**Status: implementation in progress (October 14, 2026). Android and native iOS
 verification pilots and enrollment coverage are implemented; required CI is
 enforced on `main`. Service activation and full feature coverage remain open.**
 
@@ -29,8 +29,8 @@ backlog, not a claim that every item is finished.
 
 | Area | Repository-local implementation | Remaining evidence or setup |
 | --- | --- | --- |
-| Merge verification | All foundation lanes passed remotely. `main` now requires the GitHub Actions **Required verification** check, with strict freshness and administrator enforcement. Builds, lint, test artifacts and templates are in place. | Keep the single required result stable; monitor duration, flakes and evidence availability. |
-| Mechanical rules | ktlint check/format tasks are part of Android verification. The semantic convention lexer protects theme/string/visibility rules; its baseline of 113 known findings was cleared on October 3, 2026, so any finding now fails. Fixture provenance and credential-pattern checks also run. | Compiler-aware semantic lint, hosting-provider/history secret scanning. |
+| Merge verification | All foundation lanes passed remotely. `main` requires the GitHub Actions **Required verification** check with strict freshness; administrators may bypass it. Builds, lint, test artifacts and templates are in place. Android verification publishes Gradle task timing reports. | Keep the single required result stable; monitor duration, flakes and evidence availability. |
+| Mechanical rules | ktlint and the fast convention lexer run alongside symbol-resolving Android Lint checks for app theme/string/visibility rules. The original 113 lexer findings were cleared on October 3, 2026. Fixture provenance and credential-pattern checks run locally; GitHub secret scanning and push protection are enabled. | Review arbitrary wrappers, dynamic values and public library APIs beyond the scoped checks; maintain compatibility with toolchain upgrades. |
 | Android scenarios | Hermetic login/sync/Home/empty messages, two message-push taps and five enrollment journeys, resettable failures, fixed projection clock, controlled enrollment flag, isolated app and device evidence gallery. | Extend the catalog to remaining screens, flag combinations and device/permission configurations. |
 | Rendering | Home state/callback rendering, light/default and dark/large-text accessibility checks, deterministic Compose captures and an explicit screenshot comparison command. | Review and establish device-specific visual baselines; broaden accessibility coverage and manual assistive-technology review. |
 | Behavioral coverage | Shared contracts, Home time/attendance boundaries, initial-sync recovery, and per-program CR regressions. Enrollment now covers conflicts, hours, deadline boundaries, prerequisite warnings, waitlists, full replacement and retry in Android/KMP/provider tests. Grade and attendance rules (Final Countdown verdicts, final-exam requirement, status precedence, absence allowance and risk) assert the same examples on Android and iOS. Android notification links are covered from the URI table through routing to message resolution. | Broader feature integration, persistence/lifecycle, the hours-source parity gap below and device configurations from milestone 3. |
@@ -112,11 +112,38 @@ the common race, and a routing-table test pins how each link rebuilds its tab.
 A push that arrives while the app is open stays silent on Android by design for
 now (it only refreshes the mirror), while iOS presents a banner.
 
-On October 2, 2026, GitHub protection for `main` was read back after activation:
-`Required verification`, GitHub Actions app `15368`, strict/up-to-date checking,
-and administrator enforcement are enabled. Existing signature, linear-history,
-force-push and deletion settings were preserved. The latest main verification
-at `8ae16ade3` was successful before enabling this requirement.
+On October 2, 2026, GitHub protection for `main` was activated after successful
+verification at `8ae16ade3`. The October 14 readback confirms `Required verification`,
+GitHub Actions app `15368`, and strict/up-to-date checking. Administrator enforcement
+is disabled, matching the later policy documented in [testing](testing.md).
+GitHub secret scanning and push protection are enabled; non-provider patterns and
+validity checks are disabled. These are hosting settings, not workflow guarantees.
+
+Shared agent commands for running/adding scenarios and investigating repairs,
+the command permission allowlist, and the bug/PR/quarantine templates are checked
+in. The guidance/configuration work proposed in section 9 is therefore implemented.
+The historical proposals below remain useful context, but the ledger and current
+testing guide take precedence when identifying unfinished work.
+
+The milestone 1 follow-up on October 14 adds five custom Android Lint issues and
+14 detector tests, including compiled Kotlin fixtures. An aliased preset color
+and a string constant passed to an aliased Text call produced zero findings in
+the fast lexer. A temporary debug-app probe now fails the real lint task for all
+five rules; it was removed before the passing full check. Compiled companion
+properties also have a regression: the initial detector missed both fields, and
+the corrected detector reports them through their resolved outer-class owner.
+On the merged Gradle 9.8.0 / AGP 9.4.1 toolchain, `android:check` passed packaging,
+lint, 150 Android/KMP tests and 14 detector tests; repository verification passed
+29 tests and the convention/fixture checks.
+
+One local warm comparison on Gradle 9.7.1 / AGP 9.4.0 measured app lint analysis
+at 68.36s before and 85.26s after adding the checks. The full check on the upgraded
+toolchain took 5m32s, including a 24.84s detector-test task under concurrent build
+load. These are local samples, not a CI threshold or a before/after comparison
+of the full pipeline. Ordinary debug assembly does not run the new checks; full
+verification publishes task profiles so subsequent runs can be compared with
+matching toolchains and cache state. Duration/flake monitoring remains ongoing
+maintenance of the foundation.
 
 ## Original repository inspection
 

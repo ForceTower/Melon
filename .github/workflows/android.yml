@@ -42,6 +42,7 @@ jobs:
             **/build/test-results/**
             **/build/reports/lint-results-*
             build/reports/ktlint/**
+            build/reports/profile/**
           if-no-files-found: warn
 
   smoke:

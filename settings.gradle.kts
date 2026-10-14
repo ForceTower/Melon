@@ -21,6 +21,7 @@ include(":apps:android:app")
 include(":apps:android:benchmark")
 include(":apps:android:design-system")
 include(":apps:android:mvi")
+include(":apps:android:lint-checks")
 
 include(":packages:shared-kmp:core:common")
 include(":packages:shared-kmp:core:analytics")
