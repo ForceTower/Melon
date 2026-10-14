@@ -14,6 +14,7 @@ mockk = "1.14.11"
 
 # Android
 agp = "9.4.1"
+android-lint = "32.4.1"
 android-compile-sdk = "37"
 android-target-sdk = "37"
 android-min-sdk = "28"
@@ -49,6 +50,8 @@ android-espresso = "3.7.0"
 android-uiautomator = "2.3.0"
 
 [libraries]
+android-lint-api = { module = "com.android.tools.lint:lint-api", version.ref = "android-lint" }
+android-lint-tests = { module = "com.android.tools.lint:lint-tests", version.ref = "android-lint" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 androidx-test-runner = { module = "androidx.test:runner", version.ref = "android-test" }
 androidx-test-rules = { module = "androidx.test:rules", version.ref = "android-test" }
@@ -182,6 +185,7 @@ coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" 
 coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coil" }
 
 [plugins]
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }

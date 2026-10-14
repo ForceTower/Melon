@@ -10,11 +10,15 @@ Native app, package and UI commands are documented in [iOS testing](ios-testing.
 Dedicated-device measurement and profile generation are in
 [Android performance](android-performance.md).
 
+If an older system Node or Bun shadows the pinned runtime inside scripts, use
+`mise exec -- bun --bun run check` (and the same prefix for other Bun scripts).
+This keeps nested commands on Bun's runtime instead of the system executable.
+
 | Command | Evidence |
 | --- | --- |
 | `bun run check` | Oxlint and Oxfmt checks for the TypeScript repository. |
 | `bun run verify:repository` | Verification-tool tests, Android conventions, fixture/credential checks and hermetic mock-server tests. |
-| `bun run android:check` | ktlint, release and benchmark test-APK assembly, Android debug unit tests, KMP JVM tests, Android lint. |
+| `bun run android:check` | ktlint, release and benchmark test-APK assembly, Android debug unit tests, KMP JVM tests, custom lint tests and Android lint. |
 | `bun run android:scenario home.populated --serial emulator-5554` | Installed scenario build, synthetic-account journey and captured device evidence. |
 | `bun run landing:check` | Astro type checking and production build. |
 
@@ -89,14 +93,30 @@ hierarchy/log evidence and instrumentation results. Native iOS uploads its test
 results through its reusable workflow. Failed setup can leave no reports; an
 artifact warning is not a successful test result.
 
+`android:check` also writes Gradle's HTML timing report under `build/reports/profile/`,
+uploaded with the Android reports. It records configuration, dependency resolution
+and task durations. Compare the same toolchain and task selection with similar cache
+state; a fresh checkout, cached build and no-op build measure different costs.
+The GitHub job/step timestamps provide total runner duration. Keep the original
+failed run when investigating a suspected flake; these reports do not classify
+flakes or establish a performance threshold automatically.
+
 The emulator lane runs synthetic Home startup, Home rendering/accessibility,
 invalid credentials with retry, failed initial sync with retry, cached offline
 Home, expired-session recovery UI, the empty inbox and message-push taps that
 outrun the mirror or point at a missing message. Enrollment journeys cover
 conflicts, minimum/maximum hours, expired deadlines, and a failed submission
 followed by a successful full-proposal replacement with waitlist/prerequisite
-warning behavior. It builds the scenario
-app once and reuses that APK while clearing its isolated state between journeys.
+warning behavior. It builds the scenario app and instrumentation APK before
+booting the emulator, using a single-use Gradle daemon so compilation does not
+compete with the emulator for resources. Before installing the scenario app, CI
+sets `hide_error_dialogs` and sends `CLOSE_SYSTEM_DIALOGS` once, following Android's
+CTS setup. The setting prevents new dialogs but does not dismiss ones already
+shown during boot. Android terminates an unresponsive app when its error dialog
+is suppressed; failed instrumentation still fails the journey. Every journey uses
+`--no-build` and clears its isolated state. The original failed run's hierarchy
+identified a Quickstep ANR that was already stealing focus when the login test
+tried to close its keyboard.
 
 Repository tooling/mock tests also emit JUnit XML at
 `artifacts/repository-tests.xml`, uploaded by the always-running repository lane.
@@ -119,11 +139,34 @@ Backing names come from the existing theme color/font definitions. The design
 system may define tokens and expose cross-module APIs, so this first checker is
 scoped to the app. Unit/instrumentation test fixtures are excluded.
 
-This is a scoped architecture check, not compiler-aware Android lint. It handles
-comments, string literals and declaration nesting but does not resolve aliases,
-propagated string values, arbitrary wrappers or all Kotlin syntax. Framework
-Android lint remains part of `android:check`. Human review still applies the full
-rules in `CLAUDE.md`, including other modules and API visibility decisions.
+This fast lexer handles comments, string literals and declaration nesting. The
+`apps/android/lint-checks` JVM module adds symbol-resolving checks to the app's
+existing `lintDebug` pass through `lintChecks`, without becoming an app dependency:
+
+| Issue | Additional enforcement |
+| --- | --- |
+| `MelonThemeColor` | Constant Compose colors, preset colors and direct backing tokens, including aliases. Transparent, Unspecified and runtime widget color restoration are allowed. |
+| `MelonThemeTypography` | Raw font families, default/preset families and backing font tokens, including aliases. |
+| `MelonThemeMotion` | Qualified and aliased Compose `spring` calls. |
+| `MelonStringResource` | Constant text and descriptions passed to Compose/Glance Text, BasicText, Icon and Image, including aliases and reordered arguments. |
+| `MelonInternalVisibility` | Kotlin top-level app declarations parsed through PSI, including annotations, generics and type aliases. |
+
+The checks report errors and exclude test/generated sources. They are scoped to
+the app: design-system token definitions and public library APIs are intentional.
+The debug lint pass covers main/debug; the fast checker also covers scenario
+sources without adding another Android variant analysis. Arbitrary wrappers,
+dynamic string composition and cross-function data provenance still need review.
+These checks do not attempt a whole-program call graph.
+
+Run `./gradlew :apps:android:lint-checks:test` for focused detector tests, or
+`./gradlew :apps:android:app:lintDebug` for real app analysis. The detector tests
+include invalid examples, valid theme/resource usage, unrelated symbols with
+the same names, and compiled Kotlin fixtures for library property resolution.
+Keep the `android-lint` catalog version aligned with AGP when upgrading and rerun
+these tests. They run in `android:check`; their JUnit/HTML results use the same
+CI artifact paths as the other JVM tests. A normal `assembleDebug` does not run
+these tests or the custom lint analysis. A first lint run compiles the small JVM
+module; later runs reuse Gradle's task outputs/cache when inputs are unchanged.
 
 `scripts/verification/android-conventions-baseline.json` records accepted debt by
 path, rule, offending source and count. It is empty: the original 113 findings were
@@ -144,9 +187,11 @@ the path and rule, never the matched credential.
 The credential check covers private keys, GitHub/Slack tokens, AWS access key IDs,
 Google service-account documents and JWTs. It intentionally permits public
 analytics/client identifiers. It is a local pattern check, not comprehensive
-secret discovery or Git-history scanning; configure the hosting provider's
-secret scanning independently where available. Detection does not establish that
-a person, message or record is synthetic.
+secret discovery or Git-history scanning. GitHub secret scanning and push
+protection were read back as enabled on October 14, 2026; non-provider patterns
+and validity checks were disabled. These hosting settings are independent of the
+workflow and must be checked separately on forks. Detection does not establish
+that a person, message or record is synthetic.
 
 When converting an incident into a fixture, start from the behavior and create
 new people, IDs, dates, text and credentials. Use reserved `example.invalid`

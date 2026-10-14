@@ -184,6 +184,7 @@ androidComponents {
 }
 
 dependencies {
+    lintChecks(project(":apps:android:lint-checks"))
     implementation(project(":apps:android:design-system"))
     implementation(project(":apps:android:mvi"))
     implementation(project(":packages:shared-kmp:umbrella"))
