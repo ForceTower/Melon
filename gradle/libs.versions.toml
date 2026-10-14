@@ -13,7 +13,7 @@ ktlint = "1.8.0"
 mockk = "1.14.11"
 
 # Android
-agp = "9.4.0"
+agp = "9.4.1"
 android-compile-sdk = "37"
 android-target-sdk = "37"
 android-min-sdk = "28"
