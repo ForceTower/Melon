@@ -5,6 +5,8 @@ with the Duo's hinge. Code lives in `apps/ios/UNESKit/Sources/UNESKit/DesignSyst
 
 Everything here was measured on the **simulator** (Xcode 27.1 beta 1, iOS 27.1 `24A94401`,
 2026-09-18). No hardware existed yet. Re-measure on a newer toolchain before trusting a number.
+On the Xcode 27.1 release (27A9275, iOS 27.1 `24A94232`), the folded (466 × 678) and inner
+(669 × 951) scene sizes are unchanged; the postures were not re-measured.
 
 ## The idea
 
@@ -100,13 +102,15 @@ sign-in bar cannot fit, so it lays out heading | form side by side instead.
   `SIMCTL_CHILD_SWIFT_DEPENDENCIES_CONTEXT=preview xcrun simctl launch <udid> dev.forcetower.unes.ios`.
   The session is in-memory, so each launch starts at onboarding; deeplinks are inert.
 
-## Known issue
+## Fixed by the OS: folding with a page open
 
-Folding the Duo **while a page is open on a spread** leaves that page with an empty toolbar
-capsule and a Back button that ignores taps, until the tab is left and re-entered. It happens
-when `SpreadStack` swaps the split view for a freshly built stack whose path is already
-populated; a stack that survives the fold is fine, and the main thread is idle. Rebuilding
-the shell 600ms after the change did not help. Unresolved as of iOS 27.1 beta 1.
+On iOS 27.1 beta 1, folding the Duo **while a page is open on a spread** left that page with
+an empty toolbar capsule and a Back button that ignored taps, until the tab was left and
+re-entered. It happened when `SpreadStack` swapped the split view for a freshly built stack
+whose path was already populated; rebuilding the shell 600ms later did not help. No app
+change fixed it, but it no longer reproduces on the Xcode 27.1 release (27A9275, iOS 27.1
+`24A94232`, checked by hand on 2026-10-16: Turmas → open a class → fold → Back). If it
+comes back, start from that swap.
 
 ## Not verified
 
