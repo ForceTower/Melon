@@ -14,12 +14,15 @@ public enum DevelopmentScenario {
     @MainActor
     static func makeStore() -> StoreOf<RootFeature> {
         NSTimeZone.default = TimeZone(identifier: "America/Bahia")!
+        let launchedAt = Date()
         return withDependencies {
             $0.context = .preview
             $0.defaultAppStorage = .inMemory
             $0.database = try! inMemoryDatabase()
             $0.sessionStore = .inMemory()
-            $0.date = .constant(now)
+            // Starts at `now` but keeps running: the pilot hero starts exactly
+            // at `now`, and on a frozen clock Home re-arms its rollover every second.
+            $0.date = DateGenerator { now.addingTimeInterval(Date().timeIntervalSince(launchedAt)) }
             $0.continuousClock = ContinuousClock()
             $0.uuid = .incrementing
             $0.apiClient = .live(baseURL: URL(string: "http://127.0.0.1:8788")!)

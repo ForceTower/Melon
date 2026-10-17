@@ -46,8 +46,8 @@ backend before asserting that cached content remains visible.
 The UI command owns a hermetic mock server on `127.0.0.1:8788`, separate from
 Android's default port 8787. It never enables the production proxy. The Debug
 app launch environment `MELON_SCENARIO=auth.login` selects a fresh in-memory
-session, defaults, and migrated GRDB database, fixes reducer time to
-`2026-10-02T13:00:00Z`, and starts at Login. Auth, sync, profile, messages, and Home
+session, defaults, and migrated GRDB database, starts reducer time at
+`2026-10-02T13:00:00Z` and lets it run, and starts at Login. Auth, sync, profile, messages, and Home
 use their real HTTP repositories. Push, analytics, remote logs, widget/watch
 publication, legacy migration, and other external integrations use preview
 dependencies. The app delegate does not initialize external SDKs in this mode.
