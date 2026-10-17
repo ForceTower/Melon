@@ -114,7 +114,7 @@ struct CoefficientHistory {
     /// One entry per enrolled discipline offer, keyed by semester id. Group
     /// rows (theory + practice) replicate the discipline's result — dedup the
     /// way the Turmas mapping does: first non-nil over name-sorted groups,
-    /// hours through the discipline → offer → widest-group fallback.
+    /// hours through the offer → discipline → widest-group fallback.
     private func takenBySemester() -> [String: [TakenDiscipline]] {
         let classesById = Dictionary(classes.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
         let offersById = Dictionary(disciplineOffers.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
@@ -140,8 +140,8 @@ struct CoefficientHistory {
                 .sorted { ($0.group.groupName ?? "", $0.row.id) < ($1.group.groupName ?? "", $1.row.id) }
             let semesterId = ordered[0].row.semesterId
             let offer = offersById[offerId]
-            let hours = offer.flatMap { disciplineHours[[semesterId, $0.disciplineId]] }
-                ?? offer?.hours
+            let hours = offer?.hours
+                ?? offer.flatMap { disciplineHours[[semesterId, $0.disciplineId]] }
                 ?? ordered.map(\.group.hours).max() ?? 0
             taken[semesterId, default: []].append(
                 TakenDiscipline(

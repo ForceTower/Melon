@@ -20,7 +20,7 @@ installation have different IDs. Use `--no-build` only when the APKs already
 match your source. Each invocation gets fresh server and app storage.
 
 The runner selects pt-BR for this package. Its `AppClock` controls Home, schedule,
-profile and ready projections. Analytics, crash reporting, remote logging,
+profile, ready, and the Disciplines list and detail projections. Analytics, crash reporting, remote logging,
 remote configuration, push registration, reminders and store prompts are disabled
 in the scenario build; normal release builds cannot select the scenario mode.
 Scenario feature gates use their false defaults instead of debug's all-on policy.
@@ -43,6 +43,11 @@ override guarded by the isolated build flag; ordinary builds cannot activate it.
 | `enrollment.over-maximum` | Above-maximum workload disables submission and produces no submit request. |
 | `enrollment.deadline-expired` | A stale OPEN window cannot permit submission after the deadline. |
 | `enrollment.submit-retry` | Select a full waitlisted section with a prerequisite warning, remove the previous selection, and recover from failed submission without changing the complete desired set. |
+| `disciplines.current` | Each current card shows its status, partial mean (weighted, Prova Final excluded) and free absences under the floored 25% allowance; the finals and low-mean disciplines are flagged. |
+| `disciplines.history` | The past semester shows the CR, approval rate and hours-weighted mean using the offer's hours, not the later catalog value; the CR counts a failure for absences posted without a mean as 0; the discipline's detail agrees. |
+| `disciplines.download-retry` | The past semester fails to download (backfill and a tap); a snackbar names it and the download card stays, and a retry after the server recovers lists the semester. |
+| `discipline.detail.finals` | A discipline in finals keeps its partial mean, lists the pending Prova Final in its own section and shows the grade the final needs. |
+| `discipline.detail.attendance` | Absences near the allowance warn on the detail, which matches the list card's free absences. |
 
 The notification journeys deliver the tap as a backend message push does: an
 intent to the running app carrying `kind`, `messageId` and `url` extras. The
@@ -58,6 +63,14 @@ variant deliberately exercises the supported client warning shape even though
 the current provider marks returned prerequisites as met. Deadline variants keep
 OPEN to reproduce a stale response. Exact deadline equality is accepted, and an
 OPEN window is not rejected merely because its published start is in the future.
+
+The Disciplines journeys use `contracts/v1/disciplines.json`. Its current
+semester keeps the pilot's id and Friday class, so login and Home behave as in
+`home.populated`, and adds three graded disciplines. The past semester arrives
+through the backfill that starts with the main screen, which tries it once per
+session. Histórico's CR includes the discipline still in finals, using the mean
+upstream reports as its final grade (the fixture uses its 4,5 partial mean);
+iOS counts it the same way.
 
 `artifacts/android/<id>/index.html` links the latest immutable run directory with screenshots, hierarchy, Compose semantics,
 instrumentation assertions, available app logcat, mock request counts, device,

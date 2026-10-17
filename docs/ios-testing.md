@@ -33,6 +33,9 @@ different machine or physical device. This avoids maintaining a divergent Swift
 copy of the shared contract. Tests decode auth, profile, onboarding, semester,
 and message DTOs; execute login through the live repository; and confirm that
 the real GRDB mirror retains its last successful semester after a failed refresh.
+`DisciplinesContractTests` reads `contracts/v1/disciplines.json` the same way
+and checks that the list, detail and CR count a past discipline's offer hours
+rather than its later catalog hours.
 
 The existing `UNESIntentTests` target is an XCUITest target. It now also contains
 `ScenarioJourneyTests`, which enters the synthetic account through Login, waits

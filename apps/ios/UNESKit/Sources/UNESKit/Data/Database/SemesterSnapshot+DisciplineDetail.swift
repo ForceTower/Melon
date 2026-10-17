@@ -52,7 +52,8 @@ extension SemesterSnapshot {
             department: discipline.department,
             ementa: discipline.program?.trimmingCharacters(in: .whitespacesAndNewlines).nilIfEmpty,
             teacherName: enrollments.firstNonNil { teacherName(of: $0.group) },
-            hours: discipline.hours ?? offers.firstNonNil(\.hours)
+            // Offer first, as in `disciplineSummaries`.
+            hours: offers.firstNonNil(\.hours) ?? discipline.hours
                 ?? enrollments.map(\.group.hours).max() ?? 0,
             // totalFaltas is replicated per group row — first, never summed.
             missedHours: enrollments.firstNonNil(\.studentClass.missedClasses) ?? 0,

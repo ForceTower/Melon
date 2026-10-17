@@ -22,9 +22,10 @@ data class SemesterDisciplines(
 
 // One entry per (semester, discipline). Multiple StudentClass rows — when a
 // discipline runs as e.g. theory + practice — are merged into a single item:
-// hours come from the catalog (upstream replicates them per group), absences
-// are taken from any one row (also replicated by `applyResult`), grades dedup
-// by upstream id, teacher is the first non-null.
+// hours come from the offer, falling back to the catalog (the catalog row
+// keeps whichever value was synced last, so it can drift from a past
+// semester's), absences are taken from any one row (replicated by
+// `applyResult`), grades dedup by upstream id, teacher is the first non-null.
 data class DisciplineListItem(
     val disciplineId: String,
     val offerId: String,

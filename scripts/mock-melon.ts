@@ -1,7 +1,15 @@
 // Hermetic API by default; --proxy explicitly enables production passthrough.
 // Run bun run mock. See docs/scenarios.md for controls and device launch commands.
 
-import { isScenarioId, messages, pilot, scenarioCatalog, type ScenarioId } from "./scenarios";
+import {
+  disciplines as semesters,
+  isDisciplinesScenario,
+  isScenarioId,
+  messages,
+  pilot,
+  scenarioCatalog,
+  type ScenarioId,
+} from "./scenarios";
 import {
   enrollmentFixture,
   parseEnrollmentSelections,
@@ -1011,6 +1019,7 @@ export function createMockHandler(options: { proxy?: boolean; now?: string } = {
       "GET /api/sync/profile",
       "GET /api/sync/semesters",
       `GET /api/sync/semesters/${pilot.semester.semester.id}`,
+      `GET /api/sync/semesters/${semesters.past.semester.id}`,
       "GET /api/sync/onboarding-status",
       "GET /api/sync/messages",
       "POST /api/sync/messages/read",
@@ -1076,11 +1085,26 @@ export function createMockHandler(options: { proxy?: boolean; now?: string } = {
         );
       }
       if (req.method === "GET") {
+        // The Disciplines journeys replace the pilot semester (same id and
+        // Friday class) with a richer one, plus a past semester.
+        const withHistory = isDisciplinesScenario(scenario);
         if (url.pathname === "/api/sync/profile") return ok(pilot.profile);
-        if (url.pathname === "/api/sync/semesters")
-          return ok({ semesters: [{ ...pilot.semester.semester, dirtyAt: null }] });
+        if (url.pathname === "/api/sync/semesters") {
+          const listed = withHistory
+            ? [semesters.current.semester, semesters.past.semester]
+            : [pilot.semester.semester];
+          return ok({ semesters: listed.map((semester) => ({ ...semester, dirtyAt: null })) });
+        }
         if (url.pathname === `/api/sync/semesters/${pilot.semester.semester.id}`)
-          return ok(pilot.semester);
+          return ok(withHistory ? semesters.current : pilot.semester);
+        if (withHistory && url.pathname === `/api/sync/semesters/${semesters.past.semester.id}`) {
+          if (scenario === "disciplines.download-retry")
+            return Response.json(
+              { ok: false, message: "Synthetic semester unavailable", data: null },
+              { status: 503 },
+            );
+          return ok(semesters.past);
+        }
         if (url.pathname === "/api/sync/onboarding-status") return ok(pilot.onboarding);
         if (url.pathname === "/api/sync/messages")
           return ok(

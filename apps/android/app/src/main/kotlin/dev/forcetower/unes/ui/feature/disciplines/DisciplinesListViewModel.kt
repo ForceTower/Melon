@@ -28,6 +28,7 @@ import kotlinx.coroutines.launch
 // `download(semesterCode)` invokes `SyncSemesterUseCase` for a tapped pending
 // placeholder card — DB writes trigger the flow to re-emit and reclassify the
 // semester into `current` / `past`, so no local mutation is needed afterwards.
+// A failure leaves the placeholder in place and emits `DownloadFailed`.
 internal data class DisciplinesUiState(
     val current: Semester? = null,
     val past: List<Semester> = emptyList(),
@@ -40,7 +41,6 @@ internal data class DisciplinesUiState(
     // currently in. Wrapped because `null` is itself a track (the graduação).
     val selectedTrack: TrackSelection? = null,
     val downloading: Set<String> = emptySet(),
-    val downloadError: String? = null,
     // Seed handover for the detail route. Set when the list-card is tapped so
     // `DisciplineDetailRoute` can render the screen against the list payload
     // while its own VM hydrates from `ObserveDisciplineDetailUseCase`. Mirrors
@@ -83,7 +83,11 @@ internal sealed interface DisciplinesIntent : UiIntent {
     ) : DisciplinesIntent
 }
 
-internal sealed interface DisciplinesEffect : UiEffect
+internal sealed interface DisciplinesEffect : UiEffect {
+    data class DownloadFailed(
+        val semesterCode: String,
+    ) : DisciplinesEffect
+}
 
 @HiltViewModel
 internal class DisciplinesListViewModel @Inject constructor(
@@ -137,23 +141,10 @@ internal class DisciplinesListViewModel @Inject constructor(
 
         analytics.selectContent(ContentTypes.SEMESTER, semesterCode, mapOf("action" to "sync"))
         viewModelScope.launch {
-            setState { copy(downloading = downloading + semesterCode, downloadError = null) }
-            val outcome = runCatching { syncSemester(dbId) }.getOrElse {
-                setState {
-                    copy(downloading = downloading - semesterCode, downloadError = "Falha ao baixar o semestre.")
-                }
-                return@launch
-            }
-            val errorMessage = when (outcome) {
-                is Outcome.Ok -> null
-                is Outcome.Err -> "Falha ao baixar o semestre."
-            }
-            setState {
-                copy(
-                    downloading = downloading - semesterCode,
-                    downloadError = errorMessage,
-                )
-            }
+            setState { copy(downloading = downloading + semesterCode) }
+            val succeeded = runCatching { syncSemester(dbId) }.getOrNull() is Outcome.Ok
+            setState { copy(downloading = downloading - semesterCode) }
+            if (!succeeded) emitEffect(DisciplinesEffect.DownloadFailed(semesterCode))
         }
     }
 }

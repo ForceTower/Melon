@@ -1,7 +1,13 @@
 import { mkdir } from "node:fs/promises";
 import { parseArgs } from "node:util";
 import { createMockHandler } from "./mock-melon";
-import { isScenarioId, pilot, scenarioCatalog } from "./scenarios";
+import {
+  isDisciplinesScenario,
+  isScenarioId,
+  pilot,
+  scenarioCatalog,
+  type ScenarioId,
+} from "./scenarios";
 
 const { values, positionals } = parseArgs({
   args: process.argv.slice(2),
@@ -29,6 +35,16 @@ const output = `${directory}/runs/${runId}`;
 const reproduction = `bun run android:scenario ${id}${values.render ? " --render" : ""} --serial ${serial}`;
 await mkdir(output, { recursive: true });
 const adb = (...args: string[]) => run(["adb", "-s", serial, ...args]);
+
+function fixtureFiles(scenario: ScenarioId) {
+  if (scenario.startsWith("enrollment."))
+    return ["contracts/v1/pilot.json", "contracts/v1/enrollment.json"];
+  if (scenario.startsWith("notification."))
+    return ["contracts/v1/pilot.json", "contracts/v1/messages.json"];
+  if (isDisciplinesScenario(scenario))
+    return ["contracts/v1/pilot.json", "contracts/v1/disciplines.json"];
+  return ["contracts/v1/pilot.json"];
+}
 
 async function run(command: string[], timeoutMs = 120_000) {
   const child = Bun.spawn(command, { stdout: "pipe", stderr: "pipe" });
@@ -136,11 +152,7 @@ try {
         failure,
         captureErrors,
         fixtureVersion: pilot.version,
-        fixtureFiles: id.startsWith("enrollment.")
-          ? ["contracts/v1/pilot.json", "contracts/v1/enrollment.json"]
-          : id.startsWith("notification.")
-            ? ["contracts/v1/pilot.json", "contracts/v1/messages.json"]
-            : ["contracts/v1/pilot.json"],
+        fixtureFiles: fixtureFiles(id),
         featureFlags: { enrollment: id.startsWith("enrollment.") },
         clock: pilot.clock,
         timezone: pilot.timezone,

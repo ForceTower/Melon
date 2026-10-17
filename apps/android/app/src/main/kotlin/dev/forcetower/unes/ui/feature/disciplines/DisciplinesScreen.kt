@@ -35,6 +35,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.LeadingIconTab
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.PrimaryTabRow
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -47,6 +49,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -60,6 +63,7 @@ import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
 import dev.forcetower.unes.designsystem.theme.MelonTheme
 import dev.forcetower.unes.designsystem.theme.melon
+import dev.forcetower.unes.mvi.collectAsEffect
 import dev.forcetower.unes.ui.feature.disciplines.components.AttentionBanner
 import dev.forcetower.unes.ui.feature.disciplines.components.DisciplineCard
 import dev.forcetower.unes.ui.feature.disciplines.components.HistorySemesterCard
@@ -98,21 +102,38 @@ internal fun DisciplinesScreen(
     val effectiveCurrent = current ?: past.firstOrNull()
     val programTracks = remember(state.past, state.pending) { programTracks(state) }
 
-    DisciplinesContent(
-        current = effectiveCurrent,
-        isCurrentLive = current != null,
-        past = past,
-        pending = state.pending,
-        downloading = state.downloading,
-        programTracks = programTracks,
-        selectedTrack = state.shownTrack,
-        overallScore = state.shownProgram?.value,
-        onSelectProgram = { vm.onIntent(DisciplinesIntent.SelectProgram(it)) },
-        onOpenDiscipline = onOpenDiscipline,
-        onDownload = { vm.onIntent(DisciplinesIntent.Download(it)) },
-        bottomInset = bottomInset,
-        modifier = modifier,
-    )
+    val snackbar = remember { SnackbarHostState() }
+    val resources = LocalResources.current
+    vm.effects.collectAsEffect { effect ->
+        when (effect) {
+            is DisciplinesEffect.DownloadFailed -> snackbar.showSnackbar(
+                resources.getString(R.string.disciplines_download_failed, formatSemesterCode(effect.semesterCode)),
+            )
+        }
+    }
+
+    Box(modifier = modifier.fillMaxSize()) {
+        DisciplinesContent(
+            current = effectiveCurrent,
+            isCurrentLive = current != null,
+            past = past,
+            pending = state.pending,
+            downloading = state.downloading,
+            programTracks = programTracks,
+            selectedTrack = state.shownTrack,
+            overallScore = state.shownProgram?.value,
+            onSelectProgram = { vm.onIntent(DisciplinesIntent.SelectProgram(it)) },
+            onOpenDiscipline = onOpenDiscipline,
+            onDownload = { vm.onIntent(DisciplinesIntent.Download(it)) },
+            bottomInset = bottomInset,
+        )
+        SnackbarHost(
+            hostState = snackbar,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = bottomInset + 24.dp),
+        )
+    }
 }
 
 // The programs present in the history, newest first. Empty for the students

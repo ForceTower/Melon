@@ -1,3 +1,4 @@
+import disciplines from "../contracts/v1/disciplines.json";
 import messages from "../contracts/v1/messages.json";
 import pilot from "../contracts/v1/pilot.json";
 
@@ -90,6 +91,39 @@ export const scenarioCatalog = [
     expected:
       "A full waitlisted section with a prerequisite warning can replace the saved proposal; failed submit retries unchanged",
   },
+  {
+    id: "disciplines.current",
+    route: "unes://classes",
+    stage: "disciplines",
+    expected:
+      "Current cards show status, partial mean and free absences; finals and low mean are flagged",
+  },
+  {
+    id: "disciplines.history",
+    route: "unes://classes",
+    stage: "disciplines",
+    expected:
+      "Past semester shows CR, approval and an hours-weighted mean using the hours of the semester taken",
+  },
+  {
+    id: "disciplines.download-retry",
+    route: "unes://classes",
+    stage: "disciplines",
+    expected:
+      "A failed past-semester download shows a snackbar and keeps the card; a retry downloads it",
+  },
+  {
+    id: "discipline.detail.finals",
+    route: "unes://classes",
+    stage: "disciplines",
+    expected: "A discipline in finals keeps its partial mean and shows the grade the final needs",
+  },
+  {
+    id: "discipline.detail.attendance",
+    route: "unes://classes",
+    stage: "disciplines",
+    expected: "Absences near the floored allowance warn and match the list card's free absences",
+  },
 ] as const;
 
 export type ScenarioId = (typeof scenarioCatalog)[number]["id"];
@@ -98,4 +132,8 @@ export function isScenarioId(value: string): value is ScenarioId {
   return scenarioCatalog.some((scenario) => scenario.id === value);
 }
 
-export { messages, pilot };
+export function isDisciplinesScenario(id: ScenarioId) {
+  return id.startsWith("disciplines.") || id.startsWith("discipline.");
+}
+
+export { disciplines, messages, pilot };

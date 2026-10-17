@@ -66,10 +66,11 @@ extension SemesterSnapshot {
                 name: discipline.name,
                 teacherName: enrollments
                     .firstNonNil { teacherIdByClass[$0.group.id].flatMap { teachersById[$0]?.name } },
-                // Group hours are per-group slices of the same catalog total,
-                // so summing them double-counts multi-group disciplines —
-                // fall back through the offer instead.
-                hours: discipline.hours ?? offers.firstNonNil(\.hours)
+                // The offer keeps the hours of the semester taken, while the
+                // catalog row carries whatever a later sync wrote. Group hours
+                // are per-group slices, so summing them double-counts
+                // multi-group disciplines.
+                hours: offers.firstNonNil(\.hours) ?? discipline.hours
                     ?? enrollments.map(\.group.hours).max() ?? 0,
                 // totalFaltas is replicated per group row — first, never summed.
                 missedHours: enrollments.firstNonNil(\.studentClass.missedClasses) ?? 0,

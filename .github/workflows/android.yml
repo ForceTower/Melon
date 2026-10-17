@@ -93,6 +93,11 @@ jobs:
             bun run android:scenario enrollment.over-maximum --serial emulator-5554 --no-build
             bun run android:scenario enrollment.deadline-expired --serial emulator-5554 --no-build
             bun run android:scenario enrollment.submit-retry --serial emulator-5554 --no-build
+            bun run android:scenario disciplines.current --serial emulator-5554 --no-build
+            bun run android:scenario disciplines.history --serial emulator-5554 --no-build
+            bun run android:scenario disciplines.download-retry --serial emulator-5554 --no-build
+            bun run android:scenario discipline.detail.finals --serial emulator-5554 --no-build
+            bun run android:scenario discipline.detail.attendance --serial emulator-5554 --no-build
       - name: Upload journey evidence
         if: always()
         uses: actions/upload-artifact@v7

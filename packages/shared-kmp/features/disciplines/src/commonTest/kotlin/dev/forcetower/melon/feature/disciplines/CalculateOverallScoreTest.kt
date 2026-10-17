@@ -135,12 +135,44 @@ class CalculateOverallScoreTest {
         track = track,
     )
 
+    // SAGRES can post "reprovado por falta" without a mean. That failure still
+    // weighs a 0 over the discipline's hours; a missing mean with no verdict is
+    // a class still running and stays out.
+    @Test
+    fun a_failure_posted_without_a_mean_scores_zero() {
+        val score = computeOverallScore(
+            semesters = listOf(undergrad1),
+            enrollments = listOf(
+                enrollment("o1", undergrad1, grade = "8.0", hours = 60),
+                enrollment("o2", undergrad1, grade = null, hours = 30, approved = false),
+                enrollment("o3", undergrad1, grade = null, hours = 60),
+            ),
+        )
+
+        assertEquals(480.0 / 90, score.current?.value)
+        assertEquals(2, score.current?.disciplineCount)
+    }
+
+    @Test
+    fun a_mean_posted_on_another_group_wins_over_the_zero() {
+        val score = computeOverallScore(
+            semesters = listOf(undergrad1),
+            enrollments = listOf(
+                enrollment("o1", undergrad1, grade = null, hours = 60, classId = "c1", approved = false),
+                enrollment("o1", undergrad1, grade = "4.0", hours = 60, classId = "c2", approved = false),
+            ),
+        )
+
+        assertEquals(4.0, score.current?.value)
+    }
+
     private fun enrollment(
         offerId: String,
         semester: SemesterEntity,
         grade: String?,
         hours: Int,
         classId: String = offerId,
+        approved: Boolean? = if (grade != null) true else null,
     ) = EnrolledDisciplineRow(
         studentClassId = "sc-$classId",
         classId = classId,
@@ -154,7 +186,7 @@ class CalculateOverallScoreTest {
         disciplineName = "Disciplina $offerId",
         department = null,
         finalGrade = grade,
-        approved = grade != null,
+        approved = approved,
         wentToFinals = false,
         missedClasses = null,
         teacherName = null,

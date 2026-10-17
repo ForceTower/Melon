@@ -25,6 +25,17 @@ same example and tests the real repository's HTTP body and error mapping. The
 mock's named variants alter constraints or metadata to reproduce client failures;
 they do not claim those invalid proposals are safe to submit to the real portal.
 
+`contracts/v1/disciplines.json` holds two semester payloads (response **data**
+for `GET /api/sync/semesters/{id}`): the pilot's current semester with grades,
+a pending Prova Final and absences added, and a closed past semester. One past
+discipline keeps 60 offer hours while its catalog row says 75, as happens when
+the catalog changes after the semester: the provider writes both from the same
+upstream workload, but the catalog row is overwritten by every later sync and
+the offer is not. Clients count the offer's hours first. Another past
+discipline failed for absences with no mean (`REPROVADO POR FALTA`), which the
+CR counts as 0 over its hours. KMP and Swift decode this example; the provider
+does not yet verify against it.
+
 Keep nullable fields distinct from missing required fields. Opaque IDs remain
 strings, platform numeric IDs retain 64-bit capacity, and schedule weekdays stay
 Sunday=0 through Saturday=6. Date-only semester boundaries differ from timestamped

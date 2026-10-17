@@ -1,6 +1,7 @@
 package dev.forcetower.melon.feature.overview.domain.usecase
 
 import dev.forcetower.melon.core.common.AppClock
+import dev.forcetower.melon.core.common.coefficientGrade
 import dev.forcetower.melon.core.database.dao.AcademicDao
 import dev.forcetower.melon.core.database.dao.SemesterDao
 import dev.forcetower.melon.core.database.entity.SemesterEntity
@@ -19,7 +20,8 @@ import kotlinx.datetime.toLocalDateTime
 // `comparisonSemesterCode` is the most recent semester strictly before the
 // active one. The math mirrors CalculateOverallScoreUseCase; the helper is
 // duplicated here on purpose (cross-feature `internal` doesn't carry, and
-// the codebase already prefers small local copies over a shared module).
+// the codebase already prefers small local copies over a shared module),
+// but both read a discipline's grade through `coefficientGrade`.
 //
 // Everything is scoped to the active semester's program (its track), so a
 // student in a mestrado is not shown it averaged with the graduação they
@@ -42,7 +44,7 @@ class ObserveGradeTileUseCase internal constructor(
         }.distinctUntilChanged()
 }
 
-private fun buildTile(
+internal fun buildTile(
     semesters: List<SemesterEntity>,
     enrollments: List<EnrolledDisciplineRow>,
     todayIso: String,
@@ -96,14 +98,16 @@ private fun overallScore(
     }
 
     val contributions = enrollments
-        .asSequence()
         .filter { it.semesterId in allowed }
-        .mapNotNull { row ->
-            val grade = row.finalGrade?.replace(",", ".")?.toDoubleOrNull() ?: return@mapNotNull null
-            row to grade
+        .groupBy { it.offerId }
+        .values
+        .mapNotNull { rows ->
+            val grade = coefficientGrade(
+                mean = rows.firstNotNullOfOrNull { it.finalGrade?.replace(",", ".")?.toDoubleOrNull() },
+                approved = rows.firstNotNullOfOrNull { it.approved },
+            ) ?: return@mapNotNull null
+            rows.first() to grade
         }
-        .distinctBy { (row, _) -> row.offerId }
-        .toList()
 
     var weightedSum = 0.0
     var weightSum = 0.0

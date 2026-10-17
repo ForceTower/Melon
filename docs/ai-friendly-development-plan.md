@@ -1,8 +1,8 @@
 # AI friendly development and reliability plan
 
-**Status: implementation in progress (October 14, 2026). Android and native iOS
-verification pilots and enrollment coverage are implemented; required CI is
-enforced on `main`. Service activation and full feature coverage remain open.**
+**Status: implementation in progress (October 17, 2026). Android and native iOS
+verification pilots, enrollment and Disciplines coverage are implemented; required
+CI is enforced on `main`. Service activation and full feature coverage remain open.**
 
 This plan describes how Melon can give coding agents enough context, reproducible
 app states, and verification tools to make changes with confidence. It also
@@ -31,9 +31,9 @@ backlog, not a claim that every item is finished.
 | --- | --- | --- |
 | Merge verification | All foundation lanes passed remotely. `main` requires the GitHub Actions **Required verification** check with strict freshness; administrators may bypass it. Builds, lint, test artifacts and templates are in place. Android verification publishes Gradle task timing reports. | Keep the single required result stable; monitor duration, flakes and evidence availability. |
 | Mechanical rules | ktlint and the fast convention lexer run alongside symbol-resolving Android Lint checks for app theme/string/visibility rules. The original 113 lexer findings were cleared on October 3, 2026. Fixture provenance and credential-pattern checks run locally; GitHub secret scanning and push protection are enabled. | Review arbitrary wrappers, dynamic values and public library APIs beyond the scoped checks; maintain compatibility with toolchain upgrades. |
-| Android scenarios | Hermetic login/sync/Home/empty messages, two message-push taps and five enrollment journeys, resettable failures, fixed projection clock, controlled enrollment flag, isolated app and device evidence gallery. | Extend the catalog to remaining screens, flag combinations and device/permission configurations. |
+| Android scenarios | Hermetic login/sync/Home/empty messages, two message-push taps, five enrollment journeys and four Disciplines list/detail journeys, resettable failures, fixed projection clock, controlled enrollment flag, isolated app and device evidence gallery. | Extend the catalog to remaining screens, flag combinations and device/permission configurations. |
 | Rendering | Home state/callback rendering, light/default and dark/large-text accessibility checks, deterministic Compose captures and an explicit screenshot comparison command. | Review and establish device-specific visual baselines; broaden accessibility coverage and manual assistive-technology review. |
-| Behavioral coverage | Shared contracts, Home time/attendance boundaries, initial-sync recovery, and per-program CR regressions. Enrollment now covers conflicts, hours, deadline boundaries, prerequisite warnings, waitlists, full replacement and retry in Android/KMP/provider tests. Grade and attendance rules (Final Countdown verdicts, final-exam requirement, status precedence, absence allowance and risk) assert the same examples on Android and iOS. Android notification links are covered from the URI table through routing to message resolution. | Broader feature integration, persistence/lifecycle, the hours-source parity gap below and device configurations from milestone 3. |
+| Behavioral coverage | Shared contracts, Home time/attendance boundaries, initial-sync recovery, and per-program CR regressions. Enrollment now covers conflicts, hours, deadline boundaries, prerequisite warnings, waitlists, full replacement and retry in Android/KMP/provider tests. Grade and attendance rules (Final Countdown verdicts, final-exam requirement, status precedence, absence allowance and risk) assert the same examples on Android and iOS. Android notification links are covered from the URI table through routing to message resolution. Disciplines list, detail and CR count a past semester's offer hours on both platforms, and both CRs count a failure without a mean as 0. | Broader feature integration, persistence/lifecycle, the Histórico semester-mean difference below and device configurations from milestone 3. |
 | Performance | Physical-device Macrobenchmark and profile-generation suites passed; isolated release-like app and manual physical-device workflow. | Review generated rules before shipping, choose a consistent measurement device, establish repeatability and trend thresholds. |
 | Native iOS | Synthetic TCA/HTTP/GRDB pilot, full package lane, explicit intent/UI target, screenshots/hierarchies and accessibility checks. | Three out-of-process AppIntents tests require a runtime that supports Apple's internal execution APIs; full visual/device coverage remains open. |
 | Private repair tooling | In `unes-backrooms`: bounded Crashlytics queries, Play reviews/vitals adapters, durable draft queue, normalized log input, allowlisted GitHub digest/outcome metrics, request correlation and provider tests. | Real service identities, export/store access, schedule/host configuration, diagnostics policy and publishing policy; no live incident or release verification yet. |
@@ -96,7 +96,7 @@ final alone) and now pass. It also replaces Final Countdown's looser copy, which
 matched the name or the short label alone and so dropped the rare regular
 evaluation a teacher named "Prova Final"; that regression also failed first.
 Android prefers offer hours over catalog hours and iOS the reverse, which matters
-only if they differ. KMP's `DisciplineListItem.status` disagrees with both
+only if they differ; the Disciplines follow-up below settles it for the offer. KMP's `DisciplineListItem.status` disagrees with both
 clients but no screen reads it.
 
 The notification navigation follow-up (October 9, 2026) traced a message push
@@ -144,6 +144,50 @@ of the full pipeline. Ordinary debug assembly does not run the new checks; full
 verification publishes task profiles so subsequent runs can be compared with
 matching toolchains and cache state. Duration/flake monitoring remains ongoing
 maintenance of the foundation.
+
+The Disciplines follow-up (October 17, 2026) starts milestone 3 with four
+installed-app journeys from a new synthetic contract, `contracts/v1/disciplines.json`:
+`disciplines.current`, `disciplines.history`, `discipline.detail.finals` and
+`discipline.detail.attendance`, plus `disciplines.download-retry` below. All
+passed on the Pixel 9 Pro XL. The
+Disciplines list and detail use cases now read the injected `AppClock` instead of
+the system clock, so the current/past split follows the scenario clock. The
+provider source settles the hours question above: it writes catalog and offer
+hours from the same upstream workload, but every later sync overwrites the
+shared catalog row while each semester's offer keeps its own, so only the offer
+describes the semester taken. Android already counted the offer. With the list
+query temporarily switched to catalog first, `disciplines.history` showed a 5,1
+CR and a 5,4 semester mean and failed waiting for 5,3. iOS counted the catalog
+in its list, detail and CR: the new `DisciplinesContractTests` failed first with
+five expectations (a 2026.1 CR of 5.44 instead of 5.75, 5.15 instead of 5.33
+cumulatively, and 75h instead of 60 in the list and detail). With the offer
+first, the full UNESKit suite passed 442 tests, and `android:check` passed.
+
+Both clients count a discipline still in finals in the CR, using the mean
+upstream reports as its final grade; the maintainer accepted that behavior.
+Which mean upstream reports there is unconfirmed: the provider's finals notes
+say it already counts the ungraded final as 0, while client comments call it
+the plain partial mean.
+
+iOS scored a failure recorded without a mean (failing for absences, `REPROVADO
+POR FALTA`) as 0 over the discipline's hours, while Android left it out of the
+CR. The maintainer confirmed the 0, which matches their experience of the
+official CR; whether other courses differ is unconfirmed. KMP now reads each
+discipline's CR grade through one shared `coefficientGrade` rule, used by both
+the Disciplines CR and the Home grade tile. Their two regressions failed first
+(8.0 instead of 5.33) and now pass, and the fixture's past semester gained such
+a failure, so `disciplines.history` expects a 4,2 CR and 33% approval. The CR
+and mutation values quoted above predate that addition. Each semester's own
+mean on the Histórico card still skips a failure without a mean on both
+platforms, and iOS averages it without weighting by hours where Android weighs
+it.
+
+Android used to keep a failed past-semester download's error in state without
+rendering it, so the card silently returned to "Baixar". It now shows a
+snackbar naming the semester, from string resources instead of the hard-coded
+state message. `DisciplinesListViewModelTest` covers a failed and a throwing
+download, and the `disciplines.download-retry` journey covers failure, the
+snackbar and a successful retry on the device.
 
 ## Original repository inspection
 

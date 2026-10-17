@@ -1,5 +1,6 @@
 package dev.forcetower.melon.feature.disciplines.domain.usecase
 
+import dev.forcetower.melon.core.common.AppClock
 import dev.forcetower.melon.core.common.allowedMissedHours
 import dev.forcetower.melon.core.database.dao.AcademicDao
 import dev.forcetower.melon.core.database.query.DisciplineDetailEnrollmentRow
@@ -13,12 +14,9 @@ import dev.forcetower.melon.feature.disciplines.domain.model.DisciplineDetailGro
 import dev.forcetower.melon.feature.disciplines.domain.model.DisciplineDetailLecture
 import dev.forcetower.melon.feature.disciplines.domain.model.DisciplineDetailSection
 import dev.zacsweers.metro.Inject
-import kotlin.time.Clock
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 
 // Reactive detail feed for the `DisciplineDetailView`. Composes four scoped
 // DAO flows — enrollments (class/group rows), grades, lectures, attachments —
@@ -32,6 +30,7 @@ import kotlinx.datetime.toLocalDateTime
 // non-null emission.
 @Inject
 class ObserveDisciplineDetailUseCase internal constructor(
+    private val clock: AppClock,
     private val academicDao: AcademicDao,
 ) {
     operator fun invoke(offerId: String): Flow<DisciplineDetail?> =
@@ -44,7 +43,8 @@ class ObserveDisciplineDetailUseCase internal constructor(
             if (enrollments.isEmpty()) {
                 null
             } else {
-                buildDisciplineDetail(enrollments, grades, lectures, materials)
+                val today = clock.localNow().date.toString()
+                buildDisciplineDetail(enrollments, grades, lectures, materials, today)
             }
         }.distinctUntilChanged()
 }
@@ -54,6 +54,7 @@ internal fun buildDisciplineDetail(
     grades: List<DisciplineDetailGradeRow>,
     lectures: List<DisciplineDetailLectureRow>,
     materials: List<DisciplineDetailMaterialRow>,
+    today: String,
 ): DisciplineDetail {
     val head = enrollments.first()
 
@@ -117,13 +118,8 @@ internal fun buildDisciplineDetail(
     // Full lesson plan, minus placeholder rows (no subject and no materials —
     // upstream emits these for cancelled / TBD slots). The native side windows
     // the list around today for the collapsed view and expands to the full
-    // plan on demand. `isPast` / `isCurrent` are classified here against real
-    // today so the native layer doesn't need its own clock to agree with ours.
-    val today = Clock.System
-        .now()
-        .toLocalDateTime(TimeZone.currentSystemDefault())
-        .date
-        .toString()
+    // plan on demand. `isPast` / `isCurrent` are classified here against
+    // `today` so the native layer doesn't need its own clock to agree with ours.
     val filteredRows = lectures
         .filter { !it.subject.isNullOrBlank() || it.attachmentCount > 0 }
     val anchorIndex = filteredRows.indexOfFirst {

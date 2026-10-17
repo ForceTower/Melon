@@ -6,11 +6,16 @@ import android.net.Uri
 import android.os.ParcelFileDescriptor
 import android.os.Process
 import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.test.SemanticsMatcher
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.captureToImage
 import androidx.compose.ui.test.click
+import androidx.compose.ui.test.hasClickAction
+import androidx.compose.ui.test.hasScrollToNodeAction
 import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.isRoot
@@ -22,6 +27,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
+import androidx.compose.ui.test.performScrollToNode
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.printToString
@@ -33,6 +39,7 @@ import dev.forcetower.unes.remote.FeatureGates
 import java.io.File
 import java.net.HttpURLConnection
 import java.net.URI
+import java.util.Locale
 import org.json.JSONObject
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -52,7 +59,8 @@ internal class ScenarioJourneyTest {
     fun runScenario() {
         check(BuildConfig.SCENARIO) { "Journeys require the isolated scenario build" }
         val isEnrollment = scenario.startsWith("enrollment.")
-        val initial = if (isEnrollment) {
+        val isDisciplines = scenario.startsWith("disciplines.") || scenario.startsWith("discipline.")
+        val initial = if (isEnrollment || isDisciplines) {
             scenario
         } else {
             when (scenario) {
@@ -103,6 +111,7 @@ internal class ScenarioJourneyTest {
         }
         if (scenario.startsWith("notification.")) runNotification()
         if (isEnrollment) runEnrollment()
+        if (isDisciplines) runDisciplines()
         assertEquals(
             "Unmocked requests must fail the journey",
             0,
@@ -196,6 +205,123 @@ internal class ScenarioJourneyTest {
             assertTrue(serverState().isNull("submitted"))
         }
     }
+
+    // Expected values follow contracts/v1/disciplines.json at the fixed clock:
+    // allowances floor 25% of the hours, partial means exclude the Prova
+    // Final, past semesters weigh grades by the hours of the offer taken, and
+    // the CR counts a failure posted without a mean as 0.
+    private fun runDisciplines() {
+        open("unes://classes")
+        waitFor(R.string.disciplines_tab_current)
+        when (scenario) {
+            "disciplines.current" -> {
+                waitForText(quantity(R.plurals.disciplines_count, 4))
+                waitForText("5,1")
+                waitForText(quantity(R.plurals.disciplines_attention_title, 2))
+                waitForText("Cálculo de Exemplo em prova final · Estatística de Exemplo com média baixa")
+                assertCard("Algoritmos de Exemplo", string(R.string.disciplines_status_ongoing), "–", "13")
+                assertCard("Cálculo de Exemplo", string(R.string.disciplines_status_final), "4,5", "11")
+                assertCard("Física de Exemplo", string(R.string.disciplines_status_ongoing), "7,0", "15")
+                assertCard("Estatística de Exemplo", string(R.string.disciplines_status_low), "4,0", "3")
+            }
+            "disciplines.history" -> {
+                click(R.string.disciplines_tab_history)
+                waitForText("2026.1")
+                waitForText("4,2")
+                waitForText("5,7")
+                waitForText("33%")
+                assertCard("Lógica de Exemplo", "8,5")
+                assertCard("Probabilidade de Exemplo", "3,0")
+                assertCard("Desenho de Exemplo", "–")
+                capture("history")
+                openCard("Probabilidade de Exemplo")
+                waitForText(string(R.string.discipline_detail_media_final).uppercase(Locale.ROOT))
+                waitFor(R.string.discipline_detail_status_failed)
+                scrollListTo(hasText(string(R.string.discipline_detail_stat_hours)))
+                waitForText(string(R.string.disciplines_card_hours_format, 60))
+                compose.onAllNodesWithText(string(R.string.disciplines_card_hours_format, 75)).assertCountEquals(0)
+                scrollListTo(hasText(string(R.string.discipline_detail_freq_of_format, 15)))
+                waitForText(string(R.string.discipline_detail_freq_of_format, 15))
+            }
+            // Backfill tries the past semester once per session; waiting for
+            // that attempt keeps it from downloading the semester behind the
+            // retry once the server recovers.
+            "disciplines.download-retry" -> {
+                click(R.string.disciplines_tab_history)
+                compose.waitUntil(90_000) {
+                    serverState()
+                        .getJSONObject("requestCounts")
+                        .optInt("GET /api/sync/semesters/00000000-0000-4000-8000-000000000100") > 0
+                }
+                click(R.string.disciplines_undownloaded_cta)
+                waitForText(string(R.string.disciplines_download_failed, "2026.1"))
+                capture("download-failed")
+                waitFor(R.string.disciplines_undownloaded_cta)
+                selectScenario("disciplines.history")
+                click(R.string.disciplines_undownloaded_cta)
+                waitForText("5,7")
+                assertCard("Probabilidade de Exemplo", "3,0")
+            }
+            "discipline.detail.finals" -> {
+                assertCard("Cálculo de Exemplo", string(R.string.disciplines_status_final), "4,5")
+                capture("list")
+                openCard("Cálculo de Exemplo")
+                waitForText(string(R.string.discipline_detail_media_partial).uppercase(Locale.ROOT))
+                waitFor(R.string.discipline_detail_status_finals)
+                waitForText("4,5")
+                scrollListTo(hasText(string(R.string.discipline_detail_final_section)))
+                scrollListTo(hasText(string(R.string.discipline_detail_callout_title)))
+                scrollListTo(hasText("5,8"))
+                waitForText("5,8")
+                waitFor(R.string.discipline_detail_callout_min_caption)
+            }
+            "discipline.detail.attendance" -> {
+                assertCard("Estatística de Exemplo", string(R.string.disciplines_status_low), "3")
+                capture("list")
+                openCard("Estatística de Exemplo")
+                scrollListTo(hasText(string(R.string.discipline_detail_freq_warn_high)))
+                waitForText("12")
+                waitForText(string(R.string.discipline_detail_freq_of_format, 15))
+                waitForText("3")
+            }
+            else -> error("Unsupported disciplines scenario: $scenario")
+        }
+    }
+
+    // Discipline cards and history rows are clickable, so each merges its
+    // texts into one node: matching them together pins values to one card.
+    private fun assertCard(
+        title: String,
+        vararg values: String,
+    ) {
+        scrollListTo(hasText(title))
+        val card = values.fold(hasText(title) and hasClickAction()) { matcher, value -> matcher and hasText(value) }
+        compose.onNode(card).assertIsDisplayed()
+    }
+
+    private fun openCard(title: String) {
+        scrollListTo(hasText(title))
+        compose.onNode(hasText(title) and hasClickAction()).performClick()
+        waitFor(R.string.discipline_detail_topbar_title)
+    }
+
+    // Lazy items outside the viewport have no semantics node until scrolled to.
+    private fun scrollListTo(matcher: SemanticsMatcher) {
+        val list =
+            hasScrollToNodeAction() and SemanticsMatcher.keyIsDefined(SemanticsProperties.VerticalScrollAxisRange)
+        compose.waitUntil(30_000) { compose.onAllNodes(list).fetchSemanticsNodes().isNotEmpty() }
+        compose.onAllNodes(list).onFirst().performScrollToNode(matcher)
+    }
+
+    private fun string(
+        resource: Int,
+        vararg args: Any,
+    ) = compose.activity.getString(resource, *args)
+
+    private fun quantity(
+        resource: Int,
+        count: Int,
+    ) = compose.activity.resources.getQuantityString(resource, count, count)
 
     private fun scrollToText(text: String) {
         compose.waitUntil(30_000) { compose.onAllNodes(hasText(text)).fetchSemanticsNodes().isNotEmpty() }

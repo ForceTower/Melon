@@ -498,6 +498,8 @@
         <item quantity="one">~%d disciplina</item>
         <item quantity="other">~%d disciplinas</item>
     </plurals>
+    <!-- "2026.1" — snackbar after a failed tap on the download card. -->
+    <string name="disciplines_download_failed">Não deu para baixar o semestre %1$s. Tente de novo.</string>
     <!-- endregion -->
 
     <!-- region Discipline Detail · Top bar / header -->

@@ -2,6 +2,7 @@ package dev.forcetower.melon.feature.disciplines
 
 import dev.forcetower.melon.core.database.query.DisciplineDetailEnrollmentRow
 import dev.forcetower.melon.feature.disciplines.DisciplineListFixtures.listItem
+import dev.forcetower.melon.feature.disciplines.domain.model.DisciplineDetail
 import dev.forcetower.melon.feature.disciplines.domain.usecase.buildDisciplineDetail
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -29,19 +30,33 @@ internal class AttendanceAllowanceTest {
         }
     }
 
+    // The catalog row keeps whichever hours were synced last; the offer keeps
+    // the hours of the semester the student actually took.
+    @Test
+    fun detailCountsTheOfferHoursOverTheCatalog() {
+        val detail = detail(catalogHours = 60, offerHours = 68)
+        assertEquals(68, detail.hours)
+        assertEquals(17, detail.allowedMissedHours)
+    }
+
     private fun listAllowance(hours: Int): Int = listItem(hours).allowedMissedHours
 
-    private fun detailAllowance(hours: Int): Int {
+    private fun detailAllowance(hours: Int): Int = detail(catalogHours = hours, offerHours = null).allowedMissedHours
+
+    private fun detail(
+        catalogHours: Int,
+        offerHours: Int?,
+    ): DisciplineDetail {
         val row = DisciplineDetailEnrollmentRow(
             offerId = "o1",
             semesterId = "s1",
             disciplineId = "d1",
             disciplineCode = "EXA101",
             disciplineName = "Disciplina de Exemplo",
-            disciplineHours = hours,
+            disciplineHours = catalogHours,
             disciplineProgram = null,
             department = null,
-            offerHours = null,
+            offerHours = offerHours,
             studentClassId = "sc1",
             classId = "c1",
             classType = "Teórica",
@@ -52,6 +67,6 @@ internal class AttendanceAllowanceTest {
             missedClasses = 0,
             teacherName = null,
         )
-        return buildDisciplineDetail(listOf(row), emptyList(), emptyList(), emptyList()).allowedMissedHours
+        return buildDisciplineDetail(listOf(row), emptyList(), emptyList(), emptyList(), today = "2026-10-02")
     }
 }

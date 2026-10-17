@@ -76,7 +76,7 @@ data class DisciplineDetailGrade(
 // One ClassLecture row. `situation` is the upstream attendance code (0 = present).
 // `attachmentCount` matches the number of LectureMaterial rows for this lecture
 // and drives the paperclip indicator on the classes timeline. `isPast` and
-// `isCurrent` are classified by the use case against `Clock.System.now()` —
+// `isCurrent` are classified by the use case against the injected `AppClock` —
 // exposing them as flags keeps the native clients from having to agree on a
 // clock (iOS's `DisciplineDate.today` is pinned for fixtures, for instance).
 data class DisciplineDetailLecture(

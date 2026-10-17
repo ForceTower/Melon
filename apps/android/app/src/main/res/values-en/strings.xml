@@ -470,6 +470,7 @@
         <item quantity="one">~%d course</item>
         <item quantity="other">~%d courses</item>
     </plurals>
+    <string name="disciplines_download_failed">We couldn\'t download semester %1$s. Try again.</string>
     <!-- endregion -->
 
     <!-- region Discipline Detail · Top bar / header -->

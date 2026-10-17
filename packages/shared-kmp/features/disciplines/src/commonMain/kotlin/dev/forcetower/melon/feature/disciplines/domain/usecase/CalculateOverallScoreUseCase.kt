@@ -1,5 +1,6 @@
 package dev.forcetower.melon.feature.disciplines.domain.usecase
 
+import dev.forcetower.melon.core.common.coefficientGrade
 import dev.forcetower.melon.core.database.dao.AcademicDao
 import dev.forcetower.melon.core.database.dao.SemesterDao
 import dev.forcetower.melon.core.database.entity.SemesterEntity
@@ -13,8 +14,9 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 
 // Lifetime CR — weighted mean of every completed discipline's final grade
 // using its hour count as the weight. A discipline counts when its final
-// grade is set, regardless of approval. Multi-group enrollments collapse to
-// one contribution via `offerId`.
+// grade is set, regardless of approval, or as a 0 when it failed without one
+// (see `coefficientGrade`). Multi-group enrollments collapse to one
+// contribution via `offerId`.
 //
 // The mean is computed per program, never across them: a student who finished
 // a graduação and moved on to a mestrado has two CRs, and blending them
@@ -82,26 +84,26 @@ internal fun computeCheckpoints(
     return points
 }
 
-// Grade parsing runs before the per-offer dedup on purpose: a discipline that
-// runs as theory + practice carries its final grade on one of the two rows,
-// so deduping first would coin-flip the graded row away.
+// A discipline that runs as theory + practice carries its final grade on one
+// of the two rows, so the mean is read across the offer's rows before falling
+// back to the verdict.
 private fun closedContributions(
     semesterById: Map<String, SemesterEntity>,
     enrollments: List<EnrolledDisciplineRow>,
 ): List<Contribution> =
     enrollments
-        .asSequence()
-        .mapNotNull { row ->
-            val grade = row.finalGrade?.replace(",", ".")?.toDoubleOrNull() ?: return@mapNotNull null
-            row to grade
+        .groupBy { it.offerId }
+        .values
+        .mapNotNull { rows ->
+            val head = rows.first()
+            val semester = semesterById[head.semesterId] ?: return@mapNotNull null
+            if (head.disciplineHours <= 0) return@mapNotNull null
+            val grade = coefficientGrade(
+                mean = rows.firstNotNullOfOrNull { it.finalGrade?.replace(",", ".")?.toDoubleOrNull() },
+                approved = rows.firstNotNullOfOrNull { it.approved },
+            ) ?: return@mapNotNull null
+            Contribution(semester = semester, grade = grade, hours = head.disciplineHours)
         }
-        .distinctBy { (row, _) -> row.offerId }
-        .mapNotNull { (row, grade) ->
-            val semester = semesterById[row.semesterId] ?: return@mapNotNull null
-            if (row.disciplineHours <= 0) return@mapNotNull null
-            Contribution(semester = semester, grade = grade, hours = row.disciplineHours)
-        }
-        .toList()
 
 // The program the student is in right now — the track of the newest semester
 // they hold enrollments in, closed grades or not. Read off enrollments rather

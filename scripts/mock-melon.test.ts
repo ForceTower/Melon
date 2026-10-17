@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { createMockHandler } from "./mock-melon";
-import { messages, pilot } from "./scenarios";
+import { disciplines, messages, pilot } from "./scenarios";
 import enrollment from "../contracts/v1/enrollment.json";
 
 function request(path: string, method: "GET" | "POST" = "GET", body?: unknown) {
@@ -128,6 +128,28 @@ describe("hermetic scenario server", () => {
     expect(await ack.json()).toEqual({ ok: true, message: null, data: { updated: 2 } });
     await handle(request("/debug/scenario/notification.message-missing", "POST"));
     expect(await inbox()).toEqual(pilot.messages);
+  });
+
+  test("disciplines journeys add a past semester only while selected", async () => {
+    const handle = createMockHandler();
+    const json = async (path: string) => (await (await handle(request(path))).json()).data;
+    const current = `/api/sync/semesters/${pilot.semester.semester.id}`;
+    const past = `/api/sync/semesters/${disciplines.past.semester.id}`;
+    expect((await handle(request(past))).status).toBe(501);
+    await handle(request("/debug/scenario/disciplines.history", "POST"));
+    expect(
+      (await json("/api/sync/semesters")).semesters.map(({ id }: { id: string }) => id),
+    ).toEqual([pilot.semester.semester.id, disciplines.past.semester.id]);
+    expect(await json(current)).toEqual(disciplines.current);
+    expect(await json(past)).toEqual(disciplines.past);
+    await handle(request("/debug/scenario/disciplines.download-retry", "POST"));
+    expect(await json(current)).toEqual(disciplines.current);
+    expect((await handle(request(past))).status).toBe(503);
+    await handle(request("/debug/scenario/home.populated", "POST"));
+    expect(await json(current)).toEqual(pilot.semester);
+    expect(await (await handle(request("/debug/state"))).json()).toMatchObject({
+      data: { unexpectedRequests: [`GET ${past}`] },
+    });
   });
 
   test("malformed clock fails before serving", () => {

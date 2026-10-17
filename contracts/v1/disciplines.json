@@ -1,0 +1,595 @@
+{
+  "version": 1,
+  "origin": "Hand-authored synthetic semesters for the Disciplines journeys; no production records, grades or attendance.",
+  "current": {
+    "semester": {
+      "id": "00000000-0000-4000-8000-000000000004",
+      "platformId": 1,
+      "code": "2026.2",
+      "description": "Semestre de demonstração",
+      "startDate": "2026-08-01",
+      "endDate": "2026-12-20",
+      "track": null
+    },
+    "disciplines": [
+      {
+        "id": "00000000-0000-4000-8000-000000000005",
+        "platformId": 1,
+        "code": "DEMO101",
+        "name": "Algoritmos de Exemplo",
+        "hours": 60,
+        "department": null,
+        "program": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000201",
+        "platformId": 201,
+        "code": "DEMO201",
+        "name": "Cálculo de Exemplo",
+        "hours": 60,
+        "department": null,
+        "program": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000301",
+        "platformId": 301,
+        "code": "DEMO301",
+        "name": "Física de Exemplo",
+        "hours": 60,
+        "department": null,
+        "program": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000401",
+        "platformId": 401,
+        "code": "DEMO401",
+        "name": "Estatística de Exemplo",
+        "hours": 60,
+        "department": null,
+        "program": null
+      }
+    ],
+    "disciplineOffers": [
+      {
+        "id": "00000000-0000-4000-8000-000000000006",
+        "disciplineId": "00000000-0000-4000-8000-000000000005",
+        "semesterId": "00000000-0000-4000-8000-000000000004",
+        "platformId": 1,
+        "hours": 60,
+        "program": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000202",
+        "disciplineId": "00000000-0000-4000-8000-000000000201",
+        "semesterId": "00000000-0000-4000-8000-000000000004",
+        "platformId": 202,
+        "hours": 60,
+        "program": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000302",
+        "disciplineId": "00000000-0000-4000-8000-000000000301",
+        "semesterId": "00000000-0000-4000-8000-000000000004",
+        "platformId": 302,
+        "hours": 60,
+        "program": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000402",
+        "disciplineId": "00000000-0000-4000-8000-000000000401",
+        "semesterId": "00000000-0000-4000-8000-000000000004",
+        "platformId": 402,
+        "hours": 60,
+        "program": null
+      }
+    ],
+    "classes": [
+      {
+        "id": "00000000-0000-4000-8000-000000000007",
+        "offerId": "00000000-0000-4000-8000-000000000006",
+        "platformId": 1,
+        "groupName": "T01",
+        "type": "T",
+        "hours": 60,
+        "program": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000203",
+        "offerId": "00000000-0000-4000-8000-000000000202",
+        "platformId": 203,
+        "groupName": "T01",
+        "type": "T",
+        "hours": 60,
+        "program": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000303",
+        "offerId": "00000000-0000-4000-8000-000000000302",
+        "platformId": 303,
+        "groupName": "T01",
+        "type": "T",
+        "hours": 60,
+        "program": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000403",
+        "offerId": "00000000-0000-4000-8000-000000000402",
+        "platformId": 403,
+        "groupName": "T01",
+        "type": "T",
+        "hours": 60,
+        "program": null
+      }
+    ],
+    "teachers": [
+      {
+        "id": "00000000-0000-4000-8000-000000000008",
+        "platformId": 1,
+        "name": "Docente Exemplo"
+      }
+    ],
+    "classTeachers": [
+      {
+        "classId": "00000000-0000-4000-8000-000000000007",
+        "teacherId": "00000000-0000-4000-8000-000000000008"
+      },
+      {
+        "classId": "00000000-0000-4000-8000-000000000203",
+        "teacherId": "00000000-0000-4000-8000-000000000008"
+      },
+      {
+        "classId": "00000000-0000-4000-8000-000000000303",
+        "teacherId": "00000000-0000-4000-8000-000000000008"
+      },
+      {
+        "classId": "00000000-0000-4000-8000-000000000403",
+        "teacherId": "00000000-0000-4000-8000-000000000008"
+      }
+    ],
+    "spaces": [
+      {
+        "id": "00000000-0000-4000-8000-000000000009",
+        "platformId": 1,
+        "type": null,
+        "campus": "Campus Exemplo",
+        "location": "Exemplo",
+        "modulo": "Módulo Exemplo"
+      }
+    ],
+    "allocations": [
+      {
+        "id": "00000000-0000-4000-8000-000000000010",
+        "classId": "00000000-0000-4000-8000-000000000007",
+        "spaceId": "00000000-0000-4000-8000-000000000009",
+        "timePlatformId": 1,
+        "day": 5,
+        "startTime": "10:00",
+        "endTime": "12:00"
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000204",
+        "classId": "00000000-0000-4000-8000-000000000203",
+        "spaceId": "00000000-0000-4000-8000-000000000009",
+        "timePlatformId": 2,
+        "day": 1,
+        "startTime": "08:00",
+        "endTime": "10:00"
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000304",
+        "classId": "00000000-0000-4000-8000-000000000303",
+        "spaceId": "00000000-0000-4000-8000-000000000009",
+        "timePlatformId": 2,
+        "day": 2,
+        "startTime": "08:00",
+        "endTime": "10:00"
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000404",
+        "classId": "00000000-0000-4000-8000-000000000403",
+        "spaceId": "00000000-0000-4000-8000-000000000009",
+        "timePlatformId": 2,
+        "day": 3,
+        "startTime": "08:00",
+        "endTime": "10:00"
+      }
+    ],
+    "studentClasses": [
+      {
+        "id": "00000000-0000-4000-8000-000000000011",
+        "classId": "00000000-0000-4000-8000-000000000007",
+        "finalGrade": null,
+        "missedClasses": 2,
+        "resultDescription": null,
+        "approved": null,
+        "underRevision": false,
+        "wentToFinals": false,
+        "resultSyncedAt": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000205",
+        "classId": "00000000-0000-4000-8000-000000000203",
+        "finalGrade": "4.5",
+        "missedClasses": 4,
+        "resultDescription": null,
+        "approved": null,
+        "underRevision": false,
+        "wentToFinals": true,
+        "resultSyncedAt": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000305",
+        "classId": "00000000-0000-4000-8000-000000000303",
+        "finalGrade": null,
+        "missedClasses": 0,
+        "resultDescription": null,
+        "approved": null,
+        "underRevision": false,
+        "wentToFinals": false,
+        "resultSyncedAt": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000405",
+        "classId": "00000000-0000-4000-8000-000000000403",
+        "finalGrade": null,
+        "missedClasses": 12,
+        "resultDescription": null,
+        "approved": null,
+        "underRevision": false,
+        "wentToFinals": false,
+        "resultSyncedAt": null
+      }
+    ],
+    "evaluations": [
+      {
+        "id": "00000000-0000-4000-8000-000000000206",
+        "classId": "00000000-0000-4000-8000-000000000203",
+        "platformId": "demo-201-partials",
+        "name": null,
+        "position": 1
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000209",
+        "classId": "00000000-0000-4000-8000-000000000203",
+        "platformId": "demo-201-final",
+        "name": null,
+        "position": 2
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000306",
+        "classId": "00000000-0000-4000-8000-000000000303",
+        "platformId": "demo-301-partials",
+        "name": null,
+        "position": 1
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000406",
+        "classId": "00000000-0000-4000-8000-000000000403",
+        "platformId": "demo-401-partials",
+        "name": null,
+        "position": 1
+      }
+    ],
+    "studentGrades": [
+      {
+        "id": "00000000-0000-4000-8000-000000000207",
+        "studentClassId": "00000000-0000-4000-8000-000000000205",
+        "evaluationId": "00000000-0000-4000-8000-000000000206",
+        "platformId": "demo-201-av1",
+        "name": "Avaliação 1",
+        "nameShort": "AV1",
+        "ordinal": 1,
+        "weight": "1.00",
+        "value": "4.00",
+        "date": "2026-09-04"
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000208",
+        "studentClassId": "00000000-0000-4000-8000-000000000205",
+        "evaluationId": "00000000-0000-4000-8000-000000000206",
+        "platformId": "demo-201-av2",
+        "name": "Avaliação 2",
+        "nameShort": "AV2",
+        "ordinal": 2,
+        "weight": "1.00",
+        "value": "5.00",
+        "date": "2026-09-25"
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000210",
+        "studentClassId": "00000000-0000-4000-8000-000000000205",
+        "evaluationId": "00000000-0000-4000-8000-000000000209",
+        "platformId": "demo-201-final",
+        "name": "Prova Final",
+        "nameShort": "Adicional",
+        "ordinal": 3,
+        "weight": "1.00",
+        "value": null,
+        "date": "2026-12-10"
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000307",
+        "studentClassId": "00000000-0000-4000-8000-000000000305",
+        "evaluationId": "00000000-0000-4000-8000-000000000306",
+        "platformId": "demo-301-av1",
+        "name": "Avaliação 1",
+        "nameShort": "AV1",
+        "ordinal": 1,
+        "weight": "2.00",
+        "value": "8.00",
+        "date": "2026-09-08"
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000308",
+        "studentClassId": "00000000-0000-4000-8000-000000000305",
+        "evaluationId": "00000000-0000-4000-8000-000000000306",
+        "platformId": "demo-301-av2",
+        "name": "Avaliação 2",
+        "nameShort": "AV2",
+        "ordinal": 2,
+        "weight": "1.00",
+        "value": "5.00",
+        "date": "2026-09-29"
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000309",
+        "studentClassId": "00000000-0000-4000-8000-000000000305",
+        "evaluationId": "00000000-0000-4000-8000-000000000306",
+        "platformId": "demo-301-av3",
+        "name": "Avaliação 3",
+        "nameShort": "AV3",
+        "ordinal": 3,
+        "weight": "1.00",
+        "value": null,
+        "date": "2026-10-20"
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000407",
+        "studentClassId": "00000000-0000-4000-8000-000000000405",
+        "evaluationId": "00000000-0000-4000-8000-000000000406",
+        "platformId": "demo-401-av1",
+        "name": "Avaliação 1",
+        "nameShort": "AV1",
+        "ordinal": 1,
+        "weight": "1.00",
+        "value": "4.00",
+        "date": "2026-09-10"
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000408",
+        "studentClassId": "00000000-0000-4000-8000-000000000405",
+        "evaluationId": "00000000-0000-4000-8000-000000000406",
+        "platformId": "demo-401-av2",
+        "name": "Avaliação 2",
+        "nameShort": "AV2",
+        "ordinal": 2,
+        "weight": "1.00",
+        "value": null,
+        "date": "2026-10-22"
+      }
+    ],
+    "lectures": [],
+    "lectureMaterials": []
+  },
+  "past": {
+    "semester": {
+      "id": "00000000-0000-4000-8000-000000000100",
+      "platformId": 2,
+      "code": "2026.1",
+      "description": "Semestre anterior de demonstração",
+      "startDate": "2026-02-01",
+      "endDate": "2026-06-30",
+      "track": null
+    },
+    "disciplines": [
+      {
+        "id": "00000000-0000-4000-8000-000000000110",
+        "platformId": 110,
+        "code": "DEMO110",
+        "name": "Lógica de Exemplo",
+        "hours": 60,
+        "department": null,
+        "program": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000410",
+        "platformId": 410,
+        "code": "DEMO410",
+        "name": "Probabilidade de Exemplo",
+        "hours": 75,
+        "department": null,
+        "program": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000120",
+        "platformId": 120,
+        "code": "DEMO120",
+        "name": "Desenho de Exemplo",
+        "hours": 45,
+        "department": null,
+        "program": null
+      }
+    ],
+    "disciplineOffers": [
+      {
+        "id": "00000000-0000-4000-8000-000000000111",
+        "disciplineId": "00000000-0000-4000-8000-000000000110",
+        "semesterId": "00000000-0000-4000-8000-000000000100",
+        "platformId": 111,
+        "hours": 60,
+        "program": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000411",
+        "disciplineId": "00000000-0000-4000-8000-000000000410",
+        "semesterId": "00000000-0000-4000-8000-000000000100",
+        "platformId": 411,
+        "hours": 60,
+        "program": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000121",
+        "disciplineId": "00000000-0000-4000-8000-000000000120",
+        "semesterId": "00000000-0000-4000-8000-000000000100",
+        "platformId": 121,
+        "hours": 45,
+        "program": null
+      }
+    ],
+    "classes": [
+      {
+        "id": "00000000-0000-4000-8000-000000000112",
+        "offerId": "00000000-0000-4000-8000-000000000111",
+        "platformId": 112,
+        "groupName": "T01",
+        "type": "T",
+        "hours": 60,
+        "program": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000412",
+        "offerId": "00000000-0000-4000-8000-000000000411",
+        "platformId": 412,
+        "groupName": "T01",
+        "type": "T",
+        "hours": 60,
+        "program": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000122",
+        "offerId": "00000000-0000-4000-8000-000000000121",
+        "platformId": 122,
+        "groupName": "T01",
+        "type": "T",
+        "hours": 45,
+        "program": null
+      }
+    ],
+    "teachers": [
+      {
+        "id": "00000000-0000-4000-8000-000000000008",
+        "platformId": 1,
+        "name": "Docente Exemplo"
+      }
+    ],
+    "classTeachers": [
+      {
+        "classId": "00000000-0000-4000-8000-000000000112",
+        "teacherId": "00000000-0000-4000-8000-000000000008"
+      },
+      {
+        "classId": "00000000-0000-4000-8000-000000000412",
+        "teacherId": "00000000-0000-4000-8000-000000000008"
+      },
+      {
+        "classId": "00000000-0000-4000-8000-000000000122",
+        "teacherId": "00000000-0000-4000-8000-000000000008"
+      }
+    ],
+    "spaces": [],
+    "allocations": [],
+    "studentClasses": [
+      {
+        "id": "00000000-0000-4000-8000-000000000113",
+        "classId": "00000000-0000-4000-8000-000000000112",
+        "finalGrade": "8.5",
+        "missedClasses": 2,
+        "resultDescription": null,
+        "approved": true,
+        "underRevision": false,
+        "wentToFinals": false,
+        "resultSyncedAt": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000413",
+        "classId": "00000000-0000-4000-8000-000000000412",
+        "finalGrade": "3.0",
+        "missedClasses": 6,
+        "resultDescription": null,
+        "approved": false,
+        "underRevision": false,
+        "wentToFinals": false,
+        "resultSyncedAt": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000123",
+        "classId": "00000000-0000-4000-8000-000000000122",
+        "finalGrade": null,
+        "missedClasses": 20,
+        "resultDescription": "REPROVADO POR FALTA",
+        "approved": false,
+        "underRevision": false,
+        "wentToFinals": false,
+        "resultSyncedAt": null
+      }
+    ],
+    "evaluations": [
+      {
+        "id": "00000000-0000-4000-8000-000000000114",
+        "classId": "00000000-0000-4000-8000-000000000112",
+        "platformId": "demo-110-partials",
+        "name": null,
+        "position": 1
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000414",
+        "classId": "00000000-0000-4000-8000-000000000412",
+        "platformId": "demo-410-partials",
+        "name": null,
+        "position": 1
+      }
+    ],
+    "studentGrades": [
+      {
+        "id": "00000000-0000-4000-8000-000000000115",
+        "studentClassId": "00000000-0000-4000-8000-000000000113",
+        "evaluationId": "00000000-0000-4000-8000-000000000114",
+        "platformId": "demo-110-av1",
+        "name": "Avaliação 1",
+        "nameShort": "AV1",
+        "ordinal": 1,
+        "weight": "1.00",
+        "value": "8.00",
+        "date": "2026-04-10"
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000116",
+        "studentClassId": "00000000-0000-4000-8000-000000000113",
+        "evaluationId": "00000000-0000-4000-8000-000000000114",
+        "platformId": "demo-110-av2",
+        "name": "Avaliação 2",
+        "nameShort": "AV2",
+        "ordinal": 2,
+        "weight": "1.00",
+        "value": "9.00",
+        "date": "2026-06-05"
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000415",
+        "studentClassId": "00000000-0000-4000-8000-000000000413",
+        "evaluationId": "00000000-0000-4000-8000-000000000414",
+        "platformId": "demo-410-av1",
+        "name": "Avaliação 1",
+        "nameShort": "AV1",
+        "ordinal": 1,
+        "weight": "1.00",
+        "value": "3.00",
+        "date": "2026-04-14"
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000416",
+        "studentClassId": "00000000-0000-4000-8000-000000000413",
+        "evaluationId": "00000000-0000-4000-8000-000000000414",
+        "platformId": "demo-410-av2",
+        "name": "Avaliação 2",
+        "nameShort": "AV2",
+        "ordinal": 2,
+        "weight": "1.00",
+        "value": "3.00",
+        "date": "2026-06-09"
+      }
+    ],
+    "lectures": [],
+    "lectureMaterials": []
+  }
+}
