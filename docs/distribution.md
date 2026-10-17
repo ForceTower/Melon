@@ -99,6 +99,5 @@ MATCH_RENEW_EXPIRED_CERTS=true MATCH_FORCE=true bundle exec fastlane ios certifi
 
 The archive job, like every iOS job, selects the Xcode build pinned in
 `apps/ios/select-xcode.sh`, because App Store Connect rejects builds made with a beta
-Xcode and a version number can't tell a beta from a release. Until the hosted `xcode-27`
-image ships the pinned build, jobs fall back to the 27.1 beta and warn on the run; those
-TestFlight builds are for internal testing only.
+Xcode and a version number can't tell a beta from a release. A runner without that build
+fails the job rather than archiving with another one.
