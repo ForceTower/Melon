@@ -3,7 +3,7 @@ import GRDB
 
 private let log = Log.scoped("MirrorStore")
 
-/// Read/write access to the local SQLite mirror of the apps/api sync data.
+/// Read/write access to the local SQLite mirror of the backend's sync data.
 struct MirrorStore: Sendable {
     var writer: any DatabaseWriter
 

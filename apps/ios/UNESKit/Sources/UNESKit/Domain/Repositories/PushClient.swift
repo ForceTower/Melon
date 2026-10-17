@@ -1,7 +1,7 @@
 import ComposableArchitecture
 
 /// Device-side push plumbing: the system permission prompt, the FCM
-/// registration-token registration against apps/api, and the fan-out of data
+/// registration-token registration against the backend, and the fan-out of data
 /// notifications to reducers. The token and notifications are delivered by
 /// Firebase/iOS to the app delegate, which hands them over through
 /// `PushTokens`/`PushEvents`.

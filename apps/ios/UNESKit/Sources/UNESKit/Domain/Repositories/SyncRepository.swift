@@ -1,7 +1,7 @@
 import ComposableArchitecture
 import Foundation
 
-/// The initial-sync surface of apps/api: session ping, backfill status
+/// The backend's initial-sync surface: session ping, backfill status
 /// polling, and the active-semester snapshot the Ready screen presents.
 @DependencyClient
 struct SyncRepository: Sendable {

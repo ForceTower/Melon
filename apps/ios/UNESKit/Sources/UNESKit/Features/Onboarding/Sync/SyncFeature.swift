@@ -130,7 +130,7 @@ struct SyncFeature {
         _ = try await step(.auth) { try await sync.ping() }
 
         // The FID usually lands before login (the app delegate stores it);
-        // now that the session exists, forward it to apps/api.
+        // now that the session exists, forward it to the backend.
         await push.reconcile()
 
         // 2. profile

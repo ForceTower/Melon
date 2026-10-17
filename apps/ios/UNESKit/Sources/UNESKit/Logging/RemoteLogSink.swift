@@ -4,10 +4,10 @@ import os
 /// Ships log records to the Melon API's `/api/logs`, which re-emits them to
 /// the OTel backend server-side under this app's service name and stamps the
 /// device's machine id from the `X-Machine-Id` header (see
-/// `apps/api/src/api/logs.ts`; the v1 pipeline is `ApiLogWriter` in
-/// `packages/shared-kmp`). The endpoint is unauthenticated by design, so the
-/// watch ships its own logs too — as `melon-watchos`, under the watch's own
-/// machine id.
+/// `apps/api/src/api/logs.ts` in the private backend repository; the v1
+/// pipeline is `ApiLogWriter` in `packages/shared-kmp`). The endpoint is
+/// unauthenticated by design, so the watch ships its own logs too — as
+/// `melon-watchos`, under the watch's own machine id.
 ///
 /// Records buffer in memory and flush `flushInterval` after the first record
 /// of an idle window arrives — no timers run while nothing is logged. The

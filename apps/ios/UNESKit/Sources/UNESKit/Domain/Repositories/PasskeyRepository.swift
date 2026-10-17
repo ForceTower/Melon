@@ -1,6 +1,6 @@
 import ComposableArchitecture
 
-/// Manages the account's passkeys against apps/api: lists them, fetches
+/// Manages the account's passkeys against the backend: lists them, fetches
 /// registration options, and enrolls a freshly minted credential.
 @DependencyClient
 struct PasskeyRepository: Sendable {

@@ -1,6 +1,6 @@
 import ComposableArchitecture
 
-/// Login against apps/api with SAGRES credentials or a passkey.
+/// Login against the backend with SAGRES credentials or a passkey.
 /// Successful logins persist the session in the `SessionStore`.
 @DependencyClient
 struct AuthRepository: Sendable {

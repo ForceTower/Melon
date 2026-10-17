@@ -341,21 +341,3 @@ internal object DisciplineDateFormatting {
         return "${iso.substring(8, 10)}/${iso.substring(5, 7)}"
     }
 }
-
-internal object DisciplineDate {
-    // Parses dd/MM/yyyy and returns days from real-today (positive = future).
-    // Mirrors iOS `DisciplineDate.daysUntil`. The iOS variant pins today to
-    // 2026-04-18 to align with the prototype's mock dates; here we use the
-    // real clock, since the data comes from the KMP flow.
-    fun daysUntil(date: String?): Int? {
-        if (date == null) return null
-        val parts = date.split('/')
-        if (parts.size != 3) return null
-        val day = parts[0].toIntOrNull() ?: return null
-        val month = parts[1].toIntOrNull() ?: return null
-        val year = parts[2].toIntOrNull() ?: return null
-        val target = java.time.LocalDate.of(year, month, day)
-        val today = java.time.LocalDate.now()
-        return java.time.temporal.ChronoUnit.DAYS.between(today, target).toInt()
-    }
-}

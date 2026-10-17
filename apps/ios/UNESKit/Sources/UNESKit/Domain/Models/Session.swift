@@ -1,6 +1,6 @@
 import Foundation
 
-/// Authenticated session against apps/api. Access token is a long-lived JWT;
+/// Authenticated session against the backend. Access token is a long-lived JWT;
 /// the refresh token is single-use (rotated by `api/auth/token/refresh`).
 struct Session: Equatable, Sendable, Codable {
     var accessToken: String

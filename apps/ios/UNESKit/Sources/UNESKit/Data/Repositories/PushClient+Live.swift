@@ -43,7 +43,7 @@ extension PushClient: DependencyKey {
 private let registrar = PushRegistrar()
 
 /// Owns the device's push registration: the FCM registration token is
-/// registered with apps/api on every app open, and any Firebase Installation
+/// registered with the backend on every app open, and any Firebase Installation
 /// ID row left behind by the retired FID-targeting builds is deleted
 /// (FID-targeted sends stopped reaching some devices, so the clients are
 /// fully back on tokens until FID push matures). The backend dedups rows by

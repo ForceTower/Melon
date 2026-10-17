@@ -194,9 +194,10 @@ internal class SessionStoreImpl(
         log.i { "logout start" }
         storage.remove(ACCESS_TOKEN_KEY)
         storage.remove(REFRESH_TOKEN_KEY)
-        // Wipe user-scoped local data on logout. We deliberately keep
-        // `PendingMutation` so optimistic writes queued before logout can
-        // still replay when the same user signs back in. Most deletes
+        // Wipe user-scoped local data on logout. `PendingMutation` is not
+        // cleared, but nothing enqueues into it yet; whatever starts writing
+        // there must clear it here or scope its rows to a user, so one
+        // account's writes never replay under another. Most deletes
         // cascade: `MessageDao.clear` takes scopes/attachments/states with
         // it, and clearing `Discipline` + `Semester` wipes the whole
         // academic subtree (DisciplineOffer → Class → StudentClass /
