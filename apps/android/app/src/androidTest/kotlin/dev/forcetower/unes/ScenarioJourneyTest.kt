@@ -27,6 +27,7 @@ import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.printToString
 import androidx.test.espresso.Espresso
 import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
 import dev.forcetower.unes.remote.FeatureGates
 import java.io.File
@@ -69,6 +70,7 @@ internal class ScenarioJourneyTest {
         if (scenario == "auth.login") return
         compose.onAllNodes(hasSetTextAction())[0].performTextInput("scenario")
         compose.onAllNodes(hasSetTextAction())[1].performTextInput("synthetic-only")
+        awaitWindowFocus()
         Espresso.closeSoftKeyboard()
         click(R.string.onboarding_login_submit)
         if (scenario == "auth.invalid-credentials") {
@@ -147,6 +149,7 @@ internal class ScenarioJourneyTest {
             scrollToText(compose.activity.getString(R.string.enrollment_prereq_unmet_title))
             scrollClick(compose.activity.getString(R.string.enrollment_section_queue))
             waitFor(R.string.enrollment_section_selected)
+            awaitWindowFocus()
             Espresso.pressBack()
             waitFor(R.string.enrollment_offers_title)
             click(R.string.enrollment_dock_review)
@@ -213,6 +216,16 @@ internal class ScenarioJourneyTest {
                 if (refresh) putExtra("kind", "scenario-refresh")
             },
         )
+    }
+
+    // A launcher ANR from emulator boot can surface after CI's one-shot dialog
+    // cleanup and hold the window focus Espresso waits for. Closing the app is
+    // what hide_error_dialogs would have done.
+    private fun awaitWindowFocus() {
+        compose.waitUntil(30_000) {
+            device.findObject(By.res("android", "aerr_close"))?.click()
+            compose.runOnUiThread { compose.activity.hasWindowFocus() }
+        }
     }
 
     private fun waitFor(resource: Int) = waitForText(compose.activity.getString(resource))

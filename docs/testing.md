@@ -114,9 +114,10 @@ sets `hide_error_dialogs` and sends `CLOSE_SYSTEM_DIALOGS` once, following Andro
 CTS setup. The setting prevents new dialogs but does not dismiss ones already
 shown during boot. Android terminates an unresponsive app when its error dialog
 is suppressed; failed instrumentation still fails the journey. Every journey uses
-`--no-build` and clears its isolated state. The original failed run's hierarchy
-identified a Quickstep ANR that was already stealing focus when the login test
-tried to close its keyboard.
+`--no-build` and clears its isolated state. A Quickstep ANR that AMS decided on
+before the setting landed can still be shown after the broadcast, and it holds
+window focus. Before Espresso closes the keyboard or presses back, the journey
+closes any system ANR dialog and waits for the app to regain window focus.
 
 Repository tooling/mock tests also emit JUnit XML at
 `artifacts/repository-tests.xml`, uploaded by the always-running repository lane.
