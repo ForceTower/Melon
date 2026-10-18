@@ -79,7 +79,7 @@ jobs:
   play-internal:
     name: Play internal testing
     if: inputs.android
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 40
     environment: stores
     concurrency:

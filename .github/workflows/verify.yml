@@ -17,7 +17,7 @@ concurrency:
 jobs:
   changes:
     name: Select affected platforms
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     outputs:
       android: ${{ steps.select.outputs.android }}
@@ -38,7 +38,7 @@ jobs:
 
   repository:
     name: Conventions, fixtures and tooling tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
@@ -76,7 +76,7 @@ jobs:
     name: Required verification
     if: always()
     needs: [changes, repository, android, ios, landing]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v7
