@@ -63,6 +63,7 @@ final class RemoteLogSink: Sendable {
             "log.tag": tag,
             "deployment.environment": Self.environment,
         ]
+        attributes.merge(Self.releaseAttributes) { current, _ in current }
         if let error {
             attributes["exception.type"] = String(reflecting: type(of: error))
             attributes["exception.message"] = String(describing: error)
@@ -125,6 +126,11 @@ final class RemoteLogSink: Sendable {
         "release"
         #endif
     }()
+
+    private static let releaseAttributes: [String: String] = [
+        "appVersion": Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String,
+        "appBuild": Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String,
+    ].compactMapValues { $0 }
 }
 
 private extension LogLevel {
