@@ -6,7 +6,9 @@ final class ScenarioJourneyTests: XCTestCase {
         continueAfterFailure = false
     }
 
-    override func tearDown() async throws {
+    // Nonisolated: after a failure stops an async test, XCTest blocks the main
+    // thread until tearDown finishes, so a main-actor tearDown deadlocks.
+    nonisolated override func tearDown() async throws {
         let (data, _) = try await URLSession.shared.data(from: URL(string: "http://127.0.0.1:8788/debug/state")!)
         let state = try JSONDecoder().decode(MockState.self, from: data)
         XCTAssertEqual(state.data.mode, "hermetic")
@@ -43,7 +45,7 @@ final class ScenarioJourneyTests: XCTestCase {
 
         try await selectScenario("home.offline-with-cache")
         app.tabBars.buttons["Hoje"].tap()
-        app.scrollViews.firstMatch.swipeDown()
+        pullToRefresh(app.scrollViews.firstMatch)
         try await waitForRequest("GET /api/sync/semesters")
         XCTAssertTrue(app.staticTexts["Algoritmos de Exemplo"].firstMatch.exists)
         capture(app, scenario: "home.offline-with-cache")
@@ -81,6 +83,13 @@ final class ScenarioJourneyTests: XCTestCase {
         app.launchArguments = ["-AppleLanguages", "(pt-BR)", "-AppleLocale", "pt_BR"]
         app.launch()
         return app
+    }
+
+    /// `swipeDown()` doesn't trigger `.refreshable`; a pressed drag does.
+    private func pullToRefresh(_ scrollView: XCUIElement) {
+        let top = scrollView.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.2))
+        let bottom = scrollView.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.8))
+        top.press(forDuration: 0.1, thenDragTo: bottom)
     }
 
     private func selectScenario(_ id: String) async throws {
