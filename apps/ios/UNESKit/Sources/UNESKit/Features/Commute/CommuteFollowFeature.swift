@@ -1,9 +1,9 @@
 import ComposableArchitecture
 import Foundation
 
-/// "Seguindo o 087": only this line's route and buses, the followed bus's
-/// band to the student's stop, refreshed while on screen. Following a bus
-/// never means the student is on it.
+/// "Seguindo o 087": only this line's route and buses, the followed
+/// departure's band to the student's stop, refreshed while on screen.
+/// Following a bus never means the student is on it.
 @Reducer
 struct CommuteFollowFeature {
     @ObservableState
@@ -11,10 +11,15 @@ struct CommuteFollowFeature {
         var lineNumber: String
         var direction: TransitDirection
         var stopId: String
+        /// The departure being followed; stays the same as it goes from
+        /// history to a bus waiting or on its way.
+        var arrivalId: String
         var vehicleId: String?
         /// What the board showed, so the screen opens with a number.
         var arrival: TransitArrival?
         var follow: TransitFollow?
+        /// When the last answer arrived on this device.
+        var followReceivedAt: Date?
         var route: TransitRoute?
         var loadFailed = false
         var showsMyLocation = false
@@ -25,6 +30,7 @@ struct CommuteFollowFeature {
             lineNumber = arrival.lineNumber
             self.direction = direction
             self.stopId = stopId
+            arrivalId = arrival.id
             vehicleId = arrival.vehicleId
             self.arrival = arrival
         }
@@ -37,6 +43,10 @@ struct CommuteFollowFeature {
         /// still finishing the opposite trip.
         var routeVehicles: [TransitVehicle] {
             follow?.vehicles.filter { $0.progressMeters != nil || $0.id == vehicleId } ?? []
+        }
+
+        func isOutdated(at now: Date) -> Bool {
+            followReceivedAt.map { now.timeIntervalSince($0) > CommuteFormat.outdatedAfter } ?? false
         }
     }
 
@@ -53,6 +63,7 @@ struct CommuteFollowFeature {
 
     @Dependency(\.transitRepository) var transitRepository
     @Dependency(\.locationClient) var locationClient
+    @Dependency(\.date.now) var now
     @Dependency(\.continuousClock) var clock
 
     static let refreshInterval: Duration = .seconds(10)
@@ -72,12 +83,12 @@ struct CommuteFollowFeature {
             case let .followLoaded(follow):
                 state.loadFailed = false
                 state.follow = follow
-                if let arrival = follow.arrival {
-                    state.arrival = arrival
-                    state.vehicleId = arrival.vehicleId ?? state.vehicleId
-                } else if state.vehicleId != nil {
-                    // Gone past the stop: keep the map, drop the countdown.
-                    state.arrival = nil
+                state.followReceivedAt = now
+                // The server resolves the departure by id: nil means it has
+                // passed the stop or no longer runs.
+                state.arrival = follow.arrival
+                if let vehicleId = follow.arrival?.vehicleId {
+                    state.vehicleId = vehicleId
                 }
                 return .none
 
@@ -123,10 +134,17 @@ struct CommuteFollowFeature {
     }
 
     private func poll(_ state: State) -> Effect<Action> {
-        .run { [line = state.lineNumber, direction = state.direction, stopId = state.stopId, vehicleId = state.vehicleId] send in
+        .run { [
+            line = state.lineNumber,
+            direction = state.direction,
+            stopId = state.stopId,
+            arrivalId = state.arrivalId,
+            vehicleId = state.vehicleId
+        ] send in
             while true {
                 do {
-                    await send(.followLoaded(try await transitRepository.follow(line, direction, stopId, vehicleId)))
+                    let follow = try await transitRepository.follow(line, direction, stopId, arrivalId, vehicleId)
+                    await send(.followLoaded(follow))
                 } catch is CancellationError {
                     return
                 } catch {

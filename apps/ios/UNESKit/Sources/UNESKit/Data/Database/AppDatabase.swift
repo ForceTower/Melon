@@ -374,6 +374,18 @@ private func migrator() -> DatabaseMigrator {
             t.add(column: "track", .text)
         }
     }
+    // Meu trajeto: one row per saved direction, mirrored from the server's
+    // `api/transit/plan`. Only server answers write it.
+    migrator.registerMigration("v14") { db in
+        try db.create(table: "commuteLegs") { t in
+            t.primaryKey("direction", .text)
+            t.column("stopId", .text).notNull()
+            t.column("stopName", .text).notNull()
+            t.column("stopArea", .text)
+            t.column("lineNumbers", .text).notNull()
+            t.column("walkMinutes", .integer).notNull()
+        }
+    }
     return migrator
 }
 

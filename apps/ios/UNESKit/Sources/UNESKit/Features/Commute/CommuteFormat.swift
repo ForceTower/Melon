@@ -13,6 +13,10 @@ enum CommuteFormat {
 
     private static let approximateBeyond: TimeInterval = 30 * 60
 
+    /// A board older than this on the device is shown frozen: the connection
+    /// is gone, so nothing may keep counting down as if it were live.
+    static let outdatedAfter: TimeInterval = 60
+
     /// "07h02" in pt-BR, "07:02" elsewhere.
     static func clock(_ date: Date, calendar: Calendar = .current) -> String {
         let parts = calendar.dateComponents([.hour, .minute], from: date)
@@ -28,13 +32,14 @@ enum CommuteFormat {
         return from == to ? from : "\(from)–\(to)"
     }
 
-    static func estimate(for arrival: TransitArrival, now: Date) -> Estimate {
+    /// `frozen` is for data the device could no longer refresh.
+    static func estimate(for arrival: TransitArrival, now: Date, frozen: Bool = false) -> Estimate {
         if arrival.state == .historical || arrival.expected.timeIntervalSince(now) > approximateBeyond {
             return Estimate(text: clock(arrival.expected), isApproximate: true)
         }
-        // A bus that stopped reporting keeps its last band on the clock, so
-        // it stops counting down instead of pretending to move.
-        if arrival.state == .waiting || arrival.signalLost {
+        // A bus that stopped reporting (or a board we can't refresh) keeps its
+        // last band on the clock, so it stops counting down instead of pretending to move.
+        if arrival.state == .waiting || arrival.signalLost || frozen {
             return Estimate(text: clockRange(arrival.earliest, arrival.latest), isApproximate: false)
         }
         if arrival.phase == .atStop {

@@ -127,6 +127,50 @@ struct TransitFollowDTO: Decodable {
     var arrival: TransitArrivalDTO?
 }
 
+struct TransitCommuteLegDTO: Decodable {
+    var stopId: String
+    var stopName: String
+    var stopArea: String?
+    var lineNumbers: [String]
+    var walkMinutes: Int
+}
+
+struct TransitCommutePlanDTO: Decodable {
+    var toCampus: TransitCommuteLegDTO?
+    var fromCampus: TransitCommuteLegDTO?
+    var updatedAt: String?
+}
+
+/// `PUT api/transit/plan`. Both keys are always sent: null removes a direction.
+struct TransitCommutePlanInputDTO: Encodable, Sendable {
+    struct Leg: Encodable, Sendable {
+        var stopId: String
+        var lineNumbers: [String]
+        var walkMinutes: Int
+    }
+
+    var toCampus: Leg?
+    var fromCampus: Leg?
+
+    init(_ plan: CommutePlan) {
+        let leg = { (leg: CommuteLeg?) in
+            leg.map { Leg(stopId: $0.stopId, lineNumbers: $0.lineNumbers, walkMinutes: $0.walkMinutes) }
+        }
+        toCampus = leg(plan.toCampus)
+        fromCampus = leg(plan.fromCampus)
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case toCampus, fromCampus
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(toCampus, forKey: .toCampus)
+        try container.encode(fromCampus, forKey: .fromCampus)
+    }
+}
+
 enum TransitDTOError: Error, Equatable {
     case invalid(String)
 }
@@ -247,6 +291,23 @@ extension TransitStopArrivalsDTO {
             serviceToday: serviceToday,
             nextService: try nextService.map { TransitNextService(lineNumber: $0.lineNumber, usual: try instant($0.usual)) }
         )
+    }
+}
+
+extension TransitCommutePlanDTO {
+    var domain: CommutePlan {
+        let leg = { (dto: TransitCommuteLegDTO?) in
+            dto.map {
+                CommuteLeg(
+                    stopId: $0.stopId,
+                    stopName: $0.stopName,
+                    stopArea: $0.stopArea,
+                    lineNumbers: $0.lineNumbers,
+                    walkMinutes: $0.walkMinutes
+                )
+            }
+        }
+        return CommutePlan(toCampus: leg(toCampus), fromCampus: leg(fromCampus))
     }
 }
 

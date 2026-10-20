@@ -8,11 +8,6 @@ struct CommuteHeroLine: View {
     /// Draws the hairline that separates it from the class above.
     var separated = true
 
-    private struct TaskKey: Hashable {
-        var schedule: CommuteDaySchedule
-        var plan: CommutePlan
-    }
-
     var body: some View {
         TimelineView(.periodic(from: .now, by: 1)) { context in
             content(now: context.date)
@@ -24,7 +19,7 @@ struct CommuteHeroLine: View {
             }
         }
         .padding(.top, separated ? 16 : 0)
-        .task(id: TaskKey(schedule: schedule, plan: store.plan)) {
+        .task(id: schedule) {
             await store.send(.task(schedule)).finish()
         }
     }
@@ -90,14 +85,15 @@ struct CommuteHeroLine: View {
     }
 
     private func inbound(_ arrival: TransitArrival, leg: CommuteLeg, now: Date) -> some View {
-        let estimate = CommuteFormat.estimate(for: arrival, now: now)
+        let frozen = store.state.isOutdated(at: now)
+        let estimate = CommuteFormat.estimate(for: arrival, now: now, frozen: frozen)
         let historical = arrival.state == .historical
         return HStack(alignment: .top, spacing: 12) {
             TransitLineBadge(number: arrival.lineNumber)
             VStack(alignment: .leading, spacing: 5) {
                 TransitEstimateText(
                     estimate: estimate,
-                    stale: arrival.signalLost,
+                    stale: arrival.signalLost || frozen,
                     size: arrival.state == .live ? 30 : 26,
                     onDark: true
                 )
@@ -172,6 +168,15 @@ struct CommuteHeroLine: View {
 
     @ViewBuilder
     private func departureChip(_ arrival: TransitArrival, now: Date) -> some View {
+        if store.state.isOutdated(at: now) {
+            TransitChip(kind: .stale, text: .localized(.commuteStateOffline), onDark: true)
+        } else {
+            liveDepartureChip(arrival, now: now)
+        }
+    }
+
+    @ViewBuilder
+    private func liveDepartureChip(_ arrival: TransitArrival, now: Date) -> some View {
         switch arrival.phase {
         case .atStop, .atOrigin:
             TransitChip(kind: .live, text: .localized(.commuteBusAlreadyAtStop), onDark: true)
@@ -235,13 +240,18 @@ struct CommuteHeroLine: View {
     // MARK: Pieces
 
     private func statusRow(_ arrival: TransitArrival, now: Date) -> some View {
-        HStack(spacing: 10) {
-            TransitChip(kind: TransitChip.Kind(arrival), onDark: true)
+        let offline = store.state.isOutdated(at: now)
+        return HStack(spacing: 10) {
+            if offline {
+                TransitChip(kind: .stale, text: .localized(.commuteStateOffline), onDark: true)
+            } else {
+                TransitChip(kind: TransitChip.Kind(arrival), onDark: true)
+            }
             if arrival.isFlaky {
                 TransitChip(kind: .flaky, onDark: true)
             }
             Spacer(minLength: 0)
-            if arrival.state != .historical, let fix = arrival.lastFixAt {
+            if !offline, arrival.state != .historical, let fix = arrival.lastFixAt {
                 TransitFreshness(fixAt: fix, now: now, signalLost: arrival.signalLost, onDark: true, short: true)
             }
         }
@@ -284,9 +294,15 @@ struct CommuteHeroCard: View {
 private func heroPreview(plan: CommutePlan, schedule: CommuteDaySchedule) -> some View {
     let state = CommuteHeroFeature.State()
     state.$isEnabled.withLock { $0 = true }
-    state.$plan.withLock { $0 = plan }
-    return CommuteHeroCard(store: Store(initialState: state) { CommuteHeroFeature() }, schedule: schedule)
-        .padding(16)
+    return CommuteHeroCard(
+        store: Store(initialState: state) {
+            CommuteHeroFeature()
+        } withDependencies: {
+            $0.commutePlanRepository = .preview(plan)
+        },
+        schedule: schedule
+    )
+    .padding(16)
 }
 
 #Preview("Ao vivo") { heroPreview(plan: TransitFixtures.plan, schedule: CommuteDaySchedule(firstStartMinute: 23 * 60)) }

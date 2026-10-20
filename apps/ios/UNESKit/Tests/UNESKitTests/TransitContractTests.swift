@@ -9,6 +9,7 @@ private struct TransitContract: Decodable {
     let network: TransitNetworkDTO
     let arrivals: TransitStopArrivalsDTO
     let follow: TransitFollowDTO
+    let plan: TransitCommutePlanDTO
 
     static func load() throws -> TransitContract {
         var root = URL(fileURLWithPath: #filePath)
@@ -39,6 +40,15 @@ struct TransitContractTests {
         #expect(board.today.map(\.status) == [.passed, .next, .upcoming])
         let basis = try #require(board.arrivals[0].basis)
         #expect(basis.counts.reduce(0, +) == 27)
+    }
+
+    @Test
+    func aSavedPlanDecodesBothLegs() throws {
+        let plan = try TransitContract.load().plan.domain
+        #expect(plan.toCampus?.stopName == "Rua de Exemplo, 100")
+        #expect(plan.toCampus?.lineNumbers == ["087"])
+        #expect(plan.fromCampus?.stopId == "2452")
+        #expect(plan.fromCampus?.walkMinutes == 3)
     }
 
     @Test

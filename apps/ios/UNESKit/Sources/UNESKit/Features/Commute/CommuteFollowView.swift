@@ -14,6 +14,13 @@ struct CommuteFollowView: View {
             VStack(alignment: .leading, spacing: 0) {
                 TimelineView(.periodic(from: .now, by: 1)) { context in
                     VStack(alignment: .leading, spacing: 0) {
+                        if store.loadFailed || store.state.isOutdated(at: context.date),
+                           let receivedAt = store.followReceivedAt {
+                            UNESBanner(tone: .neutral, title: .localized(.commuteOfflineTitle), symbol: "wifi.slash") {
+                                Text(.commuteOfflineBody(CommuteFormat.clock(receivedAt)))
+                            }
+                            .padding(.bottom, 14)
+                        }
                         headline(now: context.date)
                         status(now: context.date)
                     }
@@ -65,13 +72,14 @@ struct CommuteFollowView: View {
 
     @ViewBuilder
     private func headline(now: Date) -> some View {
+        let frozen = store.state.isOutdated(at: now)
         VStack(alignment: .leading, spacing: 6) {
             if let arrival = store.arrival {
                 HStack(alignment: .firstTextBaseline, spacing: 12) {
                     TransitEstimateText(
-                        estimate: CommuteFormat.estimate(for: arrival, now: now),
-                        dim: arrival.state == .historical,
-                        stale: arrival.signalLost,
+                        estimate: CommuteFormat.estimate(for: arrival, now: now, frozen: frozen),
+                        dim: arrival.state == .historical || frozen,
+                        stale: arrival.signalLost || frozen,
                         size: 46
                     )
                     Text(isDepartureStop ? .commuteFollowUntilDeparture : .commuteFollowUntilYourStop)
@@ -129,9 +137,13 @@ struct CommuteFollowView: View {
     private func status(now: Date) -> some View {
         if let arrival = store.arrival {
             HStack(spacing: 8) {
-                TransitChip(kind: TransitChip.Kind(arrival))
-                if let fix = arrival.lastFixAt, arrival.state != .historical {
-                    TransitFreshness(fixAt: fix, now: now, signalLost: arrival.signalLost)
+                if store.state.isOutdated(at: now) {
+                    TransitChip(kind: .stale, text: .localized(.commuteStateOffline))
+                } else {
+                    TransitChip(kind: TransitChip.Kind(arrival))
+                    if let fix = arrival.lastFixAt, arrival.state != .historical {
+                        TransitFreshness(fixAt: fix, now: now, signalLost: arrival.signalLost)
+                    }
                 }
             }
             .padding(EdgeInsets(top: 0, leading: 4, bottom: 12, trailing: 4))

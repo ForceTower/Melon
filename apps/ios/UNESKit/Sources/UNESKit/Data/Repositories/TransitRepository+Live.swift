@@ -40,12 +40,13 @@ extension TransitRepository: DependencyKey {
                     throw error
                 }
             },
-            follow: { lineNumber, direction, stopId, vehicleId in
+            follow: { lineNumber, direction, stopId, arrivalId, vehicleId in
                 @Dependency(\.apiClient) var apiClient
                 var query = [
                     URLQueryItem(name: "line", value: lineNumber),
                     URLQueryItem(name: "direction", value: direction.rawValue),
                     URLQueryItem(name: "stopId", value: stopId),
+                    URLQueryItem(name: "arrivalId", value: arrivalId),
                 ]
                 if let vehicleId {
                     query.append(URLQueryItem(name: "vehicleId", value: vehicleId))

@@ -75,6 +75,21 @@ struct CommuteFeatureTests {
     }
 
     @Test
+    func aBoardTheDeviceCouldNotRefreshStopsCountingDown() {
+        let arrival = Self.arrival(state: .live, phase: .enRoute, earliest: 8, latest: 10, expected: 9)
+        let later = Self.now.addingTimeInterval(120)
+        let frozen = CommuteFormat.estimate(for: arrival, now: later, frozen: true)
+        #expect(frozen.text == CommuteFormat.clockRange(arrival.earliest, arrival.latest))
+        #expect(frozen == CommuteFormat.estimate(for: arrival, now: later.addingTimeInterval(60), frozen: true))
+
+        var board = CommuteBoardFeature.State(direction: .toCampus, plan: TransitFixtures.plan)
+        #expect(!board.isOutdated(at: Self.now))
+        board.boardReceivedAt = Self.now
+        #expect(!board.isOutdated(at: Self.now.addingTimeInterval(CommuteFormat.outdatedAfter)))
+        #expect(board.isOutdated(at: Self.now.addingTimeInterval(CommuteFormat.outdatedAfter + 1)))
+    }
+
+    @Test
     func flakinessNeedsEnoughObservedDays() {
         var arrival = Self.arrival(state: .historical, earliest: 3, latest: 6, expected: 4)
         arrival.ranDays = 1
@@ -172,6 +187,31 @@ struct CommuteFeatureTests {
     }
 
     @Test
+    func aSaveAlwaysSendsBothDirections() throws {
+        let input = TransitCommutePlanInputDTO(CommutePlan(toCampus: TransitFixtures.plan.toCampus))
+        let json = try #require(
+            try JSONSerialization.jsonObject(with: JSONEncoder().encode(input)) as? [String: Any]
+        )
+        #expect(json.keys.sorted() == ["fromCampus", "toCampus"])
+        #expect(json["fromCampus"] is NSNull)
+        let leg = try #require(json["toCampus"] as? [String: Any])
+        #expect(leg.keys.sorted() == ["lineNumbers", "stopId", "walkMinutes"])
+    }
+
+    @Test
+    func theMirrorKeepsWhatTheServerAnsweredUntilLogout() async throws {
+        let mirror = MirrorStore(writer: try inMemoryDatabase())
+        #expect(try await mirror.cachedCommutePlan() == CommutePlan())
+        try await mirror.applyCommutePlan(TransitFixtures.plan)
+        #expect(try await mirror.cachedCommutePlan() == TransitFixtures.plan)
+        try await mirror.applyCommutePlan(CommutePlan(fromCampus: TransitFixtures.plan.fromCampus))
+        #expect(try await mirror.cachedCommutePlan() == CommutePlan(fromCampus: TransitFixtures.plan.fromCampus))
+        try await mirror.applyCommutePlan(TransitFixtures.plan)
+        try await mirror.wipe()
+        #expect(try await mirror.cachedCommutePlan() == CommutePlan())
+    }
+
+    @Test
     func anUnknownPhaseDoesNotBreakTheBoard() throws {
         let json = """
         {
@@ -191,7 +231,7 @@ struct CommuteFeatureTests {
 
     @Test
     func continuingKeepsTheDirectionsInTravelOrder() async {
-        let store = TestStore(initialState: CommuteDirectionFeature.State()) {
+        let store = TestStore(initialState: CommuteDirectionFeature.State(plan: CommutePlan())) {
             CommuteDirectionFeature()
         }
         await store.send(.toggled(.fromCampus)) {
@@ -209,12 +249,17 @@ struct CommuteFeatureTests {
     }
 
     @Test
-    func savingTheLastLegWritesThePlan() async {
+    func savingTheLastLegGoesThroughTheServer() async {
         let draft = CommuteSetupDraft(directions: [.fromCampus], existing: CommutePlan())
+        let saved = LockIsolated<[CommutePlan]>([])
         let store = TestStore(initialState: CommuteLinesFeature.State(draft: draft, direction: .fromCampus)) {
             CommuteLinesFeature()
         } withDependencies: {
             $0.transitRepository.network = { TransitFixtures.network }
+            $0.commutePlanRepository.save = { plan in
+                saved.withValue { $0.append(plan) }
+                return plan
+            }
         }
         let departure = TransitFixtures.network.campusDepartureStop
 
@@ -237,11 +282,68 @@ struct CommuteFeatureTests {
             lineNumbers: ["087", "088"],
             walkMinutes: 30
         )
+        let plan = CommutePlan(fromCampus: leg)
         await store.send(.saveTapped) {
             $0.draft.plan.fromCampus = leg
-            $0.$plan.withLock { $0 = CommutePlan(fromCampus: leg) }
+            $0.isSaving = true
         }
-        await store.receive(.delegate(.finished(.fromCampus)))
+        await store.receive(.saveFinished(plan)) {
+            $0.isSaving = false
+        }
+        await store.receive(.delegate(.finished(plan, .fromCampus)))
+        #expect(saved.value == [plan])
+    }
+
+    @Test
+    func aFailedSaveKeepsTheStudentOnTheStep() async {
+        let draft = CommuteSetupDraft(directions: [.toCampus], existing: CommutePlan())
+        let stop = TransitFixtures.network.route(line: "087", direction: .toCampus)!.stops[4]
+        var state = CommuteLinesFeature.State(draft: draft, direction: .toCampus, stop: stop)
+        state.network = TransitFixtures.network
+        state.selected = ["087"]
+        let store = TestStore(initialState: state) {
+            CommuteLinesFeature()
+        } withDependencies: {
+            $0.commutePlanRepository.save = { _ in throw URLError(.notConnectedToInternet) }
+        }
+        await store.send(.saveTapped) {
+            $0.draft.plan.toCampus = CommuteLeg(stopId: stop.id, stopName: stop.name, stopArea: stop.area, lineNumbers: ["087"], walkMinutes: 5)
+            $0.isSaving = true
+        }
+        await store.receive(.saveFinished(nil)) {
+            $0.isSaving = false
+            $0.saveFailed = true
+        }
+        await store.send(.saveFailureDismissed) {
+            $0.saveFailed = false
+        }
+    }
+
+    @Test
+    func removingThePlanWaitsForTheServer() async {
+        let store = TestStore(initialState: CommuteDirectionFeature.State(plan: TransitFixtures.plan)) {
+            CommuteDirectionFeature()
+        } withDependencies: {
+            $0.commutePlanRepository.remove = { throw URLError(.timedOut) }
+        }
+        await store.send(.removeConfirmed) {
+            $0.isRemoving = true
+        }
+        await store.receive(.removeFinished(succeeded: false)) {
+            $0.isRemoving = false
+            $0.removeFailed = true
+        }
+        store.dependencies.commutePlanRepository.remove = {}
+        await store.send(.removeFailureDismissed) {
+            $0.removeFailed = false
+        }
+        await store.send(.removeConfirmed) {
+            $0.isRemoving = true
+        }
+        await store.receive(.removeFinished(succeeded: true)) {
+            $0.isRemoving = false
+        }
+        await store.receive(.delegate(.removed))
     }
 
     @Test
@@ -295,43 +397,72 @@ struct CommuteFeatureTests {
         #expect(lines.stop == stop)
         #expect(store.state.path.count == 3)
 
-        await store.send(.path(.element(id: store.state.path.ids.last!, action: .commuteLines(.delegate(.finished(.toCampus))))))
+        let saved = CommutePlan(toCampus: TransitFixtures.plan.toCampus)
+        await store.send(.path(.element(id: store.state.path.ids.last!, action: .commuteLines(.delegate(.finished(saved, .toCampus))))))
         #expect(store.state.path.count == 1)
         guard case let .commuteBoard(board) = store.state.path.last else {
             Issue.record("expected the board")
             return
         }
         #expect(board.direction == .toCampus)
+        #expect(board.plan == saved)
+        #expect(store.state.commute.plan == saved)
     }
 
     @Test
     func removingThePlanReturnsToHoje() async {
         var state = HomeFeature.State()
-        state.path.append(.commuteBoard(CommuteBoardFeature.State(direction: .toCampus)))
-        state.path.append(.commuteDirection(CommuteDirectionFeature.State()))
+        state.commute.plan = TransitFixtures.plan
+        state.path.append(.commuteBoard(CommuteBoardFeature.State(direction: .toCampus, plan: TransitFixtures.plan)))
+        state.path.append(.commuteDirection(CommuteDirectionFeature.State(plan: TransitFixtures.plan)))
         let store = TestStore(initialState: state) {
             HomeFeature()
         }
         store.exhaustivity = .off
         await store.send(.path(.element(id: store.state.path.ids.last!, action: .commuteDirection(.delegate(.removed)))))
         #expect(store.state.path.isEmpty)
+        #expect(store.state.commute.plan.isEmpty)
     }
 
     // MARK: Board
 
     @Test
     func aBoardForTheOtherDirectionIsDropped() async {
-        let store = TestStore(initialState: CommuteBoardFeature.State(direction: .toCampus)) {
+        let store = TestStore(initialState: CommuteBoardFeature.State(direction: .toCampus, plan: TransitFixtures.plan)) {
             CommuteBoardFeature()
         }
         await store.send(.boardLoaded(TransitFixtures.board(now: Self.now, direction: .fromCampus)))
     }
 
     @Test
+    func aPlanChangedElsewhereRestartsTheBoardOnTheNewStop() async {
+        let clock = TestClock()
+        let moved = CommutePlan(
+            toCampus: CommuteLeg(stopId: "2011", stopName: "Ponto da Oi", stopArea: "Centro", lineNumbers: ["087"], walkMinutes: 8),
+            fromCampus: TransitFixtures.plan.fromCampus
+        )
+        let requested = LockIsolated<[String]>([])
+        let store = TestStore(initialState: CommuteBoardFeature.State(direction: .toCampus, plan: TransitFixtures.plan)) {
+            CommuteBoardFeature()
+        } withDependencies: {
+            $0.continuousClock = clock
+            $0.date = .constant(Self.now)
+            $0.transitRepository.arrivals = { stopId, _, _ in
+                requested.withValue { $0.append(stopId) }
+                throw CancellationError()
+            }
+        }
+        await store.send(.planLoaded(moved)) {
+            $0.plan = moved
+        }
+        await store.finish()
+        #expect(requested.value == ["2011"])
+        await store.send(.planLoaded(moved))
+    }
+
+    @Test
     func followingABusCarriesTheSavedStop() async {
-        let state = CommuteBoardFeature.State(direction: .toCampus)
-        state.$plan.withLock { $0 = TransitFixtures.plan }
-        let store = TestStore(initialState: state) {
+        let store = TestStore(initialState: CommuteBoardFeature.State(direction: .toCampus, plan: TransitFixtures.plan)) {
             CommuteBoardFeature()
         }
         let arrival = TransitFixtures.board(now: Self.now).arrivals[0]
@@ -340,17 +471,76 @@ struct CommuteFeatureTests {
     }
 
     @Test
+    func editingStartsFromTheBoardsPlan() async {
+        let store = TestStore(initialState: CommuteBoardFeature.State(direction: .toCampus, plan: TransitFixtures.plan)) {
+            CommuteBoardFeature()
+        }
+        await store.send(.settingsTapped)
+        await store.receive(.delegate(.editPlan(TransitFixtures.plan)))
+    }
+
+    // MARK: Follow
+
+    @Test
+    func followingAHistoricalDepartureTakesTheBusThatLaterCarriesIt() async {
+        let clock = TestClock()
+        let historical = TransitFixtures.board(now: Self.now).arrivals[2]
+        let live = {
+            var arrival = TransitFixtures.board(now: Self.now).arrivals[0]
+            arrival.id = historical.id
+            return arrival
+        }()
+        let answers = LockIsolated([TransitFollow(generatedAt: Self.now, feed: TransitFeed(status: .ok), vehicles: [], arrival: live)])
+        let requests = LockIsolated<[String]>([])
+        let store = TestStore(initialState: CommuteFollowFeature.State(
+            arrival: historical,
+            direction: .toCampus,
+            stopId: TransitFixtures.myStopId
+        )) {
+            CommuteFollowFeature()
+        } withDependencies: {
+            $0.continuousClock = clock
+            $0.date = .constant(Self.now)
+            $0.transitRepository.network = { TransitFixtures.network }
+            $0.transitRepository.follow = { _, _, _, arrivalId, _ in
+                requests.withValue { $0.append(arrivalId) }
+                return answers.withValue { $0.count > 1 ? $0.removeFirst() : $0[0] }
+            }
+        }
+        store.exhaustivity = .off
+
+        let task = await store.send(.task)
+        await store.receive(\.followLoaded) {
+            $0.arrival = live
+            $0.vehicleId = live.vehicleId
+            $0.followReceivedAt = Self.now
+        }
+        #expect(requests.value == [historical.id])
+
+        answers.setValue([TransitFollow(generatedAt: Self.now, feed: TransitFeed(status: .ok), vehicles: [], arrival: nil)])
+        await clock.advance(by: CommuteFollowFeature.refreshInterval)
+        await store.receive(\.followLoaded) {
+            $0.arrival = nil
+        }
+        await task.cancel()
+    }
+
+    // MARK: Hero
+
+    @Test
     func theHeroPollsTheLegForTheTimeOfDay() async {
         let clock = TestClock()
         let state = CommuteHeroFeature.State()
         state.$isEnabled.withLock { $0 = true }
-        state.$plan.withLock { $0 = TransitFixtures.plan }
         let board = TransitFixtures.board(now: Self.now)
+        let refreshed = LockIsolated(false)
         let store = TestStore(initialState: state) {
             CommuteHeroFeature()
         } withDependencies: {
             $0.date = .constant(Self.now)
             $0.continuousClock = clock
+            $0.commutePlanRepository.observe = { AsyncStream { $0.yield(TransitFixtures.plan) } }
+            $0.commutePlanRepository.refresh = { refreshed.setValue(true) }
             $0.transitRepository.arrivals = { stopId, direction, lines in
                 #expect(stopId == TransitFixtures.myStopId)
                 #expect(direction == .toCampus)
@@ -359,13 +549,21 @@ struct CommuteFeatureTests {
             }
         }
 
-        let task = await store.send(.task(CommuteDaySchedule(firstStartMinute: 24 * 60 - 1)))
+        let schedule = CommuteDaySchedule(firstStartMinute: 24 * 60 - 1)
+        let task = await store.send(.task(schedule)) {
+            $0.schedule = schedule
+        }
+        await store.receive(.planLoaded(TransitFixtures.plan)) {
+            $0.plan = TransitFixtures.plan
+        }
         await store.receive(.directionResolved(.toCampus)) {
             $0.direction = .toCampus
         }
         await store.receive(.boardLoaded(board)) {
             $0.board = board
+            $0.boardReceivedAt = Self.now
         }
+        #expect(refreshed.value)
         await clock.advance(by: CommuteHeroFeature.refreshInterval)
         await store.receive(.directionResolved(.toCampus))
         await store.receive(.boardLoaded(board))

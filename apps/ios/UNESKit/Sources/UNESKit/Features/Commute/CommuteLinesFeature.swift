@@ -8,7 +8,6 @@ import SwiftUI
 struct CommuteLinesFeature {
     @ObservableState
     struct State: Equatable {
-        @Shared(.commutePlan) var plan
         var draft: CommuteSetupDraft
         var direction: TransitDirection
         var stop: TransitStop?
@@ -16,6 +15,8 @@ struct CommuteLinesFeature {
         var loadFailed = false
         var selected: [String] = []
         var walkMinutes: Int
+        var isSaving = false
+        var saveFailed = false
 
         init(draft: CommuteSetupDraft, direction: TransitDirection, stop: TransitStop? = nil) {
             self.draft = draft
@@ -39,14 +40,18 @@ struct CommuteLinesFeature {
         case lineToggled(String)
         case walkChanged(Int)
         case saveTapped
+        case saveFinished(CommutePlan?)
+        case saveFailureDismissed
         case delegate(Delegate)
 
         enum Delegate: Equatable {
             case next(CommuteSetupDraft)
-            case finished(TransitDirection)
+            /// The plan as the server saved it, and the direction to open on.
+            case finished(CommutePlan, TransitDirection)
         }
     }
 
+    @Dependency(\.commutePlanRepository) var commutePlanRepository
     @Dependency(\.transitRepository) var transitRepository
     @Dependency(\.analytics) var analytics
 
@@ -97,7 +102,7 @@ struct CommuteLinesFeature {
                 return .none
 
             case .saveTapped:
-                guard let stop = state.stop, !state.selected.isEmpty else { return .none }
+                guard let stop = state.stop, !state.selected.isEmpty, !state.isSaving else { return .none }
                 state.draft.plan.setLeg(
                     CommuteLeg(
                         stopId: stop.id,
@@ -109,14 +114,27 @@ struct CommuteLinesFeature {
                     for: state.direction
                 )
                 guard state.isLastStep else { return .send(.delegate(.next(state.draft))) }
-                let plan = state.draft.plan
-                state.$plan.withLock { $0 = plan }
+                state.isSaving = true
+                return .run { [plan = state.draft.plan] send in
+                    await send(.saveFinished(try? await commutePlanRepository.save(plan)))
+                }
+
+            case let .saveFinished(saved):
+                state.isSaving = false
+                guard let saved else {
+                    state.saveFailed = true
+                    return .none
+                }
                 analytics.selectContent(
                     contentType: ContentTypes.setting,
                     itemId: "commute_saved",
-                    properties: ["directions": plan.directions.map(\.rawValue).joined(separator: ",")]
+                    properties: ["directions": saved.directions.map(\.rawValue).joined(separator: ",")]
                 )
-                return .send(.delegate(.finished(state.draft.directions.first ?? state.direction)))
+                return .send(.delegate(.finished(saved, state.draft.directions.first ?? state.direction)))
+
+            case .saveFailureDismissed:
+                state.saveFailed = false
+                return .none
 
             case .delegate:
                 return .none
@@ -158,12 +176,27 @@ struct CommuteLinesView: View {
             Button {
                 store.send(.saveTapped)
             } label: {
-                Text(store.isLastStep ? .commuteSetupSave : .commonContinue)
+                if store.isSaving {
+                    ProgressView().tint(UNESColor.surface)
+                } else {
+                    Text(store.isLastStep ? .commuteSetupSave : .commonContinue)
+                }
             }
             .buttonStyle(.unesDark)
-            .disabled(store.selected.isEmpty || store.stop == nil)
+            .disabled(store.selected.isEmpty || store.stop == nil || store.isSaving)
         }
         .navigationTitle(Text(verbatim: store.stop?.name ?? ""))
+        .alert(
+            Text(.commuteSetupSaveFailed),
+            isPresented: Binding(
+                get: { store.saveFailed },
+                set: { if !$0 { store.send(.saveFailureDismissed) } }
+            )
+        ) {
+            Button(role: .cancel) {} label: { Text(.commonOk) }
+        } message: {
+            Text(.commuteSetupTryAgainBody)
+        }
         .task { await store.send(.task).finish() }
     }
 

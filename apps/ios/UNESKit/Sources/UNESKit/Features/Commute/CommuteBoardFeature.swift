@@ -7,24 +7,33 @@ import Foundation
 struct CommuteBoardFeature {
     @ObservableState
     struct State: Equatable {
-        @Shared(.commutePlan) var plan
+        var plan: CommutePlan
         var direction: TransitDirection
         var board: TransitStopBoard?
+        /// When the board arrived on this device, so a dead connection can't
+        /// keep a countdown running.
+        var boardReceivedAt: Date?
         var network: TransitNetwork?
         var loadFailed = false
         /// The arrival "Como calculamos" explains.
         var explained: TransitArrival?
         var isExplainerPresented = false
 
-        init(direction: TransitDirection) {
+        init(direction: TransitDirection, plan: CommutePlan) {
             self.direction = direction
+            self.plan = plan
         }
 
         var leg: CommuteLeg? { plan.leg(for: direction) }
+
+        func isOutdated(at now: Date) -> Bool {
+            boardReceivedAt.map { now.timeIntervalSince($0) > CommuteFormat.outdatedAfter } ?? false
+        }
     }
 
     enum Action: Equatable {
         case task
+        case planLoaded(CommutePlan)
         case networkLoaded(TransitNetwork)
         case boardLoaded(TransitStopBoard)
         case boardFailed
@@ -38,24 +47,34 @@ struct CommuteBoardFeature {
 
         enum Delegate: Equatable {
             case follow(TransitArrival, TransitDirection, stopId: String)
-            case editPlan
+            case editPlan(CommutePlan)
         }
     }
 
+    @Dependency(\.commutePlanRepository) var commutePlanRepository
     @Dependency(\.transitRepository) var transitRepository
+    @Dependency(\.date.now) var now
     @Dependency(\.continuousClock) var clock
     @Dependency(\.analytics) var analytics
 
     static let refreshInterval: Duration = .seconds(20)
 
-    private enum CancelID { case poll }
+    private enum CancelID { case plan, poll }
 
     var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
             case .task:
-                guard let leg = state.leg else { return .none }
-                return .merge(loadNetwork(), poll(leg: leg, direction: state.direction))
+                return .merge(observePlan(), refreshPlan(), loadNetwork(), poll(state))
+
+            case let .planLoaded(plan):
+                guard plan != state.plan else { return .none }
+                let previous = state.leg
+                state.plan = plan
+                guard state.leg != previous else { return .none }
+                state.board = nil
+                state.boardReceivedAt = nil
+                return poll(state)
 
             case let .networkLoaded(network):
                 state.network = network
@@ -65,6 +84,7 @@ struct CommuteBoardFeature {
                 guard board.direction == state.direction else { return .none }
                 state.loadFailed = false
                 state.board = board
+                state.boardReceivedAt = now
                 return .none
 
             case .boardFailed:
@@ -75,9 +95,9 @@ struct CommuteBoardFeature {
                 guard direction != state.direction else { return .none }
                 state.direction = direction
                 state.board = nil
+                state.boardReceivedAt = nil
                 state.loadFailed = false
-                guard let leg = state.leg else { return .cancel(id: CancelID.poll) }
-                return poll(leg: leg, direction: direction)
+                return poll(state)
 
             case let .arrivalTapped(arrival):
                 guard let leg = state.leg else { return .none }
@@ -94,12 +114,26 @@ struct CommuteBoardFeature {
                 return .none
 
             case .settingsTapped, .startTapped:
-                return .send(.delegate(.editPlan))
+                return .send(.delegate(.editPlan(state.plan)))
 
             case .delegate:
                 return .none
             }
         }
+    }
+
+    private func observePlan() -> Effect<Action> {
+        .run { send in
+            for await plan in commutePlanRepository.observe() {
+                await send(.planLoaded(plan))
+            }
+        }
+        .cancellable(id: CancelID.plan, cancelInFlight: true)
+    }
+
+    /// The answer lands through the observation; a failure keeps the mirrored plan.
+    private func refreshPlan() -> Effect<Action> {
+        .run { _ in try? await commutePlanRepository.refresh() }
     }
 
     private func loadNetwork() -> Effect<Action> {
@@ -109,8 +143,9 @@ struct CommuteBoardFeature {
         }
     }
 
-    private func poll(leg: CommuteLeg, direction: TransitDirection) -> Effect<Action> {
-        .run { send in
+    private func poll(_ state: State) -> Effect<Action> {
+        guard let leg = state.leg else { return .cancel(id: CancelID.poll) }
+        return .run { [direction = state.direction] send in
             while true {
                 do {
                     let board = try await transitRepository.arrivals(leg.stopId, direction, leg.lineNumbers)

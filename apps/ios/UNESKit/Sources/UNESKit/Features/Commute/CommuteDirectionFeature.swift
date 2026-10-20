@@ -7,12 +7,15 @@ import SwiftUI
 struct CommuteDirectionFeature {
     @ObservableState
     struct State: Equatable {
-        @Shared(.commutePlan) var plan
+        /// The saved plan being edited; empty on a first setup.
+        var plan: CommutePlan
         var selected: Set<TransitDirection>
         var isRemoveConfirmationPresented = false
+        var isRemoving = false
+        var removeFailed = false
 
-        init() {
-            @Shared(.commutePlan) var plan
+        init(plan: CommutePlan) {
+            self.plan = plan
             let saved = Set(plan.directions)
             selected = saved.isEmpty ? [.toCampus] : saved
         }
@@ -26,6 +29,8 @@ struct CommuteDirectionFeature {
         case removeTapped
         case removeConfirmationChanged(Bool)
         case removeConfirmed
+        case removeFinished(succeeded: Bool)
+        case removeFailureDismissed
         case delegate(Delegate)
 
         enum Delegate: Equatable {
@@ -34,6 +39,7 @@ struct CommuteDirectionFeature {
         }
     }
 
+    @Dependency(\.commutePlanRepository) var commutePlanRepository
     @Dependency(\.analytics) var analytics
 
     var body: some ReducerOf<Self> {
@@ -61,10 +67,29 @@ struct CommuteDirectionFeature {
                 return .none
 
             case .removeConfirmed:
-                analytics.selectContent(contentType: ContentTypes.setting, itemId: "commute_removed")
                 state.isRemoveConfirmationPresented = false
-                state.$plan.withLock { $0 = CommutePlan() }
+                state.isRemoving = true
+                return .run { send in
+                    do {
+                        try await commutePlanRepository.remove()
+                        await send(.removeFinished(succeeded: true))
+                    } catch {
+                        await send(.removeFinished(succeeded: false))
+                    }
+                }
+
+            case let .removeFinished(succeeded):
+                state.isRemoving = false
+                guard succeeded else {
+                    state.removeFailed = true
+                    return .none
+                }
+                analytics.selectContent(contentType: ContentTypes.setting, itemId: "commute_removed")
                 return .send(.delegate(.removed))
+
+            case .removeFailureDismissed:
+                state.removeFailed = false
+                return .none
 
             case .delegate:
                 return .none
@@ -95,11 +120,18 @@ struct CommuteDirectionView: View {
                 Button(role: .destructive) {
                     store.send(.removeTapped)
                 } label: {
-                    Text(.commuteSetupRemove)
-                        .font(.system(size: 15, weight: .semibold))
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 12)
+                    Group {
+                        if store.isRemoving {
+                            ProgressView()
+                        } else {
+                            Text(.commuteSetupRemove)
+                        }
+                    }
+                    .font(.system(size: 15, weight: .semibold))
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 12)
                 }
+                .disabled(store.isRemoving)
                 .padding(.top, 22)
             }
         } footer: {
@@ -123,6 +155,17 @@ struct CommuteDirectionView: View {
             }
         } message: {
             Text(.commuteSetupRemoveConfirmBody)
+        }
+        .alert(
+            Text(.commuteSetupRemoveFailed),
+            isPresented: Binding(
+                get: { store.removeFailed },
+                set: { if !$0 { store.send(.removeFailureDismissed) } }
+            )
+        ) {
+            Button(role: .cancel) {} label: { Text(.commonOk) }
+        } message: {
+            Text(.commuteSetupTryAgainBody)
         }
     }
 
@@ -174,7 +217,7 @@ struct CommuteDirectionView: View {
 
 #Preview {
     NavigationStack {
-        CommuteDirectionView(store: Store(initialState: CommuteDirectionFeature.State()) {
+        CommuteDirectionView(store: Store(initialState: CommuteDirectionFeature.State(plan: TransitFixtures.plan)) {
             CommuteDirectionFeature()
         })
     }

@@ -31,24 +31,34 @@ struct CommuteDaySchedule: Equatable, Hashable, Sendable {
 struct CommuteHeroFeature {
     @ObservableState
     struct State: Equatable {
-        @Shared(.commutePlan) var plan
         @Shared(.appStorage(FeatureFlags.commuteEnabledKey)) var isEnabled = false
+        var plan = CommutePlan()
+        var schedule = CommuteDaySchedule()
         var direction: TransitDirection?
         var board: TransitStopBoard?
+        /// When the board arrived on this device, so a dead connection can't
+        /// keep a countdown running.
+        var boardReceivedAt: Date?
         var loadFailed = false
 
         var leg: CommuteLeg? {
             direction.flatMap { plan.leg(for: $0) }
         }
 
+        func isOutdated(at now: Date) -> Bool {
+            boardReceivedAt.map { now.timeIntervalSince($0) > CommuteFormat.outdatedAfter } ?? false
+        }
+
         /// The next arrival worth a glance, skipping buses already gone.
         func headline(now: Date) -> TransitArrival? {
-            board?.arrivals.first { $0.latest > now || $0.phase == .atStop }
+            let outdated = isOutdated(at: now)
+            return board?.arrivals.first { $0.latest > now || ($0.phase == .atStop && !outdated) }
         }
     }
 
     enum Action: Equatable {
         case task(CommuteDaySchedule)
+        case planLoaded(CommutePlan)
         case directionResolved(TransitDirection?)
         case boardLoaded(TransitStopBoard)
         case boardFailed
@@ -62,25 +72,37 @@ struct CommuteHeroFeature {
         }
     }
 
+    @Dependency(\.commutePlanRepository) var commutePlanRepository
     @Dependency(\.transitRepository) var transitRepository
     @Dependency(\.date) var date
     @Dependency(\.continuousClock) var clock
 
     static let refreshInterval: Duration = .seconds(30)
 
-    private enum CancelID { case poll }
+    private enum CancelID { case plan, poll }
 
     var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
             case let .task(schedule):
-                guard state.isEnabled, !state.plan.isEmpty else { return .none }
-                return poll(schedule: schedule)
+                state.schedule = schedule
+                guard state.isEnabled else { return .none }
+                return .merge(observePlan(), refreshPlan())
+
+            case let .planLoaded(plan):
+                state.plan = plan
+                guard !plan.isEmpty else {
+                    state.direction = nil
+                    state.board = nil
+                    return .cancel(id: CancelID.poll)
+                }
+                return poll(plan: plan, schedule: state.schedule)
 
             case let .directionResolved(direction):
                 if direction != state.direction {
                     state.direction = direction
                     state.board = nil
+                    state.boardReceivedAt = nil
                     state.loadFailed = false
                 }
                 return .none
@@ -89,6 +111,7 @@ struct CommuteHeroFeature {
                 guard board.direction == state.direction else { return .none }
                 state.loadFailed = false
                 state.board = board
+                state.boardReceivedAt = date.now
                 return .none
 
             case .boardFailed:
@@ -108,11 +131,25 @@ struct CommuteHeroFeature {
         }
     }
 
+    private func observePlan() -> Effect<Action> {
+        .run { send in
+            for await plan in commutePlanRepository.observe() {
+                await send(.planLoaded(plan))
+            }
+        }
+        .cancellable(id: CancelID.plan, cancelInFlight: true)
+    }
+
+    /// Another device may have changed the plan; the answer lands through the
+    /// observation, and a failure leaves the mirrored plan in place.
+    private func refreshPlan() -> Effect<Action> {
+        .run { _ in try? await commutePlanRepository.refresh() }
+    }
+
     /// One loop for as long as Home is visible; each tick re-resolves the leg,
     /// so the line flips from going in to going home on its own.
-    private func poll(schedule: CommuteDaySchedule) -> Effect<Action> {
+    private func poll(plan: CommutePlan, schedule: CommuteDaySchedule) -> Effect<Action> {
         .run { send in
-            @Shared(.commutePlan) var plan
             while true {
                 let direction = schedule.direction(for: plan, at: date.now)
                 await send(.directionResolved(direction))

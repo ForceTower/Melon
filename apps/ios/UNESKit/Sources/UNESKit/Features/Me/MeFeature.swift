@@ -369,8 +369,6 @@ struct MeFeature {
                     // Before the session clears — the DELETEs need the bearer.
                     await push.unregister()
                     try? await meRepository.wipeLocalData()
-                    @Shared(.commutePlan) var commutePlan
-                    $commutePlan.withLock { $0 = CommutePlan() }
                     do {
                         try sessionStore.clear()
                         log.info("session logout ok")

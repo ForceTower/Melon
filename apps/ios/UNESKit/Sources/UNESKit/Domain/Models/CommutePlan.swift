@@ -1,4 +1,3 @@
-import ComposableArchitecture
 import Foundation
 
 /// One saved direction of "Meu trajeto": where the student boards and which
@@ -12,6 +11,8 @@ struct CommuteLeg: Codable, Hashable, Sendable {
     var walkMinutes: Int
 }
 
+/// The student's saved commute. The server owns it (`api/transit/plan`); the
+/// device mirrors whatever the server last answered.
 struct CommutePlan: Codable, Hashable, Sendable {
     var toCampus: CommuteLeg?
     var fromCampus: CommuteLeg?
@@ -34,12 +35,5 @@ struct CommutePlan: Codable, Hashable, Sendable {
         case .toCampus: toCampus = leg
         case .fromCampus: fromCampus = leg
         }
-    }
-}
-
-extension SharedKey where Self == FileStorageKey<CommutePlan>.Default {
-    /// Device-local and wiped on logout: a boarding stop says where someone lives.
-    static var commutePlan: Self {
-        Self[.fileStorage(.applicationSupportDirectory.appending(component: "commute-plan.json")), default: CommutePlan()]
     }
 }

@@ -12,10 +12,13 @@ struct TransitRepository: Sendable {
         _ direction: TransitDirection,
         _ lineNumbers: [String]
     ) async throws -> TransitStopBoard
+    /// Follows one departure by its arrival id, which survives it going from
+    /// history to a bus on its way; `vehicleId` is the fallback.
     var follow: @Sendable (
         _ lineNumber: String,
         _ direction: TransitDirection,
         _ stopId: String,
+        _ arrivalId: String,
         _ vehicleId: String?
     ) async throws -> TransitFollow
 }
@@ -30,7 +33,7 @@ extension TransitRepository: TestDependencyKey {
             arrivals: { _, direction, _ in
                 TransitFixtures.board(now: Date(), direction: direction, mode: mode)
             },
-            follow: { _, _, _, _ in TransitFixtures.follow(now: Date()) }
+            follow: { _, _, _, _, _ in TransitFixtures.follow(now: Date()) }
         )
     }
 }

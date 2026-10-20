@@ -199,5 +199,22 @@
       }
     ],
     "arrival": null
+  },
+  "plan": {
+    "toCampus": {
+      "stopId": "9001",
+      "stopName": "Rua de Exemplo, 100",
+      "stopArea": "Bairro Exemplo",
+      "lineNumbers": ["087"],
+      "walkMinutes": 5
+    },
+    "fromCampus": {
+      "stopId": "2452",
+      "stopName": "Av. Transnordestina",
+      "stopArea": "Novo Horizonte (Saída)",
+      "lineNumbers": ["087"],
+      "walkMinutes": 3
+    },
+    "updatedAt": "2026-10-02T09:40:00.000Z"
   }
 }

@@ -103,7 +103,10 @@ struct CommuteBoardView: View {
     @ViewBuilder
     private func content(leg: CommuteLeg, now: Date) -> some View {
         if let board = store.board {
-            if board.feed.status != .ok {
+            if store.loadFailed || store.state.isOutdated(at: now), let receivedAt = store.boardReceivedAt {
+                offlineNotice(since: receivedAt)
+                    .padding(.bottom, 14)
+            } else if board.feed.status != .ok {
                 feedNotice(board.feed)
                     .padding(.bottom, 14)
             }
@@ -135,7 +138,10 @@ struct CommuteBoardView: View {
     }
 
     private func arrivalsSection(_ board: TransitStopBoard, now: Date) -> some View {
-        let degraded = board.feed.status != .ok
+        let frozen = store.state.isOutdated(at: now)
+        let degraded = board.feed.status != .ok || frozen
+        // Without fresh data, a bus whose window already closed can't be vouched for.
+        let arrivals = frozen ? board.arrivals.filter { $0.latest >= now } : board.arrivals
         return VStack(alignment: .leading, spacing: 0) {
             CommuteSectionHeader(
                 title: .localized(store.direction == .toCampus ? .commuteNextTitle : .commuteNextDeparturesTitle),
@@ -143,21 +149,21 @@ struct CommuteBoardView: View {
                 action: .localized(.commuteHowTitle),
                 onAction: { store.send(.explainTapped(nil)) }
             )
-            if board.arrivals.isEmpty {
+            if arrivals.isEmpty {
                 Text(.commuteNothingSoon)
                     .font(.system(size: 13.5))
                     .foregroundStyle(UNESColor.ink4)
                     .padding(.horizontal, 4)
             } else {
                 VStack(spacing: 0) {
-                    ForEach(board.arrivals) { arrival in
+                    ForEach(arrivals) { arrival in
                         Button {
                             store.send(.arrivalTapped(arrival))
                         } label: {
-                            CommuteArrivalRow(arrival: arrival, direction: store.direction, now: now)
+                            CommuteArrivalRow(arrival: arrival, direction: store.direction, now: now, frozen: frozen)
                         }
                         .buttonStyle(CommuteRowButtonStyle())
-                        if arrival.id != board.arrivals.last?.id {
+                        if arrival.id != arrivals.last?.id {
                             Divider().overlay(UNESColor.line)
                         }
                     }
@@ -170,8 +176,9 @@ struct CommuteBoardView: View {
     }
 
     private func sectionHint(_ board: TransitStopBoard, degraded: Bool) -> String {
-        if degraded, let last = board.feed.lastUpdateAt {
-            return .localized(.commuteLastInfoAt(CommuteFormat.clock(last)))
+        let lastInfo = board.feed.status != .ok ? board.feed.lastUpdateAt : store.boardReceivedAt
+        if degraded, let lastInfo {
+            return .localized(.commuteLastInfoAt(CommuteFormat.clock(lastInfo)))
         }
         return .localized(store.direction == .toCampus ? .commuteNextHint : .commuteNextDeparturesHint)
     }
@@ -193,6 +200,12 @@ struct CommuteBoardView: View {
             }
         }
         .padding(.bottom, 18)
+    }
+
+    private func offlineNotice(since receivedAt: Date) -> some View {
+        UNESBanner(tone: .neutral, title: .localized(.commuteOfflineTitle), symbol: "wifi.slash") {
+            Text(.commuteOfflineBody(CommuteFormat.clock(receivedAt)))
+        }
     }
 
     private func feedNotice(_ feed: TransitFeed) -> some View {
@@ -235,6 +248,8 @@ struct CommuteArrivalRow: View {
     var arrival: TransitArrival
     var direction: TransitDirection
     var now: Date
+    /// The board could not be refreshed: no countdown, no live claims.
+    var frozen = false
 
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
@@ -270,12 +285,12 @@ struct CommuteArrivalRow: View {
         } else {
             HStack(alignment: .firstTextBaseline, spacing: 8) {
                 TransitEstimateText(
-                    estimate: CommuteFormat.estimate(for: arrival, now: now),
-                    dim: arrival.state == .historical || arrival.signalLost,
-                    stale: arrival.signalLost,
+                    estimate: CommuteFormat.estimate(for: arrival, now: now, frozen: frozen),
+                    dim: arrival.state == .historical || arrival.signalLost || frozen,
+                    stale: arrival.signalLost || frozen,
                     size: arrival.state == .live ? 30 : 26
                 )
-                if arrival.state == .live, !arrival.signalLost, let stops = arrival.stopsAway, stops > 0 {
+                if arrival.state == .live, !arrival.signalLost, !frozen, let stops = arrival.stopsAway, stops > 0 {
                     Text(.commuteStopsAway(stops))
                         .font(.system(size: 12.5, weight: .medium))
                         .monospacedDigit()
@@ -315,13 +330,13 @@ struct CommuteArrivalRow: View {
                 .foregroundStyle(UNESColor.ink3)
             TransitEstimateText(
                 estimate: CommuteFormat.Estimate(text: CommuteFormat.clock(arrival.expected), isApproximate: false),
-                dim: arrival.state == .historical,
+                dim: arrival.state == .historical || frozen,
                 size: 24
             )
         }
         FlowLayout(spacing: 6, lineSpacing: 6) {
             departureChip
-            if arrival.state != .historical, let fix = arrival.lastFixAt {
+            if !frozen, arrival.state != .historical, let fix = arrival.lastFixAt {
                 TransitFreshness(fixAt: fix, now: now, signalLost: arrival.signalLost, short: true)
             }
         }
@@ -330,6 +345,15 @@ struct CommuteArrivalRow: View {
 
     @ViewBuilder
     private var departureChip: some View {
+        if frozen {
+            TransitChip(kind: .stale, text: .localized(.commuteStateOffline), small: true)
+        } else {
+            liveDepartureChip
+        }
+    }
+
+    @ViewBuilder
+    private var liveDepartureChip: some View {
         switch arrival.phase {
         case .atStop, .atOrigin:
             TransitChip(kind: .live, text: .localized(.commuteBusAtStop), small: true)
@@ -350,11 +374,15 @@ struct CommuteArrivalRow: View {
 
     private var chips: some View {
         FlowLayout(spacing: 6, lineSpacing: 6) {
-            TransitChip(kind: arrival.missing ? .historical : TransitChip.Kind(arrival), small: true)
+            if frozen {
+                TransitChip(kind: .stale, text: .localized(.commuteStateOffline), small: true)
+            } else {
+                TransitChip(kind: arrival.missing ? .historical : TransitChip.Kind(arrival), small: true)
+            }
             if arrival.isFlaky {
                 TransitChip(kind: .flaky, small: true)
             }
-            if arrival.state != .historical, let fix = arrival.lastFixAt {
+            if !frozen, arrival.state != .historical, let fix = arrival.lastFixAt {
                 TransitFreshness(fixAt: fix, now: now, signalLost: arrival.signalLost)
             }
         }
@@ -557,21 +585,14 @@ struct CommuteIntro: View {
     }
 }
 
-extension CommuteBoardFeature.State {
-    static func preview(_ direction: TransitDirection, plan: CommutePlan = TransitFixtures.plan) -> Self {
-        let state = Self(direction: direction)
-        state.$plan.withLock { $0 = plan }
-        return state
-    }
-}
-
 @MainActor
 private func boardPreview(_ direction: TransitDirection, mode: TransitFixtures.BoardMode, plan: CommutePlan = TransitFixtures.plan) -> some View {
     NavigationStack {
-        CommuteBoardView(store: Store(initialState: .preview(direction, plan: plan)) {
+        CommuteBoardView(store: Store(initialState: CommuteBoardFeature.State(direction: direction, plan: plan)) {
             CommuteBoardFeature()
         } withDependencies: {
             $0.transitRepository = .mock(mode: mode)
+            $0.commutePlanRepository = .preview(plan)
         })
     }
 }

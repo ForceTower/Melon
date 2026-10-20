@@ -292,10 +292,10 @@ struct HomeFeature {
                 switch delegate {
                 case let .openBoard(direction):
                     analytics.selectContent(contentType: ContentTypes.tile, itemId: "commute")
-                    state.path.open(.commuteBoard(CommuteBoardFeature.State(direction: direction)))
+                    state.path.open(.commuteBoard(CommuteBoardFeature.State(direction: direction, plan: state.commute.plan)))
                 case .openSetup:
                     analytics.selectContent(contentType: ContentTypes.cta, itemId: "commute_setup")
-                    state.path.open(.commuteDirection(CommuteDirectionFeature.State()))
+                    state.path.open(.commuteDirection(CommuteDirectionFeature.State(plan: state.commute.plan)))
                 }
                 return .none
 
@@ -373,17 +373,19 @@ struct HomeFeature {
                 state.path.append(.commuteLines(CommuteLinesFeature.State(draft: draft, direction: .fromCampus)))
             }
         case .commuteDirection(.delegate(.removed)):
+            state.commute.plan = CommutePlan()
             state.path = StackState()
         case let .commuteStopPicker(.delegate(.next(draft, stop))):
             state.path.append(.commuteLines(CommuteLinesFeature.State(draft: draft, direction: .toCampus, stop: stop)))
         case let .commuteLines(.delegate(.next(draft))):
             state.path.append(.commuteLines(CommuteLinesFeature.State(draft: draft, direction: .fromCampus)))
-        case let .commuteLines(.delegate(.finished(direction))):
-            state.path.open(.commuteBoard(CommuteBoardFeature.State(direction: direction)))
+        case let .commuteLines(.delegate(.finished(plan, direction))):
+            state.commute.plan = plan
+            state.path.open(.commuteBoard(CommuteBoardFeature.State(direction: direction, plan: plan)))
         case let .commuteBoard(.delegate(.follow(arrival, direction, stopId))):
             state.path.append(.commuteFollow(CommuteFollowFeature.State(arrival: arrival, direction: direction, stopId: stopId)))
-        case .commuteBoard(.delegate(.editPlan)):
-            state.path.append(.commuteDirection(CommuteDirectionFeature.State()))
+        case let .commuteBoard(.delegate(.editPlan(plan))):
+            state.path.append(.commuteDirection(CommuteDirectionFeature.State(plan: plan)))
         default:
             break
         }
