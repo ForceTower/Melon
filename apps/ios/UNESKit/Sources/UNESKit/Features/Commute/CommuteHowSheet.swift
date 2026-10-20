@@ -110,17 +110,19 @@ struct CommuteHowSheet: View {
             start.addingTimeInterval(binLength) > arrival.earliest && start < arrival.latest
         }
         return VStack(spacing: 8) {
+            // Verbatim labels: the axes are hidden and the chart reads as one
+            // accessibility label, so these never reach the String Catalog.
             Chart {
                 RectangleMark(
-                    xStart: .value("start", arrival.earliest),
-                    xEnd: .value("end", arrival.latest)
+                    xStart: .value(Text(verbatim: "start"), arrival.earliest),
+                    xEnd: .value(Text(verbatim: "end"), arrival.latest)
                 )
                 .foregroundStyle(color.opacity(0.12))
                 .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
                 ForEach(bins, id: \.start) { bin in
                     BarMark(
-                        x: .value("minute", bin.start, unit: .minute),
-                        y: .value("trips", bin.count)
+                        x: .value(Text(verbatim: "minute"), bin.start, unit: .minute),
+                        y: .value(Text(verbatim: "trips"), bin.count)
                     )
                     .foregroundStyle(inBand(bin.start) ? color : UNESColor.surface3)
                     .clipShape(RoundedRectangle(cornerRadius: 3, style: .continuous))
