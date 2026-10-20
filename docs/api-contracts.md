@@ -36,6 +36,13 @@ discipline failed for absences with no mean (`REPROVADO POR FALTA`), which the
 CR counts as 0 over its hours. KMP and Swift decode this example; the provider
 does not yet verify against it.
 
+`contracts/v1/transit.json` covers "Meu trajeto" (response **data** for
+`GET /api/transit/network`, `GET /api/transit/stops/{id}/arrivals` and
+`GET /api/transit/follow`, all signed-in only): a route pair with travel-ordered
+stops, one arrival in each state (`live`, `waiting`, `historical`) and a follow
+payload. Instants are ISO strings; clients format bands and never show seconds.
+Swift decodes it in `TransitContractTests`; Android consumes it in its follow-up.
+
 Keep nullable fields distinct from missing required fields. Opaque IDs remain
 strings, platform numeric IDs retain 64-bit capacity, and schedule weekdays stay
 Sunday=0 through Saturday=6. Date-only semester boundaries differ from timestamped

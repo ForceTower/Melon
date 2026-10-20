@@ -181,6 +181,23 @@ enum UNESColor {
     /// Base of the scrim layered over the rose mesh.
     static let roseScrim = Color(hex: 0x100A1A)
 
+    // MARK: Meu trajeto
+
+    static let transit003 = Color(light: plum, dark: Color(hex: 0x7A5BC0))
+    static let transit087 = Color(light: magenta, dark: Color(hex: 0xD8609E))
+    static let transit088 = Color(light: coral, dark: Color(hex: 0xF07C6E))
+    /// "Aguardando saída" — the design's readable magenta.
+    static let transitWaiting = Color(light: magenta, dark: Color(hex: 0xD8609E))
+
+    static func transitLine(_ number: String) -> Color {
+        switch number {
+        case "003": transit003
+        case "087": transit087
+        case "088": transit088
+        default: ink3
+        }
+    }
+
     // MARK: Always-dark screens (splash / welcome / sync)
 
     /// Backdrop behind the mesh on always-dark screens, in both themes.

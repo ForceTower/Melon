@@ -1,50 +1,79 @@
 import SwiftUI
 
 /// Live Activity-style hero: the next class over a drifting cool mesh, with a
-/// ticking countdown. The whole card is the tap target.
-struct HomeHeroCard: View {
+/// ticking countdown. Without an accessory the whole card is the tap target;
+/// with one (the commute line) each part is its own.
+struct HomeHeroCard<Accessory: View>: View {
     let hero: HomeHeroClass
+    var showsAccessory = false
     var onDetails: () -> Void
+    @ViewBuilder var accessory: Accessory
+
+    private var padding: EdgeInsets { EdgeInsets(top: 18, leading: 20, bottom: 20, trailing: 20) }
+    private var shape: RoundedRectangle { RoundedRectangle(cornerRadius: 30, style: .continuous) }
 
     var body: some View {
-        Button(action: onDetails) {
-            ZStack {
-                UNESColor.darkBg
-                MeshView(variant: .cool)
-                LinearGradient.css(
-                    stops: [
-                        .init(color: UNESColor.scrim.opacity(0.15), location: 0),
-                        .init(color: UNESColor.scrim.opacity(0.62), location: 1),
-                    ],
-                    angle: 155
-                )
-
-                TimelineView(.periodic(from: .now, by: 1)) { context in
-                    VStack(spacing: 0) {
-                        eyebrowRow(now: context.date)
-                        HStack(alignment: .bottom, spacing: 16) {
-                            titleColumn
-                            if !inProgress {
-                                countdown(now: context.date)
-                            }
-                        }
-                        .padding(.top, 16)
-                        if let endsAt = hero.endsAt, inProgress {
-                            progressSection(endsAt: endsAt, now: context.date)
-                                .padding(.top, 16)
-                        }
-                        footer
-                            .padding(.top, 18)
-                    }
-                    .padding(EdgeInsets(top: 18, leading: 20, bottom: 20, trailing: 20))
+        if showsAccessory {
+            VStack(spacing: 0) {
+                Button(action: onDetails) {
+                    classContent.contentShape(Rectangle())
                 }
+                .buttonStyle(.plain)
+                .disabled(hero.disciplineId == nil)
+                accessory
             }
+            .padding(padding)
+            .background { backdrop }
             .environment(\.colorScheme, .dark)
-            .clipShape(RoundedRectangle(cornerRadius: 30, style: .continuous))
+            .clipShape(shape)
+            .shadow(color: Color(hex: 0x141020, opacity: 0.28), radius: 20, y: 18)
+        } else {
+            Button(action: onDetails) {
+                classContent
+                    .padding(padding)
+                    .background { backdrop }
+                    .environment(\.colorScheme, .dark)
+                    .clipShape(shape)
+            }
+            .buttonStyle(.pressableCard)
+            .disabled(hero.disciplineId == nil)
+            .shadow(color: Color(hex: 0x141020, opacity: 0.28), radius: 20, y: 18)
         }
-        .buttonStyle(.pressableCard)
-        .disabled(hero.disciplineId == nil)
-        .shadow(color: Color(hex: 0x141020, opacity: 0.28), radius: 20, y: 18)
+    }
+
+    private var backdrop: some View {
+        ZStack {
+            UNESColor.darkBg
+            MeshView(variant: .cool)
+            LinearGradient.css(
+                stops: [
+                    .init(color: UNESColor.scrim.opacity(0.15), location: 0),
+                    .init(color: UNESColor.scrim.opacity(0.62), location: 1),
+                ],
+                angle: 155
+            )
+        }
+    }
+
+    private var classContent: some View {
+        TimelineView(.periodic(from: .now, by: 1)) { context in
+            VStack(spacing: 0) {
+                eyebrowRow(now: context.date)
+                HStack(alignment: .bottom, spacing: 16) {
+                    titleColumn
+                    if !inProgress {
+                        countdown(now: context.date)
+                    }
+                }
+                .padding(.top, 16)
+                if let endsAt = hero.endsAt, inProgress {
+                    progressSection(endsAt: endsAt, now: context.date)
+                        .padding(.top, 16)
+                }
+                footer
+                    .padding(.top, 18)
+            }
+        }
     }
 
     private var inProgress: Bool {
@@ -216,6 +245,12 @@ struct HomeHeroCard: View {
         [hero.startTime, hero.endTime]
             .compactMap { $0?.isEmpty == false ? $0 : nil }
             .joined(separator: " – ")
+    }
+}
+
+extension HomeHeroCard where Accessory == EmptyView {
+    init(hero: HomeHeroClass, onDetails: @escaping () -> Void) {
+        self.init(hero: hero, onDetails: onDetails) { EmptyView() }
     }
 }
 

@@ -31,6 +31,8 @@ public enum FeatureFlags {
     public static let retrospectiveEnabledKey = "flag_enable_retrospective"
     /// Gates the "Progresso" hub entry — the `enable_course_progress` key.
     public static let courseProgressEnabledKey = "flag_enable_course_progress"
+    /// Gates "Meu trajeto" on Home — the `enable_commute` key.
+    public static let commuteEnabledKey = "flag_enable_commute"
     /// reCAPTCHA site key for document requests — the `document_captcha_site_key`
     /// key. Empty means the portal isn't demanding a captcha right now.
     public static let documentCaptchaSiteKeyKey = "flag_document_captcha_site_key"
@@ -51,6 +53,7 @@ public enum FeatureFlags {
         evaluationRemindersEnabled: Bool,
         retrospectiveEnabled: Bool,
         courseProgressEnabled: Bool,
+        commuteEnabled: Bool,
         documentCaptchaSiteKey: String,
         documentCaptchaBaseURL: String
     ) {
@@ -65,6 +68,7 @@ public enum FeatureFlags {
         defaults.set(evaluationRemindersEnabled, forKey: evaluationRemindersEnabledKey)
         defaults.set(retrospectiveEnabled, forKey: retrospectiveEnabledKey)
         defaults.set(courseProgressEnabled, forKey: courseProgressEnabledKey)
+        defaults.set(commuteEnabled, forKey: commuteEnabledKey)
         defaults.set(documentCaptchaSiteKey, forKey: documentCaptchaSiteKeyKey)
         defaults.set(documentCaptchaBaseURL, forKey: documentCaptchaBaseURLKey)
         log.info("""
@@ -76,6 +80,7 @@ public enum FeatureFlags {
         evaluationReminders=\(evaluationRemindersEnabled) \
         retrospective=\(retrospectiveEnabled) \
         courseProgress=\(courseProgressEnabled) \
+        commute=\(commuteEnabled) \
         captcha=\(!documentCaptchaSiteKey.isEmpty)
         """)
     }
