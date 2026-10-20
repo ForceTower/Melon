@@ -574,7 +574,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "chega à UEFS ~%@"
+            "value" : "chega na UEFS ~%@"
           }
         }
       }
@@ -710,7 +710,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Chegando à UEFS em ~%lld min"
+            "value" : "Chegando na UEFS em ~%lld min"
           }
         }
       }
@@ -744,7 +744,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Chegar à UEFS"
+            "value" : "Chegar na UEFS"
           }
         }
       }
@@ -795,7 +795,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Seu ponto · Chegar à UEFS"
+            "value" : "Seu ponto · Chegar na UEFS"
           }
         }
       }

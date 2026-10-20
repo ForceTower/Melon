@@ -1,6 +1,6 @@
 import Foundation
 
-/// `toCampus` is "Chegar à UEFS"; `fromCampus` is "Sair da UEFS".
+/// `toCampus` is "Chegar na UEFS"; `fromCampus` is "Sair da UEFS".
 enum TransitDirection: String, Codable, CaseIterable, Equatable, Sendable {
     case toCampus
     case fromCampus
