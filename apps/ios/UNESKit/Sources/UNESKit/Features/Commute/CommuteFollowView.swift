@@ -14,10 +14,9 @@ struct CommuteFollowView: View {
             VStack(alignment: .leading, spacing: 0) {
                 TimelineView(.periodic(from: .now, by: 1)) { context in
                     VStack(alignment: .leading, spacing: 0) {
-                        if store.loadFailed || store.state.isOutdated(at: context.date),
-                           let receivedAt = store.followReceivedAt {
+                        if store.loadFailed || store.state.isOutdated(at: context.date) {
                             UNESBanner(tone: .neutral, title: .localized(.commuteOfflineTitle), symbol: "wifi.slash") {
-                                Text(.commuteOfflineBody(CommuteFormat.clock(receivedAt)))
+                                Text(.commuteOfflineBody(CommuteFormat.clock(store.followReceivedAt)))
                             }
                             .padding(.bottom, 14)
                         }
@@ -330,7 +329,8 @@ extension GeoPoint {
         CommuteFollowView(store: Store(initialState: CommuteFollowFeature.State(
             arrival: TransitFixtures.board(now: .now).arrivals[0],
             direction: .toCampus,
-            stopId: TransitFixtures.myStopId
+            stopId: TransitFixtures.myStopId,
+            receivedAt: .now
         )) {
             CommuteFollowFeature()
         } withDependencies: {

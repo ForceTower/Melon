@@ -46,7 +46,8 @@ struct CommuteBoardFeature {
         case delegate(Delegate)
 
         enum Delegate: Equatable {
-            case follow(TransitArrival, TransitDirection, stopId: String)
+            /// `receivedAt` is when the board carrying `arrival` reached the device.
+            case follow(TransitArrival, TransitDirection, stopId: String, receivedAt: Date)
             case editPlan(CommutePlan)
         }
     }
@@ -81,7 +82,7 @@ struct CommuteBoardFeature {
                 return .none
 
             case let .boardLoaded(board):
-                guard board.direction == state.direction else { return .none }
+                guard board.direction == state.direction, board.stopId == state.leg?.stopId else { return .none }
                 state.loadFailed = false
                 state.board = board
                 state.boardReceivedAt = now
@@ -92,17 +93,24 @@ struct CommuteBoardFeature {
                 return .none
 
             case let .directionPicked(direction):
+                // The view restarts `.task` for the new direction, so polling
+                // stays tied to the screen being on display.
                 guard direction != state.direction else { return .none }
                 state.direction = direction
                 state.board = nil
                 state.boardReceivedAt = nil
                 state.loadFailed = false
-                return poll(state)
+                return .none
 
             case let .arrivalTapped(arrival):
                 guard let leg = state.leg else { return .none }
                 analytics.selectContent(contentType: ContentTypes.tile, itemId: "commute_follow")
-                return .send(.delegate(.follow(arrival, state.direction, stopId: leg.stopId)))
+                return .send(.delegate(.follow(
+                    arrival,
+                    state.direction,
+                    stopId: leg.stopId,
+                    receivedAt: state.boardReceivedAt ?? now
+                )))
 
             case let .explainTapped(arrival):
                 state.explained = arrival ?? state.board?.arrivals.first { $0.basis != nil } ?? state.board?.arrivals.first

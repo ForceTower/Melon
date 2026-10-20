@@ -49,6 +49,18 @@ struct CommuteHeroFeature {
             boardReceivedAt.map { now.timeIntervalSince($0) > CommuteFormat.outdatedAfter } ?? false
         }
 
+        /// The only way a plan enters the hero, so a board never outlives the
+        /// stop and lines it was asked for — whether the change was observed
+        /// here or handed over by Home after a save.
+        mutating func apply(_ plan: CommutePlan) {
+            guard plan != self.plan else { return }
+            self.plan = plan
+            board = nil
+            boardReceivedAt = nil
+            loadFailed = false
+            if plan.isEmpty { direction = nil }
+        }
+
         /// The next arrival worth a glance, skipping buses already gone.
         func headline(now: Date) -> TransitArrival? {
             let outdated = isOutdated(at: now)
@@ -90,12 +102,8 @@ struct CommuteHeroFeature {
                 return .merge(observePlan(), refreshPlan())
 
             case let .planLoaded(plan):
-                state.plan = plan
-                guard !plan.isEmpty else {
-                    state.direction = nil
-                    state.board = nil
-                    return .cancel(id: CancelID.poll)
-                }
+                state.apply(plan)
+                guard !plan.isEmpty else { return .cancel(id: CancelID.poll) }
                 return poll(plan: plan, schedule: state.schedule)
 
             case let .directionResolved(direction):
@@ -108,7 +116,7 @@ struct CommuteHeroFeature {
                 return .none
 
             case let .boardLoaded(board):
-                guard board.direction == state.direction else { return .none }
+                guard board.direction == state.direction, board.stopId == state.leg?.stopId else { return .none }
                 state.loadFailed = false
                 state.board = board
                 state.boardReceivedAt = date.now

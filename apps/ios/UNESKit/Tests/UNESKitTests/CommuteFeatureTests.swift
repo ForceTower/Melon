@@ -410,6 +410,29 @@ struct CommuteFeatureTests {
     }
 
     @Test
+    func savingFromSetupDropsTheHerosBoardForTheOldStop() async {
+        var state = HomeFeature.State()
+        state.commute.plan = TransitFixtures.plan
+        state.commute.direction = .toCampus
+        state.commute.board = TransitFixtures.board(now: Self.now)
+        state.commute.boardReceivedAt = Self.now
+        let draft = CommuteSetupDraft(directions: [.toCampus], existing: TransitFixtures.plan)
+        state.path.append(.commuteLines(CommuteLinesFeature.State(draft: draft, direction: .toCampus)))
+        let store = TestStore(initialState: state) {
+            HomeFeature()
+        }
+        store.exhaustivity = .off
+        let moved = CommutePlan(
+            toCampus: CommuteLeg(stopId: "2011", stopName: "Ponto da Oi", stopArea: "Centro", lineNumbers: ["087"], walkMinutes: 8)
+        )
+
+        await store.send(.path(.element(id: store.state.path.ids.last!, action: .commuteLines(.delegate(.finished(moved, .toCampus))))))
+        #expect(store.state.commute.plan == moved)
+        #expect(store.state.commute.board == nil)
+        #expect(store.state.commute.boardReceivedAt == nil)
+    }
+
+    @Test
     func removingThePlanReturnsToHoje() async {
         var state = HomeFeature.State()
         state.commute.plan = TransitFixtures.plan
@@ -461,13 +484,45 @@ struct CommuteFeatureTests {
     }
 
     @Test
-    func followingABusCarriesTheSavedStop() async {
-        let store = TestStore(initialState: CommuteBoardFeature.State(direction: .toCampus, plan: TransitFixtures.plan)) {
+    func followingABusCarriesTheSavedStopAndTheSnapshotsAge() async {
+        var state = CommuteBoardFeature.State(direction: .toCampus, plan: TransitFixtures.plan)
+        let receivedAt = Self.now.addingTimeInterval(-40)
+        state.boardReceivedAt = receivedAt
+        let store = TestStore(initialState: state) {
             CommuteBoardFeature()
+        } withDependencies: {
+            $0.date = .constant(Self.now)
         }
         let arrival = TransitFixtures.board(now: Self.now).arrivals[0]
         await store.send(.arrivalTapped(arrival))
-        await store.receive(.delegate(.follow(arrival, .toCampus, stopId: TransitFixtures.myStopId)))
+        await store.receive(.delegate(.follow(arrival, .toCampus, stopId: TransitFixtures.myStopId, receivedAt: receivedAt)))
+    }
+
+    @Test
+    func pickingADirectionLeavesPollingToTheScreensTask() async {
+        var state = CommuteBoardFeature.State(direction: .toCampus, plan: TransitFixtures.plan)
+        state.board = TransitFixtures.board(now: Self.now)
+        state.boardReceivedAt = Self.now
+        // Exhaustive store: an effect started here would fail the test.
+        let store = TestStore(initialState: state) {
+            CommuteBoardFeature()
+        }
+        await store.send(.directionPicked(.fromCampus)) {
+            $0.direction = .fromCampus
+            $0.board = nil
+            $0.boardReceivedAt = nil
+        }
+    }
+
+    @Test
+    func aBoardForAStopNoLongerSavedIsIgnored() async {
+        let moved = CommutePlan(
+            toCampus: CommuteLeg(stopId: "2011", stopName: "Ponto da Oi", stopArea: "Centro", lineNumbers: ["087"], walkMinutes: 8)
+        )
+        let store = TestStore(initialState: CommuteBoardFeature.State(direction: .toCampus, plan: moved)) {
+            CommuteBoardFeature()
+        }
+        await store.send(.boardLoaded(TransitFixtures.board(now: Self.now)))
     }
 
     @Test
@@ -492,18 +547,21 @@ struct CommuteFeatureTests {
         }()
         let answers = LockIsolated([TransitFollow(generatedAt: Self.now, feed: TransitFeed(status: .ok), vehicles: [], arrival: live)])
         let requests = LockIsolated<[String]>([])
+        let fallbacks = LockIsolated<[String?]>([])
         let store = TestStore(initialState: CommuteFollowFeature.State(
             arrival: historical,
             direction: .toCampus,
-            stopId: TransitFixtures.myStopId
+            stopId: TransitFixtures.myStopId,
+            receivedAt: Self.now
         )) {
             CommuteFollowFeature()
         } withDependencies: {
             $0.continuousClock = clock
             $0.date = .constant(Self.now)
             $0.transitRepository.network = { TransitFixtures.network }
-            $0.transitRepository.follow = { _, _, _, arrivalId, _ in
+            $0.transitRepository.follow = { _, _, _, arrivalId, vehicleId in
                 requests.withValue { $0.append(arrivalId) }
+                fallbacks.withValue { $0.append(vehicleId) }
                 return answers.withValue { $0.count > 1 ? $0.removeFirst() : $0[0] }
             }
         }
@@ -522,10 +580,154 @@ struct CommuteFeatureTests {
         await store.receive(\.followLoaded) {
             $0.arrival = nil
         }
+        // Still the same departure, now with its bus as the fallback.
+        #expect(requests.value == [historical.id, historical.id])
+        #expect(fallbacks.value == [nil, live.vehicleId])
         await task.cancel()
     }
 
+    @Test
+    func aFollowThatNeverGetsAnAnswerAgesFromTheBoardSnapshot() async {
+        let snapshotAt = Self.now.addingTimeInterval(-30)
+        let clock = TestClock()
+        let store = TestStore(initialState: CommuteFollowFeature.State(
+            arrival: TransitFixtures.board(now: Self.now).arrivals[0],
+            direction: .toCampus,
+            stopId: TransitFixtures.myStopId,
+            receivedAt: snapshotAt
+        )) {
+            CommuteFollowFeature()
+        } withDependencies: {
+            $0.continuousClock = clock
+            $0.transitRepository.network = { TransitFixtures.network }
+            $0.transitRepository.follow = { _, _, _, _, _ in throw URLError(.notConnectedToInternet) }
+        }
+        store.exhaustivity = .off
+
+        #expect(!store.state.isOutdated(at: Self.now))
+        let task = await store.send(.task)
+        await store.receive(\.followFailed) {
+            $0.loadFailed = true
+        }
+        #expect(store.state.isOutdated(at: snapshotAt.addingTimeInterval(CommuteFormat.outdatedAfter + 1)))
+        await task.cancel()
+    }
+
+    // MARK: Plan sync
+
+    @Test
+    func aSaveNeitherWaitsForAnOlderRefreshNorLetsItLand() async throws {
+        let database = try inMemoryDatabase()
+        let older = TransitFixtures.plan
+        let saved = CommutePlan(toCampus: TransitFixtures.plan.toCampus)
+        let (gate, release) = AsyncStream.makeStream(of: Void.self)
+        let (started, start) = AsyncStream.makeStream(of: Void.self)
+        // The GET stays unanswered until released (or until it is cancelled).
+        let client = APIClient(send: { request in
+            guard request.method == "GET" else { return try Self.planEnvelope(saved) }
+            start.yield()
+            for await _ in gate { break }
+            return try Self.planEnvelope(older)
+        })
+
+        try await withDependencies {
+            $0.apiClient = client
+            $0.database = database
+        } operation: {
+            let repository = CommutePlanRepository.liveValue
+            let refresh = Task { try await repository.refresh() }
+            for await _ in started { break }
+
+            let done = LockIsolated(false)
+            let save = Task {
+                defer { done.setValue(true) }
+                return try await repository.save(saved)
+            }
+            // Bounded, so an implementation that queues the save behind the GET
+            // fails here instead of hanging the suite.
+            for _ in 0..<500 where !done.value {
+                try await Task.sleep(for: .milliseconds(10))
+            }
+            #expect(done.value, "the save waited for the older refresh")
+            release.yield()
+            #expect(try await save.value == saved)
+            _ = try? await refresh.value
+        }
+        #expect(try await MirrorStore(writer: database).cachedCommutePlan() == saved)
+    }
+
+    @Test
+    func aRefreshStopsWithItsCallerAndWritesNothing() async throws {
+        let database = try inMemoryDatabase()
+        let (started, start) = AsyncStream.makeStream(of: Void.self)
+        let (gate, _) = AsyncStream.makeStream(of: Void.self)
+        let client = APIClient(send: { _ in
+            start.yield()
+            for await _ in gate { break }
+            return try Self.planEnvelope(TransitFixtures.plan)
+        })
+
+        try await withDependencies {
+            $0.apiClient = client
+            $0.database = database
+        } operation: {
+            let refresh = Task { try await CommutePlanRepository.liveValue.refresh() }
+            for await _ in started { break }
+            refresh.cancel()
+            await #expect(throws: (any Error).self) { try await refresh.value }
+        }
+        #expect(try await MirrorStore(writer: database).cachedCommutePlan() == CommutePlan())
+    }
+
+    private nonisolated static func planEnvelope(_ plan: CommutePlan) throws -> Data {
+        let leg = { (leg: CommuteLeg?) -> Any in
+            guard let leg else { return NSNull() }
+            return [
+                "stopId": leg.stopId,
+                "stopName": leg.stopName,
+                "stopArea": leg.stopArea.map { $0 as Any } ?? NSNull(),
+                "lineNumbers": leg.lineNumbers,
+                "walkMinutes": leg.walkMinutes,
+            ] as [String: Any]
+        }
+        return try JSONSerialization.data(withJSONObject: [
+            "ok": true,
+            "message": "",
+            "data": ["toCampus": leg(plan.toCampus), "fromCampus": leg(plan.fromCampus), "updatedAt": NSNull()],
+        ])
+    }
+
     // MARK: Hero
+
+    @Test
+    func aNewStopInTheSameDirectionDropsTheOldStopsBoard() async {
+        var state = CommuteHeroFeature.State()
+        state.plan = TransitFixtures.plan
+        state.direction = .toCampus
+        state.board = TransitFixtures.board(now: Self.now)
+        state.boardReceivedAt = Self.now
+        let moved = CommutePlan(
+            toCampus: CommuteLeg(stopId: "2011", stopName: "Ponto da Oi", stopArea: "Centro", lineNumbers: ["087"], walkMinutes: 8),
+            fromCampus: TransitFixtures.plan.fromCampus
+        )
+        let store = TestStore(initialState: state) {
+            CommuteHeroFeature()
+        } withDependencies: {
+            $0.date = .constant(Self.now)
+            $0.continuousClock = TestClock()
+            $0.transitRepository.arrivals = { _, _, _ in throw URLError(.timedOut) }
+        }
+        store.exhaustivity = .off
+
+        await store.send(.planLoaded(moved)) {
+            $0.plan = moved
+            $0.board = nil
+            $0.boardReceivedAt = nil
+        }
+        await store.send(.boardLoaded(TransitFixtures.board(now: Self.now)))
+        #expect(store.state.board == nil)
+        await store.skipInFlightEffects()
+    }
 
     @Test
     func theHeroPollsTheLegForTheTimeOfDay() async {

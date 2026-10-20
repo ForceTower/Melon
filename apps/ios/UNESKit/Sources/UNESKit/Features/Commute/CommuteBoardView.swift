@@ -44,7 +44,7 @@ struct CommuteBoardView: View {
         )) {
             CommuteHowSheet(arrival: store.explained, direction: store.direction)
         }
-        .task { await store.send(.task).finish() }
+        .task(id: store.direction) { await store.send(.task).finish() }
     }
 
     private var directionPicker: some View {

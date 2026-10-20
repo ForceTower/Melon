@@ -18,21 +18,23 @@ struct CommuteFollowFeature {
         /// What the board showed, so the screen opens with a number.
         var arrival: TransitArrival?
         var follow: TransitFollow?
-        /// When the last answer arrived on this device.
-        var followReceivedAt: Date?
+        /// When the data on screen arrived on this device: the board's
+        /// snapshot until the first answer here replaces it.
+        var followReceivedAt: Date
         var route: TransitRoute?
         var loadFailed = false
         var showsMyLocation = false
         var locationDenied = false
         var isExplainerPresented = false
 
-        init(arrival: TransitArrival, direction: TransitDirection, stopId: String) {
+        init(arrival: TransitArrival, direction: TransitDirection, stopId: String, receivedAt: Date) {
             lineNumber = arrival.lineNumber
             self.direction = direction
             self.stopId = stopId
             arrivalId = arrival.id
             vehicleId = arrival.vehicleId
             self.arrival = arrival
+            followReceivedAt = receivedAt
         }
 
         var followedVehicle: TransitVehicle? {
@@ -46,7 +48,7 @@ struct CommuteFollowFeature {
         }
 
         func isOutdated(at now: Date) -> Bool {
-            followReceivedAt.map { now.timeIntervalSince($0) > CommuteFormat.outdatedAfter } ?? false
+            now.timeIntervalSince(followReceivedAt) > CommuteFormat.outdatedAfter
         }
     }
 
@@ -87,10 +89,10 @@ struct CommuteFollowFeature {
                 // The server resolves the departure by id: nil means it has
                 // passed the stop or no longer runs.
                 state.arrival = follow.arrival
-                if let vehicleId = follow.arrival?.vehicleId {
-                    state.vehicleId = vehicleId
-                }
-                return .none
+                guard let vehicleId = follow.arrival?.vehicleId, vehicleId != state.vehicleId else { return .none }
+                // The newly associated bus becomes the fallback the next requests send.
+                state.vehicleId = vehicleId
+                return poll(state, waitingFirst: true)
 
             case .followFailed:
                 state.loadFailed = true
@@ -133,7 +135,7 @@ struct CommuteFollowFeature {
         }
     }
 
-    private func poll(_ state: State) -> Effect<Action> {
+    private func poll(_ state: State, waitingFirst: Bool = false) -> Effect<Action> {
         .run { [
             line = state.lineNumber,
             direction = state.direction,
@@ -141,6 +143,9 @@ struct CommuteFollowFeature {
             arrivalId = state.arrivalId,
             vehicleId = state.vehicleId
         ] send in
+            if waitingFirst {
+                try await clock.sleep(for: Self.refreshInterval)
+            }
             while true {
                 do {
                     let follow = try await transitRepository.follow(line, direction, stopId, arrivalId, vehicleId)

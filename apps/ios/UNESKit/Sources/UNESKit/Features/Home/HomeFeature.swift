@@ -373,17 +373,22 @@ struct HomeFeature {
                 state.path.append(.commuteLines(CommuteLinesFeature.State(draft: draft, direction: .fromCampus)))
             }
         case .commuteDirection(.delegate(.removed)):
-            state.commute.plan = CommutePlan()
+            state.commute.apply(CommutePlan())
             state.path = StackState()
         case let .commuteStopPicker(.delegate(.next(draft, stop))):
             state.path.append(.commuteLines(CommuteLinesFeature.State(draft: draft, direction: .toCampus, stop: stop)))
         case let .commuteLines(.delegate(.next(draft))):
             state.path.append(.commuteLines(CommuteLinesFeature.State(draft: draft, direction: .fromCampus)))
         case let .commuteLines(.delegate(.finished(plan, direction))):
-            state.commute.plan = plan
+            state.commute.apply(plan)
             state.path.open(.commuteBoard(CommuteBoardFeature.State(direction: direction, plan: plan)))
-        case let .commuteBoard(.delegate(.follow(arrival, direction, stopId))):
-            state.path.append(.commuteFollow(CommuteFollowFeature.State(arrival: arrival, direction: direction, stopId: stopId)))
+        case let .commuteBoard(.delegate(.follow(arrival, direction, stopId, receivedAt))):
+            state.path.append(.commuteFollow(CommuteFollowFeature.State(
+                arrival: arrival,
+                direction: direction,
+                stopId: stopId,
+                receivedAt: receivedAt
+            )))
         case let .commuteBoard(.delegate(.editPlan(plan))):
             state.path.append(.commuteDirection(CommuteDirectionFeature.State(plan: plan)))
         default:

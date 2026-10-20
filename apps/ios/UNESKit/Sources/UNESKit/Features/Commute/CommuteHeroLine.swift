@@ -39,6 +39,8 @@ struct CommuteHeroLine: View {
                             case .toCampus: inbound(arrival, leg: leg, now: now)
                             case .fromCampus: goingHome(arrival, leg: leg, now: now)
                             }
+                        } else if store.state.isOutdated(at: now) {
+                            offline(leg: leg)
                         } else if let board = store.board {
                             quiet(board: board, leg: leg)
                         } else {
@@ -213,6 +215,22 @@ struct CommuteHeroLine: View {
                 } else {
                     small(leg.stopName)
                 }
+            }
+        }
+    }
+
+    /// Nothing left to show from a board we can no longer refresh: say so
+    /// rather than claim no bus is coming.
+    private func offline(leg: CommuteLeg) -> some View {
+        HStack(spacing: 12) {
+            Image(systemName: "wifi.slash")
+                .font(.system(size: 16, weight: .medium))
+                .foregroundStyle(.white.opacity(0.75))
+            VStack(alignment: .leading, spacing: 2) {
+                Text(.commuteOfflineTitle)
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundStyle(.white)
+                small(leg.stopName)
             }
         }
     }
