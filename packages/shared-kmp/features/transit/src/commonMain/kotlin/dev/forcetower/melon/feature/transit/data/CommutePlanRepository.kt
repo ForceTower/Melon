@@ -57,7 +57,8 @@ class CommutePlanRepository internal constructor(
                     Outcome.Ok(Unit)
                 }
                 is Outcome.Err -> {
-                    log.w { "refresh failed err=${outcome.error}" }
+                    // Once per screen entry, and the mirror stays; not a bug.
+                    log.i { "refresh failed err=${outcome.error}" }
                     Outcome.Err(outcome.error)
                 }
             }
