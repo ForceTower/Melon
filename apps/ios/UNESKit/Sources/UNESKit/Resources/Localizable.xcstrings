@@ -613,23 +613,6 @@
         }
       }
     },
-    "commute.usuallyLeavesShort" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "usually leaves"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "costuma sair"
-          }
-        }
-      }
-    },
     "commute.usuallyPassesAround" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1010,13 +993,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "times are what usually happens, not the timetable"
+            "value" : "Estimated times, not the official timetable"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "o horário é o que costuma acontecer, não a tabela"
+            "value" : "Horários previstos, não é o horário da tabela oficial"
           }
         }
       }
@@ -1146,13 +1129,30 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "On some days the line runs short of buses and some departures don't happen. The %2$@ %1$@ left on %3$lld of %4$lld days."
+            "value" : "On some days the line runs one bus short and some departures don't happen. The %2$@ %1$@ left on %3$lld of %4$lld days."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Em alguns dias a linha roda com menos ônibus e algumas saídas não acontecem. O %1$@ das %2$@ saiu em %3$lld de %4$lld dias."
+            "value" : "Em alguns dias a linha fica com um ônibus a menos e algumas saídas não acontecem. O %1$@ das %2$@ saiu em %3$lld de %4$lld dias."
+          }
+        }
+      }
+    },
+    "commute.flakyBodyNights" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "On some days the line runs one bus short and some departures don't happen. The %2$@ %1$@ left on %3$lld of %4$lld nights."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Em alguns dias a linha fica com um ônibus a menos e algumas saídas não acontecem. O %1$@ das %2$@ saiu em %3$lld de %4$lld noites."
           }
         }
       }
@@ -4761,6 +4761,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Às 20h da véspera, neste aparelho"
+          }
+        }
+      }
+    },
+    "settings.commuteOnHomeLabel" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "My commute on Today"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meu trajeto em Hoje"
+          }
+        }
+      }
+    },
+    "settings.commuteOnHomeHint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turn off if you don't ride the bus; it stays in Me"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desligue se não vai de ônibus; continua em Eu"
           }
         }
       }
@@ -19785,6 +19819,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "médias da universidade"
+          }
+        }
+      }
+    },
+    "me.shortcut.commute" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "My commute"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meu trajeto"
+          }
+        }
+      }
+    },
+    "me.shortcut.commuteHint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "when yours comes"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "quando o seu passa"
           }
         }
       }

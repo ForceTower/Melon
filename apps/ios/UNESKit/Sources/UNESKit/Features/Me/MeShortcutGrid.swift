@@ -80,6 +80,7 @@ struct MeShortcutGrid: View {
 extension MeShortcut {
     var label: String {
         switch self {
+        case .commute: .localized(.meShortcutCommute)
         case .enrollment: .localized(.meShortcutEnrollment)
         case .calendar: .localized(.meShortcutCalendar)
         case .countdown: .localized(.meShortcutCountdown)
@@ -95,6 +96,7 @@ extension MeShortcut {
 
     var hint: String? {
         switch self {
+        case .commute: .localized(.meShortcutCommuteHint)
         case .enrollment: .localized(.meShortcutEnrollmentHint)
         case .calendar: .localized(.meShortcutCalendarHint)
         case .countdown: nil
@@ -110,6 +112,7 @@ extension MeShortcut {
 
     var icon: String {
         switch self {
+        case .commute: "bus"
         case .enrollment: "checklist"
         case .calendar: "calendar"
         case .countdown: "timer"
@@ -125,13 +128,14 @@ extension MeShortcut {
 
     var isBeta: Bool {
         switch self {
-        case .enrollment, .library: true
+        case .commute, .enrollment, .library: true
         default: false
         }
     }
 
     var tone: Color {
         switch self {
+        case .commute: UNESColor.readable(0xE85D4E)
         case .enrollment: UNESColor.readable(0x3B9EAE)
         case .calendar: UNESColor.readable(0xE85D4E)
         case .countdown: UNESColor.readable(0xB23A7A)

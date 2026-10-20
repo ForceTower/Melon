@@ -8,11 +8,11 @@ struct BetaTag: View {
     var body: some View {
         Text(.commonBeta)
             .textCase(.uppercase)
-            .font(.system(size: 10, weight: .heavy))
-            .tracking(0.7)
+            .font(.system(size: 8.5, weight: .heavy))
+            .tracking(0.5)
             .foregroundStyle(tone)
-            .padding(.horizontal, 8)
-            .padding(.vertical, 4.5)
+            .padding(.horizontal, 6)
+            .padding(.vertical, 3)
             .background(tone.opacity(0.11), in: Capsule())
             .overlay {
                 Capsule().strokeBorder(tone.opacity(0.28))

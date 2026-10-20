@@ -90,6 +90,21 @@ struct CommuteFeatureTests {
     }
 
     @Test
+    func theCampusDepartureStopDropsTheProviderSuffix() {
+        let leg = CommuteLeg(
+            stopId: "6020",
+            stopName: "Av. Transnordestina (Saída)",
+            stopArea: "Novo Horizonte",
+            lineNumbers: ["088"],
+            walkMinutes: 0
+        )
+        #expect(CommuteFormat.departureStopName(leg) == "Av. Transnordestina · Novo Horizonte")
+        var withoutArea = leg
+        withoutArea.stopArea = nil
+        #expect(CommuteFormat.departureStopName(withoutArea) == "Av. Transnordestina")
+    }
+
+    @Test
     func flakinessNeedsEnoughObservedDays() {
         var arrival = Self.arrival(state: .historical, earliest: 3, latest: 6, expected: 4)
         arrival.ranDays = 1
@@ -376,21 +391,21 @@ struct CommuteFeatureTests {
         await store.send(.commute(.setupTapped))
         await store.receive(.commute(.delegate(.openSetup)))
         #expect(store.state.path.count == 1)
-        guard case .commuteDirection = store.state.path.last else {
+        guard case .commute(.direction) = store.state.path.last else {
             Issue.record("expected the direction step")
             return
         }
 
         let draft = CommuteSetupDraft(directions: [.toCampus], existing: CommutePlan())
-        await store.send(.path(.element(id: store.state.path.ids.last!, action: .commuteDirection(.delegate(.next(draft))))))
-        guard case .commuteStopPicker = store.state.path.last else {
+        await store.send(.path(.element(id: store.state.path.ids.last!, action: .commute(.direction(.delegate(.next(draft)))))))
+        guard case .commute(.stopPicker) = store.state.path.last else {
             Issue.record("expected the stop step")
             return
         }
 
         let stop = TransitFixtures.network.route(line: "087", direction: .toCampus)!.stops[4]
-        await store.send(.path(.element(id: store.state.path.ids.last!, action: .commuteStopPicker(.delegate(.next(draft, stop))))))
-        guard case let .commuteLines(lines) = store.state.path.last else {
+        await store.send(.path(.element(id: store.state.path.ids.last!, action: .commute(.stopPicker(.delegate(.next(draft, stop)))))))
+        guard case let .commute(.lines(lines)) = store.state.path.last else {
             Issue.record("expected the lines step")
             return
         }
@@ -398,9 +413,9 @@ struct CommuteFeatureTests {
         #expect(store.state.path.count == 3)
 
         let saved = CommutePlan(toCampus: TransitFixtures.plan.toCampus)
-        await store.send(.path(.element(id: store.state.path.ids.last!, action: .commuteLines(.delegate(.finished(saved, .toCampus))))))
+        await store.send(.path(.element(id: store.state.path.ids.last!, action: .commute(.lines(.delegate(.finished(saved, .toCampus)))))))
         #expect(store.state.path.count == 1)
-        guard case let .commuteBoard(board) = store.state.path.last else {
+        guard case let .commute(.board(board)) = store.state.path.last else {
             Issue.record("expected the board")
             return
         }
@@ -417,7 +432,7 @@ struct CommuteFeatureTests {
         state.commute.board = TransitFixtures.board(now: Self.now)
         state.commute.boardReceivedAt = Self.now
         let draft = CommuteSetupDraft(directions: [.toCampus], existing: TransitFixtures.plan)
-        state.path.append(.commuteLines(CommuteLinesFeature.State(draft: draft, direction: .toCampus)))
+        state.path.append(.commute(.lines(CommuteLinesFeature.State(draft: draft, direction: .toCampus))))
         let store = TestStore(initialState: state) {
             HomeFeature()
         }
@@ -426,7 +441,7 @@ struct CommuteFeatureTests {
             toCampus: CommuteLeg(stopId: "2011", stopName: "Ponto da Oi", stopArea: "Centro", lineNumbers: ["087"], walkMinutes: 8)
         )
 
-        await store.send(.path(.element(id: store.state.path.ids.last!, action: .commuteLines(.delegate(.finished(moved, .toCampus))))))
+        await store.send(.path(.element(id: store.state.path.ids.last!, action: .commute(.lines(.delegate(.finished(moved, .toCampus)))))))
         #expect(store.state.commute.plan == moved)
         #expect(store.state.commute.board == nil)
         #expect(store.state.commute.boardReceivedAt == nil)
@@ -436,15 +451,109 @@ struct CommuteFeatureTests {
     func removingThePlanReturnsToHoje() async {
         var state = HomeFeature.State()
         state.commute.plan = TransitFixtures.plan
-        state.path.append(.commuteBoard(CommuteBoardFeature.State(direction: .toCampus, plan: TransitFixtures.plan)))
-        state.path.append(.commuteDirection(CommuteDirectionFeature.State(plan: TransitFixtures.plan)))
+        state.path.append(.commute(.board(CommuteBoardFeature.State(direction: .toCampus, plan: TransitFixtures.plan))))
+        state.path.append(.commute(.direction(CommuteDirectionFeature.State(plan: TransitFixtures.plan))))
         let store = TestStore(initialState: state) {
             HomeFeature()
         }
         store.exhaustivity = .off
-        await store.send(.path(.element(id: store.state.path.ids.last!, action: .commuteDirection(.delegate(.removed)))))
+        await store.send(.path(.element(id: store.state.path.ids.last!, action: .commute(.direction(.delegate(.removed))))))
         #expect(store.state.path.isEmpty)
         #expect(store.state.commute.plan.isEmpty)
+    }
+
+    @Test
+    func hidingItFromHojeStopsTheHero() async {
+        var state = CommuteHeroFeature.State()
+        state.$isEnabled.withLock { $0 = true }
+        state.$isOnHome.withLock { $0 = false }
+        let store = TestStore(initialState: state) {
+            CommuteHeroFeature()
+        }
+        #expect(!store.state.isShown)
+        let schedule = CommuteDaySchedule(firstStartMinute: 8 * 60)
+        await store.send(.task(schedule)) {
+            $0.schedule = schedule
+        }
+    }
+
+    @Test
+    func theSettingsSwitchHidesItFromHoje() async {
+        let store = TestStore(initialState: SettingsFeature.State()) {
+            SettingsFeature()
+        }
+        await store.send(.commuteOnHomeToggled(false)) {
+            $0.$isCommuteOnHome.withLock { $0 = false }
+        }
+    }
+
+    // MARK: Eu routing
+
+    @Test
+    func theEuShortcutOpensTheSavedStopForTheTimeOfDay() async {
+        let morning = Calendar.current.date(bySettingHour: 7, minute: 0, second: 0, of: Self.now)!
+        let store = TestStore(initialState: MeFeature.State()) {
+            MeFeature()
+        } withDependencies: {
+            $0.commutePlanRepository = .preview(TransitFixtures.plan)
+            $0.date.now = morning
+        }
+        store.exhaustivity = .off
+
+        await store.send(.shortcutTapped(.commute))
+        await store.receive(.commutePlanResolved(TransitFixtures.plan))
+        #expect(store.state.path.count == 1)
+        guard case let .commute(.board(board)) = store.state.path.last else {
+            Issue.record("expected the board")
+            return
+        }
+        #expect(board.plan == TransitFixtures.plan)
+        #expect(board.direction == .toCampus)
+    }
+
+    @Test
+    func theEuShortcutOpensTheIntroWithoutAPlan() async {
+        let store = TestStore(initialState: MeFeature.State()) {
+            MeFeature()
+        } withDependencies: {
+            $0.commutePlanRepository = .preview(CommutePlan())
+            $0.date.now = Self.now
+        }
+        store.exhaustivity = .off
+
+        await store.send(.shortcutTapped(.commute))
+        await store.receive(.commutePlanResolved(CommutePlan()))
+        guard case let .commute(.board(board)) = store.state.path.last else {
+            Issue.record("expected the board")
+            return
+        }
+        #expect(board.leg == nil)
+    }
+
+    @Test
+    func savingFromEuReplacesTheStepsWithTheBoard() async {
+        var state = MeFeature.State()
+        let draft = CommuteSetupDraft(directions: [.toCampus], existing: CommutePlan())
+        state.path.append(.commute(.board(CommuteBoardFeature.State(direction: .toCampus, plan: CommutePlan()))))
+        state.path.append(.commute(.direction(CommuteDirectionFeature.State(plan: CommutePlan()))))
+        state.path.append(.commute(.lines(CommuteLinesFeature.State(draft: draft, direction: .toCampus))))
+        let store = TestStore(initialState: state) {
+            MeFeature()
+        }
+        store.exhaustivity = .off
+
+        let saved = CommutePlan(toCampus: TransitFixtures.plan.toCampus)
+        await store.send(.path(.element(id: store.state.path.ids.last!, action: .commute(.lines(.delegate(.finished(saved, .toCampus)))))))
+        #expect(store.state.path.count == 1)
+        guard case let .commute(.board(board)) = store.state.path.last else {
+            Issue.record("expected the board")
+            return
+        }
+        #expect(board.plan == saved)
+
+        await store.send(.path(.element(id: store.state.path.ids.last!, action: .commute(.board(.delegate(.editPlan(saved)))))))
+        await store.send(.path(.element(id: store.state.path.ids.last!, action: .commute(.direction(.delegate(.removed))))))
+        #expect(store.state.path.isEmpty)
     }
 
     // MARK: Board

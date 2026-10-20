@@ -4,7 +4,7 @@ import Foundation
 /// The pinned shortcuts — most push their flow; the document ones
 /// (comprovante / histórico) open the request sheet instead.
 enum MeShortcut: String, Equatable, Sendable, Identifiable, CaseIterable {
-    case enrollment, calendar, countdown, courseProgress, certificate, history, paradoxo, materials, library,
+    case commute, enrollment, calendar, countdown, courseProgress, certificate, history, paradoxo, materials, library,
          retrospective
 
     var id: String { rawValue }
@@ -44,6 +44,7 @@ struct MeFeature {
         @Shared(.appStorage(FeatureFlags.libraryEnabledKey)) var isLibraryEnabled = false
         @Shared(.appStorage(FeatureFlags.retrospectiveEnabledKey)) var isRetrospectiveEnabled = false
         @Shared(.appStorage(FeatureFlags.courseProgressEnabledKey)) var isCourseProgressEnabled = false
+        @Shared(.appStorage(FeatureFlags.commuteEnabledKey)) var isCommuteEnabled = false
         /// The semester whose Retrospectiva window the mirror says is open.
         var retrospectiveSemester: String?
         /// Which program the hero's Score stat is showing. Nil follows the
@@ -85,6 +86,7 @@ struct MeFeature {
                 case .library: isLibraryEnabled
                 case .retrospective: isRetrospectiveEnabled && retrospectiveSemester != nil
                 case .courseProgress: isCourseProgressEnabled
+                case .commute: isCommuteEnabled
                 case .calendar, .countdown: true
                 }
             }
@@ -128,6 +130,8 @@ struct MeFeature {
         case libraryWork(LibraryWorkDetailFeature)
         case courseProgress(CourseProgressFeature)
         case curriculumFlow(CurriculumFlowFeature)
+        // A reducer enum nests through its `body`; it has no initializer.
+        case commute(CommutePath.Body = CommutePath.body)
     }
 
     enum Action: Equatable {
@@ -136,6 +140,7 @@ struct MeFeature {
         case overviewUpdated(CachedMeOverview)
         case profileLoaded(Profile)
         case shortcutTapped(MeShortcut)
+        case commutePlanResolved(CommutePlan)
         case editProfileTapped
         /// Walks the hero's Score stat to the next program.
         case scoreProgramTapped
@@ -180,6 +185,7 @@ struct MeFeature {
     @Dependency(\.mirrorStore) var mirrorStore
     @Dependency(\.date) var date
     @Dependency(\.analytics) var analytics
+    @Dependency(\.commutePlanRepository) var commutePlanRepository
 
     private let log = Log.scoped("MeFeature")
 
@@ -217,6 +223,15 @@ struct MeFeature {
             case let .shortcutTapped(shortcut):
                 analytics.selectContent(contentType: ContentTypes.shortcut, itemId: shortcut.analyticsItemId)
                 switch shortcut {
+                case .commute:
+                    // The mirror answers on subscription, so the flow opens
+                    // on the saved stop (or the intro) without flashing the other.
+                    return .run { send in
+                        for await plan in commutePlanRepository.observe() {
+                            await send(.commutePlanResolved(plan))
+                            return
+                        }
+                    }
                 case .enrollment:
                     state.path.open(.enrollment(EnrollmentFeature.State(profile: state.profile)))
                 case .calendar:
@@ -247,6 +262,11 @@ struct MeFeature {
                         semesterCode: semesterCode
                     )))
                 }
+                return .none
+
+            case let .commutePlanResolved(plan):
+                let direction = CommuteDaySchedule().direction(for: plan, at: date.now) ?? .toCampus
+                state.path.open(.commute(.board(CommuteBoardFeature.State(direction: direction, plan: plan))))
                 return .none
 
             case .editProfileTapped:
@@ -385,7 +405,8 @@ struct MeFeature {
                     routeParadoxo(pathAction, state: &state),
                     routeMaterials(pathAction, state: &state),
                     routeLibrary(pathAction, state: &state),
-                    routeCourseProgress(pathAction, state: &state)
+                    routeCourseProgress(pathAction, state: &state),
+                    routeCommute(pathAction, state: &state)
                 )
 
             case .document, .path, .delegate:
@@ -545,6 +566,21 @@ struct MeFeature {
         return .none
     }
 
+    /// Saving replaces the setup steps with the board; removing the plan
+    /// returns to Eu. Home's hero picks the change up from the mirror.
+    private func routeCommute(_ action: Path.Action, state: inout State) -> Effect<Action> {
+        guard case let .commute(action) = action, let route = CommutePath.route(action) else { return .none }
+        switch route {
+        case let .push(screen):
+            state.path.append(.commute(screen))
+        case let .saved(_, board):
+            state.path.open(.commute(board))
+        case .removed:
+            state.path = StackState()
+        }
+        return .none
+    }
+
     private func wakeCalendar(in state: State) -> [Effect<Action>] {
         state.path.ids.compactMap { id in
             guard case .calendar = state.path[id: id] else { return nil }
@@ -606,6 +642,7 @@ struct MeFeature {
 extension MeShortcut {
     var analyticsItemId: String {
         switch self {
+        case .commute: "commute"
         case .enrollment: "enrollment"
         case .calendar: "calendar"
         case .countdown: "final_countdown"

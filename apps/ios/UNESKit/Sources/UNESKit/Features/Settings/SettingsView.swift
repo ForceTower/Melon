@@ -85,6 +85,17 @@ struct SettingsView: View {
                             SettingsScheduleViewCard(mode: store.scheduleView) {
                                 store.send(.scheduleViewSelected($0))
                             }
+                            if store.isCommuteFlagOn {
+                                SettingsToggleCard(
+                                    symbol: "bus",
+                                    tone: UNESColor.readable(0xE85D4E),
+                                    label: .settingsCommuteOnHomeLabel,
+                                    hint: .settingsCommuteOnHomeHint,
+                                    isOn: store.isCommuteOnHome
+                                ) {
+                                    store.send(.commuteOnHomeToggled($0))
+                                }
+                            }
                         }
                     }
                     .fadeUp(delay: 0.2)
@@ -114,7 +125,13 @@ struct SettingsView: View {
                                 }
                             }
                             if store.showsEvaluationReminders {
-                                SettingsEvaluationReminderCard(isOn: store.evaluationRemindersEnabled) {
+                                SettingsToggleCard(
+                                    symbol: "alarm",
+                                    tone: UNESColor.readable(0x7A5AD0),
+                                    label: .settingsNotificationsEvaluationReminderLabel,
+                                    hint: .settingsNotificationsEvaluationReminderHint,
+                                    isOn: store.evaluationRemindersEnabled
+                                ) {
                                     store.send(.evaluationRemindersToggled($0))
                                 }
                             }

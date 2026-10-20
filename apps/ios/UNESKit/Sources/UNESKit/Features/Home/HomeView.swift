@@ -83,16 +83,8 @@ struct HomeView: View {
                 MaterialsListView(store: store)
             case let .materialsDetail(store):
                 MaterialsDetailView(store: store)
-            case let .commuteBoard(store):
-                CommuteBoardView(store: store)
-            case let .commuteFollow(store):
-                CommuteFollowView(store: store)
-            case let .commuteDirection(store):
-                CommuteDirectionView(store: store)
-            case let .commuteStopPicker(store):
-                CommuteStopPickerView(store: store)
-            case let .commuteLines(store):
-                CommuteLinesView(store: store)
+            case let .commute(store):
+                CommutePathView(store: store)
             }
         }
         .task { await store.send(.task).finish() }
@@ -216,7 +208,7 @@ struct HomeView: View {
 
     @ViewBuilder
     private func heroCard(_ overview: HomeOverview) -> some View {
-        let showsCommute = store.commute.isEnabled
+        let showsCommute = store.commute.isShown
         let schedule = CommuteDaySchedule(today: overview.today)
         if let hero = overview.hero {
             HomeHeroCard(hero: hero, showsAccessory: showsCommute) {

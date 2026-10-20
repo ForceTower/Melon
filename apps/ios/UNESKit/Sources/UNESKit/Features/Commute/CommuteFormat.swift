@@ -70,6 +70,14 @@ enum CommuteFormat {
         .localized(.commuteSignalLostFor(max(1, Int(now.timeIntervalSince(fix) / 60))))
     }
 
+    /// "Av. Transnordestina · Novo Horizonte": the provider marks the campus
+    /// departure stop "(Saída)", which the screens already say in words.
+    static func departureStopName(_ leg: CommuteLeg) -> String {
+        [leg.stopName, leg.stopArea]
+            .compactMap { $0?.replacingOccurrences(of: " (Saída)", with: "") }
+            .joined(separator: " · ")
+    }
+
     /// "linhas 087 e 088" — natural-language list of line numbers.
     static func lineList(_ numbers: [String]) -> String {
         numbers.formatted(.list(type: .and))

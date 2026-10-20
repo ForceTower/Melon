@@ -64,11 +64,8 @@ struct HomeFeature {
         case campusEventOrganizations(CampusEventOrganizationsFeature)
         case materialsList(MaterialsListFeature)
         case materialsDetail(MaterialsDetailFeature)
-        case commuteBoard(CommuteBoardFeature)
-        case commuteFollow(CommuteFollowFeature)
-        case commuteDirection(CommuteDirectionFeature)
-        case commuteStopPicker(CommuteStopPickerFeature)
-        case commuteLines(CommuteLinesFeature)
+        // A reducer enum nests through its `body`; it has no initializer.
+        case commute(CommutePath.Body = CommutePath.body)
     }
 
     enum Action: Equatable {
@@ -292,10 +289,10 @@ struct HomeFeature {
                 switch delegate {
                 case let .openBoard(direction):
                     analytics.selectContent(contentType: ContentTypes.tile, itemId: "commute")
-                    state.path.open(.commuteBoard(CommuteBoardFeature.State(direction: direction, plan: state.commute.plan)))
+                    state.path.open(.commute(.board(CommuteBoardFeature.State(direction: direction, plan: state.commute.plan))))
                 case .openSetup:
                     analytics.selectContent(contentType: ContentTypes.cta, itemId: "commute_setup")
-                    state.path.open(.commuteDirection(CommuteDirectionFeature.State(plan: state.commute.plan)))
+                    state.path.open(.commute(.direction(CommuteDirectionFeature.State(plan: state.commute.plan))))
                 }
                 return .none
 
@@ -362,37 +359,19 @@ struct HomeFeature {
         return .none
     }
 
-    /// Meu trajeto's setup pushes its steps on this stack; saving replaces them
-    /// with the board, and removing the plan returns to Hoje.
+    /// Saving replaces the setup steps with the board, and removing the plan
+    /// returns to Hoje; the hero takes the change at once either way.
     private func routeCommute(_ action: Path.Action, state: inout State) -> Effect<Action> {
-        switch action {
-        case let .commuteDirection(.delegate(.next(draft))):
-            if draft.directions.contains(.toCampus) {
-                state.path.append(.commuteStopPicker(CommuteStopPickerFeature.State(draft: draft)))
-            } else {
-                state.path.append(.commuteLines(CommuteLinesFeature.State(draft: draft, direction: .fromCampus)))
-            }
-        case .commuteDirection(.delegate(.removed)):
+        guard case let .commute(action) = action, let route = CommutePath.route(action) else { return .none }
+        switch route {
+        case let .push(screen):
+            state.path.append(.commute(screen))
+        case let .saved(plan, board):
+            state.commute.apply(plan)
+            state.path.open(.commute(board))
+        case .removed:
             state.commute.apply(CommutePlan())
             state.path = StackState()
-        case let .commuteStopPicker(.delegate(.next(draft, stop))):
-            state.path.append(.commuteLines(CommuteLinesFeature.State(draft: draft, direction: .toCampus, stop: stop)))
-        case let .commuteLines(.delegate(.next(draft))):
-            state.path.append(.commuteLines(CommuteLinesFeature.State(draft: draft, direction: .fromCampus)))
-        case let .commuteLines(.delegate(.finished(plan, direction))):
-            state.commute.apply(plan)
-            state.path.open(.commuteBoard(CommuteBoardFeature.State(direction: direction, plan: plan)))
-        case let .commuteBoard(.delegate(.follow(arrival, direction, stopId, receivedAt))):
-            state.path.append(.commuteFollow(CommuteFollowFeature.State(
-                arrival: arrival,
-                direction: direction,
-                stopId: stopId,
-                receivedAt: receivedAt
-            )))
-        case let .commuteBoard(.delegate(.editPlan(plan))):
-            state.path.append(.commuteDirection(CommuteDirectionFeature.State(plan: plan)))
-        default:
-            break
         }
         return .none
     }

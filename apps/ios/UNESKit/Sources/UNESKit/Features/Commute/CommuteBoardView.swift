@@ -65,7 +65,7 @@ struct CommuteBoardView: View {
             Label {
                 Text(store.direction == .toCampus ? .commuteBoardEyebrowToCampus : .commuteDirectionFromCampus)
             } icon: {
-                Image(systemName: store.direction == .toCampus ? "mappin" : "arrow.right.to.line")
+                Image(systemName: store.direction == .toCampus ? "mappin" : "figure.walk.departure")
             }
             .font(.system(size: 12.5, weight: .semibold))
             .foregroundStyle(UNESColor.ink3)
@@ -84,8 +84,7 @@ struct CommuteBoardView: View {
     }
 
     private func headerTitle(_ leg: CommuteLeg) -> String {
-        guard store.direction == .fromCampus, let area = leg.stopArea else { return leg.stopName }
-        return "\(leg.stopName) · \(area.replacingOccurrences(of: " (Saída)", with: ""))"
+        store.direction == .fromCampus ? CommuteFormat.departureStopName(leg) : leg.stopName
     }
 
     private func headerSubtitle(_ leg: CommuteLeg) -> String {
@@ -219,13 +218,13 @@ struct CommuteBoardView: View {
     }
 
     private func flakyNotice(_ arrival: TransitArrival) -> some View {
-        UNESBanner(tone: .neutral, title: .localized(.commuteStateFlaky), symbol: "circle.dashed") {
-            Text(.commuteFlakyBody(
-                arrival.lineNumber,
-                arrival.scheduledDeparture.map(clockLabel) ?? CommuteFormat.clock(arrival.expected),
-                arrival.ranDays ?? 0,
-                arrival.observedDays ?? 0
-            ))
+        let time = arrival.scheduledDeparture.map(clockLabel) ?? CommuteFormat.clock(arrival.expected)
+        let ran = arrival.ranDays ?? 0, observed = arrival.observedDays ?? 0
+        let evening = Calendar.current.component(.hour, from: arrival.expected) >= 18
+        return UNESBanner(tone: .neutral, title: .localized(.commuteStateFlaky), symbol: "circle.dashed") {
+            Text(evening
+                ? .commuteFlakyBodyNights(arrival.lineNumber, time, ran, observed)
+                : .commuteFlakyBody(arrival.lineNumber, time, ran, observed))
         }
     }
 
@@ -252,22 +251,24 @@ struct CommuteArrivalRow: View {
     var frozen = false
 
     var body: some View {
-        HStack(alignment: .top, spacing: 12) {
+        let toCampus = direction == .toCampus
+        HStack(alignment: toCampus ? .top : .center, spacing: 12) {
             TransitLineBadge(number: arrival.lineNumber)
-                .padding(.top, direction == .toCampus ? 3 : 0)
+                .padding(.top, toCampus ? 3 : 0)
             VStack(alignment: .leading, spacing: 0) {
-                switch direction {
-                case .toCampus: inbound
-                case .fromCampus: departure
+                if toCampus {
+                    inbound
+                } else {
+                    departure
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             Image(systemName: "chevron.right")
                 .font(.system(size: 13, weight: .semibold))
                 .foregroundStyle(UNESColor.ink4)
-                .padding(.top, 8)
+                .padding(.top, toCampus ? 8 : 0)
         }
-        .padding(EdgeInsets(top: 14, leading: 16, bottom: 14, trailing: 14))
+        .padding(EdgeInsets(top: toCampus ? 14 : 13, leading: 16, bottom: toCampus ? 14 : 13, trailing: 14))
         .accessibilityElement(children: .combine)
     }
 
@@ -324,16 +325,11 @@ struct CommuteArrivalRow: View {
 
     @ViewBuilder
     private var departure: some View {
-        HStack(alignment: .firstTextBaseline, spacing: 7) {
-            Text(.commuteUsuallyLeavesShort)
-                .font(.system(size: 12.5, weight: .medium))
-                .foregroundStyle(UNESColor.ink3)
-            TransitEstimateText(
-                estimate: CommuteFormat.Estimate(text: CommuteFormat.clock(arrival.expected), isApproximate: false),
-                dim: arrival.state == .historical || frozen,
-                size: 24
-            )
-        }
+        TransitEstimateText(
+            estimate: CommuteFormat.Estimate(text: CommuteFormat.clock(arrival.expected), isApproximate: false),
+            dim: arrival.state == .historical || frozen,
+            size: 24
+        )
         FlowLayout(spacing: 6, lineSpacing: 6) {
             departureChip
             if !frozen, arrival.state != .historical, let fix = arrival.lastFixAt {

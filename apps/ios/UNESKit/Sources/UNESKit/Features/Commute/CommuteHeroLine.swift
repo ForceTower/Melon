@@ -143,7 +143,7 @@ struct CommuteHeroLine: View {
             }
             HStack(spacing: 8) {
                 departureChip(arrival, now: now)
-                small(leg.stopArea.map { "\(leg.stopName) · \($0)" } ?? leg.stopName)
+                small(CommuteFormat.departureStopName(leg))
                     .lineLimit(1)
             }
         }
@@ -213,7 +213,7 @@ struct CommuteHeroLine: View {
                         CommuteFormat.clock(next.usual)
                     )))
                 } else {
-                    small(leg.stopName)
+                    small(stopName(leg))
                 }
             }
         }
@@ -230,9 +230,13 @@ struct CommuteHeroLine: View {
                 Text(.commuteOfflineTitle)
                     .font(.system(size: 14, weight: .semibold))
                     .foregroundStyle(.white)
-                small(leg.stopName)
+                small(stopName(leg))
             }
         }
+    }
+
+    private func stopName(_ leg: CommuteLeg) -> String {
+        store.direction == .fromCampus ? CommuteFormat.departureStopName(leg) : leg.stopName
     }
 
     private func placeholder(leg: CommuteLeg) -> some View {

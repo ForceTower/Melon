@@ -66,6 +66,8 @@ struct MeView: View {
                 CourseProgressView(store: store)
             case let .curriculumFlow(store):
                 CurriculumFlowView(store: store)
+            case let .commute(store):
+                CommutePathView(store: store)
             }
         }
         .task { await store.send(.task).finish() }

@@ -29,9 +29,13 @@ struct CommuteDaySchedule: Equatable, Hashable, Sendable {
 /// stop. Polls only while Home is on screen.
 @Reducer
 struct CommuteHeroFeature {
+    /// The student's own switch (in Ajustes) for those who don't take the bus.
+    static let onHomeKey = "commuteOnHome"
+
     @ObservableState
     struct State: Equatable {
         @Shared(.appStorage(FeatureFlags.commuteEnabledKey)) var isEnabled = false
+        @Shared(.appStorage(CommuteHeroFeature.onHomeKey)) var isOnHome = true
         var plan = CommutePlan()
         var schedule = CommuteDaySchedule()
         var direction: TransitDirection?
@@ -40,6 +44,8 @@ struct CommuteHeroFeature {
         /// keep a countdown running.
         var boardReceivedAt: Date?
         var loadFailed = false
+
+        var isShown: Bool { isEnabled && isOnHome }
 
         var leg: CommuteLeg? {
             direction.flatMap { plan.leg(for: $0) }
@@ -98,7 +104,7 @@ struct CommuteHeroFeature {
             switch action {
             case let .task(schedule):
                 state.schedule = schedule
-                guard state.isEnabled else { return .none }
+                guard state.isShown else { return .none }
                 return .merge(observePlan(), refreshPlan())
 
             case let .planLoaded(plan):
