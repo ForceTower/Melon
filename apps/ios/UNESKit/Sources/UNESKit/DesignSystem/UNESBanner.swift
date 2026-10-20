@@ -19,6 +19,8 @@ struct UNESBanner<Content: View>: View {
     var title: String?
     var action: String?
     var onAction: (() -> Void)?
+    /// Replaces the tone's default symbol.
+    var symbol: String?
     @ViewBuilder var content: Content
 
     var body: some View {
@@ -74,7 +76,8 @@ struct UNESBanner<Content: View>: View {
     }
 
     private var icon: String {
-        switch tone {
+        if let symbol { return symbol }
+        return switch tone {
         case .danger, .warn: "exclamationmark.triangle.fill"
         case .info: "checkmark"
         case .neutral: "info"

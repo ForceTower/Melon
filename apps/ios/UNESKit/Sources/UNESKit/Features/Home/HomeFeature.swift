@@ -12,6 +12,7 @@ struct HomeFeature {
         var errorMessage: String?
         var lastRefreshed: Date?
         var campusEvent: CampusEvent?
+        var commute = CommuteHeroFeature.State()
         var path = StackState<Path.State>()
         @Presents var relogin: LoginFeature.State?
         @Presents var reauth: ReauthFeature.State?
@@ -63,6 +64,8 @@ struct HomeFeature {
         case campusEventOrganizations(CampusEventOrganizationsFeature)
         case materialsList(MaterialsListFeature)
         case materialsDetail(MaterialsDetailFeature)
+        // A reducer enum nests through its `body`; it has no initializer.
+        case commute(CommutePath.Body = CommutePath.body)
     }
 
     enum Action: Equatable {
@@ -88,6 +91,7 @@ struct HomeFeature {
         case relogin(PresentationAction<LoginFeature.Action>)
         case reauth(PresentationAction<ReauthFeature.Action>)
         case interception(PresentationAction<InterceptionFeature.Action>)
+        case commute(CommuteHeroFeature.Action)
         case path(StackActionOf<Path>)
         case delegate(Delegate)
 
@@ -115,6 +119,7 @@ struct HomeFeature {
     private enum CancelID { case observation, refresh, heroRollover, campusEventObservation, campusEventRefresh }
 
     var body: some ReducerOf<Self> {
+        Scope(state: \.commute, action: \.commute) { CommuteHeroFeature() }
         Reduce { state, action in
             switch action {
             case .task:
@@ -280,10 +285,25 @@ struct HomeFeature {
             case .relogin:
                 return .none
 
+            case let .commute(.delegate(delegate)):
+                switch delegate {
+                case let .openBoard(direction):
+                    analytics.selectContent(contentType: ContentTypes.tile, itemId: "commute")
+                    state.path.open(.commute(.board(CommuteBoardFeature.State(direction: direction, plan: state.commute.plan))))
+                case .openSetup:
+                    analytics.selectContent(contentType: ContentTypes.cta, itemId: "commute_setup")
+                    state.path.open(.commute(.direction(CommuteDirectionFeature.State(plan: state.commute.plan))))
+                }
+                return .none
+
+            case .commute:
+                return .none
+
             case let .path(.element(id: _, action: pathAction)):
                 return .merge(
                     routeCampusEvent(pathAction, state: &state),
-                    routeMaterials(pathAction, state: &state)
+                    routeMaterials(pathAction, state: &state),
+                    routeCommute(pathAction, state: &state)
                 )
 
             case .path:
@@ -335,6 +355,23 @@ struct HomeFeature {
             state.path.append(.materialsDetail(MaterialsDetailFeature.State(material: material)))
         default:
             break
+        }
+        return .none
+    }
+
+    /// Saving replaces the setup steps with the board, and removing the plan
+    /// returns to Hoje; the hero takes the change at once either way.
+    private func routeCommute(_ action: Path.Action, state: inout State) -> Effect<Action> {
+        guard case let .commute(action) = action, let route = CommutePath.route(action) else { return .none }
+        switch route {
+        case let .push(screen):
+            state.path.append(.commute(screen))
+        case let .saved(plan, board):
+            state.commute.apply(plan)
+            state.path.open(.commute(board))
+        case .removed:
+            state.commute.apply(CommutePlan())
+            state.path = StackState()
         }
         return .none
     }

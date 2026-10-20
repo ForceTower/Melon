@@ -83,6 +83,8 @@ struct HomeView: View {
                 MaterialsListView(store: store)
             case let .materialsDetail(store):
                 MaterialsDetailView(store: store)
+            case let .commute(store):
+                CommutePathView(store: store)
             }
         }
         .task { await store.send(.task).finish() }
@@ -206,14 +208,21 @@ struct HomeView: View {
 
     @ViewBuilder
     private func heroCard(_ overview: HomeOverview) -> some View {
+        let showsCommute = store.commute.isShown
+        let schedule = CommuteDaySchedule(today: overview.today)
         if let hero = overview.hero {
-            HomeHeroCard(hero: hero) {
+            HomeHeroCard(hero: hero, showsAccessory: showsCommute) {
                 guard let id = hero.disciplineId else { return }
                 store.send(.disciplineTapped(
                     id: id, name: hero.disciplineName, offerId: hero.offerId, isNowClass: true
                 ))
+            } accessory: {
+                CommuteHeroLine(store: store.scope(state: \.commute, action: \.commute), schedule: schedule)
             }
             .scaleIn(delay: 0.1, duration: 0.62)
+        } else if showsCommute {
+            CommuteHeroCard(store: store.scope(state: \.commute, action: \.commute), schedule: schedule)
+                .scaleIn(delay: 0.1, duration: 0.62)
         }
     }
 

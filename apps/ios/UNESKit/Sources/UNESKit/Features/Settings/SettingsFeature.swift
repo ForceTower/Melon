@@ -25,6 +25,8 @@ struct SettingsFeature {
         @Shared(.appStorage("scheduleView")) var scheduleView: ScheduleViewMode = .grid
         @Shared(.appStorage(EvaluationReminderPreference.key)) var evaluationRemindersEnabled = true
         @Shared(.appStorage(FeatureFlags.evaluationRemindersEnabledKey)) var isEvaluationRemindersFlagOn = false
+        @Shared(.appStorage(CommuteHeroFeature.onHomeKey)) var isCommuteOnHome = true
+        @Shared(.appStorage(FeatureFlags.commuteEnabledKey)) var isCommuteFlagOn = false
         @Shared(.unlockedSecretIcons) var unlockedSecretIcons
         @Shared(.announcedSecretIcons) var announcedSecretIcons
 
@@ -60,6 +62,7 @@ struct SettingsFeature {
         case spoilerSelected(GradeSpoiler)
         case notificationToggled(NotificationToggle)
         case evaluationRemindersToggled(Bool)
+        case commuteOnHomeToggled(Bool)
         case settingsUpdateFailed(revert: SettingsChange)
         case appIconLoaded(AppIcon)
         case appIconSelected(AppIcon)
@@ -196,6 +199,16 @@ struct SettingsFeature {
                 // Device-local, no PATCH — but the pending requests must
                 // follow the switch immediately, off included.
                 return .run { _ in await evaluationReminders.reconcile() }
+
+            case let .commuteOnHomeToggled(isOn):
+                analytics.selectContent(
+                    contentType: ContentTypes.setting,
+                    itemId: "commute_on_home",
+                    properties: ["action": "toggle", "value": isOn]
+                )
+                state.$isCommuteOnHome.withLock { $0 = isOn }
+                log.info("set commute on home isOn=\(isOn)")
+                return .none
 
             case let .settingsUpdateFailed(revert):
                 state.settings.apply(revert)

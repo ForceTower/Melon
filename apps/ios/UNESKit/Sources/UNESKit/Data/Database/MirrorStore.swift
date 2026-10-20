@@ -166,6 +166,7 @@ struct MirrorStore: Sendable {
                 // The student's own entries go too: the next account to sign
                 // in on this device must not inherit them.
                 try PersonalEventRecord.deleteAll(db)
+                try CommuteLegRecord.deleteAll(db)
                 try Self.clearCourseProgress(db)
                 try SyncStateRecord.deleteAll(db)
             }

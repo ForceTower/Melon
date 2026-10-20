@@ -47,6 +47,23 @@
           }
         }
       }
+    },
+    "NSLocationWhenInUseUsageDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your location shows the bus stops closest to you and where you are on the route map. It never leaves your device."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sua localização mostra os pontos de ônibus mais perto e você no mapa do trajeto. Ela não sai do aparelho."
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

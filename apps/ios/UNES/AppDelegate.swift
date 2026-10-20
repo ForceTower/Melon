@@ -99,6 +99,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
             evaluationRemindersEnabled: settings.bool(.evaluationReminders),
             retrospectiveEnabled: settings.bool(.retrospective),
             courseProgressEnabled: settings.bool(.courseProgress),
+            commuteEnabled: settings.bool(.commute),
             documentCaptchaSiteKey: settings.string(.documentCaptchaSiteKey),
             documentCaptchaBaseURL: settings.string(.documentCaptchaBaseURL)
         )
