@@ -8,46 +8,75 @@ struct CommuteHowSheet: View {
     var direction: TransitDirection
 
     @Environment(\.dismiss) private var dismiss
+    /// Measured content height so the sheet hugs it — same pattern as
+    /// `MeDocumentSheet`, including the post-presentation re-sync (a detent
+    /// write issued mid-animation is dropped).
+    @State private var height: CGFloat = 560
 
     var body: some View {
-        NavigationStack {
+        ScrollView {
             TimelineView(.periodic(from: .now, by: 1)) { context in
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 0) {
-                        if let arrival {
-                            summary(arrival, now: context.date)
-                            if let basis = arrival.basis, basis.sampleCount >= 2, basis.dayCount >= 2 {
-                                explanation(basis)
-                                distribution(basis, arrival: arrival)
-                                    .padding(.top, 18)
-                            }
+                VStack(alignment: .leading, spacing: 0) {
+                    header
+                        .padding(.bottom, 18)
+                    if let arrival {
+                        summary(arrival, now: context.date)
+                        if let basis = arrival.basis, basis.sampleCount >= 2, basis.dayCount >= 2 {
+                            explanation(basis)
+                            distribution(basis, arrival: arrival)
+                                .padding(.top, 18)
                         }
-                        reasons
-                            .padding(.top, 16)
-                        Text(.commuteHowFootnote)
-                            .font(.system(size: 12))
-                            .foregroundStyle(UNESColor.ink4)
-                            .padding(.top, 16)
                     }
-                    .padding(EdgeInsets(top: 4, leading: 20, bottom: 32, trailing: 20))
+                    reasons
+                        .padding(.top, 16)
+                    Text(.commuteHowFootnote)
+                        .font(.system(size: 12))
+                        .foregroundStyle(UNESColor.ink4)
+                        .padding(.top, 16)
                 }
+                .padding(EdgeInsets(top: 24, leading: 20, bottom: 26, trailing: 20))
             }
-            .background(UNESColor.surface.ignoresSafeArea())
-            .navigationTitle(Text(.commuteHowTitle))
-            .inlineNavigationBar()
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button {
-                        dismiss()
-                    } label: {
-                        Image(systemName: "xmark")
-                    }
-                    .accessibilityLabel(Text(.commonClose))
-                }
+            .onGeometryChange(for: CGFloat.self) { proxy in
+                proxy.size.height
+            } action: { measured in
+                fit(measured)
             }
         }
-        .presentationDetents([.medium, .large])
+        .scrollIndicators(.hidden)
+        .presentationBackground(UNESColor.surface)
+        .presentationDetents([.height(height)])
         .presentationDragIndicator(.visible)
+    }
+
+    private func fit(_ measured: CGFloat) {
+        height = measured
+        Task { @MainActor in
+            try? await Task.sleep(for: .milliseconds(700))
+            if height == measured {
+                height = measured + 0.001
+            }
+        }
+    }
+
+    private var header: some View {
+        HStack(spacing: 12) {
+            Text(.commuteHowTitle)
+                .font(.system(size: 22, weight: .bold))
+                .tracking(-0.66)
+                .foregroundStyle(UNESColor.ink)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            Button {
+                dismiss()
+            } label: {
+                Image(systemName: "xmark")
+                    .font(.system(size: 11, weight: .semibold))
+                    .foregroundStyle(UNESColor.ink3)
+                    .frame(width: 30, height: 30)
+                    .background(UNESColor.surface2, in: Circle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(Text(.commonClose))
+        }
     }
 
     private func summary(_ arrival: TransitArrival, now: Date) -> some View {
