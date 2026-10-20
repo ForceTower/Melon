@@ -292,7 +292,7 @@ struct CommuteArrivalRow: View {
                     size: arrival.state == .live ? 30 : 26
                 )
                 if arrival.state == .live, !arrival.signalLost, !frozen, let stops = arrival.stopsAway, stops > 0 {
-                    Text(.commuteStopsAway(stops))
+                    Text(stops == 1 ? .commuteNextStop : .commuteStopsAway(stops))
                         .font(.system(size: 12.5, weight: .medium))
                         .monospacedDigit()
                         .foregroundStyle(UNESColor.ink3)

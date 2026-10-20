@@ -121,8 +121,9 @@ struct CommuteFollowView: View {
 
     private func detail(_ arrival: TransitArrival) -> String? {
         var parts: [String] = []
+        // The count includes the student's stop, so 1 means it is the next one.
         if let stops = arrival.stopsAway, stops > 0, arrival.state == .live {
-            parts.append(.localized(.commuteFollowStopsAway(stops)))
+            parts.append(stops == 1 ? .localized(.commuteFollowNextStop) : .localized(.commuteFollowStopsAway(stops)))
         }
         if let campus = arrival.campusArrival {
             parts.append(.localized(.commuteReachesCampus(CommuteFormat.clock(campus))))

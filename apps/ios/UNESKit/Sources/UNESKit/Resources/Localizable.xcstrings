@@ -1681,6 +1681,40 @@
         }
       }
     },
+    "commute.follow.nextStop" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "yours is the next stop"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "seu ponto é a próxima parada"
+          }
+        }
+      }
+    },
+    "commute.nextStop" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "next stop"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "próxima parada"
+          }
+        }
+      }
+    },
     "commute.follow.passed" : {
       "extractionState" : "manual",
       "localizations" : {

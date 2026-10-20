@@ -18,7 +18,7 @@ struct CommuteHeroLine: View {
                 Rectangle().fill(.white.opacity(0.16)).frame(height: 1)
             }
         }
-        .padding(.top, separated ? 16 : 0)
+        .padding(.top, separated ? 14 : 0)
         .task(id: schedule) {
             await store.send(.task(schedule)).finish()
         }
@@ -128,7 +128,7 @@ struct CommuteHeroLine: View {
 
     private func goingHome(_ arrival: TransitArrival, leg: CommuteLeg, now: Date) -> some View {
         VStack(alignment: .leading, spacing: 10) {
-            HStack(alignment: .center, spacing: 10) {
+            HStack(alignment: .firstTextBaseline, spacing: 10) {
                 TransitLineBadge(number: arrival.lineNumber)
                 ViewThatFits(in: .horizontal) {
                     HStack(alignment: .firstTextBaseline, spacing: 8) {
