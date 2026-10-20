@@ -58,6 +58,22 @@ enum UNESColor {
     static let accentPress  = dynamic(light: hex(0xC9, 0x45, 0x38),
                                       dark:  hex(0xE8, 0x8A, 0x1D))
 
+    // MARK: Meu trajeto (one identity per UEFS bus line; the dark values are lifted)
+    static let transit003     = dynamic(light: hex(0x2D, 0x1B, 0x4E), dark: hex(0x7A, 0x5B, 0xC0))
+    static let transit087     = dynamic(light: hex(0xB2, 0x3A, 0x7A), dark: hex(0xD8, 0x60, 0x9E))
+    static let transit088     = dynamic(light: hex(0xE8, 0x5D, 0x4E), dark: hex(0xF0, 0x7C, 0x6E))
+    /// "Aguardando saída" — the design's readable magenta.
+    static let transitWaiting = dynamic(light: hex(0xB2, 0x3A, 0x7A), dark: hex(0xD8, 0x60, 0x9E))
+
+    static func transitLine(_ number: String) -> Color {
+        switch number {
+        case "003": transit003
+        case "087": transit087
+        case "088": transit088
+        default: ink3
+        }
+    }
+
     // MARK: - Helpers
     private static func hex(_ r: Int, _ g: Int, _ b: Int) -> UIColor {
         UIColor(red: CGFloat(r) / 255, green: CGFloat(g) / 255, blue: CGFloat(b) / 255, alpha: 1)

@@ -33,6 +33,7 @@ import androidx.navigation3.runtime.rememberDecoratedNavEntries
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import dev.forcetower.melon.feature.paradoxo.domain.model.ParadoxoExploreKind
+import dev.forcetower.melon.feature.transit.domain.model.TransitDirection
 import dev.forcetower.unes.designsystem.foundation.RevealWindowHost
 import dev.forcetower.unes.designsystem.theme.MelonMotion
 import dev.forcetower.unes.designsystem.theme.MelonTheme
@@ -45,6 +46,15 @@ import dev.forcetower.unes.ui.feature.campusevent.CampusEventSpeakersScreen
 import dev.forcetower.unes.ui.feature.campusevent.CampusEventVenuesScreen
 import dev.forcetower.unes.ui.feature.campusevent.CampusEventViewModel
 import dev.forcetower.unes.ui.feature.campusevent.CampusEventWorkshopsScreen
+import dev.forcetower.unes.ui.feature.commute.CommuteBoardScreen
+import dev.forcetower.unes.ui.feature.commute.CommuteDirectionScreen
+import dev.forcetower.unes.ui.feature.commute.CommuteFollowIntent
+import dev.forcetower.unes.ui.feature.commute.CommuteFollowScreen
+import dev.forcetower.unes.ui.feature.commute.CommuteFollowViewModel
+import dev.forcetower.unes.ui.feature.commute.CommuteLinesScreen
+import dev.forcetower.unes.ui.feature.commute.CommuteSetupIntent
+import dev.forcetower.unes.ui.feature.commute.CommuteSetupViewModel
+import dev.forcetower.unes.ui.feature.commute.CommuteStopPickerScreen
 import dev.forcetower.unes.ui.feature.courseprogress.CourseProgressScreen
 import dev.forcetower.unes.ui.feature.courseprogress.CurriculumFlowScreen
 import dev.forcetower.unes.ui.feature.disciplinedetail.DisciplineDetailRoute
@@ -137,6 +147,17 @@ internal fun ConnectedScreen(
     // icons flip light — the Android analogue of iOS `WelcomeChrome`.
     val campusEventVm: CampusEventViewModel = hiltViewModel()
     val campusEventState by campusEventVm.state.collectAsStateWithLifecycle()
+    // Meu trajeto hand-offs: the board seeds the follow screen with the
+    // arrival it showed, and the board / Hoje seed the setup session with the
+    // plan being edited, so neither push serializes a payload.
+    val commuteFollowVm: CommuteFollowViewModel = hiltViewModel()
+    val commuteSetupVm: CommuteSetupViewModel = hiltViewModel()
+
+    // Saving replaces the setup steps with the board, and removing the plan
+    // returns to where the flow opened — the iOS `CommutePath.route` rules.
+    fun closeCommuteFlow() {
+        navigator.activeStack.removeAll { it.isCommuteRoute }
+    }
     // A flexible in-app update finished downloading — offer the restart.
     val updateDownloaded by vm.updateDownloaded.collectAsStateWithLifecycle()
     val unreadBadges = mapOf(
@@ -190,6 +211,13 @@ internal fun ConnectedScreen(
                         onOpenSchedule = { navigator.selectTab(ConnectedTab.Schedule) },
                         onOpenProfile = { navigator.selectTab(ConnectedTab.Me) },
                         onOpenCampusEvent = { navigator.navigate(ConnectedRoute.CampusEvent) },
+                        onOpenCommute = { direction ->
+                            navigator.navigate(ConnectedRoute.Commute(direction.wire))
+                        },
+                        onOpenCommuteSetup = {
+                            commuteSetupVm.onIntent(CommuteSetupIntent.Enter)
+                            navigator.navigate(ConnectedRoute.CommuteSetupDirection)
+                        },
                     )
                 }
                 entry<ConnectedRoute.Schedule>(metadata = TabRootMetadata) {
@@ -486,6 +514,72 @@ internal fun ConnectedScreen(
                 entry<ConnectedRoute.CampusEventOrganizations> {
                     CampusEventOrganizationsScreen(
                         onBack = { navigator.goBack() },
+                        bottomInset = bottomInset,
+                    )
+                }
+                entry<ConnectedRoute.Commute> { route ->
+                    CommuteBoardScreen(
+                        direction = route.direction?.let(TransitDirection::fromWire),
+                        onBack = { navigator.goBack() },
+                        onFollow = { seed ->
+                            commuteFollowVm.onIntent(
+                                CommuteFollowIntent.Seed(seed.arrival, seed.direction, seed.stopId, seed.receivedAt),
+                            )
+                            navigator.navigate(
+                                ConnectedRoute.CommuteFollow(
+                                    lineNumber = seed.arrival.lineNumber,
+                                    direction = seed.direction.wire,
+                                    stopId = seed.stopId,
+                                    arrivalId = seed.arrival.id,
+                                    vehicleId = seed.arrival.vehicleId,
+                                ),
+                            )
+                        },
+                        onEditPlan = { plan ->
+                            commuteSetupVm.onIntent(CommuteSetupIntent.Begin(plan))
+                            navigator.navigate(ConnectedRoute.CommuteSetupDirection)
+                        },
+                        bottomInset = bottomInset,
+                    )
+                }
+                entry<ConnectedRoute.CommuteFollow> { route ->
+                    CommuteFollowScreen(
+                        route = route,
+                        onBack = { navigator.goBack() },
+                        bottomInset = bottomInset,
+                    )
+                }
+                entry<ConnectedRoute.CommuteSetupDirection> {
+                    CommuteDirectionScreen(
+                        onBack = { navigator.goBack() },
+                        onGoToStop = { navigator.navigate(ConnectedRoute.CommuteSetupStop) },
+                        onGoToLines = { direction ->
+                            navigator.navigate(ConnectedRoute.CommuteSetupLines(direction.wire))
+                        },
+                        onRemoved = { closeCommuteFlow() },
+                        bottomInset = bottomInset,
+                    )
+                }
+                entry<ConnectedRoute.CommuteSetupStop> {
+                    CommuteStopPickerScreen(
+                        onBack = { navigator.goBack() },
+                        onGoToLines = { direction ->
+                            navigator.navigate(ConnectedRoute.CommuteSetupLines(direction.wire))
+                        },
+                        bottomInset = bottomInset,
+                    )
+                }
+                entry<ConnectedRoute.CommuteSetupLines> { route ->
+                    CommuteLinesScreen(
+                        direction = TransitDirection.fromWire(route.direction) ?: TransitDirection.ToCampus,
+                        onBack = { navigator.goBack() },
+                        onGoToLines = { direction ->
+                            navigator.navigate(ConnectedRoute.CommuteSetupLines(direction.wire))
+                        },
+                        onFinished = { _, direction ->
+                            closeCommuteFlow()
+                            navigator.navigate(ConnectedRoute.Commute(direction.wire))
+                        },
                         bottomInset = bottomInset,
                     )
                 }

@@ -27,7 +27,28 @@ data class MelonColors(
     val verdict: MelonVerdictColors,
     val vault: MelonVaultColors,
     val status: MelonStatusColors,
+    val transit: MelonTransitColors,
 )
+
+// Meu trajeto (iOS `UNESColor.transit*`): one identity per UEFS bus line for
+// the badges, route lines and bus markers, plus the "Aguardando saída" chip
+// tone. Lines the catalog doesn't know fall back to the muted ink.
+@Immutable
+data class MelonTransitColors(
+    val line003: Color,
+    val line087: Color,
+    val line088: Color,
+    val waiting: Color,
+    val unknownLine: Color,
+) {
+    fun line(number: String): Color =
+        when (number) {
+            "003" -> line003
+            "087" -> line087
+            "088" -> line088
+            else -> unknownLine
+        }
+}
 
 // Adaptive semantic status trio — pass/attention/fail signals on grades,
 // absence bars, and warning banners. Unlike `fixed.success`/`fixed.destructive`
@@ -279,6 +300,13 @@ internal fun melonColorsLight() =
             warn = StatusWarnLight,
             bad = StatusBadLight,
         ),
+        transit = MelonTransitColors(
+            line003 = TransitLine003Light,
+            line087 = TransitLine087Light,
+            line088 = TransitLine088Light,
+            waiting = TransitWaitingLight,
+            unknownLine = Ink3Light,
+        ),
     )
 
 internal fun melonColorsDark() =
@@ -317,6 +345,13 @@ internal fun melonColorsDark() =
             ok = StatusOkDark,
             warn = StatusWarnDark,
             bad = StatusBadDark,
+        ),
+        transit = MelonTransitColors(
+            line003 = TransitLine003Dark,
+            line087 = TransitLine087Dark,
+            line088 = TransitLine088Dark,
+            waiting = TransitWaitingDark,
+            unknownLine = Ink3Dark,
         ),
     )
 

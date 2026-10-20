@@ -17,6 +17,7 @@ import dev.forcetower.unes.reminders.EvaluationReminderPreferenceStore
 import dev.forcetower.unes.remote.FeatureFlags
 import dev.forcetower.unes.theme.ThemeMode
 import dev.forcetower.unes.theme.ThemePreferenceStore
+import dev.forcetower.unes.ui.feature.commute.CommutePreferenceStore
 import dev.forcetower.unes.ui.feature.schedule.SchedulePreferenceStore
 import javax.inject.Inject
 import kotlin.time.Clock
@@ -49,6 +50,9 @@ internal sealed interface SettingsIntent : UiIntent {
     data class SetEvaluationReminders(
         val value: Boolean,
     ) : SettingsIntent
+    data class SetCommuteOnHome(
+        val value: Boolean,
+    ) : SettingsIntent
 }
 
 internal sealed interface SettingsEffect : UiEffect
@@ -63,6 +67,7 @@ internal class SettingsViewModel @Inject constructor(
     private val themePreferences: ThemePreferenceStore,
     private val schedulePreferences: SchedulePreferenceStore,
     private val reminderPreferences: EvaluationReminderPreferenceStore,
+    private val commutePreferences: CommutePreferenceStore,
     featureFlags: FeatureFlags,
     private val analytics: Analytics,
 ) : MviViewModel<SettingsUiState, SettingsIntent, SettingsEffect>(SettingsUiState()) {
@@ -101,8 +106,15 @@ internal class SettingsViewModel @Inject constructor(
             }
         }
         viewModelScope.launch {
+            commutePreferences.onHome.collect { onHome ->
+                setState { copy(commuteOnHome = onHome) }
+            }
+        }
+        viewModelScope.launch {
             featureFlags.gates.collect { gates ->
-                setState { copy(evaluationRemindersAvailable = gates.evaluationReminders) }
+                setState {
+                    copy(evaluationRemindersAvailable = gates.evaluationReminders, commuteAvailable = gates.commute)
+                }
             }
         }
         viewModelScope.launch {
@@ -127,6 +139,7 @@ internal class SettingsViewModel @Inject constructor(
             is SettingsIntent.SetSpoiler -> setSpoiler(intent.value)
             is SettingsIntent.SetToggle -> setToggle(intent.toggle, intent.value)
             is SettingsIntent.SetEvaluationReminders -> setEvaluationReminders(intent.value)
+            is SettingsIntent.SetCommuteOnHome -> setCommuteOnHome(intent.value)
         }
     }
 
@@ -176,6 +189,18 @@ internal class SettingsViewModel @Inject constructor(
         )
         setState { copy(evaluationRemindersEnabled = value) }
         viewModelScope.launch { reminderPreferences.set(value) }
+    }
+
+    // Device-local, no PATCH — the Hoje hero collects this store and drops
+    // (or restores) the bus line as soon as the write lands.
+    private fun setCommuteOnHome(value: Boolean) {
+        analytics.selectContent(
+            ContentTypes.SETTING,
+            "commute_on_home",
+            mapOf("action" to "toggle", "value" to value),
+        )
+        setState { copy(commuteOnHome = value) }
+        viewModelScope.launch { commutePreferences.setOnHome(value) }
     }
 
     private fun setSpoiler(value: SpoilerMode) {

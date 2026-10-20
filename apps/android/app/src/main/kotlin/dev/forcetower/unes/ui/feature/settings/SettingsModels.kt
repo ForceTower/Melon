@@ -54,6 +54,10 @@ internal data class SettingsUiState(
     // Remote Config gate. Not part of the "n/9 ativas" server-toggle count.
     val evaluationRemindersAvailable: Boolean = false,
     val evaluationRemindersEnabled: Boolean = true,
+    // Device-local "Meu trajeto em Hoje" switch (DataStore, never syncs) and
+    // its Remote Config gate. Off keeps the bus line off Hoje; Eu still has it.
+    val commuteAvailable: Boolean = false,
+    val commuteOnHome: Boolean = true,
 ) : UiState {
     val messageActiveCount: Int get() = countOn(notifMsgBroadcast, notifMsgClass, notifMsgDirect)
     val gradeActiveCount: Int get() = countOn(notifGradePosted, notifGradeChanged, notifGradeDateChanged)

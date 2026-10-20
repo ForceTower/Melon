@@ -17,6 +17,7 @@ import dev.forcetower.melon.feature.me.domain.usecase.FetchAcademicDocumentUseCa
 import dev.forcetower.melon.feature.me.domain.usecase.ObserveMeProfileUseCase
 import dev.forcetower.melon.feature.me.domain.usecase.UpdateProfileUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.SyncProfileUseCase
+import dev.forcetower.melon.feature.transit.domain.usecase.ClearCommutePlanUseCase
 import dev.forcetower.unes.firebase.PushRegistrar
 import dev.forcetower.unes.mvi.MviViewModel
 import dev.forcetower.unes.mvi.UiEffect
@@ -200,6 +201,7 @@ internal class MeViewModel @Inject constructor(
     private val localDocuments: LocalDocumentStore,
     private val sessionStore: SessionStore,
     private val clearCampusEvent: ClearCampusEventUseCase,
+    private val clearCommutePlan: ClearCommutePlanUseCase,
     private val pushRegistrar: PushRegistrar,
     private val analytics: Analytics,
 ) : MviViewModel<MeUiState, MeIntent, MeEffect>(MeUiState()) {
@@ -440,6 +442,9 @@ internal class MeViewModel @Inject constructor(
             // User-scoped snapshot outside the DB teardown — iOS wipes it
             // with the mirror; here it lives in KeyValueStorage.
             runCatching { clearCampusEvent() }
+            // The saved commute is the student's own; same key-value mirror,
+            // same explicit wipe.
+            runCatching { clearCommutePlan() }
             // Match iOS pacing: ~0.9s flash before the goodbye view animates in.
             kotlinx.coroutines.delay(LogoutFlashMs)
             setState { copy(logoutStep = LogoutStep.LoggedOut) }

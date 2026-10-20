@@ -60,7 +60,8 @@ import dev.forcetower.unes.ui.feature.overview.OverviewTomorrowUi
 import kotlin.math.roundToInt
 
 // Mesh hero card — the design's contained "Próxima aula" card and its two
-// alternate states: live class (3a) and day concluded (3b).
+// alternate states: live class (3a) and day concluded (3b). `accessory` is
+// the Meu trajeto line drawn under the class, on the same mesh.
 @Composable
 internal fun HeroCard(
     state: OverviewHeroState,
@@ -69,6 +70,7 @@ internal fun HeroCard(
     isEvening: Boolean,
     onOpenClassDetails: (OverviewHeroClass) -> Unit,
     modifier: Modifier = Modifier,
+    accessory: (@Composable () -> Unit)? = null,
 ) {
     val variant = when (state) {
         is OverviewHeroState.DayDone -> MeshVariant.Dusk
@@ -97,7 +99,7 @@ internal fun HeroCard(
                 ),
         )
 
-        Box(modifier = Modifier.padding(horizontal = 20.dp, vertical = 22.dp)) {
+        Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 22.dp)) {
             when (state) {
                 is OverviewHeroState.Upcoming -> UpcomingContent(state, onOpenClassDetails)
                 is OverviewHeroState.Live -> LiveContent(state)
@@ -108,6 +110,7 @@ internal fun HeroCard(
                     isEvening = isEvening,
                 )
             }
+            accessory?.invoke()
         }
     }
 }

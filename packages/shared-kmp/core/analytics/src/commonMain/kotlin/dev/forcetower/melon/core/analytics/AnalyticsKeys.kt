@@ -62,6 +62,12 @@ object Screens {
     const val CAMPUS_EVENT_WORKSHOPS = "campus_event_workshops"
     const val CAMPUS_EVENT_VENUES = "campus_event_venues"
     const val CAMPUS_EVENT_ORGANIZATIONS = "campus_event_organizations"
+
+    const val COMMUTE = "commute"
+    const val COMMUTE_FOLLOW = "commute_follow"
+    const val COMMUTE_SETUP_DIRECTION = "commute_setup_direction"
+    const val COMMUTE_SETUP_STOP = "commute_setup_stop"
+    const val COMMUTE_SETUP_LINES = "commute_setup_lines"
 }
 
 object ContentTypes {

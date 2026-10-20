@@ -95,6 +95,14 @@ import dev.forcetower.melon.feature.sync.domain.usecase.SyncMessagesUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.SyncProfileUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.SyncSemesterListUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.SyncSemesterUseCase
+import dev.forcetower.melon.feature.transit.domain.usecase.ClearCommutePlanUseCase
+import dev.forcetower.melon.feature.transit.domain.usecase.FollowTransitArrivalUseCase
+import dev.forcetower.melon.feature.transit.domain.usecase.GetStopArrivalsUseCase
+import dev.forcetower.melon.feature.transit.domain.usecase.GetTransitNetworkUseCase
+import dev.forcetower.melon.feature.transit.domain.usecase.ObserveCommutePlanUseCase
+import dev.forcetower.melon.feature.transit.domain.usecase.RefreshCommutePlanUseCase
+import dev.forcetower.melon.feature.transit.domain.usecase.RemoveCommutePlanUseCase
+import dev.forcetower.melon.feature.transit.domain.usecase.SaveCommutePlanUseCase
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.DependencyGraph
 import dev.zacsweers.metro.Provides
@@ -281,6 +289,18 @@ interface UmbrellaGraph {
     // mutated via `updateSettingsUseCase`.
     val observeSettingsUseCase: ObserveSettingsUseCase
     val updateSettingsUseCase: UpdateSettingsUseCase
+
+    // Meu trajeto — the saved plan mirror (observe / refresh / save / remove /
+    // logout clear) and the bus reads it feeds (network, a stop's arrivals,
+    // following one departure).
+    val observeCommutePlanUseCase: ObserveCommutePlanUseCase
+    val refreshCommutePlanUseCase: RefreshCommutePlanUseCase
+    val saveCommutePlanUseCase: SaveCommutePlanUseCase
+    val removeCommutePlanUseCase: RemoveCommutePlanUseCase
+    val clearCommutePlanUseCase: ClearCommutePlanUseCase
+    val getTransitNetworkUseCase: GetTransitNetworkUseCase
+    val getStopArrivalsUseCase: GetStopArrivalsUseCase
+    val followTransitArrivalUseCase: FollowTransitArrivalUseCase
 
     @DependencyGraph.Factory
     fun interface Factory {

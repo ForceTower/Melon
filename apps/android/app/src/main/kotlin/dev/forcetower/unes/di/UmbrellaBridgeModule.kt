@@ -99,6 +99,14 @@ import dev.forcetower.melon.feature.sync.domain.usecase.SyncMessagesUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.SyncProfileUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.SyncSemesterListUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.SyncSemesterUseCase
+import dev.forcetower.melon.feature.transit.domain.usecase.ClearCommutePlanUseCase
+import dev.forcetower.melon.feature.transit.domain.usecase.FollowTransitArrivalUseCase
+import dev.forcetower.melon.feature.transit.domain.usecase.GetStopArrivalsUseCase
+import dev.forcetower.melon.feature.transit.domain.usecase.GetTransitNetworkUseCase
+import dev.forcetower.melon.feature.transit.domain.usecase.ObserveCommutePlanUseCase
+import dev.forcetower.melon.feature.transit.domain.usecase.RefreshCommutePlanUseCase
+import dev.forcetower.melon.feature.transit.domain.usecase.RemoveCommutePlanUseCase
+import dev.forcetower.melon.feature.transit.domain.usecase.SaveCommutePlanUseCase
 import dev.forcetower.melon.umbrella.UmbrellaConfig
 import dev.forcetower.melon.umbrella.UmbrellaGraph
 import dev.forcetower.unes.BuildConfig
@@ -463,4 +471,26 @@ internal object UmbrellaBridgeModule {
     @Provides
     fun provideDeletePersonalEventUseCase(graph: UmbrellaGraph): DeletePersonalEventUseCase =
         graph.deletePersonalEventUseCase
+
+    // Meu trajeto — the saved plan mirror and the bus reads behind the Hoje
+    // line, the board, the follow screen and the setup steps.
+    @Provides
+    fun provideObserveCommutePlanUseCase(graph: UmbrellaGraph): ObserveCommutePlanUseCase =
+        graph.observeCommutePlanUseCase
+    @Provides
+    fun provideRefreshCommutePlanUseCase(graph: UmbrellaGraph): RefreshCommutePlanUseCase =
+        graph.refreshCommutePlanUseCase
+    @Provides
+    fun provideSaveCommutePlanUseCase(graph: UmbrellaGraph): SaveCommutePlanUseCase = graph.saveCommutePlanUseCase
+    @Provides
+    fun provideRemoveCommutePlanUseCase(graph: UmbrellaGraph): RemoveCommutePlanUseCase = graph.removeCommutePlanUseCase
+    @Provides
+    fun provideClearCommutePlanUseCase(graph: UmbrellaGraph): ClearCommutePlanUseCase = graph.clearCommutePlanUseCase
+    @Provides
+    fun provideGetTransitNetworkUseCase(graph: UmbrellaGraph): GetTransitNetworkUseCase = graph.getTransitNetworkUseCase
+    @Provides
+    fun provideGetStopArrivalsUseCase(graph: UmbrellaGraph): GetStopArrivalsUseCase = graph.getStopArrivalsUseCase
+    @Provides
+    fun provideFollowTransitArrivalUseCase(graph: UmbrellaGraph): FollowTransitArrivalUseCase =
+        graph.followTransitArrivalUseCase
 }

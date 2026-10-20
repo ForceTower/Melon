@@ -52,6 +52,7 @@ internal enum class RemoteBoolKey(
     CAMPUS_EVENT("enable_campus_event"),
     EVALUATION_REMINDERS("enable_evaluation_reminders"),
     COURSE_PROGRESS("enable_course_progress"),
+    COMMUTE("enable_commute"),
 
     IN_APP_REVIEW("enable_in_app_review"),
 }

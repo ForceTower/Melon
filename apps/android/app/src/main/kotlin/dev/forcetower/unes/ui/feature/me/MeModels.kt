@@ -52,10 +52,11 @@ internal data class ProfileIdentity(
 // the dc `EuScreen` hue map.
 internal enum class ShortcutTone { Teal, Coral, Magenta, Indigo, Violet, Amber, Green, Mustard }
 
-// Same set as iOS `MeShortcut` (MeFeature.swift). Enrollment, CourseProgress,
-// Certificate, History, Paradoxo, Library and Materials are remote-config
-// gated; Calendar and Countdown always show.
+// Same set as iOS `MeShortcut` (MeFeature.swift). Commute, Enrollment,
+// CourseProgress, Certificate, History, Paradoxo, Library and Materials are
+// remote-config gated; Calendar and Countdown always show.
 internal enum class ShortcutKind {
+    Commute,
     Enrollment,
     Calendar,
     Countdown,
