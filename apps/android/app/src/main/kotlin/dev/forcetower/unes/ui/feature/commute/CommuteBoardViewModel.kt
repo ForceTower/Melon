@@ -70,8 +70,8 @@ internal sealed interface CommuteBoardIntent : UiIntent {
     ) : CommuteBoardIntent
     data object ExplainerDismissed : CommuteBoardIntent
 
-    // The route left the stack (the flow closed over it): the next `Open` is
-    // a fresh entry, not a pop back.
+    // The route left the stack, popped or closed over by the flow: the next
+    // `Open` is a fresh entry, not a pop back.
     data object Closed : CommuteBoardIntent
 }
 

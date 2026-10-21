@@ -5,9 +5,11 @@ import dev.forcetower.melon.core.common.Outcome
 import dev.forcetower.melon.core.storage.KeyValueStorage
 import dev.forcetower.melon.feature.transit.data.CommutePlanRepository
 import dev.forcetower.melon.feature.transit.data.network.TransitService
+import dev.forcetower.melon.feature.transit.domain.model.CommuteLeg
 import dev.forcetower.melon.feature.transit.domain.model.CommutePlan
 import dev.forcetower.melon.feature.transit.domain.model.TransitArrivalState
 import dev.forcetower.melon.feature.transit.domain.model.TransitDirection
+import dev.forcetower.melon.feature.transit.domain.model.TransitError
 import dev.forcetower.melon.feature.transit.domain.model.TransitFeedStatus
 import dev.forcetower.melon.feature.transit.domain.model.TransitFollow
 import dev.forcetower.melon.feature.transit.domain.model.TransitNetwork
@@ -167,6 +169,35 @@ internal class TransitContractTest {
 
             assertTrue(repository.observe().first().isEmpty)
             assertNull(storage.get("transit.commute_plan"))
+        }
+
+    // A write queued behind a slow refresh at logout must not go out: by its
+    // turn the bearer may be the next account's.
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun aWriteQueuedAtLogoutIsNotSent() =
+        runTest {
+            val answer = CompletableDeferred<Unit>()
+            val methods = mutableListOf<HttpMethod>()
+            val service = service { request ->
+                methods += request.method
+                if (request.method == HttpMethod.Get) answer.await()
+                fixture.getValue("plan")
+            }
+            val repository = CommutePlanRepository(service, FakeStorage(), json, Logger)
+            val leg = CommuteLeg("9001", "Rua de Exemplo, 100", null, listOf("087"), walkMinutes = 5)
+
+            val refresh = async { repository.refresh() }
+            runCurrent()
+            val save = async { repository.save(CommutePlan(toCampus = leg)) }
+            runCurrent()
+            repository.clear()
+            answer.complete(Unit)
+
+            assertIs<Outcome.Ok<Unit>>(refresh.await())
+            assertIs<Outcome.Err<TransitError>>(save.await())
+            assertEquals(listOf(HttpMethod.Get), methods)
+            assertTrue(repository.observe().first().isEmpty)
         }
 
     private fun service(data: suspend (HttpRequestData) -> JsonElement): TransitService {

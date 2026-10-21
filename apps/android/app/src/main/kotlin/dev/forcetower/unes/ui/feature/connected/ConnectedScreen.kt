@@ -170,6 +170,14 @@ internal fun ConnectedScreen(
             it is ConnectedRoute.CommuteSetupStop || it is ConnectedRoute.CommuteSetupLines
         }
     }
+
+    // The board forgets its entry once its route has left every stack,
+    // however it left (toolbar or system back, a deep link), so the next
+    // push opens on the direction it asks for, not on the last pick.
+    val boardOnStack = navigator.stacks.values.any { stack -> stack.any { it is ConnectedRoute.Commute } }
+    LaunchedEffect(boardOnStack) {
+        if (!boardOnStack) commuteBoardVm.onIntent(CommuteBoardIntent.Closed)
+    }
     // A flexible in-app update finished downloading — offer the restart.
     val updateDownloaded by vm.updateDownloaded.collectAsStateWithLifecycle()
     val unreadBadges = mapOf(

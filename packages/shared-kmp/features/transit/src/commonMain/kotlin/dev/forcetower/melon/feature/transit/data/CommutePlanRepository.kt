@@ -39,8 +39,9 @@ class CommutePlanRepository internal constructor(
     private val state = MutableStateFlow(CommutePlan())
 
     // Guards the mirror: its hydration, every write, and the generation a
-    // logout bumps so a request begun under the previous account cannot
-    // write its answer into the next one's mirror.
+    // logout bumps. A request begun under the previous account neither goes
+    // out on its turn (the bearer by then may be the next account's) nor
+    // writes its answer into the next one's mirror.
     private val mirror = Mutex()
     private var hydrated = false
     private var generation = 0
@@ -55,6 +56,7 @@ class CommutePlanRepository internal constructor(
     suspend fun refresh(): Outcome<Unit, TransitError> {
         val began = hydrate()
         return operations.withLock {
+            if (signedOut(began, "refresh")) return@withLock Outcome.Err(TransitError.SignedOut)
             when (val outcome = service.plan()) {
                 is Outcome.Ok -> {
                     if (apply(outcome.value, began)) log.d { "refresh ok directions=${outcome.value.directions.size}" }
@@ -72,6 +74,7 @@ class CommutePlanRepository internal constructor(
     suspend fun save(plan: CommutePlan): Outcome<CommutePlan, TransitError> {
         val began = hydrate()
         return operations.withLock {
+            if (signedOut(began, "save")) return@withLock Outcome.Err(TransitError.SignedOut)
             when (val outcome = service.savePlan(plan)) {
                 is Outcome.Ok -> {
                     if (apply(outcome.value, began)) log.i { "save ok directions=${outcome.value.directions.size}" }
@@ -88,6 +91,7 @@ class CommutePlanRepository internal constructor(
     suspend fun remove(): Outcome<Unit, TransitError> {
         val began = hydrate()
         return operations.withLock {
+            if (signedOut(began, "remove")) return@withLock Outcome.Err(TransitError.SignedOut)
             when (val outcome = service.removePlan()) {
                 is Outcome.Ok -> {
                     if (apply(outcome.value, began)) log.i { "remove ok" }
@@ -102,7 +106,8 @@ class CommutePlanRepository internal constructor(
     }
 
     // Logout wipe — the plan is the student's own, so the next account on
-    // the device must not inherit it, not even from a request still in flight.
+    // the device must not inherit it, not even from a request still in flight
+    // or waiting its turn.
     suspend fun clear() {
         mirror.withLock {
             hydrated = true
@@ -123,6 +128,17 @@ class CommutePlanRepository internal constructor(
                     ?.let { state.value = it.toDomain() }
             }
             generation
+        }
+
+    // Whether a logout came between the call and its turn.
+    private suspend fun signedOut(
+        began: Int,
+        operation: String,
+    ): Boolean =
+        mirror.withLock {
+            val stale = began != generation
+            if (stale) log.i { "$operation skipped: logged out meanwhile" }
+            stale
         }
 
     // False when a logout came first: the answer belongs to the account that asked.
