@@ -149,7 +149,40 @@ internal sealed interface ConnectedRoute : NavKey {
     @Serializable data object EnrollmentTimetable : ConnectedRoute
     @Serializable data object EnrollmentReview : ConnectedRoute
     @Serializable data object EnrollmentSuccess : ConnectedRoute
+
+    // Meu trajeto — pushed on whichever tab opened it (the Hoje hero line or
+    // the Eu shortcut), like iOS `CommutePath`. `Commute` is the board
+    // ("Meu ponto" / "Saindo da UEFS"); `direction` is a `TransitDirection`
+    // wire value, null letting the time of day pick the leg. `CommuteFollow`
+    // carries the ids that re-fetch one departure; the arrival the board
+    // showed is handed off in-memory through the shared ViewModel so the
+    // screen opens with a number. The setup steps share
+    // `CommuteSetupViewModel`'s draft and carry no payload.
+    @Serializable data class Commute(
+        val direction: String? = null,
+    ) : ConnectedRoute
+    @Serializable data class CommuteFollow(
+        val lineNumber: String,
+        val direction: String,
+        val stopId: String,
+        val arrivalId: String,
+        val vehicleId: String? = null,
+    ) : ConnectedRoute
+    @Serializable data object CommuteSetupDirection : ConnectedRoute
+    @Serializable data object CommuteSetupStop : ConnectedRoute
+    @Serializable data class CommuteSetupLines(
+        val direction: String,
+    ) : ConnectedRoute
 }
+
+// Every screen of the Meu trajeto flow; saving or removing the plan strips
+// them so the board (or the tab root) sits directly above where it opened.
+internal val NavKey.isCommuteRoute: Boolean
+    get() = this is ConnectedRoute.Commute ||
+        this is ConnectedRoute.CommuteFollow ||
+        this is ConnectedRoute.CommuteSetupDirection ||
+        this is ConnectedRoute.CommuteSetupStop ||
+        this is ConnectedRoute.CommuteSetupLines
 
 internal fun ConnectedTab.rootRoute(): ConnectedRoute =
     when (this) {

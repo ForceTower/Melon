@@ -732,6 +732,8 @@
     <string name="me_shortcut_paradoxo_hint">médias da universidade</string>
     <string name="me_shortcut_materials_label">Materiais</string>
     <string name="me_shortcut_materials_hint">Provas e resumos das disciplinas</string>
+    <string name="me_shortcut_commute_label">Meu trajeto</string>
+    <string name="me_shortcut_commute_hint">quando o seu passa</string>
     <string name="me_shortcut_beta">Beta</string>
     <!-- endregion -->
 
@@ -887,6 +889,8 @@
     <string name="settings_schedule_view_list_hint">Um dia por vez, em linha do tempo</string>
     <string name="settings_schedule_view_grid">Grade da semana</string>
     <string name="settings_schedule_view_list">Lista do dia</string>
+    <string name="settings_commute_on_home_label">Meu trajeto em Hoje</string>
+    <string name="settings_commute_on_home_hint">Desligue se não vai de ônibus; continua em Eu</string>
     <!-- endregion -->
 
     <!-- region Settings · Notas / privacidade -->
@@ -2400,6 +2404,194 @@
     <string name="course_progress_manual_completion_failed_title">Não foi possível atualizar a disciplina</string>
     <string name="course_progress_manual_completion_failed_body">Verifique sua conexão e tente de novo.</string>
     <string name="course_progress_footer_manual_format">Inclui %1$s de disciplinas que você marcou como concluídas</string>
+    <!-- endregion -->
+
+    <!-- region Meu trajeto (dc `UNES Meu trajeto - Android`, iOS `Features/Commute`) -->
+    <string name="commute_title">Meu trajeto</string>
+    <string name="commute_back">Voltar</string>
+    <string name="commute_settings">Ajustes do trajeto</string>
+    <string name="commute_close">Fechar</string>
+    <string name="commute_continue">Continuar</string>
+    <string name="commute_ok">Entendi</string>
+    <string name="commute_direction_to_campus">Chegar na UEFS</string>
+    <string name="commute_direction_from_campus">Sair da UEFS</string>
+    <string name="commute_campus_short" translatable="false">UEFS</string>
+    <string name="commute_terminal">Terminal</string>
+    <string name="commute_range_separator" translatable="false">–</string>
+    <string name="commute_approx_prefix" translatable="false">~</string>
+    <string name="commute_list_separator" translatable="false">", "</string>
+    <string name="commute_list_last_separator">" e "</string>
+    <!-- "· 1,9 km" after the neighbourhood on a stop row. -->
+    <string name="commute_stop_distance_format" translatable="false">· %1$s</string>
+    <string name="commute_line_accessibility">Linha %1$s</string>
+    <string name="commute_lines_list">linhas %1$s</string>
+    <string name="commute_walk_minutes">%1$d min a pé</string>
+    <string name="commute_distance_meters">%1$d m</string>
+    <string name="commute_distance_kilometers">%1$s km</string>
+
+    <!-- Estimates: a minute band on the way, a clock band while waiting, an approximate time from history. -->
+    <string name="commute_estimate_arriving">chegando</string>
+    <string name="commute_estimate_at_stop">no ponto</string>
+    <string name="commute_estimate_minutes">%1$d min</string>
+    <string name="commute_estimate_minute_range">%1$d–%2$d min</string>
+    <string name="commute_state_live">Ao vivo</string>
+    <string name="commute_state_waiting">Aguardando saída</string>
+    <string name="commute_state_historical">Pelo histórico</string>
+    <string name="commute_state_stale">Sem sinal</string>
+    <string name="commute_state_flaky">Nem sempre roda</string>
+    <string name="commute_state_offline">Sem conexão</string>
+    <string name="commute_fresh_seconds">atualizado há %1$d s</string>
+    <string name="commute_fresh_minutes">atualizado há %1$d min</string>
+    <string name="commute_fresh_seconds_short">há %1$d s</string>
+    <string name="commute_fresh_minutes_short">há %1$d min</string>
+    <string name="commute_signal_lost_for">Sem sinal do ônibus há %1$d min</string>
+
+    <!-- Board · Meu ponto / Saindo da UEFS -->
+    <string name="commute_board_eyebrow_to_campus">Seu ponto · Chegar na UEFS</string>
+    <string name="commute_departure_stop_subtitle">Ponto de saída · todas as linhas partem daqui</string>
+    <string name="commute_next_title">Próximos</string>
+    <string name="commute_next_hint">no seu ponto, agora</string>
+    <string name="commute_next_departures_title">Próximas saídas</string>
+    <string name="commute_next_departures_hint">Horários previstos, não é o horário da tabela oficial</string>
+    <string name="commute_last_info_at">última informação · %1$s</string>
+    <string name="commute_nothing_soon">Nenhum ônibus destas linhas previsto por enquanto.</string>
+    <string name="commute_next_stop">próxima parada</string>
+    <plurals name="commute_stops_away">
+        <item quantity="one">a %1$d parada</item>
+        <item quantity="other">a %1$d paradas</item>
+    </plurals>
+    <string name="commute_reaches_campus">chega na UEFS ~%1$s</string>
+    <string name="commute_usually_leaves">costuma sair %1$s</string>
+    <string name="commute_usually_leaves_terminal">costuma sair do Terminal %1$s</string>
+    <string name="commute_usually_passes_around">costuma passar por volta de %1$s</string>
+    <string name="commute_last_seen_near">visto perto de %1$s</string>
+    <string name="commute_last_seen_near_at">visto perto de %1$s às %2$s</string>
+    <string name="commute_missing_title">O %1$s das %2$s não aparece no sinal</string>
+    <string name="commute_missing_body">Pode estar sem GPS ou ainda não ter saído. Pelo histórico, costuma passar por volta de %1$s.</string>
+    <string name="commute_bus_at_stop">Ônibus no ponto</string>
+    <string name="commute_bus_already_at_stop">Ônibus já no ponto</string>
+    <string name="commute_arriving_from_terminal_in">Chegando do Terminal em ~%1$d min</string>
+    <string name="commute_arriving_at_campus_in">Chegando na UEFS em ~%1$d min</string>
+    <string name="commute_today_title">Hoje</string>
+    <string name="commute_today_hint">saídas que costumam acontecer</string>
+    <string name="commute_today_empty">Nenhuma saída observada hoje.</string>
+    <string name="commute_today_official">oficial %1$s</string>
+    <string name="commute_today_footnote">Horários em que o ônibus costuma passar aqui, pelo que vimos nos últimos dias. Tracejado: nem sempre roda.</string>
+    <string name="commute_board_footnote">Seguir um ônibus não é estar nele. Nunca marcamos embarque nem trocamos você de ônibus sozinhos.</string>
+    <!-- "em 6 de 10 dias" reads right for every count, so these stay plain strings. -->
+    <string name="commute_flaky_body" tools:ignore="PluralsCandidate">Em alguns dias a linha fica com um ônibus a menos e algumas saídas não acontecem. O %1$s das %2$s saiu em %3$d de %4$d dias.</string>
+    <string name="commute_flaky_body_nights" tools:ignore="PluralsCandidate">Em alguns dias a linha fica com um ônibus a menos e algumas saídas não acontecem. O %1$s das %2$s saiu em %3$d de %4$d noites.</string>
+    <string name="commute_no_service_title">Sem viagens destas linhas hoje</string>
+    <string name="commute_no_service_body">Pelo que vimos nas últimas semanas, não há viagens de %1$s neste dia.</string>
+    <string name="commute_next_trip">Próxima viagem · %1$s</string>
+    <string name="commute_offline_title">Sem conexão com o UNES</string>
+    <string name="commute_offline_body">Mostrando o que recebemos às %1$s. As previsões param de contar até a conexão voltar.</string>
+    <string name="commute_unavailable_title">Dados de ônibus indisponíveis agora</string>
+    <string name="commute_unavailable_body">O serviço de posição dos ônibus não responde. Abaixo está a última informação que recebemos, às %1$s.</string>
+    <string name="commute_unavailable_body_no_data">O serviço de posição dos ônibus não responde. Tentamos de novo em instantes.</string>
+
+    <!-- First use -->
+    <string name="commute_intro_title">Qual é o seu ponto?</string>
+    <string name="commute_intro_body">Diga onde você embarca e a gente mostra quando o 003, o 087 ou o 088 passam por lá, pelo que o ônibus está fazendo agora, não pela tabela.</string>
+    <string name="commute_intro_live">o ônibus está a caminho do seu ponto</string>
+    <string name="commute_intro_waiting">ainda parado no início da linha</string>
+    <string name="commute_intro_historical">nenhum ônibus visível; só o costume</string>
+    <string name="commute_intro_action">Escolher meu ponto</string>
+    <string name="commute_works_without_location">Funciona sem localização.</string>
+
+    <!-- Como calculamos -->
+    <string name="commute_how_title">Como calculamos</string>
+    <!-- Only shown from two trips over two days up, and "de cada 10" is a ratio, not a count. -->
+    <string name="commute_how_basis" tools:ignore="PluralsCandidate">Baseado em %1$d viagens desta linha em %2$d dias, neste horário.</string>
+    <string name="commute_how_hit_rate" tools:ignore="PluralsCandidate">Em %1$d de cada 10, o ônibus passou dentro dessa faixa.</string>
+    <string name="commute_how_chart_accessibility">Distribuição das viagens recentes, com a faixa %1$s destacada.</string>
+    <string name="commute_how_live_title">Onde o ônibus está agora</string>
+    <string name="commute_how_live_body">A posição ao vivo ao longo da rota, atualizada a cada 10–20 s.</string>
+    <string name="commute_how_history_title">Quanto demoraram as viagens recentes</string>
+    <string name="commute_how_history_body">Do ponto em que ele está até o seu, nos mesmos dias e horários.</string>
+    <string name="commute_how_ignored_title">No que não confiamos</string>
+    <string name="commute_how_ignored_body">A tabela oficial e a contagem do app da prefeitura: o que os ônibus realmente fizeram pesa mais.</string>
+    <string name="commute_how_footnote">Quanto mais longe o ônibus, mais larga a faixa. Acima de 30 min, mostramos só um horário aproximado.</string>
+
+    <!-- Seguindo o ônibus -->
+    <string name="commute_follow_title">Seguindo o %1$s</string>
+    <string name="commute_follow_until_your_stop">até o seu ponto</string>
+    <string name="commute_follow_until_departure">até a saída</string>
+    <string name="commute_follow_next_stop">seu ponto é a próxima parada</string>
+    <plurals name="commute_follow_stops_away">
+        <item quantity="one">a %1$d parada do seu ponto</item>
+        <item quantity="other">a %1$d paradas do seu ponto</item>
+    </plurals>
+    <string name="commute_follow_passed">Este ônibus já passou pelo seu ponto</string>
+    <string name="commute_follow_no_estimate">Sem previsão para este ônibus agora</string>
+    <string name="commute_follow_caption">Só os ônibus do %1$s · %2$d na linha agora</string>
+    <string name="commute_map_schematic">Mapa esquemático</string>
+    <string name="commute_route_your_stop">seu ponto</string>
+    <string name="commute_show_my_location">Mostrar minha localização</string>
+    <string name="commute_hide_my_location">Ocultar minha localização</string>
+    <string name="commute_location_denied_title">Sem acesso à localização</string>
+    <string name="commute_location_denied_body">Tudo bem: procure seu ponto pelo nome ou toque nele no mapa.</string>
+    <string name="commute_location_denied_follow_body">Tudo bem: o mapa e a previsão funcionam sem ela.</string>
+
+    <!-- Hoje hero line -->
+    <string name="commute_hero_invite_title">Vai de ônibus?</string>
+    <string name="commute_hero_invite_body">Salve seu ponto e veja aqui quando o seu passa.</string>
+    <string name="commute_hero_invite_action">Configurar</string>
+    <string name="commute_hero_at_your_stop">no seu ponto · %1$s</string>
+    <string name="commute_hero_usually_passes">costuma passar em %1$s</string>
+    <string name="commute_hero_no_bus_yet">nenhum ônibus visível ainda</string>
+    <string name="commute_hero_going_home">Voltando?</string>
+    <string name="commute_hero_leaves_campus">O %1$s sai da UEFS</string>
+    <string name="commute_hero_nothing_soon">Nenhum ônibus previsto agora</string>
+    <string name="commute_hero_next_service">Próximo: o %1$s de %2$s, ~%3$s</string>
+    <string name="commute_hero_unavailable">Não deu para ver os ônibus agora</string>
+
+    <!-- Setup · direção -->
+    <string name="commute_setup_step">%1$d de %2$d</string>
+    <string name="commute_setup_direction_title">Quando você quer saber do ônibus?</string>
+    <string name="commute_setup_direction_subtitle">Pode marcar os dois. Cada direção tem o seu ponto.</string>
+    <string name="commute_setup_to_campus_body">Do seu ponto até o campus, antes da primeira aula.</string>
+    <string name="commute_setup_from_campus_body">Da Av. Transnordestina · Novo Horizonte (Saída), depois da última aula.</string>
+    <string name="commute_setup_no_location_needed">Você só diz onde costuma embarcar.</string>
+    <string name="commute_setup_remove">Remover meu trajeto</string>
+    <string name="commute_setup_remove_confirm_title">Remover seu trajeto?</string>
+    <string name="commute_setup_remove_confirm_body">Seu ponto e suas linhas saem deste aparelho. Você pode configurar de novo quando quiser.</string>
+    <string name="commute_setup_remove_failed">Não deu para remover seu trajeto</string>
+    <string name="commute_setup_try_again_body">Nada foi alterado. Verifique a conexão e tente de novo.</string>
+    <string name="commute_setup_cancel">Cancelar</string>
+
+    <!-- Setup · ponto -->
+    <string name="commute_setup_stop_title">Onde você embarca?</string>
+    <string name="commute_setup_stop_subtitle">O ponto onde você realmente pega o ônibus, não o terminal.</string>
+    <string name="commute_setup_stop_search">Rua, avenida ou nome do ponto</string>
+    <string name="commute_setup_stop_search_clear">Limpar busca</string>
+    <string name="commute_setup_stop_pick">Escolha um ponto</string>
+    <string name="commute_setup_stops">Pontos</string>
+    <string name="commute_setup_nearby_stops">Pontos próximos</string>
+    <string name="commute_setup_use_location">Usar minha localização</string>
+    <string name="commute_setup_near_you">Pontos perto de você</string>
+    <string name="commute_setup_location_unavailable">Localização indisponível · tentar de novo</string>
+    <string name="commute_setup_map_hint">Mapa esquemático · toque em um ponto para escolher</string>
+    <string name="commute_setup_no_match">Nenhum ponto com esse nome.</string>
+    <!-- Only offered past the first eight stops, so the count is always plural. -->
+    <string name="commute_setup_show_all_stops" tools:ignore="PluralsCandidate">Ver todos os %1$d pontos</string>
+    <string name="commute_setup_stop_load_failed">Não deu para carregar os pontos. Verifique a conexão.</string>
+
+    <!-- Setup · linhas -->
+    <string name="commute_setup_lines_title">Suas linhas neste ponto</string>
+    <string name="commute_setup_lines_title_leaving">Suas linhas para voltar</string>
+    <string name="commute_setup_lines_subtitle">Marque as que você realmente pega. As outras ficam de fora.</string>
+    <string name="commute_setup_line_serves">passa neste ponto</string>
+    <string name="commute_setup_line_does_not_serve">não passa neste ponto</string>
+    <string name="commute_setup_line_duration">~%1$d min de ponta a ponta</string>
+    <string name="commute_setup_line_duration_range">%1$d–%2$d min de ponta a ponta</string>
+    <string name="commute_setup_walk_title">Até o ponto</string>
+    <string name="commute_setup_walk_hint">Quanto você leva a pé, de casa até lá.</string>
+    <string name="commute_setup_walk_hint_leaving">Quanto você leva a pé, da sala até lá.</string>
+    <string name="commute_setup_walk_label">Caminhada</string>
+    <string name="commute_setup_walk_minutes_value">%1$d min</string>
+    <string name="commute_setup_save">Salvar meu trajeto</string>
+    <string name="commute_setup_save_failed">Não deu para salvar seu trajeto</string>
     <!-- endregion -->
 
 </resources>

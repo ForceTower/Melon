@@ -44,8 +44,9 @@ state (`live`, `waiting`, `historical`), a follow payload and a saved plan.
 Instants are ISO strings; clients format bands and never show seconds. The
 server owns the saved plan: `PUT` replaces it whole (both directions always
 sent, `null` removes one) and answers with the stop names it resolved, which
-clients mirror locally. Swift decodes it in `TransitContractTests`; Android
-consumes it in its follow-up.
+clients mirror locally. Swift decodes it in `TransitContractTests`; KMP decodes
+it in `TransitContractTest` (`packages/shared-kmp/features/transit`), which also
+round-trips the plan through the Android key-value mirror.
 
 Keep nullable fields distinct from missing required fields. Opaque IDs remain
 strings, platform numeric IDs retain 64-bit capacity, and schedule weekdays stay

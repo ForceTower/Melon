@@ -6,6 +6,7 @@ private let log = Log.scoped("TransitRepository")
 extension TransitRepository: DependencyKey {
     static let liveValue: TransitRepository = {
         let cache = TransitNetworkCache()
+        let outages = TransitOutages()
         return TransitRepository(
             network: {
                 if let cached = await cache.fresh() { return cached }
@@ -17,13 +18,15 @@ extension TransitRepository: DependencyKey {
                     log.info("network ok lines=\(network.lines.count) routes=\(network.routes.count)")
                     return network
                 } catch {
-                    logFailure("network", error: error)
+                    // Once per screen entry; being offline isn't a bug.
+                    logFailure("network failed", error: error, connection: .info)
                     if let stale = await cache.any() { return stale }
                     throw error
                 }
             },
             arrivals: { stopId, direction, lineNumbers in
                 @Dependency(\.apiClient) var apiClient
+                let key = "\(stopId)/\(direction.rawValue)"
                 do {
                     let dto: TransitStopArrivalsDTO = try await apiClient.get(
                         from: "api/transit/stops/\(stopId)/arrivals",
@@ -34,9 +37,10 @@ extension TransitRepository: DependencyKey {
                     )
                     let board = try dto.domain()
                     log.debug("arrivals ok stop=\(stopId) count=\(board.arrivals.count) feed=\(board.feed.status.rawValue)")
+                    await outages.recovered("arrivals", key: key)
                     return board
                 } catch {
-                    logFailure("arrivals", error: error)
+                    await outages.failed("arrivals", key: key, error: error)
                     throw error
                 }
             },
@@ -53,26 +57,53 @@ extension TransitRepository: DependencyKey {
                 }
                 do {
                     let dto: TransitFollowDTO = try await apiClient.get(from: "api/transit/follow", query: query)
-                    return try dto.domain()
+                    let follow = try dto.domain()
+                    await outages.recovered("follow", key: arrivalId)
+                    return follow
                 } catch {
-                    logFailure("follow", error: error)
+                    await outages.failed("follow", key: arrivalId, error: error)
                     throw error
                 }
             }
         )
     }()
+}
 
-    private static func logFailure(_ operation: String, error: Error) {
-        switch error {
-        case is CancellationError:
-            break
-        case let APIError.server(status, message):
-            log.warn("\(operation) server \(status) message=\(message ?? "<none>")")
-        case is URLError:
-            log.warn("\(operation) transport failure", error: error)
-        default:
-            log.error("\(operation) failed", error: error)
+/// Connection trouble — no transport, a non-2xx answer — is logged at
+/// `connection`, which the caller picks by how often the read runs. Anything
+/// else is a bug in this app or the API and stays an error.
+private func logFailure(_ what: String, error: any Error, connection: LogLevel) {
+    switch error {
+    case is CancellationError:
+        break
+    case let APIError.server(status, message):
+        log.write(connection, "\(what) server \(status) message=\(message ?? "<none>")")
+    case is URLError:
+        log.write(connection, "\(what) transport failure", error: error)
+    default:
+        log.error(what, error: error)
+    }
+}
+
+/// The polled reads log once per outage: the first failure and the recovery
+/// at info (one remote record each), the repeats in between at debug, which
+/// stays on the device. A screen polling every few seconds offline must not
+/// ship a record per tick.
+private actor TransitOutages {
+    private var failing: Set<String> = []
+
+    func failed(_ read: String, key: String, error: any Error) {
+        guard !LogPipeline.isCancellation(error) else { return }
+        if failing.insert(key).inserted {
+            logFailure("\(read) failing key=\(key)", error: error, connection: .info)
+        } else {
+            log.debug("\(read) still failing key=\(key)")
         }
+    }
+
+    func recovered(_ read: String, key: String) {
+        guard failing.remove(key) != nil else { return }
+        log.info("\(read) recovered key=\(key)")
     }
 }
 

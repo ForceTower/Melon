@@ -101,6 +101,12 @@ internal fun MeScreen(
 
     val openShortcut: (ShortcutKind) -> Unit = { kind ->
         when (kind) {
+            // The board picks the leg from the time of day (or opens the
+            // intro when nothing is saved), like iOS `commutePlanResolved`.
+            ShortcutKind.Commute -> {
+                vm.trackShortcutOpen("commute")
+                connectedNavigator.navigate(ConnectedRoute.Commute())
+            }
             ShortcutKind.Enrollment -> {
                 vm.trackShortcutOpen("enrollment")
                 connectedNavigator.navigate(ConnectedRoute.Enrollment)

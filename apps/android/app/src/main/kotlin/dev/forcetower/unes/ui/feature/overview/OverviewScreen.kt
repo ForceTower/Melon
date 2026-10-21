@@ -37,6 +37,7 @@ import dev.forcetower.melon.feature.overview.domain.model.OverviewClassState as 
 import dev.forcetower.melon.feature.overview.domain.model.OverviewMessagesTile as KmpOverviewMessagesTile
 import dev.forcetower.melon.feature.overview.domain.model.OverviewNowClass as KmpOverviewNowClass
 import dev.forcetower.melon.feature.overview.domain.model.OverviewTodayItem as KmpOverviewTodayItem
+import dev.forcetower.melon.feature.transit.domain.model.TransitDirection
 import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.components.MelonBanner
 import dev.forcetower.unes.designsystem.foundation.PinnedHeaderHairline
@@ -46,6 +47,10 @@ import dev.forcetower.unes.designsystem.foundation.scaleInOnAppear
 import dev.forcetower.unes.designsystem.theme.melon
 import dev.forcetower.unes.mvi.collectAsEffect
 import dev.forcetower.unes.ui.feature.campusevent.CampusEventHomeCard
+import dev.forcetower.unes.ui.feature.commute.CommuteDaySchedule
+import dev.forcetower.unes.ui.feature.commute.CommuteHeroCard
+import dev.forcetower.unes.ui.feature.commute.CommuteHeroSection
+import dev.forcetower.unes.ui.feature.commute.CommuteHeroViewModel
 import dev.forcetower.unes.ui.feature.disciplines.formatSemesterCode
 import dev.forcetower.unes.ui.feature.overview.components.FinalStretchCard
 import dev.forcetower.unes.ui.feature.overview.components.HeroCard
@@ -74,9 +79,29 @@ internal fun OverviewScreen(
     onOpenSchedule: () -> Unit = {},
     onOpenProfile: () -> Unit = {},
     onOpenCampusEvent: () -> Unit = {},
+    onOpenCommute: (TransitDirection) -> Unit = {},
+    onOpenCommuteSetup: () -> Unit = {},
 ) {
     val vm: OverviewViewModel = hiltViewModel()
     val state by vm.state.collectAsStateWithLifecycle()
+    // Meu trajeto under the hero: its own ViewModel so the bus polling stays
+    // tied to this tab being on screen, like iOS `CommuteHeroFeature`.
+    val commuteVm: CommuteHeroViewModel = hiltViewModel()
+    val commuteState by commuteVm.state.collectAsStateWithLifecycle()
+    val commuteSchedule = CommuteDaySchedule.fromStartTimes(state.todayRaw.map { it.startTime })
+    val commute: (@Composable (separated: Boolean) -> Unit)? = if (commuteState.isShown) {
+        { separated ->
+            CommuteHeroSection(
+                vm = commuteVm,
+                schedule = commuteSchedule,
+                separated = separated,
+                onOpenBoard = onOpenCommute,
+                onOpenSetup = onOpenCommuteSetup,
+            )
+        }
+    } else {
+        null
+    }
 
     var showReloginSheet by remember { mutableStateOf(false) }
     var showReauthSheet by remember { mutableStateOf(false) }
@@ -158,6 +183,7 @@ internal fun OverviewScreen(
             vm.trackCampusEventTap()
             onOpenCampusEvent()
         },
+        commute = commute,
     )
 }
 
@@ -173,6 +199,9 @@ internal fun OverviewContent(
     onOpenSchedule: () -> Unit = {},
     onOpenProfile: () -> Unit = {},
     onOpenCampusEvent: () -> Unit = {},
+    // The Meu trajeto line; `separated` draws the hairline that splits it
+    // from the class above. Null hides it (gate off, switch off, or tests).
+    commute: (@Composable (separated: Boolean) -> Unit)? = null,
 ) {
     val hero = deriveHeroState(state)
     val finalStretch = deriveFinalStretch(state)
@@ -297,7 +326,13 @@ internal fun OverviewContent(
                         )
                     },
                     modifier = Modifier.scaleInOnAppear(delayMs = 140, fromScale = 0.97f),
+                    accessory = commute?.let { line -> { line(true) } },
                 )
+                Spacer(Modifier.height(26.dp))
+            } else if (commute != null) {
+                CommuteHeroCard(modifier = Modifier.scaleInOnAppear(delayMs = 140, fromScale = 0.97f)) {
+                    commute(false)
+                }
                 Spacer(Modifier.height(26.dp))
             }
 

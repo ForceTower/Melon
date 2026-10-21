@@ -7,6 +7,11 @@
     <!-- Evaluation-reminder alarms are RTC and die with a reboot; the boot
          broadcast re-arms them from the on-disk snapshot. -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <!-- Meu trajeto: only ever asked for from a button the student taps, to
+         sort the boarding stops by distance or show them on the route map.
+         The fix stays on the device. -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <queries>
         <intent>

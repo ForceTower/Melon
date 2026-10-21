@@ -199,4 +199,9 @@ private fun ConnectedRoute.toScreenEvent(): Pair<String, Map<String, Any>> =
         ConnectedRoute.EnrollmentTimetable -> Screens.ENROLLMENT_TIMETABLE to emptyMap()
         ConnectedRoute.EnrollmentReview -> Screens.ENROLLMENT_REVIEW to emptyMap()
         ConnectedRoute.EnrollmentSuccess -> Screens.ENROLLMENT_SUCCESS to emptyMap()
+        is ConnectedRoute.Commute -> Screens.COMMUTE to (direction?.let { mapOf("direction" to it) } ?: emptyMap())
+        is ConnectedRoute.CommuteFollow -> Screens.COMMUTE_FOLLOW to mapOf("line" to lineNumber)
+        ConnectedRoute.CommuteSetupDirection -> Screens.COMMUTE_SETUP_DIRECTION to emptyMap()
+        ConnectedRoute.CommuteSetupStop -> Screens.COMMUTE_SETUP_STOP to emptyMap()
+        is ConnectedRoute.CommuteSetupLines -> Screens.COMMUTE_SETUP_LINES to mapOf("direction" to direction)
     }

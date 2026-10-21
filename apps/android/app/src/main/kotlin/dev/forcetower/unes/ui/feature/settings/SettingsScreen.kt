@@ -27,6 +27,7 @@ import androidx.compose.material.icons.filled.Alarm
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.CalendarViewWeek
 import androidx.compose.material.icons.filled.Campaign
+import androidx.compose.material.icons.filled.DirectionsBus
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Event
 import androidx.compose.material.icons.filled.Groups
@@ -164,6 +165,10 @@ internal fun SettingsScreen(
                     )
                     Spacer(Modifier.height(12.dp))
                     AppearanceCard(state = state, onIntent = vm::onIntent)
+                    if (state.commuteAvailable) {
+                        Spacer(Modifier.height(14.dp))
+                        CommuteOnHomeCard(state = state, onToggle = vm::onIntent)
+                    }
                 }
 
                 // ── Notas · privacidade ──
@@ -487,6 +492,33 @@ private fun EvaluationReminderCard(
             hint = stringResource(R.string.settings_notif_evaluation_reminder_hint),
             on = state.evaluationRemindersEnabled,
             onToggle = { onToggle(SettingsIntent.SetEvaluationReminders(it)) },
+            showDivider = false,
+        )
+    }
+}
+
+// Device-local "Meu trajeto em Hoje" switch for students who don't take the
+// bus — the line leaves Hoje, the Eu shortcut stays (iOS `SettingsToggleCard`).
+@Composable
+private fun CommuteOnHomeCard(
+    state: SettingsUiState,
+    onToggle: (SettingsIntent) -> Unit,
+) {
+    val shape = RoundedCornerShape(24.dp)
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(shape)
+            .background(MaterialTheme.melon.surface.card)
+            .border(1.dp, MaterialTheme.melon.surface.line, shape),
+    ) {
+        NotificationToggleRow(
+            icon = Icons.Filled.DirectionsBus,
+            iconTint = MaterialTheme.melon.palette.coral,
+            label = stringResource(R.string.settings_commute_on_home_label),
+            hint = stringResource(R.string.settings_commute_on_home_hint),
+            on = state.commuteOnHome,
+            onToggle = { onToggle(SettingsIntent.SetCommuteOnHome(it)) },
             showDivider = false,
         )
     }

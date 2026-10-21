@@ -7,6 +7,7 @@ import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Copyright
 import androidx.compose.material.icons.filled.Description
+import androidx.compose.material.icons.filled.DirectionsBus
 import androidx.compose.material.icons.filled.EditNote
 import androidx.compose.material.icons.filled.HourglassTop
 import androidx.compose.material.icons.filled.Info
@@ -49,10 +50,18 @@ internal object MeFixtures {
         semesterEnd = "8 jul",
     )
 
-    // Grid tiles in dc/iOS order. Enrollment, Certificate, History, Paradoxo,
-    // Library, and Materials are remote-config gated; Calendar and Countdown
-    // always show.
+    // Grid tiles in dc/iOS order. Commute, Enrollment, Certificate, History,
+    // Paradoxo, Library, and Materials are remote-config gated; Calendar and
+    // Countdown always show.
     private val gridLibrary = listOf(
+        Shortcut(
+            id = ShortcutKind.Commute,
+            labelRes = R.string.me_shortcut_commute_label,
+            hintRes = R.string.me_shortcut_commute_hint,
+            tone = ShortcutTone.Coral,
+            icon = Icons.Filled.DirectionsBus,
+            beta = true,
+        ),
         Shortcut(
             id = ShortcutKind.Enrollment,
             labelRes = R.string.me_shortcut_enrollment_label,
@@ -120,6 +129,7 @@ internal object MeFixtures {
     fun gridShortcuts(gates: FeatureGates): List<Shortcut> =
         gridLibrary.filter {
             when (it.id) {
+                ShortcutKind.Commute -> gates.commute
                 ShortcutKind.Enrollment -> gates.enrollment
                 ShortcutKind.CourseProgress -> gates.courseProgress
                 ShortcutKind.Certificate -> gates.enrollmentCertificate

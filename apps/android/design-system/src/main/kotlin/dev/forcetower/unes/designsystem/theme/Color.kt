@@ -138,6 +138,18 @@ internal val PaletteJadeDark = Color(0xFF3FC3B5)
 internal val PaletteOrangeLight = Color(0xFFE8894E)
 internal val PaletteOrangeDark = Color(0xFFF2A26B)
 
+// Meu trajeto line identities (`MelonTransitColors`, iOS `UNESColor.transit*`).
+// Light values are the brand hexes; dark values are lifted so the badges and
+// "Aguardando saída" chip stay readable on `SurfaceDark`.
+internal val TransitLine003Light = BrandPlum
+internal val TransitLine003Dark = Color(0xFF7A5BC0)
+internal val TransitLine087Light = BrandMagenta
+internal val TransitLine087Dark = Color(0xFFD8609E)
+internal val TransitLine088Light = BrandCoral
+internal val TransitLine088Dark = Color(0xFFF07C6E)
+internal val TransitWaitingLight = BrandMagenta
+internal val TransitWaitingDark = Color(0xFFD8609E)
+
 // Verdict hero mesh palettes (`MelonVerdictColors`). The Final Countdown
 // verdict card is an always-dark world: `night` is the base plate, `veil` the
 // legibility scrim over the blobs, and each outcome family gets three mesh

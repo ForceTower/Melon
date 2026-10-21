@@ -28,6 +28,8 @@ internal data class FeatureGates(
     val campusEvent: Boolean = false,
     val evaluationReminders: Boolean = false,
     val courseProgress: Boolean = false,
+    // "Meu trajeto": the Hoje line, the Eu tile and the Configurações switch.
+    val commute: Boolean = false,
     val documentCaptchaSiteKey: String = "",
     val documentCaptchaBaseUrl: String = "",
     // Kill switch + per-moment allow-list for the Play review prompt.
@@ -79,6 +81,7 @@ internal class FeatureFlags @Inject constructor(
                 campusEvent = true,
                 evaluationReminders = true,
                 courseProgress = true,
+                commute = true,
                 documentCaptchaSiteKey = captchaSiteKey,
                 documentCaptchaBaseUrl = captchaBaseUrl,
                 inAppReview = true,
@@ -95,6 +98,7 @@ internal class FeatureFlags @Inject constructor(
             campusEvent = settings.bool(RemoteBoolKey.CAMPUS_EVENT),
             evaluationReminders = settings.bool(RemoteBoolKey.EVALUATION_REMINDERS),
             courseProgress = settings.bool(RemoteBoolKey.COURSE_PROGRESS),
+            commute = settings.bool(RemoteBoolKey.COMMUTE),
             documentCaptchaSiteKey = captchaSiteKey,
             documentCaptchaBaseUrl = captchaBaseUrl,
             inAppReview = settings.bool(RemoteBoolKey.IN_APP_REVIEW),
