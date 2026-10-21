@@ -46,7 +46,9 @@ import dev.forcetower.unes.ui.feature.campusevent.CampusEventSpeakersScreen
 import dev.forcetower.unes.ui.feature.campusevent.CampusEventVenuesScreen
 import dev.forcetower.unes.ui.feature.campusevent.CampusEventViewModel
 import dev.forcetower.unes.ui.feature.campusevent.CampusEventWorkshopsScreen
+import dev.forcetower.unes.ui.feature.commute.CommuteBoardIntent
 import dev.forcetower.unes.ui.feature.commute.CommuteBoardScreen
+import dev.forcetower.unes.ui.feature.commute.CommuteBoardViewModel
 import dev.forcetower.unes.ui.feature.commute.CommuteDirectionScreen
 import dev.forcetower.unes.ui.feature.commute.CommuteFollowIntent
 import dev.forcetower.unes.ui.feature.commute.CommuteFollowScreen
@@ -150,13 +152,23 @@ internal fun ConnectedScreen(
     // Meu trajeto hand-offs: the board seeds the follow screen with the
     // arrival it showed, and the board / Hoje seed the setup session with the
     // plan being edited, so neither push serializes a payload.
+    val commuteBoardVm: CommuteBoardViewModel = hiltViewModel()
     val commuteFollowVm: CommuteFollowViewModel = hiltViewModel()
     val commuteSetupVm: CommuteSetupViewModel = hiltViewModel()
 
     // Saving replaces the setup steps with the board, and removing the plan
     // returns to where the flow opened — the iOS `CommutePath.route` rules.
     fun closeCommuteFlow() {
+        commuteBoardVm.onIntent(CommuteBoardIntent.Closed)
         navigator.activeStack.removeAll { it.isCommuteRoute }
+    }
+
+    // A later setup step restored without its session (the process was
+    // recreated under it) gives way to the first, which starts over.
+    fun restartCommuteSetup() {
+        navigator.activeStack.removeAll {
+            it is ConnectedRoute.CommuteSetupStop || it is ConnectedRoute.CommuteSetupLines
+        }
     }
     // A flexible in-app update finished downloading — offer the restart.
     val updateDownloaded by vm.updateDownloaded.collectAsStateWithLifecycle()
@@ -566,6 +578,7 @@ internal fun ConnectedScreen(
                         onGoToLines = { direction ->
                             navigator.navigate(ConnectedRoute.CommuteSetupLines(direction.wire))
                         },
+                        onExpired = { restartCommuteSetup() },
                         bottomInset = bottomInset,
                     )
                 }
@@ -580,6 +593,7 @@ internal fun ConnectedScreen(
                             closeCommuteFlow()
                             navigator.navigate(ConnectedRoute.Commute(direction.wire))
                         },
+                        onExpired = { restartCommuteSetup() },
                         bottomInset = bottomInset,
                     )
                 }

@@ -19,6 +19,7 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -125,6 +126,57 @@ internal class CommuteSetupViewModelTest {
             advanceUntilIdle()
             assertTrue(model.state.value.saveFailed)
             assertTrue(effects.none { it is CommuteSetupEffect.Finished })
+        }
+
+    @Test
+    fun aDirectionUncheckedAfterItsLinesStepIsNotSaved() =
+        runTest {
+            val saved = slot<CommutePlan>()
+            val save = mockk<SaveCommutePlanUseCase>()
+            coEvery { save(capture(saved)) } answers { Outcome.Ok(saved.captured) }
+            val model = model(save = save)
+
+            model.onIntent(CommuteSetupIntent.Begin(CommutePlan()))
+            advanceUntilIdle()
+            model.onIntent(CommuteSetupIntent.DirectionToggled(TransitDirection.FromCampus))
+            model.onIntent(CommuteSetupIntent.StopSelected(CommuteFixtures.MY_STOP_ID))
+            model.onIntent(CommuteSetupIntent.OpenLines(TransitDirection.ToCampus))
+            model.onIntent(CommuteSetupIntent.SaveTapped)
+            advanceUntilIdle()
+            assertFalse(saved.isCaptured)
+
+            // Back on the first step, the way in is unchecked.
+            model.onIntent(CommuteSetupIntent.Enter)
+            model.onIntent(CommuteSetupIntent.DirectionToggled(TransitDirection.ToCampus))
+            assertEquals(listOf(TransitDirection.FromCampus), model.state.value.directions)
+            model.onIntent(CommuteSetupIntent.OpenLines(TransitDirection.FromCampus))
+            model.onIntent(CommuteSetupIntent.SaveTapped)
+            advanceUntilIdle()
+
+            assertNull(saved.captured.toCampus)
+            assertEquals(listOf("003", "087", "088"), saved.captured.fromCampus?.lineNumbers)
+        }
+
+    @Test
+    fun aStepRestoredWithoutItsSessionExpires() =
+        runTest {
+            val model = model()
+            val effects = mutableListOf<CommuteSetupEffect>()
+            backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { model.effects.toList(effects) }
+
+            model.onIntent(CommuteSetupIntent.OpenLines(TransitDirection.ToCampus))
+            model.onIntent(CommuteSetupIntent.OpenStop)
+            advanceUntilIdle()
+            assertEquals(listOf<CommuteSetupEffect>(CommuteSetupEffect.Expired, CommuteSetupEffect.Expired), effects)
+
+            // With a session they are ordinary entries.
+            model.onIntent(CommuteSetupIntent.Begin(CommutePlan()))
+            advanceUntilIdle()
+            model.onIntent(CommuteSetupIntent.OpenStop)
+            model.onIntent(CommuteSetupIntent.OpenLines(TransitDirection.FromCampus))
+            advanceUntilIdle()
+            assertEquals(2, effects.size)
+            assertEquals(TransitDirection.FromCampus, model.state.value.linesDirection)
         }
 
     @Test

@@ -37,8 +37,13 @@ class CommutePlanRepository internal constructor(
 ) {
     private val log = logger.withTag("CommutePlanRepository")
     private val state = MutableStateFlow(CommutePlan())
-    private val hydration = Mutex()
+
+    // Guards the mirror: its hydration, every write, and the generation a
+    // logout bumps so a request begun under the previous account cannot
+    // write its answer into the next one's mirror.
+    private val mirror = Mutex()
     private var hydrated = false
+    private var generation = 0
     private val operations = Mutex()
 
     fun observe(): Flow<CommutePlan> =
@@ -48,12 +53,11 @@ class CommutePlanRepository internal constructor(
         }
 
     suspend fun refresh(): Outcome<Unit, TransitError> {
-        hydrate()
+        val began = hydrate()
         return operations.withLock {
             when (val outcome = service.plan()) {
                 is Outcome.Ok -> {
-                    apply(outcome.value)
-                    log.d { "refresh ok directions=${outcome.value.directions.size}" }
+                    if (apply(outcome.value, began)) log.d { "refresh ok directions=${outcome.value.directions.size}" }
                     Outcome.Ok(Unit)
                 }
                 is Outcome.Err -> {
@@ -66,12 +70,11 @@ class CommutePlanRepository internal constructor(
     }
 
     suspend fun save(plan: CommutePlan): Outcome<CommutePlan, TransitError> {
-        hydrate()
+        val began = hydrate()
         return operations.withLock {
             when (val outcome = service.savePlan(plan)) {
                 is Outcome.Ok -> {
-                    apply(outcome.value)
-                    log.i { "save ok directions=${outcome.value.directions.size}" }
+                    if (apply(outcome.value, began)) log.i { "save ok directions=${outcome.value.directions.size}" }
                     outcome
                 }
                 is Outcome.Err -> {
@@ -83,12 +86,11 @@ class CommutePlanRepository internal constructor(
     }
 
     suspend fun remove(): Outcome<Unit, TransitError> {
-        hydrate()
+        val began = hydrate()
         return operations.withLock {
             when (val outcome = service.removePlan()) {
                 is Outcome.Ok -> {
-                    apply(outcome.value)
-                    log.i { "remove ok" }
+                    if (apply(outcome.value, began)) log.i { "remove ok" }
                     Outcome.Ok(Unit)
                 }
                 is Outcome.Err -> {
@@ -100,32 +102,47 @@ class CommutePlanRepository internal constructor(
     }
 
     // Logout wipe — the plan is the student's own, so the next account on
-    // the device must not inherit it.
+    // the device must not inherit it, not even from a request still in flight.
     suspend fun clear() {
-        hydration.withLock { hydrated = true }
-        state.value = CommutePlan()
-        storage.remove(STORAGE_KEY)
-    }
-
-    private suspend fun hydrate() {
-        hydration.withLock {
-            if (hydrated) return
+        mirror.withLock {
             hydrated = true
-            val cached = storage.get(STORAGE_KEY) ?: return
-            runCatching { json.decodeFromString<TransitCommutePlanDTO>(cached) }
-                .getOrNull()
-                ?.let { state.value = it.toDomain() }
+            generation++
+            state.value = CommutePlan()
+            storage.remove(STORAGE_KEY)
         }
     }
 
-    private suspend fun apply(plan: CommutePlan) {
-        state.value = plan
-        if (plan.isEmpty) {
-            storage.remove(STORAGE_KEY)
-        } else {
-            storage.put(STORAGE_KEY, json.encodeToString(plan.toDto()))
+    // Loads the stored snapshot once and answers the generation a request
+    // begins under.
+    private suspend fun hydrate(): Int =
+        mirror.withLock {
+            if (!hydrated) {
+                hydrated = true
+                storage.get(STORAGE_KEY)
+                    ?.let { cached -> runCatching { json.decodeFromString<TransitCommutePlanDTO>(cached) }.getOrNull() }
+                    ?.let { state.value = it.toDomain() }
+            }
+            generation
         }
-    }
+
+    // False when a logout came first: the answer belongs to the account that asked.
+    private suspend fun apply(
+        plan: CommutePlan,
+        began: Int,
+    ): Boolean =
+        mirror.withLock {
+            if (began != generation) {
+                log.i { "answer dropped: logged out meanwhile" }
+                return@withLock false
+            }
+            state.value = plan
+            if (plan.isEmpty) {
+                storage.remove(STORAGE_KEY)
+            } else {
+                storage.put(STORAGE_KEY, json.encodeToString(plan.toDto()))
+            }
+            true
+        }
 
     private companion object {
         const val STORAGE_KEY = "transit.commute_plan"

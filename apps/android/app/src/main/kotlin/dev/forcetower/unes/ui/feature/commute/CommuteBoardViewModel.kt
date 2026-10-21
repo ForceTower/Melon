@@ -69,6 +69,10 @@ internal sealed interface CommuteBoardIntent : UiIntent {
         val arrival: TransitArrival?,
     ) : CommuteBoardIntent
     data object ExplainerDismissed : CommuteBoardIntent
+
+    // The route left the stack (the flow closed over it): the next `Open` is
+    // a fresh entry, not a pop back.
+    data object Closed : CommuteBoardIntent
 }
 
 internal sealed interface CommuteBoardEffect : UiEffect
@@ -124,6 +128,10 @@ internal class CommuteBoardViewModel @Inject constructor(
                 copy(explained = arrival, explainerOpen = true)
             }
             CommuteBoardIntent.ExplainerDismissed -> setState { copy(explainerOpen = false) }
+            CommuteBoardIntent.Closed -> {
+                opened = false
+                openedWith = null
+            }
         }
     }
 
@@ -166,8 +174,11 @@ internal class CommuteBoardViewModel @Inject constructor(
     private fun onPlan(plan: CommutePlan) {
         val previousLeg = currentState.leg
         setState {
-            val direction = if (autoDirection) resolveDirection(plan) else direction
-            copy(plan = plan, planLoaded = true, direction = direction)
+            // A leg edited away, here or on another device, hands the board
+            // to the plan's own direction.
+            val gone = direction != null && !plan.isEmpty && plan.leg(direction) == null
+            val next = if (autoDirection || gone) resolveDirection(plan) else direction
+            copy(plan = plan, planLoaded = true, direction = next)
         }
         if (currentState.leg != previousLeg) {
             setState { copy(board = null, boardReceivedAt = null) }

@@ -59,6 +59,7 @@ internal fun CommuteLinesScreen(
     onBack: () -> Unit,
     onGoToLines: (TransitDirection) -> Unit,
     onFinished: (CommutePlan, TransitDirection) -> Unit,
+    onExpired: () -> Unit,
     modifier: Modifier = Modifier,
     bottomInset: Dp = 0.dp,
 ) {
@@ -69,6 +70,7 @@ internal fun CommuteLinesScreen(
         when (effect) {
             is CommuteSetupEffect.GoToLines -> onGoToLines(effect.direction)
             is CommuteSetupEffect.Finished -> onFinished(effect.plan, effect.direction)
+            CommuteSetupEffect.Expired -> onExpired()
             CommuteSetupEffect.GoToStop, CommuteSetupEffect.Removed -> Unit
         }
     }

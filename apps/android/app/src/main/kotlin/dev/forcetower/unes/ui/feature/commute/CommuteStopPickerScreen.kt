@@ -33,6 +33,7 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -75,13 +76,19 @@ import dev.forcetower.unes.mvi.collectAsEffect
 internal fun CommuteStopPickerScreen(
     onBack: () -> Unit,
     onGoToLines: (TransitDirection) -> Unit,
+    onExpired: () -> Unit,
     modifier: Modifier = Modifier,
     bottomInset: Dp = 0.dp,
 ) {
     val vm: CommuteSetupViewModel = hiltViewModel()
     val state by vm.state.collectAsStateWithLifecycle()
+    LaunchedEffect(Unit) { vm.onIntent(CommuteSetupIntent.OpenStop) }
     vm.effects.collectAsEffect { effect ->
-        if (effect is CommuteSetupEffect.GoToLines) onGoToLines(effect.direction)
+        when (effect) {
+            is CommuteSetupEffect.GoToLines -> onGoToLines(effect.direction)
+            CommuteSetupEffect.Expired -> onExpired()
+            CommuteSetupEffect.GoToStop, CommuteSetupEffect.Removed, is CommuteSetupEffect.Finished -> Unit
+        }
     }
     val requestLocation = rememberLocationRequest(
         permissions = vm.locationPermissions,

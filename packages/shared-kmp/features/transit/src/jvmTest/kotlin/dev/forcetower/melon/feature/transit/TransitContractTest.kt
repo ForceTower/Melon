@@ -31,7 +31,11 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 import kotlin.time.Instant
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
@@ -141,7 +145,31 @@ internal class TransitContractTest {
             assertNull(storage.get("transit.commute_plan"))
         }
 
-    private fun service(data: (HttpRequestData) -> JsonElement): TransitService {
+    // A refresh in flight at logout answers with the previous account's
+    // plan; the mirror must not take it.
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun aRefreshOutlivingTheLogoutCannotRestoreThePlan() =
+        runTest {
+            val answer = CompletableDeferred<Unit>()
+            val service = service {
+                answer.await()
+                fixture.getValue("plan")
+            }
+            val storage = FakeStorage()
+            val repository = CommutePlanRepository(service, storage, json, Logger)
+
+            val refresh = async { repository.refresh() }
+            runCurrent()
+            repository.clear()
+            answer.complete(Unit)
+            assertIs<Outcome.Ok<Unit>>(refresh.await())
+
+            assertTrue(repository.observe().first().isEmpty)
+            assertNull(storage.get("transit.commute_plan"))
+        }
+
+    private fun service(data: suspend (HttpRequestData) -> JsonElement): TransitService {
         val client = HttpClient(
             MockEngine { request ->
                 respond(

@@ -67,7 +67,7 @@ internal fun CommuteDirectionScreen(
             CommuteSetupEffect.GoToStop -> onGoToStop()
             is CommuteSetupEffect.GoToLines -> onGoToLines(effect.direction)
             CommuteSetupEffect.Removed -> onRemoved()
-            is CommuteSetupEffect.Finished -> Unit
+            is CommuteSetupEffect.Finished, CommuteSetupEffect.Expired -> Unit
         }
     }
     CommuteDirectionContent(

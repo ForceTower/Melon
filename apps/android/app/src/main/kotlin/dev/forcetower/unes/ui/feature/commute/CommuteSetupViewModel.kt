@@ -135,6 +135,7 @@ internal sealed interface CommuteSetupIntent : UiIntent {
     data object RemoveFailureDismissed : CommuteSetupIntent
 
     // Stop step.
+    data object OpenStop : CommuteSetupIntent
     data class QueryChanged(
         val query: String,
     ) : CommuteSetupIntent
@@ -173,6 +174,10 @@ internal sealed interface CommuteSetupEffect : UiEffect {
         val direction: TransitDirection,
     ) : CommuteSetupEffect
     data object Removed : CommuteSetupEffect
+
+    // A later step came back without its session (the process was recreated
+    // under it): the steps give way to the first, which starts over.
+    data object Expired : CommuteSetupEffect
 }
 
 @HiltViewModel
@@ -212,6 +217,7 @@ internal class CommuteSetupViewModel @Inject constructor(
             CommuteSetupIntent.RemoveDismissed -> setState { copy(removeConfirmOpen = false) }
             CommuteSetupIntent.RemoveConfirmed -> remove()
             CommuteSetupIntent.RemoveFailureDismissed -> setState { copy(removeFailed = false) }
+            CommuteSetupIntent.OpenStop -> if (!begun) emitEffect(CommuteSetupEffect.Expired)
             is CommuteSetupIntent.QueryChanged -> setState { copy(query = intent.query) }
             is CommuteSetupIntent.StopSelected -> setState { copy(selectedStopId = intent.stopId) }
             CommuteSetupIntent.LocateMe -> locate()
@@ -223,7 +229,9 @@ internal class CommuteSetupViewModel @Inject constructor(
                     emitEffect(CommuteSetupEffect.GoToLines(TransitDirection.ToCampus))
                 }
             }
-            is CommuteSetupIntent.OpenLines -> openLines(intent.direction)
+            is CommuteSetupIntent.OpenLines -> {
+                if (begun) openLines(intent.direction) else emitEffect(CommuteSetupEffect.Expired)
+            }
             is CommuteSetupIntent.LineToggled -> toggleLine(intent.lineNumber)
             is CommuteSetupIntent.WalkChanged -> setState { copy(walkMinutes = intent.minutes.coerceIn(WALK_RANGE)) }
             CommuteSetupIntent.SaveTapped -> save()
@@ -341,8 +349,11 @@ internal class CommuteSetupViewModel @Inject constructor(
             return
         }
         setState { copy(saving = true) }
+        // A pass through a direction unchecked since leaves its leg in the
+        // draft; only the chosen directions are sent.
+        val plan = state.directions.fold(CommutePlan()) { plan, chosen -> plan.withLeg(chosen, draft.leg(chosen)) }
         viewModelScope.launch {
-            when (val outcome = saveCommutePlan(draft)) {
+            when (val outcome = saveCommutePlan(plan)) {
                 is Outcome.Ok -> {
                     setState { copy(saving = false) }
                     begun = false
