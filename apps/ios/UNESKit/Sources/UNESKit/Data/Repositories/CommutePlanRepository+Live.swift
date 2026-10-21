@@ -38,7 +38,8 @@ extension CommutePlanRepository: DependencyKey {
                         log.debug("refresh ok directions=\(dto.domain.directions.count)")
                     }
                 } catch {
-                    logFailure("refresh", error: error)
+                    // Once per screen entry, and the mirror stays; not a bug.
+                    logFailure("refresh failed", error: error, connection: .info)
                     throw error
                 }
             },
@@ -59,7 +60,7 @@ extension CommutePlanRepository: DependencyKey {
                         return saved
                     }
                 } catch {
-                    logFailure("save", error: error)
+                    logFailure("save failed", error: error, connection: .warn)
                     throw error
                 }
             },
@@ -75,24 +76,28 @@ extension CommutePlanRepository: DependencyKey {
                         log.info("remove ok")
                     }
                 } catch {
-                    logFailure("remove", error: error)
+                    logFailure("remove failed", error: error, connection: .warn)
                     throw error
                 }
             }
         )
     }()
+}
 
-    private static func logFailure(_ operation: String, error: Error) {
-        switch error {
-        case is CancellationError:
-            break
-        case let APIError.server(status, message):
-            log.warn("\(operation) server \(status) message=\(message ?? "<none>")")
-        case is URLError:
-            log.warn("\(operation) transport failure", error: error)
-        default:
-            log.error("\(operation) failed", error: error)
-        }
+/// Connection trouble — no transport, a non-2xx answer — is logged at
+/// `connection`: a refresh runs on every screen entry, a save or removal
+/// once per tap with an alert the student sees. Anything else is a bug in
+/// this app or the API and stays an error.
+private func logFailure(_ what: String, error: any Error, connection: LogLevel) {
+    switch error {
+    case is CancellationError:
+        break
+    case let APIError.server(status, message):
+        log.write(connection, "\(what) server \(status) message=\(message ?? "<none>")")
+    case is URLError:
+        log.write(connection, "\(what) transport failure", error: error)
+    default:
+        log.error(what, error: error)
     }
 }
 
