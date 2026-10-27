@@ -2429,8 +2429,8 @@
     <string name="commute_how_live_body">Its live position along the route, updated every 10–20 s.</string>
     <string name="commute_how_history_title">How long recent trips took</string>
     <string name="commute_how_history_body">From where it is to your stop, on the same days and times.</string>
-    <string name="commute_how_ignored_title">What we don\'t lean on</string>
-    <string name="commute_how_ignored_body">The official timetable and the city app\'s countdown: what buses actually did weighs more.</string>
+    <string name="commute_how_ignored_title">What about the timetable?</string>
+    <string name="commute_how_ignored_body">It and the city app\'s countdown take a back seat. We start from what buses actually did.</string>
     <string name="commute_how_footnote">The farther the bus, the wider the window. Beyond 30 min we only show an approximate time.</string>
 
     <string name="commute_follow_title">Following the %1$s</string>

@@ -14,6 +14,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Sensors
@@ -111,7 +112,11 @@ internal fun CommuteHowSheet(
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 Reason(Icons.Filled.Sensors, R.string.commute_how_live_title, R.string.commute_how_live_body)
                 Reason(Icons.Filled.History, R.string.commute_how_history_title, R.string.commute_how_history_body)
-                Reason(Icons.Filled.Close, R.string.commute_how_ignored_title, R.string.commute_how_ignored_body)
+                Reason(
+                    Icons.Filled.CalendarMonth,
+                    R.string.commute_how_ignored_title,
+                    R.string.commute_how_ignored_body,
+                )
             }
             Spacer(Modifier.height(16.dp))
             Text(
