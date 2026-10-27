@@ -4661,13 +4661,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "The official timetable and the city app's countdown: what buses actually did weighs more."
+            "value" : "It and the city app's countdown take a back seat. We start from what buses actually did."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A tabela oficial e a contagem do app da prefeitura: o que os ônibus realmente fizeram pesa mais."
+            "value" : "Ela e a contagem do app da prefeitura ficam em segundo plano. Partimos do que os ônibus realmente fizeram."
           }
         }
       }
@@ -4678,13 +4678,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "What we don't lean on"
+            "value" : "What about the timetable?"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No que não confiamos"
+            "value" : "E a tabela oficial?"
           }
         }
       }

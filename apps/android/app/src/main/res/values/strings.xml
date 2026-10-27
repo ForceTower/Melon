@@ -2509,8 +2509,8 @@
     <string name="commute_how_live_body">A posição ao vivo ao longo da rota, atualizada a cada 10–20 s.</string>
     <string name="commute_how_history_title">Quanto demoraram as viagens recentes</string>
     <string name="commute_how_history_body">Do ponto em que ele está até o seu, nos mesmos dias e horários.</string>
-    <string name="commute_how_ignored_title">No que não confiamos</string>
-    <string name="commute_how_ignored_body">A tabela oficial e a contagem do app da prefeitura: o que os ônibus realmente fizeram pesa mais.</string>
+    <string name="commute_how_ignored_title">E a tabela oficial?</string>
+    <string name="commute_how_ignored_body">Ela e a contagem do app da prefeitura ficam em segundo plano. Partimos do que os ônibus realmente fizeram.</string>
     <string name="commute_how_footnote">Quanto mais longe o ônibus, mais larga a faixa. Acima de 30 min, mostramos só um horário aproximado.</string>
 
     <!-- Seguindo o ônibus -->

@@ -154,7 +154,7 @@ struct CommuteHowSheet: View {
         VStack(alignment: .leading, spacing: 10) {
             reason("dot.radiowaves.left.and.right", .commuteHowLiveTitle, .commuteHowLiveBody)
             reason("clock", .commuteHowHistoryTitle, .commuteHowHistoryBody)
-            reason("xmark", .commuteHowIgnoredTitle, .commuteHowIgnoredBody)
+            reason("calendar", .commuteHowIgnoredTitle, .commuteHowIgnoredBody)
         }
     }
 
