@@ -10,6 +10,13 @@ private struct TransitContract: Decodable {
     let arrivals: TransitStopArrivalsDTO
     let follow: TransitFollowDTO
     let plan: TransitCommutePlanDTO
+    let liveActivity: LiveActivity
+
+    /// What the backend pushes as `aps.content-state`, decoded the way
+    /// ActivityKit decodes it: a plain `JSONDecoder`.
+    struct LiveActivity: Decodable {
+        let content: [String: CommuteActivityAttributes.ContentState]
+    }
 
     static func load() throws -> TransitContract {
         var root = URL(fileURLWithPath: #filePath)
@@ -49,6 +56,36 @@ struct TransitContractTests {
         #expect(plan.toCampus?.lineNumbers == ["087"])
         #expect(plan.fromCampus?.stopId == "2452")
         #expect(plan.fromCampus?.walkMinutes == 3)
+    }
+
+    @Test
+    func liveActivityPushesReadAsTheArrivalsTheyCameFrom() throws {
+        let contract = try TransitContract.load()
+        let board = try contract.arrivals.domain()
+        let content = contract.liveActivity.content
+        let route = try #require(TransitFixtures.network.route(line: "087", direction: .toCampus))
+        let attributes = try #require(CommuteActivityAttributes(
+            arrival: board.arrivals[0],
+            route: route,
+            lineName: "087",
+            stopId: TransitFixtures.myStopId
+        ))
+
+        let live = try #require(content["live"]?.arrival(for: attributes))
+        #expect(live.state == .live)
+        #expect(live.earliest == board.arrivals[0].earliest)
+        #expect(live.latest == board.arrivals[0].latest)
+        #expect(live.campusArrival == board.arrivals[0].campusArrival)
+        #expect(live.stopsAway == 4)
+        #expect(content["live"]?.progressMeters == 1180)
+
+        let waiting = try #require(content["waiting"]?.arrival(for: attributes))
+        #expect(waiting.state == .waiting)
+        #expect(waiting.originDeparture == board.arrivals[1].originDeparture)
+
+        let passed = try #require(content["passed"])
+        #expect(passed.status == .passed)
+        #expect(passed.arrival(for: attributes) == nil)
     }
 
     @Test

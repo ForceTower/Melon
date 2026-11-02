@@ -673,6 +673,7 @@ struct CommuteFeatureTests {
                 fallbacks.withValue { $0.append(vehicleId) }
                 return answers.withValue { $0.count > 1 ? $0.removeFirst() : $0[0] }
             }
+            $0.commuteActivity.status = { _ in .unavailable }
         }
         store.exhaustivity = .off
 
@@ -710,6 +711,7 @@ struct CommuteFeatureTests {
             $0.continuousClock = clock
             $0.transitRepository.network = { TransitFixtures.network }
             $0.transitRepository.follow = { _, _, _, _, _ in throw URLError(.notConnectedToInternet) }
+            $0.commuteActivity.status = { _ in .unavailable }
         }
         store.exhaustivity = .off
 
@@ -720,6 +722,108 @@ struct CommuteFeatureTests {
         }
         #expect(store.state.isOutdated(at: snapshotAt.addingTimeInterval(CommuteFormat.outdatedAfter + 1)))
         await task.cancel()
+    }
+
+    // MARK: Lock screen
+
+    private static func followState(lockScreen: CommuteActivityStatus) -> CommuteFollowFeature.State {
+        let network = TransitFixtures.network
+        var state = CommuteFollowFeature.State(
+            arrival: TransitFixtures.board(now: now).arrivals[0],
+            direction: .toCampus,
+            stopId: TransitFixtures.myStopId,
+            receivedAt: now
+        )
+        state.route = network.route(line: "087", direction: .toCampus)
+        state.lineName = network.line("087")?.name
+        state.lockScreen = lockScreen
+        return state
+    }
+
+    @Test
+    func theLockScreenStartsFromWhatTheScreenShowsAndStopsAgain() async throws {
+        let arrival = TransitFixtures.board(now: Self.now).arrivals[0]
+        let started = LockIsolated<(CommuteActivityAttributes, CommuteActivityAttributes.ContentState, String?)?>(nil)
+        let stopped = LockIsolated<[String]>([])
+        let store = TestStore(initialState: Self.followState(lockScreen: .available)) {
+            CommuteFollowFeature()
+        } withDependencies: {
+            $0.commuteActivity.start = { started.setValue(($0, $1, $2)) }
+            $0.commuteActivity.stop = { id in stopped.withValue { $0.append(id) } }
+        }
+
+        await store.send(.lockScreenTapped) {
+            $0.lockScreen = .running
+        }
+        await store.finish()
+        let (attributes, content, vehicleId) = try #require(started.value)
+        #expect(attributes.arrivalId == arrival.id)
+        // Terminal → the student's stop, ringed at the end of the line.
+        #expect(attributes.stops.first?.name == String.localized(.commuteTerminal))
+        #expect(attributes.mineIndex == attributes.stops.count - 1)
+        #expect(content.status == .live)
+        #expect(content.arrival(for: attributes)?.latest == arrival.latest)
+        #expect(vehicleId == arrival.vehicleId)
+
+        await store.send(.lockScreenTapped) {
+            $0.lockScreen = .available
+        }
+        await store.finish()
+        #expect(stopped.value == [arrival.id])
+    }
+
+    @Test
+    func aLockScreenThatWontStartAsksForTheStatusAgain() async {
+        let store = TestStore(initialState: Self.followState(lockScreen: .available)) {
+            CommuteFollowFeature()
+        } withDependencies: {
+            $0.commuteActivity.start = { _, _, _ in throw URLError(.unknown) }
+            $0.commuteActivity.status = { _ in .unavailable }
+        }
+
+        await store.send(.lockScreenTapped) {
+            $0.lockScreen = .running
+        }
+        await store.receive(.lockScreenLoaded(.unavailable)) {
+            $0.lockScreen = .unavailable
+        }
+    }
+
+    @Test
+    func boardingWhereTheLineStartsDrawsTheWholeTrip() throws {
+        let network = TransitFixtures.network
+        let arrival = TransitFixtures.board(now: Self.now).arrivals[0]
+        let inbound = try #require(network.route(line: "087", direction: .toCampus))
+        let atTerminal = try #require(CommuteActivityAttributes(
+            arrival: arrival,
+            route: inbound,
+            lineName: "087",
+            stopId: inbound.stops[0].id
+        ))
+        #expect(atTerminal.boardsAtOrigin)
+        #expect(atTerminal.stops.last?.name == "UEFS")
+
+        let outbound = try #require(network.route(line: "087", direction: .fromCampus))
+        let leaving = try #require(CommuteActivityAttributes(
+            arrival: arrival,
+            route: outbound,
+            lineName: "087",
+            stopId: TransitFixtures.campusDepartureStopId
+        ))
+        #expect(leaving.boardsAtOrigin)
+        #expect(leaving.stops.count == outbound.stops.count)
+        #expect(leaving.stops.last?.name == String.localized(.commuteTerminal))
+    }
+
+    @Test
+    func theIslandsMinuteBandIsTheEstimatesBand() {
+        let live = Self.arrival(state: .live, earliest: 8.2, latest: 9.6, expected: 9)
+        #expect(CommuteFormat.minuteBand(for: live, now: Self.now) == 8...10)
+        #expect(CommuteFormat.minuteBand(for: live, now: Self.now, frozen: true) == nil)
+        let waiting = Self.arrival(state: .waiting, earliest: 12, latest: 18, expected: 15)
+        #expect(CommuteFormat.minuteBand(for: waiting, now: Self.now) == nil)
+        let arriving = Self.arrival(state: .live, earliest: 0.2, latest: 0.9, expected: 0.5)
+        #expect(CommuteFormat.minuteBand(for: arriving, now: Self.now) == nil)
     }
 
     // MARK: Plan sync

@@ -30,6 +30,10 @@ struct CommuteFollowView: View {
                     progress(route: route, mineIndex: mine)
                         .padding(.top, 14)
                 }
+                if store.state.showsLockScreenToggle {
+                    lockScreenButton
+                        .padding(.top, 12)
+                }
                 locationButton
                     .padding(.top, 12)
                 if store.locationDenied {
@@ -245,24 +249,29 @@ struct CommuteFollowView: View {
         let stops = Array(route.stops[...max(end, mineIndex)])
         return TransitRouteProgress(
             stopNames: stops.map { transitShortName($0, in: route) },
-            busPosition: store.followedVehicle?.progressMeters.flatMap { Self.fractionalIndex($0, stops: stops) },
+            busPosition: store.followedVehicle?.progressMeters.flatMap {
+                TransitRoute.fractionalIndex($0, distances: stops.map(\.distanceMeters))
+            },
             mineIndex: mineIndex,
             color: color
         )
         .transitCard(padding: EdgeInsets(top: 14, leading: 14, bottom: 10, trailing: 14))
     }
 
-    /// Where `meters` falls between the stops, as a fractional stop index.
-    static func fractionalIndex(_ meters: Double, stops: [TransitStop]) -> Double? {
-        guard let first = stops.first, let last = stops.last, meters >= first.distanceMeters else { return nil }
-        guard meters < last.distanceMeters else { return Double(stops.count - 1) }
-        for index in stops.indices.dropLast() {
-            let from = stops[index].distanceMeters, to = stops[index + 1].distanceMeters
-            if meters < to {
-                return Double(index) + (to > from ? (meters - from) / (to - from) : 0)
+    // MARK: Lock screen
+
+    private var lockScreenButton: some View {
+        Button {
+            store.send(.lockScreenTapped)
+        } label: {
+            Label {
+                Text(store.lockScreen == .running ? .commuteLockScreenStop : .commuteLockScreenStart)
+            } icon: {
+                Image(systemName: "platter.filled.bottom.iphone")
             }
+            .font(.system(size: 15, weight: .semibold))
         }
-        return Double(stops.count - 1)
+        .buttonStyle(.unesNeutral)
     }
 
     // MARK: Location

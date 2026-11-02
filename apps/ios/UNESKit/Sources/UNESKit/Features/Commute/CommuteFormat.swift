@@ -45,16 +45,26 @@ enum CommuteFormat {
         if arrival.phase == .atStop {
             return Estimate(text: .localized(.commuteEstimateAtStop), isApproximate: false)
         }
-        let low = Int((arrival.earliest.timeIntervalSince(now) / 60).rounded(.down))
-        let high = Int((arrival.latest.timeIntervalSince(now) / 60).rounded(.up))
-        if high <= 1 {
+        guard let band = minuteBand(for: arrival, now: now) else {
             return Estimate(text: .localized(.commuteEstimateArriving), isApproximate: false)
         }
-        let floor = max(1, low)
-        let text: String = floor >= high
-            ? .localized(.commuteEstimateMinutes(high))
-            : .localized(.commuteEstimateMinuteRange(floor, high))
+        let text: String = band.count == 1
+            ? .localized(.commuteEstimateMinutes(band.upperBound))
+            : .localized(.commuteEstimateMinuteRange(band.lowerBound, band.upperBound))
         return Estimate(text: text, isApproximate: false)
+    }
+
+    /// The countdown of a bus on its way, in whole minutes: the earliest edge
+    /// rounded down but never below one, the latest rounded up. Nil whenever
+    /// `estimate` shows a clock time or a word instead.
+    static func minuteBand(for arrival: TransitArrival, now: Date, frozen: Bool = false) -> ClosedRange<Int>? {
+        guard arrival.state == .live, !arrival.signalLost, !frozen, arrival.phase != .atStop,
+              arrival.expected.timeIntervalSince(now) <= approximateBeyond
+        else { return nil }
+        let high = Int((arrival.latest.timeIntervalSince(now) / 60).rounded(.up))
+        guard high > 1 else { return nil }
+        let low = Int((arrival.earliest.timeIntervalSince(now) / 60).rounded(.down))
+        return min(max(1, low), high)...high
     }
 
     /// "atualizado há 8 s" — the bus's last new position, not our request.

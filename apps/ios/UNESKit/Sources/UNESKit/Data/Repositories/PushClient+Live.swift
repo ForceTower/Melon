@@ -22,6 +22,9 @@ extension PushClient: DependencyKey {
         fcmTokenReceived: { token in
             await registrar.fcmTokenReceived(token)
         },
+        currentToken: {
+            await registrar.currentToken()
+        },
         reconcile: {
             await registrar.reconcile()
         },
@@ -70,6 +73,10 @@ private actor PushRegistrar {
             addPendingDelete(previous)
         }
         await reconcile()
+    }
+
+    func currentToken() -> String? {
+        UserDefaults.standard.string(forKey: Self.tokenKey)
     }
 
     func reconcile() async {

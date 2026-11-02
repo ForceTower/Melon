@@ -46,6 +46,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         UNUserNotificationCenter.current().delegate = self
         Messaging.messaging().delegate = self
         application.registerForRemoteNotifications()
+        Task { await CommuteActivities.resume() }
 
         configureRemoteSettings()
         configurePostHog()

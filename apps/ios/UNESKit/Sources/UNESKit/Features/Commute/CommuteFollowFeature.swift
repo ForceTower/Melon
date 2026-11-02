@@ -1,6 +1,8 @@
 import ComposableArchitecture
 import Foundation
 
+private let log = Log.scoped("CommuteFollow")
+
 /// "Seguindo o 087": only this line's route and buses, the followed
 /// departure's band to the student's stop, refreshed while on screen.
 /// Following a bus never means the student is on it.
@@ -22,6 +24,9 @@ struct CommuteFollowFeature {
         /// snapshot until the first answer here replaces it.
         var followReceivedAt: Date
         var route: TransitRoute?
+        var lineName: String?
+        /// Whether this departure is on the lock screen, or can be.
+        var lockScreen: CommuteActivityStatus = .unavailable
         var loadFailed = false
         var showsMyLocation = false
         var locationDenied = false
@@ -50,13 +55,29 @@ struct CommuteFollowFeature {
         func isOutdated(at now: Date) -> Bool {
             now.timeIntervalSince(followReceivedAt) > CommuteFormat.outdatedAfter
         }
+
+        /// What the lock screen starts from; nil until the route and an
+        /// estimate are both in.
+        var activity: (attributes: CommuteActivityAttributes, state: CommuteActivityAttributes.ContentState)? {
+            guard let arrival, let route, let lineName,
+                  let attributes = CommuteActivityAttributes(arrival: arrival, route: route, lineName: lineName, stopId: stopId)
+            else { return nil }
+            return (attributes, .init(arrival: arrival, progressMeters: followedVehicle?.progressMeters))
+        }
+
+        /// Stopping is always offered; starting needs something to show.
+        var showsLockScreenToggle: Bool {
+            lockScreen == .running || (lockScreen == .available && activity != nil)
+        }
     }
 
     enum Action: Equatable {
         case task
-        case routeLoaded(TransitRoute?)
+        case routeLoaded(TransitRoute?, lineName: String?)
         case followLoaded(TransitFollow)
         case followFailed
+        case lockScreenLoaded(CommuteActivityStatus)
+        case lockScreenTapped
         case myLocationTapped
         case locationResolved(LocationAuthorization)
         case explainTapped
@@ -65,6 +86,7 @@ struct CommuteFollowFeature {
 
     @Dependency(\.transitRepository) var transitRepository
     @Dependency(\.locationClient) var locationClient
+    @Dependency(\.commuteActivity) var commuteActivity
     @Dependency(\.date.now) var now
     @Dependency(\.continuousClock) var clock
 
@@ -76,10 +98,11 @@ struct CommuteFollowFeature {
         Reduce { state, action in
             switch action {
             case .task:
-                return .merge(loadRoute(state), poll(state))
+                return .merge(loadRoute(state), poll(state), loadLockScreen(state))
 
-            case let .routeLoaded(route):
+            case let .routeLoaded(route, lineName):
                 state.route = route
+                state.lineName = lineName
                 return .none
 
             case let .followLoaded(follow):
@@ -97,6 +120,31 @@ struct CommuteFollowFeature {
             case .followFailed:
                 state.loadFailed = true
                 return .none
+
+            case let .lockScreenLoaded(status):
+                state.lockScreen = status
+                return .none
+
+            case .lockScreenTapped:
+                switch state.lockScreen {
+                case .unavailable:
+                    return .none
+                case .running:
+                    state.lockScreen = .available
+                    return .run { [arrivalId = state.arrivalId] _ in
+                        await commuteActivity.stop(arrivalId)
+                    }
+                case .available:
+                    guard let activity = state.activity else { return .none }
+                    state.lockScreen = .running
+                    return .run { [vehicleId = state.vehicleId] _ in
+                        try await commuteActivity.start(activity.attributes, activity.state, vehicleId)
+                    } catch: { [arrivalId = state.arrivalId] error, send in
+                        // Turned off in Settings meanwhile, or too many running.
+                        log.warn("lock screen start failed", error: error)
+                        await send(.lockScreenLoaded(await commuteActivity.status(arrivalId)))
+                    }
+                }
 
             case .myLocationTapped:
                 if state.showsMyLocation {
@@ -131,7 +179,13 @@ struct CommuteFollowFeature {
     private func loadRoute(_ state: State) -> Effect<Action> {
         .run { [line = state.lineNumber, direction = state.direction] send in
             let network = try? await transitRepository.network()
-            await send(.routeLoaded(network?.route(line: line, direction: direction)))
+            await send(.routeLoaded(network?.route(line: line, direction: direction), lineName: network?.line(line)?.name))
+        }
+    }
+
+    private func loadLockScreen(_ state: State) -> Effect<Action> {
+        .run { [arrivalId = state.arrivalId] send in
+            await send(.lockScreenLoaded(await commuteActivity.status(arrivalId)))
         }
     }
 

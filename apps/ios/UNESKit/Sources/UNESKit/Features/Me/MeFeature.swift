@@ -177,6 +177,7 @@ struct MeFeature {
     @Dependency(\.profileRepository) var profileRepository
     @Dependency(\.sessionStore) var sessionStore
     @Dependency(\.push) var push
+    @Dependency(\.commuteActivity) var commuteActivity
     @Dependency(\.appInfo) var appInfo
     @Dependency(\.pasteboard) var pasteboard
     @Dependency(\.openURL) var openURL
@@ -387,6 +388,7 @@ struct MeFeature {
                 let firstName = firstName(of: state.displayName)
                 return .run { [log] send in
                     // Before the session clears — the DELETEs need the bearer.
+                    await commuteActivity.stopAll()
                     await push.unregister()
                     try? await meRepository.wipeLocalData()
                     do {

@@ -188,6 +188,11 @@ enum UNESColor {
     static let transit088 = Color(light: coral, dark: Color(hex: 0xF07C6E))
     /// "Aguardando saída" — the design's readable magenta.
     static let transitWaiting = Color(light: magenta, dark: Color(hex: 0xD8609E))
+    /// The lock-screen Live Activity; translucent, the system blurs the wallpaper behind it.
+    static let transitActivityBackground = Color(
+        light: Color(hex: 0xFFFFFF, opacity: 0.78),
+        dark: Color(hex: 0x161618, opacity: 0.72)
+    )
 
     static func transitLine(_ number: String) -> Color {
         switch number {

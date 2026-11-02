@@ -6,5 +6,6 @@ import WidgetKit
 struct UNESWidgetsBundle: WidgetBundle {
     var body: some Widget {
         NextClassWidget()
+        CommuteLiveActivityWidget()
     }
 }

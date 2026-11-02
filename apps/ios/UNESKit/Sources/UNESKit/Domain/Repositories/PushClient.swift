@@ -14,6 +14,8 @@ struct PushClient: Sendable {
     /// already exists (fresh installs are registered by the onboarding sync
     /// step instead).
     var fcmTokenReceived: @Sendable (_ token: String) async -> Void
+    /// The FCM registration token Firebase last handed this device, if any.
+    var currentToken: @Sendable () async -> String? = { nil }
     /// Register the token and delete any stale identifier row still on the
     /// backend. Runs post-login, on token hand-offs, and on every return to
     /// the foreground.
@@ -43,6 +45,7 @@ extension PushClient: TestDependencyKey {
     static let previewValue = PushClient(
         requestAuthorization: {},
         fcmTokenReceived: { _ in },
+        currentToken: { nil },
         reconcile: {},
         unregister: {},
         dataNotificationReceived: { _ in },

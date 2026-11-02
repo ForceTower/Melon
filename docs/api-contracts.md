@@ -48,6 +48,16 @@ clients mirror locally. Swift decodes it in `TransitContractTests`; KMP decodes
 it in `TransitContractTest` (`packages/shared-kmp/features/transit`), which also
 round-trips the plan through the Android key-value mirror.
 
+Its `liveActivity` section covers following a departure on the iOS lock screen.
+`register` is the body of `POST /api/transit/live-activities`, sent when the
+student starts the Live Activity and again whenever ActivityKit rotates its push
+token; `vehicleId` may be omitted. `DELETE /api/transit/live-activities/{id}`
+stops it. Each `content` entry is an `aps.content-state` the backend pushes
+through FCM: the arrival states plus `passed` and `ended`, which end the
+activity. ActivityKit decodes pushes with its own decoder, so these instants are
+Unix seconds, not ISO strings. Swift decodes them in `TransitContractTests`; the
+backend's contract test serializes the same arrivals into them.
+
 Keep nullable fields distinct from missing required fields. Opaque IDs remain
 strings, platform numeric IDs retain 64-bit capacity, and schedule weekdays stay
 Sunday=0 through Saturday=6. Date-only semester boundaries differ from timestamped

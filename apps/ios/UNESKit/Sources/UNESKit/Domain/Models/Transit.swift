@@ -55,6 +55,20 @@ struct TransitRoute: Equatable, Sendable, Identifiable {
     func index(of stopId: String) -> Int? {
         stops.firstIndex { $0.id == stopId }
     }
+
+    /// Where `meters` falls between consecutive stops at `distances`, as a
+    /// fractional stop index; nil before the first one.
+    static func fractionalIndex(_ meters: Double, distances: [Double]) -> Double? {
+        guard let first = distances.first, let last = distances.last, meters >= first else { return nil }
+        guard meters < last else { return Double(distances.count - 1) }
+        for index in distances.indices.dropLast() {
+            let from = distances[index], to = distances[index + 1]
+            if meters < to {
+                return Double(index) + (to > from ? (meters - from) / (to - from) : 0)
+            }
+        }
+        return Double(distances.count - 1)
+    }
 }
 
 struct TransitNetwork: Equatable, Sendable {

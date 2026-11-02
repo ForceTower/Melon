@@ -216,5 +216,49 @@
       "walkMinutes": 3
     },
     "updatedAt": "2026-10-02T09:40:00.000Z"
+  },
+  "liveActivity": {
+    "register": {
+      "activityId": "6F1D2C3B-8A41-4E7B-9C0D-2B5E7A9F1C30",
+      "pushToken": "80a1b2c3d4e5f60718293a4b5c6d7e8f80a1b2c3d4e5f60718293a4b5c6d7e8f",
+      "deviceToken": "synthetic-fcm-registration-token",
+      "lineNumber": "087",
+      "direction": "toCampus",
+      "stopId": "9001",
+      "arrivalId": "087:toCampus:2026-10-02:06:30",
+      "vehicleId": "90001"
+    },
+    "content": {
+      "live": {
+        "status": "live",
+        "window": { "earliest": 1790935080, "latest": 1790935200, "expected": 1790935140 },
+        "originDeparture": null,
+        "campusArrival": 1790935920,
+        "stopsAway": 4,
+        "atStop": false,
+        "progressMeters": 1180,
+        "signalLost": false
+      },
+      "waiting": {
+        "status": "waiting",
+        "window": { "earliest": 1790935920, "latest": 1790936280, "expected": 1790936100 },
+        "originDeparture": 1790935080,
+        "campusArrival": 1790937480,
+        "stopsAway": null,
+        "atStop": false,
+        "progressMeters": 0,
+        "signalLost": false
+      },
+      "passed": {
+        "status": "passed",
+        "window": null,
+        "originDeparture": null,
+        "campusArrival": null,
+        "stopsAway": null,
+        "atStop": false,
+        "progressMeters": 4210,
+        "signalLost": false
+      }
+    }
   }
 }

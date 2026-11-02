@@ -3815,6 +3815,108 @@
         }
       }
     },
+    "commute.activity.endedShort" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "no estimate"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "sem previsão"
+          }
+        }
+      }
+    },
+    "commute.activity.leavesCampus" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "leaves UEFS"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "sai da UEFS"
+          }
+        }
+      }
+    },
+    "commute.activity.leavesTerminal" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "leaves the Terminal"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "sai do Terminal"
+          }
+        }
+      }
+    },
+    "commute.activity.passedShort" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "passed"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "já passou"
+          }
+        }
+      }
+    },
+    "commute.activity.reachesCampus" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "reaches UEFS"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "chega na UEFS"
+          }
+        }
+      }
+    },
+    "commute.activity.untilStop" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "to your stop"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "até o ponto"
+          }
+        }
+      }
+    },
     "commute.arrivingAtCampusIn" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4991,6 +5093,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sem acesso à localização"
+          }
+        }
+      }
+    },
+    "commute.lockScreen.start" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Follow on the Lock Screen"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acompanhar na tela bloqueada"
+          }
+        }
+      }
+    },
+    "commute.lockScreen.stop" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stop following on the Lock Screen"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parar de acompanhar na tela bloqueada"
           }
         }
       }
