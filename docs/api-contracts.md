@@ -48,15 +48,24 @@ clients mirror locally. Swift decodes it in `TransitContractTests`; KMP decodes
 it in `TransitContractTest` (`packages/shared-kmp/features/transit`), which also
 round-trips the plan through the Android key-value mirror.
 
-Its `liveActivity` section covers following a departure on the iOS lock screen.
-`register` is the body of `POST /api/transit/live-activities`, sent when the
-student starts the Live Activity and again whenever ActivityKit rotates its push
-token; `vehicleId` may be omitted. `DELETE /api/transit/live-activities/{id}`
-stops it. Each `content` entry is an `aps.content-state` the backend pushes
-through FCM: the arrival states plus `passed` and `ended`, which end the
-activity. ActivityKit decodes pushes with its own decoder, so these instants are
-Unix seconds, not ISO strings. Swift decodes them in `TransitContractTests`; the
-backend's contract test serializes the same arrivals into them.
+Its `liveActivity` section covers following a departure outside the app: the
+iOS Live Activity and the Android ongoing notification. `register` is the body
+of `POST /api/transit/live-activities` from iOS, sent when the student starts
+the Live Activity and again whenever ActivityKit rotates its push token; a
+missing `platform` means `ios`, and `vehicleId` may be omitted.
+`registerAndroid` is the Android body: `platform: "android"` and no push token,
+with an `activityId` the app makes up for its notification.
+`DELETE /api/transit/live-activities/{id}` stops either. Each `content` entry is
+what the backend pushes through FCM: the arrival states plus `passed` and
+`ended`, which end the activity. iOS receives it as `aps.content-state`;
+Android receives a data message with `kind: "transit_live_activity"`,
+`activityId`, `event` (`update` or `end`), `content` (the same object as a JSON
+string), `timestamp`, and `staleDate` or `dismissalDate`, all Unix seconds as
+strings. ActivityKit decodes pushes with its own decoder, so the content's
+instants are Unix seconds, not ISO strings. Swift decodes them in
+`TransitContractTests` and KMP in `TransitContractTest`, which also checks the
+Android body; the backend's contract test serializes the same arrivals into
+them.
 
 Keep nullable fields distinct from missing required fields. Opaque IDs remain
 strings, platform numeric IDs retain 64-bit capacity, and schedule weekdays stay

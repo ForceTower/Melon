@@ -228,6 +228,16 @@
       "arrivalId": "087:toCampus:2026-10-02:06:30",
       "vehicleId": "90001"
     },
+    "registerAndroid": {
+      "activityId": "0d5e2f4a-7b1c-4e9a-8f36-2a1c5d7e9b40",
+      "platform": "android",
+      "deviceToken": "synthetic-fcm-registration-token",
+      "lineNumber": "087",
+      "direction": "toCampus",
+      "stopId": "9001",
+      "arrivalId": "087:toCampus:2026-10-02:06:30",
+      "vehicleId": "90001"
+    },
     "content": {
       "live": {
         "status": "live",

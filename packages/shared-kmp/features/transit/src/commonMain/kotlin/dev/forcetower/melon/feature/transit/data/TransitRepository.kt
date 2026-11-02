@@ -3,10 +3,14 @@ package dev.forcetower.melon.feature.transit.data
 import co.touchlab.kermit.Logger
 import dev.forcetower.melon.core.common.AppClock
 import dev.forcetower.melon.core.common.Outcome
+import dev.forcetower.melon.feature.transit.data.network.TransitLiveUpdateDTO
 import dev.forcetower.melon.feature.transit.data.network.TransitService
+import dev.forcetower.melon.feature.transit.data.network.toDomain
 import dev.forcetower.melon.feature.transit.domain.model.TransitDirection
 import dev.forcetower.melon.feature.transit.domain.model.TransitError
 import dev.forcetower.melon.feature.transit.domain.model.TransitFollow
+import dev.forcetower.melon.feature.transit.domain.model.TransitLiveUpdate
+import dev.forcetower.melon.feature.transit.domain.model.TransitLiveUpdateRegistration
 import dev.forcetower.melon.feature.transit.domain.model.TransitNetwork
 import dev.forcetower.melon.feature.transit.domain.model.TransitStopBoard
 import dev.zacsweers.metro.AppScope
@@ -16,6 +20,8 @@ import kotlin.time.Duration.Companion.hours
 import kotlin.time.Instant
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.json.Json
 
 // The bus network, arrivals and follow reads. Stops and geometry change only
 // when the city edits a route, so the network is reused for a few hours and a
@@ -27,6 +33,7 @@ import kotlinx.coroutines.sync.withLock
 class TransitRepository internal constructor(
     private val service: TransitService,
     private val clock: AppClock,
+    private val json: Json,
     logger: Logger,
 ) {
     private val log = logger.withTag("TransitRepository")
@@ -76,6 +83,27 @@ class TransitRepository internal constructor(
         noteOutcome("follow", arrivalId, failed = outcome is Outcome.Err)
         return outcome
     }
+
+    suspend fun registerLiveUpdate(registration: TransitLiveUpdateRegistration): Outcome<Unit, TransitError> {
+        val outcome = service.registerLiveUpdate(registration)
+        if (outcome is Outcome.Err) log.w { "live update register failed line=${registration.lineNumber}" }
+        return outcome
+    }
+
+    suspend fun unregisterLiveUpdate(activityId: String): Outcome<Unit, TransitError> =
+        service.unregisterLiveUpdate(activityId)
+
+    // The `content` of a pushed update; null when it isn't one this build reads.
+    fun decodeLiveUpdate(content: String): TransitLiveUpdate? =
+        try {
+            json.decodeFromString<TransitLiveUpdateDTO>(content).toDomain()
+        } catch (_: SerializationException) {
+            log.w { "live update content unreadable length=${content.length}" }
+            null
+        } catch (_: IllegalArgumentException) {
+            log.w { "live update content unreadable length=${content.length}" }
+            null
+        }
 
     // The polled reads log once per outage: the first failure and the recovery
     // at Info (one remote record each, no non-fatal), the repeats in between

@@ -14,6 +14,8 @@ import dev.forcetower.melon.feature.transit.domain.model.TransitFeed
 import dev.forcetower.melon.feature.transit.domain.model.TransitFeedStatus
 import dev.forcetower.melon.feature.transit.domain.model.TransitFollow
 import dev.forcetower.melon.feature.transit.domain.model.TransitLine
+import dev.forcetower.melon.feature.transit.domain.model.TransitLiveUpdate
+import dev.forcetower.melon.feature.transit.domain.model.TransitLiveUpdateRegistration
 import dev.forcetower.melon.feature.transit.domain.model.TransitNetwork
 import dev.forcetower.melon.feature.transit.domain.model.TransitNextService
 import dev.forcetower.melon.feature.transit.domain.model.TransitRoute
@@ -29,6 +31,7 @@ import io.ktor.client.call.body
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
+import io.ktor.client.request.post
 import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
@@ -103,6 +106,30 @@ internal class TransitService(
 
     suspend fun removePlan(): Outcome<CommutePlan, TransitError> =
         payload<TransitCommutePlanDTO, CommutePlan>({ client.delete("api/transit/plan") }) { it.toDomain() }
+
+    // Sent once per followed departure: the backend then pushes its updates
+    // to this device as FCM data messages. The shared Json drops a null
+    // vehicle, which the server reads as none.
+    suspend fun registerLiveUpdate(registration: TransitLiveUpdateRegistration): Outcome<Unit, TransitError> =
+        command {
+            client.post("api/transit/live-activities") {
+                contentType(ContentType.Application.Json)
+                setBody(registration.toDto())
+            }
+        }
+
+    suspend fun unregisterLiveUpdate(activityId: String): Outcome<Unit, TransitError> =
+        command { client.delete("api/transit/live-activities/$activityId") }
+
+    // Writes whose answer carries no data: only the status matters.
+    private suspend inline fun command(request: () -> HttpResponse): Outcome<Unit, TransitError> =
+        try {
+            if (request().status.isSuccess()) Outcome.Ok(Unit) else Outcome.Err(TransitError.Connection)
+        } catch (cancellation: CancellationException) {
+            throw cancellation
+        } catch (_: Exception) {
+            Outcome.Err(TransitError.Connection)
+        }
 
     private suspend inline fun <reified D, T> payload(
         request: () -> HttpResponse,
@@ -425,4 +452,69 @@ private fun CommuteLeg.toDto() =
         stopArea = stopArea,
         lineNumbers = lineNumbers,
         walkMinutes = walkMinutes,
+    )
+
+// ───────── live updates ─────────
+
+@Serializable
+internal data class TransitLiveUpdateRegistrationDTO(
+    val activityId: String,
+    val platform: String,
+    val deviceToken: String,
+    val lineNumber: String,
+    val direction: String,
+    val stopId: String,
+    val arrivalId: String,
+    val vehicleId: String? = null,
+)
+
+private fun TransitLiveUpdateRegistration.toDto() =
+    TransitLiveUpdateRegistrationDTO(
+        activityId = activityId,
+        platform = "android",
+        deviceToken = deviceToken,
+        lineNumber = lineNumber,
+        direction = direction.wire,
+        stopId = stopId,
+        arrivalId = arrivalId,
+        vehicleId = vehicleId,
+    )
+
+// The `content` of a pushed update. ActivityKit decodes the same object on
+// iOS, so instants are Unix seconds rather than ISO strings.
+@Serializable
+internal data class TransitLiveUpdateDTO(
+    val status: String,
+    val window: WindowDTO? = null,
+    val originDeparture: Long? = null,
+    val campusArrival: Long? = null,
+    val stopsAway: Int? = null,
+    val atStop: Boolean = false,
+    val progressMeters: Double? = null,
+    val signalLost: Boolean = false,
+) {
+    @Serializable
+    internal data class WindowDTO(
+        val earliest: Long,
+        val latest: Long,
+        val expected: Long,
+    )
+}
+
+internal fun TransitLiveUpdateDTO.toDomain(): TransitLiveUpdate? =
+    TransitLiveUpdate(
+        status = TransitLiveUpdate.Status.fromWire(status) ?: return null,
+        window = window?.let {
+            TransitLiveUpdate.Window(
+                earliest = Instant.fromEpochSeconds(it.earliest),
+                latest = Instant.fromEpochSeconds(it.latest),
+                expected = Instant.fromEpochSeconds(it.expected),
+            )
+        },
+        originDeparture = originDeparture?.let { Instant.fromEpochSeconds(it) },
+        campusArrival = campusArrival?.let { Instant.fromEpochSeconds(it) },
+        stopsAway = stopsAway,
+        atStop = atStop,
+        progressMeters = progressMeters,
+        signalLost = signalLost,
     )

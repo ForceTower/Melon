@@ -100,13 +100,16 @@ import dev.forcetower.melon.feature.sync.domain.usecase.SyncProfileUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.SyncSemesterListUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.SyncSemesterUseCase
 import dev.forcetower.melon.feature.transit.domain.usecase.ClearCommutePlanUseCase
+import dev.forcetower.melon.feature.transit.domain.usecase.DecodeTransitLiveUpdateUseCase
 import dev.forcetower.melon.feature.transit.domain.usecase.FollowTransitArrivalUseCase
 import dev.forcetower.melon.feature.transit.domain.usecase.GetStopArrivalsUseCase
 import dev.forcetower.melon.feature.transit.domain.usecase.GetTransitNetworkUseCase
 import dev.forcetower.melon.feature.transit.domain.usecase.ObserveCommutePlanUseCase
 import dev.forcetower.melon.feature.transit.domain.usecase.RefreshCommutePlanUseCase
+import dev.forcetower.melon.feature.transit.domain.usecase.RegisterTransitLiveUpdateUseCase
 import dev.forcetower.melon.feature.transit.domain.usecase.RemoveCommutePlanUseCase
 import dev.forcetower.melon.feature.transit.domain.usecase.SaveCommutePlanUseCase
+import dev.forcetower.melon.feature.transit.domain.usecase.UnregisterTransitLiveUpdateUseCase
 import dev.forcetower.melon.umbrella.UmbrellaConfig
 import dev.forcetower.melon.umbrella.UmbrellaGraph
 import dev.forcetower.unes.BuildConfig
@@ -493,4 +496,13 @@ internal object UmbrellaBridgeModule {
     @Provides
     fun provideFollowTransitArrivalUseCase(graph: UmbrellaGraph): FollowTransitArrivalUseCase =
         graph.followTransitArrivalUseCase
+    @Provides
+    fun provideRegisterTransitLiveUpdateUseCase(graph: UmbrellaGraph): RegisterTransitLiveUpdateUseCase =
+        graph.registerTransitLiveUpdateUseCase
+    @Provides
+    fun provideUnregisterTransitLiveUpdateUseCase(graph: UmbrellaGraph): UnregisterTransitLiveUpdateUseCase =
+        graph.unregisterTransitLiveUpdateUseCase
+    @Provides
+    fun provideDecodeTransitLiveUpdateUseCase(graph: UmbrellaGraph): DecodeTransitLiveUpdateUseCase =
+        graph.decodeTransitLiveUpdateUseCase
 }

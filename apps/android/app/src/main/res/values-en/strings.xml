@@ -2443,6 +2443,13 @@
     </plurals>
     <string name="commute_follow_passed">This bus has already passed your stop</string>
     <string name="commute_follow_no_estimate">No estimate for this bus right now</string>
+    <string name="commute_live_start">Follow in notifications</string>
+    <string name="commute_live_stop">Stop following in notifications</string>
+    <string name="commute_live_denied_title">Notifications are off</string>
+    <string name="commute_live_denied_body">Turn on UNES notifications to follow the bus outside the app.</string>
+    <string name="commute_live_channel">Followed bus</string>
+    <string name="commute_live_channel_description">The estimate for the bus you are following, updated as it comes.</string>
+    <string name="commute_live_action_stop">Stop</string>
     <string name="commute_follow_caption">Only %1$s buses · %2$d on the line now</string>
     <string name="commute_map_schematic">Schematic map</string>
     <string name="commute_route_your_stop">your stop</string>

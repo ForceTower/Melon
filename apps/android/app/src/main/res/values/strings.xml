@@ -2524,6 +2524,14 @@
     </plurals>
     <string name="commute_follow_passed">Este ônibus já passou pelo seu ponto</string>
     <string name="commute_follow_no_estimate">Sem previsão para este ônibus agora</string>
+    <string name="commute_live_start">Acompanhar nas notificações</string>
+    <string name="commute_live_stop">Parar de acompanhar nas notificações</string>
+    <string name="commute_live_denied_title">Notificações desligadas</string>
+    <string name="commute_live_denied_body">Ative as notificações do UNES para acompanhar o ônibus fora do app.</string>
+    <string name="commute_live_channel">Ônibus acompanhado</string>
+    <string name="commute_live_channel_description">A previsão do ônibus que você está seguindo, atualizada enquanto ele vem.</string>
+    <string name="commute_live_title" translatable="false">%1$s %2$s</string>
+    <string name="commute_live_action_stop">Parar</string>
     <string name="commute_follow_caption">Só os ônibus do %1$s · %2$d na linha agora</string>
     <string name="commute_map_schematic">Mapa esquemático</string>
     <string name="commute_route_your_stop">seu ponto</string>

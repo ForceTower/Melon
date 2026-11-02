@@ -13,6 +13,7 @@ import dev.forcetower.melon.core.common.ForegroundSignal
 import dev.forcetower.melon.core.network.MachineIdSource
 import dev.forcetower.melon.core.session.domain.SessionStore
 import dev.forcetower.melon.core.session.domain.model.AuthState
+import dev.forcetower.unes.commute.CommuteLiveUpdates
 import dev.forcetower.unes.di.ApplicationScope
 import dev.forcetower.unes.firebase.PushRegistrar
 import dev.forcetower.unes.reminders.EvaluationReminderScheduler
@@ -51,6 +52,9 @@ internal class MelonApp : Application() {
 
     @Inject
     lateinit var pushRegistrar: PushRegistrar
+
+    @Inject
+    lateinit var commuteLiveUpdates: CommuteLiveUpdates
 
     @Inject
     lateinit var reviewPrompter: ReviewPrompter
@@ -134,7 +138,11 @@ internal class MelonApp : Application() {
         ProcessLifecycleOwner.get().lifecycle.addObserver(object : DefaultLifecycleObserver {
             override fun onStart(owner: LifecycleOwner) {
                 foregroundSignal.pulse()
-                applicationScope.launch { pushRegistrar.reconcile() }
+                applicationScope.launch {
+                    pushRegistrar.reconcile()
+                    // After the token reconcile, so a retried registration has one.
+                    commuteLiveUpdates.resume()
+                }
             }
         })
     }

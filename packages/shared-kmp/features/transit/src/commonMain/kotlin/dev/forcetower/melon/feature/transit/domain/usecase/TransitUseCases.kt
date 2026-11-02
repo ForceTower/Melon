@@ -5,6 +5,8 @@ import dev.forcetower.melon.feature.transit.data.TransitRepository
 import dev.forcetower.melon.feature.transit.domain.model.TransitDirection
 import dev.forcetower.melon.feature.transit.domain.model.TransitError
 import dev.forcetower.melon.feature.transit.domain.model.TransitFollow
+import dev.forcetower.melon.feature.transit.domain.model.TransitLiveUpdate
+import dev.forcetower.melon.feature.transit.domain.model.TransitLiveUpdateRegistration
 import dev.forcetower.melon.feature.transit.domain.model.TransitNetwork
 import dev.forcetower.melon.feature.transit.domain.model.TransitStopBoard
 import dev.zacsweers.metro.Inject
@@ -28,6 +30,32 @@ class GetStopArrivalsUseCase internal constructor(
         direction: TransitDirection,
         lineNumbers: List<String>,
     ): Outcome<TransitStopBoard, TransitError> = repository.arrivals(stopId, direction, lineNumbers)
+}
+
+// Asks the backend to push a followed departure's updates to this device,
+// which redraws its ongoing notification from them.
+@Inject
+class RegisterTransitLiveUpdateUseCase internal constructor(
+    private val repository: TransitRepository,
+) {
+    suspend operator fun invoke(registration: TransitLiveUpdateRegistration): Outcome<Unit, TransitError> =
+        repository.registerLiveUpdate(registration)
+}
+
+@Inject
+class UnregisterTransitLiveUpdateUseCase internal constructor(
+    private val repository: TransitRepository,
+) {
+    suspend operator fun invoke(activityId: String): Outcome<Unit, TransitError> =
+        repository.unregisterLiveUpdate(activityId)
+}
+
+// Reads the `content` of a pushed update.
+@Inject
+class DecodeTransitLiveUpdateUseCase internal constructor(
+    private val repository: TransitRepository,
+) {
+    operator fun invoke(content: String): TransitLiveUpdate? = repository.decodeLiveUpdate(content)
 }
 
 // One departure's buses and band, polled while "Seguindo" is on screen.

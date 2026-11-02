@@ -1,5 +1,6 @@
 package dev.forcetower.unes.ui.feature.commute
 
+import android.content.res.Resources
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -177,6 +178,25 @@ internal fun CommuteEstimate.label(): String =
         CommuteEstimate.Arriving -> stringResource(R.string.commute_estimate_arriving)
         is CommuteEstimate.Minutes -> stringResource(R.string.commute_estimate_minutes, minutes)
         is CommuteEstimate.MinuteRange -> stringResource(R.string.commute_estimate_minute_range, low, high)
+    }
+
+// The same words outside composition, for the ongoing notification, where an
+// approximate time can't get a smaller "~" and spells it out instead.
+internal fun CommuteEstimate.text(resources: Resources): String =
+    when (this) {
+        is CommuteEstimate.Clock -> {
+            val time = CommuteFormat.clock(time)
+            if (isApproximate) resources.getString(R.string.commute_approx_prefix) + time else time
+        }
+        is CommuteEstimate.ClockRange -> {
+            val from = CommuteFormat.clock(start)
+            val to = CommuteFormat.clock(end)
+            if (from == to) from else from + resources.getString(R.string.commute_range_separator) + to
+        }
+        CommuteEstimate.AtStop -> resources.getString(R.string.commute_estimate_at_stop)
+        CommuteEstimate.Arriving -> resources.getString(R.string.commute_estimate_arriving)
+        is CommuteEstimate.Minutes -> resources.getString(R.string.commute_estimate_minutes, minutes)
+        is CommuteEstimate.MinuteRange -> resources.getString(R.string.commute_estimate_minute_range, low, high)
     }
 
 // "atualizado há 8 s" — the bus's last new position, not our request.

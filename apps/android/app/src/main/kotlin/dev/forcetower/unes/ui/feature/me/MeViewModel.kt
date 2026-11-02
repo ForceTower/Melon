@@ -18,6 +18,7 @@ import dev.forcetower.melon.feature.me.domain.usecase.ObserveMeProfileUseCase
 import dev.forcetower.melon.feature.me.domain.usecase.UpdateProfileUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.SyncProfileUseCase
 import dev.forcetower.melon.feature.transit.domain.usecase.ClearCommutePlanUseCase
+import dev.forcetower.unes.commute.CommuteLiveUpdates
 import dev.forcetower.unes.firebase.PushRegistrar
 import dev.forcetower.unes.mvi.MviViewModel
 import dev.forcetower.unes.mvi.UiEffect
@@ -203,6 +204,7 @@ internal class MeViewModel @Inject constructor(
     private val clearCampusEvent: ClearCampusEventUseCase,
     private val clearCommutePlan: ClearCommutePlanUseCase,
     private val pushRegistrar: PushRegistrar,
+    private val commuteLiveUpdates: CommuteLiveUpdates,
     private val analytics: Analytics,
 ) : MviViewModel<MeUiState, MeIntent, MeEffect>(MeUiState()) {
 
@@ -437,6 +439,7 @@ internal class MeViewModel @Inject constructor(
         setState { copy(logoutStep = LogoutStep.Flashing, logoutFirstName = firstName) }
         viewModelScope.launch {
             // Before logout() — the DELETEs need the session bearer.
+            runCatching { commuteLiveUpdates.stop() }
             runCatching { pushRegistrar.unregisterAll() }
             runCatching { sessionStore.logout() }
             // User-scoped snapshot outside the DB teardown — iOS wipes it

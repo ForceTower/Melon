@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- The design-system `MelonTransitColors` dark variants. -->
+    <color name="notification_transit_003">#7A5BC0</color>
+    <color name="notification_transit_087">#D8609E</color>
+    <color name="notification_transit_088">#F07C6E</color>
+</resources>

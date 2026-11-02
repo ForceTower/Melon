@@ -1,5 +1,9 @@
 package dev.forcetower.unes.ui.feature.commute
 
+import android.Manifest
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,6 +27,8 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.LocationDisabled
 import androidx.compose.material.icons.filled.LocationOff
 import androidx.compose.material.icons.filled.MyLocation
+import androidx.compose.material.icons.filled.NotificationsActive
+import androidx.compose.material.icons.filled.NotificationsOff
 import androidx.compose.material.icons.filled.WifiOff
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.CircularProgressIndicator
@@ -37,6 +43,8 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -59,6 +67,7 @@ import dev.forcetower.melon.feature.transit.domain.model.TransitRoute
 import dev.forcetower.melon.feature.transit.domain.model.TransitStop
 import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.components.MelonBanner
+import dev.forcetower.unes.designsystem.components.MelonGhostButton
 import dev.forcetower.unes.designsystem.theme.MelonTheme
 import dev.forcetower.unes.designsystem.theme.melon
 import dev.forcetower.unes.ui.feature.connected.ConnectedRoute
@@ -99,6 +108,11 @@ internal fun CommuteFollowScreen(
         onGranted = { vm.onIntent(CommuteFollowIntent.LocateMe) },
         onDenied = { vm.onIntent(CommuteFollowIntent.LocationDenied) },
     )
+    val requestNotifications = rememberNotificationRequest(
+        isGranted = vm::canPostNotifications,
+        onGranted = { vm.onIntent(CommuteFollowIntent.NotificationToggled) },
+        onDenied = { vm.onIntent(CommuteFollowIntent.NotificationsDenied) },
+    )
 
     CommuteFollowContent(
         state = state,
@@ -107,9 +121,42 @@ internal fun CommuteFollowScreen(
         onToggleLocation = {
             if (state.showsMyLocation) vm.onIntent(CommuteFollowIntent.HideMyLocation) else requestLocation()
         },
+        onToggleNotification = {
+            if (state.followsInNotifications) {
+                vm.onIntent(CommuteFollowIntent.NotificationToggled)
+            } else {
+                requestNotifications()
+            }
+        },
         modifier = modifier,
         bottomInset = bottomInset,
     )
+}
+
+// The notification prompt (Android 13+), raised only when the student asks to
+// follow the bus outside the app. Before 13 there is no prompt, so a "no"
+// means the app's notifications are off in Settings.
+@Composable
+private fun rememberNotificationRequest(
+    isGranted: () -> Boolean,
+    onGranted: () -> Unit,
+    onDenied: () -> Unit,
+): () -> Unit {
+    val granted = rememberUpdatedState(onGranted)
+    val denied = rememberUpdatedState(onDenied)
+    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { allowed ->
+        if (allowed) granted.value() else denied.value()
+    }
+    return remember(launcher) {
+        {
+            when {
+                isGranted() -> granted.value()
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ->
+                    launcher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                else -> denied.value()
+            }
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -119,6 +166,7 @@ internal fun CommuteFollowContent(
     onBack: () -> Unit,
     onIntent: (CommuteFollowIntent) -> Unit,
     onToggleLocation: () -> Unit,
+    onToggleNotification: () -> Unit,
     modifier: Modifier = Modifier,
     bottomInset: Dp = 0.dp,
 ) {
@@ -269,6 +317,38 @@ internal fun CommuteFollowContent(
                 ) {
                     RouteLine(state = state, route = route, mineIndex = mineIndex, color = color)
                 }
+            }
+
+            if (state.showsNotificationToggle) {
+                MelonGhostButton(
+                    text = stringResource(
+                        if (state.followsInNotifications) R.string.commute_live_stop else R.string.commute_live_start,
+                    ),
+                    onClick = onToggleNotification,
+                    leading = {
+                        Icon(
+                            imageVector = if (state.followsInNotifications) {
+                                Icons.Filled.NotificationsOff
+                            } else {
+                                Icons.Filled.NotificationsActive
+                            },
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onBackground,
+                        )
+                    },
+                    modifier = Modifier.padding(top = 12.dp),
+                )
+            }
+
+            if (state.notificationsDenied) {
+                MelonBanner(
+                    title = stringResource(R.string.commute_live_denied_title),
+                    detail = stringResource(R.string.commute_live_denied_body),
+                    tone = MaterialTheme.colorScheme.outline,
+                    icon = Icons.Filled.NotificationsOff,
+                    onClick = { openAppSettings(context) },
+                    modifier = Modifier.padding(top = 10.dp),
+                )
             }
 
             if (state.locationDenied) {
@@ -487,6 +567,7 @@ private fun CommuteFollowPreview() {
             onBack = {},
             onIntent = {},
             onToggleLocation = {},
+            onToggleNotification = {},
         )
     }
 }

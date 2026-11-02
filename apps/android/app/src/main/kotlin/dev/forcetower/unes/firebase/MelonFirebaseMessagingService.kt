@@ -3,6 +3,7 @@ package dev.forcetower.unes.firebase
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import dagger.hilt.android.AndroidEntryPoint
+import dev.forcetower.unes.commute.CommuteLiveUpdates
 import dev.forcetower.unes.di.ApplicationScope
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
@@ -18,6 +19,7 @@ internal class MelonFirebaseMessagingService : FirebaseMessagingService() {
 
     @Inject lateinit var pushRegistrar: PushRegistrar
     @Inject lateinit var pushSyncCoordinator: PushSyncCoordinator
+    @Inject lateinit var commuteLiveUpdates: CommuteLiveUpdates
     @Inject @ApplicationScope
     lateinit var applicationScope: CoroutineScope
 
@@ -37,6 +39,12 @@ internal class MelonFirebaseMessagingService : FirebaseMessagingService() {
         // by the system before this callback fires. Only data-only messages
         // land here in the background; any payload lands here in foreground.
         Timber.tag(TAG).i("remote message from=%s data=%s", message.from, message.data.keys)
+        // The followed bus's ongoing notification redraws itself; nothing in
+        // the mirror changed, so it must not trigger a sync.
+        if (message.data["kind"] == CommuteLiveUpdates.PUSH_KIND) {
+            applicationScope.launch { commuteLiveUpdates.onPush(message.data) }
+            return
+        }
         // Foreground receipt of a mirror-relevant push (spec 0008): `kind`
         // certifies upstream data changed, so pull it now — no ON_START will
         // fire while the app stays open. Same guard as iOS `PushClient`:

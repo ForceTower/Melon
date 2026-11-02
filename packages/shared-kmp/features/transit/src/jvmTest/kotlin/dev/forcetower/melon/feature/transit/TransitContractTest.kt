@@ -1,9 +1,11 @@
 package dev.forcetower.melon.feature.transit
 
 import co.touchlab.kermit.Logger
+import dev.forcetower.melon.core.common.AppClock
 import dev.forcetower.melon.core.common.Outcome
 import dev.forcetower.melon.core.storage.KeyValueStorage
 import dev.forcetower.melon.feature.transit.data.CommutePlanRepository
+import dev.forcetower.melon.feature.transit.data.TransitRepository
 import dev.forcetower.melon.feature.transit.data.network.TransitService
 import dev.forcetower.melon.feature.transit.domain.model.CommuteLeg
 import dev.forcetower.melon.feature.transit.domain.model.CommutePlan
@@ -12,6 +14,8 @@ import dev.forcetower.melon.feature.transit.domain.model.TransitDirection
 import dev.forcetower.melon.feature.transit.domain.model.TransitError
 import dev.forcetower.melon.feature.transit.domain.model.TransitFeedStatus
 import dev.forcetower.melon.feature.transit.domain.model.TransitFollow
+import dev.forcetower.melon.feature.transit.domain.model.TransitLiveUpdate
+import dev.forcetower.melon.feature.transit.domain.model.TransitLiveUpdateRegistration
 import dev.forcetower.melon.feature.transit.domain.model.TransitNetwork
 import dev.forcetower.melon.feature.transit.domain.model.TransitStopBoard
 import dev.forcetower.melon.feature.transit.domain.model.TransitTodaySlotStatus
@@ -107,6 +111,50 @@ internal class TransitContractTest {
             assertEquals(listOf("90001", "90002"), follow.vehicles.map { it.id })
             assertEquals(20.0, follow.vehicles[0].heading)
             assertNull(follow.arrival)
+        }
+
+    // The ongoing notification redraws from the same `content-state` iOS
+    // decodes, and registers with the body the backend checks.
+    @Test
+    fun liveUpdatesDecodeAndRegisterAsTheContractSays() =
+        runTest {
+            val sentBodies = mutableListOf<String>()
+            val service = service { request ->
+                if (request.method == HttpMethod.Post) sentBodies += (request.body as TextContent).text
+                JsonNull
+            }
+            val repository = TransitRepository(service, AppClock(), json, Logger)
+            val liveActivity = fixture.getValue("liveActivity").jsonObject
+            val content = liveActivity.getValue("content").jsonObject
+
+            val live = assertNotNull(repository.decodeLiveUpdate(content.getValue("live").toString()))
+            assertEquals(TransitLiveUpdate.Status.Live, live.status)
+            assertEquals(Instant.parse("2026-10-02T09:58:00.000Z"), live.window?.earliest)
+            assertEquals(Instant.parse("2026-10-02T10:12:00.000Z"), live.campusArrival)
+            assertEquals(4, live.stopsAway)
+            assertEquals(1180.0, live.progressMeters)
+            assertEquals(TransitArrivalState.Live, live.arrival("a", "087")?.state)
+
+            val waiting = assertNotNull(repository.decodeLiveUpdate(content.getValue("waiting").toString()))
+            assertEquals(Instant.parse("2026-10-02T09:58:00.000Z"), waiting.originDeparture)
+
+            val passed = assertNotNull(repository.decodeLiveUpdate(content.getValue("passed").toString()))
+            assertEquals(TransitLiveUpdate.Status.Passed, passed.status)
+            assertNull(passed.arrival("a", "087"))
+            assertNull(repository.decodeLiveUpdate("""{"status":"teleported"}"""))
+
+            val expected = liveActivity.getValue("registerAndroid").jsonObject
+            val registration = TransitLiveUpdateRegistration(
+                activityId = expected.getValue("activityId").jsonPrimitive.content,
+                deviceToken = expected.getValue("deviceToken").jsonPrimitive.content,
+                lineNumber = "087",
+                direction = TransitDirection.ToCampus,
+                stopId = "9001",
+                arrivalId = expected.getValue("arrivalId").jsonPrimitive.content,
+                vehicleId = "90001",
+            )
+            assertIs<Outcome.Ok<Unit>>(repository.registerLiveUpdate(registration))
+            assertEquals(expected, json.parseToJsonElement(sentBodies.single()))
         }
 
     @Test

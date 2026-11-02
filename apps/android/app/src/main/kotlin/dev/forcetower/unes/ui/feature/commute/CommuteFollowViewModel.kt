@@ -12,6 +12,7 @@ import dev.forcetower.melon.feature.transit.domain.model.TransitRoute
 import dev.forcetower.melon.feature.transit.domain.model.TransitVehicle
 import dev.forcetower.melon.feature.transit.domain.usecase.FollowTransitArrivalUseCase
 import dev.forcetower.melon.feature.transit.domain.usecase.GetTransitNetworkUseCase
+import dev.forcetower.unes.commute.CommuteLiveUpdates
 import dev.forcetower.unes.mvi.MviViewModel
 import dev.forcetower.unes.mvi.UiEffect
 import dev.forcetower.unes.mvi.UiIntent
@@ -42,6 +43,10 @@ internal data class CommuteFollowUiState(
     // until the first answer here replaces it.
     val followReceivedAt: Instant? = null,
     val route: TransitRoute? = null,
+    val lineName: String? = null,
+    // The departure the ongoing notification follows, whichever screen started it.
+    val notificationArrivalId: String? = null,
+    val notificationsDenied: Boolean = false,
     val loadFailed: Boolean = false,
     val userLocation: GeoPoint? = null,
     val locating: Boolean = false,
@@ -59,6 +64,13 @@ internal data class CommuteFollowUiState(
         get() = follow?.vehicles?.filter { it.progressMeters != null || it.id == vehicleId }.orEmpty()
 
     fun isOutdated(now: Instant): Boolean = CommuteFormat.isOutdated(followReceivedAt, now)
+
+    val followsInNotifications: Boolean
+        get() = arrivalId.isNotEmpty() && notificationArrivalId == arrivalId
+
+    // Stopping is always offered; starting needs something to show.
+    val showsNotificationToggle: Boolean
+        get() = followsInNotifications || (arrival != null && route != null && lineName != null)
 }
 
 internal sealed interface CommuteFollowIntent : UiIntent {
@@ -89,6 +101,11 @@ internal sealed interface CommuteFollowIntent : UiIntent {
     data object LocationDenied : CommuteFollowIntent
     data object ExplainTapped : CommuteFollowIntent
     data object ExplainerDismissed : CommuteFollowIntent
+
+    // Starts or stops the ongoing notification; the screen asked for the
+    // permission first.
+    data object NotificationToggled : CommuteFollowIntent
+    data object NotificationsDenied : CommuteFollowIntent
 }
 
 internal sealed interface CommuteFollowEffect : UiEffect
@@ -98,15 +115,24 @@ internal class CommuteFollowViewModel @Inject constructor(
     private val followTransitArrival: FollowTransitArrivalUseCase,
     private val getTransitNetwork: GetTransitNetworkUseCase,
     private val locationClient: DeviceLocationClient,
+    private val liveUpdates: CommuteLiveUpdates,
     private val clock: AppClock,
 ) : MviViewModel<CommuteFollowUiState, CommuteFollowIntent, CommuteFollowEffect>(CommuteFollowUiState()) {
     private var pollJob: Job? = null
     private var polling = false
 
-    // The screen owns the permission prompt; these let it ask before raising it.
+    init {
+        viewModelScope.launch {
+            liveUpdates.followedArrivalId.collect { id -> setState { copy(notificationArrivalId = id) } }
+        }
+    }
+
+    // The screen owns the permission prompts; these let it ask before raising them.
     val locationPermissions: Array<String> get() = locationClient.permissions
 
     fun isLocationGranted(): Boolean = locationClient.isGranted()
+
+    fun canPostNotifications(): Boolean = liveUpdates.canPost()
 
     override fun onIntent(intent: CommuteFollowIntent) {
         when (intent) {
@@ -119,6 +145,7 @@ internal class CommuteFollowViewModel @Inject constructor(
                     vehicleId = intent.arrival.vehicleId,
                     arrival = intent.arrival,
                     followReceivedAt = intent.receivedAt,
+                    notificationArrivalId = notificationArrivalId,
                 )
             }
             is CommuteFollowIntent.Open -> open(intent)
@@ -135,6 +162,29 @@ internal class CommuteFollowViewModel @Inject constructor(
             CommuteFollowIntent.LocationDenied -> setState { copy(locationDenied = true, locating = false) }
             CommuteFollowIntent.ExplainTapped -> setState { copy(explainerOpen = true) }
             CommuteFollowIntent.ExplainerDismissed -> setState { copy(explainerOpen = false) }
+            CommuteFollowIntent.NotificationToggled -> toggleNotification()
+            CommuteFollowIntent.NotificationsDenied -> setState { copy(notificationsDenied = true) }
+        }
+    }
+
+    private fun toggleNotification() {
+        val state = currentState
+        viewModelScope.launch {
+            if (state.followsInNotifications) {
+                liveUpdates.stop()
+                return@launch
+            }
+            val arrival = state.arrival ?: return@launch
+            val route = state.route ?: return@launch
+            val lineName = state.lineName ?: return@launch
+            val started = liveUpdates.start(
+                arrival = arrival,
+                route = route,
+                lineName = lineName,
+                stopId = state.stopId,
+                progressMeters = state.followedVehicle?.progressMeters,
+            )
+            setState { copy(notificationsDenied = !started && !liveUpdates.canPost()) }
         }
     }
 
@@ -147,14 +197,20 @@ internal class CommuteFollowViewModel @Inject constructor(
                     stopId = intent.stopId,
                     arrivalId = intent.arrivalId,
                     vehicleId = intent.vehicleId,
+                    notificationArrivalId = notificationArrivalId,
                 )
             }
         }
-        setState { copy(explainerOpen = false, locationDenied = false) }
+        setState { copy(explainerOpen = false, locationDenied = false, notificationsDenied = false) }
         viewModelScope.launch {
             val outcome = getTransitNetwork()
             if (outcome is Outcome.Ok) {
-                setState { copy(route = outcome.value.route(lineNumber, direction)) }
+                setState {
+                    copy(
+                        route = outcome.value.route(lineNumber, direction),
+                        lineName = outcome.value.line(lineNumber)?.name,
+                    )
+                }
             }
         }
         restartPolling()

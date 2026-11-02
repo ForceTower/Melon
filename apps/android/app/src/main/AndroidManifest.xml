@@ -12,6 +12,9 @@
          The fix stays on the device. -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <!-- Lets the followed-bus notification become a Live Update on Android 16+
+         (pinned, with a status-bar chip); without it, a plain ongoing one. -->
+    <uses-permission android:name="android.permission.POST_PROMOTED_NOTIFICATIONS" />
 
     <queries>
         <intent>
@@ -152,6 +155,11 @@
                 <action android:name="android.intent.action.TIMEZONE_CHANGED" />
             </intent-filter>
         </receiver>
+        <!-- The followed-bus notification's stop action and stale alarm, both
+             explicit PendingIntents of this app. -->
+        <receiver
+            android:name=".commute.CommuteLiveUpdateReceiver"
+            android:exported="false" />
     </application>
 
 </manifest>
