@@ -10,6 +10,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertIs
+import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.minutes
@@ -97,5 +98,23 @@ internal class CommuteLiveUpdateTest {
         assertEquals(follow.arrival!!.earliest, arrival.earliest)
         assertEquals(follow.arrival!!.campusArrival, arrival.campusArrival)
         assertEquals(busProgress, record.update.progressMeters)
+    }
+
+    @Test
+    fun aTapOpensTheFollowScreenOnTheNotificationsOwnUpdate() {
+        val record = record().copy(vehicleId = "90001")
+        val seed = assertNotNull(record.followSeed())
+        assertEquals(record.arrivalId, seed.arrival.id)
+        assertEquals(follow.arrival!!.earliest, seed.arrival.earliest)
+        assertEquals("90001", seed.arrival.vehicleId)
+        assertEquals(TransitDirection.ToCampus, seed.direction)
+        assertEquals(CommuteFixtures.MY_STOP_ID, seed.stopId)
+        assertEquals(now, seed.receivedAt)
+    }
+
+    @Test
+    fun aBusThatPassedLeavesNothingToFollow() {
+        val passed = record().copy(update = CommuteLiveRecord.Update(status = "passed"))
+        assertNull(passed.followSeed())
     }
 }

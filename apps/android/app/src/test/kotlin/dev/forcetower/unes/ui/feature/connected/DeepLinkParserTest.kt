@@ -73,6 +73,13 @@ class DeepLinkParserTest {
     }
 
     @Test
+    fun `the followed-bus notification resolves to its follow target`() {
+        assertEquals(DeepLinkTarget.CommuteFollow(), parseDeepLink("unes://commute/follow"))
+        assertNull(parseDeepLink("unes://commute"))
+        assertNull(parseDeepLink("unes://commute/follow/087"))
+    }
+
+    @Test
     fun `unknown shapes are dropped`() {
         assertNull(parseDeepLink("unes://materials"))
         assertNull(parseDeepLink("unes://settings"))

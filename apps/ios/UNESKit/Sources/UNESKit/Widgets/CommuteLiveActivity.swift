@@ -14,6 +14,7 @@ public struct CommuteLiveActivityWidget: Widget {
             CommuteActivityBanner(snapshot: CommuteActivitySnapshot(context))
                 .activityBackgroundTint(UNESColor.transitActivityBackground)
                 .activitySystemActionForegroundColor(UNESColor.ink)
+                .widgetURL(Deeplinks.commuteFollowURL)
         } dynamicIsland: { context in
             let snapshot = CommuteActivitySnapshot(context)
             return DynamicIsland {
@@ -26,7 +27,7 @@ public struct CommuteLiveActivityWidget: Widget {
                         .padding(.trailing, 6)
                 }
                 DynamicIslandExpandedRegion(.bottom) {
-                    CommuteActivityBody(snapshot: snapshot, onDark: true)
+                    CommuteActivityBody(snapshot: snapshot, placement: .island)
                         .padding(EdgeInsets(top: 2, leading: 6, bottom: 0, trailing: 6))
                 }
             } compactLeading: {
@@ -37,6 +38,7 @@ public struct CommuteLiveActivityWidget: Widget {
                 CommuteActivityMinimal(snapshot: snapshot)
             }
             .keylineTint(UNESColor.transitLine(snapshot.attributes.lineNumber))
+            .widgetURL(Deeplinks.commuteFollowURL)
         }
     }
 }
@@ -70,7 +72,7 @@ struct CommuteActivitySnapshot {
 
 // MARK: - Lock screen
 
-private struct CommuteActivityBanner: View {
+struct CommuteActivityBanner: View {
     var snapshot: CommuteActivitySnapshot
 
     var body: some View {
@@ -80,9 +82,9 @@ private struct CommuteActivityBanner: View {
                 Spacer(minLength: 0)
                 CommuteActivityLineName(name: snapshot.attributes.lineName, onDark: false)
             }
-            CommuteActivityBody(snapshot: snapshot, onDark: false)
+            CommuteActivityBody(snapshot: snapshot, placement: .lockScreen)
         }
-        .padding(EdgeInsets(top: 14, leading: 16, bottom: 12, trailing: 16))
+        .padding(EdgeInsets(top: 12, leading: 16, bottom: 10, trailing: 16))
     }
 }
 
@@ -102,14 +104,21 @@ private struct CommuteActivityLineName: View {
 
 /// The estimate to the stop (or the departure, boarding where the line
 /// starts), the campus arrival beside it, and the route line underneath.
-private struct CommuteActivityBody: View {
-    var snapshot: CommuteActivitySnapshot
-    var onDark: Bool
+/// The system clips a Live Activity past 160pt, and the island's bottom
+/// region gets well under that, so there the route drops its stop names.
+struct CommuteActivityBody: View {
+    enum Placement {
+        case lockScreen, island
+    }
 
+    var snapshot: CommuteActivitySnapshot
+    var placement: Placement
+
+    private var onDark: Bool { placement == .island }
     private var ink: Color { onDark ? .white : UNESColor.ink }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: 6) {
             if let arrival = snapshot.arrival {
                 board(arrival)
             } else {
@@ -125,7 +134,8 @@ private struct CommuteActivityBody: View {
                     busPosition: snapshot.attributes.busPosition(snapshot.state),
                     mineIndex: snapshot.attributes.mineIndex,
                     color: snapshot.color,
-                    onDark: onDark
+                    onDark: onDark,
+                    showsStopNames: placement == .lockScreen
                 )
             }
         }
@@ -133,7 +143,7 @@ private struct CommuteActivityBody: View {
 
     private func board(_ arrival: TransitArrival) -> some View {
         HStack(alignment: .bottom, spacing: 12) {
-            VStack(alignment: .leading, spacing: 5) {
+            VStack(alignment: .leading, spacing: 2) {
                 if snapshot.isFrozen {
                     frozenLabel
                 } else {
@@ -143,17 +153,17 @@ private struct CommuteActivityBody: View {
                     estimate: CommuteFormat.estimate(for: arrival, now: snapshot.now, frozen: snapshot.isStale),
                     dim: arrival.state == .historical,
                     stale: snapshot.isFrozen,
-                    size: 40,
+                    size: 30,
                     onDark: onDark
                 )
             }
             Spacer(minLength: 0)
             if let campus = arrival.campusArrival {
-                VStack(alignment: .trailing, spacing: 5) {
+                VStack(alignment: .trailing, spacing: 2) {
                     caption(Text(.commuteActivityReachesCampus))
                     TransitEstimateText(
                         estimate: CommuteFormat.Estimate(text: CommuteFormat.clock(campus), isApproximate: true),
-                        size: 24,
+                        size: 20,
                         onDark: onDark
                     )
                     .fixedSize()

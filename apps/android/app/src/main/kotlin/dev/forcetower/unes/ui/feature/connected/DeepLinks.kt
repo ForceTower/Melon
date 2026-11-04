@@ -1,5 +1,6 @@
 package dev.forcetower.unes.ui.feature.connected
 
+import dev.forcetower.unes.ui.feature.commute.CommuteFollowSeed
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.channels.Channel
@@ -32,6 +33,14 @@ internal sealed interface DeepLinkTarget {
     /** `unes://calendar` — Calendário, pushed on the Eu tab. Carried by the
      *  personal-event reminder notifications. */
     data object Calendar : DeepLinkTarget
+
+    /** `unes://commute/follow` — a tap on the followed-bus notification:
+     *  "Seguindo o 087" over the board on Eu. `ConnectedViewModel` fills in
+     *  `bus` from the notification's last update; without one the board
+     *  opens alone. */
+    data class CommuteFollow(
+        val bus: CommuteFollowSeed? = null,
+    ) : DeepLinkTarget
 }
 
 // Hand-rolled instead of `android.net.Uri` so it stays a pure JVM function
@@ -53,6 +62,7 @@ internal fun parseDeepLink(url: String): DeepLinkTarget? {
         host == "materials" && rest.size == 2 && rest[0].equals("discipline", ignoreCase = true) ->
             DeepLinkTarget.MaterialsDiscipline(rest[1])
         host == "materials" && rest.size == 1 -> DeepLinkTarget.MaterialDetail(rest[0])
+        host == "commute" && rest == listOf("follow") -> DeepLinkTarget.CommuteFollow()
         else -> null
     }
 }
@@ -99,6 +109,14 @@ internal fun ConnectedNavigator.open(target: DeepLinkTarget) {
                 ConnectedRoute.Me,
                 ConnectedRoute.Materials,
                 ConnectedRoute.MaterialsDetail(target.materialId),
+            ),
+        )
+        is DeepLinkTarget.CommuteFollow -> setStack(
+            ConnectedTab.Me,
+            listOfNotNull(
+                ConnectedRoute.Me,
+                ConnectedRoute.Commute(target.bus?.direction?.wire),
+                target.bus?.route(),
             ),
         )
     }

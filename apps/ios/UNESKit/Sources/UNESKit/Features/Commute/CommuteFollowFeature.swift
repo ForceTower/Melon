@@ -42,6 +42,17 @@ struct CommuteFollowFeature {
             followReceivedAt = receivedAt
         }
 
+        /// The bus a Live Activity tap opens; nil once it has nothing left to follow.
+        init?(activity: CommuteActivityContent) {
+            guard let arrival = activity.state.arrival(for: activity.attributes) else { return nil }
+            self.init(
+                arrival: arrival,
+                direction: activity.attributes.direction,
+                stopId: activity.attributes.stopId,
+                receivedAt: activity.receivedAt
+            )
+        }
+
         var followedVehicle: TransitVehicle? {
             follow?.vehicles.first { $0.id == vehicleId }
         }

@@ -52,6 +52,7 @@ import dev.forcetower.unes.ui.feature.commute.CommuteBoardViewModel
 import dev.forcetower.unes.ui.feature.commute.CommuteDirectionScreen
 import dev.forcetower.unes.ui.feature.commute.CommuteFollowIntent
 import dev.forcetower.unes.ui.feature.commute.CommuteFollowScreen
+import dev.forcetower.unes.ui.feature.commute.CommuteFollowSeed
 import dev.forcetower.unes.ui.feature.commute.CommuteFollowViewModel
 import dev.forcetower.unes.ui.feature.commute.CommuteLinesScreen
 import dev.forcetower.unes.ui.feature.commute.CommuteSetupIntent
@@ -117,12 +118,6 @@ internal fun ConnectedScreen(
     LifecycleEventEffect(Lifecycle.Event.ON_START) { vm.onAppeared() }
 
     val navigator = rememberConnectedNavigator(initial = ConnectedTab.Overview)
-    // Applies buffered deeplink targets (notification taps, VIEW intents) —
-    // including one that arrived before this shell existed (cold start,
-    // mid-onboarding): the handler's conflated channel holds it until here.
-    LaunchedEffect(navigator) {
-        vm.deepLinks.collect { target -> navigator.open(target) }
-    }
     // Central screen_view pipeline for every route inside the shell: fires
     // on the initial route, every tab switch (each tab root is its own
     // screen), every push, and every pop — the ViewModel dedupes consecutive
@@ -155,6 +150,21 @@ internal fun ConnectedScreen(
     val commuteBoardVm: CommuteBoardViewModel = hiltViewModel()
     val commuteFollowVm: CommuteFollowViewModel = hiltViewModel()
     val commuteSetupVm: CommuteSetupViewModel = hiltViewModel()
+
+    fun seedCommuteFollow(seed: CommuteFollowSeed) {
+        commuteFollowVm.onIntent(CommuteFollowIntent.Seed(seed.arrival, seed.direction, seed.stopId, seed.receivedAt))
+    }
+
+    // Applies buffered deeplink targets (notification taps, VIEW intents) —
+    // including one that arrived before this shell existed (cold start,
+    // mid-onboarding): the handler's conflated channel holds it until here.
+    // The followed-bus notification seeds its follow screen like the board does.
+    LaunchedEffect(navigator) {
+        vm.deepLinks.collect { target ->
+            (target as? DeepLinkTarget.CommuteFollow)?.bus?.let(::seedCommuteFollow)
+            navigator.open(target)
+        }
+    }
 
     // Saving replaces the setup steps with the board, and removing the plan
     // returns to where the flow opened — the iOS `CommutePath.route` rules.
@@ -542,18 +552,8 @@ internal fun ConnectedScreen(
                         direction = route.direction?.let(TransitDirection::fromWire),
                         onBack = { navigator.goBack() },
                         onFollow = { seed ->
-                            commuteFollowVm.onIntent(
-                                CommuteFollowIntent.Seed(seed.arrival, seed.direction, seed.stopId, seed.receivedAt),
-                            )
-                            navigator.navigate(
-                                ConnectedRoute.CommuteFollow(
-                                    lineNumber = seed.arrival.lineNumber,
-                                    direction = seed.direction.wire,
-                                    stopId = seed.stopId,
-                                    arrivalId = seed.arrival.id,
-                                    vehicleId = seed.arrival.vehicleId,
-                                ),
-                            )
+                            seedCommuteFollow(seed)
+                            navigator.navigate(seed.route())
                         },
                         onEditPlan = { plan ->
                             commuteSetupVm.onIntent(CommuteSetupIntent.Begin(plan))

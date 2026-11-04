@@ -253,6 +253,67 @@ struct AppFeatureTests {
     }
 
     @Test
+    func liveActivityTapLandsOnTheFollowedBusOverItsBoard() async throws {
+        let activity = try Self.commuteActivity(passed: false)
+        let follow = try #require(CommuteFollowFeature.State(activity: activity))
+        let store = TestStore(initialState: AppFeature.State()) {
+            AppFeature()
+        } withDependencies: {
+            $0.date = .constant(Self.referenceDate)
+            $0.commuteActivity.current = { activity }
+            $0.commutePlanRepository.observe = { AsyncStream { $0.yield(TransitFixtures.plan) } }
+        }
+
+        await store.send(.intentOpenCommuteFollow)
+        await store.receive(.intentRoute(.me)) {
+            $0.tab = .me
+        }
+        await store.receive(.me(.deeplinkOpened(.commute(TransitFixtures.plan, direction: .toCampus, follow: follow)))) {
+            $0.me.path[id: 0] = .commute(.board(CommuteBoardFeature.State(direction: .toCampus, plan: TransitFixtures.plan)))
+            $0.me.path[id: 1] = .commute(.follow(follow))
+        }
+        #expect(follow.arrivalId == activity.attributes.arrivalId)
+        #expect(follow.followReceivedAt == activity.receivedAt)
+    }
+
+    @Test
+    func liveActivityTapWithNothingLeftToFollowLandsOnTheBoard() async throws {
+        let activity = try Self.commuteActivity(passed: true)
+        let store = TestStore(initialState: AppFeature.State()) {
+            AppFeature()
+        } withDependencies: {
+            $0.date = .constant(Self.referenceDate)
+            $0.commuteActivity.current = { activity }
+            $0.commutePlanRepository.observe = { AsyncStream { $0.yield(TransitFixtures.plan) } }
+        }
+
+        await store.send(.intentOpenCommuteFollow)
+        await store.receive(.intentRoute(.me)) {
+            $0.tab = .me
+        }
+        await store.receive(.me(.deeplinkOpened(.commute(TransitFixtures.plan, direction: .toCampus, follow: nil)))) {
+            $0.me.path[id: 0] = .commute(.board(CommuteBoardFeature.State(direction: .toCampus, plan: TransitFixtures.plan)))
+        }
+    }
+
+    private static func commuteActivity(passed: Bool) throws -> CommuteActivityContent {
+        let network = TransitFixtures.network
+        let route = try #require(network.route(line: "087", direction: .toCampus))
+        let line = try #require(network.line("087"))
+        let attributes = try #require(CommuteActivityAttributes(
+            arrival: TransitFixtures.board(now: referenceDate).arrivals[0],
+            route: route,
+            lineName: line.name,
+            stopId: TransitFixtures.myStopId
+        ))
+        let arrival = try #require(TransitFixtures.follow(now: referenceDate).arrival)
+        let state = passed
+            ? CommuteActivityAttributes.ContentState(status: .passed, atStop: false, progressMeters: 99_999, signalLost: false)
+            : CommuteActivityAttributes.ContentState(arrival: arrival, progressMeters: 1_180)
+        return CommuteActivityContent(attributes: attributes, state: state, receivedAt: referenceDate.addingTimeInterval(-20))
+    }
+
+    @Test
     func unreadCountFeedsTheMessagesBadge() async {
         let store = TestStore(initialState: AppFeature.State()) {
             AppFeature()

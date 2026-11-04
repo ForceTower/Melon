@@ -22,6 +22,12 @@ Evolve by addition only — never repurpose an existing URI.
 | `unes://messages/{messageId}` | Message detail, or the inbox when the message can't be found (below) |
 | `unes://materials/{materialId}` | Material detail |
 | `unes://materials/discipline/{disciplineId}` | Materials shelf of one discipline |
+| `unes://commute/follow` | "Seguindo o 087" for the bus being followed outside the app, pushed over the commute board on the Eu tab; the board alone once the bus passed or following ended |
+
+`unes://commute/follow` is the tap target of the iOS Live Activity and the
+Android followed-bus notification: the apps compose it, never the backend.
+The follow screen opens from the activity's or notification's own last update,
+so a tap works offline.
 
 A message push can be tapped before the device has mirrored the message. Both
 apps then refresh the inbox once and open the message only if it has arrived;

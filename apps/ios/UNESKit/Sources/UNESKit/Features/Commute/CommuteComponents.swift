@@ -232,6 +232,7 @@ struct TransitRouteProgress: View {
     var mineIndex: Int
     var color: Color
     var onDark = false
+    var showsStopNames = true
 
     var body: some View {
         GeometryReader { proxy in
@@ -279,10 +280,12 @@ struct TransitRouteProgress: View {
                         .position(x: x(busPosition), y: 13.5)
                         .animation(UNESMotion.settle(0.8), value: busPosition)
                 }
-                labels(x: x)
+                if showsStopNames {
+                    labels(x: x)
+                }
             }
         }
-        .frame(height: 44)
+        .frame(height: showsStopNames ? 40 : 28)
         .accessibilityHidden(true)
     }
 
@@ -393,7 +396,7 @@ func transitShortName(_ stop: TransitStop, in route: TransitRoute) -> String {
             mineIndex: 4,
             color: UNESColor.transit087
         )
-        .transitCard(padding: EdgeInsets(top: 14, leading: 14, bottom: 10, trailing: 14))
+        .transitCard(padding: EdgeInsets(top: 14, leading: 14, bottom: 14, trailing: 14))
     }
     .padding(20)
     .background(UNESColor.surface)

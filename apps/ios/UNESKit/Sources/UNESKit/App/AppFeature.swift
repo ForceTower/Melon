@@ -41,6 +41,7 @@ struct AppFeature {
         case intentOpenMessage(id: String)
         case intentOpenMaterial(id: String)
         case intentOpenMaterialsDiscipline(disciplineId: String)
+        case intentOpenCommuteFollow
         case secretIconsChanged
         case iconCelebrationDismissed
         case iconCelebrationUsed(AppIcon)
@@ -59,6 +60,8 @@ struct AppFeature {
     @Dependency(\.disciplinesRepository) var disciplinesRepository
     @Dependency(\.messagesRepository) var messagesRepository
     @Dependency(\.materialsRepository) var materialsRepository
+    @Dependency(\.commuteActivity) var commuteActivity
+    @Dependency(\.commutePlanRepository) var commutePlanRepository
     @Dependency(\.intentRouter) var intentRouter
     @Dependency(\.evaluationReminders) var evaluationReminders
     @Dependency(\.appIconClient) var appIconClient
@@ -116,6 +119,8 @@ struct AppFeature {
                             case .calendar:
                                 await send(.intentRoute(.me))
                                 await send(.me(.deeplinkOpened(.calendar)))
+                            case .commuteFollow:
+                                await send(.intentOpenCommuteFollow)
                             }
                         }
                     }
@@ -211,6 +216,28 @@ struct AppFeature {
                     }
                     await send(.intentRoute(.me))
                     await send(.me(.deeplinkOpened(.materialsDiscipline(discipline))))
+                }
+
+            case .intentOpenCommuteFollow:
+                // The Live Activity holds what the follow screen opens with,
+                // so this works offline; one with nothing left to follow
+                // (the bus passed, or it already ended) lands on the board.
+                return .run { [log, now = date.now] send in
+                    var plan = CommutePlan()
+                    for await saved in commutePlanRepository.observe() {
+                        plan = saved
+                        break
+                    }
+                    let activity = await commuteActivity.current()
+                    let follow = activity.flatMap(CommuteFollowFeature.State.init(activity:))
+                    if follow == nil {
+                        log.info("entity route fallback kind=commuteFollow")
+                    }
+                    let direction = activity?.attributes.direction
+                        ?? CommuteDaySchedule().direction(for: plan, at: now)
+                        ?? .toCampus
+                    await send(.intentRoute(.me))
+                    await send(.me(.deeplinkOpened(.commute(plan, direction: direction, follow: follow))))
                 }
 
             case .secretIconsChanged:

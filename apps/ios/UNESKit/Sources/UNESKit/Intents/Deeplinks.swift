@@ -9,6 +9,9 @@ private let log = Log.scoped("Deeplinks")
 /// Intents use, which already solves cold-launch ordering (routes wait until
 /// the connected shell subscribes).
 public enum Deeplinks {
+    /// The Live Activity's tap: the app composes it, never the backend.
+    static let commuteFollowURL = URL(string: "unes://commute/follow")!
+
     /// OS-level `unes://` open (`onOpenURL`).
     public static func open(_ url: URL) {
         post(url.absoluteString)
@@ -61,6 +64,8 @@ public enum Deeplinks {
             return .materialsDiscipline(disciplineId: rest[1])
         case ("materials", 1):
             return .material(id: rest[0])
+        case ("commute", 1) where rest[0] == "follow":
+            return .commuteFollow
         default:
             return nil
         }

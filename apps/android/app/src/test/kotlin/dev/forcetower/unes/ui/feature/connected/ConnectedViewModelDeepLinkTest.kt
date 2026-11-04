@@ -7,6 +7,8 @@ import dev.forcetower.melon.core.sync.domain.model.SyncError
 import dev.forcetower.melon.feature.messages.domain.model.MessageFeedDetail
 import dev.forcetower.melon.feature.messages.domain.usecase.ObserveMessageDetailUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.SyncMessagesUseCase
+import dev.forcetower.unes.commute.CommuteLiveUpdates
+import dev.forcetower.unes.ui.feature.commute.CommuteFollowSeed
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -27,6 +29,7 @@ internal class ConnectedViewModelDeepLinkTest {
     private val handler = DeepLinkHandler()
     private val observeDetail = mockk<ObserveMessageDetailUseCase>()
     private val syncMessages = mockk<SyncMessagesUseCase>()
+    private val liveUpdates = mockk<CommuteLiveUpdates>()
     private val viewModel = ConnectedViewModel(
         refreshSession = mockk(relaxed = true),
         backfillMirror = mockk(relaxed = true),
@@ -36,6 +39,7 @@ internal class ConnectedViewModelDeepLinkTest {
         widgetSnapshotPublisher = mockk(relaxed = true),
         analytics = NoOpAnalytics,
         deepLinkHandler = handler,
+        commuteLiveUpdates = liveUpdates,
         inAppUpdater = mockk(relaxed = true),
         reviewPrompter = mockk(relaxed = true),
         logger = Logger,
@@ -92,6 +96,18 @@ internal class ConnectedViewModelDeepLinkTest {
             assertEquals(DeepLinkTarget.Calendar, open("unes://calendar"))
             assertEquals(DeepLinkTarget.MaterialDetail("mat-1"), open("unes://materials/mat-1"))
             coVerify(exactly = 0) { syncMessages(any(), any()) }
+        }
+
+    @Test
+    fun theFollowedBusNotificationOpensOnItsOwnLastUpdate() =
+        runTest {
+            val seed = mockk<CommuteFollowSeed>()
+            coEvery { liveUpdates.followed() } returns seed
+
+            assertEquals(DeepLinkTarget.CommuteFollow(seed), open("unes://commute/follow"))
+
+            coEvery { liveUpdates.followed() } returns null
+            assertEquals(DeepLinkTarget.CommuteFollow(), open("unes://commute/follow"))
         }
 
     private suspend fun open(url: String): DeepLinkTarget {

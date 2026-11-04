@@ -18,6 +18,9 @@ enum IntentRoute: Equatable, Sendable {
     case reauth
     /// `unes://calendar` — Calendário, pushed on the Eu tab.
     case calendar
+    /// `unes://commute/follow` — a Live Activity tap. Opens "Seguindo o 087"
+    /// for the bus on the lock screen, pushed over the board on the Eu tab.
+    case commuteFollow
 
     /// Log label — never carries ids or names (remote log).
     var kindLabel: String {
@@ -30,6 +33,7 @@ enum IntentRoute: Equatable, Sendable {
         case .classesDiscipline: "classesDiscipline"
         case .reauth: "reauth"
         case .calendar: "calendar"
+        case .commuteFollow: "commuteFollow"
         }
     }
 }
