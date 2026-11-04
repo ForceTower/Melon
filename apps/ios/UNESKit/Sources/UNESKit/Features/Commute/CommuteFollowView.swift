@@ -255,7 +255,7 @@ struct CommuteFollowView: View {
             mineIndex: mineIndex,
             color: color
         )
-        .transitCard(padding: EdgeInsets(top: 14, leading: 14, bottom: 10, trailing: 14))
+        .transitCard(padding: EdgeInsets(top: 14, leading: 14, bottom: 14, trailing: 14))
     }
 
     // MARK: Lock screen

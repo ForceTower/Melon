@@ -1,6 +1,7 @@
 package dev.forcetower.unes.ui.feature.connected
 
 import androidx.navigation3.runtime.NavKey
+import dev.forcetower.unes.ui.feature.commute.CommuteFollowSeed
 import kotlinx.serialization.Serializable
 
 // Inner-Connected navigation routes. Each tab has a root route that's the
@@ -183,6 +184,15 @@ internal val NavKey.isCommuteRoute: Boolean
         this is ConnectedRoute.CommuteSetupDirection ||
         this is ConnectedRoute.CommuteSetupStop ||
         this is ConnectedRoute.CommuteSetupLines
+
+internal fun CommuteFollowSeed.route(): ConnectedRoute.CommuteFollow =
+    ConnectedRoute.CommuteFollow(
+        lineNumber = arrival.lineNumber,
+        direction = direction.wire,
+        stopId = stopId,
+        arrivalId = arrival.id,
+        vehicleId = arrival.vehicleId,
+    )
 
 internal fun ConnectedTab.rootRoute(): ConnectedRoute =
     when (this) {

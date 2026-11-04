@@ -6,6 +6,7 @@ import dev.forcetower.melon.feature.transit.domain.model.TransitDirection
 import dev.forcetower.melon.feature.transit.domain.model.TransitLiveUpdate
 import dev.forcetower.melon.feature.transit.domain.model.TransitRoute
 import dev.forcetower.unes.ui.feature.commute.CommuteEstimate
+import dev.forcetower.unes.ui.feature.commute.CommuteFollowSeed
 import dev.forcetower.unes.ui.feature.commute.CommuteFormat
 import kotlin.math.roundToInt
 import kotlin.time.Instant
@@ -86,6 +87,18 @@ internal data class CommuteLiveRecord(
     // "até a saída" there, and so does the notification.
     val untilDeparture: Boolean
         get() = mineIndex == 0 && direction == TransitDirection.FromCampus.wire
+
+    // What a tap on the notification opens the follow screen with; null once
+    // the bus passed and there is nothing left to follow.
+    fun followSeed(): CommuteFollowSeed? {
+        val arrival = update.toDomain().arrival(arrivalId, lineNumber) ?: return null
+        return CommuteFollowSeed(
+            arrival = arrival.copy(vehicleId = vehicleId),
+            direction = TransitDirection.fromWire(direction) ?: return null,
+            stopId = stopId,
+            receivedAt = Instant.fromEpochSeconds(updatedAt),
+        )
+    }
 
     companion object {
         fun of(

@@ -56,6 +56,13 @@ struct DeeplinksTests {
     }
 
     @Test
+    func theLiveActivityTapResolvesToTheFollowedBus() {
+        #expect(Deeplinks.parse(Deeplinks.commuteFollowURL.absoluteString) == .commuteFollow)
+        #expect(Deeplinks.parse("unes://commute") == nil)
+        #expect(Deeplinks.parse("unes://commute/follow/087") == nil)
+    }
+
+    @Test
     func queryParamsAreIgnored() {
         #expect(Deeplinks.parse("unes://materials/mat-1?utm=push") == .material(id: "mat-1"))
     }

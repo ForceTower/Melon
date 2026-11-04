@@ -14,6 +14,7 @@ import dev.forcetower.melon.feature.sync.domain.usecase.BackfillMirrorUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.PingActivityUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.RefreshSessionUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.SyncMessagesUseCase
+import dev.forcetower.unes.commute.CommuteLiveUpdates
 import dev.forcetower.unes.review.ReviewPrompter
 import dev.forcetower.unes.update.InAppUpdater
 import dev.forcetower.unes.widgets.WidgetSnapshotPublisher
@@ -43,6 +44,7 @@ internal class ConnectedViewModel @Inject constructor(
     private val widgetSnapshotPublisher: WidgetSnapshotPublisher,
     private val analytics: Analytics,
     deepLinkHandler: DeepLinkHandler,
+    private val commuteLiveUpdates: CommuteLiveUpdates,
     private val inAppUpdater: InAppUpdater,
     private val reviewPrompter: ReviewPrompter,
     logger: Logger,
@@ -66,12 +68,21 @@ internal class ConnectedViewModel @Inject constructor(
     private var backfillStarted = false
     private var lastReportedRoute: ConnectedRoute? = null
 
+    private suspend fun resolve(target: DeepLinkTarget): DeepLinkTarget =
+        when (target) {
+            is DeepLinkTarget.Message -> resolveMessage(target)
+            // The notification's own last update, so this works offline.
+            // Mirrors iOS `AppFeature.intentOpenCommuteFollow`.
+            is DeepLinkTarget.CommuteFollow -> DeepLinkTarget.CommuteFollow(commuteLiveUpdates.followed())
+            else -> target
+        }
+
     // A message push can outrun the mirror. Refresh the inbox once and open
     // the message only if it is then on the device; otherwise land on the
     // inbox rather than a detail that may never load. Mirrors iOS
     // `AppFeature.intentOpenMessage`.
-    private suspend fun resolve(target: DeepLinkTarget): DeepLinkTarget {
-        if (target !is DeepLinkTarget.Message || isMirrored(target.id)) return target
+    private suspend fun resolveMessage(target: DeepLinkTarget.Message): DeepLinkTarget {
+        if (isMirrored(target.id)) return target
         val refresh = syncMessages(since = null, cursor = null)
         if (isMirrored(target.id)) return target
         log.i { "message link fell back to the inbox refreshOk=${refresh is Outcome.Ok}" }

@@ -14,6 +14,7 @@ extension CommuteActivityClient: DependencyKey {
             status: { await coordinator.status(arrivalId: $0) },
             start: { try await coordinator.start($0, state: $1, vehicleId: $2) },
             stop: { await coordinator.stop(arrivalId: $0) },
+            current: { await coordinator.current() },
             stopAll: { await coordinator.stopAll() },
             resume: { await coordinator.resume() }
         )
@@ -22,6 +23,7 @@ extension CommuteActivityClient: DependencyKey {
             status: { _ in .unavailable },
             start: { _, _, _ in },
             stop: { _ in },
+            current: { nil },
             stopAll: {},
             resume: {}
         )
@@ -70,6 +72,18 @@ private actor CommuteActivityCoordinator {
         for activity in Activity<CommuteActivityAttributes>.activities where activity.attributes.arrivalId == arrivalId {
             await end(id: activity.id)
         }
+    }
+
+    func current() -> CommuteActivityContent? {
+        guard let activity = Activity<CommuteActivityAttributes>.activities.first(where: { Self.isRunning($0.activityState) })
+        else { return nil }
+        let content = activity.content
+        return CommuteActivityContent(
+            attributes: activity.attributes,
+            state: content.state,
+            // Every update, the app's and the backend's, is stale this long after it was sent.
+            receivedAt: content.staleDate?.addingTimeInterval(-Self.staleAfter) ?? .distantPast
+        )
     }
 
     func stopAll() async {

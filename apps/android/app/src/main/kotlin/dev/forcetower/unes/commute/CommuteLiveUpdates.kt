@@ -10,6 +10,7 @@ import dev.forcetower.melon.feature.transit.domain.usecase.DecodeTransitLiveUpda
 import dev.forcetower.melon.feature.transit.domain.usecase.RegisterTransitLiveUpdateUseCase
 import dev.forcetower.melon.feature.transit.domain.usecase.UnregisterTransitLiveUpdateUseCase
 import dev.forcetower.unes.firebase.PushIdentifierStore
+import dev.forcetower.unes.ui.feature.commute.CommuteFollowSeed
 import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -42,6 +43,8 @@ internal class CommuteLiveUpdates @Inject constructor(
     val followedArrivalId: Flow<String?> = store.record.map { it?.arrivalId }.distinctUntilChanged()
 
     fun canPost(): Boolean = notifier.canPost()
+
+    suspend fun followed(): CommuteFollowSeed? = store.current()?.followSeed()
 
     // Replaces whichever bus was followed before. False when there is nothing
     // to show or notifications are off.

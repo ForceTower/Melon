@@ -169,6 +169,8 @@ struct MeFeature {
             case materialsHub
             case material(Material)
             case materialsDiscipline(MaterialsDiscipline)
+            /// The board, with the followed bus on top while there is one.
+            case commute(CommutePlan, direction: TransitDirection, follow: CommuteFollowFeature.State?)
         }
     }
 
@@ -314,6 +316,11 @@ struct MeFeature {
                 case let .materialsDiscipline(discipline):
                     path.append(.materials(MaterialsFeature.State()))
                     path.append(.materialsList(MaterialsListFeature.State(discipline: discipline)))
+                case let .commute(plan, direction, follow):
+                    path.append(.commute(.board(CommuteBoardFeature.State(direction: direction, plan: plan))))
+                    if let follow {
+                        path.append(.commute(.follow(follow)))
+                    }
                 }
                 state.path = path
                 return .none

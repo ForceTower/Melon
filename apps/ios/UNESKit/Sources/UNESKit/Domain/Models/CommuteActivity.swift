@@ -58,6 +58,14 @@ struct CommuteActivityAttributes: Codable, Hashable, Sendable {
     }
 }
 
+/// A running Live Activity as its last update left it.
+struct CommuteActivityContent: Equatable, Sendable {
+    var attributes: CommuteActivityAttributes
+    var state: CommuteActivityAttributes.ContentState
+    /// When that update reached the device.
+    var receivedAt: Date
+}
+
 extension CommuteActivityAttributes {
     /// Where the followed bus sits on the route line, as a fractional stop index.
     func busPosition(_ state: ContentState) -> Double? {

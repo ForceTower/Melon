@@ -14,6 +14,8 @@ struct CommuteActivityClient: Sendable {
         _ vehicleId: String?
     ) async throws -> Void
     var stop: @Sendable (_ arrivalId: String) async -> Void
+    /// The bus on the lock screen now; nil when none is.
+    var current: @Sendable () async -> CommuteActivityContent? = { nil }
     /// Logout: a signed-out student's lock screen stops following anything.
     var stopAll: @Sendable () async -> Void
     /// App launch: activities still running pick their push tokens back up,
@@ -36,6 +38,7 @@ extension CommuteActivityClient: TestDependencyKey {
         status: { _ in .available },
         start: { _, _, _ in },
         stop: { _ in },
+        current: { nil },
         stopAll: {},
         resume: {}
     )

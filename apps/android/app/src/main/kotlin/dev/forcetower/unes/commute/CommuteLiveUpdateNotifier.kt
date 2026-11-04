@@ -231,13 +231,13 @@ internal class CommuteLiveUpdateNotifier @Inject constructor(
         manager.notify(NOTIFICATION_TAG, NOTIFICATION_ID, notification)
     }
 
-    // Taps land on Hoje, where the commute line lives, through the same
-    // unes:// path pushes use.
+    // Taps open "Seguindo o 087" through the same unes:// path pushes use,
+    // or the board once the bus passed.
     private fun openApp(): PendingIntent {
         val intent = Intent(context, MainActivity::class.java).apply {
             action = Intent.ACTION_VIEW
-            data = HOME_DEEPLINK.toUri()
-            putExtra("url", HOME_DEEPLINK)
+            data = FOLLOW_DEEPLINK.toUri()
+            putExtra("url", FOLLOW_DEEPLINK)
         }
         return PendingIntent.getActivity(context, REQUEST_OPEN, intent, PENDING_FLAGS)
     }
@@ -279,7 +279,7 @@ internal class CommuteLiveUpdateNotifier @Inject constructor(
         const val REQUEST_STOP = 7_101
         const val REQUEST_STALE = 7_102
         const val PENDING_FLAGS = PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        const val HOME_DEEPLINK = "unes://home"
+        const val FOLLOW_DEEPLINK = "unes://commute/follow"
         const val DETAIL_SEPARATOR = " · "
         const val CHIP_LENGTH = 7
 
