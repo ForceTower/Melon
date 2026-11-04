@@ -1,5 +1,6 @@
 package dev.forcetower.melon.feature.calendar.domain.usecase
 
+import dev.forcetower.melon.core.common.AppClock
 import dev.forcetower.melon.core.database.dao.PersonalEventDao
 import dev.forcetower.melon.core.database.entity.PersonalEventEntity
 import dev.forcetower.melon.feature.calendar.domain.model.PersonalEvent
@@ -16,6 +17,15 @@ class ObservePersonalEventsUseCase internal constructor(
     private val dao: PersonalEventDao,
 ) {
     operator fun invoke(): Flow<List<PersonalEvent>> = dao.observeAll().map { rows -> rows.mapNotNull { it.project() } }
+}
+
+// A discipline's checklist, pending first.
+@Inject
+class ObserveDisciplinePersonalEventsUseCase internal constructor(
+    private val dao: PersonalEventDao,
+) {
+    operator fun invoke(disciplineId: String): Flow<List<PersonalEvent>> =
+        dao.observeByDiscipline(disciplineId).map { rows -> rows.mapNotNull { it.project() } }
 }
 
 // One-shot read for the reminder snapshot, which runs outside composition.
@@ -40,6 +50,17 @@ class DeletePersonalEventUseCase internal constructor(
     suspend operator fun invoke(id: String) = dao.deleteById(id)
 }
 
+@Inject
+class SetPersonalEventCompletedUseCase internal constructor(
+    private val dao: PersonalEventDao,
+    private val clock: AppClock,
+) {
+    suspend operator fun invoke(
+        id: String,
+        completed: Boolean,
+    ) = dao.setCompletedAt(id, if (completed) clock.now().toEpochMilliseconds() else null)
+}
+
 // A row whose start date can't be parsed is unrenderable, so it's dropped at
 // the boundary rather than surfaced half-typed.
 private fun PersonalEventEntity.project(): PersonalEvent? {
@@ -55,6 +76,7 @@ private fun PersonalEventEntity.project(): PersonalEvent? {
         reminder = PersonalEventReminder.fromDays(reminderDays),
         notes = notes,
         createdAt = createdAt,
+        completedAt = completedAt,
     )
 }
 
@@ -78,4 +100,5 @@ private fun PersonalEvent.toEntity(): PersonalEventEntity =
         reminderDays = reminder.days,
         notes = notes,
         createdAt = createdAt,
+        completedAt = completedAt,
     )

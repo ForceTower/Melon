@@ -27,9 +27,11 @@ import dev.forcetower.melon.feature.auth.domain.usecase.RenamePasskeyUseCase
 import dev.forcetower.melon.feature.calendar.domain.usecase.DeletePersonalEventUseCase
 import dev.forcetower.melon.feature.calendar.domain.usecase.ObserveActiveSemesterCodeUseCase
 import dev.forcetower.melon.feature.calendar.domain.usecase.ObserveCalendarEventsUseCase
+import dev.forcetower.melon.feature.calendar.domain.usecase.ObserveDisciplinePersonalEventsUseCase
 import dev.forcetower.melon.feature.calendar.domain.usecase.ObservePersonalEventsUseCase
 import dev.forcetower.melon.feature.calendar.domain.usecase.ReadPersonalEventsUseCase
 import dev.forcetower.melon.feature.calendar.domain.usecase.SavePersonalEventUseCase
+import dev.forcetower.melon.feature.calendar.domain.usecase.SetPersonalEventCompletedUseCase
 import dev.forcetower.melon.feature.campusevent.domain.usecase.ClearCampusEventUseCase
 import dev.forcetower.melon.feature.campusevent.domain.usecase.ObserveCampusEventUseCase
 import dev.forcetower.melon.feature.campusevent.domain.usecase.RefreshCampusEventUseCase
@@ -461,11 +463,18 @@ internal object UmbrellaBridgeModule {
     fun provideObserveActiveSemesterCodeUseCase(graph: UmbrellaGraph): ObserveActiveSemesterCodeUseCase =
         graph.observeActiveSemesterCodeUseCase
 
-    // The student's own calendar entries — observe for the screen, read for
-    // the reminder snapshot, save/delete for the composer.
+    // The student's own calendar entries — observe for the screens, read for
+    // the reminder snapshot, save/delete for the composer, completion for the
+    // discipline checklist.
     @Provides
     fun provideObservePersonalEventsUseCase(graph: UmbrellaGraph): ObservePersonalEventsUseCase =
         graph.observePersonalEventsUseCase
+    @Provides
+    fun provideObserveDisciplinePersonalEventsUseCase(graph: UmbrellaGraph): ObserveDisciplinePersonalEventsUseCase =
+        graph.observeDisciplinePersonalEventsUseCase
+    @Provides
+    fun provideSetPersonalEventCompletedUseCase(graph: UmbrellaGraph): SetPersonalEventCompletedUseCase =
+        graph.setPersonalEventCompletedUseCase
     @Provides
     fun provideReadPersonalEventsUseCase(graph: UmbrellaGraph): ReadPersonalEventsUseCase =
         graph.readPersonalEventsUseCase

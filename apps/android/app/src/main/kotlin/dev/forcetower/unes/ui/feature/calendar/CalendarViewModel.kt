@@ -8,6 +8,7 @@ import dev.forcetower.melon.feature.calendar.domain.usecase.DeletePersonalEventU
 import dev.forcetower.melon.feature.calendar.domain.usecase.ObserveCalendarEventsUseCase
 import dev.forcetower.melon.feature.calendar.domain.usecase.ObservePersonalEventsUseCase
 import dev.forcetower.melon.feature.calendar.domain.usecase.SavePersonalEventUseCase
+import dev.forcetower.melon.feature.calendar.domain.usecase.SetPersonalEventCompletedUseCase
 import dev.forcetower.melon.feature.disciplines.domain.usecase.ObserveDisciplinesListUseCase
 import dev.forcetower.unes.mvi.MviViewModel
 import dev.forcetower.unes.mvi.UiEffect
@@ -41,6 +42,7 @@ internal class CalendarViewModel @Inject constructor(
     observeDisciplines: ObserveDisciplinesListUseCase,
     private val savePersonalEvent: SavePersonalEventUseCase,
     private val deletePersonalEvent: DeletePersonalEventUseCase,
+    private val setPersonalEventCompleted: SetPersonalEventCompletedUseCase,
     private val reminders: PersonalEventReminderScheduler,
     private val analytics: Analytics,
 ) : MviViewModel<CalendarUiState, CalendarIntent, CalendarEffect>(CalendarUiState()) {
@@ -100,6 +102,19 @@ internal class CalendarViewModel @Inject constructor(
         )
         viewModelScope.launch {
             deletePersonalEvent(entry.id)
+            reminders.refresh()
+        }
+    }
+
+    fun togglePersonalCompleted(entry: PersonalEntry) {
+        val completed = !entry.isCompleted
+        analytics.selectContent(
+            contentType = ContentTypes.CALENDAR_EVENT,
+            itemId = entry.id,
+            properties = mapOf("action" to if (completed) "complete" else "reopen"),
+        )
+        viewModelScope.launch {
+            setPersonalEventCompleted(entry.id, completed)
             reminders.refresh()
         }
     }

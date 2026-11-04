@@ -16,7 +16,11 @@ data class PersonalEvent(
     val reminder: PersonalEventReminder,
     val notes: String,
     val createdAt: Long,
-)
+    // Epoch millis; null while pending. A completed entry never reminds.
+    val completedAt: Long? = null,
+) {
+    val isCompleted: Boolean get() = completedAt != null
+}
 
 enum class PersonalEventCategory(
     val wire: String,

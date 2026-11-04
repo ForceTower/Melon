@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.sp
 import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.foundation.PinnedHeaderHairline
 import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
+import dev.forcetower.unes.ui.feature.calendar.PersonalEntry
 import dev.forcetower.unes.ui.feature.disciplinedetail.components.DisciplineCargaCard
 import dev.forcetower.unes.ui.feature.disciplinedetail.components.DisciplineCollabBanner
 import dev.forcetower.unes.ui.feature.disciplinedetail.components.DisciplineDetailHeader
@@ -46,6 +47,7 @@ import dev.forcetower.unes.ui.feature.disciplinedetail.components.DisciplineFina
 import dev.forcetower.unes.ui.feature.disciplinedetail.components.DisciplineFrequenciaCard
 import dev.forcetower.unes.ui.feature.disciplinedetail.components.DisciplineMediaHero
 import dev.forcetower.unes.ui.feature.disciplinedetail.components.DisciplineNotasCard
+import dev.forcetower.unes.ui.feature.disciplinedetail.components.DisciplineTasksCard
 import dev.forcetower.unes.ui.feature.disciplines.Discipline
 import dev.forcetower.unes.ui.feature.disciplines.isAwaitingFinal
 import java.util.Locale
@@ -64,6 +66,11 @@ internal fun DisciplineDetailScreen(
     modifier: Modifier = Modifier,
     collabCount: Int? = null,
     onOpenMaterials: (() -> Unit)? = null,
+    tasks: List<PersonalEntry> = emptyList(),
+    canAddTasks: Boolean = false,
+    onToggleTask: (PersonalEntry) -> Unit = {},
+    onOpenTask: (PersonalEntry) -> Unit = {},
+    onAddTask: () -> Unit = {},
     bottomInset: Dp = 0.dp,
 ) {
     val listState = rememberLazyListState()
@@ -131,6 +138,26 @@ internal fun DisciplineDetailScreen(
                             .fadeUpOnAppear(delayMs = 200)
                             .padding(horizontal = 16.dp)
                             .padding(top = 14.dp),
+                    )
+                }
+            }
+            // A past discipline takes no new tasks, so it only shows the
+            // section when there's something to look back at.
+            if (canAddTasks || tasks.isNotEmpty()) {
+                item("tarefas") {
+                    SectionOverline(
+                        text = stringResource(R.string.discipline_tasks_title),
+                        modifier = Modifier.padding(top = 18.dp),
+                    )
+                    DisciplineTasksCard(
+                        tasks = tasks,
+                        canAdd = canAddTasks,
+                        onToggle = onToggleTask,
+                        onOpen = onOpenTask,
+                        onAdd = onAddTask,
+                        modifier = Modifier
+                            .fadeUpOnAppear(delayMs = 220)
+                            .padding(horizontal = 16.dp),
                     )
                 }
             }

@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Undo
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
@@ -67,6 +69,7 @@ internal fun CalEventSheet(
     onAddToCalendar: (CalendarEvent) -> Unit = {},
     onEdit: (PersonalEntry) -> Unit = {},
     onDelete: (PersonalEntry) -> Unit = {},
+    onToggleCompleted: (PersonalEntry) -> Unit = {},
 ) {
     val category = remember(event) { CalendarMath.categorize(event) }
     val accent = category.color()
@@ -100,6 +103,8 @@ internal fun CalEventSheet(
             // The student's own entries get edit + delete where the
             // institutional ones get the system-calendar handoff.
             if (personal != null) {
+                CompletionButton(entry = personal, accent = accent, onToggle = onToggleCompleted)
+                Spacer(modifier = Modifier.height(8.dp))
                 PersonalActions(
                     entry = personal,
                     accent = accent,
@@ -405,6 +410,40 @@ private fun DisciplineCard(
                 text = name,
                 style = MaterialTheme.typography.titleSmall.copy(fontSize = 13.5.sp),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    }
+}
+
+@Composable
+private fun CompletionButton(
+    entry: PersonalEntry,
+    accent: androidx.compose.ui.graphics.Color,
+    onToggle: (PersonalEntry) -> Unit,
+) {
+    Surface(
+        onClick = { onToggle(entry) },
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+    ) {
+        Row(
+            modifier = Modifier.padding(vertical = 13.dp),
+            horizontalArrangement = Arrangement.spacedBy(7.dp, Alignment.CenterHorizontally),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(
+                imageVector = if (entry.isCompleted) Icons.AutoMirrored.Filled.Undo else Icons.Filled.CheckCircle,
+                contentDescription = null,
+                tint = if (entry.isCompleted) MaterialTheme.colorScheme.onSurfaceVariant else accent,
+                modifier = Modifier.size(18.dp),
+            )
+            Text(
+                text = stringResource(
+                    if (entry.isCompleted) R.string.personal_task_mark_pending else R.string.personal_task_mark_done,
+                ),
+                style = MaterialTheme.typography.titleSmall.copy(fontSize = 14.sp),
+                color = MaterialTheme.colorScheme.onSurface,
             )
         }
     }

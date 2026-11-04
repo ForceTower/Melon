@@ -33,4 +33,6 @@ data class PersonalEventEntity(
     val notes: String,
     // Epoch millis — ties the row order when two entries start the same day.
     val createdAt: Long,
+    // Epoch millis the student checked the entry off; null while pending.
+    val completedAt: Long? = null,
 )

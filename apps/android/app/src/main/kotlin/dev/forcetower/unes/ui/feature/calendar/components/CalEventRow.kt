@@ -39,6 +39,7 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -74,12 +75,13 @@ internal fun CalEventRow(
     val ink3 = MaterialTheme.colorScheme.onSurfaceVariant
     val ink4 = MaterialTheme.colorScheme.outlineVariant
     val personal = event.personal
+    val completed = personal?.isCompleted == true
     var menuOpen by remember(event.id) { mutableStateOf(false) }
 
     Surface(
         modifier = modifier
             .fillMaxWidth()
-            .alpha(if (status == CalendarStatus.Past) 0.5f else 1f)
+            .alpha(if (status == CalendarStatus.Past || completed) 0.5f else 1f)
             .clip(RoundedCornerShape(20.dp))
             .combinedClickable(
                 onClick = onClick,
@@ -155,6 +157,7 @@ internal fun CalEventRow(
                         lineHeight = 18.sp,
                         fontWeight = FontWeight.SemiBold,
                         letterSpacing = (-0.14).sp,
+                        textDecoration = if (completed) TextDecoration.LineThrough else null,
                     ),
                     color = ink,
                     maxLines = 2,
@@ -162,7 +165,11 @@ internal fun CalEventRow(
                     modifier = Modifier.padding(top = 3.dp),
                 )
                 Text(
-                    text = eventCountdownLabel(event),
+                    text = if (completed) {
+                        stringResource(R.string.personal_task_done)
+                    } else {
+                        eventCountdownLabel(event)
+                    },
                     style = MaterialTheme.typography.labelSmall.copy(fontSize = 11.5.sp),
                     color = ink3,
                     modifier = Modifier.padding(top = 3.dp),

@@ -1937,6 +1937,28 @@
     </plurals>
     <string name="notif_personal_event_channel">Event reminders</string>
     <string name="notif_personal_event_title">Your event is coming up</string>
+    <string name="personal_task_done">Done</string>
+    <string name="personal_task_mark_done">Mark as done</string>
+    <string name="personal_task_mark_pending">Mark as not done</string>
+    <string name="discipline_tasks_title">Tasks</string>
+    <plurals name="discipline_tasks_pending">
+        <item quantity="one">%1$d pending</item>
+        <item quantity="other">%1$d pending</item>
+    </plurals>
+    <string name="discipline_tasks_all_done">All caught up</string>
+    <string name="discipline_tasks_empty">No tasks yet. Note this class\'s assignments and due dates to get a reminder.</string>
+    <string name="discipline_tasks_add">New task</string>
+    <string name="discipline_tasks_due_today">Due today</string>
+    <string name="discipline_tasks_due_tomorrow">Due tomorrow</string>
+    <plurals name="discipline_tasks_due_in">
+        <item quantity="one">Due in %1$d day</item>
+        <item quantity="other">Due in %1$d days</item>
+    </plurals>
+    <string name="discipline_tasks_due_on">Due %1$s</string>
+    <plurals name="discipline_tasks_overdue">
+        <item quantity="one">%1$d day overdue</item>
+        <item quantity="other">%1$d days overdue</item>
+    </plurals>
     <!-- endregion -->
 
     <!-- region Biblioteca -->

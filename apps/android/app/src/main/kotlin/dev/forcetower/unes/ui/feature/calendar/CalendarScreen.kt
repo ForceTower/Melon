@@ -93,6 +93,7 @@ internal fun CalendarScreen(
         onAddToCalendar = vm::trackAddToCalendar,
         onSavePersonal = vm::savePersonal,
         onDeletePersonal = vm::deletePersonal,
+        onTogglePersonalCompleted = vm::togglePersonalCompleted,
         modifier = modifier,
         bottomInset = bottomInset,
     )
@@ -109,6 +110,7 @@ private fun CalendarContent(
     onAddToCalendar: (CalendarEvent) -> Unit = {},
     onSavePersonal: (PersonalEntry, Boolean) -> Unit = { _, _ -> },
     onDeletePersonal: (PersonalEntry) -> Unit = {},
+    onTogglePersonalCompleted: (PersonalEntry) -> Unit = {},
     bottomInset: Dp = 0.dp,
 ) {
     var category by rememberSaveable { mutableStateOf(CalendarCategoryFilter.All) }
@@ -245,6 +247,7 @@ private fun CalendarContent(
                 openEventId = null
                 onDeletePersonal(entry)
             },
+            onToggleCompleted = onTogglePersonalCompleted,
         )
     }
 

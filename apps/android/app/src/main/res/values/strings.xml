@@ -2005,6 +2005,28 @@
     </plurals>
     <string name="notif_personal_event_channel">Lembretes de eventos</string>
     <string name="notif_personal_event_title">Seu evento está chegando</string>
+    <string name="personal_task_done">Concluída</string>
+    <string name="personal_task_mark_done">Marcar como concluída</string>
+    <string name="personal_task_mark_pending">Marcar como pendente</string>
+    <string name="discipline_tasks_title">Tarefas</string>
+    <plurals name="discipline_tasks_pending">
+        <item quantity="one">%1$d pendente</item>
+        <item quantity="other">%1$d pendentes</item>
+    </plurals>
+    <string name="discipline_tasks_all_done">Tudo em dia</string>
+    <string name="discipline_tasks_empty">Nenhuma tarefa ainda. Anote trabalhos e entregas desta disciplina para receber um lembrete.</string>
+    <string name="discipline_tasks_add">Nova tarefa</string>
+    <string name="discipline_tasks_due_today">Entrega hoje</string>
+    <string name="discipline_tasks_due_tomorrow">Entrega amanhã</string>
+    <plurals name="discipline_tasks_due_in">
+        <item quantity="one">Entrega em %1$d dia</item>
+        <item quantity="other">Entrega em %1$d dias</item>
+    </plurals>
+    <string name="discipline_tasks_due_on">Entrega em %1$s</string>
+    <plurals name="discipline_tasks_overdue">
+        <item quantity="one">Atrasada há %1$d dia</item>
+        <item quantity="other">Atrasada há %1$d dias</item>
+    </plurals>
     <!-- endregion -->
 
     <!-- region Biblioteca -->
