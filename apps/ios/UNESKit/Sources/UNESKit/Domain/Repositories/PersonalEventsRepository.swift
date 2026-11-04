@@ -10,6 +10,9 @@ struct PersonalEventsRepository: Sendable {
     /// Inserts or replaces one entry and re-aligns its local notification.
     var save: @Sendable (_ event: PersonalEvent) async throws -> Void
     var delete: @Sendable (_ id: String) async throws -> Void
+    /// Checks an entry off (stamped now) or reopens it; a completed entry
+    /// schedules no reminder.
+    var setCompleted: @Sendable (_ id: String, _ completed: Bool) async throws -> Void
     /// Re-aligns the pending notifications with what's stored — for the days
     /// nothing was written but the clock moved past a scheduled reminder.
     var reconcileReminders: @Sendable () async -> Void
@@ -26,6 +29,7 @@ extension PersonalEventsRepository: TestDependencyKey {
         },
         save: { _ in },
         delete: { _ in },
+        setCompleted: { _, _ in },
         reconcileReminders: {}
     )
 }

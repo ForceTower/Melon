@@ -15,10 +15,28 @@ interface PersonalEventDao {
     @Query("SELECT * FROM PersonalEvent ORDER BY start ASC, createdAt ASC, id ASC")
     suspend fun all(): List<PersonalEventEntity>
 
-    // The composer always sends the whole entry, so there is no partial-update
-    // path — an edit upserts over its own id.
+    // A discipline's checklist: pending entries by due date, completed ones
+    // after them.
+    @Query(
+        """
+        SELECT * FROM PersonalEvent WHERE disciplineId = :disciplineId
+        ORDER BY completedAt IS NOT NULL, start ASC, createdAt ASC, id ASC
+        """,
+    )
+    fun observeByDiscipline(disciplineId: String): Flow<List<PersonalEventEntity>>
+
+    // The composer always sends the whole entry — an edit upserts over its
+    // own id.
     @Upsert
     suspend fun upsert(event: PersonalEventEntity)
+
+    // The checklist toggle touches only this column, so it can't clobber an
+    // edit made elsewhere.
+    @Query("UPDATE PersonalEvent SET completedAt = :completedAt WHERE id = :id")
+    suspend fun setCompletedAt(
+        id: String,
+        completedAt: Long?,
+    )
 
     @Query("DELETE FROM PersonalEvent WHERE id = :id")
     suspend fun deleteById(id: String)

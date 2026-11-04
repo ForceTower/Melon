@@ -185,25 +185,34 @@ struct DisciplineDetailFeatureTests {
 
     @Test
     func taskStreamsTheDetailFromTheMirror() async {
-        let summary = DisciplinesOverview.preview(now: Self.referenceDate).current!.disciplines[0]
+        let overview = DisciplinesOverview.preview(now: Self.referenceDate)
+        let summary = overview.current!.disciplines[0]
         let detail = DisciplineDetail.preview(now: Self.referenceDate)
         let materials = MaterialsDisciplineDetails.preview()
         // Left un-yielded so the detail lands on demand: `.task` merges the
-        // mirror observation with the one-shot Materiais fetch, and driving
-        // the mirror explicitly keeps the two effects' order deterministic
-        // instead of racing.
+        // mirror observation with the one-shot Materiais fetch and the
+        // overview read, and driving the streams explicitly keeps the
+        // effects' order deterministic instead of racing.
         let (updates, mirror) = AsyncStream.makeStream(of: DisciplineDetail.self)
+        let (cachedOverview, overviewGate) = AsyncStream.makeStream(of: DisciplinesOverview.self)
 
         let store = TestStore(
             initialState: DisciplineDetailFeature.State(summary: summary, semesterId: "sem-2026-1")
         ) {
             DisciplineDetailFeature()
         } withDependencies: {
+            $0.calendar = Calendar.current
+            $0.date = .constant(Self.referenceDate)
             $0.disciplinesRepository.observeDetail = { semesterId, disciplineId in
                 #expect(semesterId == "sem-2026-1")
                 #expect(disciplineId == summary.id)
                 return updates
             }
+            $0.disciplinesRepository.cached = { _ in
+                for await overview in cachedOverview { return overview }
+                return nil
+            }
+            $0.personalEventsRepository.observe = { .finished }
             // The detail flow also fires the one-shot Materiais entry-count
             // load, which is gated on in DEBUG (showsMaterials == true).
             $0.materialsRepository.discipline = { disciplineId in
@@ -212,7 +221,9 @@ struct DisciplineDetailFeatureTests {
             }
         }
 
-        await store.send(.task)
+        await store.send(.task) {
+            $0.today = Calendar.current.startOfDay(for: Self.referenceDate)
+        }
         // The one-shot fetch resolves immediately; the shelf entry inherits the
         // screen's tint (the summary `colorIndex`, since the detail hasn't
         // landed yet).
@@ -227,6 +238,12 @@ struct DisciplineDetailFeatureTests {
             $0.detail = detail
             $0.name = detail.name
             $0.colorIndex = detail.colorIndex
+        }
+        overviewGate.yield(overview)
+        overviewGate.finish()
+        await store.receive(.semesterResolved(isCurrent: true, options: overview.composerOptions)) {
+            $0.isCurrentSemester = true
+            $0.composerOptions = overview.composerOptions
         }
     }
 

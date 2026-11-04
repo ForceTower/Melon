@@ -2,7 +2,8 @@ import ComposableArchitecture
 import SwiftUI
 
 /// One discipline, end to end: mesh hero with the partial mean, stat cards,
-/// grades, attendance, syllabus, the lecture timeline, and attachments. The
+/// grades, the student's tasks, attendance, syllabus, the lecture timeline,
+/// and attachments. The
 /// inline nav title fades in as the large header scrolls away, mirroring the
 /// system large-title collapse.
 struct DisciplineDetailView: View {
@@ -50,6 +51,9 @@ struct DisciplineDetailView: View {
         .inlineNavigationBar()
         .onscreenEntity(store.detail.map { .discipline(semesterId: $0.semesterId, disciplineId: $0.id) })
         .task { await store.send(.task).finish() }
+        .sheet(item: $store.scope(state: \.composer, action: \.composer)) { composerStore in
+            CalendarPersonalEventSheet(store: composerStore)
+        }
     }
 
     // MARK: Content
@@ -93,6 +97,22 @@ struct DisciplineDetailView: View {
                         countdownRow
                             .fadeUp(delay: 0.28)
                             .padding(.bottom, 22)
+                    }
+
+                    if store.showsTasks {
+                        DisciplineTasksBlock(
+                            tasks: store.tasks,
+                            today: store.today,
+                            canAdd: store.isCurrentSemester,
+                            onToggle: { store.send(.taskToggled($0)) },
+                            onOpen: { store.send(.taskTapped($0)) },
+                            onAdd: { store.send(.addTaskTapped) }
+                        )
+                        // The check-off lands through the mirror observation,
+                        // so the reorder animates on the list, not the send.
+                        .animation(.easeOut(duration: 0.2), value: store.tasks)
+                        .fadeUp(delay: 0.29)
+                        .padding(.bottom, 22)
                     }
 
                     DisciplinePresencaCard(detail: detail)

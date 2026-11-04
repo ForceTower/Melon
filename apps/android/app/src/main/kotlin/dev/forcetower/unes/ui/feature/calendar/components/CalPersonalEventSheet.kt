@@ -79,6 +79,7 @@ internal fun CalPersonalEventSheet(
     onDismiss: () -> Unit,
     onSave: (PersonalEntry, isNew: Boolean) -> Unit,
     onDelete: (PersonalEntry) -> Unit,
+    seedDiscipline: PersonalDiscipline? = null,
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val isNew = editing == null
@@ -87,7 +88,7 @@ internal fun CalPersonalEventSheet(
     var start by remember { mutableStateOf(editing?.start ?: seedDay) }
     var end by remember { mutableStateOf(editing?.end) }
     var category by remember { mutableStateOf(editing?.category ?: PersonalCategory.Task) }
-    var discipline by remember { mutableStateOf(editing?.discipline) }
+    var discipline by remember { mutableStateOf(editing?.discipline ?: seedDiscipline) }
     var reminder by remember { mutableStateOf(editing?.reminder ?: PersonalReminder.DayBefore) }
     var notes by remember { mutableStateOf(editing?.notes.orEmpty()) }
     var picking by remember { mutableStateOf<DateTarget?>(null) }
@@ -125,6 +126,7 @@ internal fun CalPersonalEventSheet(
                             reminder = reminder,
                             notes = notes.trim(),
                             createdAt = editing?.createdAt ?: System.currentTimeMillis(),
+                            completedAt = editing?.completedAt,
                         ),
                         isNew,
                     )

@@ -11,7 +11,6 @@ import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.datetime.DatePeriod
-import kotlinx.datetime.LocalDate
 import kotlinx.datetime.minus
 
 // Keeps the personal-entry reminder snapshot and its alarm honest. Unlike the
@@ -36,7 +35,7 @@ internal class PersonalEventReminderScheduler @Inject constructor(
                 return@launch
             }
             val snapshot = PersonalEventReminderSnapshot(
-                reminders = events.mapNotNull { it.toEntry() },
+                reminders = events.mapNotNull { it.toReminderEntry() },
             )
             runCatching { PersonalEventReminderSnapshot.save(context, snapshot) }
                 .onFailure { log.w(it) { "personal reminder snapshot write failed" } }
@@ -44,18 +43,17 @@ internal class PersonalEventReminderScheduler @Inject constructor(
             log.d { "personal reminder snapshot published count=${snapshot.reminders.size}" }
         }
     }
+}
 
-    // The lead time is folded into the stored fire date, so the receiver only
-    // has to match "today". Entries without a reminder drop out here.
-    private fun PersonalEvent.toEntry(): PersonalEventReminderSnapshot.Entry? {
-        if (reminder.days <= 0) return null
-        val fireDate = start.minus(DatePeriod(days = reminder.days))
-        return PersonalEventReminderSnapshot.Entry(
-            id = id,
-            title = title,
-            fireDateIso = fireDate.toIsoString(),
-        )
-    }
-
-    private fun LocalDate.toIsoString(): String = toString()
+// The lead time is folded into the stored fire date, so the receiver only has
+// to match "today". Entries without a reminder, and checked-off ones, drop out
+// here.
+internal fun PersonalEvent.toReminderEntry(): PersonalEventReminderSnapshot.Entry? {
+    if (reminder.days <= 0 || isCompleted) return null
+    val fireDate = start.minus(DatePeriod(days = reminder.days))
+    return PersonalEventReminderSnapshot.Entry(
+        id = id,
+        title = title,
+        fireDateIso = fireDate.toString(),
+    )
 }

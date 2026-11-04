@@ -172,11 +172,13 @@ internal object CalendarMath {
         events: List<CalendarEvent>,
         today: LocalDate = this.today,
     ): CalendarEvent? {
-        val active = events.filter { !it.closed && status(it, today) == CalendarStatus.Active }
+        // A checked-off entry is no longer an action to take.
+        val open = events.filter { it.personal?.isCompleted != true }
+        val active = open.filter { !it.closed && status(it, today) == CalendarStatus.Active }
         if (active.isNotEmpty()) {
             return active.minByOrNull { it.endOrStart }
         }
-        val future = events.filter { status(it, today) == CalendarStatus.Future }
+        val future = open.filter { status(it, today) == CalendarStatus.Future }
         if (future.isNotEmpty()) {
             return future.minByOrNull { it.start }
         }

@@ -51,7 +51,10 @@ internal data class PersonalEntry(
     val reminder: PersonalReminder,
     val notes: String,
     val createdAt: Long,
-)
+    val completedAt: Long? = null,
+) {
+    val isCompleted: Boolean get() = completedAt != null
+}
 
 // One entry of the composer's class picker. The tint comes from
 // `ColorFor.discipline(code)` at draw time, so a class keeps the same color it
@@ -91,6 +94,7 @@ internal fun mapPersonalEvent(event: KmpPersonalEvent): PersonalEntry =
         reminder = PersonalReminder.entries.firstOrNull { it.days == event.reminder.days } ?: PersonalReminder.None,
         notes = event.notes,
         createdAt = event.createdAt,
+        completedAt = event.completedAt,
     )
 
 internal fun PersonalEntry.toKmp(): KmpPersonalEvent =
@@ -109,4 +113,5 @@ internal fun PersonalEntry.toKmp(): KmpPersonalEvent =
         reminder = KmpReminder.fromDays(reminder.days),
         notes = notes,
         createdAt = createdAt,
+        completedAt = completedAt,
     )

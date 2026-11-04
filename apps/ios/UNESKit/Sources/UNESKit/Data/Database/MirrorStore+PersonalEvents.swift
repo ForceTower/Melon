@@ -19,6 +19,7 @@ struct PersonalEventRecord: Codable, Equatable, Sendable, FetchableRecord, Persi
     var reminderDays: Int
     var notes: String
     var createdAt: String
+    var completedAt: String?
 
     init(_ event: PersonalEvent) {
         id = event.id
@@ -32,6 +33,7 @@ struct PersonalEventRecord: Codable, Equatable, Sendable, FetchableRecord, Persi
         reminderDays = event.reminder.rawValue
         notes = event.notes
         createdAt = event.createdAt.formatted(MirrorStore.timestampFormat)
+        completedAt = event.completedAt?.formatted(MirrorStore.timestampFormat)
     }
 
     var domain: PersonalEvent {
@@ -46,7 +48,8 @@ struct PersonalEventRecord: Codable, Equatable, Sendable, FetchableRecord, Persi
             discipline: discipline,
             reminder: PersonalEvent.Reminder(rawValue: reminderDays) ?? .none,
             notes: notes,
-            createdAt: (try? Date(createdAt, strategy: MirrorStore.timestampFormat)) ?? .distantPast
+            createdAt: (try? Date(createdAt, strategy: MirrorStore.timestampFormat)) ?? .distantPast,
+            completedAt: completedAt.flatMap { try? Date($0, strategy: MirrorStore.timestampFormat) }
         )
     }
 
@@ -60,6 +63,17 @@ extension MirrorStore {
     func savePersonalEvent(_ event: PersonalEvent) async throws {
         try await writer.write { db in
             try PersonalEventRecord(event).upsert(db)
+        }
+    }
+
+    /// Touches only the completion column, so a check-off never races an
+    /// edit made in the composer.
+    func setPersonalEventCompleted(id: String, completedAt: Date?) async throws {
+        let stamp = completedAt?.formatted(MirrorStore.timestampFormat)
+        _ = try await writer.write { db in
+            try PersonalEventRecord
+                .filter(key: id)
+                .updateAll(db, Column("completedAt").set(to: stamp))
         }
     }
 

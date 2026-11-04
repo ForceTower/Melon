@@ -27,14 +27,19 @@ struct CalendarPersonalEventFeature {
             !title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
         }
 
-        init(day: Date, disciplines: [PersonalEventDisciplineOption], calendar: Calendar = .current) {
+        init(
+            day: Date,
+            disciplines: [PersonalEventDisciplineOption],
+            discipline: PersonalEvent.DisciplineTag? = nil,
+            calendar: Calendar = .current
+        ) {
             editing = nil
             self.disciplines = disciplines
             title = ""
             start = calendar.startOfDay(for: day)
             end = nil
             category = .task
-            discipline = nil
+            self.discipline = discipline
             reminder = .dayBefore
             notes = ""
         }
@@ -171,7 +176,8 @@ extension CalendarPersonalEventFeature.State {
             discipline: discipline,
             reminder: reminder,
             notes: notes.trimmingCharacters(in: .whitespacesAndNewlines),
-            createdAt: editing?.createdAt ?? now
+            createdAt: editing?.createdAt ?? now,
+            completedAt: editing?.completedAt
         )
     }
 }

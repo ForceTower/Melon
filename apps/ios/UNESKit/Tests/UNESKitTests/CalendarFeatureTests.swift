@@ -234,6 +234,34 @@ struct CalendarFeatureTests {
     }
 
     @Test
+    func checkingOffFromTheDetailSheetKeepsItOpenAndCurrent() async {
+        let toggled = LockIsolated<[(String, Bool)]>([])
+        let store = makeStore(personal: [Self.mine])
+        store.dependencies.personalEventsRepository.setCompleted = { id, completed in
+            toggled.withValue { $0.append((id, completed)) }
+        }
+        await startup(store)
+
+        let row = store.state.allEvents.first { $0.id == Self.mine.id }!
+        await store.send(.eventTapped(row)) {
+            $0.detail = row
+        }
+        await store.send(.completionToggled(Self.mine))
+        await store.finish()
+        #expect(toggled.value.map(\.0) == [Self.mine.id])
+        #expect(toggled.value.map(\.1) == [true])
+
+        var checkedOff = Self.mine
+        checkedOff.completedAt = Self.now
+        await store.send(.personalEventsLoaded([checkedOff])) {
+            $0.personalEvents = [checkedOff]
+            $0.detail = CalendarEvent(checkedOff, calendar: Self.calendar)
+        }
+        #expect(store.state.detail?.isCompleted == true)
+        #expect(store.state.hero?.id != Self.mine.id)
+    }
+
+    @Test
     func failedFetchKeepsTheScreenAlive() async {
         let store = makeStore(events: { _ in throw APIError.emptyEnvelope })
 

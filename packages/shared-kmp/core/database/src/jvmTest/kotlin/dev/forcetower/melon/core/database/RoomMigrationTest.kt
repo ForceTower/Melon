@@ -4,11 +4,13 @@ import androidx.room3.Room
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import androidx.sqlite.execSQL
 import dev.forcetower.melon.core.database.entity.AcademicCalendarEventEntity
+import dev.forcetower.melon.core.database.entity.PersonalEventEntity
 import dev.forcetower.melon.core.database.entity.SettingsEntity
 import java.io.File
 import java.nio.file.Files
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -21,9 +23,11 @@ internal class RoomMigrationTest {
     @Test
     fun opensExistingRoom2DatabaseWithoutLosingData() =
         runBlocking {
-            withDatabase(14) { database ->
+            withDatabase(15) { database ->
                 assertEquals("dark", database.settingsDao().get("theme"))
-                assertEquals("Study session", database.personalEventDao().all().single().title)
+                val personalEvent = database.personalEventDao().all().single()
+                assertEquals("Study session", personalEvent.title)
+                assertNull(personalEvent.completedAt)
                 database.settingsDao().put(SettingsEntity("theme", "light"))
                 assertEquals("light", database.settingsDao().observe("theme").first())
             }
@@ -32,12 +36,13 @@ internal class RoomMigrationTest {
     @Test
     fun migratesEverySupportedRoom2SchemaWithoutLosingData() =
         runBlocking {
-            for (version in 8..13) {
+            for (version in 8..14) {
                 withDatabase(version) { database ->
                     assertEquals("dark", database.settingsDao().get("theme"), "Schema $version")
                     val personalEvents = database.personalEventDao().all()
                     if (version >= 9) {
                         assertEquals("Study session", personalEvents.single().title, "Schema $version")
+                        assertNull(personalEvents.single().completedAt, "Schema $version")
                     } else {
                         assertEquals(emptyList(), personalEvents)
                     }
@@ -58,6 +63,26 @@ internal class RoomMigrationTest {
                 assertEquals(listOf(newEvent), dao.observeAll().first())
                 dao.replaceAll(emptyList())
                 assertEquals(emptyList(), dao.observeAll().first())
+            }
+        }
+
+    @Test
+    fun ordersADisciplineChecklistPendingFirstAndTogglesCompletion() =
+        runBlocking {
+            withDatabase(15) { database ->
+                val dao = database.personalEventDao()
+                dao.upsert(personalEvent("late", start = "2026-10-20", disciplineId = "calc"))
+                dao.upsert(personalEvent("soon", start = "2026-10-05", disciplineId = "calc"))
+                dao.upsert(personalEvent("done", start = "2026-10-01", disciplineId = "calc"))
+                dao.upsert(personalEvent("other", start = "2026-10-02", disciplineId = "phys"))
+                dao.setCompletedAt("done", 1_000L)
+
+                val checklist = dao.observeByDiscipline("calc").first()
+                assertEquals(listOf("soon", "late", "done"), checklist.map { it.id })
+                assertEquals(1_000L, checklist.last().completedAt)
+
+                dao.setCompletedAt("done", null)
+                assertEquals(listOf("done", "soon", "late"), dao.observeByDiscipline("calc").first().map { it.id })
             }
         }
 
@@ -117,6 +142,24 @@ internal class RoomMigrationTest {
             }
         }
     }
+
+    private fun personalEvent(
+        id: String,
+        start: String,
+        disciplineId: String,
+    ) = PersonalEventEntity(
+        id = id,
+        title = id,
+        start = start,
+        end = null,
+        category = "TASK",
+        disciplineId = disciplineId,
+        disciplineCode = disciplineId.uppercase(),
+        disciplineName = disciplineId,
+        reminderDays = 1,
+        notes = "",
+        createdAt = 1L,
+    )
 
     private fun calendarEvent(id: String) =
         AcademicCalendarEventEntity(

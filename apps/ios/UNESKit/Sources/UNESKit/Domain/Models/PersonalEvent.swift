@@ -17,6 +17,10 @@ struct PersonalEvent: Equatable, Sendable, Identifiable {
     var reminder: Reminder
     var notes: String
     var createdAt: Date
+    /// Checked off — the entry stays on the timeline but stops reminding.
+    var completedAt: Date? = nil
+
+    var isCompleted: Bool { completedAt != nil }
 
     enum Category: String, CaseIterable, Equatable, Sendable {
         case task, exam, study, life

@@ -52,6 +52,19 @@ extension PersonalEventsRepository: DependencyKey {
             }
             await reconcile(mirror: mirror, now: date.now)
         },
+        setCompleted: { id, completed in
+            @Dependency(\.database) var database
+            @Dependency(\.date) var date
+            let mirror = MirrorStore(writer: database)
+            do {
+                try await mirror.setPersonalEventCompleted(id: id, completedAt: completed ? date.now : nil)
+                log.info("completion id=\(id) completed=\(completed)")
+            } catch {
+                log.error("completion failed id=\(id)", error: error)
+                throw error
+            }
+            await reconcile(mirror: mirror, now: date.now)
+        },
         reconcileReminders: {
             @Dependency(\.database) var database
             @Dependency(\.date) var date
@@ -110,8 +123,8 @@ enum PersonalEventReminderScheduler {
         }
     }
 
-    /// One reminder per entry that asked for one and whose fire moment is
-    /// still ahead. Entries are day-only, so it lands at `fireHour` on the
+    /// One reminder per pending entry that asked for one and whose fire
+    /// moment is still ahead. Entries are day-only, so it lands at `fireHour` on the
     /// day `reminder` days before the start.
     static func desiredReminders(
         events: [PersonalEvent],
@@ -120,6 +133,7 @@ enum PersonalEventReminderScheduler {
     ) -> [Reminder] {
         events.compactMap { event in
             guard event.reminder != .none,
+                  !event.isCompleted,
                   let start = CalendarFormat.parse(event.start, calendar: calendar),
                   let day = calendar.date(byAdding: .day, value: -event.reminder.rawValue, to: start),
                   let fireDate = calendar.date(bySettingHour: fireHour, minute: 0, second: 0, of: day),

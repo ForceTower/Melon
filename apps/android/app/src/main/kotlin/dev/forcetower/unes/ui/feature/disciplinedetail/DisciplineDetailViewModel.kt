@@ -5,14 +5,22 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.forcetower.melon.core.analytics.Analytics
 import dev.forcetower.melon.core.analytics.ContentTypes
 import dev.forcetower.melon.core.common.Outcome
+import dev.forcetower.melon.feature.calendar.domain.usecase.DeletePersonalEventUseCase
+import dev.forcetower.melon.feature.calendar.domain.usecase.ObserveDisciplinePersonalEventsUseCase
+import dev.forcetower.melon.feature.calendar.domain.usecase.SavePersonalEventUseCase
+import dev.forcetower.melon.feature.calendar.domain.usecase.SetPersonalEventCompletedUseCase
 import dev.forcetower.melon.feature.disciplines.domain.usecase.ObserveDisciplineDetailUseCase
 import dev.forcetower.melon.feature.materials.domain.usecase.GetMaterialsDisciplineUseCase
 import dev.forcetower.unes.mvi.MviViewModel
 import dev.forcetower.unes.mvi.UiEffect
 import dev.forcetower.unes.mvi.UiIntent
 import dev.forcetower.unes.mvi.UiState
+import dev.forcetower.unes.reminders.PersonalEventReminderScheduler
 import dev.forcetower.unes.remote.FeatureFlags
 import dev.forcetower.unes.review.ReviewPrompter
+import dev.forcetower.unes.ui.feature.calendar.PersonalEntry
+import dev.forcetower.unes.ui.feature.calendar.mapPersonalEvent
+import dev.forcetower.unes.ui.feature.calendar.toKmp
 import dev.forcetower.unes.ui.feature.disciplines.Discipline
 import dev.forcetower.unes.ui.feature.disciplines.DisciplineStatus
 import dev.forcetower.unes.ui.feature.disciplines.status
@@ -33,6 +41,16 @@ internal sealed interface DisciplineDetailIntent : UiIntent {
     data class SelectGroup(
         val code: String?,
     ) : DisciplineDetailIntent
+    data class ToggleTask(
+        val task: PersonalEntry,
+    ) : DisciplineDetailIntent
+    data class SaveTask(
+        val task: PersonalEntry,
+        val isNew: Boolean,
+    ) : DisciplineDetailIntent
+    data class DeleteTask(
+        val task: PersonalEntry,
+    ) : DisciplineDetailIntent
 }
 
 internal sealed interface DisciplineDetailEffect : UiEffect
@@ -47,6 +65,8 @@ internal data class DisciplineDetailUiState(
     // Null hides the banner — flag off, fetch pending, or fetch failed (the
     // shelf is online-only, so a quiet miss beats an error state here).
     val collabCount: Int? = null,
+    // The student's own entries tagged with this discipline, pending first.
+    val tasks: List<PersonalEntry> = emptyList(),
 ) : UiState {
     // What the screen actually renders. Hydrated payload wins over the seed
     // once it lands; until then we paint the list-card data so the screen
@@ -59,6 +79,11 @@ internal data class DisciplineDetailUiState(
 internal class DisciplineDetailViewModel @Inject constructor(
     private val observeDetail: ObserveDisciplineDetailUseCase,
     private val getMaterialsDiscipline: GetMaterialsDisciplineUseCase,
+    private val observeDisciplineTasks: ObserveDisciplinePersonalEventsUseCase,
+    private val savePersonalEvent: SavePersonalEventUseCase,
+    private val deletePersonalEvent: DeletePersonalEventUseCase,
+    private val setPersonalEventCompleted: SetPersonalEventCompletedUseCase,
+    private val reminders: PersonalEventReminderScheduler,
     private val featureFlags: FeatureFlags,
     private val analytics: Analytics,
     private val reviewPrompter: ReviewPrompter,
@@ -67,7 +92,9 @@ internal class DisciplineDetailViewModel @Inject constructor(
 ) {
     private var detailJob: Job? = null
     private var collabJob: Job? = null
+    private var tasksJob: Job? = null
     private var collabLoadedFor: String? = null
+    private var tasksLoadedFor: String? = null
     private var verdictReportedFor: String? = null
 
     // Called from the composable click handler right before the hoisted
@@ -82,6 +109,9 @@ internal class DisciplineDetailViewModel @Inject constructor(
             is DisciplineDetailIntent.Open -> open(intent.offerId, intent.seed)
             DisciplineDetailIntent.Close -> close()
             is DisciplineDetailIntent.SelectGroup -> setState { copy(selectedGroup = intent.code) }
+            is DisciplineDetailIntent.ToggleTask -> toggleTask(intent.task)
+            is DisciplineDetailIntent.SaveTask -> saveTask(intent.task, intent.isNew)
+            is DisciplineDetailIntent.DeleteTask -> deleteTask(intent.task)
         }
     }
 
@@ -98,21 +128,86 @@ internal class DisciplineDetailViewModel @Inject constructor(
         }
         detailJob?.cancel()
         collabJob?.cancel()
+        tasksJob?.cancel()
         collabLoadedFor = null
+        tasksLoadedFor = null
         verdictReportedFor = null
         setState {
-            copy(offerId = offerId, seed = seed, hydrated = null, selectedGroup = null, collabCount = null)
+            copy(
+                offerId = offerId,
+                seed = seed,
+                hydrated = null,
+                selectedGroup = null,
+                collabCount = null,
+                tasks = emptyList(),
+            )
         }
         loadCollabCount(seed?.disciplineId)
+        observeTasks(seed?.disciplineId)
         detailJob = viewModelScope.launch {
             observeDetail(offerId).collect { raw ->
                 if (raw == null) return@collect
                 val mapped = mapDetail(raw, seed = currentState.seed)
                 setState { copy(hydrated = mapped) }
                 loadCollabCount(raw.disciplineId)
+                observeTasks(raw.disciplineId)
                 reportVerdict(offerId, mapped)
             }
         }
+    }
+
+    private fun observeTasks(disciplineId: String?) {
+        if (disciplineId == null || tasksLoadedFor == disciplineId) return
+        tasksLoadedFor = disciplineId
+        tasksJob?.cancel()
+        tasksJob = viewModelScope.launch {
+            observeDisciplineTasks(disciplineId).collect { entries ->
+                setState { copy(tasks = entries.map(::mapPersonalEvent)) }
+            }
+        }
+    }
+
+    private fun toggleTask(task: PersonalEntry) {
+        val completed = !task.isCompleted
+        trackTask(task, if (completed) "complete" else "reopen")
+        viewModelScope.launch {
+            setPersonalEventCompleted(task.id, completed)
+            reminders.refresh()
+        }
+    }
+
+    private fun saveTask(
+        task: PersonalEntry,
+        isNew: Boolean,
+    ) {
+        trackTask(task, if (isNew) "create" else "update")
+        viewModelScope.launch {
+            savePersonalEvent(task.toKmp())
+            reminders.refresh()
+        }
+    }
+
+    private fun deleteTask(task: PersonalEntry) {
+        trackTask(task, "delete")
+        viewModelScope.launch {
+            deletePersonalEvent(task.id)
+            reminders.refresh()
+        }
+    }
+
+    private fun trackTask(
+        task: PersonalEntry,
+        action: String,
+    ) {
+        analytics.selectContent(
+            contentType = ContentTypes.CALENDAR_EVENT,
+            itemId = task.id,
+            properties = mapOf(
+                "action" to action,
+                "category" to task.category.name.lowercase(),
+                "source" to "discipline",
+            ),
+        )
     }
 
     // Once per open, on hydrated data only — the seed's verdict is stale.
@@ -158,7 +253,10 @@ internal class DisciplineDetailViewModel @Inject constructor(
         detailJob = null
         collabJob?.cancel()
         collabJob = null
+        tasksJob?.cancel()
+        tasksJob = null
         collabLoadedFor = null
+        tasksLoadedFor = null
         verdictReportedFor = null
         setState { DisciplineDetailUiState() }
     }
