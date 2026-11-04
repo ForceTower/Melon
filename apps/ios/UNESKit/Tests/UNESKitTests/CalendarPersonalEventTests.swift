@@ -99,6 +99,45 @@ struct CalendarPersonalEventFeatureTests {
     }
 
     @Test
+    func editingACheckedOffEntryKeepsItCheckedOff() async {
+        var checkedOff = Self.stored
+        checkedOff.completedAt = Self.day(2026, 4, 16)
+        let saved = LockIsolated<[PersonalEvent]>([])
+        let store = makeStore(
+            CalendarPersonalEventFeature.State(
+                editing: checkedOff,
+                disciplines: [],
+                calendar: Self.calendar
+            ),
+            saved: saved
+        )
+
+        await store.send(.binding(.set(\.title, "Relatório final"))) {
+            $0.title = "Relatório final"
+        }
+        await store.send(.saveTapped)
+        await store.finish()
+
+        #expect(saved.value.first?.completedAt == checkedOff.completedAt)
+    }
+
+    @Test
+    func aNewEntryCanStartTaggedWithADiscipline() {
+        let tag = [PersonalEventDisciplineOption].preview[2].tag
+        let state = CalendarPersonalEventFeature.State(
+            day: Self.now,
+            disciplines: .preview,
+            discipline: tag,
+            calendar: Self.calendar
+        )
+
+        #expect(state.discipline == tag)
+        #expect(state.category == .task)
+        #expect(state.start == Self.day(2026, 4, 17))
+        #expect(state.composed(id: "new", now: Self.now).completedAt == nil)
+    }
+
+    @Test
     func aStartPastTheEndPushesTheEndAlong() async {
         let store = makeStore(
             CalendarPersonalEventFeature.State(
@@ -214,6 +253,31 @@ struct PersonalEventStoreTests {
     }
 
     @Test
+    func checkingOffTouchesOnlyTheCompletionStamp() async throws {
+        let store = MirrorStore(writer: try inMemoryDatabase())
+        let doneAt = Date(timeIntervalSince1970: 1_776_100_000)
+        try await store.savePersonalEvent(Self.sample)
+
+        try await store.setPersonalEventCompleted(id: Self.sample.id, completedAt: doneAt)
+        var expected = Self.sample
+        expected.completedAt = doneAt
+        #expect(try await store.personalEvents() == [expected])
+
+        try await store.setPersonalEventCompleted(id: Self.sample.id, completedAt: nil)
+        #expect(try await store.personalEvents() == [Self.sample])
+    }
+
+    @Test
+    func aCompletionStampRoundTripsThroughAFullSave() async throws {
+        let store = MirrorStore(writer: try inMemoryDatabase())
+        var checkedOff = Self.sample
+        checkedOff.completedAt = Date(timeIntervalSince1970: 1_776_100_000)
+
+        try await store.savePersonalEvent(checkedOff)
+        #expect(try await store.personalEvents().first?.completedAt == checkedOff.completedAt)
+    }
+
+    @Test
     func logoutTakesTheStudentsEntriesWithIt() async throws {
         let store = MirrorStore(writer: try inMemoryDatabase())
         try await store.savePersonalEvent(Self.sample)
@@ -278,5 +342,19 @@ struct PersonalEventReminderSchedulerTests {
         )
 
         #expect(reminders.isEmpty)
+    }
+
+    @Test
+    func checkedOffEntriesStopReminding() {
+        let now = Self.calendar.date(from: DateComponents(year: 2026, month: 4, day: 17, hour: 9))!
+        var done = Self.event(id: "done", start: "2026-04-20", reminder: .dayBefore)
+        done.completedAt = now
+        let reminders = PersonalEventReminderScheduler.desiredReminders(
+            events: [done, Self.event(id: "open", start: "2026-04-20", reminder: .dayBefore)],
+            now: now,
+            calendar: Self.calendar
+        )
+
+        #expect(reminders.map(\.identifier) == ["personal-event/open"])
     }
 }

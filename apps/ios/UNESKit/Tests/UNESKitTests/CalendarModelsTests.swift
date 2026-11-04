@@ -159,6 +159,28 @@ struct CalendarModelsTests {
         #expect(CalendarMath.nextDeadline(in: [done], today: Self.today) == nil)
     }
 
+    @Test
+    func nextDeadlineSkipsCheckedOffEntries() {
+        let checkedOff = CalendarEvent(PersonalEvent(
+            id: "mine",
+            title: "Entregar relatório",
+            start: "2026-04-18",
+            end: nil,
+            category: .task,
+            discipline: nil,
+            reminder: .none,
+            notes: "",
+            createdAt: .distantPast,
+            completedAt: Self.today
+        ))!
+        let upcoming = Self.event(id: "next", start: Self.day(2026, 4, 22))
+
+        let hero = CalendarMath.nextDeadline(in: [checkedOff, upcoming], today: Self.today)
+
+        #expect(checkedOff.isCompleted)
+        #expect(hero?.id == "next")
+    }
+
     // MARK: Day lookup + grouping
 
     @Test

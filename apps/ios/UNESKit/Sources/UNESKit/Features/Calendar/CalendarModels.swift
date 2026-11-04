@@ -24,6 +24,8 @@ struct CalendarEvent: Equatable, Identifiable, Sendable {
 
     var isPersonal: Bool { personal != nil }
 
+    var isCompleted: Bool { personal?.isCompleted ?? false }
+
     var endOrStart: Date { end ?? start }
 
     /// Days the event spans, inclusive.
@@ -302,9 +304,11 @@ enum CalendarMath {
     }
 
     /// The hero pick: the active event closing soonest, else the next
-    /// upcoming one. Closed (holiday) events never headline while running —
-    /// there is nothing to act on.
+    /// upcoming one. Closed (holiday) events never headline while running,
+    /// and checked-off entries never headline at all — there is nothing to
+    /// act on.
     static func nextDeadline(in events: [CalendarEvent], today: Date, calendar: Calendar = .current) -> CalendarEvent? {
+        let events = events.filter { !$0.isCompleted }
         let active = events.filter { !$0.closed && status($0, today: today, calendar: calendar) == .active }
         if let soonest = active.min(by: { $0.endOrStart < $1.endOrStart }) {
             return soonest

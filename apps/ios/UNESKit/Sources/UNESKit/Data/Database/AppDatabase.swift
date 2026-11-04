@@ -386,6 +386,12 @@ private func migrator() -> DatabaseMigrator {
             t.column("walkMinutes", .integer).notNull()
         }
     }
+    // Personal entries can be checked off. Existing rows read as pending.
+    migrator.registerMigration("v15") { db in
+        try db.alter(table: "personalEvents") { t in
+            t.add(column: "completedAt", .text)
+        }
+    }
     return migrator
 }
 

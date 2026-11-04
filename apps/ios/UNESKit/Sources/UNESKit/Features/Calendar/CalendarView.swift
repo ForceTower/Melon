@@ -38,7 +38,8 @@ struct CalendarView: View {
                 onClose: { store.send(.detailDismissed) },
                 onAddToCalendar: { store.send(.addToCalendarTapped(event)) },
                 onEdit: { store.send(.editTapped($0)) },
-                onDelete: { store.send(.deleteTapped($0)) }
+                onDelete: { store.send(.deleteTapped($0)) },
+                onToggleCompleted: { store.send(.completionToggled($0)) }
             )
         }
         .sheet(item: $store.scope(state: \.composer, action: \.composer)) { composerStore in

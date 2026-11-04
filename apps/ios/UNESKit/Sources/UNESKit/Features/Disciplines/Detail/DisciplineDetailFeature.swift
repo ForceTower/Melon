@@ -18,7 +18,21 @@ struct DisciplineDetailFeature {
         /// the count lands, and forever for past-semester disciplines, which
         /// the materials overview doesn't cover.
         var materials: MaterialsDiscipline?
+        /// The student's own entries tagged with this discipline, pending
+        /// first.
+        var tasks: [PersonalEvent] = []
+        /// Resolved against the mirrored overview on `task`. Only the running
+        /// semester takes new tasks — the composer's class picker offers
+        /// nothing else.
+        var isCurrentSemester = false
+        var composerOptions: [PersonalEventDisciplineOption] = []
+        /// Local midnight the due labels count from.
+        var today = Date.distantPast
+        @Presents var composer: CalendarPersonalEventFeature.State?
         @Shared(.appStorage(FeatureFlags.materialsEnabledKey)) var isMaterialsEnabled = false
+
+        /// A past discipline keeps the section only for what it already has.
+        var showsTasks: Bool { isCurrentSemester || !tasks.isEmpty }
 
         /// Debug builds skip the flag so the flow stays reachable.
         var showsMaterials: Bool {
@@ -53,6 +67,12 @@ struct DisciplineDetailFeature {
         case countdownTapped
         case materialsLoaded(MaterialsDiscipline)
         case materialsTapped
+        case personalEventsUpdated([PersonalEvent])
+        case semesterResolved(isCurrent: Bool, options: [PersonalEventDisciplineOption])
+        case taskToggled(PersonalEvent)
+        case taskTapped(PersonalEvent)
+        case addTaskTapped
+        case composer(PresentationAction<CalendarPersonalEventFeature.Action>)
         case delegate(Delegate)
 
         enum Delegate: Equatable {
@@ -66,11 +86,14 @@ struct DisciplineDetailFeature {
 
     @Dependency(\.disciplinesRepository) var disciplinesRepository
     @Dependency(\.materialsRepository) var materialsRepository
+    @Dependency(\.personalEventsRepository) var personalEventsRepository
     @Dependency(\.analytics) var analytics
+    @Dependency(\.calendar) var calendar
+    @Dependency(\.date.now) var now
 
     private let log = Log.scoped("DisciplineDetailFeature")
 
-    private enum CancelID { case observation, materials }
+    private enum CancelID { case observation, materials, personalEvents }
 
     var body: some ReducerOf<Self> {
         Reduce { state, action in
@@ -81,6 +104,7 @@ struct DisciplineDetailFeature {
                 // materials_discipline already uses) instead of polluting the
                 // offer_id namespace.
                 analytics.screen(name: Screens.disciplineDetail, properties: ["discipline_id": state.disciplineId])
+                state.today = calendar.startOfDay(for: now)
                 // The observation replays the mirror on subscription, so
                 // every appearance rehydrates and later writes (sync
                 // refreshes from any tab) land live.
@@ -93,8 +117,23 @@ struct DisciplineDetailFeature {
                     }
                 }
                 .cancellable(id: CancelID.observation, cancelInFlight: true)
-                guard state.showsMaterials, state.materials == nil else { return observation }
-                return .merge(observation, loadMaterials(disciplineId: state.disciplineId))
+                let tasks: Effect<Action> = .merge(
+                    .run { send in
+                        for await events in personalEventsRepository.observe() {
+                            await send(.personalEventsUpdated(events))
+                        }
+                    }
+                    .cancellable(id: CancelID.personalEvents, cancelInFlight: true),
+                    .run { [semesterId = state.semesterId, now] send in
+                        let overview = try? await disciplinesRepository.cached(now)
+                        await send(.semesterResolved(
+                            isCurrent: overview?.current?.id == semesterId,
+                            options: overview?.composerOptions ?? []
+                        ))
+                    }
+                )
+                guard state.showsMaterials, state.materials == nil else { return .merge(observation, tasks) }
+                return .merge(observation, tasks, loadMaterials(disciplineId: state.disciplineId))
 
             case let .detailUpdated(detail):
                 state.detail = detail
@@ -122,9 +161,60 @@ struct DisciplineDetailFeature {
                 log.info("open materials id=\(materials.id)")
                 return .send(.delegate(.openMaterials(materials)))
 
-            case .delegate:
+            case let .personalEventsUpdated(events):
+                state.tasks = DisciplineTasks.tasks(for: state.disciplineId, in: events)
+                return .none
+
+            case let .semesterResolved(isCurrent, options):
+                state.isCurrentSemester = isCurrent
+                state.composerOptions = options
+                return .none
+
+            case let .taskToggled(event):
+                let completed = !event.isCompleted
+                analytics.selectContent(
+                    contentType: ContentTypes.calendarEvent,
+                    itemId: event.id,
+                    properties: ["action": completed ? "complete" : "reopen"]
+                )
+                return .run { [log] _ in
+                    do {
+                        try await personalEventsRepository.setCompleted(event.id, completed)
+                    } catch {
+                        log.error("completion failed id=\(event.id)", error: error)
+                    }
+                }
+
+            case let .taskTapped(event):
+                state.composer = CalendarPersonalEventFeature.State(
+                    editing: event,
+                    disciplines: state.composerOptions,
+                    calendar: calendar
+                )
+                return .none
+
+            case .addTaskTapped:
+                guard state.isCurrentSemester else { return .none }
+                let tag = state.composerOptions.first { $0.tag.id == state.disciplineId }?.tag
+                    ?? PersonalEvent.DisciplineTag(
+                        id: state.disciplineId,
+                        code: state.detail?.code ?? "",
+                        name: state.name
+                    )
+                state.composer = CalendarPersonalEventFeature.State(
+                    day: now,
+                    disciplines: state.composerOptions,
+                    discipline: tag,
+                    calendar: calendar
+                )
+                return .none
+
+            case .composer, .delegate:
                 return .none
             }
+        }
+        .ifLet(\.$composer, action: \.composer) {
+            CalendarPersonalEventFeature()
         }
     }
 

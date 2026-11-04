@@ -87,6 +87,7 @@ struct CalendarFeature {
         case addTapped(day: Date?)
         case editTapped(PersonalEvent)
         case deleteTapped(PersonalEvent)
+        case completionToggled(PersonalEvent)
         case composer(PresentationAction<CalendarPersonalEventFeature.Action>)
         case confirmDelete(PresentationAction<Delete>)
 
@@ -156,6 +157,12 @@ struct CalendarFeature {
 
             case let .personalEventsLoaded(events):
                 state.personalEvents = events
+                // The open sheet is a snapshot; a check-off made from it has
+                // to show up in it.
+                if let id = state.detail?.personal?.id,
+                   let updated = events.first(where: { $0.id == id }) {
+                    state.detail = CalendarEvent(updated, calendar: calendar)
+                }
                 return .none
 
             case let .disciplinesLoaded(disciplines):
@@ -221,6 +228,21 @@ struct CalendarFeature {
                 if let wait = closeDetailFirst(&state, then: .deleteTapped(event)) { return wait }
                 state.confirmDelete = .deletePersonalEvent(id: event.id, titled: event.title)
                 return .none
+
+            case let .completionToggled(event):
+                let completed = !event.isCompleted
+                analytics.selectContent(
+                    contentType: ContentTypes.calendarEvent,
+                    itemId: event.id,
+                    properties: ["action": completed ? "complete" : "reopen"]
+                )
+                return .run { [log] _ in
+                    do {
+                        try await personalEventsRepository.setCompleted(event.id, completed)
+                    } catch {
+                        log.error("completion failed id=\(event.id)", error: error)
+                    }
+                }
 
             case let .confirmDelete(.presented(.confirmed(id))):
                 log.info("delete id=\(id)")

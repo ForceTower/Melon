@@ -13,6 +13,7 @@ struct CalendarEventSheet: View {
     var onAddToCalendar: () -> Void = {}
     var onEdit: (PersonalEvent) -> Void = { _ in }
     var onDelete: (PersonalEvent) -> Void = { _ in }
+    var onToggleCompleted: (PersonalEvent) -> Void = { _ in }
 
     @State private var isCalendarEditPresented = false
 
@@ -206,39 +207,69 @@ struct CalendarEventSheet: View {
         .background(UNESColor.surface2, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
     }
 
-    /// The student's own entries get edit + delete where the institutional
-    /// ones get the system-calendar handoff.
+    /// The student's own entries get check-off, edit and delete where the
+    /// institutional ones get the system-calendar handoff.
     @ViewBuilder
     private var actions: some View {
         if let personal = event.personal {
-            HStack(spacing: 8) {
-                Button {
-                    onEdit(personal)
-                } label: {
-                    filledLabel(icon: "pencil", text: .calendarPersonalEditAction)
-                }
-                .buttonStyle(TilePressStyle())
-
-                Button {
-                    onDelete(personal)
-                } label: {
-                    Image(systemName: "trash")
-                        .font(.system(size: 16, weight: .semibold))
-                        .foregroundStyle(UNESColor.alertRed)
-                        .frame(width: 52)
-                        .frame(maxHeight: .infinity)
-                        .background(UNESColor.surface2, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
-                        .overlay {
-                            RoundedRectangle(cornerRadius: 16, style: .continuous)
-                                .strokeBorder(UNESColor.cardLine)
-                        }
-                }
-                .buttonStyle(TilePressStyle())
+            VStack(spacing: 8) {
+                completionButton(personal)
+                personalEditRow(personal)
             }
-            .fixedSize(horizontal: false, vertical: true)
         } else {
             addToCalendarButton
         }
+    }
+
+    private func personalEditRow(_ personal: PersonalEvent) -> some View {
+        HStack(spacing: 8) {
+            Button {
+                onEdit(personal)
+            } label: {
+                filledLabel(icon: "pencil", text: .calendarPersonalEditAction)
+            }
+            .buttonStyle(TilePressStyle())
+
+            Button {
+                onDelete(personal)
+            } label: {
+                Image(systemName: "trash")
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundStyle(UNESColor.alertRed)
+                    .frame(width: 52)
+                    .frame(maxHeight: .infinity)
+                    .background(UNESColor.surface2, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 16, style: .continuous)
+                            .strokeBorder(UNESColor.cardLine)
+                    }
+            }
+            .buttonStyle(TilePressStyle())
+        }
+        .fixedSize(horizontal: false, vertical: true)
+    }
+
+    private func completionButton(_ personal: PersonalEvent) -> some View {
+        Button {
+            onToggleCompleted(personal)
+        } label: {
+            HStack(spacing: 7) {
+                Image(systemName: personal.isCompleted ? "arrow.uturn.backward.circle" : "checkmark.circle")
+                    .font(.system(size: 14, weight: .semibold))
+                Text(personal.isCompleted ? .calendarPersonalMarkPending : .calendarPersonalMarkDone)
+                    .font(.system(size: 14, weight: .semibold))
+                    .tracking(-0.14)
+            }
+            .foregroundStyle(category.color)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 13)
+            .background(category.color.opacity(0.12), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+            .overlay {
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .strokeBorder(category.color.opacity(0.3))
+            }
+        }
+        .buttonStyle(TilePressStyle())
     }
 
     @ViewBuilder

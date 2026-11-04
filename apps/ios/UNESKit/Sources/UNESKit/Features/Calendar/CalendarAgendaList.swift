@@ -106,7 +106,7 @@ struct CalendarEventRow: View {
                     .strokeBorder(UNESColor.cardLine)
             }
             .shadow(color: Color(hex: 0x141020, opacity: 0.05), radius: 7, y: 5)
-            .opacity(status == .past ? 0.5 : 1)
+            .opacity(status == .past || event.isCompleted ? 0.5 : 1)
         }
         .buttonStyle(.pressableCard)
         .modifier(CalendarPersonalRowMenu(personal: event.personal, actions: actions))
@@ -164,7 +164,7 @@ struct CalendarEventRow: View {
                     .font(.system(size: 11, weight: .semibold))
                     .foregroundStyle(category.color)
                 provenance
-                if status == .active && !event.closed {
+                if status == .active && !event.closed && !event.isCompleted {
                     Spacer(minLength: 4)
                     HStack(spacing: 4) {
                         Circle()
@@ -181,13 +181,25 @@ struct CalendarEventRow: View {
                 .font(.system(size: 14.5, weight: .semibold))
                 .tracking(-0.15)
                 .lineSpacing(2)
+                .strikethrough(event.isCompleted)
                 .foregroundStyle(UNESColor.ink)
                 .lineLimit(2)
                 .multilineTextAlignment(.leading)
-            Text(CalendarMath.countdown(event, today: today).phrase)
-                .font(.system(size: 11.5, weight: .medium))
-                .monospacedDigit()
-                .foregroundStyle(status == .past ? UNESColor.ink4 : UNESColor.ink3)
+            if event.isCompleted {
+                Label {
+                    Text(.calendarPersonalCompleted)
+                } icon: {
+                    Image(systemName: "checkmark.circle.fill")
+                }
+                .labelStyle(.titleAndIcon)
+                .font(.system(size: 11.5, weight: .semibold))
+                .foregroundStyle(category.color)
+            } else {
+                Text(CalendarMath.countdown(event, today: today).phrase)
+                    .font(.system(size: 11.5, weight: .medium))
+                    .monospacedDigit()
+                    .foregroundStyle(status == .past ? UNESColor.ink4 : UNESColor.ink3)
+            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
