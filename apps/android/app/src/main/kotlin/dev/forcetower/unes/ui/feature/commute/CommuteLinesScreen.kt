@@ -94,14 +94,12 @@ internal fun CommuteLinesContent(
     bottomInset: Dp = 0.dp,
 ) {
     val toCampus = direction == TransitDirection.ToCampus
-    // The catalog answered and the session is on this step's direction.
-    val network = state.network?.takeIf { state.linesDirection == direction }
-    val stop = state.linesStop?.takeIf { state.linesDirection == direction }
-    val ready = network != null && stop != null
+    val status = state.linesStatus(direction)
+    val ready = status as? CommuteLinesStatus.Ready
     CommuteSetupScaffold(
         step = state.linesStep(direction),
         total = state.totalSteps,
-        barTitle = stop?.name.orEmpty(),
+        barTitle = ready?.stop?.name.orEmpty(),
         title = stringResource(
             if (toCampus) R.string.commute_setup_lines_title else R.string.commute_setup_lines_title_leaving,
         ),
@@ -115,23 +113,28 @@ internal fun CommuteLinesContent(
                     if (state.isLastLinesStep) R.string.commute_setup_save else R.string.commute_continue,
                 ),
                 onClick = { onIntent(CommuteSetupIntent.SaveTapped) },
-                enabled = ready && state.selectedLines.isNotEmpty() && !state.saving,
+                enabled = ready != null && state.selectedLines.isNotEmpty() && !state.saving,
                 isLoading = state.saving,
             )
         },
     ) {
-        when {
-            network != null && stop != null -> {
-                LinesCard(state = state, direction = direction, network = network, onIntent = onIntent)
+        when (status) {
+            is CommuteLinesStatus.Ready -> {
+                LinesCard(state = state, direction = direction, network = status.network, onIntent = onIntent)
                 WalkCard(state = state, direction = direction, onIntent = onIntent)
             }
-            state.networkFailed -> MelonBanner(
+            CommuteLinesStatus.Failed -> MelonBanner(
                 title = stringResource(R.string.commute_hero_unavailable),
                 detail = stringResource(R.string.commute_setup_stop_load_failed),
                 tone = MaterialTheme.colorScheme.outline,
                 onClick = { onIntent(CommuteSetupIntent.LoadNetwork) },
             )
-            else -> Box(
+            CommuteLinesStatus.NoStop -> MelonBanner(
+                title = stringResource(R.string.commute_hero_unavailable),
+                detail = stringResource(R.string.commute_setup_lines_unavailable),
+                tone = MaterialTheme.colorScheme.outline,
+            )
+            CommuteLinesStatus.Loading -> Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 40.dp),

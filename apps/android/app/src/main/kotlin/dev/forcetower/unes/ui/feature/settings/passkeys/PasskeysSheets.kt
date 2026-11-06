@@ -603,6 +603,7 @@ internal fun DeletePasskeyDialog(
                     color = MaterialTheme.colorScheme.primary,
                     onClick = { onIntent(PasskeysIntent.CancelDelete) },
                     fill = false,
+                    enabled = !state.deleting,
                 )
                 Box(
                     modifier = Modifier
@@ -664,19 +665,20 @@ private fun SheetTextButton(
     color: Color,
     onClick: () -> Unit,
     fill: Boolean = true,
+    enabled: Boolean = true,
 ) {
     Box(
         modifier = Modifier
             .then(if (fill) Modifier.fillMaxWidth() else Modifier)
             .clip(CircleShape)
-            .clickable(role = Role.Button, onClick = onClick)
+            .clickable(enabled = enabled, role = Role.Button, onClick = onClick)
             .padding(horizontal = 18.dp, vertical = 12.dp),
         contentAlignment = Alignment.Center,
     ) {
         Text(
             text = text,
             style = MaterialTheme.typography.titleSmall.copy(fontSize = 15.sp, fontWeight = FontWeight.SemiBold),
-            color = color,
+            color = if (enabled) color else color.copy(alpha = 0.38f),
         )
     }
 }

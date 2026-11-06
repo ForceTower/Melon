@@ -2612,6 +2612,7 @@
     <string name="commute_setup_lines_title">Suas linhas neste ponto</string>
     <string name="commute_setup_lines_title_leaving">Suas linhas para voltar</string>
     <string name="commute_setup_lines_subtitle">Marque as que você realmente pega. As outras ficam de fora.</string>
+    <string name="commute_setup_lines_unavailable">As linhas deste trajeto não estão disponíveis agora.</string>
     <string name="commute_setup_line_serves">passa neste ponto</string>
     <string name="commute_setup_line_does_not_serve">não passa neste ponto</string>
     <string name="commute_setup_line_duration">~%1$d min de ponta a ponta</string>

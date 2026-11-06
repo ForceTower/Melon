@@ -2525,6 +2525,7 @@
     <string name="commute_setup_lines_title">Your lines at this stop</string>
     <string name="commute_setup_lines_title_leaving">Your lines home</string>
     <string name="commute_setup_lines_subtitle">Pick the ones you actually take. The others stay out.</string>
+    <string name="commute_setup_lines_unavailable">The lines for this route aren\'t available right now.</string>
     <string name="commute_setup_line_serves">stops here</string>
     <string name="commute_setup_line_does_not_serve">doesn\'t stop here</string>
     <string name="commute_setup_line_duration">~%1$d min end to end</string>
