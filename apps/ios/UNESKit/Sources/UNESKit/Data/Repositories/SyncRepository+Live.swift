@@ -165,6 +165,8 @@ extension SyncRepository: DependencyKey {
                 log.info("backfill complete pages=\(pages)")
             } catch {
                 switch error {
+                case is OnboardingNotSettled:
+                    log.warn("backfill polling hit cap without terminal status; retrying next launch")
                 case APIError.server(401, _):
                     log.warn("backfill unauthorized")
                 case let APIError.server(status, message):
@@ -186,18 +188,19 @@ private let backfillPollInterval: Duration = .seconds(5)
 private let backfillMaxPollIterations = 60
 private let backfillMaxMessagePages = 200
 
+/// The server's onboarding didn't settle within the polling cap. Thrown so
+/// the backfill stays incomplete and the next launch tries again.
+private struct OnboardingNotSettled: Error {}
+
 private func awaitTerminalOnboardingStatus() async throws {
     @Dependency(\.apiClient) var apiClient
     @Dependency(\.continuousClock) var clock
     for iteration in 0 ..< backfillMaxPollIterations {
+        if iteration > 0 { try await clock.sleep(for: backfillPollInterval) }
         let dto: OnboardingStatusDTO = try await apiClient.get(from: "api/sync/onboarding-status")
         if isBackfillTerminal(dto.domain) { return }
-        if iteration == backfillMaxPollIterations - 1 {
-            log.warn("backfill polling hit cap without terminal status")
-            return
-        }
-        try await clock.sleep(for: backfillPollInterval)
     }
+    throw OnboardingNotSettled()
 }
 
 // Phase 1 failure short-circuits Phase 2 server-side, so a failed initial phase

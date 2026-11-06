@@ -17,11 +17,19 @@ extension MirrorStore {
 
     /// Upserts a fetched page, replacing each message's scope and attachment
     /// rows. `messageStates` (the local read/star overlay) is deliberately
-    /// left alone so sync never resurrects an unread dot.
+    /// left alone so sync never resurrects an unread dot, and a star toggle
+    /// the server hasn't acknowledged keeps its local value over the page's.
     func upsertMessages(_ page: MessageMirrorPage, syncedAt: Date) async throws {
         do {
             try await writer.write { db in
-                for message in page.messages {
+                let pendingStars = try MessageStateRecord
+                    .filter(Column("starAckPending") == true)
+                    .fetchAll(db)
+                    .reduce(into: [String: Bool]()) { $0[$1.messageId] = $1.starred }
+                for var message in page.messages {
+                    if let starred = pendingStars[message.id] {
+                        message.starred = starred
+                    }
                     try message.upsert(db)
                 }
                 let ids = page.messages.map(\.id)
@@ -46,6 +54,7 @@ extension MirrorStore {
                     ?? MessageStateRecord(messageId: id, readAt: nil, starred: false)
                 guard state.readAt == nil else { return }
                 state.readAt = now.formatted(Self.timestampFormat)
+                state.readAckPending = true
                 try state.upsert(db)
             }
             log.debug("mark message read id=\(id)")
@@ -66,6 +75,7 @@ extension MirrorStore {
                         ?? MessageStateRecord(messageId: message.id, readAt: nil, starred: false)
                     guard state.readAt == nil else { continue }
                     state.readAt = stamp
+                    state.readAckPending = true
                     try state.upsert(db)
                 }
             }
@@ -82,6 +92,7 @@ extension MirrorStore {
                 var state = try MessageStateRecord.fetchOne(db, key: id)
                     ?? MessageStateRecord(messageId: id, readAt: nil, starred: false)
                 state.starred = starred
+                state.starAckPending = true
                 try state.upsert(db)
                 // Also flip the mirrored server value: the display OR-merges
                 // it with the overlay, so an unstar would otherwise stay
@@ -95,6 +106,45 @@ extension MirrorStore {
         } catch {
             log.error("set message starred failed id=\(id)", error: error)
             throw error
+        }
+    }
+
+    // MARK: Server acks
+
+    /// Overlay rows holding a read or star the server hasn't acknowledged.
+    func unacknowledgedMessageStates() async throws -> [MessageStateRecord] {
+        try await writer.read { db in
+            try MessageStateRecord
+                .filter(Column("readAckPending") == true || Column("starAckPending") == true)
+                .fetchAll(db)
+        }
+    }
+
+    func acknowledgeMessagesRead(ids: [String]) async throws {
+        _ = try await writer.write { db in
+            try MessageStateRecord
+                .filter(ids.contains(Column("messageId")))
+                .updateAll(db, Column("readAckPending").set(to: false))
+        }
+    }
+
+    /// The server's read-all covers every local read, earlier unacked ones
+    /// included.
+    func acknowledgeAllMessagesRead() async throws {
+        _ = try await writer.write { db in
+            try MessageStateRecord
+                .filter(Column("readAckPending") == true)
+                .updateAll(db, Column("readAckPending").set(to: false))
+        }
+    }
+
+    /// Leaves the star pending when the student toggled it again since: that
+    /// newer value still awaits its own ack.
+    func acknowledgeMessageStar(id: String, starred: Bool) async throws {
+        _ = try await writer.write { db in
+            try MessageStateRecord
+                .filter(Column("messageId") == id && Column("starred") == starred)
+                .updateAll(db, Column("starAckPending").set(to: false))
         }
     }
 
@@ -136,7 +186,7 @@ extension MirrorStore {
             .compactMap { $0?.trimmingCharacters(in: .whitespacesAndNewlines) }
             .first { !$0.isEmpty }
         return MessagesSummary(
-            unreadCount: messages.count { $0.read == false && !readLocally.contains($0.id) },
+            unreadCount: messages.count { $0.read != true && !readLocally.contains($0.id) },
             latestSenderName: latest.senderName?.trimmingCharacters(in: .whitespacesAndNewlines),
             latestPreview: preview
         )

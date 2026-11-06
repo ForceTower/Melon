@@ -201,4 +201,54 @@ struct MessagesMappingTests {
         overview = try await mirror.messagesOverview(now: now)
         #expect(overview.messages.first?.starred == false)
     }
+
+    @Test
+    func unackedUnstarSurvivesAResync() async throws {
+        let mirror = MirrorStore(writer: try inMemoryDatabase())
+        let page = MessageMirrorPage(
+            messages: [
+                MessageRecord(
+                    id: "m1", subject: nil, content: "Olá", senderName: "UNES",
+                    timestamp: "2026-04-18T09:14:00.000Z", read: true, source: "app", starred: true
+                ),
+            ],
+            scopes: [],
+            attachments: []
+        )
+        let now = date(day: 18, hour: 13)
+        try await mirror.upsertMessages(page, syncedAt: now)
+
+        try await mirror.setMessageStarred(id: "m1", starred: false)
+        // The ack never landed, so the next sync still says starred.
+        try await mirror.upsertMessages(page, syncedAt: now.addingTimeInterval(60))
+
+        #expect(try await mirror.messagesOverview(now: now).messages.first?.starred == false)
+
+        // Once acked, the server is authoritative again — here another device
+        // starred it back.
+        try await mirror.acknowledgeMessageStar(id: "m1", starred: false)
+        try await mirror.upsertMessages(page, syncedAt: now.addingTimeInterval(120))
+
+        #expect(try await mirror.messagesOverview(now: now).messages.first?.starred == true)
+    }
+
+    @Test
+    func homeSummaryAndInboxAgreeOnAMissingReadFlag() async throws {
+        let mirror = MirrorStore(writer: try inMemoryDatabase())
+        let wire = Data("""
+        {"messages":[
+          {"id":"m1","subject":"Aviso","content":"Oi","senderName":"UNES",
+           "timestamp":"2026-04-18T09:14:00.000Z","read":null},
+          {"id":"m2","subject":"Aviso","content":"Oi","senderName":"UNES",
+           "timestamp":"2026-04-17T09:14:00.000Z"}
+        ],"nextCursor":null}
+        """.utf8)
+        let page = try JSONDecoder().decode(MessageListDTO.self, from: wire).page
+        let now = date(day: 18, hour: 13)
+        try await mirror.upsertMessages(page, syncedAt: now)
+
+        let overview = try await mirror.messagesOverview(now: now)
+        #expect(overview.unreadCount == 2)
+        #expect(try await mirror.messagesSummary()?.unreadCount == overview.unreadCount)
+    }
 }
