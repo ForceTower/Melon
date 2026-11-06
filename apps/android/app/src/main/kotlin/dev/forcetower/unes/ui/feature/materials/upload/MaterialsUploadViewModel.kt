@@ -142,7 +142,8 @@ internal sealed interface MaterialsUploadIntent : UiIntent {
 }
 
 internal sealed interface MaterialsUploadEffect : UiEffect {
-    // Fired when the sheet closes after a successful submission so hosts can
+    // Fired once a submission has landed and the sheet is closed — on "Done",
+    // or when an upload finishes after a close mid-submit — so hosts can
     // refetch (the new material lands under "Meus envios").
     data class Finished(
         val disciplineId: String,
@@ -158,29 +159,26 @@ internal class MaterialsUploadViewModel @Inject constructor(
 ) : MviViewModel<MaterialsUploadUiState, MaterialsUploadIntent, MaterialsUploadEffect>(
     MaterialsUploadUiState(),
 ) {
+    // Bumped whenever the sheet opens or closes. File reads and uploads can
+    // outlive the opening that started them, so they compare it before
+    // touching the state.
+    private var session = 0
+
     override fun onIntent(intent: MaterialsUploadIntent) {
         when (intent) {
-            is MaterialsUploadIntent.StartFromHub -> {
-                setState {
-                    freshState().copy(
-                        isOpen = true,
-                        options = intent.options,
-                        step = MaterialsUploadStep.PickDiscipline,
-                    )
-                }
-                loadSemesterOptions()
-            }
-            is MaterialsUploadIntent.StartFromDiscipline -> {
-                setState {
-                    freshState().copy(
-                        isOpen = true,
-                        discipline = intent.discipline,
-                        isLocked = true,
-                        step = MaterialsUploadStep.Source,
-                    )
-                }
-                loadSemesterOptions()
-            }
+            is MaterialsUploadIntent.StartFromHub -> open(
+                freshState().copy(
+                    options = intent.options,
+                    step = MaterialsUploadStep.PickDiscipline,
+                ),
+            )
+            is MaterialsUploadIntent.StartFromDiscipline -> open(
+                freshState().copy(
+                    discipline = intent.discipline,
+                    isLocked = true,
+                    step = MaterialsUploadStep.Source,
+                ),
+            )
             is MaterialsUploadIntent.PickDiscipline -> {
                 val choice = currentState.options.firstOrNull { it.id == intent.disciplineId }
                     ?: return
@@ -218,6 +216,12 @@ internal class MaterialsUploadViewModel @Inject constructor(
             guidelinesAlreadyAcknowledged = prefs().getBoolean(KEY_GUIDELINES, false),
         )
 
+    private fun open(state: MaterialsUploadUiState) {
+        session++
+        setState { state.copy(isOpen = true) }
+        loadSemesterOptions()
+    }
+
     // Straight off the mirror, so the chips are there by the time the student
     // reaches the details step even with no connection.
     private fun loadSemesterOptions() {
@@ -250,6 +254,7 @@ internal class MaterialsUploadViewModel @Inject constructor(
     }
 
     private fun dismiss() {
+        session++
         val submitted = currentState.submitted
         setState { copy(isOpen = false) }
         if (submitted != null) {
@@ -259,6 +264,7 @@ internal class MaterialsUploadViewModel @Inject constructor(
 
     // SAF grant → bytes + display name + page count off the main thread.
     private fun readFile(uri: Uri) {
+        val startedIn = session
         viewModelScope.launch {
             val picked = withContext(Dispatchers.IO) {
                 runCatching {
@@ -283,13 +289,7 @@ internal class MaterialsUploadViewModel @Inject constructor(
                     )
                 }.getOrNull()
             }
-            setState {
-                if (picked == null) {
-                    copy(fileReadFailed = true)
-                } else {
-                    copy(file = picked, fileReadFailed = false, step = MaterialsUploadStep.Details)
-                }
-            }
+            applyPickedFile(startedIn, picked)
         }
     }
 
@@ -299,28 +299,38 @@ internal class MaterialsUploadViewModel @Inject constructor(
     // page count, so only the bytes need lifting. Fixed name mirrors iOS
     // ("digitalizacao.pdf").
     private fun readScan(intent: MaterialsUploadIntent.ScanPicked) {
+        val startedIn = session
         viewModelScope.launch {
             val bytes = withContext(Dispatchers.IO) {
                 runCatching {
                     context.contentResolver.openInputStream(intent.pdfUri)?.use { it.readBytes() }
                 }.getOrNull()
             }
-            setState {
-                if (bytes == null) {
-                    copy(fileReadFailed = true)
-                } else {
-                    copy(
-                        file = MaterialsPickedFile(
-                            fileName = "digitalizacao.pdf",
-                            byteCount = bytes.size,
-                            pages = intent.pages.coerceAtLeast(1),
-                            bytes = bytes,
-                            isScan = true,
-                        ),
-                        fileReadFailed = false,
-                        step = MaterialsUploadStep.Details,
-                    )
-                }
+            val picked = bytes?.let {
+                MaterialsPickedFile(
+                    fileName = "digitalizacao.pdf",
+                    byteCount = it.size,
+                    pages = intent.pages.coerceAtLeast(1),
+                    bytes = it,
+                    isScan = true,
+                )
+            }
+            applyPickedFile(startedIn, picked)
+        }
+    }
+
+    // A slow read must not pull the wizard forward once the student went Back
+    // to the discipline pick or closed the sheet in the meantime.
+    private fun applyPickedFile(
+        startedIn: Int,
+        picked: MaterialsPickedFile?,
+    ) {
+        if (startedIn != session) return
+        setState {
+            when {
+                step != MaterialsUploadStep.Source -> this
+                picked == null -> copy(fileReadFailed = true)
+                else -> copy(file = picked, fileReadFailed = false, step = MaterialsUploadStep.Details)
             }
         }
     }
@@ -329,6 +339,7 @@ internal class MaterialsUploadViewModel @Inject constructor(
         val state = currentState
         val discipline = state.discipline ?: return
         val file = state.file ?: return
+        val startedIn = session
         setState { copy(isSubmitting = true, submitFailed = false) }
         viewModelScope.launch {
             val submission = MaterialSubmission(
@@ -342,7 +353,11 @@ internal class MaterialsUploadViewModel @Inject constructor(
                 fileName = file.fileName,
                 bytes = file.bytes,
             )
-            when (val outcome = submitMaterial(submission)) {
+            val outcome = submitMaterial(submission)
+            // Closed mid-upload: the sheet (or a newer one) must not change,
+            // but the hosts still need to refetch "Meus envios".
+            val isSheetStillOpen = startedIn == session
+            when (outcome) {
                 is Outcome.Ok -> {
                     analytics.selectContent(
                         contentType = ContentTypes.MATERIAL,
@@ -350,16 +365,22 @@ internal class MaterialsUploadViewModel @Inject constructor(
                         properties = mapOf("action" to "submit"),
                     )
                     prefs().edit { putBoolean(KEY_GUIDELINES, true) }
-                    setState {
-                        copy(
-                            isSubmitting = false,
-                            submitted = outcome.value,
-                            step = MaterialsUploadStep.Success,
-                            guidelinesAlreadyAcknowledged = true,
-                        )
+                    if (isSheetStillOpen) {
+                        setState {
+                            copy(
+                                isSubmitting = false,
+                                submitted = outcome.value,
+                                step = MaterialsUploadStep.Success,
+                                guidelinesAlreadyAcknowledged = true,
+                            )
+                        }
+                    } else {
+                        emitEffect(MaterialsUploadEffect.Finished(discipline.id))
                     }
                 }
-                is Outcome.Err -> setState { copy(isSubmitting = false, submitFailed = true) }
+                is Outcome.Err -> if (isSheetStillOpen) {
+                    setState { copy(isSubmitting = false, submitFailed = true) }
+                }
             }
         }
     }

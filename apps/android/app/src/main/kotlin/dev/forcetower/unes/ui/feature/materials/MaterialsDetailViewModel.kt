@@ -96,11 +96,13 @@ internal class MaterialsDetailViewModel @Inject constructor(
     MaterialsDetailUiState(),
 ) {
     private var toastJob: Job? = null
+    private var loadJob: Job? = null
 
     override fun onIntent(intent: MaterialsDetailIntent) {
         when (intent) {
-            is MaterialsDetailIntent.Seed -> setState {
-                MaterialsDetailUiState(material = intent.material)
+            is MaterialsDetailIntent.Seed -> {
+                loadJob?.cancel()
+                setState { MaterialsDetailUiState(material = intent.material) }
             }
             is MaterialsDetailIntent.Ensure -> ensure(intent)
             MaterialsDetailIntent.ToggleUseful -> toggleUseful()
@@ -119,7 +121,8 @@ internal class MaterialsDetailViewModel @Inject constructor(
 
     private fun ensure(intent: MaterialsDetailIntent.Ensure) {
         if (currentState.material?.id == intent.materialId) return
-        viewModelScope.launch {
+        loadJob?.cancel()
+        loadJob = viewModelScope.launch {
             setState { MaterialsDetailUiState(isLoading = true) }
             when (val outcome = getMaterial(intent.materialId)) {
                 is Outcome.Ok -> setState { copy(material = outcome.value, isLoading = false) }
@@ -127,6 +130,10 @@ internal class MaterialsDetailViewModel @Inject constructor(
             }
         }
     }
+
+    // One view model serves every detail screen, so a request that finishes
+    // after the student moved on to another material must leave it alone.
+    private fun isShowing(materialId: String) = currentState.material?.id == materialId
 
     private fun toggleUseful() {
         val material = currentState.material ?: return
@@ -144,7 +151,7 @@ internal class MaterialsDetailViewModel @Inject constructor(
         viewModelScope.launch {
             when (setUseful(material.id, !wasUseful)) {
                 is Outcome.Ok -> if (!wasUseful) reportSharedShelfPaidOff(material)
-                is Outcome.Err -> {
+                is Outcome.Err -> if (isShowing(material.id)) {
                     setState {
                         copy(material = this.material?.copy(isUseful = wasUseful, usefulCount = material.usefulCount))
                     }
@@ -167,7 +174,7 @@ internal class MaterialsDetailViewModel @Inject constructor(
         viewModelScope.launch {
             when (setSaved(material.id, !wasSaved)) {
                 is Outcome.Ok -> if (!wasSaved) reportSharedShelfPaidOff(material)
-                is Outcome.Err -> {
+                is Outcome.Err -> if (isShowing(material.id)) {
                     setState { copy(material = this.material?.copy(isSaved = wasSaved)) }
                     flash(MaterialsToastKind.SyncFailed)
                 }
@@ -199,6 +206,7 @@ internal class MaterialsDetailViewModel @Inject constructor(
                             .apply { writeBytes(outcome.value.bytes) }
                             .also { pruneMaterialCache(keeping = it) }
                     }
+                    if (!isShowing(material.id)) return@launch
                     setState {
                         copy(
                             isOpening = false,
@@ -211,7 +219,7 @@ internal class MaterialsDetailViewModel @Inject constructor(
                     }
                     emitEffect(MaterialsDetailEffect.ViewFile(file, mime))
                 }
-                is Outcome.Err -> {
+                is Outcome.Err -> if (isShowing(material.id)) {
                     setState { copy(isOpening = false) }
                     flash(MaterialsToastKind.OpenFailed)
                 }
@@ -272,7 +280,7 @@ internal class MaterialsDetailViewModel @Inject constructor(
         viewModelScope.launch {
             when (reportMaterial(material.id, reason)) {
                 is Outcome.Ok -> Unit
-                is Outcome.Err -> flash(MaterialsToastKind.SyncFailed)
+                is Outcome.Err -> if (isShowing(material.id)) flash(MaterialsToastKind.SyncFailed)
             }
         }
     }
