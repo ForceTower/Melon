@@ -31,6 +31,7 @@ internal class MelonFirebaseMessagingService : FirebaseMessagingService() {
         Timber.tag(TAG).i("FCM token received length=%d", token.length)
         applicationScope.launch {
             pushRegistrar.tokenReceived(token)
+            commuteLiveUpdates.resume()
         }
     }
 

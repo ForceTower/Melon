@@ -9,6 +9,7 @@ import dev.forcetower.unes.ui.feature.commute.CommuteEstimate
 import dev.forcetower.unes.ui.feature.commute.CommuteFollowSeed
 import dev.forcetower.unes.ui.feature.commute.CommuteFormat
 import kotlin.math.roundToInt
+import kotlin.time.Duration.Companion.hours
 import kotlin.time.Instant
 import kotlinx.serialization.Serializable
 
@@ -31,8 +32,18 @@ internal data class CommuteLiveRecord(
     val update: Update,
     // Server time of the update on screen, Unix seconds; an older push is dropped.
     val updatedAt: Long,
-    val registered: Boolean = false,
+    // The FCM token the backend pushes this follow to; null until a
+    // registration goes through.
+    val registeredToken: String? = null,
+    // Unix seconds. Past it the follow ends even if the backend's end never
+    // arrived, as ActivityKit ends a Live Activity on its own. A record written
+    // before it existed counts from its last update.
+    val expiresAt: Long = updatedAt + MAX_LIFETIME.inWholeSeconds,
 ) {
+    val expiry: Instant get() = Instant.fromEpochSeconds(expiresAt)
+
+    fun expired(now: Instant): Boolean = now >= expiry
+
     @Serializable
     data class Update(
         val status: String,
@@ -101,6 +112,8 @@ internal data class CommuteLiveRecord(
     }
 
     companion object {
+        private val MAX_LIFETIME = 8.hours
+
         fun of(
             activityId: String,
             arrival: TransitArrival,
