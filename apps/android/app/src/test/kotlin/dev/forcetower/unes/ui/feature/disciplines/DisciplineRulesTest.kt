@@ -3,7 +3,9 @@ package dev.forcetower.unes.ui.feature.disciplines
 import androidx.compose.ui.graphics.Color
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 // Same examples as iOS `DisciplinesMappingTests`, so both clients reach the
 // same verdicts from the same academic record.
@@ -39,6 +41,30 @@ internal class DisciplineRulesTest {
         assertEquals(DisciplineStatus.Key.Pending, discipline().status.key)
         assertEquals(DisciplineStatus.Key.Low, discipline(storedPartialAverage = 5.0).status.key)
         assertEquals(DisciplineStatus.Key.Ongoing, discipline(storedPartialAverage = 7.5).status.key)
+    }
+
+    @Test
+    fun aPendingFinalExamIsFinalsEvenWithoutTheUpstreamMarker() {
+        val pendingFinal = GradeEntry(label = "Adicional", title = "Prova Final", date = null, score = null)
+
+        // Detail: the mapper pulls the row out into `finalExam`.
+        val detail = discipline(finalGrade = 4.0).copy(finalExam = pendingFinal)
+        assertTrue(detail.isAwaitingFinal)
+        assertEquals(DisciplineStatus.Key.Final, detail.status.key)
+
+        // List card: the row still rides the sections.
+        val card = discipline(finalGrade = 4.0, grades = listOf(grade(score = 4.0), pendingFinal))
+        assertTrue(card.isAwaitingFinal)
+        assertEquals(DisciplineStatus.Key.Final, card.status.key)
+
+        val ongoing = discipline(storedPartialAverage = 7.5, grades = listOf(grade(score = 7.5), pendingFinal))
+        assertEquals(DisciplineStatus.Key.Final, ongoing.status.key)
+
+        val graded = discipline(finalGrade = 4.0).copy(finalExam = pendingFinal.copy(score = 2.0))
+        assertFalse(graded.isAwaitingFinal)
+        assertEquals(DisciplineStatus.Key.Failed, graded.status.key)
+
+        assertEquals(DisciplineStatus.Key.Failed, detail.copy(approved = false).status.key)
     }
 
     @Test

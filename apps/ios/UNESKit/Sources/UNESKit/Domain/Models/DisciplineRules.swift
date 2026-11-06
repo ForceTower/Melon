@@ -18,9 +18,12 @@ enum DisciplineRules {
         return .ok
     }
 
+    /// `finalExamPending`: the Prova Final row is listed but ungraded — the
+    /// student is in finals even when upstream's marker is missing.
     static func status(
         approved: Bool?,
         wentToFinals: Bool,
+        finalExamPending: Bool,
         finalGrade: Double?,
         partialAverage: Double?
     ) -> DisciplineStatus {
@@ -29,7 +32,8 @@ enum DisciplineRules {
         if let approved {
             return approved ? .approved : .failed
         }
-        if wentToFinals { return .finals }
+        // `finalGrade` is a live mean until the Prova Final lands.
+        if wentToFinals || finalExamPending { return .finals }
         if let finalGrade {
             // Result mean posted but no verdict yet — infer from the cutoffs.
             if finalGrade >= 7 { return .approved }

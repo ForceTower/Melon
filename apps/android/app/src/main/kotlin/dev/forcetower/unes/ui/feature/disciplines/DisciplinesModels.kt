@@ -178,10 +178,13 @@ internal val Discipline.hasEqualWeights: Boolean
 
 // The student is sitting the Prova Final and upstream hasn't recorded a
 // verdict yet. The upstream marker is authoritative; the pending final-exam
-// row covers seeds/payloads that predate the flag.
+// row covers seeds/payloads that predate the flag. The detail mapper pulls
+// that row into `finalExam`; list cards still carry it in `sections`.
 internal val Discipline.isAwaitingFinal: Boolean
-    get() = approved == null &&
-        (wentToFinals || (finalExam != null && finalExam.score == null))
+    get() {
+        val exam = finalExam ?: allGrades.firstOrNull { isFinalExam(it.title, it.label) }
+        return approved == null && (wentToFinals || (exam != null && exam.score == null))
+    }
 
 internal val Discipline.completedCount: Int
     get() = allGrades.count { it.score != null }
@@ -227,9 +230,9 @@ internal val Discipline.status: DisciplineStatus
             }
         }
         // During finals upstream publishes finalGrade LIVE (it equals the
-        // partial mean), so the wentToFinals marker must win before any
-        // threshold check — a 3,5 live value is not a failed verdict.
-        if (wentToFinals) {
+        // partial mean), so being in finals must win before any threshold
+        // check — a 3,5 live value is not a failed verdict.
+        if (isAwaitingFinal) {
             return DisciplineStatus(DisciplineStatus.Key.Final, "prova final")
         }
         val final = finalGrade

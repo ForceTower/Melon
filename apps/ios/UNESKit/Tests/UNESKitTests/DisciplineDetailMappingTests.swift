@@ -151,6 +151,26 @@ struct DisciplineDetailMappingTests {
     }
 
     @Test
+    func pendingFinalExamIsFinalsEvenWithoutTheUpstreamMarker() {
+        // A live mean under 5 and no `wentToFinals` marker: the ungraded
+        // Prova Final row alone must keep the list, hero and finals card on
+        // one standing.
+        var snapshot = detailPayload(withFinalExam: true).snapshot
+        snapshot.studentClasses[0].finalGrade = "4.0"
+        let detail = snapshot.disciplineDetail(disciplineId: "d-fis", now: now, calendar: calendar)!
+        let summary = snapshot.disciplineSummaries(now: now, calendar: calendar)[0]
+
+        #expect(detail.isAwaitingFinalExam)
+        #expect(detail.status == .finals)
+        #expect(summary.status == .finals)
+
+        var graded = detailPayload(withFinalExam: true, finalExamValue: "2.0").snapshot
+        graded.studentClasses[0].finalGrade = "4.0"
+        #expect(graded.disciplineDetail(disciplineId: "d-fis", now: now, calendar: calendar)!.status == .failed)
+        #expect(graded.disciplineSummaries(now: now, calendar: calendar)[0].status == .failed)
+    }
+
+    @Test
     func publishedFinalExamGradeHidesTheCardButClaimsNoVerdict() {
         var detail = detailPayload(withFinalExam: true, finalExamValue: "6.0").snapshot
             .disciplineDetail(disciplineId: "d-fis", now: now, calendar: calendar)!

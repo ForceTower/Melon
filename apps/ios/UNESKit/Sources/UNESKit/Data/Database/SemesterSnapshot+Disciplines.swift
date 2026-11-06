@@ -36,8 +36,7 @@ extension SemesterSnapshot {
             // group row — dedup by upstream id or the chips double up and the
             // average over-weights nothing in particular. The Prova Final row
             // is not a regular evaluation: it renders as the last chip, but
-            // stays out of the average and the next-evaluation pick —
-            // `wentToFinals` already carries the state.
+            // stays out of the average and the next-evaluation pick.
             var seenGradeKeys: Set<String> = []
             let dedupedGrades = enrollments
                 .flatMap { gradesByStudentClass[$0.studentClass.id] ?? [] }
@@ -98,6 +97,7 @@ extension SemesterSnapshot {
                 finalGrade: enrollments.firstNonNil(\.studentClass.finalGrade).flatMap(parseDecimal),
                 approved: enrollments.firstNonNil(\.studentClass.approved),
                 wentToFinals: enrollments.contains { $0.studentClass.wentToFinals == true },
+                finalExamPending: finalExam.map { $0.value.flatMap(parseDecimal) == nil } ?? false,
                 nextEvaluation: nextEvaluation,
                 colorIndex: position
             )
