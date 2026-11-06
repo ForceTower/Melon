@@ -30,6 +30,8 @@ struct EnrollmentReviewView: View {
         }
         .inlineNavigationBar()
         .hiddenTabBar()
+        // Popping cancels an in-flight submit; hiding the button also blocks swipe-back.
+        .navigationBarBackButtonHidden(store.isSubmitting)
         .task { await store.send(.task).finish() }
         .alert($store.scope(state: \.alert, action: \.alert))
         .safeAreaInset(edge: .bottom) {
@@ -228,6 +230,7 @@ struct EnrollmentReviewView: View {
                         }
                 }
                 .buttonStyle(TilePressStyle())
+                .disabled(store.isSubmitting)
                 .accessibilityLabel(Text(.enrollmentReviewSaveDraft))
 
                 Button {

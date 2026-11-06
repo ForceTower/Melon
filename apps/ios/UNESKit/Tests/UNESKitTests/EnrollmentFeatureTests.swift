@@ -33,7 +33,6 @@ struct EnrollmentFeatureTests {
 
         await store.send(.task) {
             $0.referenceDate = Self.referenceDate
-            $0.hasLoaded = true
             $0.isLoading = true
         }
 
@@ -45,6 +44,7 @@ struct EnrollmentFeatureTests {
         openOffers.yield(())
         await store.receive(.offersLoaded(.previewCatalogue)) {
             $0.isLoading = false
+            $0.hasLoaded = true
             $0.$session.withLock {
                 $0.disciplines = .previewCatalogue
                 // Literal, not a preseedFromSavedProposal() mirror — the
@@ -71,11 +71,11 @@ struct EnrollmentFeatureTests {
 
         await store.send(.task) {
             $0.referenceDate = Self.referenceDate
-            $0.hasLoaded = true
             $0.isLoading = true
         }
         await store.receive(.windowLoaded(nil)) {
             $0.isLoading = false
+            $0.hasLoaded = true
         }
     }
 
@@ -101,11 +101,11 @@ struct EnrollmentFeatureTests {
 
         await store.send(.task) {
             $0.referenceDate = Self.referenceDate
-            $0.hasLoaded = true
             $0.isLoading = true
         }
         await store.receive(.loadFailed("Sem conexão. Verifique sua internet e tente de novo.")) {
             $0.isLoading = false
+            $0.hasLoaded = true
             $0.errorMessage = "Sem conexão. Verifique sua internet e tente de novo."
         }
 
@@ -135,6 +135,38 @@ struct EnrollmentFeatureTests {
                 ]
             }
         }
+    }
+
+    @Test
+    func loadCancelledWithTheViewRestartsOnReappearance() async {
+        let calls = LockIsolated(0)
+        let store = TestStore(initialState: EnrollmentFeature.State(profile: .preview)) {
+            EnrollmentFeature()
+        } withDependencies: {
+            $0.date = .constant(Self.referenceDate)
+            $0.enrollmentRepository.window = {
+                let call = calls.withValue {
+                    $0 += 1
+                    return $0
+                }
+                if call == 1 { try await Task.never() }
+                return nil
+            }
+        }
+
+        // SwiftUI cancels the view's `.task` when the screen disappears mid-load.
+        let appearance = await store.send(.task) {
+            $0.referenceDate = Self.referenceDate
+            $0.isLoading = true
+        }
+        await appearance.cancel()
+
+        await store.send(.task)
+        await store.receive(.windowLoaded(nil)) {
+            $0.isLoading = false
+            $0.hasLoaded = true
+        }
+        #expect(calls.value == 2)
     }
 
     @Test
@@ -276,6 +308,37 @@ struct EnrollmentReviewFeatureTests {
             #expect($0 == EnrollmentSession.preview.selections)
         }
         #expect(store.state.isReadonly)
+    }
+
+    @Test
+    func savingDraftCannotLeaveWhileSubmitting() async {
+        @Shared(.enrollmentSession) var session = EnrollmentSession.preview
+        let dismissed = LockIsolated(false)
+        let (submitGate, openSubmit) = AsyncStream.makeStream(of: Void.self)
+        let store = TestStore(initialState: EnrollmentReviewFeature.State()) {
+            EnrollmentReviewFeature()
+        } withDependencies: {
+            $0.date = .constant(EnrollmentFeatureTests.referenceDate)
+            $0.dismiss = DismissEffect { dismissed.setValue(true) }
+            $0.enrollmentRepository.submit = { _ in
+                for await _ in submitGate { break }
+            }
+        }
+
+        await store.send(.submitTapped) {
+            $0.referenceDate = EnrollmentFeatureTests.referenceDate
+            $0.isSubmitting = true
+        }
+        // Popping the review would cancel the in-flight submit with it.
+        await store.send(.saveTapped).finish()
+        #expect(!dismissed.value)
+
+        openSubmit.yield(())
+        await store.receive(.submitSucceeded) {
+            $0.isSubmitting = false
+            $0.$session.withLock { $0.window?.state = .closed }
+        }
+        await store.receive(.delegate(.submitted))
     }
 
     @Test

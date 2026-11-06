@@ -15,6 +15,8 @@ struct EnrollmentFeature {
         var errorMessage: String?
         /// "Now" pinned at the latest appearance — the countdown's anchor.
         var referenceDate = Date.distantPast
+        /// Set only once a load settles: one cancelled with the view's task
+        /// restarts on the next appearance instead of wedging the spinner.
         var hasLoaded = false
 
         init(profile: Profile? = nil, session: EnrollmentSession? = nil) {
@@ -66,7 +68,6 @@ struct EnrollmentFeature {
                 analytics.screen(Screens.enrollment)
                 state.referenceDate = now
                 guard !state.hasLoaded else { return .none }
-                state.hasLoaded = true
                 state.isLoading = true
                 state.errorMessage = nil
                 // A previous run's session is upstream truth no longer.
@@ -83,11 +84,13 @@ struct EnrollmentFeature {
                 state.$session.withLock { $0.window = window }
                 if window == nil {
                     state.isLoading = false
+                    state.hasLoaded = true
                 }
                 return .none
 
             case let .offersLoaded(disciplines):
                 state.isLoading = false
+                state.hasLoaded = true
                 state.$session.withLock {
                     $0.disciplines = disciplines
                     $0.preseedFromSavedProposal()
@@ -96,6 +99,7 @@ struct EnrollmentFeature {
 
             case let .loadFailed(message):
                 state.isLoading = false
+                state.hasLoaded = true
                 state.errorMessage = message
                 return .none
 

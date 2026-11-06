@@ -90,6 +90,9 @@ struct EnrollmentReviewFeature {
                 return .none
 
             case .saveTapped:
+                // Leaving mid-submit would cancel the request with this
+                // screen and drop its outcome.
+                guard !state.isSubmitting else { return .none }
                 // The draft already lives in the shared session; "salvar
                 // rascunho" just steps back out of the review.
                 return .run { _ in await dismiss() }
