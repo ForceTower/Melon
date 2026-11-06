@@ -32,6 +32,7 @@ import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
 import io.ktor.client.call.body
 import io.ktor.client.statement.HttpResponse
+import io.ktor.http.isSuccess
 import kotlinx.coroutines.CancellationException
 import kotlinx.serialization.SerializationException
 
@@ -112,6 +113,7 @@ internal class MirrorRepositoryImpl(
     override suspend fun syncSemester(semesterId: String): Outcome<Unit, SyncError> =
         callNetwork("syncSemester") {
             log.d { "syncSemester start id=$semesterId" }
+            val requestedDirtyAt = semesterDao.get(semesterId)?.dirtyAt
             val response = api.getSemesterPayload(semesterId)
             when (val mapped = classifyResponse<SemesterPayloadResponse>(response, "syncSemester id=$semesterId")) {
                 is Outcome.Err -> mapped
@@ -119,6 +121,7 @@ internal class MirrorRepositoryImpl(
                     val p = mapped.value
                     academicDao.applySemesterPayload(
                         semesterId = semesterId,
+                        appliedDirtyAt = requestedDirtyAt,
                         semester = p.semester.toEntity(),
                         disciplines = p.disciplines.map { it.toEntity() },
                         teachers = p.teachers.map { it.toEntity() },
@@ -156,6 +159,7 @@ internal class MirrorRepositoryImpl(
         cursor: String?,
     ): Outcome<MessagePageResult, SyncError> =
         callNetwork("syncMessages") {
+            if (cursor == null) replayPendingStars()
             log.d { "syncMessages request since=${since ?: "<nil>"} cursor=${cursor ?: "<nil>"}" }
             val response = api.getMessages(since, cursor)
             when (val mapped = classifyResponse<MessagePageResponse>(response, "syncMessages")) {
@@ -183,6 +187,19 @@ internal class MirrorRepositoryImpl(
                 }
             }
         }
+
+    // A rejected ack stays pending — display keeps the local change and the
+    // next first-page sync tries again.
+    private suspend fun replayPendingStars() {
+        for (state in messageDao.listPendingStars()) {
+            val status = api.ackStar(state.messageId, state.starred).status
+            if (status.isSuccess()) {
+                messageDao.acknowledgeStar(state.messageId, state.starred)
+            } else {
+                log.w { "replay star ack rejected id=${state.messageId} status=${status.value}" }
+            }
+        }
+    }
 
     override suspend fun syncCalendarEvents(): Outcome<Int, SyncError> =
         callNetwork("syncCalendarEvents") {

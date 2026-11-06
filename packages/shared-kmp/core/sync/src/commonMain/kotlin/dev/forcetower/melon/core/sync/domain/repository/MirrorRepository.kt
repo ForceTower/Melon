@@ -24,7 +24,8 @@ interface MirrorRepository {
     suspend fun fetchOnboardingStatus(): Outcome<OnboardingStatus, SyncError>
 
     // Pulls and applies one page of the inbox. Caller decides whether to
-    // continue paging based on `nextCursor`.
+    // continue paging based on `nextCursor`. The first page (no cursor)
+    // first replays star changes the server has not acknowledged.
     suspend fun syncMessages(
         since: String?,
         cursor: String?,

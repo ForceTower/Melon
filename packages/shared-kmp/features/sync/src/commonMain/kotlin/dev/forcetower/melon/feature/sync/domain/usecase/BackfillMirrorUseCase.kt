@@ -13,8 +13,8 @@ import kotlinx.coroutines.delay
 
 // Polls for server Phase 2 completion and mirrors historical data (every
 // semester's payload + the full message archive) into the local DB. Runs
-// once per authenticated session — gated by `backfillMirrorComplete` in
-// SyncState, which is wiped by SessionStore.logout.
+// until it completes once per authenticated session — gated by
+// `backfillMirrorComplete` in SyncState, which is wiped by SessionStore.logout.
 //
 // The server's Phase 2 (backfill.ts) runs autonomously after Phase 1:
 // enqueues one `kind='semester'` job per historical semester + one
@@ -36,15 +36,16 @@ class BackfillMirrorUseCase internal constructor(
         }
         log.i { "backfill start" }
 
-        // Wait for the server's Phase 2 to finish before pulling payloads —
-        // mirroring mid-flight would produce an incomplete snapshot that
-        // looks "done" to the flag.
-        when (val result = awaitTerminalStatus()) {
+        // Wait for the server's Phase 2 to finish before pulling payloads.
+        // Only a settled Phase 2 may flip the flag below — a mid-flight
+        // snapshot is mirrored but left incomplete, so the next appearance
+        // re-polls and pulls the rest.
+        val phaseTwo = when (val result = awaitPhaseTwo()) {
             is Outcome.Err -> {
                 log.w { "backfill aborted waiting for terminal onboarding status err=${result.error}" }
                 return result
             }
-            is Outcome.Ok -> Unit
+            is Outcome.Ok -> result.value
         }
 
         // Backfill the local Credentials row from server state. Critical for
@@ -92,28 +93,29 @@ class BackfillMirrorUseCase internal constructor(
             return Outcome.Err(SyncError.Unexpected)
         }
 
+        if (phaseTwo != PhaseTwo.Settled) {
+            log.w { "backfill mirrored but left incomplete phaseTwo=$phaseTwo" }
+            return Outcome.Ok(Unit)
+        }
         syncState.setBackfillMirrorComplete(true)
         log.i { "backfill complete" }
         return Outcome.Ok(Unit)
     }
 
-    // Returns Ok once the server reports Phase 1 + Phase 2 (semesters +
-    // messages) terminal, or after the hard cap elapses. Giving up on the
-    // cap still returns Ok so the caller's flag-flip path can proceed —
-    // next launch will re-poll, and a server stuck in `running` for 5
-    // minutes is operator-visible via /sync/onboarding-status directly.
-    private suspend fun awaitTerminalStatus(): Outcome<Unit, SyncError> {
-        repeat(MAX_POLL_ITERATIONS) { iteration ->
+    private enum class PhaseTwo { Settled, NeverStarted, StillRunning }
+
+    // Polls until Phase 2 settles or Phase 1 fails (Phase 2 is then never
+    // enqueued), or gives up at the hard cap with StillRunning.
+    private suspend fun awaitPhaseTwo(): Outcome<PhaseTwo, SyncError> {
+        repeat(MAX_POLL_ITERATIONS) {
             when (val result = mirror.fetchOnboardingStatus()) {
                 is Outcome.Err -> return result
-                is Outcome.Ok -> if (isTerminal(result.value)) return Outcome.Ok(Unit)
+                is Outcome.Ok -> stoppedPhaseTwo(result.value)?.let { return Outcome.Ok(it) }
             }
             delay(POLL_INTERVAL_MILLIS)
-            if (iteration == MAX_POLL_ITERATIONS - 1) {
-                log.w { "backfill polling hit cap without terminal status" }
-            }
         }
-        return Outcome.Ok(Unit)
+        log.w { "backfill polling hit cap without terminal status" }
+        return Outcome.Ok(PhaseTwo.StillRunning)
     }
 
     private suspend fun paginateMessages(): Outcome<Unit, SyncError> {
@@ -138,19 +140,19 @@ class BackfillMirrorUseCase internal constructor(
         return Outcome.Ok(Unit)
     }
 
-    // Phase 1 Failed short-circuits: Phase 2 is never enqueued, so the
-    // semesters/messages fields stay Pending forever. Treat "Phase 1
-    // failed" as terminal-for-everything so we don't loop to the cap on a
-    // dead onboarding.
-    private fun isTerminal(status: OnboardingStatus): Boolean {
-        if (status.initial.state == State.Failed) return true
-        if (status.initial.state != State.Done) return false
+    // Null while polling should continue. A failed Phase 1 stops the poll —
+    // the semesters/messages fields would stay Pending forever — but a later
+    // server retry may still run Phase 2, so it never counts as settled.
+    // Unknown (a state this client doesn't recognise) is never terminal.
+    private fun stoppedPhaseTwo(status: OnboardingStatus): PhaseTwo? {
+        if (status.initial.state == State.Failed) return PhaseTwo.NeverStarted
+        if (status.initial.state != State.Done) return null
         val semTerminal = status.semesters.state == State.Done ||
             status.semesters.state == State.Partial ||
             status.semesters.state == State.Failed
         val msgTerminal = status.messages.state == State.Done ||
             status.messages.state == State.Failed
-        return semTerminal && msgTerminal
+        return if (semTerminal && msgTerminal) PhaseTwo.Settled else null
     }
 
     private companion object {

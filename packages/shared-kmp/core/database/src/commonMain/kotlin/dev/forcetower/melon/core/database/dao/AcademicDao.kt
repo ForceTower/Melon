@@ -92,9 +92,13 @@ abstract class AcademicDao {
     @Query("SELECT * FROM Semester WHERE id = :id")
     protected abstract suspend fun getSemester(id: String): SemesterEntity?
 
+    // `appliedDirtyAt` is the semester's dirtyAt as listed when the payload
+    // was requested, not now: a list that landed mid-flight may describe
+    // newer server state than this payload carries.
     @Transaction
     open suspend fun applySemesterPayload(
         semesterId: String,
+        appliedDirtyAt: String?,
         semester: SemesterEntity,
         disciplines: List<DisciplineEntity>,
         teachers: List<TeacherEntity>,
@@ -116,10 +120,10 @@ abstract class AcademicDao {
         upsertSpaces(spaces)
         // Scoped (re)inserts. Order matches FK topology. The payload's
         // semester row carries no dirtyAt — keep the one the semester list
-        // wrote, and stamp it as applied: this scope now reflects the server
-        // state that dirtyAt described.
+        // wrote. If it moved past `appliedDirtyAt`, the row reads stale and
+        // the next refresh re-pulls it.
         val listed = getSemester(semesterId)
-        upsertSemester(semester.copy(dirtyAt = listed?.dirtyAt, appliedDirtyAt = listed?.dirtyAt))
+        upsertSemester(semester.copy(dirtyAt = listed?.dirtyAt, appliedDirtyAt = appliedDirtyAt))
         upsertDisciplineOffers(offers)
         upsertClasses(classes)
         upsertClassTeachers(classTeachers)

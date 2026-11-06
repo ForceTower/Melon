@@ -6,6 +6,7 @@ import dev.forcetower.melon.core.database.entity.MessageEntity
 import dev.forcetower.melon.core.database.entity.MessageScopeEntity
 import dev.forcetower.melon.core.database.entity.MessageStateEntity
 import dev.forcetower.melon.feature.messages.domain.internal.MessageOriginResolver
+import dev.forcetower.melon.feature.messages.domain.internal.isStarred
 import dev.forcetower.melon.feature.messages.domain.internal.toMessageFeedSource
 import dev.forcetower.melon.feature.messages.domain.model.MessageFeedAttachmentKind
 import dev.forcetower.melon.feature.messages.domain.model.MessageFeedItem
@@ -60,7 +61,7 @@ class ObserveMessagesInboxUseCase internal constructor(
             authorName = entity.authorName,
             timestamp = entity.timestamp,
             isUnread = entity.read != true && state?.readAt == null,
-            isStarred = entity.starred == true || state?.starred == true,
+            isStarred = entity.isStarred(state),
             attachmentCount = attachments.size,
             imageCount = imageCount,
         )

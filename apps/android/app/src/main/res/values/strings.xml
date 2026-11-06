@@ -946,6 +946,7 @@
     <string name="settings_notif_class_subject_hint">O tópico previsto mudou</string>
     <string name="settings_notif_evaluation_reminder_label">Lembrete de avaliação</string>
     <string name="settings_notif_evaluation_reminder_hint">Às 20h da véspera, neste aparelho</string>
+    <string name="settings_save_failed">Não deu para salvar a preferência. Tente de novo.</string>
     <!-- endregion -->
 
     <!-- region Evaluation reminder notification -->

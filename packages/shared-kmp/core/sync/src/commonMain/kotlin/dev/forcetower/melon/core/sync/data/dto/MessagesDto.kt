@@ -44,6 +44,14 @@ internal data class MessageScopeDto(
     val platformScopeId: String?,
 )
 
+// Same body as the device ack in features/messages; the sync replays it for
+// star changes the server has not acknowledged.
+@Serializable
+internal data class StarMessageRequest(
+    val id: String,
+    val starred: Boolean,
+)
+
 @Serializable
 internal data class MessageAttachmentDto(
     val id: String,
