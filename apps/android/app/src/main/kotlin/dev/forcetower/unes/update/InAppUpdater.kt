@@ -73,6 +73,7 @@ internal class InAppUpdater @Inject constructor(
 
     private var checked = false
     private var startedImmediate = false
+    private var downloadListener: InstallStateUpdatedListener? = null
 
     suspend fun checkOnLaunch(launcher: ActivityResultLauncher<IntentSenderRequest>) {
         if (BuildConfig.SCENARIO) return
@@ -114,7 +115,10 @@ internal class InAppUpdater @Inject constructor(
             launcher,
             AppUpdateOptions.newBuilder(type).build(),
         )
-        if (!started) Timber.d("in-app update flow could not start, type=%d", type)
+        if (!started) {
+            Timber.d("in-app update flow could not start, type=%d", type)
+            unregisterDownloadListener()
+        }
     }
 
     // Re-enters a fullscreen update the user backgrounded so it can't stay
@@ -143,7 +147,10 @@ internal class InAppUpdater @Inject constructor(
     suspend fun onUpdateFlowResult(resultCode: Int) {
         when (resultCode) {
             Activity.RESULT_OK -> Unit
-            Activity.RESULT_CANCELED -> recordDecline()
+            Activity.RESULT_CANCELED -> {
+                unregisterDownloadListener()
+                recordDecline()
+            }
             ActivityResult.RESULT_IN_APP_UPDATE_FAILED -> Timber.d("in-app update flow failed")
             else -> Timber.d("in-app update flow result=%d", resultCode)
         }
@@ -165,16 +172,22 @@ internal class InAppUpdater @Inject constructor(
                 when (state.installStatus()) {
                     InstallStatus.DOWNLOADED -> {
                         _updateDownloaded.value = true
-                        appUpdateManager.unregisterListener(this)
+                        unregisterDownloadListener()
                     }
                     // Terminal states never surface UI.
                     InstallStatus.INSTALLED, InstallStatus.FAILED, InstallStatus.CANCELED ->
-                        appUpdateManager.unregisterListener(this)
+                        unregisterDownloadListener()
                     else -> Unit
                 }
             }
         }
+        downloadListener = listener
         appUpdateManager.registerListener(listener)
+    }
+
+    private fun unregisterDownloadListener() {
+        downloadListener?.let(appUpdateManager::unregisterListener)
+        downloadListener = null
     }
 
     // Declining a flexible prompt mutes the FLEXIBLE rows for a week so a
