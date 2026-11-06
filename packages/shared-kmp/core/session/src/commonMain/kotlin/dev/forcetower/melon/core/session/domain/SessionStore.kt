@@ -66,11 +66,16 @@ interface SessionStore : AuthTokenSource {
      * cached upstream credentials and the whole local mirror untouched.
      * `api/auth/token/refresh` returns no user, so [persist] would have
      * nothing to write there.
+     *
+     * Only swaps while the stored access token is still [staleAccessToken],
+     * the one the rotation started from. A logout or a fresh login that landed
+     * while the refresh was in flight wins, and this returns false.
      */
     suspend fun replaceTokens(
+        staleAccessToken: String,
         accessToken: String,
         refreshToken: String,
-    )
+    ): Boolean
 
     suspend fun setSessionInvalid(invalid: Boolean)
 

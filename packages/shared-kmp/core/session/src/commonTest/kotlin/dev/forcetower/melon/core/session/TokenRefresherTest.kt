@@ -16,7 +16,10 @@ import io.ktor.utils.io.ByteReadChannel
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
@@ -115,17 +118,34 @@ class TokenRefresherTest {
     @Test
     fun anAlreadyRotatedTokenSkipsTheCallAndRetries() =
         runTest {
-            val store = FakeSessionStore(access = "rotated", refresh = "next")
+            val store = FakeSessionStore(access = "expired", refresh = "rotatable")
+            var calls = 0
+            val refresher = refresher(store) {
+                calls++
+                HttpStatusCode.OK to ROTATED
+            }
+            assertTrue(refresher.refresh("expired"))
+
+            // Another caller won the race while this request sat on its 401.
+            assertTrue(refresher.refresh("expired"))
+
+            assertEquals(1, calls)
+        }
+
+    @Test
+    fun aTokenFromAnotherLoginIsNotReplayed() =
+        runTest {
+            val store = FakeSessionStore(access = "next-login", refresh = "next")
             var calls = 0
             val refresher = refresher(store) {
                 calls++
                 HttpStatusCode.OK to ROTATED
             }
 
-            // Another caller won the race while this request sat on its 401.
-            assertTrue(refresher.refresh("expired"))
+            assertFalse(refresher.refresh("expired"))
 
             assertEquals(0, calls)
+            assertEquals("next-login", store.getAccessToken())
         }
 
     @Test
@@ -143,6 +163,52 @@ class TokenRefresherTest {
 
             assertEquals(0, calls)
             assertTrue(store.sessionInvalid.value)
+        }
+
+    @Test
+    fun aRotationThatLandsAfterLogoutIsDropped() =
+        runTest {
+            val store = FakeSessionStore(access = "expired", refresh = "rotatable")
+            val entered = CompletableDeferred<Unit>()
+            val release = CompletableDeferred<Unit>()
+            val refresher = refresher(store) {
+                entered.complete(Unit)
+                release.await()
+                HttpStatusCode.OK to ROTATED
+            }
+
+            val result = async { refresher.refresh("expired") }
+            entered.await()
+            store.logout()
+            release.complete(Unit)
+
+            assertFalse(result.await())
+            assertNull(store.getAccessToken())
+            assertNull(store.getRefreshToken())
+        }
+
+    @Test
+    fun aCallerQueuedAcrossLogoutAndANewLoginIsNotReplayed() =
+        runTest {
+            val store = FakeSessionStore(access = "expired", refresh = "rotatable")
+            val entered = CompletableDeferred<Unit>()
+            val release = CompletableDeferred<Unit>()
+            val refresher = refresher(store) {
+                entered.complete(Unit)
+                release.await()
+                HttpStatusCode.OK to ROTATED
+            }
+
+            val inFlight = async { refresher.refresh("expired") }
+            entered.await()
+            val queued = async(start = CoroutineStart.UNDISPATCHED) { refresher.refresh("expired") }
+            store.logout()
+            store.persist("b1", "b2", User("b", "Bob", null), null, null)
+            release.complete(Unit)
+
+            assertFalse(inFlight.await())
+            assertFalse(queued.await())
+            assertEquals("b1", store.getAccessToken())
         }
 
     private fun refresher(
@@ -179,11 +245,14 @@ private class FakeSessionStore(
     override suspend fun getRefreshToken(): String? = refresh
 
     override suspend fun replaceTokens(
+        staleAccessToken: String,
         accessToken: String,
         refreshToken: String,
-    ) {
+    ): Boolean {
+        if (access != staleAccessToken) return false
         access = accessToken
         refresh = refreshToken
+        return true
     }
 
     override suspend fun setSessionInvalid(invalid: Boolean) {
