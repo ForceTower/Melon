@@ -63,7 +63,9 @@ struct CalendarPersonalEventFeatureTests {
         await store.send(.binding(.set(\.category, .study))) {
             $0.category = .study
         }
-        await store.send(.saveTapped)
+        await store.send(.saveTapped) {
+            $0.saveStatus = .saving
+        }
         await store.finish()
 
         let event = saved.value.first
@@ -90,7 +92,9 @@ struct CalendarPersonalEventFeatureTests {
         await store.send(.binding(.set(\.reminder, .week))) {
             $0.reminder = .week
         }
-        await store.send(.saveTapped)
+        await store.send(.saveTapped) {
+            $0.saveStatus = .saving
+        }
         await store.finish()
 
         #expect(saved.value.first?.id == Self.stored.id)
@@ -115,7 +119,9 @@ struct CalendarPersonalEventFeatureTests {
         await store.send(.binding(.set(\.title, "Relatório final"))) {
             $0.title = "Relatório final"
         }
-        await store.send(.saveTapped)
+        await store.send(.saveTapped) {
+            $0.saveStatus = .saving
+        }
         await store.finish()
 
         #expect(saved.value.first?.completedAt == checkedOff.completedAt)
@@ -157,6 +163,75 @@ struct CalendarPersonalEventFeatureTests {
         await store.send(.periodToggled(false)) {
             $0.end = nil
         }
+    }
+
+    @Test
+    func aDoubleTapSavesOnce() async {
+        let clock = TestClock()
+        let saved = LockIsolated<[PersonalEvent]>([])
+        let store = makeStore(
+            CalendarPersonalEventFeature.State(
+                day: Self.day(2026, 4, 20),
+                disciplines: [],
+                calendar: Self.calendar
+            )
+        )
+        // The row lands first; the reminder reconcile after it is the window
+        // a second tap used to slip into.
+        store.dependencies.personalEventsRepository.save = { event in
+            saved.withValue { $0.append(event) }
+            try await clock.sleep(for: .milliseconds(40))
+        }
+
+        await store.send(.binding(.set(\.title, "Lista 3 de Cálculo"))) {
+            $0.title = "Lista 3 de Cálculo"
+        }
+        await store.send(.saveTapped) {
+            $0.saveStatus = .saving
+        }
+        await store.send(.saveTapped)
+        await clock.advance(by: .milliseconds(40))
+        await store.finish()
+
+        #expect(saved.value.count == 1)
+        #expect(store.isDismissed)
+    }
+
+    @Test
+    func aFailedSaveKeepsTheComposerAndItsInput() async {
+        let saved = LockIsolated<[PersonalEvent]>([])
+        let store = makeStore(
+            CalendarPersonalEventFeature.State(
+                day: Self.day(2026, 4, 20),
+                disciplines: [],
+                calendar: Self.calendar
+            ),
+            saved: saved
+        )
+        let save = store.dependencies.personalEventsRepository.save
+        store.dependencies.personalEventsRepository.save = { _ in
+            throw DatabaseError(resultCode: .SQLITE_FULL)
+        }
+
+        await store.send(.binding(.set(\.title, "Lista 3 de Cálculo"))) {
+            $0.title = "Lista 3 de Cálculo"
+        }
+        await store.send(.saveTapped) {
+            $0.saveStatus = .saving
+        }
+        await store.receive(\.saveFailed) {
+            $0.saveStatus = .failed
+        }
+        #expect(store.isDismissed == false)
+
+        store.dependencies.personalEventsRepository.save = save
+        await store.send(.saveTapped) {
+            $0.saveStatus = .saving
+        }
+        await store.finish()
+
+        #expect(saved.value.map(\.title) == ["Lista 3 de Cálculo"])
+        #expect(store.isDismissed)
     }
 
     @Test

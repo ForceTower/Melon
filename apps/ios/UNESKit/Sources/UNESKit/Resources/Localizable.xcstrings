@@ -614,6 +614,40 @@
         }
       }
     },
+    "calendar.feed.errorBody" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your personal events are still here."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seus eventos pessoais continuam aqui."
+          }
+        }
+      }
+    },
+    "calendar.feed.errorTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "We couldn't load the UEFS dates"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não deu para carregar as datas da UEFS"
+          }
+        }
+      }
+    },
     "calendar.filter.all" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1460,6 +1494,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Período"
+          }
+        }
+      }
+    },
+    "calendar.personal.saveFailedBody" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "What you entered is still here. Please try again."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O que você preencheu continua aqui. Tente novamente."
+          }
+        }
+      }
+    },
+    "calendar.personal.saveFailedTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "We couldn't save the event"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não deu para salvar o evento"
           }
         }
       }

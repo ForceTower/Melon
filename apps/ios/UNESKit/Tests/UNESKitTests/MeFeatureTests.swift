@@ -165,7 +165,7 @@ struct MeFeatureTests {
         }
         #expect(woken.today == today)
         #expect(woken.selectedDay == today)
-        #expect(woken.fetchedAt == Self.referenceDate)
+        #expect(woken.feed == .loaded(fetchedAt: Self.referenceDate))
     }
 
     @Test
