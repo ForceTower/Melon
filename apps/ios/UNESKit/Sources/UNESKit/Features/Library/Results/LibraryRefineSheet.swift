@@ -230,7 +230,7 @@ extension LibraryFacetGroup {
                         state.works = works
                         state.total = works.count
                         state.serverFacets = LibrarySearchPage.facetValues(over: works)
-                        state.isLoading = false
+                        state.phase = .loaded
                         return state
                     }()
                 ) {

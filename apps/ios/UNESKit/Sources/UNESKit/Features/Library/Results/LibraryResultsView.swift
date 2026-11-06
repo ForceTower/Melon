@@ -32,6 +32,9 @@ struct LibraryResultsView: View {
         } else if store.isLoading {
             SpinnerRing(size: 28, color: UNESColor.accent, trackColor: UNESColor.surface3)
                 .frame(maxHeight: .infinity)
+        } else if store.phase == .failed {
+            ScrollView { failedState.padding(16) }
+                .scrollIndicators(.hidden)
         } else if store.isEmpty {
             ScrollView { emptyState.padding(16) }
                 .scrollIndicators(.hidden)
@@ -174,12 +177,19 @@ struct LibraryResultsView: View {
                     .foregroundStyle(UNESColor.ink3)
                     .lineLimit(1)
             }
-            LibraryFreshnessStamp(reading: store.aggregatedReading, now: store.now) {
-                store.send(.refreshTapped)
-            }
+            LibraryFreshnessStamp(
+                reading: store.aggregatedReading,
+                now: store.now,
+                onRefresh: refreshAction
+            )
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.horizontal, 4)
+    }
+
+    private var refreshAction: (() -> Void)? {
+        guard !store.isRefreshingReadings else { return nil }
+        return { store.send(.refreshTapped) }
     }
 
     private var headerSuffix: String {
@@ -349,6 +359,19 @@ struct LibraryResultsView: View {
                 hint: .libraryResultsSuggestSubjectHint
             ) {
                 store.send(.editQueryTapped)
+            }
+        }
+    }
+
+    private var failedState: some View {
+        LibraryStateCard(
+            icon: "wifi.exclamationmark",
+            tone: UNESColor.ink3,
+            title: Text(.libraryResultsErrorTitle),
+            body_: Text(.libraryResultsErrorBody)
+        ) {
+            LibrarySuggestionRow(icon: "arrow.clockwise", label: .libraryResultsErrorRetry) {
+                store.send(.retryTapped)
             }
         }
     }
@@ -577,6 +600,18 @@ struct LibraryResultRow: View {
                 initialState: LibraryResultsFeature.State(query: "cálculo aplicado a jogos", scope: .title)
             ) {
                 LibraryResultsFeature()
+            }
+        )
+    }
+}
+
+#Preview("Falha na busca") {
+    NavigationStack {
+        LibraryResultsView(
+            store: Store(initialState: LibraryResultsFeature.State(query: "cálculo", scope: .all)) {
+                LibraryResultsFeature()
+            } withDependencies: {
+                $0.libraryRepository.search = { _ in throw URLError(.notConnectedToInternet) }
             }
         )
     }
