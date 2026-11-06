@@ -14,7 +14,6 @@ import dev.forcetower.unes.mvi.MviViewModel
 import dev.forcetower.unes.mvi.UiEffect
 import dev.forcetower.unes.mvi.UiIntent
 import dev.forcetower.unes.mvi.UiState
-import dev.forcetower.unes.reminders.PersonalEventReminderScheduler
 import javax.inject.Inject
 import kotlinx.coroutines.launch
 
@@ -43,7 +42,6 @@ internal class CalendarViewModel @Inject constructor(
     private val savePersonalEvent: SavePersonalEventUseCase,
     private val deletePersonalEvent: DeletePersonalEventUseCase,
     private val setPersonalEventCompleted: SetPersonalEventCompletedUseCase,
-    private val reminders: PersonalEventReminderScheduler,
     private val analytics: Analytics,
 ) : MviViewModel<CalendarUiState, CalendarIntent, CalendarEffect>(CalendarUiState()) {
 
@@ -88,10 +86,7 @@ internal class CalendarViewModel @Inject constructor(
                 "category" to entry.category.name.lowercase(),
             ),
         )
-        viewModelScope.launch {
-            savePersonalEvent(entry.toKmp())
-            reminders.refresh()
-        }
+        viewModelScope.launch { savePersonalEvent(entry.toKmp()) }
     }
 
     fun deletePersonal(entry: PersonalEntry) {
@@ -100,10 +95,7 @@ internal class CalendarViewModel @Inject constructor(
             itemId = entry.id,
             properties = mapOf("action" to "delete"),
         )
-        viewModelScope.launch {
-            deletePersonalEvent(entry.id)
-            reminders.refresh()
-        }
+        viewModelScope.launch { deletePersonalEvent(entry.id) }
     }
 
     fun togglePersonalCompleted(entry: PersonalEntry) {
@@ -113,10 +105,7 @@ internal class CalendarViewModel @Inject constructor(
             itemId = entry.id,
             properties = mapOf("action" to if (completed) "complete" else "reopen"),
         )
-        viewModelScope.launch {
-            setPersonalEventCompleted(entry.id, completed)
-            reminders.refresh()
-        }
+        viewModelScope.launch { setPersonalEventCompleted(entry.id, completed) }
     }
 
     fun trackOpenEvent(event: CalendarEvent) {

@@ -119,24 +119,35 @@ internal class PushRegistrar @Inject constructor(
         return fetched
     }
 
-    // Logout teardown — must run while the session bearer is still valid.
-    // Best-effort: after logout there is nothing to retry with; the backend's
-    // invalid-token prune eventually collects what this misses.
-    suspend fun unregisterAll() {
+    // Logout teardown. The DELETEs need the session bearer, so they run first;
+    // `endSession` then runs before the lock is released, so a reconcile queued
+    // meanwhile (app foreground, token rotation) finds no session instead of
+    // re-registering the departing account. Best-effort: after logout there is
+    // nothing to retry with; the backend's invalid-token prune eventually
+    // collects what this misses.
+    suspend fun unregisterAll(endSession: suspend () -> Unit) {
         mutex.withLock {
-            val identifiers = buildSet {
-                identifierStore.fid()?.let(::add)
-                identifierStore.token()?.let(::add)
-                addAll(identifierStore.pendingDeletes())
+            try {
+                deleteAllIdentifiers()
+            } finally {
+                endSession()
             }
-            for (identifier in identifiers) {
-                val outcome = runCatching { unregisterNotificationToken(identifier) }.getOrNull()
-                if (outcome !is Outcome.Ok) {
-                    Timber.tag(TAG).w("logout unregister failed for a push identifier")
-                }
-            }
-            identifierStore.clear()
         }
+    }
+
+    private suspend fun deleteAllIdentifiers() {
+        val identifiers = buildSet {
+            identifierStore.fid()?.let(::add)
+            identifierStore.token()?.let(::add)
+            addAll(identifierStore.pendingDeletes())
+        }
+        for (identifier in identifiers) {
+            val outcome = runCatching { unregisterNotificationToken(identifier) }.getOrNull()
+            if (outcome !is Outcome.Ok) {
+                Timber.tag(TAG).w("logout unregister failed for a push identifier")
+            }
+        }
+        identifierStore.clear()
     }
 
     private suspend fun flushPendingDeletes() {

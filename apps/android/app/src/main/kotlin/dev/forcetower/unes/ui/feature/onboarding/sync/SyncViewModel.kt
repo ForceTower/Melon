@@ -409,8 +409,7 @@ internal class SyncViewModel @Inject constructor(
             if (waitForStep(step) is StepResult.Fail) {
                 stopWork()
                 if (anyAuthBroken) {
-                    runCatching { pushRegistrar.unregisterAll() }
-                    sessionStore.logout()
+                    runCatching { pushRegistrar.unregisterAll(endSession = sessionStore::logout) }
                     emitEffect(SyncEffect.AuthFailed)
                 } else {
                     setState { copy(failed = true) }
@@ -422,8 +421,7 @@ internal class SyncViewModel @Inject constructor(
         waitForReadiness()
         if (anyAuthBroken) {
             Timber.tag(TAG).i("sync: finish -> AuthFailed")
-            runCatching { pushRegistrar.unregisterAll() }
-            runCatching { sessionStore.logout() }
+            runCatching { pushRegistrar.unregisterAll(endSession = sessionStore::logout) }
             emitEffect(SyncEffect.AuthFailed)
         } else {
             Timber.tag(TAG).i("sync: finish -> Done")

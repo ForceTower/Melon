@@ -15,7 +15,6 @@ import dev.forcetower.unes.mvi.MviViewModel
 import dev.forcetower.unes.mvi.UiEffect
 import dev.forcetower.unes.mvi.UiIntent
 import dev.forcetower.unes.mvi.UiState
-import dev.forcetower.unes.reminders.PersonalEventReminderScheduler
 import dev.forcetower.unes.remote.FeatureFlags
 import dev.forcetower.unes.review.ReviewPrompter
 import dev.forcetower.unes.ui.feature.calendar.PersonalEntry
@@ -83,7 +82,6 @@ internal class DisciplineDetailViewModel @Inject constructor(
     private val savePersonalEvent: SavePersonalEventUseCase,
     private val deletePersonalEvent: DeletePersonalEventUseCase,
     private val setPersonalEventCompleted: SetPersonalEventCompletedUseCase,
-    private val reminders: PersonalEventReminderScheduler,
     private val featureFlags: FeatureFlags,
     private val analytics: Analytics,
     private val reviewPrompter: ReviewPrompter,
@@ -170,10 +168,7 @@ internal class DisciplineDetailViewModel @Inject constructor(
     private fun toggleTask(task: PersonalEntry) {
         val completed = !task.isCompleted
         trackTask(task, if (completed) "complete" else "reopen")
-        viewModelScope.launch {
-            setPersonalEventCompleted(task.id, completed)
-            reminders.refresh()
-        }
+        viewModelScope.launch { setPersonalEventCompleted(task.id, completed) }
     }
 
     private fun saveTask(
@@ -181,18 +176,12 @@ internal class DisciplineDetailViewModel @Inject constructor(
         isNew: Boolean,
     ) {
         trackTask(task, if (isNew) "create" else "update")
-        viewModelScope.launch {
-            savePersonalEvent(task.toKmp())
-            reminders.refresh()
-        }
+        viewModelScope.launch { savePersonalEvent(task.toKmp()) }
     }
 
     private fun deleteTask(task: PersonalEntry) {
         trackTask(task, "delete")
-        viewModelScope.launch {
-            deletePersonalEvent(task.id)
-            reminders.refresh()
-        }
+        viewModelScope.launch { deletePersonalEvent(task.id) }
     }
 
     private fun trackTask(

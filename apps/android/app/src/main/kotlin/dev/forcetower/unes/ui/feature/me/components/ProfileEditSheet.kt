@@ -38,12 +38,14 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -91,9 +93,18 @@ internal fun ProfileEditSheet(
     identity: ProfileIdentity,
     onIntent: (MeIntent) -> Unit,
 ) {
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    // A save in flight keeps the sheet up, like Cancel already does — its
+    // result belongs to this sheet.
+    val saving by rememberUpdatedState(state.saving)
+    val sheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true,
+        confirmValueChange = { it != SheetValue.Hidden || !saving },
+    )
     var sourceOpen by rememberSaveable { mutableStateOf(false) }
-    var cropSource by remember { mutableStateOf<Uri?>(null) }
+    // The photo Uris are saveable: a picker or camera round trip can recreate
+    // the Activity (rotation, dark mode), and the result lands in the new
+    // composition.
+    var cropSource by rememberSaveable { mutableStateOf<Uri?>(null) }
 
     val context = LocalContext.current
     val galleryLauncher = rememberLauncherForActivityResult(
@@ -103,7 +114,7 @@ internal fun ProfileEditSheet(
     }
     // TakePicture writes full resolution into a FileProvider-backed cache
     // slot (`cache/camera/`, declared in file_provider_paths.xml).
-    var cameraTarget by remember { mutableStateOf<Uri?>(null) }
+    var cameraTarget by rememberSaveable { mutableStateOf<Uri?>(null) }
     val cameraLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.TakePicture(),
     ) { saved ->
@@ -116,7 +127,10 @@ internal fun ProfileEditSheet(
         containerColor = MaterialTheme.colorScheme.surface,
     ) {
         Column(modifier = Modifier.padding(horizontal = 22.dp, vertical = 4.dp)) {
-            SheetHeader(onClose = { onIntent(MeIntent.CloseEditProfile) })
+            SheetHeader(
+                closeEnabled = !state.saving,
+                onClose = { onIntent(MeIntent.CloseEditProfile) },
+            )
             Spacer(Modifier.height(18.dp))
             AvatarBlock(
                 state = state,
@@ -188,7 +202,10 @@ internal fun ProfileEditSheet(
 }
 
 @Composable
-private fun SheetHeader(onClose: () -> Unit) {
+private fun SheetHeader(
+    closeEnabled: Boolean,
+    onClose: () -> Unit,
+) {
     val accent = MaterialTheme.colorScheme.primary
     Row(verticalAlignment = Alignment.CenterVertically) {
         Box(
@@ -231,6 +248,7 @@ private fun SheetHeader(onClose: () -> Unit) {
                 .clickable(
                     role = Role.Button,
                     onClickLabel = stringResource(R.string.me_edit_sheet_close),
+                    enabled = closeEnabled,
                     onClick = onClose,
                 ),
             contentAlignment = Alignment.Center,

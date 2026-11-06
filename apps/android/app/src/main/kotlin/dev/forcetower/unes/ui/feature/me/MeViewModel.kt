@@ -230,7 +230,7 @@ internal class MeViewModel @Inject constructor(
                 sheet.copy(stage = if (sheet.stored == null) DocumentStage.Intro else DocumentStage.Saved)
             }
             MeIntent.OpenEditProfile -> openEditProfile()
-            MeIntent.CloseEditProfile -> setState { copy(editProfile = null) }
+            MeIntent.CloseEditProfile -> closeEditProfile()
             is MeIntent.EditNameChanged -> updateEditProfile {
                 it.copy(pendingName = intent.value.take(ProfileNameMaxLength), failed = false)
             }
@@ -241,8 +241,10 @@ internal class MeViewModel @Inject constructor(
                 it.copy(photoAction = PendingPhotoAction.Remove, pendingPhoto = null, failed = false)
             }
             MeIntent.SaveProfile -> saveProfile()
-            MeIntent.BeginLogout -> setState { copy(logoutStep = LogoutStep.Confirming) }
-            MeIntent.CancelLogout -> setState { copy(logoutStep = LogoutStep.Idle) }
+            MeIntent.BeginLogout -> beginLogout()
+            MeIntent.CancelLogout -> setState {
+                if (logoutStep == LogoutStep.Confirming) copy(logoutStep = LogoutStep.Idle) else this
+            }
             MeIntent.ConfirmLogout -> performLogout()
             MeIntent.ResetLogout -> setState {
                 copy(
@@ -273,12 +275,20 @@ internal class MeViewModel @Inject constructor(
     private var toastJob: Job? = null
 
     private fun openEditProfile() {
+        if (currentState.editProfile?.saving == true) return
         val identity = currentState.identity ?: return
         analytics.selectContent(ContentTypes.SETTING, "edit_profile")
         // The field drafts the *alternate* name only — when the display name
         // is the portal name the field opens empty, matching the dc sheet.
         val nickname = identity.name.takeIf { it != identity.officialName }.orEmpty()
         setState { copy(editProfile = ProfileEditState(pendingName = nickname)) }
+    }
+
+    // Like iOS `interactiveDismissDisabled(isSaving)`: the sheet that started a
+    // save stays up until its result lands, so that result can never close or
+    // fail a sheet reopened in the meantime.
+    private fun closeEditProfile() {
+        setState { if (editProfile?.saving == true) this else copy(editProfile = null) }
     }
 
     private fun saveProfile() {
@@ -433,15 +443,24 @@ internal class MeViewModel @Inject constructor(
         }
     }
 
+    // Each logout step is only entered from the one before it, so a stale tap
+    // (through the flash, or a second confirm) can't reopen the sheet or start
+    // a second teardown. The sheet names the session owner, so it waits for
+    // the profile.
+    private fun beginLogout() {
+        if (currentState.logoutStep != LogoutStep.Idle || currentState.identity == null) return
+        setState { copy(logoutStep = LogoutStep.Confirming) }
+    }
+
     private fun performLogout() {
+        if (currentState.logoutStep != LogoutStep.Confirming) return
         analytics.selectContent(ContentTypes.SETTING, "logout", mapOf("action" to "logout"))
         val firstName = currentState.identity?.firstName?.ifBlank { null } ?: "Estudante"
         setState { copy(logoutStep = LogoutStep.Flashing, logoutFirstName = firstName) }
         viewModelScope.launch {
-            // Before logout() — the DELETEs need the session bearer.
+            // Before the session ends — the DELETEs need the session bearer.
             runCatching { commuteLiveUpdates.stop() }
-            runCatching { pushRegistrar.unregisterAll() }
-            runCatching { sessionStore.logout() }
+            runCatching { pushRegistrar.unregisterAll(endSession = sessionStore::logout) }
             // User-scoped snapshot outside the DB teardown — iOS wipes it
             // with the mirror; here it lives in KeyValueStorage.
             runCatching { clearCampusEvent() }
