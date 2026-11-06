@@ -21,7 +21,8 @@ struct PushClient: Sendable {
     /// the foreground.
     var reconcile: @Sendable () async -> Void
     /// Logout teardown: unmap every identifier this device registered, then
-    /// drop the local caches. Must run while the session bearer is valid.
+    /// drop the stale ones. The FCM token stays cached so the next login
+    /// registers it again. Must run while the session bearer is valid.
     var unregister: @Sendable () async -> Void
     /// App-delegate hand-off: the data payload of a notification presented
     /// while the app was in the foreground. Payloads carrying a `kind`

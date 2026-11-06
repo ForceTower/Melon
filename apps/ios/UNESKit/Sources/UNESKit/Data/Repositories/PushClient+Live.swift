@@ -43,7 +43,7 @@ extension PushClient: DependencyKey {
     )
 }
 
-private let registrar = PushRegistrar()
+private let registrar = PushRegistrar(defaults: .standard)
 
 /// Owns the device's push registration: the FCM registration token is
 /// registered with the backend on every app open, and any Firebase Installation
@@ -53,7 +53,7 @@ private let registrar = PushRegistrar()
 /// identifier value, so a stale identifier's row stays live next to the token
 /// row — and every push would arrive twice — until the delete lands; failed
 /// deletes are queued and retried on later reconciles.
-private actor PushRegistrar {
+actor PushRegistrar {
     /// Written by the retired FID-targeting builds; read once so the FID row
     /// a previous app version registered can be deleted, then cleared for
     /// good.
@@ -63,11 +63,17 @@ private actor PushRegistrar {
     private static let tokenKey = "messaging_notification_token"
     private static let pendingDeletesKey = "messaging_pending_deletes"
 
+    private let defaults: UserDefaults
+
+    init(defaults: UserDefaults) {
+        self.defaults = defaults
+    }
+
     /// Token rotation: retire the previous token's row once the new one is
     /// registered, never before — deleting first would leave a push gap.
     func fcmTokenReceived(_ token: String) async {
-        let previous = UserDefaults.standard.string(forKey: Self.tokenKey)
-        UserDefaults.standard.set(token, forKey: Self.tokenKey)
+        let previous = defaults.string(forKey: Self.tokenKey)
+        defaults.set(token, forKey: Self.tokenKey)
         log.debug("fcm token stored length=\(token.count)")
         if let previous, previous != token {
             addPendingDelete(previous)
@@ -76,7 +82,7 @@ private actor PushRegistrar {
     }
 
     func currentToken() -> String? {
-        UserDefaults.standard.string(forKey: Self.tokenKey)
+        defaults.string(forKey: Self.tokenKey)
     }
 
     func reconcile() async {
@@ -85,7 +91,7 @@ private actor PushRegistrar {
             log.debug("reconcile deferred: no session")
             return
         }
-        guard let token = UserDefaults.standard.string(forKey: Self.tokenKey) else {
+        guard let token = defaults.string(forKey: Self.tokenKey) else {
             log.debug("reconcile: no fcm token available yet")
             await flushPendingDeletes()
             return
@@ -96,20 +102,22 @@ private actor PushRegistrar {
         removePendingDelete(token)
         // Queue the FID row's delete only after the token is registered —
         // deleting first would leave a push gap.
-        if let fid = UserDefaults.standard.string(forKey: Self.legacyFidKey), fid != token {
+        if let fid = defaults.string(forKey: Self.legacyFidKey), fid != token {
             addPendingDelete(fid)
-            UserDefaults.standard.removeObject(forKey: Self.legacyFidKey)
+            defaults.removeObject(forKey: Self.legacyFidKey)
         }
         await flushPendingDeletes()
     }
 
     /// Logout teardown — best-effort: after logout there is nothing to retry
     /// with; the backend's invalid-token prune eventually collects what this
-    /// misses.
+    /// misses. The token stays cached: it belongs to the device, and Firebase
+    /// only hands it over again at the next launch, so a login before then
+    /// registers it from here.
     func unregister() async {
         var identifiers = Set(pendingDeletes())
         for key in [Self.legacyFidKey, Self.tokenKey] {
-            if let value = UserDefaults.standard.string(forKey: key) {
+            if let value = defaults.string(forKey: key) {
                 identifiers.insert(value)
             }
         }
@@ -119,8 +127,8 @@ private actor PushRegistrar {
                 log.warn("logout unregister failed for a push identifier")
             }
         }
-        for key in [Self.legacyFidKey, Self.tokenKey, Self.pendingDeletesKey] {
-            UserDefaults.standard.removeObject(forKey: key)
+        for key in [Self.legacyFidKey, Self.pendingDeletesKey] {
+            defaults.removeObject(forKey: key)
         }
     }
 
@@ -185,19 +193,19 @@ private actor PushRegistrar {
     }
 
     private func pendingDeletes() -> [String] {
-        UserDefaults.standard.stringArray(forKey: Self.pendingDeletesKey) ?? []
+        defaults.stringArray(forKey: Self.pendingDeletesKey) ?? []
     }
 
     private func addPendingDelete(_ identifier: String) {
         var pending = pendingDeletes()
         guard !pending.contains(identifier) else { return }
         pending.append(identifier)
-        UserDefaults.standard.set(pending, forKey: Self.pendingDeletesKey)
+        defaults.set(pending, forKey: Self.pendingDeletesKey)
     }
 
     private func removePendingDelete(_ identifier: String) {
         let pending = pendingDeletes().filter { $0 != identifier }
-        UserDefaults.standard.set(pending, forKey: Self.pendingDeletesKey)
+        defaults.set(pending, forKey: Self.pendingDeletesKey)
     }
 }
 
