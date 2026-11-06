@@ -115,11 +115,13 @@ struct CurriculumFlowFeature {
                 return .none
 
             case .entrySheetDismissed:
+                // The sheet hosts the toggle's failure alert, so it outlives the request.
+                guard state.togglingCompletionCode == nil else { return .none }
                 state.presentedEntryCode = nil
                 return .none
 
             case let .trailRequested(code):
-                guard state.progress.entry(code) != nil else { return .none }
+                guard state.togglingCompletionCode == nil, state.progress.entry(code) != nil else { return .none }
                 log.info("show trail code=\(code)")
                 analytics.selectContent(contentType: ContentTypes.tile, itemId: "curriculum_trail", properties: ["code": code])
                 // Co-requisites ride along: they are taken with the focus, so

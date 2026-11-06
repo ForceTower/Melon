@@ -34,6 +34,14 @@ struct RetrospectiveFeature {
     /// The once-per-semester announce reveal's seen marker.
     static let seenSemesterKey = "retrospective_seen_semester"
 
+    enum Playback: Equatable, Sendable {
+        case playing
+        /// Held by a press or the share sheet.
+        case paused
+        /// The closing card dwelled out: the story is over, not held.
+        case parked
+    }
+
     @ObservableState
     struct State: Equatable {
         var semesterCode: String
@@ -43,7 +51,7 @@ struct RetrospectiveFeature {
         var cards: [RetroCard] = [.abertura]
         var index = 0
         var isShowingAnnounce: Bool
-        var isPaused = false
+        var playback: Playback = .playing
         var isSharePresented = false
         /// Progress bookkeeping for the segmented bars: when the current
         /// card's dwell started, and how much had elapsed before a pause.
@@ -56,6 +64,10 @@ struct RetrospectiveFeature {
         @Shared(.appStorage(RetrospectiveFeature.seenSemesterKey)) var seenSemester = ""
 
         var currentCard: RetroCard { cards[min(index, cards.count - 1)] }
+
+        var isPaused: Bool { playback != .playing }
+
+        var showsPausedPill: Bool { playback == .paused && !isSharePresented && !isShowingAnnounce }
 
         init(semesterCode: String) {
             self.semesterCode = semesterCode
@@ -157,7 +169,7 @@ struct RetrospectiveFeature {
             case .autoAdvanced:
                 guard state.index < state.cards.count - 1 else {
                     // The story parks on the closing card, like the design.
-                    pause(&state)
+                    pause(&state, as: .parked)
                     return .none
                 }
                 state.index += 1
@@ -189,22 +201,22 @@ struct RetrospectiveFeature {
     private func restartDwell(_ state: inout State) -> Effect<Action> {
         state.elapsedBeforePause = 0
         state.cardStartedAt = date.now
-        state.isPaused = false
+        state.playback = .playing
         return scheduleAdvance(after: Self.cardDuration, reduceMotion: state.reduceMotion)
     }
 
-    private func pause(_ state: inout State) {
-        guard !state.isPaused else { return }
+    private func pause(_ state: inout State, as playback: Playback = .paused) {
+        guard state.playback == .playing else { return }
         if let startedAt = state.cardStartedAt {
             state.elapsedBeforePause += date.now.timeIntervalSince(startedAt)
         }
         state.cardStartedAt = nil
-        state.isPaused = true
+        state.playback = playback
     }
 
     private func resumeDwell(_ state: inout State) -> Effect<Action> {
         state.cardStartedAt = date.now
-        state.isPaused = false
+        state.playback = .playing
         let remaining = max(0.05, Self.cardDuration - state.elapsedBeforePause)
         return scheduleAdvance(after: remaining, reduceMotion: state.reduceMotion)
     }

@@ -90,12 +90,11 @@ struct CourseProgressVersionButton: View {
 struct CurriculumVersionPickerSheet: View {
     var progress: CourseProgress
     var course: String?
-    /// The version being switched to (or `CourseProgressFeature.automaticVersionSwitch`).
-    var switchingVersionId: String?
+    var versionSwitch: CourseProgressFeature.VersionSwitch?
     var onPick: (String) -> Void
     var onAutomatic: () -> Void
 
-    private var isSwitching: Bool { switchingVersionId != nil }
+    private var isSwitching: Bool { versionSwitch != nil }
 
     var body: some View {
         ScrollView {
@@ -110,7 +109,7 @@ struct CurriculumVersionPickerSheet: View {
                             standing: progress.standing(of: version),
                             approvedHours: progress.approvedHours,
                             selected: version.id == progress.curriculum?.id,
-                            switching: version.id == switchingVersionId
+                            switching: versionSwitch == .version(version.id)
                         ) {
                             onPick(version.id)
                         }
@@ -127,7 +126,7 @@ struct CurriculumVersionPickerSheet: View {
                 if progress.curriculum?.isManualPick == true {
                     Button(action: onAutomatic) {
                         HStack(spacing: 7) {
-                            if switchingVersionId == CourseProgressFeature.automaticVersionSwitch {
+                            if versionSwitch == .automatic {
                                 ProgressView().controlSize(.small)
                             } else {
                                 Image(systemName: "wand.and.sparkles")
@@ -310,7 +309,7 @@ struct CurriculumVersionRow: View {
             CurriculumVersionPickerSheet(
                 progress: .preview(),
                 course: "Psicologia",
-                switchingVersionId: nil,
+                versionSwitch: nil,
                 onPick: { _ in },
                 onAutomatic: {}
             )

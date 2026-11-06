@@ -10,6 +10,15 @@ enum WatchDeeplinkDestination: Equatable, Sendable {
     case discipline(id: String)
 }
 
+/// A screen on the watch's `NavigationStack`.
+enum WatchRoute: Equatable, Hashable, Sendable {
+    case week
+    case discipline(String)
+    case messages
+    case message(String)
+    case spaceImpact
+}
+
 /// The watch's routing table as pure functions, deliberately not
 /// `#if os(watchOS)`-gated: `WatchAppFeature` can't run on the macOS test
 /// destination, so the table lives here where it can.
@@ -58,5 +67,16 @@ enum WatchDeeplinkResolver {
         // the phone carry it.
         case .discipline, .material, .materialsDiscipline, .reauth, .calendar, .commuteFollow: .root
         }
+    }
+
+    /// Where a message deeplink waits while the mirror doesn't hold the
+    /// message yet. The wait belongs to this inbox: leaving it abandons it.
+    static let awaitingInbox: [WatchRoute] = [.messages]
+
+    /// The detail the waiting inbox upgrades to once `snapshot` holds the
+    /// message; nil until then, or once the user has left the inbox.
+    static func upgradedPath(awaiting id: String, from path: [WatchRoute], snapshot: WatchSnapshot) -> [WatchRoute]? {
+        guard path == awaitingInbox, snapshot.messages.contains(where: { $0.id == id }) else { return nil }
+        return [.messages, .message(id)]
     }
 }

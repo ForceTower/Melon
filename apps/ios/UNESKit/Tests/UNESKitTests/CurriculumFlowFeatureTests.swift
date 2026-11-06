@@ -62,6 +62,32 @@ struct CurriculumFlowFeatureTests {
         #expect(store.state.alert != nil)
     }
 
+    /// The alert is hosted by the sheet, so the sheet must outlive the request.
+    @Test
+    func theSheetStaysUpUntilTheToggleFinishes() async {
+        struct Offline: Error {}
+        let release = AsyncStream.makeStream(of: Void.self)
+        let store = TestStore(initialState: CurriculumFlowFeature.State(progress: .preview())) {
+            CurriculumFlowFeature()
+        } withDependencies: {
+            $0.courseProgressRepository.markCompleted = { _ in
+                for await _ in release.stream { break }
+                throw Offline()
+            }
+        }
+        store.exhaustivity = .off
+
+        await store.send(.entryTapped("CHF345"))
+        await store.send(.completionToggled("CHF345"))
+        await store.send(.entrySheetDismissed)
+        await store.send(.trailRequested("CHF345"))
+        release.continuation.yield()
+        await store.receive(\.completionToggleFinished)
+
+        #expect(store.state.alert != nil)
+        #expect(store.state.presentedEntryCode == "CHF345")
+    }
+
     private func makeStore(
         _ progress: CourseProgress,
         calls: LockIsolated<[String]>

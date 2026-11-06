@@ -21,13 +21,7 @@ struct WatchAppFeature {
         var awaitingMessageId: String?
     }
 
-    enum Route: Equatable, Hashable {
-        case week
-        case discipline(String)
-        case messages
-        case message(String)
-        case spaceImpact
-    }
+    typealias Route = WatchRoute
 
     enum Action: Equatable, BindableAction {
         case binding(BindingAction<State>)
@@ -55,7 +49,21 @@ struct WatchAppFeature {
     private enum CancelID { case observation, routes, deeplinkGrace }
 
     var body: some ReducerOf<Self> {
-        BindingReducer()
+        CombineReducers {
+            BindingReducer()
+            core
+        }
+        // Taps and native back pops alike: once the user leaves the inbox a
+        // message deeplink opened, its detail upgrade no longer applies.
+        .onChange(of: \.path) { _, state in
+            guard state.awaitingMessageId != nil, state.path != WatchDeeplinkResolver.awaitingInbox else { return .none }
+            log.info("deeplink message wait abandoned on navigation")
+            state.awaitingMessageId = nil
+            return .cancel(id: CancelID.deeplinkGrace)
+        }
+    }
+
+    private var core: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
             case .binding:
@@ -102,10 +110,10 @@ struct WatchAppFeature {
                     effects.append(apply(route, &state))
                 }
                 if let id = state.awaitingMessageId,
-                   snapshot.messages.contains(where: { $0.id == id }) {
+                   let upgraded = WatchDeeplinkResolver.upgradedPath(awaiting: id, from: state.path, snapshot: snapshot) {
                     state.awaitingMessageId = nil
                     log.info("deeplink message upgrade after refresh")
-                    state.path = [.messages, .message(id)]
+                    state.path = upgraded
                     effects.append(markReadEffect(id, state))
                     effects.append(.cancel(id: CancelID.deeplinkGrace))
                 }

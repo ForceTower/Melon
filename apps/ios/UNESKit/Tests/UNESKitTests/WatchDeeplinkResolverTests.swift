@@ -113,6 +113,28 @@ struct WatchDeeplinkResolverTests {
         #expect(!WatchDeeplinkResolver.needsSnapshot(.discipline(semesterId: "s", disciplineId: "d")))
     }
 
+    @Test
+    func awaitedMessageUpgradesTheInboxOnceItLands() {
+        #expect(
+            WatchDeeplinkResolver.upgradedPath(awaiting: "wm1", from: [.messages], snapshot: .preview())
+                == [.messages, .message("wm1")]
+        )
+        #expect(
+            WatchDeeplinkResolver.upgradedPath(awaiting: "not-mirrored", from: [.messages], snapshot: .preview())
+                == nil
+        )
+    }
+
+    /// The deeplink waits on the inbox it opened; a refresh landing after the
+    /// user moved on must not pull them back.
+    @Test
+    func awaitedMessageNeverUpgradesAScreenTheUserNavigatedTo() {
+        let elsewhere: [[WatchRoute]] = [[], [.week], [.discipline("d1")], [.messages, .message("wm2")], [.spaceImpact]]
+        for path in elsewhere {
+            #expect(WatchDeeplinkResolver.upgradedPath(awaiting: "wm1", from: path, snapshot: .preview()) == nil)
+        }
+    }
+
     private func resolve(_ url: String) -> WatchDeeplinkDestination? {
         Deeplinks.parse(url).map { WatchDeeplinkResolver.resolve($0, snapshot: .preview()) }
     }

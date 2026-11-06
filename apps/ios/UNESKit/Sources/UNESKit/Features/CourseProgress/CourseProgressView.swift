@@ -23,14 +23,15 @@ struct CourseProgressView: View {
                 CurriculumVersionPickerSheet(
                     progress: progress,
                     course: store.course,
-                    switchingVersionId: store.switchingVersionId,
+                    versionSwitch: store.versionSwitch,
                     onPick: { store.send(.versionSelected($0)) },
                     onAutomatic: { store.send(.automaticVersionTapped) }
                 )
                 .interactiveDismissDisabled(store.isSwitchingVersion)
+                // Attached to the sheet: the screen underneath can't present while it is up.
+                .alert($store.scope(state: \.alert, action: \.alert))
             }
         }
-        .alert($store.scope(state: \.alert, action: \.alert))
     }
 
     private var explainerBinding: Binding<Bool> {

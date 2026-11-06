@@ -29,6 +29,7 @@ struct CurriculumEntrySheet: View {
         .presentationBackground(UNESColor.surface)
         .presentationDetents([.height(height)])
         .presentationDragIndicator(.visible)
+        .interactiveDismissDisabled(togglingCompletionCode != nil)
     }
 
     private func detail(_ entry: CurriculumEntry, isRoot: Bool) -> some View {
@@ -123,6 +124,7 @@ private struct CurriculumEntryDetail: View {
                             .font(.system(size: 14, weight: .semibold))
                     }
                     .buttonStyle(.unesDark)
+                    .disabled(togglingCompletionCode != nil)
                     .padding(.top, 2)
                 }
                 completionToggle
@@ -170,6 +172,7 @@ private struct CurriculumEntryDetail: View {
                         .background(UNESColor.surface2, in: Circle())
                 }
                 .buttonStyle(.plain)
+                .disabled(togglingCompletionCode != nil)
                 .accessibilityLabel(Text(.commonDone))
             }
         }
