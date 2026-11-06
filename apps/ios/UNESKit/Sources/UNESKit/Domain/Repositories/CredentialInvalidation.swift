@@ -21,12 +21,17 @@ struct CredentialInvalidation: Sendable {
     /// A sync-family 412 — the flag without a username to go with it.
     var markInvalid: @Sendable () -> Void
     var clear: @Sendable () -> Void
+    /// Logout: forgets the flag and the portal username with it, so the next
+    /// account starts clean.
+    var reset: @Sendable () -> Void
 }
 
+/// Writes go through `defaultAppStorage`, the store the features'
+/// `@Shared(.appStorage)` reads observe.
 extension CredentialInvalidation: DependencyKey {
     static let liveValue = CredentialInvalidation(
         apply: { health in
-            let defaults = UserDefaults.standard
+            @Dependency(\.defaultAppStorage) var defaults
             if let username = health.username {
                 defaults.set(username, forKey: usernameKey)
             }
@@ -36,15 +41,27 @@ extension CredentialInvalidation: DependencyKey {
             // Passkey-only accounts with nothing on file — not a problem to
             // nag about, and not a reason to clear a flag either.
             case .none: break
+            case .unknown: break
             }
         },
-        markInvalid: { UserDefaults.standard.set(true, forKey: storageKey) },
-        clear: { UserDefaults.standard.set(false, forKey: storageKey) }
+        markInvalid: {
+            @Dependency(\.defaultAppStorage) var defaults
+            defaults.set(true, forKey: storageKey)
+        },
+        clear: {
+            @Dependency(\.defaultAppStorage) var defaults
+            defaults.set(false, forKey: storageKey)
+        },
+        reset: {
+            @Dependency(\.defaultAppStorage) var defaults
+            defaults.removeObject(forKey: storageKey)
+            defaults.removeObject(forKey: usernameKey)
+        }
     )
 
     static let testValue = CredentialInvalidation()
 
-    static let previewValue = CredentialInvalidation(apply: { _ in }, markInvalid: {}, clear: {})
+    static let previewValue = CredentialInvalidation(apply: { _ in }, markInvalid: {}, clear: {}, reset: {})
 }
 
 extension DependencyValues {

@@ -37,6 +37,9 @@ struct RootFeature {
     @Dependency(\.evaluationReminders) var evaluationReminders
     @Dependency(\.legacyMigration) var legacyMigration
     @Dependency(\.sessionStore) var sessionStore
+    @Dependency(\.meRepository) var meRepository
+    @Dependency(\.credentialInvalidation) var credentialInvalidation
+    @Dependency(\.sessionInvalidation) var sessionInvalidation
     @Dependency(\.analytics) var analytics
     private let log = Log.scoped("RootFeature")
 
@@ -101,7 +104,14 @@ struct RootFeature {
                 analytics.reset()
                 analytics.register(properties: ["machine_id": MachineIdentity.id])
                 state = .farewell(FarewellFeature.State(firstName: firstName))
-                return .none
+                // Leaving .connected cancels every shell effect before this
+                // starts, so no sync or status poll still in flight can write
+                // the old account back after the wipe.
+                return .run { _ in
+                    try? await meRepository.wipeLocalData()
+                    credentialInvalidation.reset()
+                    sessionInvalidation.clear()
+                }
 
             case .farewell(.delegate(.signIn)):
                 log.info("farewell -> onboarding sign-in")

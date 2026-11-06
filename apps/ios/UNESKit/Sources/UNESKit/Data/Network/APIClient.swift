@@ -321,6 +321,12 @@ private actor TokenRefresher {
 
         do {
             let (data, response) = try await session.data(for: request)
+            // A logout or a fresh login while the POST was out owns the store
+            // now; saving or burning this pair would undo it.
+            guard sessionStore.current() == current else {
+                log.info("refresh outcome dropped: the session changed mid-rotation")
+                return sessionStore.current() != nil
+            }
             guard let http = response as? HTTPURLResponse else { return false }
             guard 200..<300 ~= http.statusCode else {
                 // 400 covers a spent, revoked or foreign refresh token — the

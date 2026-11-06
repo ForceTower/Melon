@@ -34,9 +34,12 @@ extension CredentialStatusRepository: DependencyKey {
             do {
                 let dto: CredentialStatusDTO = try await apiClient.get(from: "api/me/status")
                 let health = CredentialHealth(
-                    status: CredentialStatus(rawValue: dto.credentials.status) ?? .ok,
+                    status: CredentialStatus(rawValue: dto.credentials.status.lowercased()) ?? .unknown,
                     username: dto.credentials.username
                 )
+                if health.status == .unknown {
+                    log.warn("unknown credential status=\(dto.credentials.status), keeping the last known state")
+                }
                 log.debug("status ok credentials=\(health.status.rawValue)")
                 return health
             } catch {

@@ -11,6 +11,8 @@ enum CredentialStatus: String, Equatable, Sendable, Codable {
     /// No credentials on file (passkey-only accounts). Reported for
     /// completeness; the app doesn't surface it.
     case none
+    /// A value this build doesn't know. Leaves the last known state alone.
+    case unknown
 }
 
 struct CredentialHealth: Equatable, Sendable, Codable {

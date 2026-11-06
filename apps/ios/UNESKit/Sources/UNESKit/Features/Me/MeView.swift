@@ -163,8 +163,14 @@ struct MeView: View {
             store.send(.logoutTapped)
         } label: {
             HStack(spacing: 8) {
-                Image(systemName: "rectangle.portrait.and.arrow.right")
-                    .font(.system(size: 14, weight: .semibold))
+                if store.isLoggingOut {
+                    ProgressView()
+                        .controlSize(.small)
+                        .tint(Color(hex: 0xE5453A))
+                } else {
+                    Image(systemName: "rectangle.portrait.and.arrow.right")
+                        .font(.system(size: 14, weight: .semibold))
+                }
                 Text(.meSignOut)
                     .font(.system(size: 15, weight: .semibold))
             }
@@ -180,6 +186,7 @@ struct MeView: View {
             .shadow(color: Color(hex: 0x141020, opacity: 0.05), radius: 9, y: 6)
         }
         .buttonStyle(TilePressStyle())
+        .disabled(store.isLoggingOut)
     }
 
     private var footer: some View {
