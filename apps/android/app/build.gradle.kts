@@ -23,7 +23,7 @@ fun gitOutput(vararg args: String): String? {
 }
 
 // Bumped by hand on every release.
-val marketingVersion = "12.9.0"
+val marketingVersion = "12.10.0"
 
 val gitVersionCode = gitOutput("rev-list", "--count", "HEAD")?.toIntOrNull() ?: 1
 
