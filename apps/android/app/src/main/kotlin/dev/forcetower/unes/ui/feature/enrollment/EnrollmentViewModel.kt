@@ -90,7 +90,7 @@ internal class EnrollmentViewModel @Inject constructor(
         setState { copy(referenceNowMillis = appClock.now().toEpochMilliseconds()) }
         when (currentState.phase) {
             EnrollmentPhase.Loading -> Unit
-            EnrollmentPhase.Idle, EnrollmentPhase.Failed -> load(initial = true)
+            EnrollmentPhase.Idle, is EnrollmentPhase.Failed -> load(initial = true)
             // Re-mounts of the status hub (back-pops, later re-entries) pull
             // fresh vacancy counts without disturbing picks or the UI.
             EnrollmentPhase.Loaded -> load(initial = false)
@@ -98,17 +98,18 @@ internal class EnrollmentViewModel @Inject constructor(
     }
 
     // Window first (the cheap gate), offers only when a window exists.
-    // `initial` shows the full-screen spinner, resets the session and
-    // preseeds picks from the saved proposal; silent refreshes keep picks —
-    // vanished sections drop out via `resolvedPicks`.
+    // `initial` shows the full-screen spinner and resets the session. Picks
+    // are preseeded from the saved proposal when the offers first load (see
+    // `EnrollmentOffersStatus`); later refreshes keep them — vanished
+    // sections drop out via `resolvedPicks` — and a failed refresh keeps the
+    // last good catalogue.
     private fun load(initial: Boolean) {
         loadJob?.cancel()
         if (initial) {
             setState {
                 copy(
                     phase = EnrollmentPhase.Loading,
-                    error = null,
-                    offersFailed = false,
+                    offersStatus = EnrollmentOffersStatus.Pending,
                     picks = emptyList(),
                     submitError = null,
                     reopened = false,
@@ -120,7 +121,7 @@ internal class EnrollmentViewModel @Inject constructor(
         loadJob = viewModelScope.launch {
             when (val availability = getWindow()) {
                 is Outcome.Err -> {
-                    if (initial) setState { copy(phase = EnrollmentPhase.Failed, error = availability.error) }
+                    if (initial) setState { copy(phase = EnrollmentPhase.Failed(availability.error)) }
                 }
                 is Outcome.Ok -> {
                     val window = availability.value.window.takeIf { availability.value.available }
@@ -128,26 +129,31 @@ internal class EnrollmentViewModel @Inject constructor(
                         setState {
                             copy(
                                 phase = EnrollmentPhase.Loaded,
-                                available = false,
                                 window = null,
+                                offersStatus = EnrollmentOffersStatus.Pending,
                                 disciplines = emptyList(),
                             )
                         }
                         return@launch
                     }
-                    setState { copy(available = true, window = window) }
+                    setState { copy(window = window) }
                     when (val offers = getOffers()) {
                         is Outcome.Ok -> setState {
                             val catalogue = offers.value.disciplines
+                            val seeded = offersStatus == EnrollmentOffersStatus.Loaded
                             copy(
                                 phase = EnrollmentPhase.Loaded,
                                 disciplines = catalogue,
-                                offersFailed = false,
-                                picks = if (initial) preseedPicks(window, catalogue) else picks,
+                                offersStatus = EnrollmentOffersStatus.Loaded,
+                                picks = if (seeded) picks else preseedPicks(window, catalogue),
                             )
                         }
-                        is Outcome.Err -> {
-                            if (initial) setState { copy(phase = EnrollmentPhase.Loaded, offersFailed = true) }
+                        is Outcome.Err -> setState {
+                            if (offersStatus == EnrollmentOffersStatus.Loaded) {
+                                this
+                            } else {
+                                copy(phase = EnrollmentPhase.Loaded, offersStatus = EnrollmentOffersStatus.Failed)
+                            }
                         }
                     }
                 }
@@ -198,7 +204,8 @@ internal class EnrollmentViewModel @Inject constructor(
     // Submits the complete desired set; the backend replaces the saved
     // proposal wholesale (open → publish → close happens server-side). On
     // success the window flips to Closed locally so the status hub shows the
-    // comprovante state without a refetch.
+    // comprovante state without a refetch; a refresh still in flight is
+    // dropped because its snapshot may predate the close.
     private fun submit() {
         setState { copy(referenceNowMillis = appClock.now().toEpochMilliseconds()) }
         val state = currentState
@@ -208,6 +215,7 @@ internal class EnrollmentViewModel @Inject constructor(
         submitJob = viewModelScope.launch {
             when (val outcome = submitEnrollment(state.selections)) {
                 is Outcome.Ok -> {
+                    loadJob?.cancel()
                     analytics.selectContent(
                         contentType = ContentTypes.ENROLLMENT,
                         properties = mapOf("action" to "submit"),

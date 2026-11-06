@@ -107,6 +107,8 @@ private fun EnrollmentStatusContent(
     bottomInset: Dp = 0.dp,
 ) {
     val window = state.window
+    val phase = state.phase
+    val offersFailed = state.offersStatus == EnrollmentOffersStatus.Failed
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -157,8 +159,8 @@ private fun EnrollmentStatusContent(
                 Spacer(Modifier.height(18.dp))
 
                 when {
-                    state.phase == EnrollmentPhase.Loading || state.phase == EnrollmentPhase.Idle -> LoadingState()
-                    state.phase == EnrollmentPhase.Failed -> ErrorState(error = state.error, onRetry = onRetry)
+                    phase == EnrollmentPhase.Loading || phase == EnrollmentPhase.Idle -> LoadingState()
+                    phase is EnrollmentPhase.Failed -> ErrorState(error = phase.error, onRetry = onRetry)
                     window == null -> EmptyState()
                     else -> {
                         EnrollmentHero(
@@ -166,7 +168,7 @@ private fun EnrollmentStatusContent(
                             nowMillis = state.referenceNowMillis,
                         )
 
-                        if (state.offersFailed) {
+                        if (offersFailed) {
                             OffersFailedCard(onRetry = onRetry, modifier = Modifier.padding(top = 18.dp))
                         } else {
                             StatTiles(state = state, modifier = Modifier.padding(top = 18.dp))
@@ -193,7 +195,7 @@ private fun EnrollmentStatusContent(
             }
         }
 
-        if (state.phase == EnrollmentPhase.Loaded && window != null && !state.offersFailed &&
+        if (phase == EnrollmentPhase.Loaded && window != null && !offersFailed &&
             window.state != EnrollmentWindowState.Upcoming
         ) {
             val locked = state.isReadonly
@@ -448,7 +450,7 @@ private fun EmptyState() {
 
 @Composable
 private fun ErrorState(
-    error: dev.forcetower.melon.feature.enrollment.domain.repository.EnrollmentError?,
+    error: dev.forcetower.melon.feature.enrollment.domain.repository.EnrollmentError,
     onRetry: () -> Unit,
 ) {
     Column(

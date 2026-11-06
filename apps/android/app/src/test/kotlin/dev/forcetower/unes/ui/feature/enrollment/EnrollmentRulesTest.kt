@@ -238,8 +238,8 @@ internal class EnrollmentRulesTest {
         window: EnrollmentWindow = window(),
     ) = EnrollmentUiState(
         phase = EnrollmentPhase.Loaded,
-        available = true,
         window = window,
+        offersStatus = EnrollmentOffersStatus.Loaded,
         disciplines = disciplines,
         picks = disciplines.map { makePick(window, it, it.sections.first()) },
         referenceNowMillis = Instant.parse("2026-10-02T12:00:00Z").toEpochMilli(),
