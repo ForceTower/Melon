@@ -40,6 +40,7 @@ import io.ktor.client.statement.readRawBytes
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.http.isSuccess
+import kotlinx.coroutines.CancellationException
 
 // `api/materials/*` — the collaborative study-materials shelf. All reads are
 // live (nothing mirrors into the local DB); mutations are fire-and-confirm so
@@ -149,6 +150,8 @@ internal class MaterialsService(
             val response = transferClient.get(payload.url)
             if (!response.status.isSuccess()) return Outcome.Err(MaterialsError.Connection)
             response.readRawBytes()
+        } catch (e: CancellationException) {
+            throw e
         } catch (_: Exception) {
             return Outcome.Err(MaterialsError.Connection)
         }
@@ -185,6 +188,8 @@ internal class MaterialsService(
                 setBody(submission.bytes)
             }
             if (!upload.status.isSuccess()) return Outcome.Err(MaterialsError.Connection)
+        } catch (e: CancellationException) {
+            throw e
         } catch (_: Exception) {
             return Outcome.Err(MaterialsError.Connection)
         }
@@ -232,19 +237,25 @@ internal class MaterialsService(
 
     // Unwraps the `{ ok, data }` envelope; any transport/decoding hiccup or
     // `ok=false` collapses to Connection — the screens only distinguish
-    // "worked" from "retry".
+    // "worked" from "retry". Cancellation is not a hiccup: swallowing it would
+    // hand a cancelled caller an Err to apply to whatever screen is current.
     private suspend inline fun <reified T> envelope(request: () -> HttpResponse): Outcome<T, MaterialsError> {
         val response = try {
             request()
+        } catch (e: CancellationException) {
+            throw e
         } catch (_: Exception) {
             return Outcome.Err(MaterialsError.Connection)
         }
         if (!response.status.isSuccess()) return Outcome.Err(MaterialsError.Connection)
-        val data = runCatching { response.body<ApiEnvelope<T>>() }
-            .getOrNull()
-            ?.takeIf { it.ok }
-            ?.data
-            ?: return Outcome.Err(MaterialsError.Connection)
+        val body = try {
+            response.body<ApiEnvelope<T>>()
+        } catch (e: CancellationException) {
+            throw e
+        } catch (_: Exception) {
+            null
+        }
+        val data = body?.takeIf { it.ok }?.data ?: return Outcome.Err(MaterialsError.Connection)
         return Outcome.Ok(data)
     }
 
@@ -252,6 +263,8 @@ internal class MaterialsService(
     private suspend inline fun confirm(request: () -> HttpResponse): Outcome<Unit, MaterialsError> {
         val response = try {
             request()
+        } catch (e: CancellationException) {
+            throw e
         } catch (_: Exception) {
             return Outcome.Err(MaterialsError.Connection)
         }

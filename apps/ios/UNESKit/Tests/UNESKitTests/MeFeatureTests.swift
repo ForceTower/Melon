@@ -165,7 +165,7 @@ struct MeFeatureTests {
         }
         #expect(woken.today == today)
         #expect(woken.selectedDay == today)
-        #expect(woken.fetchedAt == Self.referenceDate)
+        #expect(woken.feed == .loaded(fetchedAt: Self.referenceDate))
     }
 
     @Test
@@ -265,9 +265,8 @@ struct MeFeatureTests {
     }
 
     @Test
-    func logoutWipesTheMirrorThemeAndSession() async {
+    func logoutResetsTheThemeAndClearsTheSession() async {
         let sessionStore = SessionStore.inMemory(initial: .preview)
-        let wiped = LockIsolated(false)
         let unregistered = LockIsolated(false)
         let stoppedFollowing = LockIsolated(false)
 
@@ -278,24 +277,74 @@ struct MeFeatureTests {
             MeFeature()
         } withDependencies: {
             $0.sessionStore = sessionStore
-            $0.meRepository.wipeLocalData = { wiped.setValue(true) }
             $0.push.unregister = { unregistered.setValue(true) }
             $0.commuteActivity.stopAll = { stoppedFollowing.setValue(true) }
         }
 
         await store.send(.logoutTapped) {
-            $0.isLogoutPromptPresented = true
+            $0.logout = .confirming
         }
         await store.send(.logoutConfirmed) {
-            $0.isLogoutPromptPresented = false
+            $0.logout = .tearingDown
             $0.$theme.withLock { $0 = .system }
         }
+        // The mirror wipe belongs to the root, after this shell is gone.
         await store.receive(.delegate(.loggedOut(firstName: "Mariana")))
 
         #expect(sessionStore.current() == nil)
-        #expect(wiped.value == true)
         #expect(unregistered.value == true)
         #expect(stoppedFollowing.value == true)
+    }
+
+    @Test
+    func dismissingThePromptKeepsTheSession() async {
+        let store = TestStore(initialState: MeFeature.State(userName: "Mariana Souza")) {
+            MeFeature()
+        }
+
+        await store.send(.logoutTapped) {
+            $0.logout = .confirming
+        }
+        await store.send(.logoutPromptDismissed) {
+            $0.logout = nil
+        }
+        // A late confirm from the dismissing sheet must not log out.
+        await store.send(.logoutConfirmed)
+    }
+
+    @Test
+    func confirmingAgainWhileLoggingOutTearsDownOnce() async {
+        let clock = TestClock()
+        let unregistered = LockIsolated(0)
+        let logoutEvents = LockIsolated(0)
+
+        let store = TestStore(initialState: MeFeature.State(userName: "Mariana Souza")) {
+            MeFeature()
+        } withDependencies: {
+            $0.sessionStore = .inMemory(initial: .preview)
+            $0.commuteActivity.stopAll = {}
+            $0.push.unregister = {
+                unregistered.withValue { $0 += 1 }
+                try? await clock.sleep(for: .seconds(1))
+            }
+            $0.analytics.selectContent = { _, itemId, _ in
+                if itemId == "logout" { logoutEvents.withValue { $0 += 1 } }
+            }
+        }
+        store.exhaustivity = .off
+
+        await store.send(.logoutTapped)
+        await store.send(.logoutConfirmed)
+        // A slow DELETE leaves the screen up, so the button gets tapped again.
+        await store.send(.logoutTapped)
+        #expect(store.state.isLogoutPromptPresented == false)
+        await store.send(.logoutConfirmed)
+        await clock.advance(by: .seconds(1))
+        await store.receive(.delegate(.loggedOut(firstName: "Mariana")))
+        await store.finish()
+
+        #expect(unregistered.value == 1)
+        #expect(logoutEvents.value == 1)
     }
 
     @Test

@@ -40,14 +40,64 @@ abstract class MessageDao {
     @Query("SELECT * FROM MessageState WHERE messageId = :messageId")
     abstract suspend fun getState(messageId: String): MessageStateEntity?
 
-    // Mirrored server value only — display OR-merges it with the overlay, so
-    // an unstar must also clear it or it would stay shadowed until the ack
-    // round-trips through a refresh (matches iOS `setMessageStarred`).
     @Query("UPDATE Message SET starred = :starred WHERE id = :id")
-    abstract suspend fun updateMessageStarred(
+    protected abstract suspend fun updateMessageStarred(
         id: String,
         starred: Boolean,
     )
+
+    @Query("UPDATE MessageState SET starPending = 0 WHERE messageId = :messageId AND starred = :starred")
+    protected abstract suspend fun clearStarPending(
+        messageId: String,
+        starred: Boolean,
+    )
+
+    @Query("SELECT * FROM MessageState WHERE starPending = 1")
+    abstract suspend fun listPendingStars(): List<MessageStateEntity>
+
+    // Records a local star change; it wins over the mirrored value until the
+    // server acknowledges it.
+    @Transaction
+    open suspend fun markStarPending(
+        messageId: String,
+        starred: Boolean,
+        now: String,
+    ) {
+        val existing = getState(messageId)
+        upsertState(
+            existing?.copy(starred = starred, starPending = true, updatedAt = now)
+                ?: MessageStateEntity(
+                    messageId = messageId,
+                    readAt = null,
+                    starred = starred,
+                    updatedAt = now,
+                    starPending = true,
+                ),
+        )
+    }
+
+    // The server took `starred`: mirror it and hand display back to the
+    // server value — unless a newer opposite change is still pending.
+    @Transaction
+    open suspend fun acknowledgeStar(
+        messageId: String,
+        starred: Boolean,
+    ) {
+        updateMessageStarred(messageId, starred)
+        clearStarPending(messageId, starred)
+    }
+
+    @Transaction
+    open suspend fun markRead(
+        messageId: String,
+        now: String,
+    ) {
+        val existing = getState(messageId)
+        upsertState(
+            existing?.copy(readAt = now, updatedAt = now)
+                ?: MessageStateEntity(messageId = messageId, readAt = now, starred = false, updatedAt = now),
+        )
+    }
 
     @Query("SELECT * FROM MessageState WHERE messageId IN (:ids)")
     abstract fun observeStates(ids: List<String>): Flow<List<MessageStateEntity>>
@@ -107,7 +157,7 @@ abstract class MessageDao {
     abstract suspend fun upsertStates(states: List<MessageStateEntity>)
 
     // Atomically flips readAt to `now` for every currently-unread message,
-    // preserving each existing row's `starred` flag. Idempotent: a second
+    // preserving each existing row's star state. Idempotent: a second
     // call inside the same `now` window is a no-op because `unreadMessageIds`
     // already filters them out.
     @Transaction
@@ -117,13 +167,8 @@ abstract class MessageDao {
         val existing = getStates(ids).associateBy { it.messageId }
         upsertStates(
             ids.map { id ->
-                val cur = existing[id]
-                MessageStateEntity(
-                    messageId = id,
-                    readAt = now,
-                    starred = cur?.starred == true,
-                    updatedAt = now,
-                )
+                existing[id]?.copy(readAt = now, updatedAt = now)
+                    ?: MessageStateEntity(messageId = id, readAt = now, starred = false, updatedAt = now)
             },
         )
     }

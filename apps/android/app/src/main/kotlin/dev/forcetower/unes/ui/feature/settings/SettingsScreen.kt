@@ -3,6 +3,7 @@ package dev.forcetower.unes.ui.feature.settings
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -40,6 +41,8 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -48,9 +51,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -63,6 +68,7 @@ import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.foundation.PinnedHeaderHairline
 import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
 import dev.forcetower.unes.designsystem.theme.melon
+import dev.forcetower.unes.mvi.collectAsEffect
 import dev.forcetower.unes.theme.ThemeMode
 import dev.forcetower.unes.ui.feature.me.components.rememberAppInfo
 import dev.forcetower.unes.ui.feature.settings.components.NotificationGroupCard
@@ -115,115 +121,131 @@ internal fun SettingsScreen(
     val scrollState = rememberScrollState()
     val scrolled by remember { derivedStateOf { scrollState.value > 0 } }
 
-    // The back-button bar stays pinned; the headline and the settings cards
-    // scroll beneath it.
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
-            .windowInsetsPadding(WindowInsets.statusBars),
-    ) {
-        SettingsTopBar(onBack = onBack, modifier = Modifier.fadeUpOnAppear(delayMs = 20))
-        PinnedHeaderHairline(scrolled = scrolled)
+    val snackbar = remember { SnackbarHostState() }
+    val resources = LocalResources.current
+    vm.effects.collectAsEffect { effect ->
+        when (effect) {
+            SettingsEffect.SaveFailed -> snackbar.showSnackbar(resources.getString(R.string.settings_save_failed))
+        }
+    }
 
+    Box(modifier = modifier.fillMaxSize()) {
+        // The back-button bar stays pinned; the headline and the settings cards
+        // scroll beneath it.
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(scrollState)
-                .padding(bottom = bottomInset + 16.dp),
+                .background(MaterialTheme.colorScheme.background)
+                .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
+                .windowInsetsPadding(WindowInsets.statusBars),
         ) {
-            SettingsHeadline(modifier = Modifier.fadeUpOnAppear(delayMs = 40))
+            SettingsTopBar(onBack = onBack, modifier = Modifier.fadeUpOnAppear(delayMs = 20))
+            PinnedHeaderHairline(scrolled = scrolled)
 
-            Column(modifier = Modifier.padding(horizontal = 20.dp)) {
-                VaultCard(
-                    displayName = state.displayName,
-                    accountLabel = stringResource(
-                        R.string.settings_vault_account_format,
-                        state.campusLabel
-                            ?: stringResource(R.string.settings_vault_account_fallback),
-                    ),
-                    avatarInitial = state.avatarInitial,
-                    avatarUrl = state.avatarUrl,
-                    username = state.username.orEmpty(),
-                    password = state.password.orEmpty(),
-                    revealed = revealed,
-                    onToggleReveal = {
-                        if (!revealed) vm.trackCredentialReveal()
-                        revealed = !revealed
-                    },
-                    passkeyCount = state.passkeyCount,
-                    onOpenPasskeys = onOpenPasskeys,
-                    modifier = Modifier.fadeUpOnAppear(delayMs = 120),
-                )
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(scrollState)
+                    .padding(bottom = bottomInset + 16.dp),
+            ) {
+                SettingsHeadline(modifier = Modifier.fadeUpOnAppear(delayMs = 40))
 
-                // ── Aparência ──
-                Column(modifier = Modifier.fadeUpOnAppear(delayMs = 200)) {
-                    Spacer(Modifier.height(28.dp))
-                    SettingsSectionLabel(
-                        label = stringResource(R.string.settings_section_appearance),
-                    )
-                    Spacer(Modifier.height(12.dp))
-                    AppearanceCard(state = state, onIntent = vm::onIntent)
-                    if (state.commuteAvailable) {
-                        Spacer(Modifier.height(14.dp))
-                        CommuteOnHomeCard(state = state, onToggle = vm::onIntent)
-                    }
-                }
-
-                // ── Notas · privacidade ──
-                Column(modifier = Modifier.fadeUpOnAppear(delayMs = 260)) {
-                    Spacer(Modifier.height(28.dp))
-                    SettingsSectionLabel(
-                        label = stringResource(R.string.settings_section_grades),
-                        meta = stringResource(R.string.settings_section_grades_meta),
-                    )
-                    Spacer(Modifier.height(12.dp))
-                    NotificationPreview(spoiler = state.spoiler, clockLabel = clockLabel)
-                    Spacer(Modifier.height(12.dp))
-                    SettingsOptionCard(
-                        icon = Icons.Filled.Shield,
-                        iconTint = MaterialTheme.melon.palette.coral,
-                        title = stringResource(R.string.settings_privacy_title),
-                        subtitle = stringResource(R.string.settings_privacy_subtitle),
-                    ) {
-                        SettingsSegmentedRow(
-                            options = SpoilerMode.entries,
-                            selected = state.spoiler,
-                            optionLabel = { stringResource(it.labelRes()) },
-                            onSelect = { vm.onIntent(SettingsIntent.SetSpoiler(it)) },
-                        )
-                    }
-                }
-
-                // ── Notificações ──
-                Column(modifier = Modifier.fadeUpOnAppear(delayMs = 320)) {
-                    Spacer(Modifier.height(28.dp))
-                    SettingsSectionLabel(
-                        label = stringResource(R.string.settings_section_notifications),
-                        meta = stringResource(
-                            R.string.settings_notif_total_format,
-                            state.totalActive,
+                Column(modifier = Modifier.padding(horizontal = 20.dp)) {
+                    VaultCard(
+                        displayName = state.displayName,
+                        accountLabel = stringResource(
+                            R.string.settings_vault_account_format,
+                            state.campusLabel
+                                ?: stringResource(R.string.settings_vault_account_fallback),
                         ),
+                        avatarInitial = state.avatarInitial,
+                        avatarUrl = state.avatarUrl,
+                        username = state.username.orEmpty(),
+                        password = state.password.orEmpty(),
+                        revealed = revealed,
+                        onToggleReveal = {
+                            if (!revealed) vm.trackCredentialReveal()
+                            revealed = !revealed
+                        },
+                        passkeyCount = state.passkeyCount,
+                        onOpenPasskeys = onOpenPasskeys,
+                        modifier = Modifier.fadeUpOnAppear(delayMs = 120),
                     )
-                    Spacer(Modifier.height(12.dp))
-                    Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
-                        MessagesGroup(state = state, onToggle = vm::onIntent)
-                        GradesGroup(state = state, onToggle = vm::onIntent)
-                        ClassesGroup(state = state, onToggle = vm::onIntent)
-                        if (state.evaluationRemindersAvailable) {
-                            EvaluationReminderCard(state = state, onToggle = vm::onIntent)
+
+                    // ── Aparência ──
+                    Column(modifier = Modifier.fadeUpOnAppear(delayMs = 200)) {
+                        Spacer(Modifier.height(28.dp))
+                        SettingsSectionLabel(
+                            label = stringResource(R.string.settings_section_appearance),
+                        )
+                        Spacer(Modifier.height(12.dp))
+                        AppearanceCard(state = state, onIntent = vm::onIntent)
+                        if (state.commuteAvailable) {
+                            Spacer(Modifier.height(14.dp))
+                            CommuteOnHomeCard(state = state, onToggle = vm::onIntent)
                         }
                     }
-                }
 
-                SettingsFooter(
-                    appVersion = appInfo.version,
-                    appBuild = appInfo.build,
-                    modifier = Modifier.fadeUpOnAppear(delayMs = 400),
-                )
+                    // ── Notas · privacidade ──
+                    Column(modifier = Modifier.fadeUpOnAppear(delayMs = 260)) {
+                        Spacer(Modifier.height(28.dp))
+                        SettingsSectionLabel(
+                            label = stringResource(R.string.settings_section_grades),
+                            meta = stringResource(R.string.settings_section_grades_meta),
+                        )
+                        Spacer(Modifier.height(12.dp))
+                        NotificationPreview(spoiler = state.spoiler, clockLabel = clockLabel)
+                        Spacer(Modifier.height(12.dp))
+                        SettingsOptionCard(
+                            icon = Icons.Filled.Shield,
+                            iconTint = MaterialTheme.melon.palette.coral,
+                            title = stringResource(R.string.settings_privacy_title),
+                            subtitle = stringResource(R.string.settings_privacy_subtitle),
+                        ) {
+                            SettingsSegmentedRow(
+                                options = SpoilerMode.entries,
+                                selected = state.spoiler,
+                                optionLabel = { stringResource(it.labelRes()) },
+                                onSelect = { vm.onIntent(SettingsIntent.SetSpoiler(it)) },
+                            )
+                        }
+                    }
+
+                    // ── Notificações ──
+                    Column(modifier = Modifier.fadeUpOnAppear(delayMs = 320)) {
+                        Spacer(Modifier.height(28.dp))
+                        SettingsSectionLabel(
+                            label = stringResource(R.string.settings_section_notifications),
+                            meta = stringResource(
+                                R.string.settings_notif_total_format,
+                                state.totalActive,
+                            ),
+                        )
+                        Spacer(Modifier.height(12.dp))
+                        Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
+                            MessagesGroup(state = state, onToggle = vm::onIntent)
+                            GradesGroup(state = state, onToggle = vm::onIntent)
+                            ClassesGroup(state = state, onToggle = vm::onIntent)
+                            if (state.evaluationRemindersAvailable) {
+                                EvaluationReminderCard(state = state, onToggle = vm::onIntent)
+                            }
+                        }
+                    }
+
+                    SettingsFooter(
+                        appVersion = appInfo.version,
+                        appBuild = appInfo.build,
+                        modifier = Modifier.fadeUpOnAppear(delayMs = 400),
+                    )
+                }
             }
         }
+        SnackbarHost(
+            hostState = snackbar,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = bottomInset + 24.dp),
+        )
     }
 }
 

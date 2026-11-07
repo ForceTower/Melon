@@ -31,8 +31,9 @@ import kotlinx.coroutines.launch
 // lock-screen preview stamp stays honest. Each server-backed mutation writes
 // to local state optimistically, then forwards the patch to
 // `UpdateSettingsUseCase`; the resulting flow emission overwrites the local
-// value with the canonical server value. The theme mode is device-local and
-// goes to DataStore instead.
+// value with the canonical server value. A save the server never confirmed
+// is rolled back (the flow re-emits the previous value) and reported with
+// `SaveFailed`. The theme mode is device-local and goes to DataStore instead.
 internal sealed interface SettingsIntent : UiIntent {
     data class SetTheme(
         val value: ThemeMode,
@@ -55,7 +56,9 @@ internal sealed interface SettingsIntent : UiIntent {
     ) : SettingsIntent
 }
 
-internal sealed interface SettingsEffect : UiEffect
+internal sealed interface SettingsEffect : UiEffect {
+    data object SaveFailed : SettingsEffect
+}
 
 @HiltViewModel
 internal class SettingsViewModel @Inject constructor(
@@ -212,10 +215,7 @@ internal class SettingsViewModel @Inject constructor(
         setState { copy(spoiler = value) }
         viewModelScope.launch {
             val outcome = updateSettings(gradeSpoiler = value.serverInt)
-            if (outcome is Outcome.Err) {
-                // Local mirror keeps the optimistic value; the next profile
-                // sync will re-emit and reconcile if the server rejected it.
-            }
+            if (outcome is Outcome.Err) emitEffect(SettingsEffect.SaveFailed)
         }
     }
 
@@ -241,9 +241,7 @@ internal class SettingsViewModel @Inject constructor(
                 NotifToggle.ClassMaterial -> updateSettings(notifClassMaterial = value)
                 NotifToggle.ClassSubject -> updateSettings(notifClassSubject = value)
             }
-            if (outcome is Outcome.Err) {
-                // See note in `setSpoiler`.
-            }
+            if (outcome is Outcome.Err) emitEffect(SettingsEffect.SaveFailed)
         }
     }
 

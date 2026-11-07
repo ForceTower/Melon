@@ -5,6 +5,7 @@ import dev.forcetower.melon.core.common.Outcome
 import dev.forcetower.melon.feature.transit.domain.model.CommutePlan
 import dev.forcetower.melon.feature.transit.domain.model.TransitDirection
 import dev.forcetower.melon.feature.transit.domain.model.TransitError
+import dev.forcetower.melon.feature.transit.domain.model.TransitNetwork
 import dev.forcetower.melon.feature.transit.domain.usecase.GetTransitNetworkUseCase
 import dev.forcetower.melon.feature.transit.domain.usecase.ObserveCommutePlanUseCase
 import dev.forcetower.melon.feature.transit.domain.usecase.RemoveCommutePlanUseCase
@@ -19,6 +20,7 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertIs
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 import kotlinx.coroutines.Dispatchers
@@ -200,15 +202,60 @@ internal class CommuteSetupViewModelTest {
             assertEquals(listOf("Av. Maria Quitéria, 3203"), model.state.value.stops.map { it.name })
         }
 
-    private fun model(save: SaveCommutePlanUseCase = mockk()): CommuteSetupViewModel {
+    @Test
+    fun aLinesStepWhoseSessionStartedOverElsewhereGivesWayToTheFirst() =
+        runTest {
+            val model = model()
+            val effects = mutableListOf<CommuteSetupEffect>()
+            backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { model.effects.toList(effects) }
+            model.onIntent(CommuteSetupIntent.Begin(CommutePlan()))
+            advanceUntilIdle()
+            model.onIntent(CommuteSetupIntent.StopSelected(CommuteFixtures.MY_STOP_ID))
+            model.onIntent(CommuteSetupIntent.OpenLines(TransitDirection.ToCampus))
+            assertIs<CommuteLinesStatus.Ready>(model.state.value.linesStatus(TransitDirection.ToCampus))
+
+            // Another tab begins a fresh setup, then this tab's lines step reappears.
+            model.onIntent(CommuteSetupIntent.Begin(CommutePlan()))
+            advanceUntilIdle()
+            model.onIntent(CommuteSetupIntent.OpenLines(TransitDirection.ToCampus))
+            advanceUntilIdle()
+
+            assertEquals(CommuteLinesStatus.NoStop, model.state.value.linesStatus(TransitDirection.ToCampus))
+            assertEquals(listOf<CommuteSetupEffect>(CommuteSetupEffect.Expired), effects)
+        }
+
+    @Test
+    fun aCatalogWithoutDeparturesFromCampusEndsTheLeavingLinesStepOnAMessage() =
+        runTest {
+            val inboundOnly = CommuteFixtures.network.copy(
+                routes = CommuteFixtures.network.routes.filter { it.direction == TransitDirection.ToCampus },
+            )
+            val model = model(network = inboundOnly)
+            val effects = mutableListOf<CommuteSetupEffect>()
+            backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { model.effects.toList(effects) }
+            model.onIntent(CommuteSetupIntent.Begin(CommutePlan()))
+            advanceUntilIdle()
+            model.onIntent(CommuteSetupIntent.DirectionToggled(TransitDirection.FromCampus))
+            model.onIntent(CommuteSetupIntent.DirectionToggled(TransitDirection.ToCampus))
+            model.onIntent(CommuteSetupIntent.OpenLines(TransitDirection.FromCampus))
+            advanceUntilIdle()
+
+            assertEquals(CommuteLinesStatus.NoStop, model.state.value.linesStatus(TransitDirection.FromCampus))
+            assertTrue(effects.isEmpty())
+        }
+
+    private fun model(
+        save: SaveCommutePlanUseCase = mockk(),
+        network: TransitNetwork = CommuteFixtures.network,
+    ): CommuteSetupViewModel {
         val observePlan = mockk<ObserveCommutePlanUseCase>()
         every { observePlan() } returns flowOf(CommutePlan())
-        val network = mockk<GetTransitNetworkUseCase>()
-        coEvery { network() } returns Outcome.Ok(CommuteFixtures.network)
+        val getNetwork = mockk<GetTransitNetworkUseCase>()
+        coEvery { getNetwork() } returns Outcome.Ok(network)
         val location = mockk<DeviceLocationClient>(relaxed = true)
         return CommuteSetupViewModel(
             observeCommutePlan = observePlan,
-            getTransitNetwork = network,
+            getTransitNetwork = getNetwork,
             saveCommutePlan = save,
             removeCommutePlan = mockk<RemoveCommutePlanUseCase>(),
             locationClient = location,

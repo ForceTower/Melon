@@ -20,8 +20,10 @@ import dev.zacsweers.metro.SingleIn
 import io.ktor.client.call.body
 import io.ktor.client.statement.HttpResponse
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.SerializationException
 
 @Inject
@@ -44,27 +46,16 @@ internal class SettingsRepositoryImpl(
                 return Outcome.Err(SettingsError.NoLocalUser)
             }
 
-        // Optimistic local apply. Done first so the UI flips immediately and
-        // a subsequent app cold-start reads the new value even if the
-        // network call below never lands.
-        dao.patch(
-            userId = current.userId,
-            gradeSpoiler = patch.gradeSpoiler,
-            notifMsgBroadcast = patch.notifMsgBroadcast,
-            notifMsgClass = patch.notifMsgClass,
-            notifMsgDirect = patch.notifMsgDirect,
-            notifGradePosted = patch.notifGradePosted,
-            notifGradeChanged = patch.notifGradeChanged,
-            notifGradeDateChanged = patch.notifGradeDateChanged,
-            notifClassLocation = patch.notifClassLocation,
-            notifClassMaterial = patch.notifClassMaterial,
-            notifClassSubject = patch.notifClassSubject,
-        )
+        // Optimistic local apply so the UI flips immediately. Rolled back
+        // unless the server confirms it — the next profile sync would
+        // otherwise silently restore the server value.
+        dao.applyPatch(current.userId, patch)
 
-        return try {
+        val outcome = try {
             val response = api.update(patch.toRequest())
             classifyUpdate(response, current.userId)
         } catch (cancellation: CancellationException) {
+            withContext(NonCancellable) { rollBack(patch, current) }
             throw cancellation
         } catch (ex: SerializationException) {
             log.e(throwable = ex) { "update serialization failure" }
@@ -73,6 +64,44 @@ internal class SettingsRepositoryImpl(
             log.w(throwable = ex) { "update transport failure" }
             Outcome.Err(SettingsError.NoConnection)
         }
+        if (outcome is Outcome.Err) rollBack(patch, current)
+        return outcome
+    }
+
+    // Puts back only the fields this patch wrote that still hold its value,
+    // so a later update that landed meanwhile is kept.
+    private suspend fun rollBack(
+        patch: UserSettingsPatch,
+        previous: UserSettingsEntity,
+    ) {
+        val row = dao.getCurrent() ?: return
+        dao.applyPatch(
+            previous.userId,
+            UserSettingsPatch(
+                gradeSpoiler = restore(previous.gradeSpoiler, row.gradeSpoiler, patch.gradeSpoiler),
+                notifMsgBroadcast = restore(previous.notifMsgBroadcast, row.notifMsgBroadcast, patch.notifMsgBroadcast),
+                notifMsgClass = restore(previous.notifMsgClass, row.notifMsgClass, patch.notifMsgClass),
+                notifMsgDirect = restore(previous.notifMsgDirect, row.notifMsgDirect, patch.notifMsgDirect),
+                notifGradePosted = restore(previous.notifGradePosted, row.notifGradePosted, patch.notifGradePosted),
+                notifGradeChanged = restore(previous.notifGradeChanged, row.notifGradeChanged, patch.notifGradeChanged),
+                notifGradeDateChanged = restore(
+                    previous.notifGradeDateChanged,
+                    row.notifGradeDateChanged,
+                    patch.notifGradeDateChanged,
+                ),
+                notifClassLocation = restore(
+                    previous.notifClassLocation,
+                    row.notifClassLocation,
+                    patch.notifClassLocation,
+                ),
+                notifClassMaterial = restore(
+                    previous.notifClassMaterial,
+                    row.notifClassMaterial,
+                    patch.notifClassMaterial,
+                ),
+                notifClassSubject = restore(previous.notifClassSubject, row.notifClassSubject, patch.notifClassSubject),
+            ),
+        )
     }
 
     // On 2xx the server returns the canonical merged row — overwrite the
@@ -115,6 +144,29 @@ internal class SettingsRepositoryImpl(
         }
     }
 }
+
+private fun <T> restore(
+    before: T,
+    now: T,
+    written: T?,
+): T? = before.takeIf { now == written }
+
+private suspend fun UserSettingsDao.applyPatch(
+    userId: String,
+    changes: UserSettingsPatch,
+) = patch(
+    userId = userId,
+    gradeSpoiler = changes.gradeSpoiler,
+    notifMsgBroadcast = changes.notifMsgBroadcast,
+    notifMsgClass = changes.notifMsgClass,
+    notifMsgDirect = changes.notifMsgDirect,
+    notifGradePosted = changes.notifGradePosted,
+    notifGradeChanged = changes.notifGradeChanged,
+    notifGradeDateChanged = changes.notifGradeDateChanged,
+    notifClassLocation = changes.notifClassLocation,
+    notifClassMaterial = changes.notifClassMaterial,
+    notifClassSubject = changes.notifClassSubject,
+)
 
 private fun UserSettingsPatch.toRequest(): UpdateUserSettingsRequest =
     UpdateUserSettingsRequest(

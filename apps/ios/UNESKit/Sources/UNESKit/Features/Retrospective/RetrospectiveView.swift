@@ -123,7 +123,7 @@ struct RetrospectiveView: View {
             HStack {
                 RetroGlassButton(systemName: "xmark") { store.send(.closeTapped) }
                 Spacer()
-                if store.isPaused, !store.isSharePresented, !store.isShowingAnnounce {
+                if store.showsPausedPill {
                     Text(String.localized(.retroPaused).uppercased())
                         .font(.system(size: 12, weight: .bold))
                         .tracking(0.7)

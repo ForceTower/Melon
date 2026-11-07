@@ -20,6 +20,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import timber.log.Timber
 
 // Play In-App Reviews. Play grants roughly one sheet per user per quota window
@@ -46,6 +48,8 @@ internal class ReviewPrompter @Inject constructor(
 
     val requests: Flow<ReviewTrigger> = pending.receiveAsFlow()
 
+    private val presenting = Mutex()
+
     @Volatile
     private var gradePushLaunchedAtMs = 0L
     private val paradoxoEntities = mutableSetOf<String>()
@@ -64,6 +68,7 @@ internal class ReviewPrompter @Inject constructor(
     // the student would be rating the failure, not the app.
     fun noteTrouble(reason: String) {
         Timber.tag(TAG).d("review muted by trouble reason=%s", reason)
+        pending.tryReceive()
         scope.launch { store.recordTrouble(System.currentTimeMillis()) }
     }
 
@@ -104,17 +109,20 @@ internal class ReviewPrompter @Inject constructor(
         if (depth >= PARADOXO_DEPTH) report(ReviewTrigger.ParadoxoDepth)
     }
 
+    // Serialized and re-checked: a trigger queued before an earlier prompt was
+    // spent, or before trouble landed, is stale by the time it gets here.
     suspend fun present(
         activity: Activity,
         trigger: ReviewTrigger,
-    ) {
+    ) = presenting.withLock {
+        if (!isEligible(trigger)) return@withLock
         val info = try {
             reviewManager.requestReview()
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
             Timber.tag(TAG).d(e, "review flow unavailable")
-            return
+            return@withLock
         }
         // Recorded before launching and never revisited: Play reports nothing
         // about whether the sheet appeared, so the only honest accounting is
@@ -136,6 +144,10 @@ internal class ReviewPrompter @Inject constructor(
     }
 
     private suspend fun evaluate(trigger: ReviewTrigger) {
+        if (isEligible(trigger)) pending.trySend(trigger)
+    }
+
+    private suspend fun isEligible(trigger: ReviewTrigger): Boolean {
         val gates = featureFlags.gates.value
         val eligible = shouldRequestReview(
             trigger = trigger,
@@ -145,7 +157,7 @@ internal class ReviewPrompter @Inject constructor(
             allowedTriggers = parseReviewTriggers(gates.inAppReviewTriggers),
         )
         Timber.tag(TAG).d("review trigger=%s eligible=%b", trigger.tag, eligible)
-        if (eligible) pending.trySend(trigger)
+        return eligible
     }
 
     private companion object {

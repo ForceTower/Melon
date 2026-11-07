@@ -21,8 +21,14 @@ struct SessionInvalidation: Sendable {
 
 extension SessionInvalidation: DependencyKey {
     static let liveValue = SessionInvalidation(
-        markInvalid: { UserDefaults.standard.set(true, forKey: storageKey) },
-        clear: { UserDefaults.standard.set(false, forKey: storageKey) }
+        markInvalid: {
+            @Dependency(\.defaultAppStorage) var defaults
+            defaults.set(true, forKey: storageKey)
+        },
+        clear: {
+            @Dependency(\.defaultAppStorage) var defaults
+            defaults.set(false, forKey: storageKey)
+        }
     )
 
     static let testValue = SessionInvalidation()

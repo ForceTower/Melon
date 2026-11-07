@@ -31,6 +31,21 @@ import kotlinx.coroutines.launch
 // read and write the same draft without serialized payloads.
 internal enum class CommuteLocationStatus { Idle, Locating, Denied, Unavailable }
 
+// What the lines step for one direction shows.
+internal sealed interface CommuteLinesStatus {
+    data object Loading : CommuteLinesStatus
+
+    data object Failed : CommuteLinesStatus
+
+    // The catalog answered without a stop for this step.
+    data object NoStop : CommuteLinesStatus
+
+    data class Ready(
+        val network: TransitNetwork,
+        val stop: TransitStop,
+    ) : CommuteLinesStatus
+}
+
 internal data class CommuteSetupUiState(
     // The saved plan being edited; empty on a first setup.
     val existing: CommutePlan = CommutePlan(),
@@ -103,6 +118,17 @@ internal data class CommuteSetupUiState(
 
     val isLastLinesStep: Boolean
         get() = linesDirection?.let { directionAfter(it) } == null
+
+    fun linesStatus(direction: TransitDirection): CommuteLinesStatus {
+        val network = network?.takeIf { linesDirection == direction }
+        val stop = linesStop
+        return when {
+            network != null && stop != null -> CommuteLinesStatus.Ready(network, stop)
+            network != null -> CommuteLinesStatus.NoStop
+            networkFailed -> CommuteLinesStatus.Failed
+            else -> CommuteLinesStatus.Loading
+        }
+    }
 
     private companion object {
         // Accent- and case-insensitive, so "quiteria" finds "Quitéria".
@@ -315,6 +341,10 @@ internal class CommuteSetupViewModel @Inject constructor(
                 saveFailed = false,
             )
         }
+        // Going in, the stop comes from the stop step. Without one (the
+        // shared session was started over from another tab), start over too.
+        val stopMissing = currentState.linesStatus(direction) == CommuteLinesStatus.NoStop
+        if (direction == TransitDirection.ToCampus && stopMissing) emitEffect(CommuteSetupEffect.Expired)
     }
 
     private fun toggleLine(lineNumber: String) {

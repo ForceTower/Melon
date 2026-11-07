@@ -206,6 +206,87 @@ struct TokenRefreshTests {
         // A 401 from login means bad credentials, not a stale token.
         #expect(log.refreshCount == 0)
     }
+
+    @Test
+    func aRotationThatOutlivesALogoutIsDropped() async throws {
+        let (apiClient, log) = Self.client()
+        let store = SessionStore.inMemory(initial: Self.expired)
+        let held = HeldResponse()
+        StubURLProtocol.handler.setValue(Self.route(log: log) {
+            held.hold()
+            return (200, Self.rotatedPair)
+        })
+
+        await withDependencies {
+            $0.sessionStore = store
+            $0.sessionInvalidation = SessionInvalidation(markInvalid: {}, clear: {})
+        } operation: {
+            async let request = try? apiClient.send(APIRequest(path: "api/me/ping"))
+            await held.waitUntilHeld()
+            try? store.clear()
+            held.release()
+            _ = await request
+        }
+
+        #expect(log.refreshCount == 1)
+        #expect(store.current() == nil)
+    }
+
+    @Test
+    func aRejectionThatOutlivesAReloginLeavesTheNewSessionValid() async throws {
+        let (apiClient, log) = Self.client()
+        let store = SessionStore.inMemory(initial: Self.expired)
+        let relogin = Session(accessToken: "relogged", refreshToken: "fresh", user: Self.expired.user)
+        let invalidated = LockIsolated(0)
+        let held = HeldResponse()
+        StubURLProtocol.handler.setValue(Self.route(log: log) {
+            held.hold()
+            return (400, Data(#"{"ok":false,"message":"Invalid refresh token"}"#.utf8))
+        })
+
+        await withDependencies {
+            $0.sessionStore = store
+            $0.sessionInvalidation = SessionInvalidation(
+                markInvalid: { invalidated.withValue { $0 += 1 } },
+                clear: {}
+            )
+        } operation: {
+            async let request = try? apiClient.send(APIRequest(path: "api/me/ping"))
+            await held.waitUntilHeld()
+            try? store.save(relogin)
+            held.release()
+            _ = await request
+        }
+
+        #expect(log.refreshCount == 1)
+        #expect(invalidated.value == 0)
+        #expect(store.current() == relogin)
+    }
+}
+
+/// Parks a stubbed response on the transport thread until the test lets it
+/// go, so the test can change the session while the request is out.
+private final class HeldResponse: Sendable {
+    private let held: AsyncStream<Void>
+    private let heldContinuation: AsyncStream<Void>.Continuation
+    private let gate = DispatchSemaphore(value: 0)
+
+    init() {
+        (held, heldContinuation) = AsyncStream.makeStream()
+    }
+
+    func hold() {
+        heldContinuation.yield()
+        gate.wait()
+    }
+
+    func waitUntilHeld() async {
+        for await _ in held { return }
+    }
+
+    func release() {
+        gate.signal()
+    }
 }
 
 // MARK: - Stub transport

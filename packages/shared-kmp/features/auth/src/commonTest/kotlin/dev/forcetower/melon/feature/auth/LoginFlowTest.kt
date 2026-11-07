@@ -132,11 +132,14 @@ private class RecordingSessionStore :
     override suspend fun getRefreshToken(): String? = lastRefreshToken
 
     override suspend fun replaceTokens(
+        staleAccessToken: String,
         accessToken: String,
         refreshToken: String,
-    ) {
+    ): Boolean {
+        if (lastAccessToken != staleAccessToken) return false
         lastAccessToken = accessToken
         lastRefreshToken = refreshToken
+        return true
     }
 
     override suspend fun setSessionInvalid(invalid: Boolean) {

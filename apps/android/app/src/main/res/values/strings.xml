@@ -946,6 +946,7 @@
     <string name="settings_notif_class_subject_hint">O tópico previsto mudou</string>
     <string name="settings_notif_evaluation_reminder_label">Lembrete de avaliação</string>
     <string name="settings_notif_evaluation_reminder_hint">Às 20h da véspera, neste aparelho</string>
+    <string name="settings_save_failed">Não deu para salvar a preferência. Tente de novo.</string>
     <!-- endregion -->
 
     <!-- region Evaluation reminder notification -->
@@ -2611,6 +2612,7 @@
     <string name="commute_setup_lines_title">Suas linhas neste ponto</string>
     <string name="commute_setup_lines_title_leaving">Suas linhas para voltar</string>
     <string name="commute_setup_lines_subtitle">Marque as que você realmente pega. As outras ficam de fora.</string>
+    <string name="commute_setup_lines_unavailable">As linhas deste trajeto não estão disponíveis agora.</string>
     <string name="commute_setup_line_serves">passa neste ponto</string>
     <string name="commute_setup_line_does_not_serve">não passa neste ponto</string>
     <string name="commute_setup_line_duration">~%1$d min de ponta a ponta</string>

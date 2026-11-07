@@ -13,6 +13,10 @@ struct CalendarPersonalEventSheet: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 0) {
+                    if store.saveStatus == .failed {
+                        saveFailedBanner
+                            .padding(.bottom, 12)
+                    }
                     titleCard
                     categoryPicker
                         .padding(.top, 10)
@@ -64,6 +68,12 @@ struct CalendarPersonalEventSheet: View {
             guard store.isNew else { return }
             try? await Task.sleep(for: .milliseconds(420))
             isTitleFocused = true
+        }
+    }
+
+    private var saveFailedBanner: some View {
+        UNESBanner(tone: .danger, title: .localized(.calendarPersonalSaveFailedTitle)) {
+            Text(.calendarPersonalSaveFailedBody)
         }
     }
 

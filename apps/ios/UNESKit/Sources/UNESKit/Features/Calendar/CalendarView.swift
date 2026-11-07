@@ -125,30 +125,53 @@ struct CalendarView: View {
 
     @ViewBuilder
     private var bodySection: some View {
-        if store.fetchedAt == nil {
+        switch store.feed {
+        case .loading:
             SpinnerRing(size: 24, color: UNESColor.accent, trackColor: UNESColor.line)
                 .padding(.vertical, 64)
-        } else {
-            switch store.viewMode {
-            case .agenda:
-                CalendarAgendaList(groups: store.agendaGroups, today: store.today, actions: rowActions)
-                    .transition(.opacity)
-            case .grid:
-                CalendarMonthGridSection(
-                    events: store.filtered,
-                    selectedDay: store.selectedDay,
-                    today: store.today,
-                    onSelectDay: { store.send(.daySelected($0)) },
-                    actions: rowActions
-                )
-                .transition(.opacity)
+        case .loaded:
+            agendaOrGrid
+        case .failed:
+            VStack(spacing: 0) {
+                feedFailedBanner
+                    .padding(EdgeInsets(top: 4, leading: 16, bottom: 6, trailing: 16))
+                agendaOrGrid
             }
         }
     }
 
     @ViewBuilder
+    private var agendaOrGrid: some View {
+        switch store.viewMode {
+        case .agenda:
+            CalendarAgendaList(groups: store.agendaGroups, today: store.today, actions: rowActions)
+                .transition(.opacity)
+        case .grid:
+            CalendarMonthGridSection(
+                events: store.filtered,
+                selectedDay: store.selectedDay,
+                today: store.today,
+                onSelectDay: { store.send(.daySelected($0)) },
+                actions: rowActions
+            )
+            .transition(.opacity)
+        }
+    }
+
+    private var feedFailedBanner: some View {
+        UNESBanner(
+            tone: .warn,
+            title: .localized(.calendarFeedErrorTitle),
+            action: .localized(.commonTryAgain),
+            onAction: { store.send(.retryTapped) }
+        ) {
+            Text(.calendarFeedErrorBody)
+        }
+    }
+
+    @ViewBuilder
     private var footer: some View {
-        if let fetchedAt = store.fetchedAt {
+        if case let .loaded(fetchedAt) = store.feed {
             TimelineView(.everyMinute) { context in
                 Text(CalendarFormat.syncLabel(fetchedAt: fetchedAt, now: context.date))
                     .font(.system(size: 11.5, weight: .medium))

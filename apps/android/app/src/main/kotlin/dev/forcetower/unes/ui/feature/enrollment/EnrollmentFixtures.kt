@@ -167,8 +167,8 @@ internal object EnrollmentFixtures {
 
     val state = EnrollmentUiState(
         phase = EnrollmentPhase.Loaded,
-        available = true,
         window = window,
+        offersStatus = EnrollmentOffersStatus.Loaded,
         disciplines = disciplines,
         picks = preseedPicks(window, disciplines),
         studentName = "Mariana Alves",

@@ -49,6 +49,8 @@ class RefreshCredentialStatusUseCase internal constructor(
             // Passkey-only accounts with nothing on file — not a problem to
             // nag about, and not a reason to clear a flag either.
             CredentialStatus.None -> Unit
+            // A status this build doesn't know says nothing about the password.
+            null -> log.w { "unknown credential status=${health.status}, keeping the last answer" }
         }
     }
 }
@@ -90,6 +92,10 @@ class ReauthenticateUpstreamUseCase internal constructor(
 
         return when {
             response.status.isSuccess() -> {
+                // Settings shows the stored password, so it follows the one the
+                // portal just accepted.
+                val username = sessionStore.upstreamUsername.value ?: sessionStore.getCredentials()?.username
+                if (username != null) sessionStore.updateUpstreamCredentials(username, password)
                 sessionStore.setCredentialsInvalid(false)
                 log.i { "reauth ok, sync resumes server-side" }
                 Outcome.Ok(Unit)
@@ -103,9 +109,10 @@ class ReauthenticateUpstreamUseCase internal constructor(
     }
 }
 
-private fun String.toDomain(): CredentialStatus =
+private fun String.toDomain(): CredentialStatus? =
     when (lowercase()) {
+        "ok" -> CredentialStatus.Ok
         "invalid" -> CredentialStatus.Invalid
         "none" -> CredentialStatus.None
-        else -> CredentialStatus.Ok
+        else -> null
     }

@@ -1,7 +1,10 @@
 package dev.forcetower.melon.core.session.data
 
+import androidx.room3.withWriteTransaction
 import co.touchlab.kermit.Logger
+import dev.forcetower.melon.core.database.MelonDatabase
 import dev.forcetower.melon.core.database.dao.AcademicDao
+import dev.forcetower.melon.core.database.dao.CalendarEventDao
 import dev.forcetower.melon.core.database.dao.CredentialsDao
 import dev.forcetower.melon.core.database.dao.CurriculumDao
 import dev.forcetower.melon.core.database.dao.MessageDao
@@ -27,6 +30,7 @@ import dev.zacsweers.metro.SingleIn
 import dev.zacsweers.metro.binding
 import kotlin.time.Clock
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -35,6 +39,9 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 
 internal const val ACCESS_TOKEN_KEY = "melon.access_token"
 internal const val REFRESH_TOKEN_KEY = "melon.refresh_token"
@@ -59,11 +66,17 @@ internal class SessionStoreImpl(
     private val syncStateDao: SyncStateDao,
     private val personalEventDao: PersonalEventDao,
     private val curriculumDao: CurriculumDao,
+    private val calendarEventDao: CalendarEventDao,
+    private val database: MelonDatabase,
     private val scope: CoroutineScope,
     logger: Logger,
 ) : SessionStore {
 
     private val log = logger.withTag("SessionStoreImpl")
+
+    // Serializes every write of the token pair, so a rotation's compare-and-set
+    // can't interleave with a login or a logout.
+    private val tokens = Mutex()
     private val tokenPresent = MutableStateFlow(false)
     private val sessionInvalidState = MutableStateFlow(false)
     private val credentialsInvalidState = MutableStateFlow(false)
@@ -104,13 +117,20 @@ internal class SessionStoreImpl(
     override suspend fun getRefreshToken(): String? = storage.get(REFRESH_TOKEN_KEY)
 
     override suspend fun replaceTokens(
+        staleAccessToken: String,
         accessToken: String,
         refreshToken: String,
-    ) {
-        storage.put(ACCESS_TOKEN_KEY, accessToken)
-        storage.put(REFRESH_TOKEN_KEY, refreshToken)
-        log.i { "token pair rotated" }
-    }
+    ): Boolean =
+        tokens.withLock {
+            if (storage.get(ACCESS_TOKEN_KEY) != staleAccessToken) {
+                log.i { "token rotation dropped: the session ended or changed meanwhile" }
+                return@withLock false
+            }
+            storage.put(ACCESS_TOKEN_KEY, accessToken)
+            storage.put(REFRESH_TOKEN_KEY, refreshToken)
+            log.i { "token pair rotated" }
+            true
+        }
 
     override suspend fun setSessionInvalid(invalid: Boolean) {
         if (sessionInvalidState.value == invalid) return
@@ -149,8 +169,10 @@ internal class SessionStoreImpl(
         username: String?,
         password: String?,
     ) {
-        storage.put(ACCESS_TOKEN_KEY, accessToken)
-        storage.put(REFRESH_TOKEN_KEY, refreshToken)
+        tokens.withLock {
+            storage.put(ACCESS_TOKEN_KEY, accessToken)
+            storage.put(REFRESH_TOKEN_KEY, refreshToken)
+        }
         userDao.upsert(UserEntity(id = user.id, name = user.name, imageUrl = user.imageUrl))
         if (username != null && password != null) {
             credentialsDao.upsert(
@@ -161,6 +183,9 @@ internal class SessionStoreImpl(
                     updatedAt = Clock.System.now().toString(),
                 ),
             )
+            // The server only signs a password login in after the portal took
+            // that password; a passkey login says nothing about it.
+            setCredentialsInvalid(false)
         }
         tokenPresent.value = true
         setSessionInvalid(false)
@@ -190,43 +215,58 @@ internal class SessionStoreImpl(
         log.i { "upstream credentials backfilled userId=${current.id}" }
     }
 
-    override suspend fun logout() {
-        log.i { "logout start" }
-        storage.remove(ACCESS_TOKEN_KEY)
-        storage.remove(REFRESH_TOKEN_KEY)
-        // Wipe user-scoped local data on logout. `PendingMutation` is not
-        // cleared, but nothing enqueues into it yet; whatever starts writing
-        // there must clear it here or scope its rows to a user, so one
-        // account's writes never replay under another. Most deletes
-        // cascade: `MessageDao.clear` takes scopes/attachments/states with
-        // it, and clearing `Discipline` + `Semester` wipes the whole
-        // academic subtree (DisciplineOffer → Class → StudentClass /
-        // Lecture / Grade / ...). `credentialsDao.clear()` runs before the
-        // user row is deleted so the teardown reads top-down even though
-        // the FK cascade would also catch it.
-        messageDao.clear()
-        academicDao.clearDisciplines()
-        academicDao.clearTeachers()
-        academicDao.clearSpaces()
-        semesterDao.clear()
-        studentDao.clearStudents()
-        studentDao.clearCourses()
-        settingsDao.clear()
-        userSettingsDao.clear()
-        credentialsDao.clear()
-        syncStateDao.clear()
-        // The student's own calendar entries go too: the next account on this
-        // device must not inherit them.
-        personalEventDao.clear()
-        // The curriculum mirror is course-scoped and carries the student's own
-        // situation per slot, so it can't survive into the next account.
-        curriculumDao.clear()
-        userDao.clear()
-        tokenPresent.value = false
-        setSessionInvalid(false)
-        setCredentialsInvalid(false)
-        log.i { "logout complete: local data wiped" }
-    }
+    // A confirmed logout finishes even when the caller's scope is cancelled
+    // mid-teardown.
+    override suspend fun logout() =
+        withContext(NonCancellable) {
+            log.i { "logout start" }
+            // Wipe user-scoped local data on logout, in one transaction and
+            // before the tokens go, so a failure part-way keeps the whole
+            // session rather than handing the previous account's `User` and
+            // `Credentials` rows to the next login. `PendingMutation` is not
+            // cleared, but nothing enqueues into it yet; whatever starts writing
+            // there must clear it here or scope its rows to a user, so one
+            // account's writes never replay under another. Most deletes
+            // cascade: `MessageDao.clear` takes scopes/attachments/states with
+            // it, and clearing `Discipline` + `Semester` wipes the whole
+            // academic subtree (DisciplineOffer → Class → StudentClass /
+            // Lecture / Grade / ...). `credentialsDao.clear()` runs before the
+            // user row is deleted so the teardown reads top-down even though
+            // the FK cascade would also catch it.
+            database.withWriteTransaction {
+                messageDao.clear()
+                academicDao.clearDisciplines()
+                academicDao.clearTeachers()
+                academicDao.clearSpaces()
+                semesterDao.clear()
+                studentDao.clearStudents()
+                studentDao.clearCourses()
+                settingsDao.clear()
+                userSettingsDao.clear()
+                credentialsDao.clear()
+                syncStateDao.clear()
+                // The student's own calendar entries go too: the next account on this
+                // device must not inherit them.
+                personalEventDao.clear()
+                // The curriculum mirror is course-scoped and carries the student's own
+                // situation per slot, so it can't survive into the next account.
+                curriculumDao.clear()
+                // The academic calendar holds course- and class-scoped rows and has
+                // no FK to cascade from.
+                calendarEventDao.clear()
+                userDao.clear()
+            }
+            tokens.withLock {
+                storage.remove(ACCESS_TOKEN_KEY)
+                storage.remove(REFRESH_TOKEN_KEY)
+            }
+            storage.remove(UPSTREAM_USERNAME_KEY)
+            upstreamUsernameState.value = null
+            tokenPresent.value = false
+            setSessionInvalid(false)
+            setCredentialsInvalid(false)
+            log.i { "logout complete: local data wiped" }
+        }
 }
 
 private fun UserEntity.toDomain() = User(id = id, name = name, imageUrl = imageUrl)

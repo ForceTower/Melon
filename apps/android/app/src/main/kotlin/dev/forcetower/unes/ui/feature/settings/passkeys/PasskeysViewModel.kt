@@ -43,6 +43,7 @@ internal class PasskeysViewModel @Inject constructor(
 ) : MviViewModel<PasskeysUiState, PasskeysIntent, PasskeysEffect>(PasskeysUiState()) {
 
     private var toastJob: Job? = null
+    private var addJob: Job? = null
 
     init {
         load(initial = true)
@@ -57,9 +58,7 @@ internal class PasskeysViewModel @Inject constructor(
             }
             is PasskeysIntent.SelectTarget -> setState { copy(target = intent.target) }
             is PasskeysIntent.ContinueAdd -> continueAdd(intent.activity)
-            PasskeysIntent.CloseSheet -> setState {
-                copy(sheet = PasskeySheet.None, addStep = AddStep.Choose, editing = false, confirmDeleteId = null)
-            }
+            PasskeysIntent.CloseSheet -> closeSheet()
             is PasskeysIntent.OpenDetail -> setState {
                 val item = items.firstOrNull { it.id == intent.id }
                 copy(
@@ -73,7 +72,8 @@ internal class PasskeysViewModel @Inject constructor(
             is PasskeysIntent.EditNameChanged -> setState { copy(editName = intent.value) }
             PasskeysIntent.SaveName -> saveName()
             PasskeysIntent.RequestDelete -> setState { copy(confirmDeleteId = detailId) }
-            PasskeysIntent.CancelDelete -> setState { copy(confirmDeleteId = null) }
+            // A revoke already sent can't be called back, so its dialog stays.
+            PasskeysIntent.CancelDelete -> setState { if (deleting) this else copy(confirmDeleteId = null) }
             PasskeysIntent.ConfirmDelete -> confirmDelete()
             PasskeysIntent.DismissToast -> setState { copy(toast = null) }
         }
@@ -95,10 +95,19 @@ internal class PasskeysViewModel @Inject constructor(
         }
     }
 
+    // Dismissed before the server accepted the new key, the add is abandoned
+    // (like iOS `addDismissed`). Past that, it only finishes its bookkeeping.
+    private fun closeSheet() {
+        if (currentState.addStep == AddStep.Auth) addJob?.cancel()
+        setState {
+            copy(sheet = PasskeySheet.None, addStep = AddStep.Choose, editing = false, confirmDeleteId = null)
+        }
+    }
+
     private fun continueAdd(activity: Activity) {
         analytics.selectContent(ContentTypes.PASSKEY, properties = mapOf("action" to "create"))
         setState { copy(addStep = AddStep.Auth) }
-        viewModelScope.launch {
+        addJob = viewModelScope.launch {
             val options = when (val outcome = getRegistrationOptions()) {
                 is Outcome.Ok -> outcome.value
                 is Outcome.Err -> return@launch abortAdd(toastError = true)
@@ -140,9 +149,11 @@ internal class PasskeysViewModel @Inject constructor(
         delay(SUCCESS_DWELL_MS)
         val refreshed = (listPasskeys() as? Outcome.Ok)?.value?.map { it.toItem() } ?: currentState.items
         setState {
+            // Dismissed during the dwell, the sheet may be showing something else by now.
+            val showingSuccess = sheet == PasskeySheet.Add && addStep == AddStep.Success
             copy(
-                sheet = PasskeySheet.None,
-                addStep = AddStep.Choose,
+                sheet = if (showingSuccess) PasskeySheet.None else sheet,
+                addStep = if (showingSuccess) AddStep.Choose else addStep,
                 items = refreshed,
                 newlyAddedId = refreshed.firstOrNull()?.id,
             )
@@ -187,19 +198,17 @@ internal class PasskeysViewModel @Inject constructor(
         analytics.selectContent(ContentTypes.PASSKEY, id, mapOf("action" to "revoke"))
         setState { copy(deleting = true) }
         viewModelScope.launch {
-            when (deletePasskey(id)) {
-                is Outcome.Ok -> {
-                    refreshItems()
-                    setState { copy(deleting = false, confirmDeleteId = null, sheet = PasskeySheet.None) }
-                    showToast(PasskeyToast.Deleted)
-                }
-                is Outcome.Err -> {
-                    // NotFound means it's already gone; either way drop it and close.
-                    refreshItems()
-                    setState { copy(deleting = false, confirmDeleteId = null, sheet = PasskeySheet.None) }
-                    showToast(PasskeyToast.Error)
-                }
+            val outcome = deletePasskey(id)
+            // NotFound means it's already gone; either way drop it and close its detail.
+            refreshItems()
+            setState {
+                copy(
+                    deleting = false,
+                    confirmDeleteId = null,
+                    sheet = if (sheet == PasskeySheet.Detail && detailId == id) PasskeySheet.None else sheet,
+                )
             }
+            showToast(if (outcome is Outcome.Ok) PasskeyToast.Deleted else PasskeyToast.Error)
         }
     }
 

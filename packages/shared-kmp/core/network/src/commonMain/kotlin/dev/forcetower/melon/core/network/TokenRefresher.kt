@@ -8,8 +8,9 @@ interface TokenRefresher {
      *
      * [staleAccessToken] is the token the failing request actually carried, so
      * a caller that lost a race can tell that someone else already rotated
-     * instead of burning the new pair a second time. Returns true when a
-     * usable access token is persisted and the request is worth retrying.
+     * instead of burning the new pair a second time. Returns true only when the
+     * stored access token is the rotation of [staleAccessToken], so the request
+     * is worth retrying under it; never for a token from a later login.
      */
     suspend fun refresh(staleAccessToken: String): Boolean
 }

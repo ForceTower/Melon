@@ -9,10 +9,9 @@ internal interface SettingsRepository {
     fun observe(): Flow<UserSettings?>
 
     // Optimistic write: applies the patch to the local DAO immediately,
-    // then forwards it to the API. Returns the network outcome so callers
-    // can surface failures, but the local row is already updated either
-    // way. The next profile sync reconciles drift if the upload didn't
-    // land.
+    // then forwards it to the API. On any failure the patched fields are
+    // rolled back, so observers re-emit the previous values, and the error
+    // is returned for callers to surface.
     suspend fun update(patch: UserSettingsPatch): Outcome<UserSettings, SettingsError>
 }
 

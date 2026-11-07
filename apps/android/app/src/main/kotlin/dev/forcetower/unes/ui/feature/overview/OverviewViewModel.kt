@@ -46,6 +46,7 @@ import javax.inject.Inject
 import kotlin.time.Clock
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Instant
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
@@ -178,6 +179,7 @@ internal class OverviewViewModel @Inject constructor(
 ) : MviViewModel<OverviewUiState, OverviewIntent, OverviewEffect>(
     OverviewUiState(clock = appClock.now(), timeZone = appClock.timeZone),
 ) {
+    private var reauthJob: Job? = null
 
     init {
         viewModelScope.launch {
@@ -272,7 +274,12 @@ internal class OverviewViewModel @Inject constructor(
                 setState { copy(reauthErrorRes = null) }
                 emitEffect(OverviewEffect.ShowReauth)
             }
-            OverviewIntent.ReauthDismissed -> setState { copy(reauthErrorRes = null, reauthLoading = false) }
+            // The dismissed sheet's attempt goes with it (as on iOS), so its
+            // late reply can't land on the next sheet.
+            OverviewIntent.ReauthDismissed -> {
+                reauthJob?.cancel()
+                setState { copy(reauthErrorRes = null, reauthLoading = false) }
+            }
             is OverviewIntent.ReauthSubmitted -> submitReauth(intent.password)
             OverviewIntent.InterceptionTapped -> {
                 analytics.selectContent(contentType = ContentTypes.CTA, itemId = "tls_intercepted")
@@ -300,7 +307,7 @@ internal class OverviewViewModel @Inject constructor(
     private fun submitReauth(password: String) {
         if (currentState.reauthLoading) return
         setState { copy(reauthLoading = true, reauthErrorRes = null) }
-        viewModelScope.launch {
+        reauthJob = viewModelScope.launch {
             when (val outcome = reauthenticateUpstream(password)) {
                 is Outcome.Ok -> {
                     // The use case already cleared the flag, which drops the

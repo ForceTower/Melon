@@ -23,5 +23,12 @@ kotlin {
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.content.negotiation)
         }
+        jvmTest.dependencies {
+            implementation(kotlin("test"))
+            implementation(libs.androidx.room.runtime)
+            implementation(libs.androidx.sqlite.bundled)
+            implementation(libs.ktor.client.mock)
+            implementation(libs.ktor.serialization.kotlinx.json)
+        }
     }
 }

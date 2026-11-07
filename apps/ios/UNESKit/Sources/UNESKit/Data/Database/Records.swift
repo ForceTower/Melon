@@ -188,7 +188,7 @@ struct MessageRecord: Codable, Equatable, Sendable, FetchableRecord, Persistable
     var senderType: Int? = nil
     /// Server-side star, OR-merged across linked students. Star toggles flip
     /// it optimistically alongside the `messageStates` overlay; refreshes
-    /// then re-stamp it with the acked value.
+    /// re-stamp it with the server's value once the toggle is acked.
     var starred: Bool? = nil
     /// The admin behind an app message; nil for upstream messages and
     /// comunicados sent before the server recorded it.
@@ -218,15 +218,18 @@ struct MessageAttachmentRecord: Codable, Equatable, Sendable, FetchableRecord, P
     var position: Int?
 }
 
-/// Local read/star overlay. The backend has no mark-read or star endpoint, so
-/// this table is written only by the app and never touched by sync — a
-/// re-fetched message keeps its local state.
+/// Local read/star overlay, written only by the app and never touched by
+/// sync — a re-fetched message keeps its local state.
 struct MessageStateRecord: Codable, Equatable, Sendable, FetchableRecord, PersistableRecord {
     static let databaseTableName = "messageStates"
     var messageId: String
     /// ISO8601 stamp of the local read; nil while unread locally.
     var readAt: String?
     var starred: Bool
+    /// The server hasn't acknowledged the local read yet.
+    var readAckPending = false
+    /// The server hasn't acknowledged `starred` yet.
+    var starAckPending = false
 }
 
 struct SyncStateRecord: Codable, Equatable, Sendable, FetchableRecord, PersistableRecord {

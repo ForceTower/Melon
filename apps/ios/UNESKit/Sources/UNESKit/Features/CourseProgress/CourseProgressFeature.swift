@@ -18,13 +18,11 @@ struct CourseProgressFeature {
         var loadFailed = false
         var isComplementaryExplainerPresented = false
         var isVersionPickerPresented = false
-        /// The version whose PUT (or the DELETE back to automatic, as
-        /// `automaticVersionSwitch`) is in flight — the picker locks and
-        /// spins on it meanwhile.
-        var switchingVersionId: String?
+        /// The switch in flight — the picker locks and spins on it meanwhile.
+        var versionSwitch: VersionSwitch?
         @Presents var alert: AlertState<Never>?
 
-        var isSwitchingVersion: Bool { switchingVersionId != nil }
+        var isSwitchingVersion: Bool { versionSwitch != nil }
 
         init(course: String? = nil, progress: CourseProgress? = nil) {
             self.course = course
@@ -32,9 +30,12 @@ struct CourseProgressFeature {
         }
     }
 
-    /// Sentinel for `switchingVersionId` while resetting to the server's
-    /// resolution rather than picking a version.
-    static let automaticVersionSwitch = "automatic"
+    enum VersionSwitch: Equatable {
+        /// A PUT binding this curriculum id.
+        case version(String)
+        /// The DELETE back to the server's own resolution.
+        case automatic
+    }
 
     enum Action: Equatable {
         case task
@@ -137,7 +138,7 @@ struct CourseProgressFeature {
                 }
                 log.info("select curriculum version id=\(curriculumId)")
                 analytics.selectContent(contentType: ContentTypes.curriculumVersion, itemId: curriculumId)
-                state.switchingVersionId = curriculumId
+                state.versionSwitch = .version(curriculumId)
                 return .run { send in
                     do {
                         try await courseProgressRepository.selectVersion(curriculumId)
@@ -151,8 +152,8 @@ struct CourseProgressFeature {
             case .automaticVersionTapped:
                 guard !state.isSwitchingVersion, state.progress?.curriculum?.isManualPick == true else { return .none }
                 log.info("reset curriculum version to automatic")
-                analytics.selectContent(contentType: ContentTypes.curriculumVersion, itemId: Self.automaticVersionSwitch)
-                state.switchingVersionId = Self.automaticVersionSwitch
+                analytics.selectContent(contentType: ContentTypes.curriculumVersion, itemId: "automatic")
+                state.versionSwitch = .automatic
                 return .run { send in
                     do {
                         try await courseProgressRepository.resetVersion()
@@ -164,7 +165,7 @@ struct CourseProgressFeature {
                 .cancellable(id: CancelID.versionSwitch, cancelInFlight: true)
 
             case let .versionSwitchFinished(succeeded):
-                state.switchingVersionId = nil
+                state.versionSwitch = nil
                 // The rebuilt payload already landed through the observation;
                 // the sheet closes over the new numbers.
                 if succeeded {

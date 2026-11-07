@@ -18,6 +18,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.IconCompat
 import androidx.core.net.toUri
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dev.forcetower.unes.BuildConfig
 import dev.forcetower.unes.MainActivity
 import dev.forcetower.unes.R
 import dev.forcetower.unes.ui.feature.commute.CommuteEstimate
@@ -57,7 +58,7 @@ internal class CommuteLiveUpdateNotifier @Inject constructor(
     ) {
         ensureChannel()
         val notification = when (val view = commuteLiveView(record, now, stale)) {
-            is CommuteLiveView.Following -> following(record, view)
+            is CommuteLiveView.Following -> following(record, view, now)
             CommuteLiveView.Passed -> final(record, R.string.commute_follow_passed, dismissAt, now)
             CommuteLiveView.NoEstimate -> final(record, R.string.commute_follow_no_estimate, dismissAt, now)
         }
@@ -76,6 +77,9 @@ internal class CommuteLiveUpdateNotifier @Inject constructor(
         activityId: String,
         at: Instant,
     ) {
+        // Scenario builds pin AppClock to a fixed past date, so every alarm
+        // would ring at once and onStale would re-arm it in a loop.
+        if (BuildConfig.SCENARIO) return
         val alarms = context.getSystemService(AlarmManager::class.java) ?: return
         alarms.setAndAllowWhileIdle(AlarmManager.RTC, at.toEpochMilliseconds(), staleIntent(activityId))
     }
@@ -87,6 +91,7 @@ internal class CommuteLiveUpdateNotifier @Inject constructor(
     private fun following(
         record: CommuteLiveRecord,
         view: CommuteLiveView.Following,
+        now: Instant,
     ): Notification {
         val resources = context.resources
         val color = ContextCompat.getColor(context, lineColor(record.lineNumber))
@@ -119,6 +124,8 @@ internal class CommuteLiveUpdateNotifier @Inject constructor(
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setWhen(record.updatedAt * 1_000)
             .setShowWhen(true)
+            // Gone at the expiry even if the alarm that ends the follow is late.
+            .setTimeoutAfter((record.expiry - now).inWholeMilliseconds)
             .setContentIntent(openApp())
             .setDeleteIntent(stopIntent(record.activityId))
             .addAction(0, resources.getString(R.string.commute_live_action_stop), stopIntent(record.activityId))

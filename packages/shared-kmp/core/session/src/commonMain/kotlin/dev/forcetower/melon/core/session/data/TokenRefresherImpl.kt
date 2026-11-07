@@ -49,6 +49,9 @@ internal class TokenRefresherImpl(
      *  a structurally dead session re-attempts the refresh on every request. */
     private var burnedAccessToken: String? = null
 
+    /** The last stale → fresh access token swap this refresher persisted. */
+    private var lastRotation: Pair<String, String>? = null
+
     // Plugin-free client on purpose: routing the refresh through the shared
     // one would recurse straight back into the 401 hook that called us.
     private val http = HttpClient(engine) {
@@ -62,8 +65,10 @@ internal class TokenRefresherImpl(
             val current = sessionStore.getAccessToken()
             when {
                 current == null -> false
-                // Another caller rotated the pair while this request sat on its 401.
-                current != staleAccessToken -> true
+                // Another caller rotated the pair while this request sat on its
+                // 401. Any other token is a logout and a new login, possibly of
+                // another account, so the request must not be replayed under it.
+                current != staleAccessToken -> lastRotation == (staleAccessToken to current)
                 burnedAccessToken == staleAccessToken -> false
                 else -> rotate(staleAccessToken)
             }
@@ -86,14 +91,21 @@ internal class TokenRefresherImpl(
                 response.status.isSuccess() -> {
                     val envelope = response.body<ApiEnvelope<RefreshResponse>>()
                     val rotated = envelope.data
-                    if (envelope.ok && rotated != null) {
-                        sessionStore.replaceTokens(rotated.accessToken, rotated.refreshToken)
-                        sessionStore.setSessionInvalid(false)
-                        log.i { "token refreshed" }
-                        true
-                    } else {
-                        log.w { "refresh returned an empty envelope, staying retryable" }
-                        false
+                    when {
+                        !envelope.ok || rotated == null -> {
+                            log.w { "refresh returned an empty envelope, staying retryable" }
+                            false
+                        }
+                        !sessionStore.replaceTokens(staleAccessToken, rotated.accessToken, rotated.refreshToken) -> {
+                            log.i { "refresh discarded: logged out or signed in again meanwhile" }
+                            false
+                        }
+                        else -> {
+                            lastRotation = staleAccessToken to rotated.accessToken
+                            sessionStore.setSessionInvalid(false)
+                            log.i { "token refreshed" }
+                            true
+                        }
                     }
                 }
                 // 400 covers a spent, revoked or foreign refresh token — the

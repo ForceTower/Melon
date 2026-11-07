@@ -12,7 +12,13 @@ metro {
 
 kotlin {
     sourceSets {
-        jvmTest { resources.srcDir(rootProject.file("contracts")) }
+        jvmTest {
+            resources.srcDir(rootProject.file("contracts"))
+            dependencies {
+                implementation(libs.androidx.room.runtime)
+                implementation(libs.androidx.sqlite.bundled)
+            }
+        }
         commonMain.dependencies {
             api(project(":packages:shared-kmp:core:common"))
             implementation(project(":packages:shared-kmp:core:network"))

@@ -17,6 +17,7 @@ kotlin {
             api(project(":packages:shared-kmp:core:network"))
             implementation(project(":packages:shared-kmp:core:storage"))
             implementation(project(":packages:shared-kmp:core:database"))
+            implementation(libs.androidx.room.runtime)
             implementation(libs.kermit)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.datetime)
@@ -32,6 +33,9 @@ kotlin {
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.serialization.kotlinx.json)
             implementation(libs.kotlinx.serialization.json)
+        }
+        jvmTest.dependencies {
+            implementation(libs.androidx.sqlite.bundled)
         }
     }
 }

@@ -2,7 +2,6 @@ package dev.forcetower.melon.feature.messages.domain.usecase
 
 import co.touchlab.kermit.Logger
 import dev.forcetower.melon.core.database.dao.MessageDao
-import dev.forcetower.melon.core.database.entity.MessageStateEntity
 import dev.forcetower.melon.feature.messages.data.network.MessagesApi
 import dev.zacsweers.metro.Inject
 import kotlin.time.Clock
@@ -23,17 +22,8 @@ class MarkMessageAsReadUseCase internal constructor(
 
     suspend operator fun invoke(messageId: String) {
         if (messageDao.getMessage(messageId)?.read == true) return
-        val existing = messageDao.getState(messageId)
-        if (existing?.readAt != null) return
-        val now = Clock.System.now().toString()
-        messageDao.upsertState(
-            MessageStateEntity(
-                messageId = messageId,
-                readAt = now,
-                starred = existing?.starred == true,
-                updatedAt = now,
-            ),
-        )
+        if (messageDao.getState(messageId)?.readAt != null) return
+        messageDao.markRead(messageId, Clock.System.now().toString())
         try {
             api.ackRead(listOf(messageId))
         } catch (e: CancellationException) {

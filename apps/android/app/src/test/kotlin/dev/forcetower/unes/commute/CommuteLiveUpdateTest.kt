@@ -13,8 +13,16 @@ import kotlin.test.assertIs
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
+import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
 import kotlin.time.Instant
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.decodeFromJsonElement
+import kotlinx.serialization.json.encodeToJsonElement
+import kotlinx.serialization.json.jsonObject
 
 // What the followed-bus notification says and how it draws the route line,
 // decided before any string or platform style gets involved.
@@ -116,5 +124,28 @@ internal class CommuteLiveUpdateTest {
     fun aBusThatPassedLeavesNothingToFollow() {
         val passed = record().copy(update = CommuteLiveRecord.Update(status = "passed"))
         assertNull(passed.followSeed())
+    }
+
+    @Test
+    fun aFollowExpiresEightHoursAfterItStartedWhateverPushesCameSince() {
+        val pushed = record().copy(updatedAt = (now + 30.minutes).epochSeconds)
+        val stored = json.decodeFromString<CommuteLiveRecord>(json.encodeToString(pushed))
+        assertEquals(now + 8.hours, stored.expiry)
+        assertFalse(stored.expired(now + 8.hours - 1.seconds))
+        assertTrue(stored.expired(now + 8.hours))
+    }
+
+    @Test
+    fun aFollowStoredBeforeItHadAnExpiryEndsEightHoursAfterItsLastUpdate() {
+        val lastUpdate = now + 30.minutes
+        val current = json.encodeToJsonElement(record().copy(updatedAt = lastUpdate.epochSeconds)).jsonObject
+        val legacy = JsonObject(current - "expiresAt" + ("registered" to JsonPrimitive(true)))
+        val stored = json.decodeFromJsonElement<CommuteLiveRecord>(legacy)
+        assertEquals(lastUpdate + 8.hours, stored.expiry)
+        assertNull(stored.registeredToken)
+    }
+
+    private companion object {
+        val json = Json { ignoreUnknownKeys = true }
     }
 }

@@ -32,8 +32,8 @@ struct PasskeysFeature {
         var detail: PasskeyCredential?
         var isEditingName = false
         var renameText = ""
-        /// A rename or delete request is in flight.
-        var isMutating = false
+        /// Credentials with a rename or delete request in flight.
+        var mutatingIDs: Set<String> = []
         var mutationError: String?
 
         // Delete confirmation (native alert)
@@ -46,6 +46,11 @@ struct PasskeysFeature {
 
         var avatarInitial: String {
             accountName?.first.map { String($0).uppercased() } ?? "•"
+        }
+
+        /// The open detail's own rename or delete is in flight.
+        var isMutating: Bool {
+            detail.map { mutatingIDs.contains($0.id) } ?? false
         }
     }
 
@@ -61,7 +66,7 @@ struct PasskeysFeature {
         case addTargetSelected(PasskeyTarget)
         case addContinueTapped
         case addDismissed
-        case created(id: String, credentials: [PasskeyCredential])
+        case created(id: String)
         case addSuccessCompleted
         case createCancelled
         case createFailed(message: String?)
@@ -81,7 +86,7 @@ struct PasskeysFeature {
         case deleteConfirmed
         case deleteResponse(id: String)
 
-        case mutationFailed(message: String?)
+        case mutationFailed(id: String, message: String?)
 
         // Feedback
         case highlightExpired
@@ -99,7 +104,7 @@ struct PasskeysFeature {
     private static let toastWindow: Duration = .milliseconds(2600)
     private static let highlightWindow: Duration = .seconds(2)
 
-    private enum CancelID { case create, mutate, highlight, toast, success }
+    private enum CancelID: Hashable { case create, mutate(String), highlight, toast, success }
 
     var body: some ReducerOf<Self> {
         Reduce { state, action in
@@ -147,20 +152,23 @@ struct PasskeysFeature {
             case .addDismissed:
                 state.isAddPresented = false
                 state.addStep = .choose
+                state.isCreating = false
                 state.createError = nil
                 return .cancel(id: CancelID.create)
 
-            case let .created(id, credentials):
+            case let .created(id):
                 state.isCreating = false
-                state.credentials = credentials
                 state.newCredentialID = id
                 state.addStep = .success
                 log.info("passkey created")
-                return .run { send in
-                    try await clock.sleep(for: Self.successLinger)
-                    await send(.addSuccessCompleted)
-                }
-                .cancellable(id: CancelID.success, cancelInFlight: true)
+                return .merge(
+                    loadCredentials(),
+                    .run { send in
+                        try await clock.sleep(for: Self.successLinger)
+                        await send(.addSuccessCompleted)
+                    }
+                    .cancellable(id: CancelID.success, cancelInFlight: true)
+                )
 
             case .addSuccessCompleted:
                 state.isAddPresented = false
@@ -219,7 +227,7 @@ struct PasskeysFeature {
                     itemId: detail.id,
                     properties: ["action": "rename"]
                 )
-                state.isMutating = true
+                state.mutatingIDs.insert(detail.id)
                 state.mutationError = nil
                 log.info("rename passkey")
                 return .run { send in
@@ -227,12 +235,12 @@ struct PasskeysFeature {
                     await send(.renameResponse(id: detail.id, name: name))
                 } catch: { [log] error, send in
                     log.warn("passkey rename failed", error: error)
-                    await send(.mutationFailed(message: (error as? AuthError)?.message))
+                    await send(.mutationFailed(id: detail.id, message: (error as? AuthError)?.message))
                 }
-                .cancellable(id: CancelID.mutate, cancelInFlight: true)
+                .cancellable(id: CancelID.mutate(detail.id), cancelInFlight: true)
 
             case let .renameResponse(id, name):
-                state.isMutating = false
+                state.mutatingIDs.remove(id)
                 if let index = state.credentials.firstIndex(where: { $0.id == id }) {
                     state.credentials[index] = state.credentials[index].renamed(to: name)
                 }
@@ -261,7 +269,7 @@ struct PasskeysFeature {
                     properties: ["action": "revoke"]
                 )
                 state.pendingDelete = nil
-                state.isMutating = true
+                state.mutatingIDs.insert(target.id)
                 state.mutationError = nil
                 log.info("delete passkey")
                 return .run { send in
@@ -269,12 +277,12 @@ struct PasskeysFeature {
                     await send(.deleteResponse(id: target.id))
                 } catch: { [log] error, send in
                     log.warn("passkey delete failed", error: error)
-                    await send(.mutationFailed(message: (error as? AuthError)?.message))
+                    await send(.mutationFailed(id: target.id, message: (error as? AuthError)?.message))
                 }
-                .cancellable(id: CancelID.mutate, cancelInFlight: true)
+                .cancellable(id: CancelID.mutate(target.id), cancelInFlight: true)
 
             case let .deleteResponse(id):
-                state.isMutating = false
+                state.mutatingIDs.remove(id)
                 state.credentials.removeAll { $0.id == id }
                 if state.detail?.id == id {
                     state.detail = nil
@@ -282,8 +290,9 @@ struct PasskeysFeature {
                 log.info("passkey deleted")
                 return showToast(String.localized(.passkeysToastDeleted), in: &state)
 
-            case let .mutationFailed(message):
-                state.isMutating = false
+            case let .mutationFailed(id, message):
+                state.mutatingIDs.remove(id)
+                guard state.detail?.id == id else { return .none }
                 state.mutationError = message ?? String.localized(.passkeysMutationErrorMessage)
                 return .none
 
@@ -317,8 +326,7 @@ struct PasskeysFeature {
             let options = try await passkeyRepository.registrationOptions()
             let attestation = try await passkeyClient.register(options, target)
             try await passkeyRepository.register(attestation, passkeyDeviceName(for: target))
-            let credentials = try await passkeyRepository.credentials()
-            await send(.created(id: attestation.id, credentials: credentials))
+            await send(.created(id: attestation.id))
         } catch: { [log] error, send in
             if case AuthError.cancelled = error {
                 log.info("passkey create cancelled")

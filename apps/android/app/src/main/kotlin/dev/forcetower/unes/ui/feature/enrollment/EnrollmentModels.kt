@@ -15,7 +15,19 @@ import dev.forcetower.unes.mvi.UiState
 // `EnrollmentSession`). The catalogue is live/uncached; picks are in-memory
 // only and become the wholesale submit payload — there is no draft endpoint.
 
-internal enum class EnrollmentPhase { Idle, Loading, Loaded, Failed }
+internal sealed interface EnrollmentPhase {
+    data object Idle : EnrollmentPhase
+    data object Loading : EnrollmentPhase
+    data object Loaded : EnrollmentPhase
+    data class Failed(
+        val error: EnrollmentError,
+    ) : EnrollmentPhase
+}
+
+// Offers tree of the current window. Failed renders an inline retry instead
+// of an empty catalogue. Picks are seeded from the saved proposal whenever
+// the offers become Loaded from any other status.
+internal enum class EnrollmentOffersStatus { Pending, Loaded, Failed }
 
 internal enum class EnrollmentFilter { All, Mandatory, Optional }
 
@@ -66,14 +78,10 @@ internal sealed interface EnrollmentBlocker {
 
 internal data class EnrollmentUiState(
     val phase: EnrollmentPhase = EnrollmentPhase.Idle,
-    val error: EnrollmentError? = null,
-    // Window resolved and student is eligible. False after a Loaded phase
-    // means "no enrollment right now" (the moon-zzz empty state).
-    val available: Boolean = false,
+    // Null after a Loaded phase means "no enrollment right now" (the
+    // moon-zzz empty state).
     val window: EnrollmentWindow? = null,
-    // Window resolved but the offers tree failed — status renders with an
-    // inline retry instead of an empty catalogue.
-    val offersFailed: Boolean = false,
+    val offersStatus: EnrollmentOffersStatus = EnrollmentOffersStatus.Pending,
     val disciplines: List<EnrollmentDiscipline> = emptyList(),
     val picks: List<EnrollmentPick> = emptyList(),
     val studentName: String? = null,

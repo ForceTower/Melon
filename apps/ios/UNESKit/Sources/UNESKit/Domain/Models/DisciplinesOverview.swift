@@ -64,6 +64,8 @@ struct DisciplineSummary: Equatable, Sendable, Identifiable {
     /// Authoritative pass/fail from upstream; nil until posted.
     var approved: Bool?
     var wentToFinals: Bool = false
+    /// The Prova Final row is listed but its grade hasn't landed.
+    var finalExamPending: Bool = false
     /// The next unreleased evaluation with a scheduled future date.
     var nextEvaluation: UpcomingEvaluation?
     /// Index into `UNESColor.disciplinePalette` — same name-sorted assignment
@@ -115,6 +117,7 @@ extension DisciplineSummary {
         DisciplineRules.status(
             approved: approved,
             wentToFinals: wentToFinals,
+            finalExamPending: finalExamPending,
             finalGrade: finalGrade,
             partialAverage: partialAverage
         )

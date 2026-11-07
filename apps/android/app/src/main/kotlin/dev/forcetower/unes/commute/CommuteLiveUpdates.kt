@@ -40,7 +40,9 @@ internal class CommuteLiveUpdates @Inject constructor(
     private val mutex = Mutex()
 
     // The departure on the notification, if any.
-    val followedArrivalId: Flow<String?> = store.record.map { it?.arrivalId }.distinctUntilChanged()
+    val followedArrivalId: Flow<String?> = store.record
+        .map { record -> record?.takeUnless { it.expired(clock.now()) }?.arrivalId }
+        .distinctUntilChanged()
 
     fun canPost(): Boolean = notifier.canPost()
 
@@ -74,7 +76,7 @@ internal class CommuteLiveUpdates @Inject constructor(
             previous
         }
         Timber.tag(TAG).i("started line=%s direction=%s", record.lineNumber, record.direction)
-        previous?.takeIf { it.registered }?.let { unregister(it.activityId) }
+        previous?.takeIf { it.registeredToken != null }?.let { unregister(it.activityId) }
         register(record)
         return true
     }
@@ -88,7 +90,7 @@ internal class CommuteLiveUpdates @Inject constructor(
             record
         }
         Timber.tag(TAG).i("stopped line=%s", record.lineNumber)
-        if (record.registered) unregister(record.activityId)
+        if (record.registeredToken != null) unregister(record.activityId)
     }
 
     // An FCM data message for the followed departure. One for another
@@ -99,7 +101,7 @@ internal class CommuteLiveUpdates @Inject constructor(
         val timestamp = data[KEY_TIMESTAMP]?.toLongOrNull() ?: return
         val update = data[KEY_CONTENT]?.let { decodeLiveUpdate(it) } ?: return
         val now = clock.now()
-        mutex.withLock {
+        val expired = mutex.withLock {
             val record = store.current()?.takeIf { it.activityId == activityId && timestamp >= it.updatedAt }
                 ?: return
             val next = record.copy(update = CommuteLiveRecord.Update.of(update), updatedAt = timestamp)
@@ -107,27 +109,40 @@ internal class CommuteLiveUpdates @Inject constructor(
                 end(next, data[KEY_DISMISSAL_DATE]?.toLongOrNull()?.let { Instant.fromEpochSeconds(it) }, now)
                 return
             }
+            if (record.expired(now)) return@withLock true
             store.save(next)
             notifier.show(next, now, stale = false)
             val staleAt =
                 data[KEY_STALE_DATE]?.toLongOrNull()?.let { Instant.fromEpochSeconds(it) } ?: (now + STALE_AFTER)
             notifier.scheduleStale(activityId, staleAt)
+            false
         }
+        if (expired) stop(activityId)
     }
 
-    // The stale alarm: no push came in time, so the band stops counting.
+    // The stale alarm: no push came in time, so the band stops counting. It
+    // rings once more at the expiry, which ends the follow.
     suspend fun onStale(activityId: String) {
-        mutex.withLock {
+        val now = clock.now()
+        val expired = mutex.withLock {
             val record = store.current()?.takeIf { it.activityId == activityId } ?: return
-            notifier.show(record, clock.now(), stale = true)
+            if (record.expired(now)) return@withLock true
+            notifier.show(record, now, stale = true)
+            notifier.scheduleStale(activityId, record.expiry)
+            false
         }
+        if (expired) stop(activityId)
     }
 
-    // Every app open: a registration that never went through (offline, no
-    // FCM token yet) is tried again.
+    // Every app open and FCM token rotation: an expired follow ends, and one
+    // the backend doesn't push to this token (offline or no token at start,
+    // or FCM replaced it since) is registered again.
     suspend fun resume() {
         val record = store.current() ?: return
-        if (!record.registered) register(record)
+        when {
+            record.expired(clock.now()) -> stop(record.activityId)
+            record.registeredToken != pushIdentifiers.token() -> register(record)
+        }
     }
 
     // The backend deleted it on its side when it sent the end.
@@ -150,7 +165,7 @@ internal class CommuteLiveUpdates @Inject constructor(
         val deviceToken = pushIdentifiers.token()
         if (deviceToken == null) {
             // Without it FCM can't reach the device; the notification keeps
-            // its first estimate and goes stale on schedule.
+            // its first estimate, goes stale on schedule and ends at the expiry.
             Timber.tag(TAG).w("register skipped: no fcm token yet")
             return
         }
@@ -166,11 +181,14 @@ internal class CommuteLiveUpdates @Inject constructor(
             ),
         )
         if (outcome !is Outcome.Ok) return
-        mutex.withLock {
-            store.current()?.takeIf {
-                it.activityId == record.activityId
-            }?.let { store.save(it.copy(registered = true)) }
+        val followed = mutex.withLock {
+            val current = store.current()?.takeIf { it.activityId == record.activityId } ?: return@withLock false
+            store.save(current.copy(registeredToken = deviceToken))
+            true
         }
+        // Stopped or replaced while the request was out, so the stop saw
+        // nothing to unregister.
+        if (!followed) unregister(record.activityId)
     }
 
     // Best-effort: the backend ends it anyway when the bus passes or it expires,

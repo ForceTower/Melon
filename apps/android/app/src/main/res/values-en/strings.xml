@@ -890,6 +890,7 @@
     <string name="settings_notif_class_subject_hint">The planned topic changed</string>
     <string name="settings_notif_evaluation_reminder_label">Evaluation reminder</string>
     <string name="settings_notif_evaluation_reminder_hint">8 PM the evening before, on this device</string>
+    <string name="settings_save_failed">We couldn\'t save that preference. Try again.</string>
     <!-- endregion -->
 
     <!-- region Evaluation reminder notification -->
@@ -2524,6 +2525,7 @@
     <string name="commute_setup_lines_title">Your lines at this stop</string>
     <string name="commute_setup_lines_title_leaving">Your lines home</string>
     <string name="commute_setup_lines_subtitle">Pick the ones you actually take. The others stay out.</string>
+    <string name="commute_setup_lines_unavailable">The lines for this route aren\'t available right now.</string>
     <string name="commute_setup_line_serves">stops here</string>
     <string name="commute_setup_line_does_not_serve">doesn\'t stop here</string>
     <string name="commute_setup_line_duration">~%1$d min end to end</string>

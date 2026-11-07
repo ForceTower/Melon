@@ -21,7 +21,9 @@ import kotlinx.serialization.json.Json
 // of iOS `MirrorStore+CampusEvent` (which uses a one-row GRDB table): the
 // last payload persists as JSON in `KeyValueStorage` so the Home card renders
 // offline, refreshes land through `observe`, and identical `(id, revision)`
-// publishes write nothing so observers only wake for real changes.
+// publishes write nothing so observers only wake for real changes. Requests
+// run one at a time, in order, so an older answer can never overwrite a newer
+// one.
 @SingleIn(AppScope::class)
 @Inject
 class CampusEventRepository internal constructor(
@@ -30,8 +32,14 @@ class CampusEventRepository internal constructor(
     private val json: Json,
 ) {
     private val state = MutableStateFlow<CampusEvent?>(null)
-    private val hydration = Mutex()
+
+    // Guards the snapshot: its hydration, every write, and the generation a
+    // logout bumps. A request begun under the previous account neither goes
+    // out on its turn nor writes its answer into the next one's snapshot.
+    private val mirror = Mutex()
     private var hydrated = false
+    private var generation = 0
+    private val operations = Mutex()
 
     fun observe(): Flow<CampusEvent?> =
         flow {
@@ -42,45 +50,61 @@ class CampusEventRepository internal constructor(
     // Failures never surface — the stale offline payload is kept, exactly
     // like the iOS repository's silent refresh.
     suspend fun refresh() {
-        hydrate()
-        when (val outcome = service.current()) {
-            is Outcome.Ok -> apply(outcome.value)
-            is Outcome.Err -> Unit
+        val began = hydrate()
+        operations.withLock {
+            if (mirror.withLock { began != generation }) return
+            when (val outcome = service.current()) {
+                is Outcome.Ok -> apply(outcome.value, began)
+                is Outcome.Err -> Unit
+            }
         }
     }
 
     // Logout wipe — the featured event is user/course-scoped, so it must not
-    // leak into the next account on the device. iOS gets this through the
-    // GRDB mirror wipe; here the key-value snapshot is cleared explicitly.
+    // leak into the next account on the device, not even from a request still
+    // in flight. iOS gets this through the GRDB mirror wipe; here the
+    // key-value snapshot is cleared explicitly.
     suspend fun clear() {
-        hydration.withLock { hydrated = true }
-        state.value = null
-        storage.remove(STORAGE_KEY)
-    }
-
-    private suspend fun hydrate() {
-        hydration.withLock {
-            if (hydrated) return
+        mirror.withLock {
             hydrated = true
-            val cached = storage.get(STORAGE_KEY) ?: return
-            state.value = runCatching { json.decodeFromString<CampusEventDTO>(cached) }
-                .getOrNull()
-                ?.toDomainOrNull()
-        }
-    }
-
-    private suspend fun apply(dto: CampusEventDTO?) {
-        if (dto == null) {
-            // The server un-featured the event.
+            generation++
             state.value = null
             storage.remove(STORAGE_KEY)
-            return
         }
-        val event = dto.toDomainOrNull() ?: return
-        val current = state.value
-        if (current != null && current.id == event.id && current.revision == event.revision) return
-        state.value = event
-        storage.put(STORAGE_KEY, json.encodeToString(dto))
+    }
+
+    // Loads the stored snapshot once and answers the generation a request
+    // begins under.
+    private suspend fun hydrate(): Int =
+        mirror.withLock {
+            if (!hydrated) {
+                hydrated = true
+                storage.get(STORAGE_KEY)
+                    ?.let { cached -> runCatching { json.decodeFromString<CampusEventDTO>(cached) }.getOrNull() }
+                    ?.let { state.value = it.toDomainOrNull() }
+            }
+            generation
+        }
+
+    private suspend fun apply(
+        dto: CampusEventDTO?,
+        began: Int,
+    ) {
+        mirror.withLock {
+            // A logout came first: the answer belongs to the account that asked.
+            if (began != generation) return
+            if (dto == null) {
+                // The server un-featured the event.
+                state.value = null
+                storage.remove(STORAGE_KEY)
+                return
+            }
+            val event = dto.toDomainOrNull() ?: return
+            val current = state.value
+            if (current != null && current.id == event.id && current.revision == event.revision) return
+            state.value = event
+            storage.put(STORAGE_KEY, json.encodeToString(dto))
+        }
     }
 
     private companion object {

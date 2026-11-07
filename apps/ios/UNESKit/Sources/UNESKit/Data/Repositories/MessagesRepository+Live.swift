@@ -26,6 +26,7 @@ extension MessagesRepository: DependencyKey {
             let mirror = MirrorStore(writer: database)
 
             log.debug("refresh start")
+            await resendUnacknowledged(apiClient: apiClient, mirror: mirror)
             do {
                 let inbox: MessageListDTO = try await apiClient.get(from: "api/sync/messages")
                 try await mirror.upsertMessages(inbox.page, syncedAt: now)
@@ -73,13 +74,14 @@ extension MessagesRepository: DependencyKey {
         markRead: { id, now in
             @Dependency(\.apiClient) var apiClient
             @Dependency(\.database) var database
-            try await MirrorStore(writer: database).markMessageRead(id: id, now: now)
+            let mirror = MirrorStore(writer: database)
+            try await mirror.markMessageRead(id: id, now: now)
             log.info("markRead ok id=\(id)")
-            // Best-effort ack: the overlay already flipped the row, and the
-            // mirror never resurrects an unread dot, so a lost ack only
-            // leaves the server behind until the next read.
+            // Best-effort ack: the overlay already flipped the row, and a
+            // lost ack stays pending until the next refresh resends it.
             do {
                 try await apiClient.post(to: "api/sync/messages/read", body: MarkReadBody(ids: [id]))
+                try await mirror.acknowledgeMessagesRead(ids: [id])
             } catch {
                 log.warn("markRead ack failed id=\(id)", error: error)
             }
@@ -87,10 +89,12 @@ extension MessagesRepository: DependencyKey {
         markAllRead: { now in
             @Dependency(\.apiClient) var apiClient
             @Dependency(\.database) var database
-            try await MirrorStore(writer: database).markAllMessagesRead(now: now)
+            let mirror = MirrorStore(writer: database)
+            try await mirror.markAllMessagesRead(now: now)
             log.info("markAllRead ok")
             do {
                 try await apiClient.post(to: "api/sync/messages/read-all")
+                try await mirror.acknowledgeAllMessagesRead()
             } catch {
                 log.warn("markAllRead ack failed", error: error)
             }
@@ -98,13 +102,39 @@ extension MessagesRepository: DependencyKey {
         setStarred: { id, starred in
             @Dependency(\.apiClient) var apiClient
             @Dependency(\.database) var database
-            try await MirrorStore(writer: database).setMessageStarred(id: id, starred: starred)
+            let mirror = MirrorStore(writer: database)
+            try await mirror.setMessageStarred(id: id, starred: starred)
             log.info("setStarred ok id=\(id) starred=\(starred)")
             do {
                 try await apiClient.post(to: "api/sync/messages/star", body: StarBody(id: id, starred: starred))
+                try await mirror.acknowledgeMessageStar(id: id, starred: starred)
             } catch {
                 log.warn("setStarred ack failed id=\(id)", error: error)
             }
         }
     )
+}
+
+/// Replays the read and star acks that failed earlier, before the refresh
+/// pulls the server's view. Whatever fails again stays pending.
+private func resendUnacknowledged(apiClient: APIClient, mirror: MirrorStore) async {
+    do {
+        let pending = try await mirror.unacknowledgedMessageStates()
+        guard !pending.isEmpty else { return }
+        let readIds = pending.filter(\.readAckPending).map(\.messageId)
+        if !readIds.isEmpty {
+            try await apiClient.post(to: "api/sync/messages/read", body: MarkReadBody(ids: readIds))
+            try await mirror.acknowledgeMessagesRead(ids: readIds)
+        }
+        for state in pending where state.starAckPending {
+            try await apiClient.post(
+                to: "api/sync/messages/star",
+                body: StarBody(id: state.messageId, starred: state.starred)
+            )
+            try await mirror.acknowledgeMessageStar(id: state.messageId, starred: state.starred)
+        }
+        log.info("resent pending acks reads=\(readIds.count) stars=\(pending.count { $0.starAckPending })")
+    } catch {
+        log.warn("resending pending acks failed", error: error)
+    }
 }

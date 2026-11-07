@@ -105,7 +105,11 @@ extension DisciplineDetail {
     /// In the Prova Final window: the exam row exists but neither its grade
     /// nor the upstream verdict landed yet — the state the finals card shows.
     var isAwaitingFinalExam: Bool {
-        finalExam != nil && finalExam?.value == nil && approved == nil
+        hasPendingFinalExam && approved == nil
+    }
+
+    var hasPendingFinalExam: Bool {
+        finalExam != nil && finalExam?.value == nil
     }
 
     /// Upstream closed the discipline after the Prova Final — the hero leads
@@ -126,6 +130,7 @@ extension DisciplineDetail {
         DisciplineRules.status(
             approved: approved,
             wentToFinals: wentToFinals,
+            finalExamPending: hasPendingFinalExam,
             finalGrade: finalGrade,
             partialAverage: Self.partialAverage(of: sections.flatMap(\.grades))
         )

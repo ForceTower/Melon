@@ -392,6 +392,14 @@ private func migrator() -> DatabaseMigrator {
             t.add(column: "completedAt", .text)
         }
     }
+    // Read and star changes the server hasn't acknowledged yet, so a refresh
+    // can resend them and a resync can't overwrite a pending star.
+    migrator.registerMigration("v16") { db in
+        try db.alter(table: "messageStates") { t in
+            t.add(column: "readAckPending", .boolean).notNull().defaults(to: false)
+            t.add(column: "starAckPending", .boolean).notNull().defaults(to: false)
+        }
+    }
     return migrator
 }
 

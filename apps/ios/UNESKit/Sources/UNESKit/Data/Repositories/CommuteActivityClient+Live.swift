@@ -9,7 +9,7 @@ private let log = Log.scoped("CommuteActivity")
 extension CommuteActivityClient: DependencyKey {
     static let liveValue: CommuteActivityClient = {
         #if os(iOS)
-        let coordinator = CommuteActivityCoordinator()
+        let coordinator = CommuteActivityCoordinator(system: .live, defaults: .standard)
         return CommuteActivityClient(
             status: { await coordinator.status(arrivalId: $0) },
             start: { try await coordinator.start($0, state: $1, vehicleId: $2) },
@@ -32,21 +32,107 @@ extension CommuteActivityClient: DependencyKey {
 }
 
 #if os(iOS)
-/// Owns the running activities' push-token and lifecycle observers. An
-/// `Activity` isn't Sendable, so it never leaves this actor.
-private actor CommuteActivityCoordinator {
+/// The part of ActivityKit the coordinator drives, so tests can play the
+/// system. An `Activity` isn't Sendable, so it never leaves these closures.
+struct CommuteActivitySystem: Sendable {
+    var isEnabled: @Sendable () -> Bool
+    var activities: @Sendable () -> [CommuteLiveActivity]
+    var request: @Sendable (
+        _ attributes: CommuteActivityAttributes,
+        _ content: ActivityContent<CommuteActivityAttributes.ContentState>
+    ) throws -> CommuteLiveActivity
+    /// Ends the activity and takes it off the lock screen at once.
+    var end: @Sendable (_ id: String) async -> Void
+    var pushTokenUpdates: @Sendable (_ id: String) -> AsyncStream<Data>
+    var stateUpdates: @Sendable (_ id: String) -> AsyncStream<ActivityState>
+}
+
+/// A Live Activity as ActivityKit last reported it.
+struct CommuteLiveActivity: Sendable {
+    var id: String
+    var attributes: CommuteActivityAttributes
+    var state: ActivityState
+    var content: ActivityContent<CommuteActivityAttributes.ContentState>
+    var pushToken: Data?
+}
+
+extension CommuteActivitySystem {
+    static let live = CommuteActivitySystem(
+        isEnabled: { ActivityAuthorizationInfo().areActivitiesEnabled },
+        activities: { Activity<CommuteActivityAttributes>.activities.map(CommuteLiveActivity.init) },
+        request: { attributes, content in
+            CommuteLiveActivity(try Activity.request(attributes: attributes, content: content, pushType: .token))
+        },
+        end: { id in
+            await activity(id)?.end(nil, dismissalPolicy: .immediate)
+        },
+        pushTokenUpdates: { id in updates(of: id) { $0.pushTokenUpdates } },
+        stateUpdates: { id in updates(of: id) { $0.activityStateUpdates } }
+    )
+
+    private static func activity(_ id: String) -> Activity<CommuteActivityAttributes>? {
+        Activity<CommuteActivityAttributes>.activities.first { $0.id == id }
+    }
+
+    private static func updates<Updates: AsyncSequence & SendableMetatype>(
+        of id: String,
+        _ sequence: @escaping @Sendable (Activity<CommuteActivityAttributes>) -> Updates
+    ) -> AsyncStream<Updates.Element> where Updates.Element: Sendable, Updates.Failure == Never {
+        AsyncStream { continuation in
+            let task = Task {
+                if let activity = activity(id) {
+                    for await update in sequence(activity) {
+                        continuation.yield(update)
+                    }
+                }
+                continuation.finish()
+            }
+            continuation.onTermination = { _ in task.cancel() }
+        }
+    }
+}
+
+private extension CommuteLiveActivity {
+    init(_ activity: Activity<CommuteActivityAttributes>) {
+        self.init(
+            id: activity.id,
+            attributes: activity.attributes,
+            state: activity.activityState,
+            content: activity.content,
+            pushToken: activity.pushToken
+        )
+    }
+}
+
+/// Owns the running activities' push-token and lifecycle observers.
+actor CommuteActivityCoordinator {
     /// Matches the backend: this long without a push, the band freezes.
     private static let staleAfter: TimeInterval = 3 * 60
     /// Activities the backend knows about, so one that ended while the app
     /// was not running still gets unregistered.
-    private static let registeredKey = "commute_live_activities"
+    static let registeredKey = "commute_live_activities"
+    /// The bus each activity started with, by activity id, so registering
+    /// again after a relaunch still sends it.
+    private static let vehiclesKey = "commute_live_activity_vehicles"
 
+    private let system: CommuteActivitySystem
+    private let defaults: UserDefaults
+    /// Activities still running as far as this process knows.
     private var observers: [String: [Task<Void, Never>]] = [:]
+    /// Start, stop, stopAll and resume each await the network; interleaved,
+    /// a later tap would act on activities an earlier one was still replacing.
+    private var isBusy = false
+    private var waiting: [CheckedContinuation<Void, Never>] = []
+
+    init(system: CommuteActivitySystem, defaults: UserDefaults) {
+        self.system = system
+        self.defaults = defaults
+    }
 
     func status(arrivalId: String) -> CommuteActivityStatus {
-        guard ActivityAuthorizationInfo().areActivitiesEnabled else { return .unavailable }
-        let running = Activity<CommuteActivityAttributes>.activities.contains {
-            $0.attributes.arrivalId == arrivalId && Self.isRunning($0.activityState)
+        guard system.isEnabled() else { return .unavailable }
+        let running = system.activities().contains {
+            $0.attributes.arrivalId == arrivalId && Self.isRunning($0.state)
         }
         return running ? .running : .available
     }
@@ -56,27 +142,32 @@ private actor CommuteActivityCoordinator {
         state: CommuteActivityAttributes.ContentState,
         vehicleId: String?
     ) async throws {
-        for activity in Activity<CommuteActivityAttributes>.activities {
-            await end(id: activity.id)
+        try await serially {
+            for activity in system.activities() {
+                await end(id: activity.id)
+            }
+            let activity = try system.request(
+                attributes,
+                ActivityContent(state: state, staleDate: Date().addingTimeInterval(Self.staleAfter))
+            )
+            log.info("started line=\(attributes.lineNumber) direction=\(attributes.direction.rawValue)")
+            if let vehicleId {
+                defaults.set(vehicleIds().merging([activity.id: vehicleId]) { $1 }, forKey: Self.vehiclesKey)
+            }
+            observe(activity, vehicleId: vehicleId)
         }
-        let activity = try Activity.request(
-            attributes: attributes,
-            content: ActivityContent(state: state, staleDate: Date().addingTimeInterval(Self.staleAfter)),
-            pushType: .token
-        )
-        log.info("started line=\(attributes.lineNumber) direction=\(attributes.direction.rawValue)")
-        observe(activity, vehicleId: vehicleId)
     }
 
     func stop(arrivalId: String) async {
-        for activity in Activity<CommuteActivityAttributes>.activities where activity.attributes.arrivalId == arrivalId {
-            await end(id: activity.id)
+        await serially {
+            for activity in system.activities() where activity.attributes.arrivalId == arrivalId {
+                await end(id: activity.id)
+            }
         }
     }
 
     func current() -> CommuteActivityContent? {
-        guard let activity = Activity<CommuteActivityAttributes>.activities.first(where: { Self.isRunning($0.activityState) })
-        else { return nil }
+        guard let activity = system.activities().first(where: { Self.isRunning($0.state) }) else { return nil }
         let content = activity.content
         return CommuteActivityContent(
             attributes: activity.attributes,
@@ -87,52 +178,54 @@ private actor CommuteActivityCoordinator {
     }
 
     func stopAll() async {
-        for activity in Activity<CommuteActivityAttributes>.activities {
-            await end(id: activity.id)
+        await serially {
+            for activity in system.activities() {
+                await end(id: activity.id)
+            }
         }
     }
 
     func resume() async {
-        let activities = Activity<CommuteActivityAttributes>.activities.filter { Self.isRunning($0.activityState) }
-        for activity in activities {
-            observe(activity, vehicleId: nil)
-            // Its first registration never went through (offline, no FCM token yet).
-            if let token = activity.pushToken, !registered().contains(activity.id) {
-                await register(activity.attributes, id: activity.id, token: token, vehicleId: nil)
+        await serially {
+            let activities = system.activities().filter { Self.isRunning($0.state) }
+            let vehicles = vehicleIds()
+            for activity in activities {
+                observe(activity, vehicleId: vehicles[activity.id])
+                // Its first registration never went through (offline, no FCM token yet).
+                if let token = activity.pushToken, !registered().contains(activity.id) {
+                    await register(activity.attributes, id: activity.id, token: token, vehicleId: vehicles[activity.id])
+                }
             }
-        }
-        let running = Set(activities.map(\.id))
-        for id in registered() where !running.contains(id) {
-            await unregister(id)
+            let running = Set(activities.map(\.id))
+            defaults.set(vehicles.filter { running.contains($0.key) }, forKey: Self.vehiclesKey)
+            for id in registered() where !running.contains(id) {
+                await unregister(id)
+            }
         }
     }
 
     private func end(id: String) async {
-        await Self.dismiss(id: id)
+        await system.end(id)
         await finished(id)
-    }
-
-    /// `end` runs off the actor, so the activity is looked up there rather
-    /// than handed over.
-    private nonisolated static func dismiss(id: String) async {
-        guard let activity = Activity<CommuteActivityAttributes>.activities.first(where: { $0.id == id }) else { return }
-        await activity.end(nil, dismissalPolicy: .immediate)
     }
 
     /// ActivityKit hands out the push token after the request returns and may
     /// rotate it later; each one is (re)registered. The backend ending the
     /// activity, or the student swiping it away, ends the observation.
-    private func observe(_ activity: Activity<CommuteActivityAttributes>, vehicleId: String?) {
+    private func observe(_ activity: CommuteLiveActivity, vehicleId: String?) {
         let id = activity.id
         guard observers[id] == nil else { return }
+        let attributes = activity.attributes
+        let tokens = system.pushTokenUpdates(id)
+        let states = system.stateUpdates(id)
         observers[id] = [
             Task {
-                for await token in activity.pushTokenUpdates {
-                    await self.register(activity.attributes, id: id, token: token, vehicleId: vehicleId)
+                for await token in tokens {
+                    await self.register(attributes, id: id, token: token, vehicleId: vehicleId)
                 }
             },
             Task {
-                for await state in activity.activityStateUpdates where !Self.isRunning(state) {
+                for await state in states where !Self.isRunning(state) {
                     await self.finished(id)
                     return
                 }
@@ -165,11 +258,18 @@ private actor CommuteActivityCoordinator {
             vehicleId: vehicleId
         )
         do {
-            try await apiClient.post(to: "api/transit/live-activities", body: body)
+            try await uncancelled { [apiClient] in
+                try await apiClient.post(to: "api/transit/live-activities", body: body)
+            }
             remember(id)
             log.info("registered line=\(attributes.lineNumber)")
         } catch {
             log.warn("register failed", error: error)
+            return
+        }
+        // It ended while the POST was in flight, before there was anything to unregister.
+        if observers[id] == nil {
+            await unregister(id)
         }
     }
 
@@ -177,7 +277,9 @@ private actor CommuteActivityCoordinator {
         guard registered().contains(id) else { return }
         @Dependency(\.apiClient) var apiClient
         do {
-            try await apiClient.delete("api/transit/live-activities/\(id)")
+            try await uncancelled { [apiClient] in
+                try await apiClient.delete("api/transit/live-activities/\(id)")
+            }
             forget(id)
         } catch {
             // Retried on the next launch; until then the backend ends it
@@ -186,22 +288,48 @@ private actor CommuteActivityCoordinator {
         }
     }
 
+    /// On its own task: `finished` cancels the observers, even the one it runs
+    /// on, and a cancelled request either never goes out or lands unrecorded.
+    private func uncancelled(_ request: @escaping @Sendable () async throws -> Void) async throws {
+        try await Task { try await request() }.value
+    }
+
+    private func serially<T>(_ operation: () async throws -> T) async rethrows -> T {
+        if isBusy {
+            await withCheckedContinuation { waiting.append($0) }
+        } else {
+            isBusy = true
+        }
+        defer {
+            if waiting.isEmpty {
+                isBusy = false
+            } else {
+                waiting.removeFirst().resume()
+            }
+        }
+        return try await operation()
+    }
+
     private static func isRunning(_ state: ActivityState) -> Bool {
         state == .active || state == .stale
     }
 
+    private func vehicleIds() -> [String: String] {
+        defaults.dictionary(forKey: Self.vehiclesKey) as? [String: String] ?? [:]
+    }
+
     private func registered() -> [String] {
-        UserDefaults.standard.stringArray(forKey: Self.registeredKey) ?? []
+        defaults.stringArray(forKey: Self.registeredKey) ?? []
     }
 
     private func remember(_ id: String) {
         let ids = registered()
         guard !ids.contains(id) else { return }
-        UserDefaults.standard.set(ids + [id], forKey: Self.registeredKey)
+        defaults.set(ids + [id], forKey: Self.registeredKey)
     }
 
     private func forget(_ id: String) {
-        UserDefaults.standard.set(registered().filter { $0 != id }, forKey: Self.registeredKey)
+        defaults.set(registered().filter { $0 != id }, forKey: Self.registeredKey)
     }
 }
 

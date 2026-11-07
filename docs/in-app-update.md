@@ -258,9 +258,9 @@ didn't exist:
 | Case | Behavior |
 | --- | --- |
 | Play unavailable (sideload, emulator, `.debug` app id, no Play account) | `requestAppUpdateInfo()` throws (e.g. `ERROR_APP_NOT_OWNED`); caught, logged, done |
-| User declines (`RESULT_CANCELED`) | Record decline day; FLEXIBLE suppressed 7 days; at most one prompt per cold start |
+| User declines (`RESULT_CANCELED`) | Unregister the flexible download listener; record decline day; FLEXIBLE suppressed 7 days; at most one prompt per cold start |
 | `RESULT_IN_APP_UPDATE_FAILED` | Log, stop |
-| `startUpdateFlowForResult` returns `false` (flow could not start) | Log, stop |
+| `startUpdateFlowForResult` returns `false` (flow could not start) | Log, unregister the flexible download listener, stop |
 | Download fails mid-flexible (`InstallStatus.FAILED`) | Unregister listener, no UI |
 | Activity destroyed mid-check | `lifecycleScope` cancellation kills the coroutine before it can touch the dead launcher |
 
@@ -293,6 +293,8 @@ strings are the entire user-facing surface we own.
   Covers every row of the strategy table plus the
   `availability != UPDATE_AVAILABLE`, `stalenessDays == null`,
   `isUpdateTypeAllowed == false`, and `flexibleSuppressed` branches.
+- `InAppUpdaterTest` — mockk over `AppUpdateManager` (no Play fake): a
+  flexible flow that can't start or is declined releases its listener.
 - A `FakeAppUpdateManager`-driven flow test was considered and **cut from
   v1**: the fake's only constructor takes `android.content.Context`, the repo
   has no Robolectric (and adding it means a catalog entry, a test dependency,

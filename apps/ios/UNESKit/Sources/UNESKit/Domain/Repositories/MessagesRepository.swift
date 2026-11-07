@@ -6,7 +6,8 @@ import Foundation
 /// `refresh` pulls the first inbox page into the mirror (landing through
 /// `observe`), and `cached` is a one-shot local read for the offline fallback.
 /// Read and star mutations write the local overlay first, then best-effort
-/// ack the backend so other devices see the state.
+/// ack the backend so other devices see the state; a failed ack stays
+/// pending and `refresh` resends it.
 @DependencyClient
 struct MessagesRepository: Sendable {
     /// The inbox as mirrored on disk; nil until the first successful sync.

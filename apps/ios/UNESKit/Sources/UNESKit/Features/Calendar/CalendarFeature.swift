@@ -16,6 +16,15 @@ struct CalendarFeature {
         }
     }
 
+    /// Where the academic feed stands. Personal entries are local, so they
+    /// show in every state but `loading`.
+    enum Feed: Equatable, Sendable {
+        case loading
+        /// `fetchedAt` drives the sync footer.
+        case loaded(fetchedAt: Date)
+        case failed
+    }
+
     @ObservableState
     struct State: Equatable {
         var events: [CalendarEvent] = []
@@ -29,9 +38,7 @@ struct CalendarFeature {
         var today = Date.distantPast
         /// The grid's focused day.
         var selectedDay = Date.distantPast
-        /// When the feed landed — drives the sync footer; nil while the
-        /// first fetch is in flight.
-        var fetchedAt: Date?
+        var feed: Feed = .loading
         /// Presents the detail sheet while non-nil.
         var detail: CalendarEvent?
         @Presents var composer: CalendarPersonalEventFeature.State?
@@ -75,6 +82,7 @@ struct CalendarFeature {
         case task
         case eventsLoaded([CalendarEvent])
         case eventsFailed
+        case retryTapped
         case personalEventsLoaded([PersonalEvent])
         case disciplinesLoaded([PersonalEventDisciplineOption])
         case categorySelected(CalendarCategoryFilter)
@@ -106,7 +114,7 @@ struct CalendarFeature {
 
     private let log = Log.scoped("CalendarFeature")
 
-    private enum CancelID { case personalEvents }
+    private enum CancelID { case events, personalEvents }
 
     var body: some ReducerOf<Self> {
         Reduce { state, action in
@@ -114,19 +122,11 @@ struct CalendarFeature {
             case .task:
                 analytics.screen(Screens.calendar)
                 state.today = calendar.startOfDay(for: now)
-                if state.fetchedAt == nil {
+                if state.selectedDay == .distantPast {
                     state.selectedDay = state.today
                 }
                 return .merge(
-                    .run { [log, now] send in
-                        do {
-                            let events = try await eventsRepository.calendar(now)
-                            await send(.eventsLoaded(events.compactMap { CalendarEvent($0) }))
-                        } catch {
-                            log.warn("calendar events fetch failed", error: error)
-                            await send(.eventsFailed)
-                        }
-                    },
+                    fetchEvents(),
                     // `.task` runs again on every foreground; without the
                     // cancel a second observation would stack on the first.
                     .run { send in
@@ -147,13 +147,23 @@ struct CalendarFeature {
 
             case let .eventsLoaded(events):
                 state.events = events
-                state.fetchedAt = now
+                state.feed = .loaded(fetchedAt: now)
                 return .none
 
             case .eventsFailed:
-                // No dedicated error state — an empty feed reads as the
-                // filtered empty state, and the next appearance retries.
+                // A failed refresh keeps the feed already on screen; the
+                // footer still says when it last synced.
+                if case .loaded = state.feed { return .none }
+                state.feed = .failed
                 return .none
+
+            case .retryTapped:
+                // Only an explicit retry trades the banner for the spinner; the
+                // silent retry on every foreground keeps personal entries up.
+                if state.feed == .failed {
+                    state.feed = .loading
+                }
+                return fetchEvents()
 
             case let .personalEventsLoaded(events):
                 state.personalEvents = events
@@ -267,6 +277,19 @@ struct CalendarFeature {
             CalendarPersonalEventFeature()
         }
         .ifLet(\.$confirmDelete, action: \.confirmDelete)
+    }
+
+    private func fetchEvents() -> Effect<Action> {
+        .run { [log, now] send in
+            do {
+                let events = try await eventsRepository.calendar(now)
+                await send(.eventsLoaded(events.compactMap { CalendarEvent($0) }))
+            } catch {
+                log.warn("calendar events fetch failed", error: error)
+                await send(.eventsFailed)
+            }
+        }
+        .cancellable(id: CancelID.events, cancelInFlight: true)
     }
 
     /// Presenting the composer (or the confirm dialog) in the same frame the

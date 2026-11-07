@@ -166,18 +166,77 @@ internal class EnrollmentViewModelTest {
             assertEquals(EnrollmentEffect.Submitted, model.effects.first())
         }
 
+    @Test
+    fun remountAfterAFailedOffersLoadSeedsThePicksFromTheSavedProposal() =
+        runTest {
+            var offerCalls = 0
+            val model = model(
+                loadOffers = {
+                    offerCalls++
+                    if (offerCalls == 1) {
+                        Outcome.Err(EnrollmentError.NoConnection)
+                    } else {
+                        Outcome.Ok(EnrollmentOffers(listOf(discipline(1, section(11).copy(selected = true)))))
+                    }
+                },
+            )
+            model.onIntent(EnrollmentIntent.Enter)
+            advanceUntilIdle()
+            assertEquals(EnrollmentOffersStatus.Failed, model.state.value.offersStatus)
+            assertTrue(model.state.value.selections.isEmpty())
+
+            model.onIntent(EnrollmentIntent.Enter)
+            advanceUntilIdle()
+
+            assertEquals(EnrollmentOffersStatus.Loaded, model.state.value.offersStatus)
+            assertEquals(listOf(EnrollmentSelection(11, false, false)), model.state.value.selections)
+        }
+
+    @Test
+    fun refreshRequestedBeforeASubmitCannotReopenTheSubmittedWindow() =
+        runTest {
+            val staleRefresh = CompletableDeferred<Outcome<EnrollmentAvailability, EnrollmentError>>()
+            var windowCalls = 0
+            val model = model(
+                loadWindow = {
+                    windowCalls++
+                    if (windowCalls == 1) Outcome.Ok(EnrollmentAvailability(true, window())) else staleRefresh.await()
+                },
+            )
+            model.onIntent(EnrollmentIntent.Enter)
+            advanceUntilIdle()
+            model.onIntent(EnrollmentIntent.Enter)
+            advanceUntilIdle()
+
+            model.onIntent(EnrollmentIntent.Submit)
+            advanceUntilIdle()
+            assertEquals(EnrollmentWindowState.Closed, model.state.value.window?.state)
+
+            staleRefresh.complete(Outcome.Ok(EnrollmentAvailability(true, window())))
+            advanceUntilIdle()
+
+            assertEquals(EnrollmentWindowState.Closed, model.state.value.window?.state)
+            assertTrue(model.state.value.isReadonly)
+        }
+
     private fun model(
         catalogue: List<EnrollmentDiscipline> = listOf(discipline(1, section(11).copy(selected = true))),
         window: EnrollmentWindow = window(),
         clock: Clock = MutableClock(Instant.parse("2026-10-02T12:00:00Z")),
+        loadWindow: suspend () -> Outcome<EnrollmentAvailability, EnrollmentError> = {
+            Outcome.Ok(EnrollmentAvailability(true, window))
+        },
+        loadOffers: suspend () -> Outcome<EnrollmentOffers, EnrollmentError> = {
+            Outcome.Ok(EnrollmentOffers(catalogue))
+        },
         submit: suspend (List<EnrollmentSelection>) -> Outcome<Unit, EnrollmentError> = { Outcome.Ok(Unit) },
     ): EnrollmentViewModel {
         val getWindow = mockk<GetEnrollmentWindowUseCase>()
         val getOffers = mockk<GetEnrollmentOffersUseCase>()
         val submitEnrollment = mockk<SubmitEnrollmentUseCase>()
         val observeMeProfile = mockk<ObserveMeProfileUseCase>()
-        coEvery { getWindow() } returns Outcome.Ok(EnrollmentAvailability(true, window))
-        coEvery { getOffers() } returns Outcome.Ok(EnrollmentOffers(catalogue))
+        coEvery { getWindow() } coAnswers { loadWindow() }
+        coEvery { getOffers() } coAnswers { loadOffers() }
         coEvery { submitEnrollment(any()) } coAnswers { submit(firstArg()) }
         every { observeMeProfile() } returns emptyFlow()
         return EnrollmentViewModel(

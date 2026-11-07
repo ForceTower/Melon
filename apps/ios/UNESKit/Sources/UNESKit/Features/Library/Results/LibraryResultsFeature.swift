@@ -23,8 +23,9 @@ struct LibraryResultsFeature {
         var readings: [String: LibraryReading] = [:]
         /// Work ids with an availability consultation in flight.
         var checking: Set<String> = []
-        var isLoading = true
-        var isLoadingMore = false
+        /// An "Atualizar" sweep is re-consulting the rows that held readings.
+        var isRefreshingReadings = false
+        var phase: Phase = .loading
         var sort: LibrarySort = .relevance
         var groupByType = false
         var onlyAvailable = false
@@ -40,6 +41,18 @@ struct LibraryResultsFeature {
         init(query: String, scope: LibrarySearchScope, facets: LibraryFacetSelection = [:]) {
             self.init(terms: [LibrarySearchTerm(query: query, scope: scope)], facets: facets)
         }
+
+        enum Phase: Equatable {
+            /// The first page of the current terms, sort and facets is in
+            /// flight; any loaded rows belong to the previous query.
+            case loading
+            case loaded
+            case loadingMore
+            /// The first page could not be fetched — not the same as no matches.
+            case failed
+        }
+
+        var isLoading: Bool { phase == .loading }
 
         /// One-line rendering for the title and the empty state.
         var query: String { terms.display }
@@ -63,7 +76,7 @@ struct LibraryResultsFeature {
         /// The full-screen "nothing for this query" state. Zero rows under
         /// active facets is the refine dead-end instead, cleared in place.
         var isEmpty: Bool {
-            !isLoading && !isTooBroad && works.isEmpty && activeFacetCount == 0
+            phase == .loaded && !isTooBroad && works.isEmpty && activeFacetCount == 0
         }
 
         var activeFacetCount: Int {
@@ -130,10 +143,12 @@ struct LibraryResultsFeature {
         case task
         case pageLoaded(LibrarySearchPage, reset: Bool)
         case searchFailed(reset: Bool)
+        case retryTapped
         case loadMoreReached
         case rowAppeared(String)
         case readingLoaded(id: String, LibraryAvailabilitySnapshot)
         case refreshTapped
+        case readingsRefreshed
         case facetToggled(LibraryFacetGroup, String)
         case clearFacetsTapped
         case workTapped(LibraryWork)
@@ -154,7 +169,7 @@ struct LibraryResultsFeature {
 
     private let log = Log.scoped("LibraryResultsFeature")
 
-    private enum CancelID { case search, readings }
+    private enum CancelID { case search }
 
     var body: some ReducerOf<Self> {
         BindingReducer()
@@ -164,15 +179,14 @@ struct LibraryResultsFeature {
                 analytics.screen(name: Screens.libraryResults, properties: ["scope": state.searchScope.rawValue])
                 state.now = date.now
                 guard !state.isTooBroad else {
-                    state.isLoading = false
+                    state.phase = .loaded
                     return .none
                 }
                 guard state.works.isEmpty else { return .none }
-                return search(state, reset: true)
+                return reload(&state)
 
             case let .pageLoaded(page, reset):
-                state.isLoading = false
-                state.isLoadingMore = false
+                state.phase = .loaded
                 state.total = page.total
                 state.serverFacets = page.facets
                 if reset {
@@ -186,18 +200,15 @@ struct LibraryResultsFeature {
                 return .none
 
             case let .searchFailed(reset):
-                state.isLoading = false
-                state.isLoadingMore = false
-                if reset {
-                    state.works = []
-                    state.total = 0
-                    state.serverFacets = [:]
-                }
+                state.phase = reset ? .failed : .loaded
                 return .none
 
+            case .retryTapped:
+                return reload(&state)
+
             case .loadMoreReached:
-                guard !state.isLoading, !state.isLoadingMore, state.hasMore else { return .none }
-                state.isLoadingMore = true
+                guard state.phase == .loaded, state.hasMore else { return .none }
+                state.phase = .loadingMore
                 return search(state, reset: false)
 
             case let .rowAppeared(id):
@@ -220,6 +231,9 @@ struct LibraryResultsFeature {
                 return .none
 
             case .refreshTapped:
+                // A sweep runs to the end: restarting it would strand the ids
+                // it had already moved into `checking`.
+                guard !state.isRefreshingReadings else { return .none }
                 log.info("refresh availability")
                 state.now = date.now
                 // Only rows the student has actually seen hold readings —
@@ -227,13 +241,18 @@ struct LibraryResultsFeature {
                 let ids = state.filtered.map(\.id).filter { state.readings[$0] != nil }
                 state.readings = [:]
                 state.checking.formUnion(ids)
+                state.isRefreshingReadings = true
                 return .run { send in
                     for id in ids {
                         let snapshot = await libraryRepository.checkAvailability(id)
                         await send(.readingLoaded(id: id, snapshot))
                     }
+                    await send(.readingsRefreshed)
                 }
-                .cancellable(id: CancelID.readings, cancelInFlight: true)
+
+            case .readingsRefreshed:
+                state.isRefreshingReadings = false
+                return .none
 
             case let .facetToggled(group, key):
                 var keys = state.facets[group] ?? []
@@ -243,12 +262,12 @@ struct LibraryResultsFeature {
                 } else {
                     state.facets[group] = keys
                 }
-                return search(state, reset: true)
+                return reload(&state)
 
             case .clearFacetsTapped:
                 guard state.activeFacetCount > 0 else { return .none }
                 state.facets = [:]
-                return search(state, reset: true)
+                return reload(&state)
 
             case let .workTapped(work):
                 analytics.selectContent(contentType: ContentTypes.libraryWork, itemId: work.id)
@@ -257,21 +276,27 @@ struct LibraryResultsFeature {
             case .broadenScopeTapped:
                 guard !state.terms.isEmpty else { return .none }
                 state.terms[0].scope = .all
-                state.isLoading = true
                 state.works = []
                 state.total = 0
-                return search(state, reset: true)
+                return reload(&state)
 
             case .editQueryTapped:
                 return .run { _ in await dismiss() }
 
             case .binding(\.sort):
-                return search(state, reset: true)
+                return reload(&state)
 
             case .binding, .delegate:
                 return .none
             }
         }
+    }
+
+    /// Starts over at the first page. Until it lands, the loaded rows answer
+    /// a different query, so nothing may page past them.
+    private func reload(_ state: inout State) -> Effect<Action> {
+        state.phase = .loading
+        return search(state, reset: true)
     }
 
     private func search(_ state: State, reset: Bool) -> Effect<Action> {

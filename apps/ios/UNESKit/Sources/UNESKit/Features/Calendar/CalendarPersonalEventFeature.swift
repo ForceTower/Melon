@@ -6,6 +6,12 @@ import Foundation
 /// change up from its own observation, so no result has to travel back up.
 @Reducer
 struct CalendarPersonalEventFeature {
+    /// A write in flight ignores repeat taps; a failed one keeps the composer
+    /// open with the input.
+    enum SaveStatus: Equatable, Sendable {
+        case idle, saving, failed
+    }
+
     @ObservableState
     struct State: Equatable {
         /// The entry being edited; nil while composing a new one.
@@ -19,12 +25,13 @@ struct CalendarPersonalEventFeature {
         var discipline: PersonalEvent.DisciplineTag?
         var reminder: PersonalEvent.Reminder
         var notes: String
+        var saveStatus: SaveStatus = .idle
         @Presents var confirmDelete: ConfirmationDialogState<Action.Delete>?
 
         var isNew: Bool { editing == nil }
 
         var canSave: Bool {
-            !title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            saveStatus != .saving && !title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
         }
 
         init(
@@ -64,6 +71,7 @@ struct CalendarPersonalEventFeature {
     enum Action: Equatable, BindableAction {
         case cancelTapped
         case saveTapped
+        case saveFailed
         case deleteTapped
         case periodToggled(Bool)
         case startPicked(Date)
@@ -94,6 +102,7 @@ struct CalendarPersonalEventFeature {
 
             case .saveTapped:
                 guard state.canSave else { return .none }
+                state.saveStatus = .saving
                 let event = state.composed(id: uuid().uuidString, now: now)
                 log.info("save id=\(event.id) new=\(state.isNew)")
                 analytics.selectContent(
@@ -104,14 +113,20 @@ struct CalendarPersonalEventFeature {
                         "category": event.category.rawValue,
                     ]
                 )
-                return .run { [log] _ in
+                return .run { [log] send in
                     do {
                         try await personalEvents.save(event)
                     } catch {
                         log.error("save failed id=\(event.id)", error: error)
+                        await send(.saveFailed)
+                        return
                     }
                     await dismiss()
                 }
+
+            case .saveFailed:
+                state.saveStatus = .failed
+                return .none
 
             case .deleteTapped:
                 guard let event = state.editing else { return .none }

@@ -26,9 +26,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -46,19 +44,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.foundation.Mesh
 import dev.forcetower.unes.designsystem.foundation.MeshVariant
 import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
 import dev.forcetower.unes.designsystem.theme.MelonTheme
 import dev.forcetower.unes.designsystem.theme.melon
-import dev.forcetower.unes.mvi.collectAsEffect
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-
-// Minimum time the splash stays up before flowing into Welcome — only for
-// users who still need onboarding. Mirrors iOS OnboardingFeature (2.6s).
-private const val SplashHoldMillis = 2_600L
 
 @Composable
 internal fun SplashScreen(
@@ -66,24 +60,14 @@ internal fun SplashScreen(
     onGoOnboarding: () -> Unit,
     vm: SplashViewModel = hiltViewModel(),
 ) {
-    var holdDone by remember { mutableStateOf(false) }
-    var pendingOnboarding by remember { mutableStateOf(false) }
+    val state by vm.state.collectAsStateWithLifecycle()
 
-    // Connected users jump straight to the shell the moment the session state
-    // is known — the splash choreography never gates a returning user (same
-    // behavior as iOS RootFeature.bootstrap). Only the onboarding path holds
-    // for the intro animation.
-    vm.effects.collectAsEffect { effect ->
-        when (effect) {
-            SplashEffect.GoHome -> onGoHome()
-            SplashEffect.GoOnboarding -> if (holdDone) onGoOnboarding() else pendingOnboarding = true
+    LaunchedEffect(state) {
+        when (state) {
+            SplashState.Holding -> Unit
+            SplashState.GoHome -> onGoHome()
+            SplashState.GoOnboarding -> onGoOnboarding()
         }
-    }
-
-    LaunchedEffect(Unit) {
-        delay(SplashHoldMillis)
-        holdDone = true
-        if (pendingOnboarding) onGoOnboarding()
     }
 
     SplashContent()

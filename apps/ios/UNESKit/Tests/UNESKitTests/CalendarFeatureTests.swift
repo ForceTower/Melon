@@ -110,7 +110,7 @@ struct CalendarFeatureTests {
         }
         await store.receive(\.eventsLoaded) {
             $0.events = Self.mapped
-            $0.fetchedAt = Self.now
+            $0.feed = .loaded(fetchedAt: Self.now)
         }
         await store.finish()
         await store.skipReceivedActions(strict: false)
@@ -262,19 +262,96 @@ struct CalendarFeatureTests {
     }
 
     @Test
-    func failedFetchKeepsTheScreenAlive() async {
-        let store = makeStore(events: { _ in throw APIError.emptyEnvelope })
+    func aFailedFeedStillShowsPersonalEntriesAndCanRetry() async {
+        let attempts = LockIsolated(0)
+        let store = makeStore(
+            events: { _ in
+                let attempt = attempts.withValue { count in
+                    count += 1
+                    return count
+                }
+                if attempt == 1 { throw APIError.emptyEnvelope }
+                return Self.upstream
+            },
+            personal: [Self.mine]
+        )
 
         store.exhaustivity = .off(showSkippedAssertions: false)
         await store.send(.task) {
             $0.today = Self.today
             $0.selectedDay = Self.today
         }
-        await store.receive(\.eventsFailed)
+        await store.receive(\.eventsFailed) {
+            $0.feed = .failed
+        }
         await store.finish()
         await store.skipReceivedActions(strict: false)
+        store.exhaustivity = .on
 
-        #expect(store.state.fetchedAt == nil)
+        #expect(store.state.agendaGroups.flatMap(\.events).map(\.id) == [Self.mine.id])
+
+        await store.send(.retryTapped) {
+            $0.feed = .loading
+        }
+        await store.receive(\.eventsLoaded) {
+            $0.events = Self.mapped
+            $0.feed = .loaded(fetchedAt: Self.now)
+        }
+    }
+
+    @Test
+    func aFailedRefreshKeepsTheLoadedFeed() async {
+        let attempts = LockIsolated(0)
+        let store = makeStore(events: { _ in
+            let attempt = attempts.withValue { count in
+                count += 1
+                return count
+            }
+            if attempt > 1 { throw APIError.emptyEnvelope }
+            return Self.upstream
+        })
+        await startup(store)
+
+        store.exhaustivity = .off(showSkippedAssertions: false)
+        await store.send(.task)
+        await store.receive(\.eventsFailed)
+        await store.finish()
+
+        #expect(store.state.feed == .loaded(fetchedAt: Self.now))
+        #expect(store.state.events == Self.mapped)
+    }
+
+    @Test
+    func reappearingAfterAFailureKeepsTheFocusedDay() async {
+        let store = makeStore(events: { _ in throw APIError.emptyEnvelope })
+        store.exhaustivity = .off(showSkippedAssertions: false)
+
+        await store.send(.task)
+        await store.receive(\.eventsFailed)
+        await store.finish()
+
+        let picked = Self.day(2026, 4, 21)
+        await store.send(.daySelected(picked))
+        await store.send(.task)
+        await store.receive(\.eventsFailed)
+        await store.finish()
+
+        #expect(store.state.selectedDay == picked)
+    }
+
+    @Test
+    func reappearingAfterAFailureKeepsPersonalEntriesOnScreen() async {
+        let store = makeStore(events: { _ in throw APIError.emptyEnvelope }, personal: [Self.mine])
+        store.exhaustivity = .off(showSkippedAssertions: false)
+
+        await store.send(.task)
+        await store.receive(\.eventsFailed)
+        await store.finish()
+
+        await store.send(.task)
+        #expect(store.state.feed == .failed)
+        await store.receive(\.eventsFailed)
+        await store.finish()
     }
 
     @Test

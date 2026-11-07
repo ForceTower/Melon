@@ -28,7 +28,9 @@ struct MeFeature {
         var aboutInfo: AppInfo?
         /// Drives the sheet's transient "copiado" feedback.
         var isAboutCopied = false
-        var isLogoutPromptPresented = false
+        /// Nil until "Sair" is tapped; a confirmed logout stays in
+        /// `.tearingDown` until the root swaps in the farewell.
+        var logout: LogoutPhase?
         var path = StackState<Path.State>()
         @Presents var document: MeDocumentFeature.State?
         @Presents var editProfile: ProfileEditFeature.State?
@@ -53,6 +55,9 @@ struct MeFeature {
         var scoreProgramIndex: Int?
 
         var displayName: String? { profile?.displayName ?? userName }
+
+        var isLogoutPromptPresented: Bool { logout == .confirming }
+        var isLoggingOut: Bool { logout == .tearingDown }
 
         /// Programs the student has a coefficient in, newest first.
         var coefficientPrograms: [ProgramCoefficient] { overview?.coefficientPrograms ?? [] }
@@ -101,6 +106,11 @@ struct MeFeature {
             gatedShortcuts
             #endif
         }
+    }
+
+    enum LogoutPhase: Equatable {
+        case confirming
+        case tearingDown
     }
 
     @Reducer
@@ -154,6 +164,7 @@ struct MeFeature {
         case logoutTapped
         case logoutPromptDismissed
         case logoutConfirmed
+        case logoutFailed
         case document(PresentationAction<MeDocumentFeature.Action>)
         case path(StackActionOf<Path>)
         case delegate(Delegate)
@@ -379,33 +390,45 @@ struct MeFeature {
                 )
 
             case .logoutTapped:
+                guard state.logout == nil else { return .none }
                 log.info("begin logout")
-                state.isLogoutPromptPresented = true
+                state.logout = .confirming
                 return .none
 
             case .logoutPromptDismissed:
-                state.isLogoutPromptPresented = false
+                guard state.logout == .confirming else { return .none }
+                state.logout = nil
                 return .none
 
             case .logoutConfirmed:
+                guard state.logout == .confirming else { return .none }
                 log.info("confirm logout")
                 analytics.selectContent(contentType: ContentTypes.setting, itemId: "logout", properties: ["action": "logout"])
-                state.isLogoutPromptPresented = false
+                state.logout = .tearingDown
                 state.$theme.withLock { $0 = .system }
                 let firstName = firstName(of: state.displayName)
                 return .run { [log] send in
                     // Before the session clears — the DELETEs need the bearer.
                     await commuteActivity.stopAll()
                     await push.unregister()
-                    try? await meRepository.wipeLocalData()
                     do {
                         try sessionStore.clear()
                         log.info("session logout ok")
                     } catch {
-                        log.warn("session logout failed; continuing", error: error)
+                        // The Keychain still holds the session, so the next
+                        // launch would land back in the shell.
+                        log.error("session logout failed; staying signed in", error: error)
+                        await send(.logoutFailed)
+                        return
                     }
+                    // The root wipes the mirror once this shell's effects are
+                    // cancelled, so none of them can write the account back.
                     await send(.delegate(.loggedOut(firstName: firstName)))
                 }
+
+            case .logoutFailed:
+                state.logout = nil
+                return .none
 
             case let .path(.element(id: _, action: pathAction)):
                 return .merge(

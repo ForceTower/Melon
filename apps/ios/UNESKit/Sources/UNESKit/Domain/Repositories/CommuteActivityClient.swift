@@ -3,7 +3,8 @@ import ComposableArchitecture
 /// Following a departure on the lock screen and in the Dynamic Island. The
 /// device starts the Live Activity; the backend keeps it current with
 /// ActivityKit pushes (`api/transit/live-activities`) until the bus passes
-/// the stop.
+/// the stop. `start`, `stop`, `stopAll` and `resume` run one at a time, in
+/// call order.
 @DependencyClient
 struct CommuteActivityClient: Sendable {
     var status: @Sendable (_ arrivalId: String) async -> CommuteActivityStatus = { _ in .unavailable }
