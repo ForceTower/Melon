@@ -18,6 +18,7 @@ struct RootFeatureTests {
                 analyticsCalls.withValue { $0.append("register \(properties.keys.sorted().joined(separator: ","))") }
             }
             $0.meRepository.wipeLocalData = { teardown.withValue { $0.append("wipe") } }
+            $0.localDocuments.clear = { teardown.withValue { $0.append("documents") } }
             $0.credentialInvalidation.reset = { teardown.withValue { $0.append("credentials") } }
             $0.sessionInvalidation.clear = { teardown.withValue { $0.append("session") } }
         }
@@ -29,7 +30,7 @@ struct RootFeatureTests {
         // Logout unlinks the person and re-stamps the device id (reset drops
         // super properties).
         #expect(analyticsCalls.value == ["reset", "register machine_id"])
-        #expect(teardown.value == ["wipe", "credentials", "session"])
+        #expect(teardown.value == ["wipe", "documents", "credentials", "session"])
     }
 
     @Test
@@ -47,6 +48,7 @@ struct RootFeatureTests {
             $0.commuteActivity.stopAll = {}
             $0.push.unregister = {}
             $0.meRepository.wipeLocalData = {}
+            $0.localDocuments.clear = {}
             $0.credentialInvalidation = .liveValue
             $0.sessionInvalidation = .liveValue
         }
@@ -178,6 +180,7 @@ struct RootFeatureTests {
         dependencies.commuteActivity.stopAll = {}
         dependencies.push.unregister = {}
         dependencies.meRepository.wipeLocalData = { events.withValue { $0.append("wipe") } }
+        dependencies.localDocuments.clear = {}
         dependencies.credentialInvalidation = .liveValue
         dependencies.sessionInvalidation = .liveValue
     }

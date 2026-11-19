@@ -38,6 +38,7 @@ struct RootFeature {
     @Dependency(\.legacyMigration) var legacyMigration
     @Dependency(\.sessionStore) var sessionStore
     @Dependency(\.meRepository) var meRepository
+    @Dependency(\.localDocuments) var localDocuments
     @Dependency(\.credentialInvalidation) var credentialInvalidation
     @Dependency(\.sessionInvalidation) var sessionInvalidation
     @Dependency(\.analytics) var analytics
@@ -109,6 +110,7 @@ struct RootFeature {
                 // the old account back after the wipe.
                 return .run { _ in
                     try? await meRepository.wipeLocalData()
+                    try? localDocuments.clear()
                     credentialInvalidation.reset()
                     sessionInvalidation.clear()
                 }

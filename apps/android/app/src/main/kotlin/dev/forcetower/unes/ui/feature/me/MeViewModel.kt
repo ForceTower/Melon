@@ -33,11 +33,9 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 import javax.inject.Inject
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 // "Eu" tab. Mirrors `MeFeature` on iOS — one KMP flow drives the hero payload
 // (identity + campus + attendance + semester), a second carries the lifetime
@@ -366,7 +364,7 @@ internal class MeViewModel @Inject constructor(
     private fun openDocument(document: AcademicDocument) {
         analytics.selectContent(ContentTypes.SHORTCUT, document.shortcutItemId)
         viewModelScope.launch {
-            val stored = withContext(Dispatchers.IO) { localDocuments.load(document) }
+            val stored = localDocuments.load(document)
             setState {
                 copy(
                     documentSheet = DocumentSheetState(
@@ -395,9 +393,7 @@ internal class MeViewModel @Inject constructor(
             when (val outcome = fetchDocument(sheet.document, captchaToken)) {
                 is Outcome.Ok -> {
                     val fetched = outcome.value
-                    val stored = withContext(Dispatchers.IO) {
-                        runCatching { localDocuments.save(sheet.document, fetched.bytes) }.getOrNull()
-                    }
+                    val stored = runCatching { localDocuments.save(sheet.document, fetched.bytes) }.getOrNull()
                     updateDocumentSheet { current ->
                         val effective = stored ?: current.stored
                         when {
@@ -467,6 +463,8 @@ internal class MeViewModel @Inject constructor(
             // The saved commute is the student's own; same key-value mirror,
             // same explicit wipe.
             runCatching { clearCommutePlan() }
+            // The offline Comprovante/Histórico PDFs live outside the DB wipe.
+            runCatching { localDocuments.clear() }
             // Match iOS pacing: ~0.9s flash before the goodbye view animates in.
             kotlinx.coroutines.delay(LogoutFlashMs)
             setState { copy(logoutStep = LogoutStep.LoggedOut) }

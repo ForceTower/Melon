@@ -53,6 +53,7 @@ internal class MeViewModelTest {
         coEvery { registrar.unregisterAll(any()) } coAnswers { firstArg<suspend () -> Unit>().invoke() }
     }
     private val updateProfile = mockk<UpdateProfileUseCase>()
+    private val localDocuments = mockk<LocalDocumentStore>(relaxed = true)
 
     @BeforeTest
     fun setup() {
@@ -93,6 +94,19 @@ internal class MeViewModelTest {
             coVerify(exactly = 1) { sessionStore.logout() }
             assertEquals(LogoutStep.LoggedOut, model.state.value.logoutStep)
             assertEquals("Ana", model.state.value.logoutFirstName)
+        }
+
+    @Test
+    fun logoutDeletesTheOfflineDocuments() =
+        runTest {
+            val model = model()
+            advanceUntilIdle()
+
+            model.onIntent(MeIntent.BeginLogout)
+            model.onIntent(MeIntent.ConfirmLogout)
+            advanceUntilIdle()
+
+            coVerify(exactly = 1) { localDocuments.clear() }
         }
 
     @Test
@@ -150,7 +164,7 @@ internal class MeViewModelTest {
             fetchDocument = mockk<FetchAcademicDocumentUseCase>(),
             updateProfile = updateProfile,
             syncProfile = mockk<SyncProfileUseCase>(relaxed = true),
-            localDocuments = mockk<LocalDocumentStore>(),
+            localDocuments = localDocuments,
             sessionStore = sessionStore,
             clearCampusEvent = mockk<ClearCampusEventUseCase>(relaxed = true),
             clearCommutePlan = mockk<ClearCommutePlanUseCase>(relaxed = true),
