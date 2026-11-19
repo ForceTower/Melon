@@ -50,9 +50,9 @@ gen/
 *.jks
 *.keystore
 !**/debug.keystore.template
-# The shared debug keystore IS committed on purpose: it gives every machine/CI
-# the same debug signing cert, so the SHA-256 in the server's assetlinks.json
-# stays valid and Android passkey enrollment works on debug builds.
+# The shared debug keystore is committed so every machine/CI signs debug builds
+# with the same cert. It is public: never trust its fingerprint in a production
+# assetlinks.json or server origin list.
 !apps/android/app/debug.keystore
 
 # ---------- iOS / Xcode / Swift ----------
