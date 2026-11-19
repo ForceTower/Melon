@@ -265,6 +265,10 @@ dependencies {
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.crashlytics)
     implementation(libs.firebase.messaging)
+    constraints {
+        // Firebase Analytics still pulls guava 31.1-android (GHSA-xxph-c9ww-hj94).
+        implementation(libs.guava)
+    }
     // `await()` extension for FirebaseMessaging.getToken() / Tasks.
     implementation(libs.kotlinx.coroutines.play.services)
 

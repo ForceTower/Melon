@@ -14,9 +14,9 @@ jobs:
     runs-on: xcode-27
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: jdx/mise-action@v5
+      - uses: jdx/mise-action@b44d12e7d0d8ee7461bb893e1b1993500433185b # v5.2.7
         with:
           install_args: bun
 
@@ -27,7 +27,7 @@ jobs:
         run: xcodebuild -version && swift --version
 
       - name: Cache SwiftPM
-        uses: actions/cache@v6
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: |
             ~/Library/Caches/org.swift.swiftpm
@@ -43,7 +43,7 @@ jobs:
 
       - name: Upload app test evidence
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: ios-app-evidence
           path: artifacts/ios/
@@ -55,9 +55,9 @@ jobs:
     runs-on: xcode-27
     timeout-minutes: 40
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: jdx/mise-action@v5
+      - uses: jdx/mise-action@b44d12e7d0d8ee7461bb893e1b1993500433185b # v5.2.7
         with:
           install_args: bun
 
@@ -68,7 +68,7 @@ jobs:
         run: xcodebuild -version && swift --version
 
       - name: Cache SwiftPM
-        uses: actions/cache@v6
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: |
             ~/Library/Caches/org.swift.swiftpm
@@ -83,7 +83,7 @@ jobs:
 
       - name: Upload package test evidence
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: ios-kit-evidence
           path: artifacts/ios/

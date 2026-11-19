@@ -12,13 +12,13 @@
     "icons": "bun run scripts/generate-icons.ts"
   },
   "dependencies": {
-    "astro": "^7.1.1"
+    "astro": "^7.4.11"
   },
   "devDependencies": {
-    "@astrojs/check": "^0.9.9",
+    "@astrojs/check": "^0.9.12",
     "@types/node": "^26.1.1",
-    "puppeteer-core": "^25.3.0",
-    "sharp": "^0.35.3",
+    "puppeteer-core": "^25.17.0",
+    "sharp": "^0.35.5",
     "typescript": "^5.9.3"
   }
 }

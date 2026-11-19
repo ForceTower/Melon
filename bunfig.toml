@@ -1,0 +1,3 @@
+[install]
+# Most malicious npm releases are caught and unpublished within days; never install one younger than 7.
+minimumReleaseAge = 604800

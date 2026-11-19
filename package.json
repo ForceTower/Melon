@@ -21,7 +21,7 @@
     "kmp:xcframework": "./gradlew :packages:shared-kmp:umbrella:assembleUmbrellaReleaseXCFramework"
   },
   "devDependencies": {
-    "oxfmt": "^0.45.0",
+    "oxfmt": "^0.78.0",
     "oxlint": "^1.60.0",
     "oxlint-tsgolint": "^0.21.1"
   }
