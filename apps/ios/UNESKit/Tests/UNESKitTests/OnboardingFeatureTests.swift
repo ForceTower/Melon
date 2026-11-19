@@ -77,13 +77,22 @@ struct OnboardingFeatureTests {
         initialState.path.append(.login(LoginFeature.State()))
         initialState.path.append(.sync(SyncFeature.State(greeting: "mariana.souza")))
 
+        let sessions = SessionStore.inMemory(initial: .preview)
+        let wiped = LockIsolated(false)
         let store = TestStore(initialState: initialState) {
             OnboardingFeature()
+        } withDependencies: {
+            $0.sessionStore = sessions
+            $0.meRepository.wipeLocalData = { wiped.setValue(true) }
         }
 
         await store.send(.path(.element(id: 1, action: .sync(.delegate(.authFailed))))) {
             $0.path.removeLast()
             $0.path[id: 0] = .login(LoginFeature.State(errorMessage: "Sua sessão expirou. Entre novamente."))
         }
+        await store.finish()
+        // The next sign-in may be another account; it must not meet this one's session or mirror.
+        #expect(sessions.current() == nil)
+        #expect(wiped.value)
     }
 }

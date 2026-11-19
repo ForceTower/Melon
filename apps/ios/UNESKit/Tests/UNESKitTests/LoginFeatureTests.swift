@@ -1,10 +1,40 @@
 import ComposableArchitecture
+import Foundation
 import Testing
 
 @testable import UNESKit
 
 @MainActor
 struct LoginFeatureTests {
+    @Test
+    func reloginAsAnotherAccountKeepsTheStoredSession() async throws {
+        let sessions = SessionStore.inMemory(initial: .preview)
+        let otherAccount = try JSONSerialization.data(withJSONObject: [
+            "ok": true,
+            "data": [
+                "accessToken": "other-access",
+                "refreshToken": "other-refresh",
+                "user": ["id": "other", "name": "Outra Pessoa"],
+            ],
+        ])
+        let store = TestStore(initialState: LoginFeature.State(username: "outra.pessoa", password: "synthetic-only")) {
+            LoginFeature()
+        } withDependencies: {
+            $0.authRepository = .liveValue
+            $0.sessionStore = sessions
+            $0.apiClient.send = { _ in otherAccount }
+        }
+
+        await store.send(.submitTapped) {
+            $0.isLoading = true
+        }
+        await store.receive(.loginResponse(.failure(.differentAccount))) {
+            $0.isLoading = false
+            $0.errorMessage = "Essa é outra conta. Para trocar de conta, saia primeiro em Eu."
+        }
+        #expect(sessions.current() == .preview)
+    }
+
     @Test
     func credentialsLoginSucceeds() async {
         let store = TestStore(initialState: LoginFeature.State()) {

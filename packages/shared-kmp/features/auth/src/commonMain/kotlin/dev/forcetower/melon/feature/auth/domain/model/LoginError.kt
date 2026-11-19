@@ -5,6 +5,7 @@ sealed interface LoginError {
         NoConnection,
         InvalidCredentials,
         Unexpected,
+        DifferentAccount,
     }
 
     data class Server(

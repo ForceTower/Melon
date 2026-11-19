@@ -89,6 +89,47 @@ class LoginFlowTest {
             assertNull(sessionStore.lastAccessToken)
         }
 
+    @Test
+    fun relogin_as_a_different_account_keeps_the_stored_session() =
+        runTest {
+            val stored = User("user-0", "Bruno", null)
+            val sessionStore = RecordingSessionStore(storedUser = stored)
+            val useCase =
+                buildUseCase(sessionStore) { _ -> jsonResponse(loginOk(userId = "user-1"), HttpStatusCode.OK) }
+
+            val result = useCase("alice", "hunter2")
+
+            assertEquals(Outcome.Err(LoginError.Kind.DifferentAccount), result)
+            assertEquals(STORED_ACCESS_TOKEN, sessionStore.lastAccessToken)
+            assertEquals(stored, sessionStore.lastUser)
+            assertNull(sessionStore.lastPassword)
+        }
+
+    @Test
+    fun relogin_as_the_same_account_swaps_the_tokens() =
+        runTest {
+            val sessionStore = RecordingSessionStore(storedUser = User("user-1", "Alice", null))
+            val useCase =
+                buildUseCase(sessionStore) { _ -> jsonResponse(loginOk(userId = "user-1"), HttpStatusCode.OK) }
+
+            val result = useCase("alice", "hunter2")
+
+            assertIs<Outcome.Ok<Unit>>(result)
+            assertEquals("access-123", sessionStore.lastAccessToken)
+        }
+
+    private fun loginOk(userId: String): String =
+        """
+        {
+          "ok": true,
+          "data": {
+            "accessToken": "access-123",
+            "refreshToken": "refresh-456",
+            "user": { "id": "$userId", "name": "Alice", "imageUrl": null }
+          }
+        }
+        """.trimIndent()
+
     private fun buildUseCase(
         sessionStore: SessionStore,
         handler: suspend MockRequestHandleScope.(HttpRequestData) -> HttpResponseData,
@@ -111,17 +152,22 @@ class LoginFlowTest {
         )
 }
 
-private class RecordingSessionStore :
-    SessionStore,
+private const val STORED_ACCESS_TOKEN = "stored-access"
+
+private class RecordingSessionStore(
+    storedUser: User? = null,
+) : SessionStore,
     AuthTokenSource {
-    var lastAccessToken: String? = null
+    var lastAccessToken: String? = storedUser?.let { STORED_ACCESS_TOKEN }
     var lastRefreshToken: String? = null
-    var lastUser: User? = null
+    var lastUser: User? = storedUser
     var lastUsername: String? = null
     var lastPassword: String? = null
     var loggedOut: Boolean = false
 
-    private val _authState = MutableStateFlow<AuthState>(AuthState.Unauthenticated)
+    private val _authState = MutableStateFlow<AuthState>(
+        storedUser?.let { AuthState.Authenticated(it) } ?: AuthState.Unauthenticated,
+    )
     override val authState: StateFlow<AuthState> = _authState
 
     private val _sessionInvalid = MutableStateFlow(false)

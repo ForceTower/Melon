@@ -102,6 +102,7 @@
     <string name="onboarding_login_error_no_connection">No connection. Check your internet.</string>
     <string name="onboarding_login_error_invalid_credentials">Incorrect username or password.</string>
     <string name="onboarding_login_error_unexpected">Something went wrong. Try again.</string>
+    <string name="onboarding_login_error_different_account">That\'s a different account. To switch accounts, log out first from Me.</string>
     <string name="onboarding_login_error_server">%1$s</string>
     <string name="onboarding_login_error_email_warning">Use your username — email usually doesn\'t work here</string>
     <string name="onboarding_login_error_tls_intercepted_named">%1$s appears to be intercepting traffic and blocking the secure connection. Are you on a corporate network or using antivirus software that inspects HTTPS?</string>

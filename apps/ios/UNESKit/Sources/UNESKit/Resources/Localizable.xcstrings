@@ -9121,6 +9121,23 @@
         }
       }
     },
+    "data.error.differentAccount" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "That's a different account. To switch accounts, log out first from Me."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Essa é outra conta. Para trocar de conta, saia primeiro em Eu."
+          }
+        }
+      }
+    },
     "data.error.invalidChallenge" : {
       "extractionState" : "manual",
       "localizations" : {

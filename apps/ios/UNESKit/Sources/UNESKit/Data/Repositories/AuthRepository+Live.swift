@@ -18,6 +18,7 @@ extension AuthRepository: DependencyKey {
                     authorization: .unauthenticated
                 )
                 let session = dto.domain
+                try refuseAnotherAccount(session, stored: sessionStore.current())
                 try sessionStore.save(session)
                 sessionInvalidation.clear()
                 log.info("login ok userId=\(session.user.id)")
@@ -56,6 +57,7 @@ extension AuthRepository: DependencyKey {
                     authorization: .unauthenticated
                 )
                 let session = dto.domain
+                try refuseAnotherAccount(session, stored: sessionStore.current())
                 try sessionStore.save(session)
                 sessionInvalidation.clear()
                 log.info("completePasskeyLogin ok userId=\(session.user.id)")
@@ -67,9 +69,18 @@ extension AuthRepository: DependencyKey {
     )
 }
 
+/// Signing in over a stored session keeps its local mirror, so only that account may.
+private func refuseAnotherAccount(_ session: Session, stored: Session?) throws {
+    guard let stored, stored.user.id != session.user.id else { return }
+    log.warn("login refused: userId=\(session.user.id) would inherit the local data of userId=\(stored.user.id)")
+    throw AuthError.differentAccount
+}
+
 extension AuthError {
     fileprivate init(loginFailure error: any Error) {
         switch error {
+        case let authError as AuthError:
+            self = authError
         case APIError.server(400, _):
             log.warn("login failed: invalid credentials")
             self = .invalidCredentials
@@ -87,6 +98,8 @@ extension AuthError {
 
     fileprivate init(passkeyFailure error: any Error) {
         switch error {
+        case let authError as AuthError:
+            self = authError
         case let APIError.server(status, message):
             log.warn("passkey failed: server \(status) message=\(message ?? "<none>")")
             self = .server(message)

@@ -5,6 +5,7 @@ import dev.forcetower.melon.core.common.Outcome
 import dev.forcetower.melon.core.network.ApiEnvelope
 import dev.forcetower.melon.core.network.NetworkError
 import dev.forcetower.melon.core.session.domain.SessionStore
+import dev.forcetower.melon.core.session.domain.model.AuthState
 import dev.forcetower.melon.core.session.domain.model.User
 import dev.forcetower.melon.feature.auth.data.dto.LoginRequest
 import dev.forcetower.melon.feature.auth.data.dto.LoginResponse
@@ -167,6 +168,7 @@ internal class AuthRepositoryImpl(
             return Outcome.Err(LoginError.Kind.Unexpected)
         }
         val user = payload.user.toDomain()
+        if (isAnotherAccount(user)) return Outcome.Err(LoginError.Kind.DifferentAccount)
         sessionStore.persist(
             accessToken = payload.accessToken,
             refreshToken = payload.refreshToken,
@@ -188,6 +190,7 @@ internal class AuthRepositoryImpl(
             return Outcome.Err(LoginError.Kind.Unexpected)
         }
         val user = payload.user.toDomain()
+        if (isAnotherAccount(user)) return Outcome.Err(LoginError.Kind.DifferentAccount)
         sessionStore.persist(
             accessToken = payload.accessToken,
             refreshToken = payload.refreshToken,
@@ -195,6 +198,14 @@ internal class AuthRepositoryImpl(
         )
         log.i { "passkey ok userId=${user.id}" }
         return Outcome.Ok(user)
+    }
+
+    // Signing in over a stored session keeps its local mirror, so only that account may.
+    private suspend fun isAnotherAccount(user: User): Boolean {
+        val stored = (sessionStore.currentAuthState() as? AuthState.Authenticated)?.user ?: return false
+        if (stored.id == user.id) return false
+        log.w { "login refused: userId=${user.id} would inherit the local data of userId=${stored.id}" }
+        return true
     }
 }
 

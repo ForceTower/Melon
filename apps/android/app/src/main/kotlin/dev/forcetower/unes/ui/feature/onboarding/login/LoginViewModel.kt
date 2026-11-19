@@ -155,6 +155,7 @@ private fun LoginError.toMessageRes(): Int =
         LoginError.Kind.NoConnection -> R.string.onboarding_login_error_no_connection
         LoginError.Kind.InvalidCredentials -> R.string.onboarding_login_error_invalid_credentials
         LoginError.Kind.Unexpected -> R.string.onboarding_login_error_unexpected
+        LoginError.Kind.DifferentAccount -> R.string.onboarding_login_error_different_account
         is LoginError.Server -> R.string.onboarding_login_error_server
         is LoginError.TlsIntercepted ->
             if (issuerName != null) {

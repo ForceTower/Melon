@@ -36,6 +36,8 @@ struct OnboardingFeature {
 
     @Dependency(\.continuousClock) var clock
     @Dependency(\.analytics) var analytics
+    @Dependency(\.sessionStore) var sessionStore
+    @Dependency(\.meRepository) var meRepository
 
     private let log = Log.scoped("OnboardingFeature")
 
@@ -98,7 +100,11 @@ struct OnboardingFeature {
                     login.errorMessage = String.localized(.onboardingLoginSessionExpired)
                     state.path[id: id] = .login(login)
                 }
-                return .none
+                // Left stored, the dead session would refuse the next sign-in as another account.
+                return .run { _ in
+                    try? sessionStore.clear()
+                    try? await meRepository.wipeLocalData()
+                }
 
             case .path(.element(id: _, action: .ready(.delegate(.enter)))):
                 log.info("onboarding finished")

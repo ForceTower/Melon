@@ -121,6 +121,7 @@
     <string name="onboarding_login_error_no_connection">Sem conexão. Verifique sua internet.</string>
     <string name="onboarding_login_error_invalid_credentials">Usuário ou senha incorretos.</string>
     <string name="onboarding_login_error_unexpected">Algo deu errado. Tente novamente.</string>
+    <string name="onboarding_login_error_different_account">Essa é outra conta. Para trocar de conta, saia primeiro em Eu.</string>
     <string name="onboarding_login_error_server">%1$s</string>
     <string name="onboarding_login_error_email_warning">Use o nome de usuário, email geralmente não funciona aqui</string>
     <string name="onboarding_login_error_tls_intercepted_named">%1$s parece estar interceptando o tráfego e impedindo a conexão segura. Você está em uma rede corporativa ou com antivírus que inspeciona HTTPS?</string>
