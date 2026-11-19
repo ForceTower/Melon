@@ -51,16 +51,6 @@ extension SettingsProfileDTO {
     }
 }
 
-/// `GET api/me/credentials` — `credentials` is null when nothing is on file.
-struct CredentialsDTO: Decodable {
-    let credentials: Entry?
-
-    struct Entry: Decodable {
-        let username: String
-        let password: String
-    }
-}
-
 /// `PATCH api/me/settings` body. Only the changed field is non-nil; the
 /// synthesized encoder omits nil fields, which is what the API expects.
 struct UserSettingsPatchDTO: Encodable {

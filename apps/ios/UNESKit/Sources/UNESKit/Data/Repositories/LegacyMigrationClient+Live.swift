@@ -36,6 +36,11 @@ extension LegacyMigrationClient: DependencyKey {
                         user: SessionUser(id: dto.user.id, name: dto.user.name, imageUrl: dto.user.imageUrl)
                     )
                     try sessionStore.save(session)
+                    if let credentials = carryover.credentials {
+                        sessionStore.saveUpstreamCredentials(
+                            AccountCredentials(username: credentials.username, password: credentials.password)
+                        )
+                    }
                     LegacyStore.remove()
                     log.info("attempt ok: token adopted userId=\(session.user.id)")
                     return .migrated(session)

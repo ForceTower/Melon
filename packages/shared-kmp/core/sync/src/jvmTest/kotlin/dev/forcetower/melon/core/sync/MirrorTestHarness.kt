@@ -4,7 +4,6 @@ import androidx.room3.Room
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import co.touchlab.kermit.Logger
 import dev.forcetower.melon.core.database.MelonDatabase
-import dev.forcetower.melon.core.session.domain.SessionStore
 import dev.forcetower.melon.core.sync.data.network.MirrorApi
 import dev.forcetower.melon.core.sync.data.repository.MirrorRepositoryImpl
 import io.ktor.client.HttpClient
@@ -20,7 +19,6 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
 import io.ktor.serialization.kotlinx.json.json
-import java.lang.reflect.Proxy
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
@@ -60,7 +58,6 @@ internal fun mirrorTest(
         messageDao = database.messageDao(),
         calendarEventDao = database.calendarEventDao(),
         userSettingsDao = database.userSettingsDao(),
-        sessionStore = unusedSessionStore(),
         logger = Logger,
     )
     try {
@@ -77,8 +74,3 @@ internal fun MockRequestHandleScope.respondEnvelope(data: String): HttpResponseD
         status = HttpStatusCode.OK,
         headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
     )
-
-private fun unusedSessionStore(): SessionStore =
-    Proxy.newProxyInstance(SessionStore::class.java.classLoader, arrayOf(SessionStore::class.java)) { _, method, _ ->
-        error("SessionStore.${method.name} is not used by these tests")
-    } as SessionStore

@@ -20,6 +20,7 @@ extension AuthRepository: DependencyKey {
                 let session = dto.domain
                 try refuseAnotherAccount(session, stored: sessionStore.current())
                 try sessionStore.save(session)
+                sessionStore.saveUpstreamCredentials(AccountCredentials(username: username, password: password))
                 sessionInvalidation.clear()
                 log.info("login ok userId=\(session.user.id)")
                 return session

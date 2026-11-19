@@ -10,10 +10,8 @@ import dev.forcetower.melon.core.database.dao.StudentDao
 import dev.forcetower.melon.core.database.dao.UserDao
 import dev.forcetower.melon.core.database.dao.UserSettingsDao
 import dev.forcetower.melon.core.network.ApiEnvelope
-import dev.forcetower.melon.core.session.domain.SessionStore
 import dev.forcetower.melon.core.sync.data.dto.CalendarEventsResponse
 import dev.forcetower.melon.core.sync.data.dto.MessagePageResponse
-import dev.forcetower.melon.core.sync.data.dto.MyCredentialsResponse
 import dev.forcetower.melon.core.sync.data.dto.OnboardingStatusResponse
 import dev.forcetower.melon.core.sync.data.dto.ProfileResponse
 import dev.forcetower.melon.core.sync.data.dto.SemesterListResponse
@@ -48,7 +46,6 @@ internal class MirrorRepositoryImpl(
     private val messageDao: MessageDao,
     private val calendarEventDao: CalendarEventDao,
     private val userSettingsDao: UserSettingsDao,
-    private val sessionStore: SessionStore,
     logger: Logger,
 ) : MirrorRepository {
 
@@ -214,26 +211,6 @@ internal class MirrorRepositoryImpl(
                     calendarEventDao.replaceAll(events)
                     log.i { "syncCalendarEvents ok applied=${events.size}" }
                     Outcome.Ok(events.size)
-                }
-            }
-        }
-
-    override suspend fun syncMyCredentials(): Outcome<Unit, SyncError> =
-        callNetwork("syncMyCredentials") {
-            val response = api.getMyCredentials()
-            when (val mapped = classifyResponse<MyCredentialsResponse>(response, "syncMyCredentials")) {
-                is Outcome.Err -> mapped
-                is Outcome.Ok -> {
-                    val credentials = mapped.value.credentials
-                    if (credentials != null) {
-                        sessionStore.updateUpstreamCredentials(credentials.username, credentials.password)
-                        log.i { "syncMyCredentials ok stored=true" }
-                    } else {
-                        // Server has nothing on file (e.g. user has never logged in
-                        // with username + password). Nothing to mirror; not an error.
-                        log.i { "syncMyCredentials ok stored=false (server returned null)" }
-                    }
-                    Outcome.Ok(Unit)
                 }
             }
         }

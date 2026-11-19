@@ -227,6 +227,18 @@ struct SettingsFeatureTests {
     }
 
     @Test
+    func aPasskeyVaultHasNoPasswordToReveal() async {
+        let credentials = AccountCredentials(username: "mariana.nogueira", password: nil)
+        let store = TestStore(initialState: SettingsFeature.State(credentials: credentials)) {
+            SettingsFeature()
+        }
+
+        // No localAuth override: asking for Face ID here would fail the test.
+        await store.send(.revealTapped)
+        await store.finish()
+    }
+
+    @Test
     func selectingAThemeWritesTheSharedValue() async {
         let store = TestStore(initialState: SettingsFeature.State()) {
             SettingsFeature()

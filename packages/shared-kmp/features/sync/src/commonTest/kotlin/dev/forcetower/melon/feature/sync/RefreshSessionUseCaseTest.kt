@@ -97,6 +97,4 @@ private class FakeMirrorRepository(
     override suspend fun syncCalendarEvents(): Outcome<Int, SyncError> = Outcome.Ok(0)
 
     override suspend fun pingActivity(): Outcome<Unit, SyncError> = Outcome.Ok(Unit)
-
-    override suspend fun syncMyCredentials(): Outcome<Unit, SyncError> = Outcome.Ok(Unit)
 }

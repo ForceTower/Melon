@@ -6,5 +6,6 @@ package dev.forcetower.melon.feature.me.domain.model
 // carries an extra column.
 data class UserCredentials(
     val username: String,
-    val password: String,
+    // Null when nothing was entered on this device, as after a passkey sign-in.
+    val password: String?,
 )

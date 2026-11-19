@@ -275,7 +275,7 @@ struct SettingsFeature {
                 return .none
 
             case .revealTapped:
-                guard state.credentials != nil else { return .none }
+                guard state.credentials?.password != nil else { return .none }
                 if state.isPasswordRevealed {
                     state.isPasswordRevealed = false
                     return .cancel(id: CancelID.revealExpiry)
@@ -312,9 +312,11 @@ struct SettingsFeature {
             case let .copyTapped(field):
                 guard let credentials = state.credentials else { return .none }
                 if field == .password, !state.isPasswordRevealed { return .none }
+                guard let value = field == .username ? credentials.username : credentials.password else {
+                    return .none
+                }
                 state.copied = field
                 log.info("copy credential field=\(field)")
-                let value = field == .username ? credentials.username : credentials.password
                 return .run { send in
                     await pasteboard.copy(value)
                     try await clock.sleep(for: .milliseconds(1400))

@@ -147,7 +147,9 @@ struct RootFeatureTests {
             $0.sessionStore = SessionStore(
                 current: { .preview },
                 save: { _ in },
-                clear: { throw KeychainFailure() }
+                clear: { throw KeychainFailure() },
+                upstreamCredentials: { nil },
+                saveUpstreamCredentials: { _ in }
             )
             $0.commuteActivity.stopAll = {}
             $0.push.unregister = {}

@@ -88,11 +88,10 @@ enum SettingsChange: Equatable, Sendable {
     }
 }
 
-/// The stored SAGRES login pair, mirrored from the server for the
-/// credentials vault in Settings.
-struct AccountCredentials: Equatable, Sendable {
+/// The SAGRES login for the credentials vault in Settings, as entered on this device.
+struct AccountCredentials: Equatable, Sendable, Codable {
     var username: String
-    var password: String
+    var password: String?
 }
 
 /// Identity + preferences from `GET api/sync/profile` in one round-trip.

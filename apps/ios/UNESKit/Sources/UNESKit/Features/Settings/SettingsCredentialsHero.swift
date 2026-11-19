@@ -99,8 +99,8 @@ struct SettingsCredentialsHero: View {
             )
         }
         .buttonStyle(TilePressStyle())
-        .disabled(credentials == nil)
-        .opacity(credentials == nil ? 0.4 : 1)
+        .disabled(credentials?.password == nil)
+        .opacity(credentials?.password == nil ? 0.4 : 1)
     }
 
     private var credentialsBox: some View {
@@ -118,7 +118,7 @@ struct SettingsCredentialsHero: View {
                 label: String.localized(.commonPassword),
                 value: passwordDisplay,
                 field: .password,
-                canCopy: credentials != nil && isRevealed
+                canCopy: credentials?.password != nil && isRevealed
             )
         }
         .background(.white.opacity(0.08), in: RoundedRectangle(cornerRadius: 16, style: .continuous))

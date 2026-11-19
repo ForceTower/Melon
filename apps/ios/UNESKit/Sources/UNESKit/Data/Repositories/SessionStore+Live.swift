@@ -6,14 +6,17 @@ private let log = Log.scoped("SessionStore")
 
 extension SessionStore: DependencyKey {
     static let liveValue: SessionStore = {
-        let initial = Keychain.readSession()
+        let initial = Keychain.read(Session.self, account: Keychain.sessionAccount)
         log.info("session bootstrapped tokenPresent=\(initial != nil)")
         let cached = LockIsolated<Session?>(initial)
+        let credentials = LockIsolated<AccountCredentials?>(
+            Keychain.read(AccountCredentials.self, account: Keychain.credentialsAccount)
+        )
         return SessionStore(
             current: { cached.value },
             save: { session in
                 do {
-                    try Keychain.writeSession(session)
+                    try Keychain.write(session, account: Keychain.sessionAccount)
                 } catch {
                     log.error("session persist failed userId=\(session.user.id)", error: error)
                     throw error
@@ -23,13 +26,26 @@ extension SessionStore: DependencyKey {
             },
             clear: {
                 do {
-                    try Keychain.deleteSession()
+                    // Credentials first: a failure then leaves the session, and so the shell, intact.
+                    try Keychain.delete(account: Keychain.credentialsAccount)
+                    credentials.setValue(nil)
+                    try Keychain.delete(account: Keychain.sessionAccount)
                 } catch {
                     log.error("session clear failed", error: error)
                     throw error
                 }
                 cached.setValue(nil)
                 log.info("session cleared")
+            },
+            upstreamCredentials: { credentials.value },
+            saveUpstreamCredentials: { new in
+                do {
+                    try Keychain.write(new, account: Keychain.credentialsAccount)
+                    credentials.setValue(new)
+                    log.info("upstream credentials saved")
+                } catch {
+                    log.error("upstream credentials persist failed", error: error)
+                }
             }
         )
     }()
@@ -40,10 +56,12 @@ private struct KeychainError: Error {
 }
 
 private enum Keychain {
-    private static let service = "dev.forcetower.unes.session"
-    private static let account = "session"
+    static let sessionAccount = "session"
+    static let credentialsAccount = "upstream-credentials"
 
-    private static var baseQuery: [String: Any] {
+    private static let service = "dev.forcetower.unes.session"
+
+    private static func baseQuery(account: String) -> [String: Any] {
         [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: service,
@@ -51,8 +69,8 @@ private enum Keychain {
         ]
     }
 
-    static func readSession() -> Session? {
-        var query = baseQuery
+    static func read<Value: Decodable>(_ type: Value.Type, account: String) -> Value? {
+        var query = baseQuery(account: account)
         query[kSecReturnData as String] = true
         query[kSecMatchLimit as String] = kSecMatchLimitOne
 
@@ -61,18 +79,18 @@ private enum Keychain {
               let data = result as? Data
         else { return nil }
         do {
-            return try JSONDecoder().decode(Session.self, from: data)
+            return try JSONDecoder().decode(type, from: data)
         } catch {
-            log.warn("session decode failed", error: error)
+            log.warn("keychain decode failed account=\(account)", error: error)
             return nil
         }
     }
 
-    static func writeSession(_ session: Session) throws {
-        let data = try JSONEncoder().encode(session)
-        try deleteSession()
+    static func write(_ value: some Encodable, account: String) throws {
+        let data = try JSONEncoder().encode(value)
+        try delete(account: account)
 
-        var attributes = baseQuery
+        var attributes = baseQuery(account: account)
         attributes[kSecValueData as String] = data
         attributes[kSecAttrAccessible as String] = kSecAttrAccessibleAfterFirstUnlock
 
@@ -80,8 +98,8 @@ private enum Keychain {
         guard status == errSecSuccess else { throw KeychainError(status: status) }
     }
 
-    static func deleteSession() throws {
-        let status = SecItemDelete(baseQuery as CFDictionary)
+    static func delete(account: String) throws {
+        let status = SecItemDelete(baseQuery(account: account) as CFDictionary)
         guard status == errSecSuccess || status == errSecItemNotFound else {
             throw KeychainError(status: status)
         }

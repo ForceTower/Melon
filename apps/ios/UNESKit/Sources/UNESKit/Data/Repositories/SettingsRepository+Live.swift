@@ -29,29 +29,16 @@ extension SettingsRepository: DependencyKey {
             }
         },
         credentials: {
-            @Dependency(\.apiClient) var apiClient
-            log.debug("credentials start")
-            do {
-                let dto = try await apiClient.get(CredentialsDTO.self, from: "api/me/credentials")
-                log.info("credentials ok present=\(dto.credentials != nil)")
-                return dto.credentials.map {
-                    AccountCredentials(username: $0.username, password: $0.password)
-                }
-            } catch {
-                switch error {
-                case APIError.server(401, _):
-                    log.warn("credentials unauthorized")
-                case let APIError.server(status, message):
-                    log.warn("credentials server \(status) message=\(message ?? "<none>")")
-                case APIError.emptyEnvelope:
-                    log.warn("credentials 2xx envelope had null data")
-                case is URLError:
-                    log.warn("credentials transport failure", error: error)
-                default:
-                    log.error("credentials failed", error: error)
-                }
-                throw error
+            @Dependency(\.sessionStore) var sessionStore
+            @Dependency(\.credentialStatusRepository) var credentialStatusRepository
+            if let stored = sessionStore.upstreamCredentials() {
+                log.debug("credentials from device")
+                return stored
             }
+            // Nothing entered on this device, as after a passkey sign-in: show the username alone.
+            let health = try await credentialStatusRepository.current()
+            log.debug("credentials username-only present=\(health.username != nil)")
+            return health.username.map { AccountCredentials(username: $0, password: nil) }
         },
         update: { change in
             @Dependency(\.apiClient) var apiClient

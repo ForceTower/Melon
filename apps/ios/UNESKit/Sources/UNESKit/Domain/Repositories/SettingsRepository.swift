@@ -4,7 +4,7 @@ import ComposableArchitecture
 struct SettingsRepository: Sendable {
     /// Identity + preferences in the one `api/sync/profile` round-trip.
     var account: @Sendable () async throws -> SettingsAccount
-    /// The stored SAGRES login pair; nil when nothing is on file.
+    /// The SAGRES login known to this device; nil when not even the username is.
     var credentials: @Sendable () async throws -> AccountCredentials?
     /// Ships the single changed field; returns the server-canonical row.
     var update: @Sendable (SettingsChange) async throws -> UserSettings

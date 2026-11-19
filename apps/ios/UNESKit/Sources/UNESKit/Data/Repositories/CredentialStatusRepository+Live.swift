@@ -29,26 +29,10 @@ private struct ReauthErrorDTO: Decodable {
 
 extension CredentialStatusRepository: DependencyKey {
     static let liveValue = CredentialStatusRepository(
-        current: {
-            @Dependency(\.apiClient) var apiClient
-            do {
-                let dto: CredentialStatusDTO = try await apiClient.get(from: "api/me/status")
-                let health = CredentialHealth(
-                    status: CredentialStatus(rawValue: dto.credentials.status.lowercased()) ?? .unknown,
-                    username: dto.credentials.username
-                )
-                if health.status == .unknown {
-                    log.warn("unknown credential status=\(dto.credentials.status), keeping the last known state")
-                }
-                log.debug("status ok credentials=\(health.status.rawValue)")
-                return health
-            } catch {
-                log.warn("status poll failed", error: error)
-                throw error
-            }
-        },
+        current: fetchHealth,
         reauthenticate: { password, captchaToken in
             @Dependency(\.apiClient) var apiClient
+            @Dependency(\.sessionStore) var sessionStore
             log.info("reauth submit captcha=\(captchaToken != nil)")
             do {
                 _ = try await apiClient.send(APIRequest(
@@ -62,8 +46,36 @@ extension CredentialStatusRepository: DependencyKey {
             } catch {
                 throw ReauthFailure(error)
             }
+            // Keeps the vault in Settings in step with the login the portal just accepted.
+            let username = if let stored = sessionStore.upstreamCredentials() {
+                stored.username
+            } else {
+                try? await fetchHealth().username
+            }
+            if let username {
+                sessionStore.saveUpstreamCredentials(AccountCredentials(username: username, password: password))
+            }
         }
     )
+
+    private static func fetchHealth() async throws -> CredentialHealth {
+        @Dependency(\.apiClient) var apiClient
+        do {
+            let dto: CredentialStatusDTO = try await apiClient.get(from: "api/me/status")
+            let health = CredentialHealth(
+                status: CredentialStatus(rawValue: dto.credentials.status.lowercased()) ?? .unknown,
+                username: dto.credentials.username
+            )
+            if health.status == .unknown {
+                log.warn("unknown credential status=\(dto.credentials.status), keeping the last known state")
+            }
+            log.debug("status ok credentials=\(health.status.rawValue)")
+            return health
+        } catch {
+            log.warn("status poll failed", error: error)
+            throw error
+        }
+    }
 }
 
 extension ReauthFailure {
